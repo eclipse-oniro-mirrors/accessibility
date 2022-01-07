@@ -1,0 +1,73 @@
+# Copyright (C) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//base/accessibility/frameworks/aafwk/aafwk.gni")
+
+config("accessibleability_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "include",
+    "//base/accessibility/frameworks/aafwk/include",
+    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
+    "//utils/native/base/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
+    "//base/accessibility/interfaces/innerkits/asacfwk/include",
+    "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
+    "//base/accessibility/frameworks/asacfwk/include",
+    "//foundation/appexecfwk/appexecfwk_lite/utils/bundle_lite",
+    "//base/accessibility/util/include",
+    "//base/accessibility/common/log/include",
+    "//base/accessibility/dummyData",
+  ]
+
+  defines = [
+    "AAMS_LOG_TAG = \"accessibility_aakit\"",
+    "AAMS_LOG_DOMAIN = 0xD005201",
+  ]
+
+  if (target_cpu == "arm") {
+    cflags = [ "-DBINDER_IPC_32BIT" ]
+  }
+}
+
+ohos_shared_library("accessibleability") {
+  install_enable = true
+
+  sources = aafwk_files
+
+  configs = [
+    ":accessibleability_config",
+  ]
+
+  deps = [
+     "//utils/native/base:utils",
+     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+  ]
+
+  external_deps = [
+    "ipc:ipc_core",
+    "hiviewdfx_hilog_native:libhilog",
+    "appexecfwk_standard:appexecfwk_base",
+    "appexecfwk_standard:appexecfwk_core",
+    "aafwk_standard:want",
+    "aafwk_standard:ability_manager",
+    "samgr_standard:samgr_proxy",
+    "multimodalinput_base:libmmi-client",
+  ]
+
+  subsystem_name = "accessibility"
+  part_name = "accessibility_standard"
+}
