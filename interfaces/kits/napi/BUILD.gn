@@ -1,0 +1,123 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+ohos_shared_library("accessibility") {
+  #visiblity = [ ":*" ]
+
+  include_dirs = [
+    "//foundation/ace/napi/interfaces/kits",
+    "//third_party/node/src",
+    "//utils/system/safwk/native/include",
+    "//base/accessibility/common/log/include",
+    "//base/accessibility/frameworks/aafwk/include",
+    "//base/accessibility/interfaces/innerkits/asacfwk/include",
+    "//base/accessibility/frameworks/aafwk/include",
+    "//base/accessibility/frameworks/asacfwk/include",
+    "//base/accessibility/util/include",
+    "./include",
+  ]
+
+  defines = [
+    "AAMS_LOG_TAG = \"accessibility_napi\"",
+    "AAMS_LOG_DOMAIN = 0xD005210",
+  ]
+
+  sources = [
+    "./src/native_module.cpp",
+    "./src/napi_accessible_ability.cpp",
+    "./src/napi_accessibility_system_ability_client.cpp",
+    "./src/napi_accessibility_utils.cpp",
+    "./src/napi_accessible_ability_observer.cpp",
+    "./src/napi_accessibility_event_info.cpp",
+    "./src/napi_accessibility_window_info.cpp",
+    "./src/napi_accessibility_info.cpp",
+  ]
+
+  configs = [
+    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
+  ]
+
+  deps = [
+    #"//foundation/aafwk/standard/interfaces/innerkits/base:base",
+    #"//foundation/aafwk/standard/interfaces/innerkits/want:want",
+    #"//foundation/appexecfwk/standard/common:libappexecfwk_common",
+    #"//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
+    #"//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
+    #"//foundation/appexecfwk/standard/libs/libeventhandler:libeventhandler_target",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    #"//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
+    #"//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/ace/napi:ace_napi",
+    "//base/accessibility/frameworks/aafwk:accessibleability",
+    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//utils/native/base:utils",
+    "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+  ]
+
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "multimodalinput_base:libmmi-client",
+    "appexecfwk_standard:appexecfwk_base",
+    "appexecfwk_standard:appexecfwk_core",
+    "aafwk_standard:want",
+    "aafwk_standard:ability_manager",
+  ]
+
+  relative_install_dir = "module"
+  subsystem_name = "accessibility"
+  part_name = "accessibility_standard"
+}
+
+ohos_shared_library("tts") {
+  include_dirs = [
+    "//base/accessibility/common/log/include",
+    "//foundation/ace/napi/interfaces/kits",
+    "//third_party/node/src",
+    "./include",
+    "//base/accessibility/dummyData",
+    "//utils/native/base/include",
+    #"//foundation/tts/interfaces/innerkits/native_cpp/framework/include",
+  ]
+
+  defines = [
+    "AAMS_LOG_TAG = \"tts_napi\"",
+    "AAMS_LOG_DOMAIN = 0xD005299",
+  ]
+
+  sources = [
+    "./src/napi_tts.cpp",
+    "//base/accessibility/dummyData/ttsDummy.cpp",
+  ]
+
+  #configs = [
+  #  "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
+  #]
+
+  deps = [
+    "//foundation/ace/napi:ace_napi",
+    "//utils/native/base:utils",
+    #"//foundation/tts/interfaces/innerkits/native_cpp/framework:tts_engine",
+  ]
+
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+
+  relative_install_dir = "module"
+  subsystem_name = "accessibility"
+  part_name = "accessibility_standard"
+}

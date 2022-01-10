@@ -1,0 +1,40 @@
+{
+    "app":{
+        "bundleName": "com.ohos.aamsst.appA",
+        "vendor": "ix",
+        "version": {
+            "code": 1,
+            "name": "1.0"
+        },
+       "apiVersion": {
+          "compatible": 3,
+          "target": 3
+       }
+    },
+    "deviceConfig": {
+        "default": {
+        }
+    },
+    "module": {
+        "package":"com.ohos.AamsSystemTestA.src",
+        "name":"AamsSystemTestA",
+        "deviceType": [
+            "tv",
+            "car"
+        ],
+        "distro": {
+            "deliveryWithInstall": true,
+            "moduleName": "testability",
+            "moduleType": "entry"
+        },
+        "abilities": [{
+            "name": "AamsStAbilityA1",
+            "icon": "$media:snowball",
+            "label": "AamsStAbilityA1 Ability",
+            "launchType": "singletop",
+            "orientation": "unspecified",
+            "type": "page",
+            "visible": true
+            }]
+    }
+}
