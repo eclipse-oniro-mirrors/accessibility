@@ -48,6 +48,7 @@ config("aams_service_config") {
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
+    "//foundation/windowmanager/interfaces/innerkits/wm",
   ]
 
   defines = [
@@ -90,6 +91,7 @@ ohos_shared_library("accessibleabilityms") {
     "multimodalinput_base:libmmi-client",
     "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
+    "window_manager:libwm",
   ]
 
   subsystem_name = "barrierfree"

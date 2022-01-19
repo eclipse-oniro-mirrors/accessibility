@@ -73,59 +73,12 @@ struct WMDisplayInfo:public OHOS::RefBase {
     uint32_t vsync;
     uint32_t dpi; // 额外的像素密度，比如hi3516的mipi屏是 60mmx120mm, 480x960, dpi=203
 };
-
-struct GetFocusWindowResult:public OHOS::RefBase {
-    WMError wret; // 返回结果
-    int32_t wid; // 窗口id
-};
-
 class IWindowManagerDisplayListenerClazz {
 public:
     IWindowManagerDisplayListenerClazz() = default;
     virtual ~IWindowManagerDisplayListenerClazz() {};
     virtual void OnScreenPlugin(int32_t did) = 0;
     virtual void OnScreenPlugout(int32_t did) = 0;
-};
-
-enum WindowMode {
-    WINDOW_MODE_UNSET = 0,
-    WINDOW_MODE_FREE = 1,
-    WINDOW_MODE_TOP = 2,
-    WINDOW_MODE_MAX,
-};
-
-enum WMWindowType {
-    WINDOW_TYPE_NORMAL = 0,
-    WINDOW_TYPE_STATUS_BAR = 1,
-    WINDOW_TYPE_NAVI_BAR = 2,
-    WINDOW_TYPE_ALARM_SCREEN = 3,
-    WINDOW_TYPE_SYSTEM_UI = 4,
-    WINDOW_TYPE_LAUNCHER = 5,
-    WINDOW_TYPE_VIDEO = 6,
-    WINDOW_TYPE_MAX,
-};
-
-struct GetWindowInfoResult:public OHOS::RefBase {
-    WMError wret; // 调用返回值
-    int32_t wid; // 窗口ID
-    int32_t zorder; // 层级
-    int32_t width; // 窗口边界
-    int32_t height; // 窗口边界
-    int32_t positionX; // 窗口边界
-    int32_t positionY; // 窗口边界
-    int32_t anchorX; // 锚点
-    int32_t anchorY; // 锚点
-    bool isFocused; // 是否有焦点
-    WindowMode mode; // 窗口模式(画中画)
-    WMWindowType type; // 窗口类型
-};
-
-class IWindowChangeListenerClazz {
-public:
-    IWindowChangeListenerClazz() = default;
-    virtual ~IWindowChangeListenerClazz() {};
-    virtual void OnWindowCreate(int32_t wid) = 0;
-    virtual void OnWindowDestroy(int32_t wid) = 0;
 };
 
 class IWindowManagerService : public RefBase {
@@ -141,19 +94,6 @@ public:
         return WM_OK;
     }
     WMError AddDisplayChangeListener(IWindowManagerDisplayListenerClazz *listener) {return WM_OK;}
-    sptr<struct GetFocusWindowResult> GetFocusWindowID() {return nullptr;}
-
-    sptr<struct GetWindowInfoResult> GetWindowInfo(int32_t wid) {
-      
-        window = new GetWindowInfoResult();
-        
-        window->wid = wid;
-        window->type = WINDOW_TYPE_NORMAL;
-        return window;
-    }
-
-    sptr<struct GetWindowInfoResult> window;
-    void OnWindowListChange(IWindowChangeListenerClazz *listener) {}
 };
 // WMS dummy end
 
