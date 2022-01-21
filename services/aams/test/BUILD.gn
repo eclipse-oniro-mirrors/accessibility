@@ -125,7 +125,7 @@ ohos_unittest("accessibility_account_data_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -207,7 +207,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "ipc:ipc_core",
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_core",
     "samgr_standard:samgr_proxy",
     "ipc:libdbinder",
@@ -284,8 +284,8 @@ ohos_unittest("accessibility_touch_guider_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
   ]
 }
 
@@ -360,8 +360,8 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
     "ipc:libdbinder",
   ]
 }
@@ -432,7 +432,7 @@ ohos_unittest("accessibility_input_filter_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -501,7 +501,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -580,8 +580,8 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
     "ipc:libdbinder",
   ]
 }
@@ -667,7 +667,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "ipc:ipc_core",
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_core",
     "ipc:libdbinder",
   ]
@@ -743,8 +743,8 @@ ohos_unittest("accessibility_display_manager_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
   ]
 }
 
@@ -818,8 +818,8 @@ ohos_unittest("accessibility_touchEvent_injector_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
   ]
 }
 
@@ -900,8 +900,8 @@ ohos_unittest("accessibility_interaction_bridge_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
     "ipc:libdbinder",
   ]
 }

@@ -6,7 +6,6 @@
 		    "//base/accessibility/services/aams:accessibleabilityms",
 		    "//base/accessibility/frameworks/aafwk:accessibleability",
 		    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-        "//base/accessibility/test/resource/native_application:aams_system_test_app",
         "//base/accessibility/interfaces/kits/napi:accessibility",
         "//base/accessibility/sa_profile:aams_sa_profile",
         "//base/accessibility/interfaces/kits/napi:tts"
