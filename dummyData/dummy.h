@@ -21,7 +21,7 @@
 #include <vector>
 #include "refbase.h"
 
-#define ACCESSIBLE_ABILITY_MANAGER_SERVICE_ID 4702 // to be deleted
+#define ACCESSIBLE_ABILITY_MANAGER_SERVICE_ID 801 // to be deleted
 
 namespace OHOS {
 namespace Accessibility {
