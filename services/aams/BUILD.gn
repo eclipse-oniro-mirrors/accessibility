@@ -88,7 +88,7 @@ ohos_shared_library("accessibleabilityms") {
     "ipc:ipc_core",
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 

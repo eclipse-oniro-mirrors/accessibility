@@ -43,7 +43,7 @@ ohos_shared_library("aamsSystemTestB") {
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
-    "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//utils/native/base:utilsbase",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//utils/native/base:utils",

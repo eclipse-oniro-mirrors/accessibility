@@ -134,7 +134,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -208,7 +208,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -290,7 +290,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ipc:libdbinder",
   ]
 }
@@ -371,7 +371,7 @@ ohos_moduletest("aams_server_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ipc:libdbinder",
   ]
 }
@@ -444,7 +444,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ces_standard:cesfwk_innerkits",
   ]
 }
@@ -524,7 +524,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "hiviewdfx_hilog_native:libhilog",
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "ipc:libdbinder",
     "appexecfwk_standard:appexecfwk_core",
   ]

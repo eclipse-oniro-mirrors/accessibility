@@ -62,8 +62,8 @@ ohos_shared_library("accessibleability") {
     "hiviewdfx_hilog_native:libhilog",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
     "samgr_standard:samgr_proxy",
     "multimodalinput_base:libmmi-client",
   ]

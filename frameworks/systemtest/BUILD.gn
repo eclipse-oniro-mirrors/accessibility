@@ -69,8 +69,8 @@ ohos_systemtest("asac_system_test") {
     "samgr_standard:samgr_proxy",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
   ]
 }
 

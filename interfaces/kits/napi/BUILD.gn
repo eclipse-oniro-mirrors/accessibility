@@ -63,7 +63,7 @@ ohos_shared_library("accessibility") {
     "//base/accessibility/frameworks/aafwk:accessibleability",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//utils/native/base:utils",
-    "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
   ]
 
@@ -73,8 +73,8 @@ ohos_shared_library("accessibility") {
     "multimodalinput_base:libmmi-client",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
-    "aafwk_standard:want",
-    "aafwk_standard:ability_manager",
+    "ability_runtime:want",
+    "ability_runtime:ability_manager",
   ]
 
   relative_install_dir = "module"
