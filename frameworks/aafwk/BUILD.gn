@@ -68,6 +68,6 @@ ohos_shared_library("accessibleability") {
     "multimodalinput_base:libmmi-client",
   ]
 
-  subsystem_name = "accessibility"
-  part_name = "accessibility_standard"
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
 }

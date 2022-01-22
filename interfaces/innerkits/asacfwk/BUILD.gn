@@ -65,6 +65,6 @@ ohos_shared_library("accessibilityclient") {
 
   ]
 
-  subsystem_name = "accessibility"
-  part_name = "accessibility_standard"
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
 }
