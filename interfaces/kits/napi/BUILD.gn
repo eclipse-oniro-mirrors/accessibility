@@ -78,8 +78,8 @@ ohos_shared_library("accessibility") {
   ]
 
   relative_install_dir = "module"
-  subsystem_name = "accessibility"
-  part_name = "accessibility_standard"
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
 }
 
 ohos_shared_library("tts") {
@@ -118,6 +118,6 @@ ohos_shared_library("tts") {
   ]
 
   relative_install_dir = "module"
-  subsystem_name = "accessibility"
-  part_name = "accessibility_standard"
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
 }

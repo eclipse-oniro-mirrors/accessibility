@@ -13,7 +13,7 @@
 
 import("//build/test.gni")
 
-module_output_path = "accessibility_standard/framework_test"
+module_output_path = "accessibility/framework_test"
 
 ###############################################################################
 #1. intent(c++) get/set test without transport

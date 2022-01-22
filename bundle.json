@@ -1,0 +1,82 @@
+{
+  "name": "@openharmony/accessibility",
+  "description": "The accessibility framework provides a standard mechanism for exchanging information between applications and assistive applications.",
+  "version": "3.1.0",
+  "repository": "",
+  "license": "Apache License 2.0",
+  "component": {
+    "name": "accessibility",
+    "subsystem": "barrierfree",
+    "adapted_system_type": [
+      "standard"
+    ],
+    "rom": "2000KB",
+    "ram": "10000KB",
+    "deps": {
+      "components": [
+        "ability_manager",
+        "appexecfwk_base",
+        "appexecfwk_core",
+        "cesfwk_innerkits",
+        "ipc_core",
+        "libhilog",
+        "libmmi-client",
+        "samgr_proxy",
+        "want"
+      ],
+      "third_party": []
+    },
+    "build": {
+      "sub_component": [
+        "//base/accessibility/services/aams:accessibleabilityms",
+        "//base/accessibility/frameworks/aafwk:accessibleability",
+        "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+        "//base/accessibility/interfaces/kits/napi:accessibility",
+        "//base/accessibility/sa_profile:aams_sa_profile",
+        "//base/accessibility/interfaces/kits/napi:tts"
+      ],
+      "inner_kits": [
+        {
+          "type": "so",
+          "name": "//base/accessibility/frameworks/aafwk:accessibleability",
+          "header": {
+            "header_files": [
+              "accessible_ability_client_interface.h",
+              "accessible_ability_client_proxy.h",
+              "accessible_ability_client_stub.h",
+              "accessible_ability_client_stub_impl.h",
+              "accessible_ability_event_handler.h",
+              "accessible_ability.h",
+              "accessible_ability_listener.h",
+              "display_resize_controller.h",
+              "fingerprint_controller.h"
+            ],
+            "header_base": "//base/accessibility/frameworks/aafwk/include"
+          }
+        },
+        {
+          "type": "so",
+          "name": "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+          "header": {
+            "header_files": [
+              "accessibility_event_info.h",
+              "accessibility_element_info.h",
+              "accessibility_state_event.h",
+              "accessibility_system_ability_client.h",
+              "accessibility_ability_info.h",
+              "accessibility_window_info.h"
+            ],
+            "header_base": "//base/accessibility/interfaces/innerkits/asacfwk/include"
+          }
+        }
+      ],
+      "test": [
+        "//base/accessibility/services/test:moduletest",
+        "//base/accessibility/services/aams/test:unittest",
+        "//base/accessibility/frameworks/aafwk/test:unittest",
+        "//base/accessibility/frameworks/asacfwk/test:unittest",
+        "//base/accessibility/frameworks/systemtest:systemtest"
+      ]
+    }
+  }
+}
