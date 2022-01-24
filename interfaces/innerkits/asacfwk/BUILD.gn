@@ -11,23 +11,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
 import("//base/accessibility/frameworks/asacfwk/asacfwk.gni")
+import("//build/ohos.gni")
 
-config("accessibilityclient_config") {
+config("accessibilityclient_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
     "//base/accessibility/common/log/include",
     "//base/accessibility/dummyData",
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
-    #"//foundation/appexecfwk/standard/common/log/include",
   ]
-  
+
   defines = [
     "AAMS_LOG_TAG = \"accessibility_aakit\"",
     "AAMS_LOG_DOMAIN = 0xD005202",
@@ -38,31 +36,33 @@ config("accessibilityclient_config") {
   }
 }
 
+config("accessibilityclient_public_config") {
+  include_dirs = [ "include" ]
+}
+
 ohos_shared_library("accessibilityclient") {
   install_enable = true
 
   sources = asacfwk_files
 
-  configs = [
-    ":accessibilityclient_config",
-#    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",  
-  ]
+  configs = [ ":accessibilityclient_private_config" ]
+
+  public_configs = [ ":accessibilityclient_public_config" ]
 
   deps = [
-     "//utils/native/base:utils",
-     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-     "//base/miscservices/time/services:time_service",
+    "//base/miscservices/time/services:time_service",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
+    "ability_runtime:ability_manager",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
-    "ability_runtime:want",
-    "ability_runtime:ability_manager",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
     "samgr_standard:samgr_proxy",
-
   ]
 
   subsystem_name = "barrierfree"
