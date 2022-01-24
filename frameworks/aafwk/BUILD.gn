@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
 import("//base/accessibility/frameworks/aafwk/aafwk.gni")
+import("//build/ohos.gni")
 
-config("accessibleability_config") {
+config("accessibleability_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
@@ -42,30 +42,34 @@ config("accessibleability_config") {
   }
 }
 
+config("accessibleability_public_config") {
+  include_dirs = [ "include" ]
+}
+
 ohos_shared_library("accessibleability") {
   install_enable = true
 
   sources = aafwk_files
 
-  configs = [
-    ":accessibleability_config",
-  ]
+  configs = [ ":accessibleability_private_config" ]
+
+  public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
-     "//utils/native/base:utils",
-     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
+    "ability_runtime:ability_manager",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
-    "ability_runtime:want",
-    "ability_runtime:ability_manager",
-    "samgr_standard:samgr_proxy",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
+    "samgr_standard:samgr_proxy",
   ]
 
   subsystem_name = "barrierfree"
