@@ -33,7 +33,8 @@
         "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
         "//base/accessibility/interfaces/kits/napi:accessibility",
         "//base/accessibility/sa_profile:aams_sa_profile",
-        "//base/accessibility/interfaces/kits/napi:tts"
+        "//base/accessibility/interfaces/kits/napi:tts",
+        "//base/accessibility/sa_profile:accessibility_cfg"
       ],
       "inner_kits": [
         {
