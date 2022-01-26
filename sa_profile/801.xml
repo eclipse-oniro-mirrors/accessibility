@@ -14,7 +14,7 @@
  * limitations under the License.
  -->
 <info>
-    <process>foundation</process>
+    <process>accessibility</process>
     <systemability>
         <name>801</name>
         <libpath>/system/lib/libaccessibleabilityms.z.so</libpath>
