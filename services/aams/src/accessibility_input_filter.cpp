@@ -44,7 +44,7 @@ AccessibilityInputFilter::~AccessibilityInputFilter()
     DestroyTransmitters();
 }
 
-void AccessibilityInputFilter::OnInputEvent(MultimodalEvent &event)
+void AccessibilityInputFilter::OnInputEvent(MMI::MultimodalEvent &event)
 {
     HILOG_DEBUG();
 
@@ -57,19 +57,19 @@ void AccessibilityInputFilter::OnInputEvent(MultimodalEvent &event)
     int sourceType = event.GetSourceDevice();
     HILOG_DEBUG("Source type[%d].", sourceType);
     switch (sourceType) {
-        case SourceDevice::TOUCH_PANEL: {
+        case MMI::SourceDevice::TOUCH_PANEL: {
             TouchEvent touchEvent = static_cast<TouchEvent&>(event);
             auto task = std::bind(&AccessibilityInputFilter::ProcessTouchEvent, this, touchEvent);
             eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
         }
             break;
-        case SourceDevice::MOUSE: {
+        case MMI::SourceDevice::MOUSE: {
             MouseEvent mouseEvent = static_cast<MouseEvent&>(event);
             auto task = std::bind(&AccessibilityInputFilter::ProcessMouseEvent, this, mouseEvent);
             eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
         }
             break;
-        case SourceDevice::KEYBOARD: {
+        case MMI::SourceDevice::KEYBOARD: {
             // TODO: fixme
             // MMI::KeyEvent keyEvent = static_cast<MMI::KeyEvent&>(event);
             // auto task = std::bind(&AccessibilityInputFilter::ProcessKeyEvent, this, keyEvent);

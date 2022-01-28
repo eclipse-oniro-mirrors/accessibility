@@ -48,7 +48,7 @@ public:
     AccessibilityInputFilter();
     ~AccessibilityInputFilter();
 
-    void OnInputEvent(MultimodalEvent &event) override;
+    void OnInputEvent(MMI::MultimodalEvent &event) override;
     void OnTouchEvent(TouchEvent &event) override;
     void OnMouseEvent(MouseEvent &event) override;
     void OnKeyEvent(MMI::KeyEvent &event) override;

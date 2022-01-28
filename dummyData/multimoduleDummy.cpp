@@ -18,7 +18,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-void MultimodalInputFilter::InjectEventToMultimodal(MultimodalEvent &event) {
+void MultimodalInputFilter::InjectEventToMultimodal(MMI::MultimodalEvent &event) {
 }
 
 void MultimodalInputManager::RegisterMultimodalInputFilter(MultimodalInputFilter &inputFilter) {

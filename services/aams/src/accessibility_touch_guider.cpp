@@ -115,7 +115,7 @@ void TouchGuider::OnAccessibilityEvent(AccessibilityEventInfo &event) {
 }
 
 void TouchGuider::ClearEvents(uint32_t inputSource) {
-    if (inputSource == SourceDevice::TOUCH_PANEL) {
+    if (inputSource == MMI::SourceDevice::TOUCH_PANEL) {
         Clear();
     }
     EventTransmission::ClearEvents(inputSource);

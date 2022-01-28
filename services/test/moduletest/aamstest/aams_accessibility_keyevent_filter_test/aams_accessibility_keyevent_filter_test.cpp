@@ -172,7 +172,7 @@ KeyEvent aamsKeyEventFilterTest::CreateOnKeyEvent(int keycode) {
     KeyEvent keyEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::KEYBOARD,
+        .sourceType = MMI::SourceDevice::KEYBOARD,
     };
 
     struct KeyProperty property{
