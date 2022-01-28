@@ -22,7 +22,7 @@ namespace Accessibility {
 int MTtouchAction = -1;
 std::vector<int> mtTouchAction;
 
-void MultimodalInputFilter::InjectEventToMultimodal(MultimodalEvent &event) {
+void MultimodalInputFilter::InjectEventToMultimodal(MMI::MultimodalEvent &event) {
     TouchEvent* touchAction = (TouchEvent*)&event;
     MTtouchAction = touchAction->GetAction();
     mtTouchAction.push_back(MTtouchAction);

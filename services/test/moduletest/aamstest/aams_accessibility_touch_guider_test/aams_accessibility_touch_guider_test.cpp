@@ -204,7 +204,7 @@ TouchEvent aamsTouchGuideTest::CreateTouchEvent(int action, MmiPoint &point, int
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {
-                .sourceType = SourceDevice::TOUCH_PANEL,
+                .sourceType = MMI::SourceDevice::TOUCH_PANEL,
         .occurredTime = occurredTime,
     };
     struct ManipulationProperty manipulationProperty = {

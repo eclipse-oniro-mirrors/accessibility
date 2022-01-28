@@ -21,7 +21,7 @@ int MTkeyCode = -1;
 namespace OHOS {
 namespace Accessibility {
 
-void MultimodalInputFilter::InjectEventToMultimodal(MultimodalEvent &event) {
+void MultimodalInputFilter::InjectEventToMultimodal(MMI::MultimodalEvent &event) {
     KeyEvent* keyevent = (KeyEvent*)&event;
     MTkeyCode = keyevent->GetKeyCode();   
 }

@@ -25,8 +25,8 @@ class MultimodalInputFilter {
 public:
     MultimodalInputFilter() {};
     virtual ~MultimodalInputFilter() = default;
-    virtual void OnInputEvent(MultimodalEvent &event) {};
-    void InjectEventToMultimodal(MultimodalEvent &event);
+    virtual void OnInputEvent(MMI::MultimodalEvent &event) {};
+    void InjectEventToMultimodal(MMI::MultimodalEvent &event);
 };
 
 class MultimodalInputManager {

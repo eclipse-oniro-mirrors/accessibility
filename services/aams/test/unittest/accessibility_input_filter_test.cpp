@@ -157,7 +157,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnT
     TouchEvent touchEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::TOUCH_PANEL,
+        .sourceType = MMI::SourceDevice::TOUCH_PANEL,
     };
 
     struct ManipulationProperty manipulationProperty = {
@@ -192,7 +192,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnT
     TouchEvent touchEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::TOUCH_PANEL,
+        .sourceType = MMI::SourceDevice::TOUCH_PANEL,
     };
 
     struct ManipulationProperty manipulationProperty = {
@@ -239,7 +239,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnM
     MouseEvent mouseEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::MOUSE,
+        .sourceType = MMI::SourceDevice::MOUSE,
     };
 
     struct MouseProperty mouseProperty = {
@@ -270,7 +270,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnM
     MouseEvent mouseEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::MOUSE,
+        .sourceType = MMI::SourceDevice::MOUSE,
     };
 
     struct MouseProperty mouseProperty = {
@@ -313,7 +313,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnK
     MMI::KeyEvent keyEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::KEYBOARD,
+        .sourceType = MMI::SourceDevice::KEYBOARD,
     };
 
     struct KeyProperty property = {
@@ -344,7 +344,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_OnK
     MMI::KeyEvent keyEvent{};
 
     struct MultimodalProperty multimodal = {
-        .sourceType = SourceDevice::KEYBOARD,
+        .sourceType = MMI::SourceDevice::KEYBOARD,
     };
 
     struct KeyProperty property = {
