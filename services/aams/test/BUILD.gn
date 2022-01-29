@@ -208,7 +208,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "ability_runtime:want",
-    "appexecfwk_standard:appexecfwk_core",
+    "bundle_framework:appexecfwk_core",
     "samgr_standard:samgr_proxy",
     "ipc:libdbinder",
   ]
@@ -668,7 +668,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "ability_runtime:want",
-    "appexecfwk_standard:appexecfwk_core",
+    "bundle_framework:appexecfwk_core",
     "ipc:libdbinder",
   ]
 }
