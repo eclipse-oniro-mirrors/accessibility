@@ -110,8 +110,8 @@ ohos_unittest("asac_unit_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
-    "appexecfwk_standard:appexecfwk_base",
-    "appexecfwk_standard:appexecfwk_core",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "ability_runtime:want",
     "ability_runtime:ability_manager",
   ]

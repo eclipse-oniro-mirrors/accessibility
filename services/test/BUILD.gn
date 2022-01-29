@@ -526,7 +526,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ability_runtime:want",
     "ipc:libdbinder",
-    "appexecfwk_standard:appexecfwk_core",
+    "bundle_framework:appexecfwk_core",
   ]
 }
 
