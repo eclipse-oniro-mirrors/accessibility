@@ -27,6 +27,7 @@
 #include "ability_info.h"
 #include "accessibility_interaction_bridge.h"
 #include "accessibility_display_manager.h"
+#include "window_manager.h"
 
 using namespace std;
 
@@ -257,8 +258,9 @@ void AccessibleAbilityManagerService::RegisterInteractionOperation(const int win
             HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
         }
     }
-
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(windowId);
+    sptr<Rosen::WindowInfo> windowInfo = new Rosen::WindowInfo();
+    windowInfo->wid_ = windowId;
+    AccessibilityWindowInfoManager::GetInstance().OnWindowUpdate(windowInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
 }
 
 void AccessibleAbilityManagerService::DeregisterInteractionOperation(int windowId) {
@@ -280,8 +282,9 @@ void AccessibleAbilityManagerService::DeregisterInteractionOperation(int windowI
     }
 
     accountData->RemoveAccessibilityInteractionConnection(windowId);
-    auto& a11yWindowMgr = AccessibilityWindowInfoManager::GetInstance();
-    a11yWindowMgr.OnWindowDestroy(windowId);
+    sptr<Rosen::WindowInfo> windowInfo = new Rosen::WindowInfo();
+    windowInfo->wid_ = windowId;
+    AccessibilityWindowInfoManager::GetInstance().OnWindowUpdate(windowInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
 }
 
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
