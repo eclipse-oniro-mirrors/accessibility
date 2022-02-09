@@ -41,7 +41,7 @@ public:
 
 protected:
     TouchEvent CreateTouchEvent(int action);
-    TouchEvent CreateTouchEvent(int action, MmiPoint &point, int pointerCount, 
+    TouchEvent CreateTouchEvent(int action, MmiPoint &point, int pointerCount,
                             unsigned int occurredTime, unsigned int startTime);
     TouchEvent CreateMoveEvent(int pointerCount);
     std::unique_ptr<TouchGuider> touchGuider_ = nullptr;
@@ -87,7 +87,7 @@ void TouchGuiderTest::TearDown()
     TouchAction.clear();
 }
 
-TouchEvent TouchGuiderTest::CreateTouchEvent(int action) 
+TouchEvent TouchGuiderTest::CreateTouchEvent(int action)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {};
@@ -104,7 +104,7 @@ TouchEvent TouchGuiderTest::CreateTouchEvent(int action)
 }
 
 TouchEvent TouchGuiderTest::CreateTouchEvent(int action, MmiPoint &point, int pointerCount,
-                            unsigned int occurredTime, unsigned int startTime) 
+                            unsigned int occurredTime, unsigned int startTime)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {
@@ -124,7 +124,7 @@ TouchEvent TouchGuiderTest::CreateTouchEvent(int action, MmiPoint &point, int po
     return touchEvent;
 }
 
-TouchEvent TouchGuiderTest::CreateMoveEvent(int pointerCount) 
+TouchEvent TouchGuiderTest::CreateMoveEvent(int pointerCount)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {};
@@ -369,7 +369,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_008, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_009 start";
-    
+
     MmiPoint point(0, 0);
     MmiPoint otherPoint(500, 500);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
@@ -399,7 +399,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_010 start";
-    
+
     MmiPoint point(0, 0);
     MmiPoint otherPoint(10, 10);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
@@ -428,7 +428,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_011 start";
-    
+
     MmiPoint point(0, 0);
     MmiPoint otherPoint(500, 500);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
@@ -459,7 +459,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_012 start";
-    
+
     MmiPoint point(10, 10);
     MmiPoint otherPoint(50, 10);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
@@ -484,7 +484,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_013, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_013 start";
-    
+
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN);
     touchGuider_->OnTouchEvent(event);
     EXPECT_EQ(eventType[0], EventType::TYPE_TOUCH_BEGIN);
@@ -520,7 +520,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_013, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_014 start";
-    
+
     MmiPoint point(500, 500);
     MmiPoint movepoint(2500, 500);
     MmiPoint othermovepoint(2500,750);
@@ -548,7 +548,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_015 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(3500, 2500);
     MmiPoint movepoint2(5000,2500);
@@ -588,7 +588,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_016 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(1500, 2500);
     MmiPoint movepoint2(0,2500);
@@ -628,7 +628,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_017 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(2500, 3500);
     MmiPoint movepoint2(2500,5000);
@@ -668,7 +668,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_018 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(2500, 3500);
     MmiPoint movepoint2(2500,5000);
@@ -708,7 +708,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_019 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(1000, 2500);
     MmiPoint movepoint2(0,2500);
@@ -743,7 +743,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_020 start";
-    
+
     MmiPoint point(2500, 2500);
     MmiPoint movepoint1(2250, 2500);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
@@ -767,7 +767,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_021, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_021 start";
-    
+
     MmiPoint point(500, 500);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
     touchGuider_->OnTouchEvent(event);
@@ -797,7 +797,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_021, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_022, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_022 start";
-    
+
     MmiPoint point(500, 500);
     TouchEvent event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_DOWN, point,1, 0, 0);
     touchGuider_->OnTouchEvent(event);
@@ -824,7 +824,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_022, TestSize.Level1
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_023, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_023 start";
-    
+
     touchGuider_->ClearEvents(CompositeEvent::ROTATION);
     EXPECT_EQ(isClearEvents, true);
 

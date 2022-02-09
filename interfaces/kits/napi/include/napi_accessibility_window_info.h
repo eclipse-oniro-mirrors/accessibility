@@ -21,7 +21,7 @@
 #include "accessibility_window_info.h"
 #include "accessibility_element_info.h"
 
-struct NAccessibilityWindowInfoData {  
+struct NAccessibilityWindowInfoData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
     napi_ref thisRefer_ {};

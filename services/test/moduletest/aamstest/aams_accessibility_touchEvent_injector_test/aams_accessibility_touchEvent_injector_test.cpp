@@ -56,7 +56,7 @@ public:
 
     sptr<AccessibilityInputFilter> inputFilter_ = nullptr;
     void CreateGesturePath(
-            GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime); 
+            GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
     std::vector<GesturePathDefine> getGesturePath;
     sptr<AccessibleAbilityChannelStubImpl> aacs_ = nullptr;
     void CreateAccessibilityConfigForTouchGuide();
@@ -101,7 +101,7 @@ void aamsInjectorTest::SetUp()
     displayMgr.SetDisplay(wmdInfo);
     // accessibleAbility connection
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = AppExecFwk::EventRunner::Create("aamsAccessibleAbilityInjectorTest");
-    sptr<AccessibleAbilityClientStubImpl> accessibleAbility = 
+    sptr<AccessibleAbilityClientStubImpl> accessibleAbility =
                             new AccessibleAbilityClientStubImpl(std::make_shared<AccessibleAbilityEventHandler>(runner_));
     ins_->RegisterAbilityConnectionClientTmp(accessibleAbility);
     AddAccessibilityInteractionConnection();
@@ -130,8 +130,8 @@ void aamsInjectorTest::TearDown()
 }
 
 void aamsInjectorTest::CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime) 
-{                           
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+{
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);
     gesturePathDefine.SetEndPosition(endpoint);
@@ -176,7 +176,7 @@ void aamsInjectorTest::CreateAccessibilityConfigForTouchGuide()
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
 	object1["description"] = "$string:accessibility_service_description";
 	object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
- 
+
     Json::StreamWriterBuilder writerBuilder;
 
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -238,7 +238,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_002,
     GesturePathPositionDefine endpoint1(300.0f , 500.0f);
     GesturePathPositionDefine startpoint2(300.0f , 500.0f);
     GesturePathPositionDefine endpoint2(300.0f , 500.0f);
-   
+
     CreateGesturePath(startpoint1, endpoint1, 100);
     CreateGesturePath(startpoint2, endpoint2, 100);
     aacs_->SendSimulateGesture(1, getGesturePath);
@@ -266,7 +266,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_003,
     GesturePathPositionDefine endpoint1(300.0f , 500.0f);
     GesturePathPositionDefine startpoint2(300.0f , 500.0f);
     GesturePathPositionDefine endpoint2(300.0f , 500.0f);
-   
+
     CreateGesturePath(startpoint1, endpoint1, 100);
     CreateGesturePath(startpoint2, endpoint2, 1000);
     aacs_->SendSimulateGesture(1, getGesturePath);
@@ -304,7 +304,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_004,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     EXPECT_EQ(MTgestureId, static_cast<int>(GestureTypes::GESTURE_SWIPE_LEFT));
@@ -340,7 +340,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_005,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     EXPECT_EQ(MTgestureId, static_cast<int>(GestureTypes::GESTURE_SWIPE_RIGHT_THEN_DOWN));
@@ -377,7 +377,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_006,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     EXPECT_EQ(MTgestureId, static_cast<int>(GestureTypes::GESTURE_SWIPE_LEFT_THEN_DOWN));
@@ -414,7 +414,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_007,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     EXPECT_EQ(MTgestureId, static_cast<int>(GestureTypes::GESTURE_SWIPE_UP_THEN_LEFT));
@@ -451,7 +451,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_008,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     EXPECT_EQ(MTgestureId, static_cast<int>(GestureTypes::GESTURE_SWIPE_UP_THEN_RIGHT));
@@ -483,7 +483,7 @@ HWTEST_F(aamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_009,
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);    
+    EXPECT_EQ(mTeventType[4], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     EXPECT_EQ(mTeventType[5], EventType::TYPE_TOUCH_END);
 
     GTEST_LOG_(INFO) << "TouchEventInjector_ModuleTest_TouchEventInjector_009 end";

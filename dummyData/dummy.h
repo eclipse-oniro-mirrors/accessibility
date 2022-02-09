@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef DUMMY_H
 #define DUMMY_H
 
@@ -39,10 +39,10 @@ struct AccessibilityAbilityInfoDummy
     uint32_t accessibilityEventTypes = 0xFFFFFFFF;   // TYPES_ALL_MASK
 
     // ACCESSIBILITY_ABILITY_TYPE_SPOKEN | ACCESSIBILITY_ABILITY_TYPE_HAPTIC | ACCESSIBILITY_ABILITY_TYPE_AUDIBLE
-    uint32_t accessibilityAbilityTypes = 0x00000001 | 0x00000002 | 0x00000004; 
+    uint32_t accessibilityAbilityTypes = 0x00000001 | 0x00000002 | 0x00000004;
 
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM | CAPABILITY_RETRIEVE
-    uint32_t capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001; 
+    uint32_t capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001;
 
     std::string description =
     "When TalkBack is on, it provides spoken feedback so that you can use your device without looking at the screen.";
@@ -84,7 +84,7 @@ public:
 class IWindowManagerService : public RefBase {
 public:
     WMError GetDisplays(std::vector<struct WMDisplayInfo> &displays)
-    { 
+    {
         WMDisplayInfo display;
         display.dpi = 1;
         display.width = 1000;

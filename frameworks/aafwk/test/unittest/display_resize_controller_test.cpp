@@ -29,7 +29,7 @@ public:
     virtual ~UnitTestDisplayResizeListener() {}
 
     void OnDisplayResizeChanged(const DisplayResizeController& controller, const Rect& rect, const float scale,
-                                            const float centerX, const float centerY) override 
+                                            const float centerX, const float centerY) override
     {
         GTEST_LOG_(INFO) << "UnitTestDisplayResizeListener OnDisplayResizeChanged";
     }

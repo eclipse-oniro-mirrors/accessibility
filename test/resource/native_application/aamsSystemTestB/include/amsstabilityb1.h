@@ -59,7 +59,7 @@ public:
 private:
     void Clear();
     void GetWantInfo(const Want &want);
-    
+
     std::string targetBundle;
     std::string targetAbility;
 

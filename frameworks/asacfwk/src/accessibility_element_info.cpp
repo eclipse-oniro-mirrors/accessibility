@@ -306,7 +306,7 @@ void AccessibilityElementInfo::DeleteAction(AccessibleAction &action)
 }
 
 bool AccessibilityElementInfo::DeleteAction(ActionType &actionType)
-{  
+{
     HILOG_DEBUG("[%{public}s]", __func__);
     for (auto iter = operations_.begin(); iter != operations_.end(); iter++) {
         HILOG_DEBUG("[%{public}s] actionType[%{public}d]", __func__, actionType);

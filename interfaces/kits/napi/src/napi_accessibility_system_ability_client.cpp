@@ -41,7 +41,7 @@ napi_value IsOpenAccessibility(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenAccessibility", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -96,7 +96,7 @@ napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenTouchExploration", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -141,7 +141,7 @@ napi_value GetAbilityList(napi_env env, napi_callback_info info)
 
     std::string abilityTypes = GetStringFromNAPI(env,  parameters[0]);
     std::string stateTypes = GetStringFromNAPI(env,  parameters[1]);;
-    
+
     HILOG_INFO("abilityTypes[%{public}s]", abilityTypes.c_str());
     HILOG_INFO("stateTypes[%{public}s]", stateTypes.c_str());
 
@@ -150,7 +150,7 @@ napi_value GetAbilityList(napi_env env, napi_callback_info info)
     callbackInfo->stateTypes_ = ConvertStringToAbilityStateTypes(stateTypes);
 
     napi_value promise = nullptr;
-    
+
     if (argc > ARGS_SIZE_TWO) {
         HILOG_DEBUG("GetAbilityList callback mode");
         napi_create_reference(env, parameters[2], 1, &callbackInfo->callback_);
@@ -161,7 +161,7 @@ napi_value GetAbilityList(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAbilityList", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -218,7 +218,7 @@ napi_value SendEvent(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendEvent", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {

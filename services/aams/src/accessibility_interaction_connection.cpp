@@ -20,7 +20,7 @@ using namespace std;
 namespace OHOS{
 namespace Accessibility{
 
-AccessibilityInteractionConnection::AccessibilityInteractionConnection(const int windowId, 
+AccessibilityInteractionConnection::AccessibilityInteractionConnection(const int windowId,
     const sptr<IAccessibilityInteractionOperation> &connection, const int accountId) {
     windowId_ = windowId;
     proxy_ = connection;
@@ -28,7 +28,7 @@ AccessibilityInteractionConnection::AccessibilityInteractionConnection(const int
 }
 
 AccessibilityInteractionConnection::~AccessibilityInteractionConnection() {
-    
+
 }
 
 }  // namespace Accessibility

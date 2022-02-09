@@ -39,22 +39,22 @@ class AccessibleAbilityChannelStubImpl : public AccessibleAbilityChannelStub {
 public:
     AccessibleAbilityChannelStubImpl(AccessibleAbilityConnection &connection);
     ~AccessibleAbilityChannelStubImpl();
-    bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, const long elementId, 
+    bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, const long elementId,
         const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback, const int mode) override;
 
-    bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId, 
-        const std::string &text, const int requestId, 
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override; 
-
-    bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId, 
-        const int focusType, const int requestId, 
+    bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
+        const std::string &text, const int requestId,
         const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
 
-    bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, const int direction, 
+    bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
+        const int focusType, const int requestId,
+        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+
+    bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, const int direction,
         const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
 
-    bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,  
-        std::map<std::string, std::string> &actionArguments, const int requestId, 
+    bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+        std::map<std::string, std::string> &actionArguments, const int requestId,
         const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
 
     std::vector<AccessibilityWindowInfo> GetWindows() override;
@@ -75,7 +75,7 @@ public:
 
     bool ResetDisplayResize(const int displayId, bool animate) override;
 
-    bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX, 
+    bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
         const float centerY, const bool animate) override;
 
     void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps) override;
@@ -156,7 +156,7 @@ private:
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
     AccessibilityAbilityInfo abilityInfo_;
     AppExecFwk::ElementName elementName_;
-    wptr<AccessibilityAccountData> accountData_; 
+    wptr<AccessibilityAccountData> accountData_;
 
     int connectionId_;
 };

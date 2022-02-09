@@ -39,7 +39,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::M
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId, 
+bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
     const int mode)
 {
@@ -60,7 +60,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibili
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId, 
+bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
     const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
 {
     return true;

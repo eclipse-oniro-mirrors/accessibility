@@ -40,7 +40,7 @@ private:
     std::string description_ = "";
 };
 
-struct NAccessibilitySystemAbilityClient {  
+struct NAccessibilitySystemAbilityClient {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
     napi_ref thisRefer_ {};

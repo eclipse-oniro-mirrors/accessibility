@@ -129,7 +129,7 @@ void PraseVecUtils::ParseEventTypesFromVec(const vector<string>& events, uint32_
         if (*it == EVENT_TYPES_JSON_VALUE_FOCUS) {
             eventTypes |= EventType::TYPE_VIEW_FOCUSED_EVENT;
         }
-        
+
         if (*it == EVENT_TYPES_JSON_VALUE_TEXT_UPDATE) {
             eventTypes |= EventType::TYPE_VIEW_TEXT_UPDATE_EVENT;
         }
@@ -261,7 +261,7 @@ void PraseVecUtils::ParseCapabilitiesFromVec(const vector<string>& capabilities,
         if (*it == CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER) {
             capabilitiesValue |= Capability::CAPABILITY_KEY_EVENT_OBSERVER;
         }
-        
+
         if (*it == CAPABILITIES_JSON_VALUE_ZOOM) {
             capabilitiesValue |= Capability::CAPABILITY_ZOOM;
         }

@@ -38,7 +38,7 @@ public:
      * @brief Callback when the fingerprint sensor detects a gesture.
      * @param gesture The gesture which is detected by fingerprint sensor.
      * @return
-     */ 
+     */
     virtual void OnFingerprintGesture(uint32_t gesture) = 0;
 };
 
@@ -54,21 +54,21 @@ public:
      * @brief Judge whether the gesture detection function of the fingerprint sensor is available.
      * @param
      * @return Return true if the fingerprint sensor is available, else return false.
-     */ 
+     */
     bool IsFingerprintGestureDetectionValid();
 
     /**
      * @brief Add listener of fingerprint gesture.
      * @param listener The listener to add.
      * @return
-     */ 
+     */
     void AddFingerprintListener(std::shared_ptr<FingerprintListener>& listener);
 
     /**
      * @brief Delete listener of fingerprint gesture.
      * @param listener The listener to delete.
      * @return
-     */ 
+     */
     void DeleteFingerprintListener(std::shared_ptr<FingerprintListener>& listener);
 
     /**
@@ -83,7 +83,7 @@ public:
      * @brief Dispatch the gesture which is detected by fingerprint sensor to listeners who has been registered.
      * @param gesture The gesture which is detected by fingerprint sensor.
      * @return
-     */ 
+     */
     void DispatchOnFingerprintGesture(uint32_t gesture);
 
 private:

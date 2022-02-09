@@ -103,7 +103,7 @@ void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConn
     UpdateInteractiveUiInterval();
 }
 
-// ability disconnect. 
+// ability disconnect.
 void AccessibilityAccountData::AbilityDisconnected(sptr<AccessibleAbilityConnection> &connection) {
     HILOG_DEBUG("%{public}s start.", __func__);
     RemoveConnectedAbility(connection);

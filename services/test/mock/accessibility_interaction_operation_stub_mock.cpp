@@ -24,7 +24,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>> 
+std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>>
     AccessibilityInteractionOperationStub::aaCallbacks_ = {};
 AccessibilityInteractionOperationStub::AccessibilityInteractionOperationStub()
 {
@@ -165,7 +165,7 @@ void AccessibilityInteractionOperationStub::CallbackImpl::SetPerformActionResult
     return;
 }
 
-std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>> 
+std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>>
     AccessibilityInteractionOperationStub::CallbackImpl::GetAACallbackList()
 {
     return aaCallbacks_;

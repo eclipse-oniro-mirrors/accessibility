@@ -166,7 +166,7 @@ public:
 
     /**
      * @brief Obtains the controller for fingerprint operations.
-     * @param 
+     * @param
      * @return Return the fingerprint controller.
      */
     std::shared_ptr<FingerprintController>& GetFingerprintController();
@@ -213,7 +213,7 @@ private:
 
     sptr<IAccessibleAbilityManagerServiceClient> proxy_ = nullptr;
     sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
- 
+
     uint32_t channelId_ = AccessibleAbilityClientStubImpl::INVALID_CHANNEL_ID;
     uint32_t gestureStatusListenerSequence_ = 0;
 };

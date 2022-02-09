@@ -36,9 +36,9 @@ namespace OHOS {
 namespace Accessibility {
 /*
 * The class supply the api called by AA to get the accessibility info of UI.
-* It call the API of AAMS and the request will be proccessed by 
+* It call the API of AAMS and the request will be proccessed by
 * UI and then set the result by callback(AA-->this class(with Callback)--> AAMS
-* --> UI process and set Callback). 
+* --> UI process and set Callback).
 * It supply one instance for each thread to use this class.
 */
 class AccessibilityOperator : public AccessibilityInteractionOperationCallbackStub{
@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief Get the instance of AccessibilityOperator
-     * @param 
+     * @param
      * @return The instance of AccessibilityOperator
      */
     static AccessibilityOperator &GetInstance();
@@ -78,7 +78,7 @@ public:
      * @brief Set the object connected from AA to AAMS and channel id matched.
      * @param channelId The id matched the object connected from AA to AAMS
      * @param channel The object connected from AA to AAMS.
-     * @return 
+     * @return
      */
     static void AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel);
 
@@ -356,7 +356,7 @@ private:
     static std::vector<sptr<AccessibilityOperator>> instances_;
     static std::map<int, sptr<IAccessibleAbilityChannel>> channels_;
     int responseId_ = 0;
-    
+
     static int requestId_;    //matched request with callback result
     AccessibilityElementInfo accessibilityInfoResult_{};
     std::vector<AccessibilityElementInfo> accessibilityInfosResult_{};
@@ -364,7 +364,7 @@ private:
     bool performActionResult_ = false;
     static std::recursive_mutex mutex_;
     bool completed_ = false;
-    
+
 };
 
 } //namespace Accessibility

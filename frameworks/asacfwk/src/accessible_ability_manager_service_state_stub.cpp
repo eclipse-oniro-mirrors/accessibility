@@ -39,7 +39,7 @@ int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, Mes
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
-    
+
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED)) {
         HandleOnStateChanged(data, reply);
     }

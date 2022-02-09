@@ -53,7 +53,7 @@ enum AbilityStateType: int {
 * The class register the accessibility service observer to AAMS,and
 * dispatch the accessibility service status changed. such as Service Enable，
 * Accessibility Enable. It calls AAMS API to send the event to AA.
-* It supply sington instance for each process. 
+* It supply sington instance for each process.
 */
 class CaptionProperties {
 public:
@@ -112,7 +112,7 @@ public:
     /**
      * @brief Deregister the interaction operation.
      * @param windowId Window ID
-     * @return 
+     * @return
      */
     void DeregisterInteractionOperation(const int windowId);
 
@@ -131,14 +131,14 @@ public:
     bool IsTouchExplorationEnabled();
 
     /**
-     * @brief Queries the list of accessibility abilities. 
-     * @param accessibilityAbilityTypes Indicates the accessibility type specified by 
+     * @brief Queries the list of accessibility abilities.
+     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
-     * @param stateType Indicates the accessibility ability status. 
+     * @param stateType Indicates the accessibility ability status.
      *                  1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled;
      *                  4 indicates that the ability has been installed.
-     * @return 
+     * @return
      */
     std::vector<AccessibilityAbilityInfo> GetAbilityList(const int accessibilityAbilityTypes,
         const AbilityStateType stateType);

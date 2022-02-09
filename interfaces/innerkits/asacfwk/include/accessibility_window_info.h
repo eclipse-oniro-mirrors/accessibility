@@ -40,8 +40,8 @@ class AccessibilityWindowInfo : public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param 
-     * @return 
+     * @param
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Set the title of window
      * @param title The title of window
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -85,7 +85,7 @@ public:
 
     /**
      * @brief Get The window layer
-     * @param - 
+     * @param -
      * @return The layer of window
      * @since 3
      * @sysCap Accessibility
@@ -113,7 +113,7 @@ public:
     /**
      * @brief Set an anchor accessibility node that anchors this window to another window.
      * @param anchorId The accessibility id of component.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -148,7 +148,7 @@ public:
 
     /**
      * @brief Get the parent window
-     * @param - 
+     * @param -
      * @return The window id of the parent.
      * @since 3
      * @sysCap Accessibility
@@ -157,7 +157,7 @@ public:
 
     /**
      * @brief Get the anchor window
-     * @param - 
+     * @param -
      * @return The anchor id of the window.
      * @since 3
      * @sysCap Accessibility
@@ -166,7 +166,7 @@ public:
 
     /**
      * @brief Get the parent window
-     * @param - 
+     * @param -
      * @return The window id of the parent.
      * @since 3
      * @sysCap Accessibility
@@ -185,7 +185,7 @@ public:
     /**
      * @brief Set the widnow id of current window.
      * @param id The widnow id of current window.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -194,7 +194,7 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel.
      * @param channelId The id of the IAccessibleAbilityChannel.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -202,7 +202,7 @@ public:
 
     /**
      * @brief Get the id of the IAccessibleAbilityChannel.
-     * @param 
+     * @param
      * @return The id of the IAccessibleAbilityChannel.
      * @since 3
      * @sysCap Accessibility
@@ -239,7 +239,7 @@ public:
     /**
      * @brief Set whether the window is active or not.
      * @param active true: the window is active, otherwise is not.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -247,7 +247,7 @@ public:
 
     /**
      * @brief Checks whether this window has gained focus.
-     * @param 
+     * @param
      * @return true: the window has gained focus, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -284,7 +284,7 @@ public:
     /**
      * @brief Obtains the quantity of child windows.
      * @param -
-     * @return The quantity of child windows. 
+     * @return The quantity of child windows.
      * @since 3
      * @sysCap Accessibility
      */

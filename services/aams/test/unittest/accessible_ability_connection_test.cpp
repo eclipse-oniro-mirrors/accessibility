@@ -135,7 +135,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     auto elementName = connection_->GetElementName();
     auto ret = elementName.GetDeviceID();
     EXPECT_STREQ(ret.c_str(), "1");
-    
+
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAbilityInfo_001 end";
 }
 
@@ -462,7 +462,7 @@ HWTEST_F(AccessibleAbilityChannelStubImplUnitTest,
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
  */
-HWTEST_F(AccessibleAbilityChannelStubImplUnitTest, 
+HWTEST_F(AccessibleAbilityChannelStubImplUnitTest,
  AccessibleAbilityChannelStubImpl_Unittest_SearchElementInfosByText_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_SearchElementInfosByText_001 start";

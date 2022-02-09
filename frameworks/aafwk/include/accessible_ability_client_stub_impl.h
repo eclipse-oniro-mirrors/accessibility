@@ -59,7 +59,7 @@ public:
     void Disconnect(const int channelId) override;
 
     /**
-     * @brief Called when an accessibility event occurs. 
+     * @brief Called when an accessibility event occurs.
      * @param eventInfo The infomation of accessible event.
      * @return
      */
@@ -74,7 +74,7 @@ public:
 
     /**
      * @brief Called when a user performs a specified gesture on the device that
-     *        your accessibility application has requested to be in touch exploration mode. 
+     *        your accessibility application has requested to be in touch exploration mode.
      * @param gestureId The id of gesture.
      * @return
      */
@@ -119,7 +119,7 @@ public:
      * @brief Called when the fingerprint sensor detects a gesture.
      * @param gesture The gesture which is detected by fingerprint sensor.
      * @return
-     */ 
+     */
     void OnFingerprintGesture(const int gesture) override;
 
 private:

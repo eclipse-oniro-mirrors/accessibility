@@ -64,7 +64,7 @@ void TGEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) 
         case TouchGuider::SEND_TOUCH_GUIDE_END_MSG:
             tgServer_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_END);
             break;
-        default: 
+        default:
             break;
     }
 }
@@ -200,7 +200,7 @@ void TouchGuider::TouchGuideListener::OnDoubleTapLongPress(TouchEvent &event) {
     if (server_.currentState_ != static_cast<int>(TouchGuideState::TOUCH_GUIDING)) {
         return;
     }
-    if (server_.getLastReceivedEvent() && 
+    if (server_.getLastReceivedEvent() &&
         server_.getLastReceivedEvent()->GetPointerCount() == 0) {
         return;
     }
@@ -297,7 +297,7 @@ int TouchGuider::TouchGuideListener::GetClickPosition(MmiPoint &outPoint) {
         } else {
             return CLICK_LAST_TOUCH_GUIDE;
         }
-    } 
+    }
     if (server_.pAams_->GetAccessibilityFocusClickPointInScreen(outPoint)) {
         return CLICK_ACCESSIBILITY_FOCUS;
     }
@@ -424,7 +424,7 @@ void TouchGuider::HandleTransmitingState(TouchEvent &event) {
 void TouchGuider::Clear(TouchEvent &event) {
     if (currentState_ == static_cast<int>(TouchGuideState::TOUCH_GUIDING)) {
         SendExitEvents();
-    } else if (currentState_ == static_cast<int>(TouchGuideState::DRAGGING) 
+    } else if (currentState_ == static_cast<int>(TouchGuideState::DRAGGING)
         || currentState_ == static_cast<int>(TouchGuideState::TRANSMITING)) {
         SendUpForAllInjectedEvent(event);
     }

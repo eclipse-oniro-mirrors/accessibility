@@ -134,7 +134,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
  * @tc.number: AAMS_moduletest_SendEvent_001
  * @tc.name: SendEvent
  * @tc.desc: Test function SendEvent aams send a event to accessibility,and check the parm of event.
- *                                   
+ *
  */
 HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 {
@@ -149,7 +149,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     sleep(1);
     //check aa proxy
     EXPECT_EQ(testEventType, int(EventType::TYPE_WINDOW_UPDATE));
-    
+
     testStub->DisableAbility();
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();
@@ -161,14 +161,14 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
  * @tc.number: AAMS_moduletest_RegisterStateCallback_001
  * @tc.name: RegisterStateCallback
  * @tc.desc: Test function RegisterStateCallback
- * step1: register a statecallback and check return value of func 
+ * step1: register a statecallback and check return value of func
  * step2: connect a accessibilityability and then trigger the stateback
  * step3::disconnect the accessibilityability and trigger the stateback
  */
 HWTEST_F(AAMSServerTest, RegisterStateCallback_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterStateCallback_001 start";
-    
+
     sptr<AccessibleAbilityManagerServiceStateStub> stub = new AccessibleAbilityManagerServiceStateStub();
     sptr<IAccessibleAbilityManagerServiceState> state = new AccessibleAbilityManagerServiceStateProxy(stub);
 
@@ -188,7 +188,7 @@ HWTEST_F(AAMSServerTest, RegisterStateCallback_001, TestSize.Level1)
 
     auto accountData = aams_->GetCurrentAccountData();
     accountData->RemoveStateCallback(state);
-    
+
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterStateCallback_001 end";
 }
 
@@ -210,7 +210,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 /**
  * @tc.number: AAMS_moduletest_GetAbilityList_002
  * @tc.name: GetAbilityList
- * @tc.desc: Test function GetAbilityList 
+ * @tc.desc: Test function GetAbilityList
  * Get Enable Ability list.
  */
 HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
@@ -352,7 +352,7 @@ HWTEST_F(AAMSServerTest,DeregisterInteractionOperation_001, TestSize.Level1)
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    //wrong windowId 
+    //wrong windowId
     aams_->DeregisterInteractionOperation(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
@@ -408,7 +408,7 @@ HWTEST_F(AAMSServerTest, GetSuggestedInterval_001, TestSize.Level1)
     EXPECT_EQ(int(ret) , 0);
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(testStub);
-    
+
     ret = aams_->GetSuggestedInterval();
     uint32_t uiInteractiveTimeout = 10000;
     uint32_t uiNoninteractiveTimeout = 2000;

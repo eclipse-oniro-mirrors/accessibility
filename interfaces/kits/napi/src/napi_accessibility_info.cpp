@@ -165,7 +165,7 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetByContent", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -184,7 +184,7 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
 
             napi_create_array(env, &argv[PARAM1]);
             ConvertElementInfosToJS(env, argv[PARAM1], callbackInfo->nodeInfos_);
-            
+
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
@@ -245,7 +245,7 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info) {
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetFocus", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {
@@ -349,7 +349,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info) {
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetNext", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -429,7 +429,7 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info) {
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetChild", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -505,7 +505,7 @@ napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info) {
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetParent", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function

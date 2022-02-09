@@ -47,8 +47,8 @@ public:
     void WriteInterfaceToken(MessageParcel &data) {
         GTEST_LOG_(INFO) << "ASACStateStubUnitTest WriteInterfaceToken";
         data.WriteInterfaceToken(MockAccessibleAbilityManagerServiceStub::GetDescriptor());
-    }  
-    
+    }
+
 };
 
 /**

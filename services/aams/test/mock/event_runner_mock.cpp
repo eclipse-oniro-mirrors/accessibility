@@ -276,7 +276,7 @@
 
 //     void Run() final
 //     {
-        
+
 //     }
 
 //     void Stop() final
@@ -406,7 +406,7 @@
 
 // void EventRunner::Dump(Dumper &dumper)
 // {
-    
+
 // }
 
 // void EventRunner::SetLogger(const std::shared_ptr<Logger> &logger)

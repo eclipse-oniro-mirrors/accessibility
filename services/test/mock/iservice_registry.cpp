@@ -25,7 +25,7 @@ SystemAbilityManagerClient &SystemAbilityManagerClient::GetInstance()
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-    
+
     return SystemAbilityManager::GetInstance();
 }
 

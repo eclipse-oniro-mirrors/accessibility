@@ -132,7 +132,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetAccessibilityFocusClickPointInSc
     GTEST_LOG_(INFO) << "5 start";
     ins_->RegisterInteractionOperation(0,aamsInteractionOperator, 0);
     GTEST_LOG_(INFO) << "1 start";
-    //Set window info 
+    //Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
     GTEST_LOG_(INFO) << "2 start";
@@ -164,7 +164,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetAccessibilityFocusClickPointInSc
 HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002 start";
-    //Set window info 
+    //Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
     Rect rect(0,100,800,400);
@@ -194,7 +194,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScr
 HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_003 start";
-    //Set window info 
+    //Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
     Rect rect(0,100,800,400);
@@ -224,7 +224,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScr
 HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_004 start";
-    //Set window info 
+    //Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
     Rect rect(0,100,800,400);
@@ -252,7 +252,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScr
 HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_005 start";
-    //Set window info 
+    //Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
     Rect rect(0,0,-800,-400);

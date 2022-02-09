@@ -157,7 +157,7 @@ napi_value NTTSClient::SpeakText(napi_env env, napi_callback_info info) {
     HILOG_INFO("%{public}s start", __func__);
     napi_value ret = nullptr;
     std::string text;
-    int utteranceId = 0; 
+    int utteranceId = 0;
     size_t argc = 2;
     napi_value argv[2] = {0};
     napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);

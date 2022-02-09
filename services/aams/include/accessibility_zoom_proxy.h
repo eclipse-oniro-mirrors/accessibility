@@ -35,7 +35,7 @@ namespace Accessibility {
 class AccessibilityDisplayResizeListener /*: public WMS***.DisplayResizeCallbacks*/ {
 public:
     /**
-     * @brief 
+     * @brief
      */
     AccessibilityDisplayResizeListener() {}
 
@@ -211,7 +211,7 @@ private:
     // 动画与放大需要联动.
     // 参数：需要不需要带x，y坐标，动画是否执行，需要依照WMS的实现来定。目前WMS尚不支持该功能.
     bool SetScale(int displayId, float scale, float pivotX, float pivotY,
-        bool animate, int id) 
+        bool animate, int id)
     {
         return false;
     }

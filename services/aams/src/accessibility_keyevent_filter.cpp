@@ -111,7 +111,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
-    
+
     sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps = accountData->GetConnectedA11yAbilities();
 

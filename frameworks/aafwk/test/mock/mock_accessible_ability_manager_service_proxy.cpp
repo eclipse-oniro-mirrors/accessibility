@@ -37,7 +37,7 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
 {}
 
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
-    const sptr<IAccessibleAbilityManagerServiceState> &client, const int userId) 
+    const sptr<IAccessibleAbilityManagerServiceState> &client, const int userId)
 {
     return 0;
 }

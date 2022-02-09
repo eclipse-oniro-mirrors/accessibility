@@ -65,11 +65,11 @@ public:
 
     void DeregisterInteractionOperation(const int windowId) override;
 
-    void Interrupt(const int accountId) override; 
+    void Interrupt(const int accountId) override;
 
     uint64_t GetSuggestedInterval() override;
 
-    void PersistElementNamesToSetting(std::string &bundleName, std::map<std::string, AppExecFwk::ElementName> &componentNames, 
+    void PersistElementNamesToSetting(std::string &bundleName, std::map<std::string, AppExecFwk::ElementName> &componentNames,
         int accountId);
 
     /* For InputFilter */
@@ -89,7 +89,7 @@ public:
 
     /* For TouchExplore */
     inline void OnTouchInteractionStart() {isTouchInteraction_ = true;}
-    
+
     inline void OnTouchInteractionEnd() {isTouchInteraction_ = false;}
 
     void OnGesture(int id);
@@ -103,7 +103,7 @@ public:
     inline uint32_t GetConnectCounter() {return connectCounter_;}
 
     inline std::shared_ptr<AAMSEventHandler>& GetMainHandler() {return handler_;}
-    
+
     inline std::shared_ptr<AppExecFwk::EventRunner>& GetMainRunner() {return runner_;}
 
     sptr<AccessibilityAccountData> GetCurrentAccountData();

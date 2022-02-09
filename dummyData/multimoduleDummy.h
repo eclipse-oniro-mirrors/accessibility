@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef MULTIMODULE_DUMMY_H
 #define MULTIMODULE_DUMMY_H
 

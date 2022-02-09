@@ -109,7 +109,7 @@ public:
      * @brief Called when the fingerprint sensor detects a gesture through the proxy object.
      * @param gesture The gesture which is detected by fingerprint sensor.
      * @return
-     */ 
+     */
     virtual void OnFingerprintGesture(const int gesture) override;
 
 private:

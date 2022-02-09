@@ -145,7 +145,7 @@ napi_value RegisterCallback(napi_env env, napi_callback_info info) {
     NAPI_ASSERT(env, valueType == napi_function, "Wrong argument type. Function expected.");
     NAPI_CALL(env, napi_create_reference(env, argv[PARAM1], 1, &pCallbackInfo->callback_));
     g_JsAACallbacks[type] = pCallbackInfo;
-    
+
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;

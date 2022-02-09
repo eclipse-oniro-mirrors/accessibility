@@ -33,7 +33,7 @@ public:
     virtual ~AccessibleAbilityChannelStubImplMock()
     {}
 
-    virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, 
+    virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
         const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
         const int mode)
     {
@@ -48,22 +48,22 @@ public:
         return true;
     }
 
-    virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId, 
+    virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
         const int focusType, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock FindFocusedElementInfo";
         return true;
     }
 
-    virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, 
+    virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId,
         const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock FocusMoveSearch";
         return true;
     }
 
-    virtual bool PerformAction(const int accessibilityWindowId, const long elementId, const int action, 
-        std::map<std::string, std::string> &actionArguments, const int requestId, 
+    virtual bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+        std::map<std::string, std::string> &actionArguments, const int requestId,
         const sptr<IAccessibilityInteractionOperationCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock PerformAction";
@@ -127,7 +127,7 @@ public:
         return true;
     }
 
-    virtual bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX, 
+    virtual bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
         const float centerY, const bool animate)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock SetDisplayResizeScaleAndCenter";

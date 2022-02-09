@@ -27,7 +27,7 @@
 namespace OHOS {
 namespace Accessibility {
 class AccessibleAbilityManagerServiceStateStub : public IRemoteStub<IAccessibleAbilityManagerServiceState> {
-public: 
+public:
     /**
      * @brief construct function
      * @param object The object of IPC
@@ -55,7 +55,7 @@ public:
 
     /**
      * @brief Receive the state notify from AAMS and send it to the observer registed..
-     * @param stateType The state type and value. 
+     * @param stateType The state type and value.
      *                  state type: Refer to AccessibilityStateEventType.
      *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/
      *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED

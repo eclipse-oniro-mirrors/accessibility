@@ -34,7 +34,7 @@ AccessibilityInputFilter::AccessibilityInputFilter()
     ams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     if (ams_ != nullptr) {
         eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(ams_->GetMainRunner());
-    } 
+    }
 }
 
 AccessibilityInputFilter::~AccessibilityInputFilter()
@@ -189,7 +189,7 @@ void AccessibilityInputFilter::NotifyAccessibilityEvent(AccessibilityEventInfo &
 }
 
 void AccessibilityInputFilter::ProcessTouchEvent(TouchEvent &event)
-{   
+{
     HILOG_DEBUG();
 
     if (eventTransmitters_.empty() ||

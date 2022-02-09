@@ -89,7 +89,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const KeyEvent &keyEvent, con
     // //int sequence = 0;
     // //SetOnKeyPressEventResult(handled, sequence);
 
-    // std::shared_ptr<AccessibleAbilityManagerService> aams_ = 
+    // std::shared_ptr<AccessibleAbilityManagerService> aams_ =
     // DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 
     // sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();

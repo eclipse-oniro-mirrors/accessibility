@@ -107,7 +107,7 @@ HWTEST_F(ASACClientUnitTest, ASAC_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "IsTouchExplorationEnabled end";
 
     GTEST_LOG_(INFO) << "GetAbilityList start";
-    AbilityStateType type = AbilityStateType::ABILITY_STATE_ENABLE; 
+    AbilityStateType type = AbilityStateType::ABILITY_STATE_ENABLE;
     instance->GetAbilityList(0, type);
     GTEST_LOG_(INFO) << "GetAbilityList end";
 
