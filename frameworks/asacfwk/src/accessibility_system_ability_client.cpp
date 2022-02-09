@@ -155,7 +155,7 @@ int AccessibilitySystemAbilityClient::RegisterInteractionOperation(const int win
     interactionOperators_.insert(pair<int, shared_ptr<AccessibilityInteractionOperation>>(windowId, operation));
     if (operation != nullptr) {
         interactionOperator_ = operation;
-        sptr<AccessibilityInteractionOperationStub> aamsInteractionOperator = 
+        sptr<AccessibilityInteractionOperationStub> aamsInteractionOperator =
             new AccessibilityInteractionOperationStub();
         aamsInteractionOperator->SetWindowId(windowId);
         auto proxyService = pimpl->GetService();
@@ -322,7 +322,7 @@ bool AccessibilitySystemAbilityClient::CheckEventType(EventType eventType)
         (eventType & EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT) !=
             EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT &&
         (eventType & EventType::TYPE_PUBLIC_NOTICE_EVENT) != EventType::TYPE_PUBLIC_NOTICE_EVENT &&
-        (eventType & EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) != 
+        (eventType & EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) !=
             EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT &&
         (eventType & EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT) !=
             EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT &&

@@ -53,12 +53,12 @@ public:
         const int accountId) = 0;
 
     /**
-     * @brief Queries the list of accessibility abilities. 
-     * @param accessibilityAbilityTypes Indicates the accessibility type specified by 
+     * @brief Queries the list of accessibility abilities.
+     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
-     * @param stateType Indicates the accessibility ability status. 1 indicates that the ability is enabled; 
+     * @param stateType Indicates the accessibility ability status. 1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled; 4 indicates that the ability has been installed.
-     * @return 
+     * @return
      */
     virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) = 0;
 
@@ -76,7 +76,7 @@ public:
     /**
      * @brief Deregister the interaction operation.
      * @param windowId Window ID
-     * @return 
+     * @return
      */
     virtual void DeregisterInteractionOperation(const int windowId) = 0;
 
@@ -98,7 +98,7 @@ public:
 
     /**
      * @brief Obtains the suggested interval for switching the UI.
-     * @param 
+     * @param
      * @return Returns the interval.
      */
     virtual uint64_t GetSuggestedInterval() = 0;

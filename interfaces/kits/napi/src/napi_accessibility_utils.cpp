@@ -267,7 +267,7 @@ void ConvertAbilityApplicationInfoToJS(napi_env env, napi_value result, OHOS::Ap
     napi_value permissions;
     size_t idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &permissions));
-    for (auto permission : info.permissions) {        
+    for (auto permission : info.permissions) {
         napi_value per;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, permission.c_str(), NAPI_AUTO_LENGTH, &per));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, permissions, idx, per));
@@ -278,7 +278,7 @@ void ConvertAbilityApplicationInfoToJS(napi_env env, napi_value result, OHOS::Ap
     napi_value moduleSourceDirs;
     idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &moduleSourceDirs));
-    for (auto moduleSourceDir : info.moduleSourceDirs) {        
+    for (auto moduleSourceDir : info.moduleSourceDirs) {
         napi_value moduleSource;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, moduleSourceDir.c_str(), NAPI_AUTO_LENGTH, &moduleSource));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, moduleSourceDirs, idx, moduleSource));
@@ -373,7 +373,7 @@ void ConvertAbilityInfoToJS(napi_env env, napi_value result, OHOS::AppExecFwk::A
     napi_value permissions;
     size_t idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &permissions));
-    for (auto permission : info.permissions) {        
+    for (auto permission : info.permissions) {
         napi_value per;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, permission.c_str(), NAPI_AUTO_LENGTH, &per));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, permissions, idx, per));
@@ -388,7 +388,7 @@ void ConvertAbilityInfoToJS(napi_env env, napi_value result, OHOS::AppExecFwk::A
     napi_value deviceTypes;
     idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &deviceTypes));
-    for (auto deviceType : info.deviceTypes) {        
+    for (auto deviceType : info.deviceTypes) {
         napi_value device;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, deviceType.c_str(), NAPI_AUTO_LENGTH, &device));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, deviceTypes, idx, device));
@@ -399,7 +399,7 @@ void ConvertAbilityInfoToJS(napi_env env, napi_value result, OHOS::AppExecFwk::A
     napi_value deviceCapabilities;
     idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &deviceCapabilities));
-    for (auto deviceCap : info.deviceCapabilities) {        
+    for (auto deviceCap : info.deviceCapabilities) {
         napi_value cap;
         NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, deviceCap.c_str(), NAPI_AUTO_LENGTH, &cap));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, deviceCapabilities, idx, cap));
@@ -608,7 +608,7 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type) {
 static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type) {
     static const std::map<WindowUpdateType, const std::string> WindowUpdateTypeTable = {
         {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
-        {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"}, 
+        {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"},
         {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
         {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
         {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
@@ -1500,7 +1500,7 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         str = GetStringFromNAPI(env, value);
         eventInfo.SetComponentType(str);
     }
-    
+
     napi_create_string_utf8(env, "triggerAction", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
@@ -1509,7 +1509,7 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         str = GetStringFromNAPI(env, value);
         eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(str));
     }
-    
+
     napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
@@ -1587,7 +1587,7 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     //     eventInfo.SetBeforeText(str);
     // }
 
-    
+
     napi_create_string_utf8(env, "categoryNotification", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {

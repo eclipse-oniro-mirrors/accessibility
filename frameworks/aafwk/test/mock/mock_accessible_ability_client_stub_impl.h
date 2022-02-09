@@ -62,7 +62,7 @@ public:
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubImplMock OnKeyPressEvent";
     }
 
-    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX, 
+    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubImplMock OnDisplayResizeChanged";

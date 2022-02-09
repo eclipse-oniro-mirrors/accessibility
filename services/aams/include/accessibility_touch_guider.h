@@ -62,7 +62,7 @@ enum ClickLocation : int {
  * @brief struct to record injected pointers.
  */
 struct InjectedEventRecorder {
-    int downPointers; 
+    int downPointers;
     int downPointerNum;
     long lastDownTime;
     std::shared_ptr<TouchEvent> lastHoverEvent;
@@ -90,7 +90,7 @@ public:
 private:
     /**
      * @brief Send HoverEnter and HoverMove to Multimodal.
-     * @param 
+     * @param
      * @return
      */
     void HoverEnterAndMoveRunner();
@@ -110,7 +110,7 @@ public:
      * @brief A constructor used to create a touchGuide instance.
      * @param
      * @return
-     */    
+     */
     TouchGuider();
 
     /**
@@ -142,14 +142,14 @@ public:
      * @return
      */
     void OnAccessibilityEvent(AccessibilityEventInfo &event) override;
-   
+
     /**
      * @brief Clear event state from specific input source.
      * @param inputSource  the input source.
      * @return
      */
     void ClearEvents(uint32_t inputSource) override;
-   
+
     /**
      * @brief Destroy event state.
      * @param
@@ -164,7 +164,7 @@ public:
      * @return
      */
     void SendEventToMultimodal(TouchEvent &event, int action);
-    
+
     /**
      * @brief Send accessibility event to specific AccessiblityAbility.
      * @param eventType the type of the event
@@ -181,14 +181,14 @@ public:
 
     /**
      * @brief Clear hover enter and move event.
-     * @param 
+     * @param
      * @return
      */
     void ClearHoverEnterAndMoveEvent();
 
     /**
      * @brief Get last received event.
-     * @param 
+     * @param
      * @return Returns last event ptr.
      */
     std::shared_ptr<TouchEvent> getLastReceivedEvent();
@@ -206,42 +206,42 @@ private:
          * @brief A constructor used to create a TouchGuideListener instance.
          * @param
          * @return
-         */ 
+         */
         explicit TouchGuideListener(TouchGuider &server) : server_(server) {};
 
         /**
          * @brief Prepare to send the event corresponding to the long press to the Multimodal.
          * @param event the touch event from Multimodal
          * @return
-         */ 
+         */
         void OnDoubleTapLongPress(TouchEvent &event) override;
 
         /**
          * @brief Prepare to send the event corresponding to the single tap to the Multimodal.
          * @param event the touch event from Multimodal
          * @return
-         */ 
+         */
         bool OnDoubleTap(TouchEvent &event) override;
 
         /**
          * @brief Send GESTURE_BEGIN to AccessiblityAbility.
-         * @param 
+         * @param
          * @return
-         */ 
+         */
         bool OnStarted() override;
 
         /**
          * @brief Send GESTURE_END and TOUCH_END to AccessiblityAbility.
          * @param gestureId the id of gesture
          * @return
-         */ 
+         */
         bool OnCompleted(int gestureId) override;
 
         /**
          * @brief The gesture has been cancelled.
          * @param event the touch event from Multimodal
          * @return
-         */ 
+         */
         bool OnCancelled(TouchEvent &event) override;
     private:
 
@@ -249,7 +249,7 @@ private:
          * @brief Get the click position.
          * @param outPoint the click point
          * @return the click location
-         */ 
+         */
         int GetClickPosition(MmiPoint &outPoint);
 
         /**
@@ -257,22 +257,22 @@ private:
          * @param event the event prepared to send to Multimodal
          * @param point the click point
          * @return whether the message is successfully sent.
-         */ 
+         */
         bool TransformToSingleTap(TouchEvent &event, MmiPoint &point);
         TouchGuider &server_;
     };
     /**
      * @brief Determine whether to clear the touchguide.
-     * @param 
+     * @param
      * @return
-     */ 
+     */
     void Clear();
 
     /**
      * @brief clear the touchguide.
      * @param event the last event from Multimodal
      * @return
-     */ 
+     */
     void Clear(TouchEvent &event);
 
     /**
@@ -294,7 +294,7 @@ private:
      * @param event the touch event from Multimodal
      * @return
      */
-    void HandleTransmitingState(TouchEvent &event);    
+    void HandleTransmitingState(TouchEvent &event);
 
     /**
      * @brief Determine whether it is a drag gesture.
@@ -315,42 +315,42 @@ private:
     /**
      * @brief Get the info of injected event.
      * @param event the event prepared to send to Multimodal
-     * @return 
+     * @return
      */
     void RecordInjectedEvent(TouchEvent &event);
 
     /**
      * @brief Get the info of Received event.
      * @param event event the touch event from Multimodal
-     * @return 
+     * @return
      */
     void RecordReceivedEvent(TouchEvent &event);
 
     /**
      * @brief Clear received recorder info.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void ClearReceivedEventRecorder();
 
     /**
      * @brief Clear Injected recorder info.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void ClearInjectedEventRecorder();
 
     /**
      * @brief Send exit event to multimodal.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void SendExitEvents();
 
     /**
      * @brief Send all down events to multimodal.
      * @param event the event prepared to send to Multimodal
-     * @return 
+     * @return
      */
     void SendAllDownEvents(TouchEvent &event);
 
@@ -363,7 +363,7 @@ private:
 
     /**
      * @brief Send exit message.
-     * @param 
+     * @param
      * @return
      */
     void PostGestureRecognizeExit();
@@ -377,7 +377,7 @@ private:
 
     /**
      * @brief Send exit message.
-     * @param 
+     * @param
      * @return
      */
     void PostHoverExit();
@@ -422,21 +422,21 @@ private:
      * @brief Handle down events on touchExploring state.
      * @param event event the touch event from Multimodal
      * @return
-     */    
+     */
     void HandleTouchGuidingStateInnerDown(TouchEvent &event);
 
     /**
      * @brief Handle move events on touchExploring state.
      * @param event event the touch event from Multimodal
      * @return
-     */  
+     */
     void HandleTouchGuidingStateInnerMove(TouchEvent &event);
 
     /**
      * @brief Handle move events on dragging state.
      * @param event event the touch event from Multimodal
      * @return
-     */ 
+     */
     void HandleDraggingStateInnerMove(TouchEvent &event);
 
     int currentState_ = -1;

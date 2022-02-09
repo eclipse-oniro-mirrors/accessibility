@@ -65,7 +65,7 @@ class AccessibilityGestureRecognizeListener{
 public:
     /**
      * @brief A destructor used to delete the listener instance.
-     * @param 
+     * @param
      * @return
      */
     virtual ~AccessibilityGestureRecognizeListener() = default;
@@ -87,7 +87,7 @@ public:
 
     /**
      * @brief The callback function when recognized an event stream as a gesture.
-     * @param 
+     * @param
      * @return true if the event is consumed, else false
      */
     virtual bool OnStarted();
@@ -111,14 +111,14 @@ class AccessibilityGestureRecognizer : public AppExecFwk::EventHandler{
 public:
     /**
      * @brief A constructor used to create a accessibilityGestureRecognizer instance.
-     * @param 
+     * @param
      * @return
      */
     AccessibilityGestureRecognizer();
 
     /**
      * @brief A destructor used to delete the accessibilityGestureRecognizer instance.
-     * @param 
+     * @param
      * @return
      */
     ~AccessibilityGestureRecognizer() {}
@@ -157,7 +157,7 @@ public:
 
     /**
      * @brief Clear state.
-     * @param 
+     * @param
      * @return
      */
     void Clear();
@@ -171,7 +171,7 @@ public:
 
     /**
      * @brief If a single tap completed.
-     * @param 
+     * @param
      * @return
      */
     void SingleTapDetected();
@@ -187,7 +187,7 @@ public:
 
     /**
      * @brief Get pCurDown_ ptr.
-     * @param 
+     * @param
      * @return
      */
     std::shared_ptr<TouchEvent> GetCurDown() {
@@ -196,7 +196,7 @@ public:
 
     /**
      * @brief Get continueDown_ flag.
-     * @param 
+     * @param
      * @return
      */
     bool GetContinueDown() {
@@ -231,21 +231,21 @@ private:
     /**
      * @brief Handle the down event from touchguide.
      * @param event the touch event from touchguide
-     * @return 
+     * @return
      */
     void HandleTouchDownEvent(TouchEvent &event);
 
     /**
      * @brief Handle the move event from touchguide.
      * @param event the touch event from touchguide
-     * @return 
+     * @return
      */
     bool HandleTouchMoveEvent(TouchEvent &event);
 
     /**
      * @brief Handle the up event from touchguide.
      * @param event the touch event from touchguide
-     * @return 
+     * @return
      */
     bool HandleTouchUpEvent(TouchEvent &event);
 
@@ -258,8 +258,8 @@ private:
 
     /**
      * @brief Cancel the gesture.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void StandardGestureCancled();
 

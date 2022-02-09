@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "accessibility_element_info.h"
 #include "parcel_util.h"
 #include "hilog_wrapper.h"

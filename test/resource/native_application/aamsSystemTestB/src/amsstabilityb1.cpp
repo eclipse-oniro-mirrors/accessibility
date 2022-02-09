@@ -182,7 +182,7 @@ void AamsStAbilityB1::GetSuggestedInterval()
 {
     HILOG_INFO("AamsStAbilityB1::GetSuggestedInterval");
     AbilityContext context;
-    int timeout = 1; 
+    int timeout = 1;
     int contentType = 1;
     AccessibilitySystemAbilityClient::GetInstance(context)->GetSuggestedInterval(timeout, contentType);
 }

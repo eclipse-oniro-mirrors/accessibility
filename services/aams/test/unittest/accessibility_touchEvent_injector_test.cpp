@@ -52,7 +52,7 @@ protected:
     sptr<IAccessibleAbilityClient> service = nullptr;
     TouchEvent CreateTouchEvent(int action);
     int pointId_ = -1;
-    
+
     std::vector<GesturePathDefine> getGesturePath;
 };
 
@@ -78,7 +78,7 @@ void TouchEventInjectorTest::SetUp()
     std::shared_ptr<AccessibleAbilityEventHandler> accessibleAbilityEventHandler =
         std::make_shared<AccessibleAbilityEventHandler>(runner);
 
-    sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl(accessibleAbilityEventHandler);    
+    sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl(accessibleAbilityEventHandler);
 
     service = new AccessibleAbilityClientProxy(stub->AsObject());
     inputFilter_ = new AccessibilityInputFilter();
@@ -94,8 +94,8 @@ void TouchEventInjectorTest::TearDown()
 }
 
 void TouchEventInjectorTest::CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime) {                           
-   
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime) {
+
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);
     gesturePathDefine.SetEndPosition(endpoint);
@@ -123,7 +123,7 @@ TouchEvent TouchEventInjectorTest::CreateTouchEvent(int action) {
  * @tc.desc: Check injected single tap event .
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_001, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 start";
 
     touchEventInjector_->SetNext(inputFilter_);
@@ -146,7 +146,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
  * @tc.desc: Check injected Double-Tap event .
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_002, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_002 start";
 
     touchEventInjector_->SetNext(inputFilter_);
@@ -155,7 +155,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     GesturePathPositionDefine endpoint1(10.0f , 10.0f);
     GesturePathPositionDefine startpoint2(20.0f , 20.0f);
     GesturePathPositionDefine endpoint2(20.0f , 20.0f);
-   
+
     CreateGesturePath(startpoint1, endpoint1, 100);
     CreateGesturePath(startpoint2, endpoint2, 100);
     touchEventInjector_->InjectEvents(getGesturePath, service, 1);
@@ -173,7 +173,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
  * @tc.desc: Check injiected move event.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_003, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_003 start";
 
     touchEventInjector_->SetNext(inputFilter_);
@@ -185,7 +185,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     touchEventInjector_->InjectEvents(getGesturePath, service, 1);
     sleep(2);
     EXPECT_EQ(TouchAction[0], TouchEnum::PRIMARY_POINT_DOWN);
-    EXPECT_EQ(TouchAction[1], TouchEnum::POINT_MOVE);   
+    EXPECT_EQ(TouchAction[1], TouchEnum::POINT_MOVE);
     EXPECT_EQ(TouchAction[2], TouchEnum::PRIMARY_POINT_UP);
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_003 end";
@@ -196,7 +196,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
  * @tc.desc: Check Some functional interface .
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_004, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_004 start";
 
     MouseEvent event{};
@@ -223,7 +223,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
  * @tc.desc: Check destroy event before sendtouchevent.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_005, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_005 start";
 
     touchEventInjector_->SetNext(inputFilter_);
@@ -239,7 +239,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     EXPECT_EQ(isDestroyEvents, true);
     EXPECT_EQ(TouchAction[0], TouchEnum::PRIMARY_POINT_DOWN);
     EXPECT_EQ(TouchAction[1], TouchEnum::CANCEL);
-    
+
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_005 end";
 }
 
@@ -249,7 +249,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
  * @tc.desc: Check injected UP_THEN_RIGHT move event.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_006, TestSize.Level1)
-{   
+{
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_006 start";
 
     touchEventInjector_->SetNext(inputFilter_);
@@ -265,7 +265,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     touchEventInjector_->InjectEvents(getGesturePath, service, 1);
     sleep(2);
     EXPECT_EQ(TouchAction[0], TouchEnum::PRIMARY_POINT_DOWN);
-    EXPECT_EQ(TouchAction[1], TouchEnum::POINT_MOVE);   
+    EXPECT_EQ(TouchAction[1], TouchEnum::POINT_MOVE);
     EXPECT_EQ(TouchAction[2], TouchEnum::POINT_MOVE);
     EXPECT_EQ(TouchAction[3], TouchEnum::PRIMARY_POINT_UP);
 

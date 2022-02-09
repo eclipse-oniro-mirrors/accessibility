@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility{
 std::vector<int> TouchAction;
 int UTtouchAction = -1;
-bool isMouseEvent = false; 
+bool isMouseEvent = false;
 bool isClearEvents = false;
 bool isDestroyEvents = false;
 

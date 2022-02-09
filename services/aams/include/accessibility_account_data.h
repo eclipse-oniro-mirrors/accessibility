@@ -40,7 +40,7 @@ class AccessibilityAccountData final : public RefBase {
 public:
     AccessibilityAccountData(int accountId);
     ~AccessibilityAccountData();
-    
+
     /**
      * @brief Get the ID of the account.
      * @param
@@ -194,7 +194,7 @@ public:
     const std::map<std::string, AppExecFwk::ElementName> GetConnectingA11yAbilities();
 
     /**
-     * @brief Get the accessibility ability info of the corresponding state according to the 
+     * @brief Get the accessibility ability info of the corresponding state according to the
      *        ability state type.
      * @param state Ability state type.
      * @return
@@ -295,7 +295,7 @@ public:
 private:
     /**
      * @brief Update connected accessibility whether have touch guide capability.
-     *        Have touch guide capability isEventTouchGuideState_ is true, 
+     *        Have touch guide capability isEventTouchGuideState_ is true,
      *        otherwise isEventTouchGuideState_ is false.
      * @param
      * @return

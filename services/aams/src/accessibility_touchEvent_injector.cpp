@@ -141,7 +141,7 @@ void TouchEventInjector::GetMovesEvents(long startTime) {
     injectedEvents_.push_back(event);
 }
 
-void TouchEventInjector::InjectEvents(const std::vector<GesturePathDefine> &gesturePath, 
+void TouchEventInjector::InjectEvents(const std::vector<GesturePathDefine> &gesturePath,
         const sptr<IAccessibleAbilityClient> &service, int sequence ) {
     sequence_ = sequence;
     currentGestureService_ = service;
@@ -164,7 +164,7 @@ void TouchEventInjector::InjectEventsInner() {
 
     if (injectedEvents_.empty()) {
         currentGestureService_->OnGestureSimulateResult(sequence_, false);
-        return;        
+        return;
     }
     for (unsigned int i = 0; i < injectedEvents_.size(); i++) {
         std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
@@ -221,7 +221,7 @@ void TouchEventInjector::GetTouchEventsFromGesturePath(long startTime) {
     }
 }
 
-TouchEvent TouchEventInjector::obtainTouchEvent(long startTime, long occurredTime, 
+TouchEvent TouchEventInjector::obtainTouchEvent(long startTime, long occurredTime,
     int action, MmiPoint point) {
     HILOG_INFO("TouchEventInjector::obtainTouchEvent: start");
     TouchEvent touchEvent;

@@ -46,7 +46,7 @@ public:
     virtual void Disconnect(const int channelId) = 0;
 
     /**
-     * @brief Called when an accessibility event occurs. 
+     * @brief Called when an accessibility event occurs.
      * @param eventInfo The infomation of accessible event.
      * @return
      */
@@ -61,7 +61,7 @@ public:
 
     /**
      * @brief Called when a user performs a specified gesture on the device that
-     *        your accessibility application has requested to be in touch exploration mode. 
+     *        your accessibility application has requested to be in touch exploration mode.
      * @param gestureId The id of gesture.
      * @return
      */
@@ -84,7 +84,7 @@ public:
      * @param centerY Indicates the Y coordinate of the center for resizing the display.
      * @return
      */
-    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX, 
+    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY) = 0;
 
     /**
@@ -106,7 +106,7 @@ public:
      * @brief Called when the fingerprint sensor detects a gesture.
      * @param gesture The gesture which is detected by fingerprint sensor.
      * @return
-     */ 
+     */
     virtual void OnFingerprintGesture(const int gesture) = 0;
 
     enum class Message {

@@ -20,7 +20,7 @@
 #include "napi/native_node_api.h"
 #include "accessibility_element_info.h"
 
-struct NAccessibilityInfoData {  
+struct NAccessibilityInfoData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
     napi_ref thisRefer_ {};

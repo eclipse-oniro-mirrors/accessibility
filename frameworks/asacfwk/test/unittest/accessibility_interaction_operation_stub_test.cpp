@@ -45,7 +45,7 @@ public:
         GTEST_LOG_(INFO) << "AccessibilityInteractionStubUnitTest TearDown()";
         mockStub_ = nullptr;
     }
-    
+
 };
 
 /**

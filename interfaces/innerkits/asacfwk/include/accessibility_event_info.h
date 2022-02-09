@@ -102,8 +102,8 @@ class AccessibilityMemo : public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param 
-     * @return 
+     * @param
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -112,7 +112,7 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel
      * @param channelId The id of the IAccessibleAbilityChannel
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -138,7 +138,7 @@ public:
 
     /**
      * @brief Get the node information related with the event
-     * @param - 
+     * @param -
      * @return The node information related with the event
      * @since 3
      * @sysCap Accessibility
@@ -175,11 +175,11 @@ public:
     /**
      * @brief Gets the window ID associated with the accessibility event.
      * @param -
-     * @return The window ID associated with the accessibility event. 
+     * @return The window ID associated with the accessibility event.
      * @since 3
      * @sysCap Accessibility
      */
- 
+
     int GetWindowId() const;
 
     /**
@@ -194,7 +194,7 @@ public:
     /**
      * @brief Sets the current index of listed items or text postion associated with the current event.
      * @param index The current index of listed items or text postion associated with the current event.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -212,12 +212,12 @@ public:
     /**
      * @brief Sets the start index of listed items on the screen.
      * @param index The start index of listed items. It is unique value for the listed items.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
     void SetBeginIndex(const int index);
-    
+
     /**
      * @brief Gets the number items on the screen.
      * @param -
@@ -230,7 +230,7 @@ public:
     /**
      * @brief Sets the number items on the screen.
      * @param ItemCounts The number of items.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -257,7 +257,7 @@ public:
     /**
      * @brief Gets the class(component type) name.
      * @param -
-     * @return The class(component type) name. 
+     * @return The class(component type) name.
      * @since 3
      * @sysCap Accessibility
      */
@@ -284,7 +284,7 @@ public:
     /**
      * @brief Set the before text changed of the component.
      * @param beforeText The before text changed of the component.
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -363,7 +363,7 @@ public:
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
-     * @brief 
+     * @brief
      * @param parcel Used for IPC communication
      * @return Read AccessibilityMemo from parcel data
      * @since 3
@@ -391,15 +391,15 @@ private:
 * The class define the event types and supply the api to
 * get/set the property of event. and it triggerred by UI
 * changed and sent to AA. According to the event property,
-* AA can get event properties, such as: action triggerred 
+* AA can get event properties, such as: action triggerred
 * the event and the source.
 */
 class AccessibilityEventInfo : public AccessibilityMemo{
 public:
     /**
      * @brief Construct
-     * @param 
-     * @return 
+     * @param
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -408,7 +408,7 @@ public:
     /**
      * @brief Construct
      * @param eventType the type of event info
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -416,9 +416,9 @@ public:
 
     /**
      * @brief Construct
-     * @param windowId The id of window 
+     * @param windowId The id of window
      * @param windowChangeTypes the window change type
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -428,7 +428,7 @@ public:
      * @brief Gets the number of accessibility records.
      * @note It is same to getCount​()
      * @param -
-     * @return The number of the records that describe the information of current event 
+     * @return The number of the records that describe the information of current event
      * @since 3
      * @sysCap Accessibility
      */
@@ -437,7 +437,7 @@ public:
     /**
      * @brief Set the number of accessibility records.
      * @note It is same to setCount​(int count)
-     * @param recordCount The number of the records that describe the information of current event 
+     * @param recordCount The number of the records that describe the information of current event
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -447,7 +447,7 @@ public:
     /**
      * @brief Adds an accessibility record to describe the information of the current event.
      * @note It is same to addRecord​(AccessibilityEventInfo eventInfo)
-     * @param record The records that describe the information of current event 
+     * @param record The records that describe the information of current event
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -457,8 +457,8 @@ public:
     /**
      * @brief Get the record by index.
      * @note Remained
-     * @param 
-     * @return 
+     * @param
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -466,8 +466,8 @@ public:
 
     /**
      * @brief Gets the accessibility record list.
-     * @param 
-     * @return 
+     * @param
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -568,7 +568,7 @@ public:
     /**
      * @brief Set the move granularity of the text
      * @param granularity The move granularity of the text. Refer to "AccessibilityElementInfo.TextMoveUnit"
-     * @return 
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -603,7 +603,7 @@ public:
 
     /**
      * @brief Set the information of accessibility event of [TYPE_NOTIFICATION_UPDATE_EVENT]
-     * @param category Refer to [NotificationCategory], It maybe changed from APP 
+     * @param category Refer to [NotificationCategory], It maybe changed from APP
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -613,7 +613,7 @@ public:
     /**
      * @brief Get the information of accessibility event of [TYPE_NOTIFICATION_UPDATE_EVENT]
      * @param -
-     * @return Refer to [NotificationCategory], It maybe changed from APP 
+     * @return Refer to [NotificationCategory], It maybe changed from APP
      * @since 3
      * @sysCap Accessibility
      */
@@ -648,7 +648,7 @@ public:
     static AccessibilityEventInfo *Unmarshalling(Parcel &parcel);
 
     /**
-     * @brief Set the page ID associated with the accessibility event. 
+     * @brief Set the page ID associated with the accessibility event.
      * @param pageId The page ID associated with the accessibility event.
      * @return -
      * @since 3
@@ -659,11 +659,11 @@ public:
     /**
      * @brief Gets the page ID associated with the accessibility event.
      * @param -
-     * @return The page ID associated with the accessibility event. 
+     * @return The page ID associated with the accessibility event.
      * @since 3
      * @sysCap Accessibility
      */
- 
+
     int GetPageId() const;
 
 private:

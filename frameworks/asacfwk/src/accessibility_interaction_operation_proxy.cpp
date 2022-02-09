@@ -170,7 +170,7 @@ void AccessibilityInteractionOperationProxy::FindFocusedElementInfo(const long e
 
 }
 
-void AccessibilityInteractionOperationProxy::FocusMoveSearch(const long elementId, 
+void AccessibilityInteractionOperationProxy::FocusMoveSearch(const long elementId,
     const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
 {
     HILOG_DEBUG("%{public}s" , __func__);

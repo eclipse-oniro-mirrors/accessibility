@@ -147,7 +147,7 @@ void AccessibleAbilityManagerService::RegisterAbilityConnectionClientTmp(const s
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
 
     a11yAccountsData_.insert(make_pair(0, accountData));
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter_++, 
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter_++,
         *abilityInfo);
     connection->OnAbilityConnectDone(elementName, obj, 0);
     accountData->AddInstalledAbility(*abilityInfo);
@@ -205,7 +205,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
     return accountData->GetAccessibilityState();
 }
 
-vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(const int abilityTypes, 
+vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(const int abilityTypes,
     const int stateType) {
     HILOG_DEBUG(" %{public}s", __func__);
     vector<AccessibilityAbilityInfo> infoList;
@@ -232,7 +232,7 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 }
 
 void AccessibleAbilityManagerService::RegisterInteractionOperation(const int windowId,
-    const sptr<IAccessibilityInteractionOperation> &operation, int accountId) 
+    const sptr<IAccessibilityInteractionOperation> &operation, int accountId)
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -242,7 +242,7 @@ void AccessibleAbilityManagerService::RegisterInteractionOperation(const int win
     }
 
     sptr<AppExecFwk::IBundleMgr> bundleMgrProxy = GetBundleMgrProxy();
-    sptr<AccessibilityInteractionConnection> connection = new AccessibilityInteractionConnection(windowId, operation, 
+    sptr<AccessibilityInteractionConnection> connection = new AccessibilityInteractionConnection(windowId, operation,
                                                                                                  accountId);
     accountData->AddAccessibilityInteractionConnection(windowId, connection);
 
@@ -302,8 +302,8 @@ void AccessibleAbilityManagerService::Interrupt(const int accountId) {
     }
     std::function<void()> interruptFunc = std::bind(&AccessibleAbilityManagerService::InterruptInner, this);
 
-    handler_->PostTask(interruptFunc, TASK_INTERRUPT);    
-} 
+    handler_->PostTask(interruptFunc, TASK_INTERRUPT);
+}
 
 void AccessibleAbilityManagerService::InterruptInner() {
     HILOG_DEBUG(" %{public}s", __func__);
@@ -311,14 +311,14 @@ void AccessibleAbilityManagerService::InterruptInner() {
     map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
     for (auto &ability : abilities) {
         ability.second->OnInterrupt();
-    } 
-} 
+    }
+}
 
 uint64_t AccessibleAbilityManagerService::GetSuggestedInterval() {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
 
-    return static_cast<uint64_t>(accountData->GetNonInteractiveUiInterval()) << INT32_BIT_NUM | 
+    return static_cast<uint64_t>(accountData->GetNonInteractiveUiInterval()) << INT32_BIT_NUM |
         accountData->GetInteractiveUiInterval();
 }
 
@@ -356,7 +356,7 @@ bool AccessibleAbilityManagerService::IsWantedKeyEvent(MMI::KeyEvent &event) {
 #endif
 }
 
-void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(int displayId, Rect &rect, float scale, 
+void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(int displayId, Rect &rect, float scale,
     float centerX, float centerY) {
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
@@ -507,7 +507,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_DEBUG("Post task PublicNoticeEvent start.");
         std::function<void()> PublicNoticeEventFunc =
             std::bind(&AccessibleAbilityManagerService::PublicNoticeEventInner, this);
-        handler_->PostTask(PublicNoticeEventFunc, TASK_PUBLIC_NOTICE_EVENT);   
+        handler_->PostTask(PublicNoticeEventFunc, TASK_PUBLIC_NOTICE_EVENT);
     }
 }
 

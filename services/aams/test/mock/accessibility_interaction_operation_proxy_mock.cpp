@@ -67,7 +67,7 @@ void AccessibilityInteractionOperationProxy::FindFocusedElementInfo(const long e
     return;
 }
 
-void AccessibilityInteractionOperationProxy::FocusMoveSearch(const long elementId, 
+void AccessibilityInteractionOperationProxy::FocusMoveSearch(const long elementId,
     const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
 {
     testElementId = elementId;

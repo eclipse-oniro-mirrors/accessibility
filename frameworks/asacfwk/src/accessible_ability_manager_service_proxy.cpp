@@ -50,7 +50,7 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    
+
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("%{public}s fail, connection write Token", __func__);
         return;
@@ -75,7 +75,7 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
 }
 
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
-    const sptr<IAccessibleAbilityManagerServiceState> &client, const int userId) 
+    const sptr<IAccessibleAbilityManagerServiceState> &client, const int userId)
 {
     HILOG_DEBUG("%{public}s" , __func__);
 
@@ -171,7 +171,7 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterInteractionOperation(in
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    
+
     if (operation == nullptr) {
         HILOG_ERROR("%{public}s fail, Input operation is null", __func__);
         return;

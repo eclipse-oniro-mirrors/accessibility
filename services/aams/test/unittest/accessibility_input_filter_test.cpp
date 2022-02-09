@@ -111,7 +111,7 @@ HWTEST_F(AccessibilityInputFilterTest, AccessibilityInputFilterTest_Unittest_Set
     displayMgr.SetDisplay(wmdInfo);
 
     uint32_t availableFunctions = AccessibilityInputFilter::FEATURE_TOUCH_EXPLORATION;
-    
+
     inputFilter_->SetAvailableFunctions(availableFunctions);
 
     GTEST_LOG_(INFO) << "AccessibilityInputFilterTest_Unittest_SetAvailableFunctions003 end";

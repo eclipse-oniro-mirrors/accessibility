@@ -9,7 +9,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 #include <memory>
@@ -68,7 +68,7 @@ int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, Me
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
-    
+
     auto memFunc = memberFuncMap_.find(code);
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;
@@ -83,7 +83,7 @@ int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, Me
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s" , __func__);
-    
+
     std::shared_ptr<AccessibilityEventInfo> uiEvent(data.ReadParcelable<AccessibilityEventInfo>());
     if (!uiEvent) {
         HILOG_DEBUG("ReadParcelable<AbilityInfo> failed");
@@ -137,7 +137,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityIn
     int windowId = data.ReadInt32();
     sptr <IRemoteObject> obj = data.ReadRemoteObject();
     sptr <IAccessibilityInteractionOperation> operation = iface_cast<IAccessibilityInteractionOperation>(obj);
-    int userId = data.ReadInt32(); 
+    int userId = data.ReadInt32();
     RegisterInteractionOperation(windowId, operation, userId);
 
     return ErrCode::NO_ERROR;
@@ -147,7 +147,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibility
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s" , __func__);
-    
+
     int windowId = data.ReadInt32();
     DeregisterInteractionOperation(windowId);
 
@@ -158,7 +158,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleInterrupt(MessageParcel
 {
     HILOG_DEBUG("%{public}s" , __func__);
 
-    int userId = data.ReadInt32(); 
+    int userId = data.ReadInt32();
     Interrupt(userId);
 
     return ErrCode::NO_ERROR;
@@ -172,7 +172,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetSuggestedInterval(Me
     uint64_t result = GetSuggestedInterval();
 
     reply.WriteUint64(result);
-    
+
     return ErrCode::NO_ERROR;
 }
 
@@ -184,7 +184,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAbilityConnecti
     sptr <IRemoteObject> obj = data.ReadRemoteObject();
 
     RegisterAbilityConnectionClientTmp(obj);
-    
+
     return ErrCode::NO_ERROR;
 }
 

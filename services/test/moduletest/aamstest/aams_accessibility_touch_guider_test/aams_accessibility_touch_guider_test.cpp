@@ -53,7 +53,7 @@ public:
 protected:
     TouchEvent CreateMoveEvent(int pointerCount, int pointId);
     TouchEvent CreateTouchEvent(int action, int pointId);
-    TouchEvent CreateTouchEvent(int action, MmiPoint &point, int pointerCount, 
+    TouchEvent CreateTouchEvent(int action, MmiPoint &point, int pointerCount,
                             unsigned int occurredTime, unsigned int startTime, int pointId);
 
     sptr<AccessibilityInputFilter> inputFilter_ = nullptr;
@@ -103,7 +103,7 @@ void aamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide() {
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
 	object1["description"] = "$string:accessibility_service_description";
 	object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
- 
+
     Json::StreamWriterBuilder writerBuilder;
 
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -167,7 +167,7 @@ void aamsTouchGuideTest::TearDown()
     mtTouchAction.clear();
 }
 
-TouchEvent aamsTouchGuideTest::CreateTouchEvent(int action, int pointId) 
+TouchEvent aamsTouchGuideTest::CreateTouchEvent(int action, int pointId)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {};
@@ -183,7 +183,7 @@ TouchEvent aamsTouchGuideTest::CreateTouchEvent(int action, int pointId)
     return touchEvent;
 }
 
-TouchEvent aamsTouchGuideTest::CreateMoveEvent(int pointerCount, int pointId) 
+TouchEvent aamsTouchGuideTest::CreateMoveEvent(int pointerCount, int pointId)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {};
@@ -200,7 +200,7 @@ TouchEvent aamsTouchGuideTest::CreateMoveEvent(int pointerCount, int pointId)
 }
 
 TouchEvent aamsTouchGuideTest::CreateTouchEvent(int action, MmiPoint &point, int pointerCount,
-                            unsigned int occurredTime, unsigned int startTime, int pointId) 
+                            unsigned int occurredTime, unsigned int startTime, int pointId)
 {
     TouchEvent touchEvent;
     struct MultimodalProperty multimodal = {
@@ -557,7 +557,7 @@ HWTEST_F(aamsTouchGuideTest, aamsTouchGuideTest_Moduletest_OnTouchEvent009, Test
     inputFilter_->OnInputEvent(event);
 
     event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_UP, 0);
-    inputFilter_->OnInputEvent(event);   
+    inputFilter_->OnInputEvent(event);
     sleep(3);
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
@@ -593,9 +593,9 @@ HWTEST_F(aamsTouchGuideTest, aamsTouchGuideTest_Moduletest_OnTouchEvent010, Test
 
     event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_UP,point, 1, 0, 0, 0);
     inputFilter_->OnInputEvent(event);
-    sleep(3); 
+    sleep(3);
 
-    EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);    
+    EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
     EXPECT_EQ(mtTouchAction[0], TouchEnum::PRIMARY_POINT_DOWN);
     EXPECT_EQ(mTeventType[3], EventType::TYPE_TOUCH_END);
 
@@ -657,7 +657,7 @@ HWTEST_F(aamsTouchGuideTest, aamsTouchGuideTest_Moduletest_OnTouchEvent012, Test
     inputFilter_->OnInputEvent(event);
 
     event = CreateTouchEvent(TouchEnum::PRIMARY_POINT_UP, 0);
-    inputFilter_->OnInputEvent(event);  
+    inputFilter_->OnInputEvent(event);
     sleep(3);
 
     EXPECT_EQ(mTeventType[2], EventType::TYPE_TOUCH_BEGIN);
@@ -669,7 +669,7 @@ HWTEST_F(aamsTouchGuideTest, aamsTouchGuideTest_Moduletest_OnTouchEvent012, Test
 
     GTEST_LOG_(INFO) << " aamsTouchGuideTest_Moduletest_OnTouchEvent012 ends";
 }
-#endif   
+#endif
 
 }  // namespace Accessibility
 }  // namespace OHO

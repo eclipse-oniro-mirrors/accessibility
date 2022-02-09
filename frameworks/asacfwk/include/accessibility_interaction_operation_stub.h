@@ -69,7 +69,7 @@ public:
      * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
      *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
      *              PREFETCH_CHILDREN: Need to make the child node info also.
-     *              otherwise: Make the node information by elementId only. 
+     *              otherwise: Make the node information by elementId only.
      * @return -
      */
     virtual void SearchElementInfoByAccessibilityId(const long elementId, const int requestId,
@@ -77,11 +77,11 @@ public:
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
-     * @param elementId: The unique id of the component ID. 
+     * @param elementId: The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
-     * @param text  Filter for the child components to matched with the text 
-     * @return 
+     * @param text  Filter for the child components to matched with the text
+     * @return
      */
     virtual void SearchElementInfosByText(const long elementId, const std::string &text,
         const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
@@ -93,7 +93,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param focusType FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
-     * @return 
+     * @return
      */
     virtual void FindFocusedElementInfo(const long elementId, const int focusType, const int requestId,
         const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
@@ -129,7 +129,7 @@ public:
      *                                  {ACTION_ARGU_SELECT_TEXT_END,"10"(end location)})
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
-     * @return 
+     * @return
      */
     virtual void PerformAction(const long elementId, const int action,
         const std::map<std::string, std::string> actionArguments,
@@ -139,17 +139,17 @@ public:
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
      * @param -
-     * @return 
+     * @return
      */
 
     virtual void ClearFocus() override;
 
     /**
-     * @brief the low layser is notified by the function called while accessibility system execute 
+     * @brief the low layser is notified by the function called while accessibility system execute
      * the function of performAction from AS to check the all low windows cared the outside event.
-     * Example: PopupWindow receive the OUTSIDE_EVENT to close itself. 
+     * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
      * @param -
-     * @return 
+     * @return
      */
     virtual void OutsideTouch() override;
 
@@ -203,7 +203,7 @@ public:
          */
         virtual void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
             const int requestId) override;
-        
+
         /**
          * @brief Set the element informations matched with text to AA.
          * @param infos The element informations searched matched with text.
@@ -229,7 +229,7 @@ public:
          * @return
          */
         virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int requestId) override;
-        
+
         /**
          * @brief Set the result of action executed to AA.
          * @param succeeded True: The action is executed successfully; otherwise is false.
@@ -240,7 +240,7 @@ public:
 
         /**
          * @brief Get the callback object of AA.
-         * @param 
+         * @param
          * @return The callback object of AA and the request id matched.
          */
         std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>> GetAACallbackList();
@@ -248,7 +248,7 @@ public:
         /**
          * @brief Remove the callback object of AA after send the result to AA.
          * @param requestId The request id from AA, it is used to match with request and response.
-         * @return 
+         * @return
          */
         void RemoveAACallbackList(int requestId);
     private:

@@ -69,7 +69,7 @@ public:
 
     /**
      * @brief Set AccessibleAbility keyevent result.
-     * @param connection the AccessibleAbility 
+     * @param connection the AccessibleAbility
      * @param isHandled true if the AccessibleAbility can handle the event else false
      * @param sequenceNum the sequence of keyevent
      * @return
@@ -85,7 +85,7 @@ public:
 
     /**
      * @brief Destroy the events.
-     * @param 
+     * @param
      * @return
      */
     void DestroyEvents() override;

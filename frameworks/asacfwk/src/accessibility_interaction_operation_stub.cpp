@@ -24,7 +24,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>> 
+std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>>
     AccessibilityInteractionOperationStub::aaCallbacks_ = {};
 AccessibilityInteractionOperationStub::AccessibilityInteractionOperationStub()
 {
@@ -61,7 +61,7 @@ int AccessibilityInteractionOperationStub::OnRemoteRequest(uint32_t code, Messag
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
-    
+
     auto memFunc = memberFuncMap_.find(code);
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;
@@ -380,7 +380,7 @@ void AccessibilityInteractionOperationStub::CallbackImpl::SetPerformActionResult
     RemoveAACallbackList(requestId);
 }
 
-std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>> 
+std::map<const int, const sptr<IAccessibilityInteractionOperationCallback>>
     AccessibilityInteractionOperationStub::CallbackImpl::GetAACallbackList()
 {
     HILOG_DEBUG("%{public}s", __func__);

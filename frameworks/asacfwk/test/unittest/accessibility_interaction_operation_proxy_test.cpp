@@ -51,7 +51,7 @@ public:
         mockStub_ = nullptr;
         mockProxy_ = nullptr;
     }
-    
+
 };
 
 /**

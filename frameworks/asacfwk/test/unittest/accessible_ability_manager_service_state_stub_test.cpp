@@ -49,7 +49,7 @@ public:
     void WriteInterfaceToken(MessageParcel &data) {
         GTEST_LOG_(INFO) << "ASACStateStubUnitTest WriteInterfaceToken";
         data.WriteInterfaceToken(AccessibleAbilityManagerServiceStateStub::GetDescriptor());
-    }    
+    }
 };
 
 /**
@@ -64,7 +64,7 @@ HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_001, TestSize.Level1)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    
+
 
     int res = mockStub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);

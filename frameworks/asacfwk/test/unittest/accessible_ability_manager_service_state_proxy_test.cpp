@@ -52,7 +52,7 @@ public:
     void WriteInterfaceToken(MessageParcel &data) {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest WriteInterfaceToken";
         data.WriteInterfaceToken(AccessibleAbilityManagerServiceStateStub::GetDescriptor());
-    }    
+    }
 };
 
 /**

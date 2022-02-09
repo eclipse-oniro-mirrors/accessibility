@@ -60,7 +60,7 @@ public:
      * @brief A constructor used to create a TouchEventInjector instance.
      * @param
      * @return
-     */ 
+     */
     TouchEventInjector();
 
     /**
@@ -93,7 +93,7 @@ public:
 
     /**
      * @brief Destroy event state.
-     * @param 
+     * @param
      * @return
      */
     void DestroyEvents() override;
@@ -105,7 +105,7 @@ public:
      * @param sequence the sequence of gesture
      * @return
      */
-    void InjectEvents(const std::vector<GesturePathDefine> &gesturePath, 
+    void InjectEvents(const std::vector<GesturePathDefine> &gesturePath,
         const sptr<IAccessibleAbilityClient> &service, int sequence );
 
     /**
@@ -117,14 +117,14 @@ public:
 
     /**
      * @brief Parsing inject simulated gestures.
-     * @param 
+     * @param
      * @return
      */
     void InjectEventsInner();
 
     /**
      * @brief Get current gesture service.
-     * @param 
+     * @param
      * @return the corresponding AccessiblityAbility
      */
     sptr<IAccessibleAbilityClient> GetCurrentGestureService() {
@@ -133,7 +133,7 @@ public:
 
     /**
      * @brief Get sequence of gesture.
-     * @param 
+     * @param
      * @return the sequence of gesture
      */
     int GetSequence() {
@@ -148,36 +148,36 @@ private:
 
     /**
      * @brief Cancel the gesture.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void CancelGesture();
 
     /**
      * @brief Cancel the injected events.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void CancelInjectedEvents();
 
     /**
      * @brief Get taps events.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void GetTapsEvents(long startTime);
 
     /**
      * @brief Get move events.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void GetMovesEvents(long startTime);
 
     /**
      * @brief Get touchevents from gesturepath.
-     * @param 
-     * @return 
+     * @param
+     * @return
      */
     void GetTouchEventsFromGesturePath(long startTime);
 
@@ -189,12 +189,12 @@ private:
      * @param point the endpoint of event
      * @return the created touchevent
      */
-    TouchEvent obtainTouchEvent(long startTime, long occurredTime, 
+    TouchEvent obtainTouchEvent(long startTime, long occurredTime,
         int action, MmiPoint point);
 
     /**
      * @brief Get the number of milliseconds elapsed since the system was booted.
-     * @param 
+     * @param
      * @return the number of milliseconds elapsed since the system was booted
      */
     long getSystemTime();

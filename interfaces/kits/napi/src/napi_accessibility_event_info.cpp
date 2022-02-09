@@ -88,7 +88,7 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetSource", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function

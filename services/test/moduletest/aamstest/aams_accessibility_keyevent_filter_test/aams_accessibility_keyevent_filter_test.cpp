@@ -132,7 +132,7 @@ void aamsKeyEventFilterTest::writefileAll(const char* fname,const char* data)
 void aamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent() {
 
     std::ostringstream os;
-	Json::Value	object1, targetBundleNames, 
+	Json::Value	object1, targetBundleNames,
     accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
@@ -158,7 +158,7 @@ void aamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent() {
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
 	object1["description"] = "$string:accessibility_service_description";
 	object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
- 
+
     Json::StreamWriterBuilder writerBuilder;
 
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
@@ -278,7 +278,7 @@ HWTEST_F(aamsKeyEventFilterTest, aamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     inputFilter_->OnInputEvent(keyEvent);
     sleep(1);
     WaitUntilTaskFinished();
-    
+
     EXPECT_EQ(testKeyPressEvent, 3);
     EXPECT_EQ(MTkeyCode, 3);
     GTEST_LOG_(INFO) << "aamsKeyEventFilterTest_Moduletest_OnKeyEvent003 end";

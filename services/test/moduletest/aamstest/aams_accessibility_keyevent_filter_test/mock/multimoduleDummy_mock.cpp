@@ -23,7 +23,7 @@ namespace Accessibility {
 
 void MultimodalInputFilter::InjectEventToMultimodal(MMI::MultimodalEvent &event) {
     KeyEvent* keyevent = (KeyEvent*)&event;
-    MTkeyCode = keyevent->GetKeyCode();   
+    MTkeyCode = keyevent->GetKeyCode();
 }
 
 void MultimodalInputManager::RegisterMultimodalInputFilter(MultimodalInputFilter &inputFilter) {

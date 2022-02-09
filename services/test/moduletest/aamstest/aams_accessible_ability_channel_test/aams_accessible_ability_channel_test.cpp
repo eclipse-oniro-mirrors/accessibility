@@ -137,7 +137,7 @@ void aamsAccessibleAbilityChannelTest::writefileAll(const char* fname,const char
     {
         printf("open file %s fail \n", fname);
     }
-    
+
     fprintf(fp, "%s", data);
     fclose(fp);
 }
@@ -251,7 +251,7 @@ void aamsAccessibleAbilityChannelTest::AddAccessibilityInteractionConnection()
 }
 
 void aamsAccessibleAbilityChannelTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime) {                           
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime) {
     GTEST_LOG_(INFO) << "aamsAccessibleAbilityChannelTest CreateGesturePath";
     // create gesture
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
@@ -536,7 +536,7 @@ HWTEST_F(aamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_EQ(-1, testChannelrequestId);
     EXPECT_NE(direction, testDirection);
     EXPECT_FALSE(result);
-         
+
     testStub->DisableAbility();
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 end";
@@ -679,7 +679,7 @@ HWTEST_F(aamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     int result = aams_->GetTouchEventInjector()->GetSequence();
     EXPECT_EQ(1, result);
     gestureSteps_.clear();
-    testStub->DisableAbility(); 
+    testStub->DisableAbility();
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001 end";
 }

@@ -80,7 +80,7 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAnchorElementInfo", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -158,7 +158,7 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetRootElementInfo", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function
@@ -236,7 +236,7 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetParent", NAPI_AUTO_LENGTH, &resource);
-    
+
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {  // execute async to call c++ function

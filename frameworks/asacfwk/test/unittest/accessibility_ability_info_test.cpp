@@ -84,7 +84,7 @@ void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig() {
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
 	object1["description"] = "$string:accessibility_service_description";
 	object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
- 
+
     Json::StreamWriterBuilder writerBuilder;
 
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());

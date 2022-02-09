@@ -71,9 +71,9 @@ public:
     std::vector<ZoomObserver> observer_ {};
 
 public:
-    void Register(ZoomObserver &observer) 
-    { 
-        observer_.push_back(observer); 
+    void Register(ZoomObserver &observer)
+    {
+        observer_.push_back(observer);
     }
     void UnRegisterAll()
     {

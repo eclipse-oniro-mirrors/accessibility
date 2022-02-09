@@ -281,7 +281,7 @@ bool AccessibilityOperator::PerformAction(int channelId, int accessibilityWindow
         if (!result) {
             return result;
         }
-        
+
         if (!WaitForResultTimedLocked(requestId)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             return false;
@@ -472,7 +472,7 @@ bool AccessibilityOperator::ResetDisplayResize(const int channelId, const int di
 }
 
 bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
-    const int displayId, const float scale, const float centerX, 
+    const int displayId, const float scale, const float centerX,
     const float centerY, const bool animate)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);

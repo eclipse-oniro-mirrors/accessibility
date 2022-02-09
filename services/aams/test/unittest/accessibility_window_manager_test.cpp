@@ -343,7 +343,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     for (auto it = map.begin(); it != map.end(); it++) {
         EXPECT_EQ(2,it->second.GetWindowType());
     }
-   
+
     /* id == wid == INVALID_WINDOW_ID */
     int wid = -1;
     mgr.OnWindowDestroy(wid);

@@ -77,7 +77,7 @@ std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GoAsyncCommonEven
 {
     std::shared_ptr<AsyncCommonEventResult> res = result_;
     result_ = nullptr;
-    return res; 
+    return res;
 }
 
 bool CommonEventSubscriber::IsOrderedCommonEvent() const

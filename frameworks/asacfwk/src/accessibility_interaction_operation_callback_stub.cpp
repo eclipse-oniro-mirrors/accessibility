@@ -58,7 +58,7 @@ int AccessibilityInteractionOperationCallbackStub::OnRemoteRequest(uint32_t code
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
-    
+
     auto memFunc = memberFuncMap_.find(code);
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;

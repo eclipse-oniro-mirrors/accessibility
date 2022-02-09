@@ -36,7 +36,7 @@ extern int testEventType;
 extern int testInterrupt;
 extern int testDisplayId;
 extern int testStateType;
-extern int testGesture; 
+extern int testGesture;
 class AccessibleAbilityManagerServiceUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityManagerServiceUnitTest() {}
@@ -151,7 +151,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterAbilityConnectionClien
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterStateCallback_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterAbilityConnectionClientTmp_001 start";
-    
+
     sptr<AccessibleAbilityManagerServiceStateStub> stub = new AccessibleAbilityManagerServiceStateStub();
     sptr<IAccessibleAbilityManagerServiceState> state = new AccessibleAbilityManagerServiceStateProxy(stub);
 
@@ -584,7 +584,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SwitchedUser_003, TestSize.Lev
     sleep(1);
     EXPECT_EQ(testStateType,0);
     EXPECT_EQ(ins_->GetCurrentAccountId(), testAccountId);
-    
+
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SwitchedUser_003 end";
 }
 

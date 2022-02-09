@@ -37,12 +37,12 @@ int32_t AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParc
     return 0;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data, 
+ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
             MessageParcel &reply) {
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParcel &data, 
+ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParcel &data,
                                                                               MessageParcel &reply) {
     return NO_ERROR;
 }
@@ -80,7 +80,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParc
     // sptr<AccessibilityInteractionOperationStub> stub = new AccessibilityInteractionOperationStub();
     // sptr<IAccessibilityInteractionOperation> proxy =
     //     new AccessibilityInteractionOperationProxy(stub);
-    // sptr<AccessibilityInteractionConnection> connection = new AccessibilityInteractionConnection(0, proxy, 
+    // sptr<AccessibilityInteractionConnection> connection = new AccessibilityInteractionConnection(0, proxy,
     //     "test", 0, 0);
 
     // //new AAconnection
@@ -117,7 +117,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParc
     // sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
 
     // a11yAccountsData_.insert(make_pair(0, accountData));
-    // sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter_++, 
+    // sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter_++,
     //     *abilityInfo);
     // connection->OnAbilityConnectDone(elementName, obj, 0);
     // accountData->AddInstalledAbility(*abilityInfo);
@@ -128,7 +128,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParc
     // int sequence = 0;
     // //SetOnKeyPressEventResult(handled, sequence);
 
-    // std::shared_ptr<AccessibleAbilityManagerService> aams_ = 
+    // std::shared_ptr<AccessibleAbilityManagerService> aams_ =
     // DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 
     // sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();
@@ -166,7 +166,7 @@ ErrCode AccessibleAbilityChannelStub::HandleResetDisplayResize(MessageParcel &da
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleSetDisplayResizeScaleAndCenter(MessageParcel &data, 
+ErrCode AccessibleAbilityChannelStub::HandleSetDisplayResizeScaleAndCenter(MessageParcel &data,
                                                                                  MessageParcel &reply) {
     return NO_ERROR;
 }
@@ -175,7 +175,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleIsFingerprintGestureDetectionValid(MessageParcel &data, 
+ErrCode AccessibleAbilityChannelStub::HandleIsFingerprintGestureDetectionValid(MessageParcel &data,
                                                                                      MessageParcel &reply) {
     return NO_ERROR;
 }

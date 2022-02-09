@@ -34,7 +34,7 @@ bool AccessibleAbilityManagerServiceStateProxy::WriteInterfaceToken(MessageParce
         return false;
     }
     return true;
-} 
+}
 
 void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t stateType)
 {

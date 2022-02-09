@@ -57,7 +57,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::M
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId, 
+bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
     const int mode)
 {
@@ -133,7 +133,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibi
         return false;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT, 
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT,
                             data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by text");
         return false;
@@ -182,7 +182,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibili
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId, 
+bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
     const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
