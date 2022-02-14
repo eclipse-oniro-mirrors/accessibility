@@ -1,75 +1,43 @@
 # 无障碍软件服务子系统
+
+-   [简介](#intro)
+-   [目录](#files)
+-   [相关仓](#relevant)
 # 简介<a name="intro"></a>
 
-**无障碍框架**提供在应用程序和辅助应用之间交换信息的标准机制，支持开发辅助应用增强无障碍功能体验。
+**无障碍框架**提供在应用程序和辅助应用之间交换信息的标准机制，支持开发辅助应用增强无障碍功能体验。典型的应用场景包含两方面：
+
+1. 为残障人士提供使用应用的能力：例如针对视觉障碍人士提供屏幕朗读等功能。
+1. 为开发者提供与应用交互的能力：例如支持 UI 自动化测试框架、支持开发基于 UI 响应的辅助应用。
 
 ![](./figures/AccessibilityFramework.png)
 
 # 目录<a name="files"></a>
 
 ```
+/base/accessibility
 ├── frameworks
 │   ├── aafwk               # AccessibleAbility Kit实现代码
 │   └── asacfwk             # AccessibleAbilityClient Kit实现代码
 ├── interfaces
 │   ├── innerkits           # AccessibleAbility 和 AccessibleAbilityClient 的子系统接口
 │   └── kits                # AccessibleAbility 和 AccessibleAbilityClient 的开发者接口
+├── sa_profile              # 系统服务配置文件
 ├── services
 │   └── aams                # AccessibleAbility 管理服务框架代码
+│   └── test                # 测试目录
 ├── test                    # 测试目录
 └── util                    # 工具类目录
 ```
 
-# 使用说明<a name="usage"></a>
+# 相关仓<a name="relevant"></a>
 
-### isOpenAccessibility(): Promise\<boolean>
+**accessibility**
 
-检查是否启用了辅助功能。
+[distributedschedule_samgr](https://gitee.com/openharmony/distributedschedule_samgr)
 
-- 参数：
-  
-  无
-  
-- 返回值：
-  
-  | 类型  | 说明  |
-  | --- | --- |
-  | Promise\<boolean> | 以Promise形式返回结果，如果辅助功能已启用，则返回true；如果辅助功能未启用，则返回false。 |
-  
-- 示例
-  
-  ```js
-  accessibility.isOpenAccessibility()
-      .then((data) => {
-      console.info('success data:isOpenAccessibility : ' + JSON.stringify(data))
-  }).catch((error) => {
-      console.error('failed to  isOpenAccessibility because ' + JSON.stringify(error));
-  })
-  ```
+[appexecfwk_standard](https://gitee.com/openharmony/appexecfwk_standard)
 
-### sendEvent(event: EventInfo): Promise\<void>
+[notification_ces_standard](https://gitee.com/openharmony/notification_ces_standard)
 
-发送无障碍事件。
-
-- 参数：
-  
-  | 参数名 | 参数类型 | 必填  | 说明  |
-  | --- | --- | --- | --- |
-  | event | EventInfo | 是   | 辅助事件对象。 |
-  
-- 返回值：
-  
-  | 类型  | 说明  |
-  | --- | --- |
-  | Promise<void> | 以Promise形式返回结果，如果发送无障碍事件成功，则data有数据返回；如果发送无障碍事件失败，则err有数据返回。 |
-  
-- 示例
-  
-  ```js
-  accessibility.sendEvent(this.eventInfo)
-      .then((data) => {
-      console.info('success data:sendEvent : ' + JSON.stringify(data))
-  }).catch((error) => {
-      console.error('failed to  sendEvent because ' + JSON.stringify(error));
-  })
-  ```
+[multimodalinput_input](https://gitee.com/openharmony/multimodalinput_input)
