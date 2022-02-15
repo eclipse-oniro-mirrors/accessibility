@@ -41,6 +41,7 @@ public:
 
     void AddConnection();
     shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
+    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 };
 
 void KeyEventFilterUnitTest::SetUpTestCase()
@@ -57,11 +58,11 @@ void KeyEventFilterUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
     //注册bundleservice
-    auto bundleObject = new OHOS::AppExecFwk::BundleMgrService();
+    mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, bundleObject, saExtraProp);
+    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
 
@@ -72,16 +73,23 @@ void KeyEventFilterUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     keyEventFilter_ = nullptr;
+    mock_ = nullptr;
 }
 
 void KeyEventFilterUnitTest::AddConnection()
 {
     GTEST_LOG_(INFO) << "KeyEventFilterUnitTest AddConnection";
-    std::shared_ptr<AppExecFwk::EventRunner> runner = AppExecFwk::EventRunner::Create("KeyEventFilterUnitTest");
-    sptr<AccessibleAbilityClientStubImpl> stub =
-        new AccessibleAbilityClientStubImpl(std::make_shared<AccessibleAbilityEventHandler>(runner));
+    sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl();
     shared_ptr<AccessibleAbilityManagerService> aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    aams->RegisterAbilityConnectionClientTmp(stub);
+
+    // add an ability connection client
+    AppExecFwk::ExtensionAbilityInfo extensionInfo;
+    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
+    accountData->AddInstalledAbility(*abilityInfo);
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    connection->OnAbilityConnectDone(elementName, stub, 0);
 }
 
 /**
@@ -94,8 +102,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_001, TestSiz
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_001 start";
 
-    MMI::KeyEvent event;
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_001 end";
 }
@@ -110,9 +118,9 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_002, TestSiz
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_002 start";
 
-    MMI::KeyEvent event {};
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     AddConnection();
-    keyEventFilter_->OnKeyEvent(event);
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_002 end";
 }
@@ -131,14 +139,14 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     uint32_t sequenceNum = 0;
     int connectionId = 0;
     int accountId = 0;
-    MMI::KeyEvent event;
-    wptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     AccessibilityAbilityInfo abilityInfo;
     shared_ptr<AccessibleAbilityConnection> connection =
         make_shared<AccessibleAbilityConnection>(accountData, connectionId, abilityInfo);
 
     AddConnection();
-    keyEventFilter_->OnKeyEvent(event);
+    keyEventFilter_->OnKeyEvent(*event);
     keyEventFilter_->SetServiceOnKeyEventResult(*connection, isHandled, sequenceNum);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_001 end";
@@ -157,8 +165,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     AddConnection();
 
     GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    MMI::KeyEvent event;
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
@@ -189,8 +197,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     AddConnection();
 
     GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    MMI::KeyEvent event;
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
@@ -221,8 +229,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     AddConnection();
 
     GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    MMI::KeyEvent event;
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
@@ -252,8 +260,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     AddConnection();
 
     GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    MMI::KeyEvent event;
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Clear service KeyEvents";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
@@ -296,8 +304,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestS
     AddConnection();
 
     GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    MMI::KeyEvent event {};
-    keyEventFilter_->OnKeyEvent(event);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Process event";
     sleep(3); // wait for ProcessEvent

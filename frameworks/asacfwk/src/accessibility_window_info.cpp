@@ -37,7 +37,7 @@ bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
-    std::shared_ptr<Rect> boundsInScreen(parcel.ReadParcelable<Rect>());
+    Rect* boundsInScreen = parcel.ReadParcelable<Rect>();
     if (!boundsInScreen) {
         HILOG_ERROR("ReadParcelable boundsInScreen failed.");
         return false;
@@ -116,7 +116,7 @@ bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo 
 {
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d]",
         __func__, channelId_, windowId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
@@ -144,7 +144,7 @@ bool AccessibilityWindowInfo::GetAnchor(AccessibilityElementInfo &elementInfo)
     HILOG_DEBUG("GetAnchor of windowInfo is not support!");
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], anchorId_[%{public}d]",
         __func__, channelId_, windowId_, anchorId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
@@ -167,7 +167,7 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetParent()
     AccessibilityWindowInfo win {};
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], parentId_[%{public}d]",
         __func__, channelId_, parentId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
         for (auto window : instance->GetWindows(channelId_)) {
             if (window.GetWindowId() == parentId_) {
@@ -186,18 +186,18 @@ void AccessibilityWindowInfo::SetParentId(const int parentId)
     HILOG_DEBUG("[%{public}s] parentId_[%{public}d]", __func__, parentId_);
 }
 
-int AccessibilityWindowInfo::GetParentId()
+int AccessibilityWindowInfo::GetParentId() const
 {
     HILOG_DEBUG("[%{public}s] parentId_[%{public}d]", __func__, parentId_);
     return parentId_;
 }
 
-std::vector<int>  AccessibilityWindowInfo::GetChildIds()
+std::vector<int>  AccessibilityWindowInfo::GetChildIds() const
 {
     return childIds_;
 }
 
-int AccessibilityWindowInfo::GetAnchorId()
+int AccessibilityWindowInfo::GetAnchorId() const
 {
     HILOG_DEBUG("[%{public}s] anchorId_[%{public}d]", __func__, anchorId_);
     return anchorId_;
@@ -291,7 +291,7 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetChild(const int index)
         HILOG_ERROR("[%{public}s] called] index[%{public}d] is invalid", __func__, index);
         return win;
     }
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
         for (auto window : instance->GetWindows(channelId_)) {
         if (window.GetWindowId() == childIds_[index]) {
@@ -315,5 +315,5 @@ AccessibilityWindowInfo::AccessibilityWindowInfo()
 
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

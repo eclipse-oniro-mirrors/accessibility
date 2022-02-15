@@ -19,7 +19,6 @@
 #include "string_ex.h"
 namespace OHOS {
 namespace AppExecFwk {
-
 void ElementName::SetElementDeviceID(ElementName *element, const char *deviceId)
 {
     if (element == nullptr) {
@@ -96,6 +95,5 @@ bool ElementName::Marshalling(Parcel &parcel) const
 {
     return true;
 }
-
-}  // namespace AppExecFwk
+}  //namespace AppExecFwk
 }  // namespace OHOS

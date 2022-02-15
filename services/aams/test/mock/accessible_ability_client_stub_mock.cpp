@@ -45,37 +45,17 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnInterrupt(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnGesture(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnDisplayResizeChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGestureValidityChanged(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGesture(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }

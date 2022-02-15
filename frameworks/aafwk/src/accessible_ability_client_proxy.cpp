@@ -111,46 +111,6 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
     }
 }
 
-void AccessibleAbilityClientProxy::OnInterrupt() {
-    int error = NO_ERROR;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_INTERRUPT),
-                data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("OnInterrupt fail, error: %d", error);
-    }
-}
-
-void AccessibleAbilityClientProxy::OnGesture(const int gestureId) {
-    int error = NO_ERROR;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteInt32(gestureId)) {
-        HILOG_ERROR("%{public}s fail, gestureId write int32 error", __func__);
-        return;
-    }
-    error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE),
-                data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("OnGesture fail, error: %d", error);
-    }
-}
-
 void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence) {
     int error = NO_ERROR;
     MessageParcel data;
@@ -162,7 +122,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     if (!WriteInterfaceToken(data)) {
         return;
     }
-#if 0 // TODO: Use AccessibilityKeyEvent to instead KeyEvent
+#if 0 // TODO: Use AccessibilityKeyEvent to instead MMI::KeyEvent
     if (!data.WriteParcelable(&keyEvent)) {
         HILOG_ERROR("%{public}s fail, keyEvent write parcelable error", __func__);
         return;
@@ -179,7 +139,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     }
 }
 
-void AccessibleAbilityClientProxy::OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale,
+void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
                                                             const float centerX, const float centerY) {
     int error = NO_ERROR;
     MessageParcel data;
@@ -215,7 +175,7 @@ void AccessibleAbilityClientProxy::OnDisplayResizeChanged(const int displayId, c
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_DISPALYRESIZE_CHANGED),
                 data, reply, option);
     if (error != NO_ERROR) {
-        HILOG_ERROR("OnDisplayResizeChanged fail, error: %d", error);
+        HILOG_ERROR("OnDisplayResized fail, error: %d", error);
     }
 }
 
@@ -242,50 +202,6 @@ void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, c
                 data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnGestureSimulateResult fail, error: %d", error);
-    }
-}
-
-void AccessibleAbilityClientProxy::OnFingerprintGestureValidityChanged(const bool validity) {
-    int error = NO_ERROR;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteBool(validity)) {
-        HILOG_ERROR("%{public}s fail, validity write bool error", __func__);
-        return;
-    }
-    error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::
-                ON_FINGERPRINT_GESTURE_VALIDITY_CHANGED), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("OnFingerprintGestureValidityChanged fail, error: %d", error);
-    }
-}
-
-void AccessibleAbilityClientProxy::OnFingerprintGesture(const int gesture) {
-    int error = NO_ERROR;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteInt32(gesture)) {
-        HILOG_ERROR("%{public}s fail, gesture write int32 error", __func__);
-        return;
-    }
-    error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_FINGERPRINT_GESTURE),
-                data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("OnFingerprintGesture fail, error: %d", error);
     }
 }
 

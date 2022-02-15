@@ -20,8 +20,6 @@
 #include "ipc_types.h"
 #include "sam_log.h"
 #include "string_ex.h"
-#include "system_ability_info.h"
-//#include "tools.h"
 
 namespace OHOS {
 SystemAbilityManagerStub::SystemAbilityManagerStub()
@@ -38,22 +36,22 @@ bool SystemAbilityManagerStub::EnforceInterceToken(MessageParcel &data)
     return false;
 }
 
-int32_t SystemAbilityManagerStub::GetSystemAbilityInfoListInner(MessageParcel &data, MessageParcel &reply)
+int32_t SystemAbilityManagerStub::GetSystemAbilityInner(MessageParcel& data, MessageParcel& reply)
 {
     return ERR_NONE;
 }
 
-int32_t SystemAbilityManagerStub::CheckLocalAbilityInner(MessageParcel &data, MessageParcel &reply)
+int32_t SystemAbilityManagerStub::CheckSystemAbilityInner(MessageParcel& data, MessageParcel& reply)
 {
     return ERR_NONE;
 }
 
-int32_t SystemAbilityManagerStub::AddLocalAbilityInner(MessageParcel &data, MessageParcel &reply)
+int32_t SystemAbilityManagerStub::AddSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
 {
     return 0;
 }
 
-int32_t SystemAbilityManagerStub::RemoveLocalAbilityInner(MessageParcel &data, MessageParcel &reply)
+int32_t SystemAbilityManagerStub::RemoveSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
 {
     return 0;
 }
@@ -78,17 +76,7 @@ int32_t SystemAbilityManagerStub::CheckRemtSystemAbilityInner(MessageParcel &dat
     return 0;
 }
 
-int32_t SystemAbilityManagerStub::CheckRemtSystemAbilityForJavaInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
 int32_t SystemAbilityManagerStub::AddOndemandSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::RecycleOndemandSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
 {
     return 0;
 }
@@ -98,47 +86,12 @@ int32_t SystemAbilityManagerStub::CheckSystemAbilityImmeInner(MessageParcel &dat
     return 0;
 }
 
-int32_t SystemAbilityManagerStub::ConnOndemandSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::DisConnOndemandSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::CheckOndemandSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::GetDeviceIdInner(MessageParcel &data, MessageParcel &reply)
+int32_t SystemAbilityManagerStub::LoadSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
 {
     return 0;
 }
 
 int32_t SystemAbilityManagerStub::UnmarshalingSaExtraProp(MessageParcel &data, SAExtraProp &extraProp)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::AddSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::GetSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::CheckSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
-{
-    return 0;
-}
-
-int32_t SystemAbilityManagerStub::RemoveSystemAbilityInner(MessageParcel &data, MessageParcel &reply)
 {
     return 0;
 }
@@ -149,11 +102,6 @@ int32_t SystemAbilityManagerStub::GetHapIdMultiuser(int32_t uid)
 }
 
 bool SystemAbilityManagerStub::CanRequest()
-{
-    return true;
-}
-
-bool SystemAbilityManagerStub::IsSystemApp(int32_t callingUid)
 {
     return true;
 }

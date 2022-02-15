@@ -65,40 +65,20 @@ public:
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnAccessibilityEvent";
     }
 
-    virtual void OnInterrupt()
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnInterrupt";
-    }
-
-    virtual void OnGesture(const int gestureId)
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnGesture";
-    }
-
-    virtual void OnKeyPressEvent(const KeyEvent &keyEvent, const int sequence)
+    virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnKeyPressEvent";
     }
 
-    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
+    virtual void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY)
     {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnDisplayResizeChanged";
+        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnDisplayResized";
     }
 
     virtual void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnGestureSimulateResult";
-    }
-
-    virtual void OnFingerprintGestureValidityChanged(const bool validity)
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnFingerprintGestureValidityChanged";
-    }
-
-    virtual void OnFingerprintGesture(const int gesture)
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubMock OnFingerprintGesture";
     }
 
     int code_ = 0;

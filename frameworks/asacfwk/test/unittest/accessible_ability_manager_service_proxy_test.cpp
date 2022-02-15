@@ -13,10 +13,11 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include <gtest/gtest.h>
-#include "mock_accessible_ability_manager_service_stub.h"
+#include <memory>
+
 #include "accessible_ability_manager_service_proxy.h"
+#include "mock_accessible_ability_manager_service_stub.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -31,24 +32,27 @@ public:
     ASACProxyUnitTest() {}
     ~ASACProxyUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACProxyUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACProxyUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "ASACProxyUnitTest SetUp()";
         mockStub_ = new MockAccessibleAbilityManagerServiceStub();
         mockProxy_ = std::make_shared<AccessibleAbilityManagerServiceClientProxy>(mockStub_);
         GTEST_LOG_(INFO) << "ASACProxyUnitTest SetUp() end";
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "ASACProxyUnitTest TearDown()";
         mockStub_ = nullptr;
         mockProxy_ = nullptr;
     }
-
 };
 
 /**
@@ -90,65 +94,27 @@ HWTEST_F(ASACProxyUnitTest, GetAbilityList_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: RegisterInteractionOperation_001
- * @tc.name: RegisterInteractionOperation
- * @tc.desc: Test function RegisterInteractionOperation
+ * @tc.number: RegisterElementOperator_001
+ * @tc.name: RegisterElementOperator
+ * @tc.desc: Test function RegisterElementOperator
  */
-HWTEST_F(ASACProxyUnitTest, RegisterInteractionOperation_001, TestSize.Level1)
+HWTEST_F(ASACProxyUnitTest, RegisterElementOperator_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "RegisterInteractionOperation_001 start";
-    mockProxy_->RegisterInteractionOperation(1, nullptr, 1);
-    GTEST_LOG_(INFO) << "RegisterInteractionOperation_001 end";
+    GTEST_LOG_(INFO) << "RegisterElementOperator_001 start";
+    mockProxy_->RegisterElementOperator(1, nullptr, 1);
+    GTEST_LOG_(INFO) << "RegisterElementOperator_001 end";
 }
 
 /**
- * @tc.number: DeregisterInteractionOperation_001
- * @tc.name: DeregisterInteractionOperation
- * @tc.desc: Test function DeregisterInteractionOperation
+ * @tc.number: DeregisterElementOperator_001
+ * @tc.name: DeregisterElementOperator
+ * @tc.desc: Test function DeregisterElementOperator
  */
-HWTEST_F(ASACProxyUnitTest, DeregisterInteractionOperation_001, TestSize.Level1)
+HWTEST_F(ASACProxyUnitTest, DeregisterElementOperator_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "DeregisterInteractionOperation_001 start";
-    mockProxy_->DeregisterInteractionOperation(1);
-    GTEST_LOG_(INFO) << "DeregisterInteractionOperation_001 end";
+    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 start";
+    mockProxy_->DeregisterElementOperator(1);
+    GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
-
-/**
- * @tc.number: Interrupt_001
- * @tc.name: Interrupt
- * @tc.desc: Test function Interrupt
- */
-HWTEST_F(ASACProxyUnitTest, Interrupt_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Interrupt_001 start";
-    mockProxy_->Interrupt(0);
-    GTEST_LOG_(INFO) << "Interrupt_001 end";
-}
-
-/**
- * @tc.number: GetSuggestedInterval_001
- * @tc.name: GetSuggestedInterval
- * @tc.desc: Test function GetSuggestedInterval
- */
-HWTEST_F(ASACProxyUnitTest, GetSuggestedInterval_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetSuggestedInterval_001 start";
-    mockProxy_->GetSuggestedInterval();
-    GTEST_LOG_(INFO) << "GetSuggestedInterval_001 end";
-}
-
-/**
- * @tc.number: RegisterAbilityConnectionClientTmp_001
- * @tc.name: RegisterAbilityConnectionClientTmp
- * @tc.desc: Test function RegisterAbilityConnectionClientTmp
- */
-HWTEST_F(ASACProxyUnitTest, RegisterAbilityConnectionClientTmp_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "RegisterAbilityConnectionClientTmp_001 start";
-    MessageParcel data {};
-    mockProxy_->RegisterAbilityConnectionClientTmp(nullptr);
-    GTEST_LOG_(INFO) << "RegisterAbilityConnectionClientTmp_001 end";
-}
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

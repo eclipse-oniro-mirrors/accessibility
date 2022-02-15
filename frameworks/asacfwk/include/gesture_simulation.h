@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class GesturePathPositionDefine : public Parcelable
 {
 public:
@@ -185,43 +184,12 @@ class GestureResultListener
 public:
 
     /**
-     * @brief Called when the gesture is cancelled.
-     * @param gesturePathDefine The gesture which will be notified to listener.
+     * @brief Called when the gesture is finished.
+     * @param sequence
+     * @param result Reture true if the gesture which is listened is injected successfully, else return false.
      * @return
      */
-    virtual void OnCancelled(std::vector<GesturePathDefine> &gesturePathDefine) = 0;
-
-    /**
-     * @brief Called when the gesture is completed.
-     * @param gesturePathDefine The gesture which will be notified to listener.
-     * @return
-     */
-    virtual void OnCompleted(std::vector<GesturePathDefine> &gesturePathDefine) = 0;
-};
-
-class GestureResultListenerInfo
-{
-public:
-    GestureResultListenerInfo(std::vector<GesturePathDefine> gesturePathDefine,
-                              std::shared_ptr<GestureResultListener>& gestureResultListener);
-
-    /**
-     * @brief Obtains the listener observing gestures sent to the screen.
-     * @param
-     * @return Return the listener observing gestures sent to the screen.
-     */
-    std::shared_ptr<GestureResultListener>& GetGestureResultListener();
-
-    /**
-     * @brief Obtains GesturePath of this listenerInfo.
-     * @param
-     * @return Return GesturePath of this listenerInfo.
-     */
-    std::vector<GesturePathDefine> GetGesturePathDefine();
-
-private:
-    std::vector<GesturePathDefine> gesturePathDefine_ {};
-    std::shared_ptr<GestureResultListener> gestureResultListener_ = nullptr;
+    virtual void OnGestureInjectResult(uint32_t sequence, bool result) = 0;
 };
 
 } // namespace Accessibility

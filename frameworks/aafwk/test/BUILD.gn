@@ -34,6 +34,7 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
     "//base/accessibility/dummyData",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
@@ -44,30 +45,26 @@ config("module_private_config") {
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
   sources = [
-    "../src/accessible_ability.cpp",
+    "../src/accessibility_extension.cpp",
+    "../src/accessibility_extension_context.cpp",
     "../src/display_resize_controller.cpp",
-    "../src/accessible_ability_event_handler.cpp",
     "../src/accessible_ability_client_proxy.cpp",
     "../src/accessible_ability_client_stub_impl.cpp",
-    "../src/fingerprint_controller.cpp",
     "../src/accessible_ability_client_stub.cpp",
-    "unittest/accessible_ability_test.cpp",
+    "unittest/accessibility_extension_context_test.cpp",
     "unittest/display_resize_controller_test.cpp",
-    "unittest/accessible_ability_event_handler_test.cpp",
     "unittest/accessible_ability_client_proxy_test.cpp",
     "unittest/accessible_ability_client_stub_test.cpp",
     "unittest/accessible_ability_client_stub_impl_test.cpp",
-    "unittest/fingerprint_controller_test.cpp",
     "mock/mock_accessibility_operator.cpp",
     "mock/mock_accessibility_element_info.cpp",
     "mock/mock_gesture_simulation.cpp",
     "mock/mock_accessibility_event_info.cpp",
-    "mock/mock_accessibility_interaction_operation_stub.cpp",
-    "mock/mock_accessibility_interaction_operation_callback_stub.cpp",
     "mock/mock_accessible_ability_channel_proxy.cpp",
     "mock/mock_accessible_ability_manager_service_proxy.cpp",
-    "mock/mock_accessibility_interaction_operation_callback_proxy.cpp",
+    "mock/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/mock_accessibility_window_info.cpp",
+    "../../asacfwk/src/accessibility_caption.cpp"
   ]
 
   configs = [
@@ -81,6 +78,7 @@ ohos_unittest("accessible_ability_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
   ]
 
   external_deps = [
@@ -88,6 +86,8 @@ ohos_unittest("accessible_ability_test") {
     "hiviewdfx_hilog_native:libhilog",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
+    "ability_base:want",
+    "ability_runtime:runtime",
   ]
 }
 

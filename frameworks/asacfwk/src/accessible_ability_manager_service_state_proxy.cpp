@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessible_ability_manager_service_state_proxy.h"
 #include "hilog_wrapper.h"
 #include "ipc_types.h"
@@ -64,5 +65,5 @@ void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t st
     }
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

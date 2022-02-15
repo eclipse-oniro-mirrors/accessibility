@@ -37,18 +37,73 @@ public:
         std::vector<AccessibilityAbilityInfo> infos;
         return infos;
     }
-    void RegisterInteractionOperation(const int windowId,
-            const sptr<IAccessibilityInteractionOperation> &operation,
+    void RegisterElementOperator(const int windowId,
+            const sptr<IAccessibilityElementOperator> &operation,
             const int accountId) {}
-    void DeregisterInteractionOperation(const int windowId) {}
-    void Interrupt(const int accountId) {}
+    void DeregisterElementOperator(const int windowId) {}
 
-    void RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj) {}
-    uint64_t GetSuggestedInterval() {return 1;}
+    uint32_t RegisterCaptionPropertyCallback(
+        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) {
+            return 0;
+    }
+    CaptionProperty GetCaptionProperty()
+    {
+        CaptionProperty cap;
+        return cap;
+    }
+    bool GetEnabledState() {
+        return true;
+    }
+    bool GetCaptionState() {
+        return true;
+    }
+    bool GetTouchGuideState() {
+        return true;
+    }
+    bool GetGestureState() {
+        return true;
+    }
+    bool GetKeyEventObserverState() {
+        return true;
+    }
+
+    bool SetCaptionProperty(const CaptionProperty& caption) {
+        return true;
+    }
+    bool SetCaptionState(const bool state) {
+        return true;
+    }
+    bool SetEnabled(const bool state) {
+        return true;
+    }
+    bool SetTouchGuideState(const bool state) {
+        return true;
+    }
+    bool SetGestureState(const bool state) {
+        return true;
+    }
+    bool SetKeyEventObserverState(const bool state) {
+        return true;
+    }
+
+    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) {
+        return true;
+    }
+    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) {
+        return true;
+    }
+    std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() {
+        std::map<std::string, AppExecFwk::ElementName> test;
+        return test;
+    }
+    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() {
+        std::vector<AccessibilityAbilityInfo> test;
+        return test;
+    }
 private:
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityManagerServiceStub);
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

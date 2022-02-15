@@ -18,29 +18,28 @@
 
 #include <memory>
 #include <vector>
-#include "dummy.h"
+
+#include "display_manager.h"
+#include "display.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityDisplayManager: public IWindowManagerDisplayListenerClazz {
+class AccessibilityDisplayManager : public Rosen::DisplayManager::IDisplayListener {
 public:
     ~AccessibilityDisplayManager() = default;
 
     static AccessibilityDisplayManager &GetInstance();
-    WMDisplayInfo GetDisplay(int id);
-    std::vector<WMDisplayInfo> GetDisplays();
-    WMDisplayInfo GetDefaultDisplay();
+    const sptr<Rosen::Display> GetDisplay(int id);
+    std::vector<const sptr<Rosen::Display>> GetDisplays();
+    const sptr<Rosen::Display> GetDefaultDisplay();
     void RegisterDisplayChangeListener();
 
-    // add for UT test
-    void SetDisplay(WMDisplayInfo newWM);
+    virtual void OnCreate(Rosen::DisplayId dId) override;
+    virtual void OnDestroy(Rosen::DisplayId dId) override;
+    virtual void OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event) override;
 
-    virtual void OnScreenPlugin(int32_t did) override;
-    virtual void OnScreenPlugout(int32_t did) override;
-
-private:
+   private:
     AccessibilityDisplayManager();
-    std::vector<WMDisplayInfo> displays_ {};
 };
 }  // namespace Accessibility
 }  // namespace OHOS

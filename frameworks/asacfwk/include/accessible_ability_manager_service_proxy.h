@@ -20,6 +20,7 @@
 #include <memory>
 #include "accessible_ability_manager_service_interface.h"
 #include "accessible_ability_manager_service_state_interface.h"
+#include "accessible_ability_manager_service_caption_property_interface.h"
 #include "accessibility_event_info.h"
 #include "iremote_proxy.h"
 #include "iremote_object.h"
@@ -27,8 +28,8 @@
 namespace OHOS {
 namespace Accessibility {
 /*
-* The class define the interface to call ABMS API.
-*/
+ * The class define the interface to call ABMS API.
+ */
 class AccessibleAbilityManagerServiceClientProxy : public IRemoteProxy<IAccessibleAbilityManagerServiceClient> {
 public:
     /**
@@ -36,7 +37,7 @@ public:
      * @param object The object of IPC
      * @return
      */
-    explicit AccessibleAbilityManagerServiceClientProxy(const sptr<IRemoteObject> &object);
+    explicit AccessibleAbilityManagerServiceClientProxy(const sptr<IRemoteObject>& object);
 
     /**
      * @brief destruct function
@@ -51,7 +52,7 @@ public:
      * @param accountId The user id.
      * @return true: send ok; otherwise is refused.
      */
-    virtual void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) override;
+    virtual void SendEvent(const AccessibilityEventInfo& uiEvent, const int accountId) override;
 
     /**
      * @brief Register the state observer of AAMS.
@@ -59,8 +60,11 @@ public:
      * @param accountId The user id.
      * @return 0: Register ok; otherwise is refused.
      */
-    virtual uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback,
-        const int accountId) override;
+    virtual uint32_t RegisterStateCallback(
+        const sptr<IAccessibleAbilityManagerServiceState>& callback, const int accountId) override;
+
+    virtual uint32_t RegisterCaptionPropertyCallback(
+        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) override;
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -79,39 +83,35 @@ public:
      * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
-    virtual void RegisterInteractionOperation(const int windowId,
-            const sptr<IAccessibilityInteractionOperation> &operation,
-            const int accountId) override;
+    virtual void RegisterElementOperator(
+        const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) override;
 
     /**
      * @brief Deregister the interaction operation.
      * @param windowId Window ID
      * @return
      */
-    virtual void DeregisterInteractionOperation(const int windowId) override;
+    virtual void DeregisterElementOperator(const int windowId) override;
 
-    /**
-     * @brief Requests feedback interruption from all accessibility services.
-     *      Remained.
-     * @param -
-     * @return
-     */
-    virtual void Interrupt(const int accountId) override;
+    virtual CaptionProperty GetCaptionProperty() override;
+    virtual bool SetCaptionProperty(const CaptionProperty& caption) override;
+    virtual bool SetCaptionState(const bool state) override;
+    virtual bool SetEnabled(const bool state) override;
 
-    /**
-     * @brief Obtains the suggested interval for switching the UI.
-     * @param
-     * @return Returns the interval.
-     */
-    virtual uint64_t GetSuggestedInterval() override;
+    virtual bool GetEnabledState() override;
+    virtual bool GetCaptionState() override;
+    virtual bool GetTouchGuideState() override;
+    virtual bool GetGestureState() override;
+    virtual bool GetKeyEventObserverState() override;
 
-    /**
-     * @brief Register AA connection to AAMS.
-     *      Temp Solution.
-     * @param obj IPC object
-     * @return
-     */
-    virtual void RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj) override;
+    virtual bool SetTouchGuideState(const bool state) override;
+    virtual bool SetGestureState(const bool state) override;
+    virtual bool SetKeyEventObserverState(const bool state) override;
+
+    virtual bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
+    virtual bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) override;
+    virtual std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
+    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
 
     /**
      * @brief Get IPC object.
@@ -119,16 +119,17 @@ public:
      * @return IPC object
      */
     sptr<IRemoteObject> GetObject();
+
 private:
     /**
      * @brief Write the descriptor of IPC.
      * @param data It is include the descriptor of IPC.
      * @return true: Write the descriptor successfully; otherwise is not.
      */
-    bool WriteInterfaceToken(MessageParcel &data);
+    bool WriteInterfaceToken(MessageParcel& data);
     static inline BrokerDelegator<AccessibleAbilityManagerServiceClientProxy> delegator;
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+}  // namespace Accessibility
+}  // namespace OHOS
 #endif

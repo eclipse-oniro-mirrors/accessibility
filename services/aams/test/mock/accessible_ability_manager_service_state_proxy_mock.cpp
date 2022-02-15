@@ -17,7 +17,7 @@
 #include "hilog_wrapper.h"
 #include "ipc_types.h"
 #include "iremote_object.h"
-int testStateType = -1;
+int g_testStateType = -1;
 namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerServiceStateProxy::AccessibleAbilityManagerServiceStateProxy(
@@ -35,9 +35,8 @@ bool AccessibleAbilityManagerServiceStateProxy::WriteInterfaceToken(MessageParce
 void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t stateType)
 {
     printf("OnStateChanged\n");
-    testStateType = stateType;
+    g_testStateType = stateType;
     return;
 }
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

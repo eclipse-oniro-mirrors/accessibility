@@ -13,24 +13,15 @@
  * limitations under the License.
  */
 
-#include <string>
 #include "accessible_ability_client_stub_impl.h"
-#include "accessible_ability.h"
+#include <string>
+#include "accessibility_extension_context.h"
 #include "display_resize_controller.h"
-#include "fingerprint_controller.h"
 
 using namespace std;
-
 using namespace OHOS::Accessibility;
 
-
-
-AccessibleAbilityClientStubImpl::AccessibleAbilityClientStubImpl
-    (const std::shared_ptr<AccessibleAbilityEventHandler> &accessibleAbilityEventHandler)
-    : handler_(accessibleAbilityEventHandler)
-    {}
-
-void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr<AccessibleAbilityListener> &listener)
+void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr<AccessibilityExtension> &listener)
 {}
 
 void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
@@ -60,46 +51,22 @@ void AccessibleAbilityClientStubImpl::OnAccessibilityEventInner(const Accessibil
     }
 }
 
-void AccessibleAbilityClientStubImpl::OnInterrupt()
-{}
-
-void AccessibleAbilityClientStubImpl::AccessibleAbilityClientStubImpl::OnInterruptInner()
-{}
-
-void AccessibleAbilityClientStubImpl::OnGesture(const int gestureId)
-{}
-
-void AccessibleAbilityClientStubImpl::OnGestureInner(const int gestureId)
-{}
-
 void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
 {}
 
 void AccessibleAbilityClientStubImpl::OnKeyPressEventInner(const MMI::KeyEvent &keyEvent, const int sequence)
 {}
 
-void AccessibleAbilityClientStubImpl::OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale,
+void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
                                                              const float centerX, const float centerY)
 {}
 
-void AccessibleAbilityClientStubImpl::OnDisplayResizeChangedInner(const int displayId, const Rect &rect,
-                                                                  const float scale, const float centerX, const float centerY)
+void AccessibleAbilityClientStubImpl::OnDisplayResizedInner(const int displayId, const Rect &rect,
+    const float scale, const float centerX, const float centerY)
 {}
 
 void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully)
 {}
 
 void AccessibleAbilityClientStubImpl::OnGestureSimulateResultInner(const int sequence, const bool completedSuccessfully)
-{}
-
-void AccessibleAbilityClientStubImpl::OnFingerprintGestureValidityChanged(const bool validity)
-{}
-
-void AccessibleAbilityClientStubImpl::OnFingerprintGestureValidityChangedInner(const bool validity)
-{}
-
-void AccessibleAbilityClientStubImpl::OnFingerprintGesture(const int gesture)
-{}
-
-void AccessibleAbilityClientStubImpl::OnFingerprintGestureInner(const int gesture)
 {}

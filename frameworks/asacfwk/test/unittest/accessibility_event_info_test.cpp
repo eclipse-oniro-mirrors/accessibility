@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include <gtest/gtest.h>
+#include <memory>
+
 #include "accessibility_event_info.h"
 
 using namespace testing;
@@ -28,16 +29,20 @@ public:
     AccessibilityEventInfoUnitTest() {}
     ~AccessibilityEventInfoUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityEventInfoUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityEventInfoUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "AccessibilityEventInfoUnitTest SetUp()";
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "AccessibilityEventInfoUnitTest TearDown()";
     }
 };
@@ -151,7 +156,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetClassName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetClassName_001 start";
     AccessibilityMemo record {};
     record.SetComponentType("test");
-    EXPECT_TRUE(strcmp(record.GetComponentType().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(record.GetComponentType().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetClassName_001 end";
 }
 
@@ -165,7 +170,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetBeforeText_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetBeforeText_001 start";
     AccessibilityMemo record {};
     record.SetBeforeText("test");
-    EXPECT_TRUE(strcmp(record.GetBeforeText().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(record.GetBeforeText().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetBeforeText_001 end";
 }
 
@@ -179,7 +184,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetContentList_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetContentList_001 start";
     AccessibilityMemo record {};
     record.AddContent("test");
-    EXPECT_TRUE(strcmp(record.GetContentList()[0].c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(record.GetContentList()[0].c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetContentList_001 end";
 }
 
@@ -193,7 +198,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetLatestContent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetLatestContent_001 start";
     AccessibilityMemo record {};
     record.SetLatestContent("test");
-    EXPECT_TRUE(strcmp(record.GetLatestContent().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(record.GetLatestContent().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetLatestContent_001 end";
 }
 
@@ -207,7 +212,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetDescription_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetDescription_001 start";
     AccessibilityMemo record {};
     record.SetDescription("test");
-    EXPECT_TRUE(strcmp(record.GetDescription().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(record.GetDescription().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 
@@ -320,7 +325,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetBundleName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetDescription_001 start";
     AccessibilityEventInfo event {};
     event.SetBundleName("test");
-    EXPECT_TRUE(strcmp(event.GetBundleName().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(event.GetBundleName().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 
@@ -471,5 +476,5 @@ HWTEST_F(AccessibilityEventInfoUnitTest, ReadFromParcel_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "ReadFromParcel_001 end";
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

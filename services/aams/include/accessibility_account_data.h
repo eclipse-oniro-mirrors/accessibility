@@ -19,22 +19,24 @@
 #include <vector>
 #include <set>
 #include <string>
-#include "accessibility_interaction_connection.h"
+#include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service_state_interface.h"
 #include "element_name.h"
 #include "refbase.h"
 #include "accessibility_state_event.h"
 #include "accessibility_system_ability_client.h"
+#include "accessible_ability_manager_service_caption_property_interface.h"
+#include "accessibility_caption.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityConnection;
 
 class IAccessibleAbilityManagerServiceState;
 
-class AccessibilityInteractionConnection;
+class AccessibilityWindowConnection;
+class IAccessibleAbilityManagerServiceCaptionProperty;
 
 class AccessibilityAccountData final : public RefBase {
 public:
@@ -67,82 +69,80 @@ public:
      * @param connection Accessible ability connection.
      * @return
      */
-    void AddConnectedAbility(sptr<AccessibleAbilityConnection> &connection);
+    void AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
 
     /**
      * @brief Remove connected accessibility services.
      * @param connection Accessible ability connection.
      * @return
      */
-    void RemoveConnectedAbility(sptr<AccessibleAbilityConnection> &connection);
-
-    /**
-     * @brief Accessibility services disconnected, accessibility changes from connected state to connecting state.
-     * @param connection Accessible ability connection.
-     * @return
-     */
-    void AbilityDisconnected(sptr<AccessibleAbilityConnection> &connection);
+    void RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
 
     /**
      * @brief Remove connecting accessibility services.
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void RemoveConnectingA11yAbility(const AppExecFwk::ElementName &elementName);
+    void RemoveConnectingA11yAbility(const AppExecFwk::ElementName& elementName);
 
     /**
      * @brief Add accessibility monitoring connection.
      * @param callback Accessibility monitoring connection.
      * @return
      */
-    void AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback);
+    void AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState>& callback);
 
     /**
      * @brief Remove accessibility monitoring connection.
      * @param callback Accessibility monitoring connection.
      * @return
      */
-    void RemoveStateCallback(const wptr<IRemoteObject> &callback);
+    void RemoveStateCallback(const wptr<IRemoteObject>& callback);
 
+    void AddCaptionPropertyCallback(const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback);
+    void RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback);
     /**
      * @brief Add interface operation interactive connection.
-     * @param windowId Interface operation interactive connection the corresponding window id.
-     * @param interactionConnection Interface interface operation interactive connection.
+     * @param windowId Interface operation interactive connection the
+     * corresponding window id.
+     * @param interactionConnection Interface interface operation
+     * interactive connection.
      * @return
      */
-    void AddAccessibilityInteractionConnection(const int windowId, const sptr<AccessibilityInteractionConnection> &interactionConnection);
+    void AddAccessibilityWindowConnection(
+        const int windowId, const sptr<AccessibilityWindowConnection>& interactionConnection);
 
     /**
      * @brief Remove interface operation interactive connection.
      * @param windowId Interface operation interactive connection the corresponding window id.
      * @return
      */
-    void RemoveAccessibilityInteractionConnection(const int windowId);
+    void RemoveAccessibilityWindowConnection(const int windowId);
 
     /**
      * @brief Add connecting accessibility.
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void AddConnectingA11yAbility(const AppExecFwk::ElementName &elementName);
+    void AddConnectingA11yAbility(const AppExecFwk::ElementName& elementName);
 
-    void AddEnabledAbility(const AppExecFwk::ElementName &elementName);  // For UT
+    void AddEnabledAbility(const AppExecFwk::ElementName& elementName);  // For UT
 
     /**
      * @brief Remove accessibility that have been opened.
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void RemoveEnabledAbility(const AppExecFwk::ElementName &elementName);
+    void RemoveEnabledAbility(const AppExecFwk::ElementName& elementName);
 
-    void AddInstalledAbility(AccessibilityAbilityInfo &abilityInfo);  // For UT
+    void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo);  // For UT
 
     /**
      * @brief Empty installed accessibility list.
      * @param abilityInfo Accessibility ability info.
      * @return
      */
-    void RemoveInstalledAbility(AccessibilityAbilityInfo &abilityInfo);
+    void RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo);
 
     /**
      * @brief The real procedure for add connecting ability.
@@ -165,12 +165,14 @@ public:
      */
     const std::vector<sptr<IAccessibleAbilityManagerServiceState>> GetStateCallbacks();
 
+    const std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>> GetCaptionPropertyCallbacks();
+
     /**
      * @brief Get interface operation interactive connection list.
      * @param
      * @return Store map of interface operation interactive connection.
      */
-    const std::map<int, sptr<AccessibilityInteractionConnection>> GetAsacConnections();
+    const std::map<int, sptr<AccessibilityWindowConnection>> GetAsacConnections();
 
     /**
      * @brief Query accessible ability connection through elementName URI.
@@ -184,7 +186,7 @@ public:
      * @param windowId Interface operation interactive connection the corresponding window id.
      * @return Interface operation interactive connection corresponding to window id.
      */
-    const sptr<AccessibilityInteractionConnection> GetAccessibilityInteractionConnection(const int windowId);
+    const sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(const int windowId);
 
     /**
      * @brief Get connecting abilities list.
@@ -216,41 +218,6 @@ public:
     const std::vector<AccessibilityAbilityInfo> GetInstalledAbilities();
 
     /**
-     * @brief Get interactive Ui interval time.
-     * @param
-     * @return Interactive Ui interval time.
-     */
-    uint32_t GetInteractiveUiInterval();
-
-    /**
-     * @brief Get noninteractive Ui interval time.
-     * @param
-     * @return NonInteractive Ui interval time.
-     */
-    uint32_t GetNonInteractiveUiInterval();
-
-    /**
-     * @brief Gets the interactive Ui interval time set by the user.
-     * @param
-     * @return User set the Interactive Ui interval time.
-     */
-    uint32_t GetAccountInteractiveUiInterval();
-
-    /**
-     * @brief Gets the noninteractive Ui interval time set by the user.
-     * @param
-     * @return User set the noninteractive Ui interval time.
-     */
-    uint32_t GetAccountNonInteractiveUiInterval();
-
-    /**
-     * @brief Update interactive Ui interval time.
-     * @param
-     * @return
-     */
-    void UpdateInteractiveUiInterval();
-
-    /**
      * @brief Update user enabled accessibility capabilities.
      * @param
      * @return
@@ -269,34 +236,94 @@ public:
      * @param
      * @return isScreenMagnification_.
      */
-    bool GetScreenMagnificationFlag() {return isScreenMagnification_;}
+    bool GetScreenMagnificationFlag()
+    {
+        return isScreenMagnification_;
+    }
 
     /**
      * @brief Get flag with whether have touch guide capability.
      * @param
      * @return isEventTouchGuideState_.
      */
-    bool GetEventTouchGuideStateFlag() {return isEventTouchGuideState_;}
+    bool GetEventTouchGuideStateFlag()
+    {
+        return isEventTouchGuideState_;
+    }
 
     /**
      * @brief Get flag with whether have key event observer capability.
      * @param
      * @return isFilteringKeyEvents_.
      */
-    bool GetFilteringKeyEventsFlag() {return isFilteringKeyEvents_;}
+    bool GetFilteringKeyEventsFlag()
+    {
+        return isFilteringKeyEvents_;
+    }
 
     /**
      * @brief Get flag with whether have gesture capability.
      * @param
      * @return isGesturesSimulation_.
      */
-    bool GetGesturesSimulationFlag() {return isGesturesSimulation_;}
+    bool GetGesturesSimulationFlag()
+    {
+        return isGesturesSimulation_;
+    }
+    void GetInstalledAbilitiesFromBMS();
+
+    /**
+     * @brief Add enabled event which is needed by accessible ability.
+     * @param type EventType
+     * @return null.
+     */
+    void AddEventEnabled(EventType type);
+
+    /**
+     * @brief Delet enabled event which is needed by accessible ability.
+     * @param type EventType
+     * @return null.
+     */
+    void DeleteEventEnabled(EventType type);
+
+    CaptionProperty GetCaptionProperty()
+    {
+        return captionProperty_;
+    };
+
+    bool SetCaptionProperty(const CaptionProperty& caption);
+
+    bool SetCaptionState(const bool state);
+
+    bool SetEnabled(const bool state);
+
+    bool SetTouchGuideState(const bool state);
+
+    bool SetGestureState(const bool state);
+
+    bool SetKeyEventObserverState(const bool state);
+
+    bool GetEnabledState();
+
+    bool GetTouchGuideState();
+
+    bool GetGestureState();
+
+    bool GetKeyEventObserverState();
+
+    bool GetCaptionState();
+
+    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
+
+    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it);
+
+    void init();
 
 private:
     /**
-     * @brief Update connected accessibility whether have touch guide capability.
-     *        Have touch guide capability isEventTouchGuideState_ is true,
-     *        otherwise isEventTouchGuideState_ is false.
+     * @brief Update connected accessibility whether have touch guide
+     * capability. Have touch guide capability isEventTouchGuideState_ is
+     * true, otherwise isEventTouchGuideState_ is false.
      * @param
      * @return
      */
@@ -330,20 +357,21 @@ private:
     void UpdateMagnificationCapability();
 
     int id_;
-    uint32_t interactiveUiInterval_ = 0;
-    uint32_t nonInteractiveUiInterval_ = 0;
-    uint32_t accountInteractiveUiInterval_ = 0;
-    uint32_t accountNonInteractiveUiInterval_ = 0;
+    bool isEnabled_ = false;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_ {}; // key: The URI of the ElementName.
-    std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_ {};
-    std::map<int, sptr<AccessibilityInteractionConnection>> asacConnections_ {}; // key: windowId
-    std::vector<AccessibilityAbilityInfo> installedAbilities_ {};
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_ {}; // key: The URI of the ElementName.
-    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_ {}; // key: The URI of the ElementName.
+    bool isCaptionState_ = false;
+    CaptionProperty captionProperty_;
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_{};  // key: The URI of the
+                                                                                         // ElementName.
+    std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_{};
+    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_{};  // key: windowId
+    std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>> captionPropertyCallbacks_{};
+    std::vector<AccessibilityAbilityInfo> installedAbilities_{};
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};         // key: The URI of the ElementName.
+    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_{};  // key: The URI of the ElementName.
 };
 }  // namespace Accessibility
 }  // namespace OHOS

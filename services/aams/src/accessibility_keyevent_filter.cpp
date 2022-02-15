@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace Accessibility {
 
-int64_t TASK_TIME = 500;
+int64_t g_taskTime = 500;
 
 KeyEventFilter::KeyEventFilter()
 {
@@ -34,13 +34,13 @@ KeyEventFilter::KeyEventFilter()
         runner_ = aams_->GetMainRunner();
         if (!runner_) {
             HILOG_ERROR("get runner failed");
-            return ;
+            return;
         }
 
         timeouthandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
         if (!timeouthandler_) {
             HILOG_ERROR("create event handler failed");
-            return ;
+            return;
         }
     }
 }
@@ -122,9 +122,8 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
         if (iter->second->OnKeyPressEvent(event, sequenceNum_)) {
             if (processingEvent == nullptr) {
                 processingEvent = std::make_shared<ProcessingEvent>();
-                // TODO: fixme
-                // copyEvent = std::make_shared<MMI::KeyEvent>(event);
-                // processingEvent->event_ = copyEvent;
+                copyEvent = std::make_shared<MMI::KeyEvent>(event);
+                processingEvent->event_ = copyEvent;
                 processingEvent->seqNum_ = sequenceNum_;
             }
             processingEvent->usedCount_++;
@@ -144,7 +143,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
         return;
     }
 
-    timeouthandler_->SendEvent(sequenceNum_, processingEvent, TASK_TIME);
+    timeouthandler_->SendEvent(sequenceNum_, processingEvent, g_taskTime);
 }
 
 bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> event)
@@ -208,7 +207,8 @@ void KeyEventFilter::SendEventToParent(MMI::KeyEvent &event)
     EventTransmission::OnKeyEvent(event);
 }
 
-KeyEventFilterEventHandler::KeyEventFilterEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner, KeyEventFilter &keyEventFilter)
+KeyEventFilterEventHandler::KeyEventFilterEventHandler(
+    const std::shared_ptr<AppExecFwk::EventRunner> &runner, KeyEventFilter &keyEventFilter)
     : AppExecFwk::EventHandler(runner), keyEventFilter_(keyEventFilter)
 {
     HILOG_DEBUG("KeyEventFilterEventHandler is created");
@@ -236,4 +236,4 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
 }
 
 }
-}  // namespace accessibility
+}  // namespace Accessibility

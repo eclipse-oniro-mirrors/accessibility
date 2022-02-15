@@ -14,8 +14,8 @@
  */
 
 #include "accessible_ability_channel_proxy.h"
-#include "parcel.h"
 #include "accessibility_errorcode.h"
+#include "parcel.h"
 
 using namespace std;
 
@@ -58,7 +58,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::M
 }
 
 bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-    const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+    const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int mode)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -92,7 +92,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID,
-                         data, reply, option)) {
+                        data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
         return false;
     }
@@ -101,7 +101,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
 
 bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibilityWindowId,
     const long elementId, const std::string &text, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -143,7 +143,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibi
 
 bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibilityWindowId,
     const long elementId, const int focusType, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -183,7 +183,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibili
 }
 
 bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-    const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -222,9 +222,9 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindo
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityChannelProxy::PerformAction(const int accessibilityWindowId, const long elementId,
+bool AccessibleAbilityChannelProxy::ExecuteAction(const int accessibilityWindowId, const long elementId,
     const int action, std::map<std::string, std::string> &actionArguments, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -311,7 +311,7 @@ vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows()
     return windows;
 }
 
-bool AccessibleAbilityChannelProxy::PerformCommonAction(const int action)
+bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int action)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -327,27 +327,11 @@ bool AccessibleAbilityChannelProxy::PerformCommonAction(const int action)
         return false;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::PERFORM_COMMON_ACTION, data, reply, option)) {
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION, data, reply, option)) {
         HILOG_ERROR("fail to perform common action");
         return false;
     }
     return reply.ReadBool();
-}
-
-void AccessibleAbilityChannelProxy::DisableAbility()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::DISABLE_ABILITY, data, reply, option)) {
-        HILOG_ERROR("fail to disable ability");
-    }
 }
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int sequence)
@@ -466,9 +450,9 @@ Rect AccessibleAbilityChannelProxy::GetDisplayResizeRect(const int displayId)
         return rect;
     }
 
-    std::shared_ptr<Rect> result(reply.ReadParcelable<Rect>());
+    sptr<Rect> result = reply.ReadStrongParcelable<Rect>();
     if (!result) {
-        HILOG_ERROR("ReadParcelable<Rect> failed");
+        HILOG_ERROR("ReadStrongParcelable<Rect> failed");
         return rect;
     }
     return *result;
@@ -542,8 +526,8 @@ bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int dis
     return reply.ReadBool();
 }
 
-void AccessibleAbilityChannelProxy::SendSimulateGesture(const int sequence,
-                                                            const std::vector<GesturePathDefine> &gestureSteps)
+void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
+                                                        const std::vector<GesturePathDefine> &gestureSteps)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -554,8 +538,8 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int sequence,
     if (!WriteInterfaceToken(data)) {
         return;
     }
-    if (!data.WriteInt32(sequence)) {
-        HILOG_ERROR("sequence write error: %{public}d, ", sequence);
+    if (!data.WriteInt32(requestId)) {
+        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return;
     }
     if (!data.WriteInt32(gestureSteps.size())) {
@@ -571,25 +555,6 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int sequence,
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE, data, reply, option)) {
         HILOG_ERROR("fail to send simulation gesture");
     }
-}
-
-bool AccessibleAbilityChannelProxy::IsFingerprintGestureDetectionValid()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return false;
-    }
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::IS_FINGERPRINT_GESTURE_DETECTION_VALID,
-                         data, reply, option)) {
-        HILOG_ERROR("fail to get fingerprint gesture detection's validity");
-        return false;
-    }
-    return reply.ReadBool();
 }
 
 } // namespace Accessibility

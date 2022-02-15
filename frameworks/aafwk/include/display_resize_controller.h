@@ -109,7 +109,7 @@ public:
      * @param centerY The centerY of displayresize which needs to dispatch.
      * @return
      */
-    void DispatchOnDisplayResizeChanged(const Rect& rect, const float scale, const float centerX, const float centerY);
+    void DispatchOnDisplayResized(const Rect& rect, const float scale, const float centerX, const float centerY);
 
 private:
     std::vector<std::shared_ptr<DisplayResizeListener>> displayResizeListeners_ {};
@@ -128,7 +128,7 @@ public:
      * @param centerY Indicates the Y coordinate of the center for resizing the display.
      * @return
      */
-    virtual void OnDisplayResizeChanged(const DisplayResizeController& controller, const Rect& rect, const float scale,
+    virtual void OnDisplayResized(const DisplayResizeController& controller, const Rect& rect, const float scale,
                                             const float centerX, const float centerY) = 0;
 };
 

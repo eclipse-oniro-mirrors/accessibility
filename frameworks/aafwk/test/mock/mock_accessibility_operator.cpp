@@ -24,13 +24,11 @@ namespace Accessibility {
 std::map<int, sptr<IAccessibleAbilityChannel>> AccessibilityOperator::channels_ = {};
 std::vector<sptr<AccessibilityOperator>>  AccessibilityOperator::instances_ = {};
 std::recursive_mutex AccessibilityOperator::mutex_ = {};
-int AccessibilityOperator::requestId_ = 0;
 
 AccessibilityOperator::AccessibilityOperator()
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator";
-    performActionResult_ = true;
-    responseId_ = 0;
+    executeActionResult_ = true;
 }
 
 AccessibilityOperator &AccessibilityOperator::GetInstance()
@@ -40,23 +38,11 @@ AccessibilityOperator &AccessibilityOperator::GetInstance()
     return accessibilityOperator;
 }
 
-AccessibilityOperator &AccessibilityOperator::GetInstanceForThread(std::thread::id threadId)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator GetInstanceForThread";
-    static AccessibilityOperator accessibilityOperator;
-    return accessibilityOperator;
-}
 
 sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator GetChannel";
     return nullptr;
-}
-
-bool AccessibilityOperator::GetOperationStatus()
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator GetOperationStatus";
-    return completed_;
 }
 
 void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel)
@@ -89,7 +75,8 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
 }
 
 bool AccessibilityOperator::SearchElementInfosByText(int channelId,
-    int accessibilityWindowId, int elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+    int accessibilityWindowId, int elementId, const std::string &text,
+    std::vector<AccessibilityElementInfo> &elementInfos)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SearchElementInfosByText";
     return true;
@@ -109,11 +96,11 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
     return true;
 }
 
-bool AccessibilityOperator::PerformAction(int channelId, int accessibilityWindowId,
+bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindowId,
     int elementId, int action,  std::map<std::string, std::string> &actionArguments)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator PerformAction";
-    return performActionResult_;
+    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator ExecuteAction";
+    return executeActionResult_;
 }
 
 void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
@@ -138,32 +125,15 @@ void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementI
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SetFocusMoveSearchResult";
 }
 
-void AccessibilityOperator::SetPerformActionResult(const bool succeeded, const int requestId)
+void AccessibilityOperator::SetExecuteActionResult(const bool succeeded, const int requestId)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SetPerformActionResult";
+    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SetExecuteActionResult";
 }
 
-bool AccessibilityOperator::WaitForResultTimedLocked(const int requestId)
+bool AccessibilityOperator::ExecuteCommonAction(const int channelId, const int action)
 {
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator WaitForResultTimedLocked";
+    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator ExecuteCommonAction";
     return true;
-}
-
-int AccessibilityOperator::CreateRequestId()
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator CreateRequestId";
-    return requestId_;
-}
-
-bool AccessibilityOperator::PerformCommonAction(const int channelId, const int action)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator PerformCommonAction";
-    return true;
-}
-
-void AccessibilityOperator::DisableAbility(const int channelId)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator DisableAbility";
 }
 
 void AccessibilityOperator::SetOnKeyPressEventResult(const int channelId, const bool handled, const int sequence)
@@ -212,15 +182,9 @@ bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
 }
 
 void AccessibilityOperator::SendSimulateGesture(const int channelId,
-    const int sequence, const std::vector<GesturePathDefine> &gestureSteps)
+    const int requestId, const std::vector<GesturePathDefine> &gestureSteps)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SendSimulateGesture";
-}
-
-bool AccessibilityOperator::IsFingerprintGestureDetectionValid(const int channelId)
-{
-    GTEST_LOG_(INFO) << "MOCK AccessibilityOperator IsFingerprintGestureDetectionValid";
-    return true;
 }
 
 }  // namespace Accessibility

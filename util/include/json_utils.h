@@ -33,6 +33,10 @@ const static std::string AccessibleAbility_JSON_KEY_UI_INTERACTIVE_TIMEOUT = "ui
 const static std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES = "accessibilityCapabilities";
 const static std::string AccessibleAbility_JSON_KEY_DESCRIPTION = "description";
 const static std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY = "settingsAbility";
+const static std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE =
+    "accessibilityCapabilityRationale";
+
+const static std::string AccessibleAbility_Config_JSON_FILE_PATH = "/system/app/accessibility_config.json";
 
 // The json value of event types
 const static std::string EVENT_TYPES_JSON_VALUE_CLICK = "click";
@@ -58,6 +62,8 @@ const static std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_GESTURE_END = "touch
 const static std::string EVENT_TYPES_JSON_VALUE_TOUCH_BEGIN = "touchBegin";
 const static std::string EVENT_TYPES_JSON_VALUE_TOUCH_END = "touchEnd";
 const static std::string EVENT_TYPES_JSON_VALUE_WINDOW_UPDATE = "windowUpdate";
+const static std::string EVENT_TYPES_JSON_VALUE_INTERRUPT = "interrupt";
+const static std::string EVENT_TYPES_JSON_VALUE_GESTURE_EVENT = "gesture";
 const static std::string EVENT_TYPES_JSON_VALUE_ALL = "all";
 
 // The json value of accessibilityAbility type
@@ -75,15 +81,49 @@ const static std::string CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER = "keyEventO
 const static std::string CAPABILITIES_JSON_VALUE_ZOOM = "zoom";
 const static std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
 
+// The json object
+const static std::string JSON_OBJECT_CAPABILITY = "Capability";
+const static std::string JSON_OBJECT_ENABLED = "Enabled";
+const static std::string JSON_OBJECT_CAPTION_STATE = "CaptionState";
+const static std::string JSON_OBJECT_CAPTION_STYLE = "CaptionsStyle";
+
+// The json value of Capability
+const static std::string CAPABILITY_JSON_VALUE_ACCESSIBLE = "accessible";
+const static std::string CAPABILITY_JSON_VALUE_TOUCH_GUIDE = "touchGuide";
+const static std::string CAPABILITY_JSON_VALUE_GESTURE = "gesture";
+const static std::string CAPABILITY_JSON_VALUE_KEY_EVENT_BOSERVER = "keyEventObserver";
+
+// The json value of Caption
+const static std::string CAPTION_JSON_VALUE_FONTFAMILY = "fontFamily";
+const static std::string CAPTION_JSON_VALUE_FONTSCALE = "fontScale";
+const static std::string CAPTION_JSON_VALUE_FONTCOLOR = "fontColor";
+const static std::string CAPTION_JSON_VALUE_FONTEDGETYPE = "fontEdgeType";
+const static std::string CAPTION_JSON_VALUE_BACKGROUNDCOLOR = "backgroundColor";
+const static std::string CAPTION_JSON_VALUE_WINDOWCOLOR = "windowColor";
+
 class JsonUtils {
 public:
     static bool GetJsonObjFromJson(nlohmann::json& jsonObj, const std::string& jsonPath);
     static bool GetStringFromJson(const nlohmann::json& json, const std::string& key, std::string& value);
     static bool GetIntFromJson(const nlohmann::json& json, const std::string& key, int& value);
-    static bool GetStringVecFromJson(const nlohmann::json& json, const std::string& key,
-                                        std::vector<std::string>& value);
-    static bool ParseObjVecFromJson(const nlohmann::json& json, const std::string& key,
-                                        std::vector<nlohmann::json>& value);
+    static bool GetStringVecFromJson(
+        const nlohmann::json& json, const std::string& key, std::vector<std::string>& value);
+    static bool ParseObjVecFromJson(
+        const nlohmann::json& json, const std::string& key, std::vector<nlohmann::json>& value);
+    static bool SetStrValue(
+        nlohmann::json& json, const std::string& key, const std::string& subkey, const std::string& value);
+    static bool SetStrValue( nlohmann::json& json, const std::string& key, const std::string& value);
+    static bool SetIntValue(nlohmann::json& json, const std::string& key, const std::string& subkey, int& value);
+    static bool SetVecValue(nlohmann::json& json, const std::string& key, std::string& value);
+    static bool ClearVecValue(nlohmann::json& json, const std::string& key);
+    static bool RemoveVecValue(nlohmann::json& json, const std::string& key, const std::string& value);
+    static bool CheckEnabledValue(nlohmann::json& json, const std::string& Enakey, const std::string& Inskey);
+    static bool ToJson(const nlohmann::json& jsonObj, const std::string& jsonPath);
+    static int GetIntValue(nlohmann::json& json, const std::string& key, const std::string& subkey);
+    static std::string GetStrValue(nlohmann::json& json, const std::string& key, const std::string& subkey);
+    static std::string GetStrValue(nlohmann::json& json, const std::string& key);
+    static std::vector<std::string> GetVecValue(nlohmann::json& json, const std::string& key);
+
 };
 
 class PraseVecUtils {
@@ -96,4 +136,4 @@ public:
 }  // namespace Accessibility
 }  // namespace OHOS
 
-#endif // JSON_UTILS_H
+#endif  // JSON_UTILS_H

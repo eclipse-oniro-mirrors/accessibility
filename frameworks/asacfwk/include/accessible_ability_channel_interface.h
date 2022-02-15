@@ -20,7 +20,7 @@
 #include <vector>
 #include <map>
 
-#include "accessibility_interaction_operation_callback_interface.h"
+#include "accessibility_element_operator_callback_interface.h"
 #include "accessibility_element_info.h"
 #include "accessibility_window_info.h"
 #include "gesture_simulation.h"
@@ -30,7 +30,8 @@
 namespace OHOS {
 namespace Accessibility {
 
-class IAccessibleAbilityChannel : public IRemoteBroker {
+class IAccessibleAbilityChannel : public IRemoteBroker
+{
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityChannel");
 
@@ -47,7 +48,7 @@ public:
      * @return Return true if search elementInfo successfully, else return false.
      */
     virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-        const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+        const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int mode) = 0;
 
     /**
@@ -62,7 +63,7 @@ public:
      */
     virtual bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
         const std::string &text, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
      * @brief Make the element information of the component focused by the focus type specified.
@@ -76,7 +77,7 @@ public:
      */
     virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
         const int focusType, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
      * @brief Make the element info by current focus move direction.
@@ -89,7 +90,7 @@ public:
      */
     virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId,
         const int direction, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
      * @brief To perform action.
@@ -101,9 +102,9 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @return Return true if perform action successfully, else return false.
      */
-    virtual bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+    virtual bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
         std::map<std::string, std::string> &actionArguments, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) = 0;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
@@ -117,14 +118,7 @@ public:
      * @param action The action of OHOS::Accessibility::GlobalAction.
      * @return Return true if performs action successfully, else return false.
      */
-    virtual bool PerformCommonAction(const int action) = 0;
-
-    /**
-     * @brief Disable the accessible ability.
-     * @param
-     * @return
-     */
-    virtual void DisableAbility() = 0;
+    virtual bool ExecuteCommonAction(const int action) = 0;
 
     /**
      * @brief Set the result of key press event.
@@ -184,18 +178,11 @@ public:
 
     /**
      * @brief Send simulation gesture.
-     * @param sequence The sequence of simulation gesture.
+     * @param requestId The sequence of simulation gesture.
      * @param gestureSteps The gesture to send.
      * @return
      */
-    virtual void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps) = 0;
-
-    /**
-     * @brief Judge whether the gesture detection function of the fingerprint sensor is available.
-     * @param
-     * @return Return true if the fingerprint sensor is available, else return false.
-     */
-    virtual bool IsFingerprintGestureDetectionValid() = 0;
+    virtual void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) = 0;
 
     enum class Message {
         SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID = 0,
@@ -204,7 +191,7 @@ public:
         FOCUS_MOVE_SEARCH,
         PERFORM_ACTION,
         GET_WINDOWS,
-        PERFORM_COMMON_ACTION,
+        EXECUTE_COMMON_ACTION,
         DISABLE_ABILITY,
         SET_ON_KEY_PRESS_EVENT_RESULT,
         GET_DISPALYRESIZE_SCALE,
@@ -214,7 +201,6 @@ public:
         RESET_DISPALYRESIZE,
         SET_DISPLAYRESIZE_SCALE_AND_CENTER,
         SEND_SIMULATE_GESTURE,
-        IS_FINGERPRINT_GESTURE_DETECTION_VALID,
     };
 
 };

@@ -26,22 +26,7 @@ bool SystemAbility::MakeAndRegisterAbility(SystemAbility* systemAbility)
     return true;
 }
 
-bool SystemAbility::AddSystemAbilityListener(int32_t systemAbilityId, int32_t listenerSaId)
-{
-    return true;
-}
-
 bool SystemAbility::AddSystemAbilityListener(int32_t systemAbilityId)
-{
-    return true;
-}
-
-bool SystemAbility::InitAddSystemAbilityListener(int32_t systemAbilityId, int32_t listenerSaId)
-{
-    return true;
-}
-
-bool SystemAbility::RemoveSystemAbilityListener(int32_t systemAbilityId, int32_t listenerSaId)
 {
     return true;
 }
@@ -59,11 +44,6 @@ bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
     return true;
 }
 
-bool SystemAbility::RePublish()
-{
-    return true;
-}
-
 void SystemAbility::StopAbility(int32_t systemAbilityId) {}
 
 void SystemAbility::Start() {}
@@ -71,10 +51,6 @@ void SystemAbility::Start() {}
 void SystemAbility::Stop() {}
 
 void SystemAbility::SADump() {}
-
-void SystemAbility::Test() {}
-
-void SystemAbility::Debug() {}
 
 int32_t SystemAbility::GetSystemAbilitId() const
 {
@@ -149,16 +125,6 @@ void SystemAbility::OnDump()
 }
 
 // The details should be implemented by subclass
-void SystemAbility::OnDebug()
-{
-}
-
-// The details should be implemented by subclass
-void SystemAbility::OnTest()
-{
-}
-
-// The details should be implemented by subclass
 void SystemAbility::OnStart()
 {
 }
@@ -169,8 +135,7 @@ void SystemAbility::OnStop()
 }
 
 // The details should be implemented by subclass
-void SystemAbility::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId,
-    const sptr<IRemoteObject>& ability)
+void SystemAbility::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
 }
 
@@ -182,16 +147,6 @@ void SystemAbility::OnRemoveSystemAbility(int32_t systemAbilityId, const std::st
 sptr<IRemoteObject> SystemAbility::GetSystemAbility(int32_t systemAbilityId)
 {
     return nullptr;
-}
-
-// Reserved for future usage
-void SystemAbility::AddToLocal() const
-{
-}
-
-// Reserved for future usage
-void SystemAbility::DeleteFromLocal() const
-{
 }
 
 void SystemAbility::SetCapability(const std::u16string& capability)

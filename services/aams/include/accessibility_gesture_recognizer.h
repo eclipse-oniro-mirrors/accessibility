@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,14 +18,16 @@
 
 #include <cmath>
 #include <vector>
-#include "touch_event.h"
-#include "singleton.h"
+
+#include "accessibility_display_manager.h"
+#include "accessibility_event_info.h"
+#include "accessibility_extension_context.h"
+#include "accessible_ability_manager_service.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "hilog_wrapper.h"
-#include "accessible_ability.h"
-#include "accessibility_display_manager.h"
-#include "accessible_ability_manager_service.h"
+#include "pointer_event.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -40,6 +42,8 @@ namespace Accessibility {
 #define DIRECTION_NUM 4
 #define CALCULATION_DIMENSION(xdpi) ((xdpi) * (1.0f / 25.4f) * 10)
 #define MIN_PIXELS(xyDpi) ((xyDpi) * 0.1f)
+#define POINTER_COUNT_1 1
+#define POINTER_COUNT_2 2
 
 struct Pointer {
     float px_;
@@ -61,7 +65,7 @@ private:
     AccessibilityGestureRecognizer &server_;
 };
 
-class AccessibilityGestureRecognizeListener{
+class AccessibilityGestureRecognizeListener {
 public:
     /**
      * @brief A destructor used to delete the listener instance.
@@ -75,7 +79,7 @@ public:
      * @param event  the touch event received.
      * @return
      */
-    virtual void OnDoubleTapLongPress(TouchEvent &event);
+    virtual void OnDoubleTapLongPress(MMI::PointerEvent &event);
 
     /**
      * @brief The callback function when lifted the finger on the second tap of a double tap.
@@ -83,7 +87,7 @@ public:
      * @param event  the touch event received.
      * @return true if the event is consumed, else false
      */
-    virtual bool OnDoubleTap(TouchEvent &event);
+    virtual bool OnDoubleTap(MMI::PointerEvent &event);
 
     /**
      * @brief The callback function when recognized an event stream as a gesture.
@@ -97,17 +101,17 @@ public:
      * @param gestureId  the recognized gesture ID.
      * @return true if the event is consumed, else false
      */
-    virtual bool OnCompleted(int gestureId);
+    virtual bool OnCompleted(GestureType gestureId);
 
     /**
      * @brief The callback function when decided an event stream doesn't match any known gesture.
      * @param event  the touch event received.
      * @return true if the event is consumed, else false
      */
-    virtual bool OnCancelled(TouchEvent &event);
+    virtual bool OnCancelled(MMI::PointerEvent &event);
 };
 
-class AccessibilityGestureRecognizer : public AppExecFwk::EventHandler{
+class AccessibilityGestureRecognizer : public AppExecFwk::EventHandler {
 public:
     /**
      * @brief A constructor used to create a accessibilityGestureRecognizer instance.
@@ -128,21 +132,22 @@ public:
      * @param listener the listener from touchguide
      * @return
      */
-    void registerListener(AccessibilityGestureRecognizeListener *listener);
+    void RegisterListener(AccessibilityGestureRecognizeListener& listener);
 
     /**
      * @brief Register GestureRecognizeListener.
      * @param listener the listener from touchguide
      * @return
      */
-    void UnregisterListener(AccessibilityGestureRecognizeListener *listener);
+    void UnregisterListener();
 
     /**
      * @brief Determine whether a single tap has occurred.
      * @param
      * @return true if a single tap has occurred, else false.
      */
-    bool IsfirstTap() {
+    bool IsfirstTap()
+    {
         return isFirstTapUp_;
     }
 
@@ -153,7 +158,7 @@ public:
      * @param rawEvent The raw touch event.
      * @return true if the gesture be recognized, else false
      */
-    bool OnTouchEvent(TouchEvent &event);
+    bool OnPointerEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Clear state.
@@ -167,7 +172,7 @@ public:
      * @param event the touch event from touchguide
      * @return
      */
-    void MaybeRecognizeLongPress(TouchEvent &event);
+    void MaybeRecognizeLongPress(MMI::PointerEvent &event);
 
     /**
      * @brief If a single tap completed.
@@ -181,7 +186,8 @@ public:
      * @param value set isLongpress_ flag
      * @return
      */
-    void SetIsLongpress (bool value) {
+    void SetIsLongpress (bool value)
+    {
         isLongpress_ = value;
     }
 
@@ -190,7 +196,8 @@ public:
      * @param
      * @return
      */
-    std::shared_ptr<TouchEvent> GetCurDown() {
+    std::shared_ptr<MMI::PointerEvent> GetCurDown()
+    {
         return pCurDown_;
     }
 
@@ -199,7 +206,8 @@ public:
      * @param
      * @return
      */
-    bool GetContinueDown() {
+    bool GetContinueDown()
+    {
         return continueDown_;
     }
 
@@ -212,49 +220,49 @@ private:
      * @param event the touch event from touchguide
      * @return true if the standard gesture be recognized, else false
      */
-    bool StandardGestureRecognizer(TouchEvent &event);
+    bool StandardGestureRecognizer(MMI::PointerEvent &event);
 
     /**
      * @brief A double tap has occurred, call OnDoubleTap callback.
      * @param event the touch event from touchguide
      * @return true if the DoubleTap be recognized, else false
      */
-    bool DoubleTapRecognized(TouchEvent &event);
+    bool DoubleTapRecognized(MMI::PointerEvent &event);
 
     /**
      * @brief Recognize gestures based on the sequence of motions.
      * @param event the touch event from touchguide
      * @return true if the Direction be recognized, else false
      */
-    bool recognizeDirectionGesture(TouchEvent &event);
+    bool recognizeDirectionGesture(MMI::PointerEvent &event);
 
     /**
      * @brief Handle the down event from touchguide.
      * @param event the touch event from touchguide
      * @return
      */
-    void HandleTouchDownEvent(TouchEvent &event);
+    void HandleTouchDownEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Handle the move event from touchguide.
      * @param event the touch event from touchguide
      * @return
      */
-    bool HandleTouchMoveEvent(TouchEvent &event);
+    bool HandleTouchMoveEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Handle the up event from touchguide.
      * @param event the touch event from touchguide
      * @return
      */
-    bool HandleTouchUpEvent(TouchEvent &event);
+    bool HandleTouchUpEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Check if it's double tap.
      * @param event the touch event from touchguide
      * @return true if it's double tap, else false
      */
-    bool isDoubleTap(TouchEvent &event);
+    bool isDoubleTap(MMI::PointerEvent &event);
 
     /**
      * @brief Cancel the gesture.
@@ -283,39 +291,39 @@ private:
     static constexpr int SWIPE_LEFT = 2;
     static constexpr int SWIPE_RIGHT = 3;
 
-    static constexpr uint32_t GESTURE_DIRECTION[DIRECTION_NUM] = {
-        GestureTypes::GESTURE_SWIPE_UP,
-        GestureTypes::GESTURE_SWIPE_DOWN,
-        GestureTypes::GESTURE_SWIPE_LEFT,
-        GestureTypes::GESTURE_SWIPE_RIGHT
+    static constexpr GestureType GESTURE_DIRECTION[DIRECTION_NUM] = {
+        GestureType::GESTURE_SWIPE_UP,
+        GestureType::GESTURE_SWIPE_DOWN,
+        GestureType::GESTURE_SWIPE_LEFT,
+        GestureType::GESTURE_SWIPE_RIGHT
     };
 
-    static constexpr uint32_t GESTURE_DIRECTION_TO_ID[DIRECTION_NUM][DIRECTION_NUM] = {
+    static constexpr GestureType GESTURE_DIRECTION_TO_ID[DIRECTION_NUM][DIRECTION_NUM] = {
         {
-            GestureTypes::GESTURE_SWIPE_UP,
-            GestureTypes::GESTURE_SWIPE_UP_THEN_DOWN,
-            GestureTypes::GESTURE_SWIPE_UP_THEN_LEFT,
-            GestureTypes::GESTURE_SWIPE_UP_THEN_RIGHT,
+            GestureType::GESTURE_SWIPE_UP,
+            GestureType::GESTURE_SWIPE_UP_THEN_DOWN,
+            GestureType::GESTURE_SWIPE_UP_THEN_LEFT,
+            GestureType::GESTURE_SWIPE_UP_THEN_RIGHT,
         },
         {
-            GestureTypes::GESTURE_SWIPE_DOWN_THEN_UP,
-            GestureTypes::GESTURE_SWIPE_DOWN,
-            GestureTypes::GESTURE_SWIPE_DOWN_THEN_LEFT,
-            GestureTypes::GESTURE_SWIPE_DOWN_THEN_RIGHT,
+            GestureType::GESTURE_SWIPE_DOWN_THEN_UP,
+            GestureType::GESTURE_SWIPE_DOWN,
+            GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT,
+            GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT,
 
         },
         {
-            GestureTypes::GESTURE_SWIPE_LEFT_THEN_UP,
-            GestureTypes::GESTURE_SWIPE_LEFT_THEN_DOWN,
-            GestureTypes::GESTURE_SWIPE_LEFT,
-            GestureTypes::GESTURE_SWIPE_LEFT_THEN_RIGHT,
+            GestureType::GESTURE_SWIPE_LEFT_THEN_UP,
+            GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN,
+            GestureType::GESTURE_SWIPE_LEFT,
+            GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT,
 
         },
         {
-            GestureTypes::GESTURE_SWIPE_RIGHT_THEN_UP,
-            GestureTypes::GESTURE_SWIPE_RIGHT_THEN_DOWN,
-            GestureTypes::GESTURE_SWIPE_RIGHT_THEN_LEFT,
-            GestureTypes::GESTURE_SWIPE_RIGHT
+            GestureType::GESTURE_SWIPE_RIGHT_THEN_UP,
+            GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN,
+            GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT,
+            GestureType::GESTURE_SWIPE_RIGHT
         }
     };
 
@@ -332,12 +340,12 @@ private:
     float yMinPixels_ = 0;
     float threshold_ = 0;
     int doubleTapScaledSlop_ = 0;
-    MmiPoint prePointer_ = {};
-    MmiPoint startPointer_ = {};
-    std::vector<Pointer> pointerRoute_{};
+    MMI::PointerEvent::PointerItem prePointer_ = {};
+    MMI::PointerEvent::PointerItem startPointer_ = {};
+    std::vector<Pointer> pointerRoute_ {};
     AccessibilityGestureRecognizeListener *listener_;
-    std::unique_ptr<TouchEvent> pPreUp_ = nullptr;
-    std::shared_ptr<TouchEvent> pCurDown_ = nullptr;
+    std::unique_ptr<MMI::PointerEvent> pPreUp_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> pCurDown_ = nullptr;
     std::shared_ptr<GestureHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
 };

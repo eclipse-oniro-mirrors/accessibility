@@ -33,5 +33,5 @@ void AAMSEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event
             break;
     }
 }
-} // namespace Accessibility
-} // namespace OHOS
+} //namespace Accessibility
+} //namespace OHOS

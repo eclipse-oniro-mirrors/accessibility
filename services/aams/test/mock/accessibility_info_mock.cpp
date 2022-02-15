@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "accessibility_element_info.h"
 #include "parcel_util.h"
 #include "hilog_wrapper.h"
@@ -21,7 +20,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
 {
     return true;
@@ -32,15 +30,13 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-AccessibilityElementInfo* AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
+sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
 
 void AccessibilityElementInfo::SetComponentId(const int componentId)
-{
-
-}
+{}
 
 bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInfo &elementInfo)
 {
@@ -178,7 +174,7 @@ bool AccessibilityElementInfo::IsFocusable() const
 void AccessibilityElementInfo::SetFocusable(const bool focusable)
 {}
 
-bool AccessibilityElementInfo::IsFocused()
+bool AccessibilityElementInfo::IsFocused() const
 {
     return focused_;
 }
@@ -440,7 +436,7 @@ bool AccessibilityElementInfo::GetContentInvalid() const
 void AccessibilityElementInfo::SetError(const std::string &error)
 {}
 
-std::string AccessibilityElementInfo::GetError()
+std::string AccessibilityElementInfo::GetError() const
 {
     return error_;
 }
@@ -511,7 +507,7 @@ bool AccessibleAction::Marshalling(Parcel &parcel) const
     return true;
 };
 
-AccessibleAction* AccessibleAction::Unmarshalling(Parcel& parcel)
+sptr<AccessibleAction> AccessibleAction::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -519,12 +515,12 @@ AccessibleAction* AccessibleAction::Unmarshalling(Parcel& parcel)
 AccessibleAction::AccessibleAction(ActionType operationType, std::string description)
 {}
 
-ActionType AccessibleAction::GetActionType()
+ActionType AccessibleAction::GetActionType() const
 {
     return actionType_;
 }
 
-std::string AccessibleAction::GetDescriptionInfo()
+std::string AccessibleAction::GetDescriptionInfo() const
 {
     return description_;
 }
@@ -539,7 +535,7 @@ bool RangeInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-RangeInfo* RangeInfo::Unmarshalling(Parcel& parcel)
+sptr<RangeInfo> RangeInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -547,17 +543,17 @@ RangeInfo* RangeInfo::Unmarshalling(Parcel& parcel)
 RangeInfo::RangeInfo(int min, int max, int current)
 {}
 
-int RangeInfo::GetMin()
+int RangeInfo::GetMin() const
 {
     return min_;
 }
 
-int RangeInfo::GetMax()
+int RangeInfo::GetMax() const
 {
     return max_;
 }
 
-int RangeInfo::GetCurrent()
+int RangeInfo::GetCurrent() const
 {
     return current_;
 }
@@ -580,7 +576,7 @@ bool GridInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridInfo* GridInfo::Unmarshalling(Parcel& parcel)
+sptr<GridInfo> GridInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -596,17 +592,17 @@ void GridInfo::SetGrid(int rowCount, int columnCount,
 void GridInfo::SetGrid(GridInfo other)
 {}
 
-int GridInfo::GetRowCount()
+int GridInfo::GetRowCount() const
 {
     return rowCount_;
 }
 
-int GridInfo:: GetColumnCount()
+int GridInfo:: GetColumnCount() const
 {
     return columnCount_;
 }
 
-int GridInfo::GetSelectionMode()
+int GridInfo::GetSelectionMode() const
 {
     return selectionMode_;
 }
@@ -621,7 +617,7 @@ bool GridItemInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridItemInfo* GridItemInfo::Unmarshalling(Parcel& parcel)
+sptr<GridItemInfo> GridItemInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -637,32 +633,32 @@ void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
             int columnIndex, int columnSpan, bool heading, bool selected)
 {}
 
-int GridItemInfo::GetColumnIndex()
+int GridItemInfo::GetColumnIndex() const
 {
     return columnIndex_;
 }
 
-int GridItemInfo::GetRowIndex()
+int GridItemInfo::GetRowIndex() const
 {
     return rowIndex_;
 }
 
-int GridItemInfo::GetColumnSpan()
+int GridItemInfo::GetColumnSpan() const
 {
     return columnSpan_;
 }
 
-int GridItemInfo::GetRowSpan()
+int GridItemInfo::GetRowSpan() const
 {
     return rowSpan_;
 }
 
-bool GridItemInfo::IsHeading()
+bool GridItemInfo::IsHeading() const
 {
     return heading_;
 }
 
-bool GridItemInfo::IsSelected()
+bool GridItemInfo::IsSelected() const
 {
     return selected_;
 }
@@ -677,10 +673,10 @@ bool Rect::Marshalling(Parcel &parcel) const
     return true;
 };
 
-Rect *Rect::Unmarshalling(Parcel& parcel)
+sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -14,19 +14,13 @@
  */
 
 #include "accessibility_ability_info.h"
-#include "ability_info.h"
 #include "parcel.h"
-#include "dummy.h"
 #include "parcel_util.h"
+#include "dummy.h"
 
 using namespace OHOS::Accessibility;
 using namespace OHOS::AppExecFwk;
 using namespace std;
-
-const OHOS::AppExecFwk::AbilityInfo &AccessibilityAbilityInfo::GetAbilityInfo()
-{
-    return abilityInfo_;
-}
 
 bool AccessibilityAbilityInfo::Marshalling(Parcel &parcel) const
 {
@@ -36,45 +30,37 @@ uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
 {
     return abilityTypes_;
 }
-uint32_t AccessibilityAbilityInfo::GetUiInteractiveTime()
-{
-    return uiInteractiveTimeout_;
-}
-
-uint32_t AccessibilityAbilityInfo::GetUiNoninteractiveTime()
-{
-    return uiNoninteractiveTimeout_;
-}
 
 string AccessibilityAbilityInfo::GetId()
 {
-    return abilityInfo_.bundleName + "/" + abilityInfo_.name;
+    return bundleName_ + "/" + name_;
 }
 
 string AccessibilityAbilityInfo::GetName()
 {
-    return abilityInfo_.name;
+    return name_;
 }
 
 string AccessibilityAbilityInfo::GetPackageName()
 {
-    return abilityInfo_.bundleName;
+    return bundleName_;
 }
 
-// uint32_t AccessibilityAbilityInfo::GetCapabilityValues()
-// {
-//     return 0x0008;
-//     /* test need capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001 | 0x0020 */
-// }
-AccessibilityAbilityInfo::AccessibilityAbilityInfo(AbilityInfo abilityInfo)
+void AccessibilityAbilityInfo::SetPackageName(string bundleName)
 {
-    abilityInfo_ = abilityInfo;
+    bundleName_ = bundleName;
+}
+
+AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
+{
     AccessibilityAbilityInfoDummy accessibilityAbilityInfoDummydata;
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM | CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
     uint32_t capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001 | 0x0020;
     capabilities_ = capabilities;
     targetBundleNames_ = accessibilityAbilityInfoDummydata.filterBundleNames;
     eventTypes_ = accessibilityAbilityInfoDummydata.accessibilityEventTypes;
+    name_ = abilityInfo.name;
+    bundleName_ = abilityInfo.bundleName;
 }
 
 uint32_t AccessibilityAbilityInfo::GetCapabilityValues()

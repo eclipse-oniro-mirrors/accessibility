@@ -49,27 +49,38 @@ int AccessibilityZoomGesture::GetSysTimeout() const
     return 0;
 }
 
-bool AccessibilityZoomGesture::ValidDown(TouchEvent &event)
+bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
 {
+    MMI::PointerEvent::PointerItem currentPointerItem;
+    MMI::PointerEvent::PointerItem lastPointerItem;
     if (downCount_ == 0) {
-        lastDown_ = event;
+        pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
     } else {
-        if (event.GetMultimodalEvent()->GetOccurredTime() - lastDown_.GetMultimodalEvent()->GetOccurredTime() > timeout_) {
+        if ((event.GetActionTime() - pLastDown_->GetActionTime()) > timeout_) {
             Reset(event);
             return false;
         }
-        int dist = sqrt(pow(event.GetPointerScreenPosition(event.GetIndex()).GetX() - lastDown_.GetPointerScreenPosition(lastDown_.GetIndex()).GetX(), 2) + pow(event.GetPointerScreenPosition(event.GetIndex()).GetY() - lastDown_.GetPointerScreenPosition(lastDown_.GetIndex()).GetY(), 2));
+        if (!event.GetPointerItem(event.GetPointerId(), currentPointerItem)) {
+            HILOG_ERROR("get current GetPointerItem(%d) failed", event.GetPointerId());
+        }
+        if (pLastDown_ != nullptr) {
+            if (!pLastDown_->GetPointerItem(pLastDown_->GetPointerId(), lastPointerItem)) {
+                HILOG_ERROR("get last GetPointerItem(%d) failed", pLastDown_->GetPointerId());
+            }
+        }
+        int dist = sqrt(pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
+            + pow(currentPointerItem.GetGlobalY() - lastPointerItem.GetLocalY(), 2));
         if (dist > distance_) {
             Reset(event);
             return false;
         }
-        lastDown_ = event;
+        pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
     }
     downCount_ ++;
     return true;
 }
 
-bool AccessibilityZoomGesture::Triple(TouchEvent &event)
+bool AccessibilityZoomGesture::Triple(MMI::PointerEvent &event)
 {
     if (ValidDown(event) && downCount_ >= DOWN_COUNT && upCount_ >= UP_COUNT) {
         return true;
@@ -82,11 +93,11 @@ void AccessibilityZoomGesture::Up()
     upCount_ ++;
 }
 
-void AccessibilityZoomGesture::Reset(const TouchEvent &event)
+void AccessibilityZoomGesture::Reset(const MMI::PointerEvent &event)
 {
     upCount_ = 0;
     downCount_ = 1;
-    lastDown_ = event;
+    pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
 void AccessibilityZoomGesture::Clear()
@@ -94,5 +105,5 @@ void AccessibilityZoomGesture::Clear()
     upCount_ = 0;
     downCount_ = 0;
 }
-}  // namespace accessibility
+}  // namespace Accessibility
 }  // namespace OHOS

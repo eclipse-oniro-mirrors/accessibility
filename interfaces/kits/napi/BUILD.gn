@@ -14,7 +14,6 @@
 import("//build/ohos.gni")
 
 ohos_shared_library("accessibility") {
-  #visiblity = [ ":*" ]
 
   include_dirs = [
     "//foundation/ace/napi/interfaces/kits",
@@ -23,7 +22,6 @@ ohos_shared_library("accessibility") {
     "//base/accessibility/common/log/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
     "./include",
@@ -36,10 +34,8 @@ ohos_shared_library("accessibility") {
 
   sources = [
     "./src/native_module.cpp",
-    "./src/napi_accessible_ability.cpp",
     "./src/napi_accessibility_system_ability_client.cpp",
     "./src/napi_accessibility_utils.cpp",
-    "./src/napi_accessible_ability_observer.cpp",
     "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_window_info.cpp",
     "./src/napi_accessibility_info.cpp",
@@ -50,15 +46,7 @@ ohos_shared_library("accessibility") {
   ]
 
   deps = [
-    #"//foundation/aafwk/standard/interfaces/innerkits/base:base",
-    #"//foundation/aafwk/standard/interfaces/innerkits/want:want",
-    #"//foundation/appexecfwk/standard/common:libappexecfwk_common",
-    #"//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    #"//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
-    #"//foundation/appexecfwk/standard/libs/libeventhandler:libeventhandler_target",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    #"//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-    #"//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/ace/napi:ace_napi",
     "//base/accessibility/frameworks/aafwk:accessibleability",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
@@ -68,12 +56,13 @@ ohos_shared_library("accessibility") {
   ]
 
   external_deps = [
+    "ability_runtime:runtime",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
-    "ability_runtime:want",
+    "ability_base:want",
     "ability_runtime:ability_manager",
   ]
 
@@ -82,42 +71,10 @@ ohos_shared_library("accessibility") {
   part_name = "accessibility"
 }
 
-ohos_shared_library("tts") {
-  include_dirs = [
-    "//base/accessibility/common/log/include",
-    "//foundation/ace/napi/interfaces/kits",
-    "//third_party/node/src",
-    "./include",
-    "//base/accessibility/dummyData",
-    "//utils/native/base/include",
-    #"//foundation/tts/interfaces/innerkits/native_cpp/framework/include",
-  ]
-
-  defines = [
-    "AAMS_LOG_TAG = \"tts_napi\"",
-    "AAMS_LOG_DOMAIN = 0xD005299",
-  ]
-
-  sources = [
-    "./src/napi_tts.cpp",
-    "//base/accessibility/dummyData/ttsDummy.cpp",
-  ]
-
-  #configs = [
-  #  "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
-  #]
-
+group("napi_packages") {
   deps = [
-    "//foundation/ace/napi:ace_napi",
-    "//utils/native/base:utils",
-    #"//foundation/tts/interfaces/innerkits/native_cpp/framework:tts_engine",
+    ":accessibility",
+    "//base/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextension_napi",
+    "//base/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
   ]
-
-  external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
-  ]
-
-  relative_install_dir = "module"
-  subsystem_name = "barrierfree"
-  part_name = "accessibility"
 }

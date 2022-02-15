@@ -20,8 +20,6 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NElementInfo::cons_ = nullptr;
-
 void NElementInfo::DefineJSElementInfo(napi_env env) {
     napi_property_descriptor descForElementInfo[] = {
         DECLARE_NAPI_FUNCTION("executeAction", NElementInfo::ExecuteAction),
@@ -67,7 +65,7 @@ napi_value NElementInfo::ExecuteAction(napi_env env, napi_callback_info info) {
         HILOG_ERROR("nodeInfo is null!!");
     }
     NAccessibilityInfoData *callbackInfo = new NAccessibilityInfoData();
-    ConvertActionArgsJSToNAPI(env, argv[ARGS_SIZE_TWO], callbackInfo->actionArguments_,
+    ConvertActionArgsJSToNAPI(env, argv[argc - 1], callbackInfo->actionArguments_,
          ConvertStringToAccessibleOperationType(action));
     callbackInfo->nativeNodeInfo_ = *nodeInfo;
     callbackInfo->content_ = action;

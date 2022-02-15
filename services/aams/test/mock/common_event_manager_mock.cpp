@@ -64,5 +64,5 @@ bool CommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEv
 {
     return true;
 }
-}  // namespace EventFwk
+}  //namespace EventFwk
 }  // namespace OHOS

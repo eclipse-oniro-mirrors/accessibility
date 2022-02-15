@@ -139,37 +139,9 @@ GesturePathDefine *GesturePathDefine::Unmarshalling(Parcel &parcel)
     return nullptr;
 }
 
-GestureResultListenerInfo::GestureResultListenerInfo(std::vector<GesturePathDefine> gesturePathDefine,
-                                                    std::shared_ptr<GestureResultListener>& gestureResultListener)
+void MockGestureResultListener::OnGestureInjectResult(uint32_t sequence, bool result)
 {
-    GTEST_LOG_(INFO) << "MOCK GestureResultListenerInfo";
-    for (auto gesturePath : gesturePathDefine) {
-        gesturePathDefine_.push_back(gesturePath);
-    }
-    gestureResultListener_ = gestureResultListener;
+    GTEST_LOG_(INFO) << "MOCK MockGestureResultListener OnGestureInjectResult";
 }
-
-std::shared_ptr<GestureResultListener>& GestureResultListenerInfo::GetGestureResultListener()
-{
-    GTEST_LOG_(INFO) << "MOCK GestureResultListenerInfo GetGestureResultListener";
-    return gestureResultListener_;
-}
-
-std::vector<GesturePathDefine> GestureResultListenerInfo::GetGesturePathDefine()
-{
-    GTEST_LOG_(INFO) << "MOCK GestureResultListenerInfo GetGesturePathDefine";
-    return gesturePathDefine_;
-}
-
-void MockGestureResultListener::OnCancelled(std::vector<GesturePathDefine> &gesturePathDefine)
-{
-    GTEST_LOG_(INFO) << "MOCK MockGestureResultListener OnCancelled";
-}
-
-void MockGestureResultListener::OnCompleted(std::vector<GesturePathDefine> &gesturePathDefine)
-{
-    GTEST_LOG_(INFO) << "MOCK MockGestureResultListener OnCompleted";
-}
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -22,27 +22,21 @@ namespace Accessibility {
 std::map<int, sptr<IAccessibleAbilityChannel>> AccessibilityOperator::channels_ = {};
 std::vector<sptr<AccessibilityOperator>>  AccessibilityOperator::instances_ = {};
 std::recursive_mutex AccessibilityOperator::mutex_ = {};
-int AccessibilityOperator::requestId_ = 0;
 
 AccessibilityOperator::AccessibilityOperator()
 {
-    performActionResult_ = false;
+    executeActionResult_ = false;
 }
 
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     std::thread::id tid = std::this_thread::get_id();
-    return GetInstanceForThread(tid);
-}
-
-AccessibilityOperator &AccessibilityOperator::GetInstanceForThread(std::thread::id threadId)
-{
-    HILOG_DEBUG("[%{public}s] threadId[%{public}u]", __func__, (*(uint32_t*)&threadId));
+    HILOG_DEBUG("[%{public}s] threadId[%{public}u]", __func__, (*(uint32_t*)&tid));
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     if (instances_.size() >= MAX_INSTANCE) {
-        for (auto iter = instances_.begin(); iter != instances_.end();iter++) {
+        for (auto iter = instances_.begin(); iter != instances_.end(); iter++) {
             if (iter->GetRefPtr() != nullptr &&
-                iter->GetRefPtr()->GetOperationStatus()) {
+                iter->GetRefPtr()->asyncElementOperatorMng_.GetOperationStatus()) {
                 HILOG_DEBUG("[%{public}s] complete instance is removed", __func__);
                 instances_.erase(iter);
                 break;
@@ -70,24 +64,13 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
     }
 }
 
-bool AccessibilityOperator::GetOperationStatus()
-{
-    HILOG_DEBUG("[%{public}s] [completed_:%{public}d]", __func__, completed_);
-    return completed_;
-}
-
-void AccessibilityOperator::SetOperationStatus(bool status)
-{
-    completed_ = status;
-}
-
 void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel)
 {
-    HILOG_DEBUG("[%{public}s] Add connection to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[%{public}s] Add channel to aams [channelId:%{public}d]", __func__, channelId);
     int tempId = *(const_cast<int *>(&channelId));
     for (auto iter = channels_.begin(); iter != channels_.end(); iter++) {
         if (iter->first == tempId) {
-            HILOG_ERROR("[%{public}s] Connection to aams [channelId:%{public}d] is exited", __func__, channelId);
+            HILOG_ERROR("[%{public}s] channel to aams [channelId:%{public}d] is exited", __func__, channelId);
             return;
         }
     }
@@ -97,12 +80,12 @@ void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessib
 
 void AccessibilityOperator::RemoveChannel(int channelId)
 {
-    HILOG_DEBUG("[%{public}s] Remove connection to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[%{public}s] Remove channel to aams [channelId:%{public}d]", __func__, channelId);
     auto iter = channels_.find(channelId);
     if (iter != channels_.end()) {
         channels_.erase(iter);
     } else {
-        HILOG_DEBUG("[%{public}s] Failed to remove connection with aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_DEBUG("[%{public}s] Failed to remove channel with aams [channelId:%{public}d]", __func__, channelId);
     }
 }
 
@@ -121,15 +104,15 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
 
 std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int channelId)
 {
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        auto windows = connectService->GetWindows();
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        auto windows = channelService->GetWindows();
         for (auto &window : windows) {
             window.SetChannelId(channelId);
         }
         return windows;
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return windows_;
     }
 }
@@ -139,19 +122,19 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
 {
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        int requestId = CreateRequestId();
-        HILOG_DEBUG("[%{public}s] search element info [channelId:%{public}d] [requestId:%{public}d]", __func__,
-            channelId, requestId);
-        result = connectService->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
+        HILOG_DEBUG("[%{public}s] search element info [channelId:%{public}d] [sequenceNum:%{public}d]", __func__,
+            channelId, sequenceNum);
+        result = channelService->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, sequenceNum,
             this, mode);
         if (!result) {
             return result;
         }
-        HILOG_DEBUG("[%{public}s] search element info End[channelId:%{public}d] [requestId:%{public}d]", __func__,
-            channelId, requestId);
-        if (!WaitForResultTimedLocked(requestId)) {
+        HILOG_DEBUG("[%{public}s] search element info End[channelId:%{public}d] [sequenceNum:%{public}d]", __func__,
+            channelId, sequenceNum);
+        if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             result = false;
             return result;
@@ -161,26 +144,26 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
     for (auto& info : accessibilityInfosResult_) {
         info.SetChannelId(channelId);
     }
-    completed_ = true;
+    asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[%{public}s] search element info End[size:%{public}d]", __func__, accessibilityInfosResult_.size());
     elementInfos = accessibilityInfosResult_;
     return result;
 }
 
 bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessibilityWindowId,
-    int elementId, const std::string &text,std::vector<AccessibilityElementInfo>& elementInfos)
+    int elementId, const std::string &text, std::vector<AccessibilityElementInfo>& elementInfos)
 {
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        int requestId = CreateRequestId();
-        result = connectService->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId,
-        this);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
+        result = channelService->SearchElementInfosByText(accessibilityWindowId, elementId, text, sequenceNum,
+            this);
         if (!result) {
             return result;
         }
-        if (!WaitForResultTimedLocked(requestId)) {
+        if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             result = false;
             return result;
@@ -190,7 +173,7 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
     for (auto& info : accessibilityInfosResult_) {
         info.SetChannelId(channelId);
     }
-    completed_ = true;
+    asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[%{public}s] [size:%{public}d] end", __func__, accessibilityInfosResult_.size());
     elementInfos = accessibilityInfosResult_;
 
@@ -202,34 +185,34 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
 {
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        int requestId = CreateRequestId();
-        result = connectService->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId,
-        this);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
+        result = channelService->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, sequenceNum,
+            this);
         if (!result) {
             return result;
         }
         HILOG_DEBUG(
             "FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
-            focusType[%{public}d] requestId[%{public}d]",
+            focusType[%{public}d] sequenceNum[%{public}d]",
             channelId, accessibilityWindowId, elementId, focusType);
-        if (!WaitForResultTimedLocked(requestId)) {
+        if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             result = false;
             return result;
         }
     }
     accessibilityInfoResult_.SetChannelId(channelId);
-    completed_ = true;
+    asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
-    elementInfo = accessibilityInfoResult_;
     if (accessibilityInfoResult_.GetWindowId() == 0 &&
         accessibilityInfoResult_.GetAccessibilityId() == 0) {
         HILOG_DEBUG("[%{public}s] Can't find the component info", __func__);
         result = false;
     } else {
-        result = true;
+      elementInfo = accessibilityInfoResult_;
+      result = true;
     }
 
     return result;
@@ -240,14 +223,14 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
 {
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        int requestId = CreateRequestId();
-        result = connectService->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, this);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
+        result = channelService->FocusMoveSearch(accessibilityWindowId, elementId, direction, sequenceNum, this);
         if (!result) {
             return result;
         }
-        if (!WaitForResultTimedLocked(requestId)) {
+        if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             result = false;
             return result;
@@ -255,7 +238,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
     }
 
     accessibilityInfoResult_.SetChannelId(channelId);
-    completed_ = true;
+    asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
     elementInfo = accessibilityInfoResult_;
     if (accessibilityInfoResult_.GetWindowId() == 0 &&
@@ -268,156 +251,110 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
     return result;
 }
 
-bool AccessibilityOperator::PerformAction(int channelId, int accessibilityWindowId,
+bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindowId,
     int elementId, int action,  std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        int requestId = CreateRequestId();
-        bool result = connectService->PerformAction(accessibilityWindowId, elementId, action, actionArguments,
-            requestId,
-            this);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
+        bool result = channelService->ExecuteAction(
+            accessibilityWindowId, elementId, action, actionArguments,
+            sequenceNum, this);
         if (!result) {
             return result;
         }
 
-        if (!WaitForResultTimedLocked(requestId)) {
+        if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
             return false;
         }
     }
-    completed_ = true;
+    asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
-    return performActionResult_;
+    return executeActionResult_;
 }
 
 void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
-    const std::vector<AccessibilityElementInfo> &infos, const int requestId)
+    const std::vector<AccessibilityElementInfo> &infos, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d]", __func__, requestId);
-    responseId_ = requestId;
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         HILOG_DEBUG("[%{public}s] Response", __func__);
         accessibilityInfosResult_.push_back(*iter);
     }
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
 
 void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
-    const int requestId)
+    const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d]", __func__, requestId);
-    responseId_ = requestId;
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         accessibilityInfosResult_.push_back(*iter);
     }
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
 
-void AccessibilityOperator::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int requestId)
+void AccessibilityOperator::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
+    const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d]", __func__, requestId);
-    responseId_ = requestId;
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
 
-void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int requestId)
+void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d]", __func__, requestId);
-    responseId_ = requestId;
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
 
-void AccessibilityOperator::SetPerformActionResult(const bool succeeded, const int requestId)
+void AccessibilityOperator::SetExecuteActionResult(const bool succeeded, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] result[%{public}d]", __func__, requestId, succeeded);
-    performActionResult_ = succeeded;
-    responseId_ = requestId;
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] result[%{public}d]",
+        __func__, sequenceNum, succeeded);
+    executeActionResult_ = succeeded;
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
+    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
 
-bool AccessibilityOperator::WaitForResultTimedLocked(const int requestId)
-{
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
-    struct timeval getTime {};
-    gettimeofday(&getTime, NULL);
-    uint64_t startTime = getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec;
-    HILOG_DEBUG("[%{public}s] element requestId[%{public}d]", __func__, requestId);
-
-    do {
-        if (responseId_ == requestId) {
-            return true;
-        }
-        gettimeofday(&getTime, NULL);
-        uint64_t endTime =  getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec;
-        uint64_t waitTime = endTime - startTime;
-        if (TIMEOUT_OPERATOR_MILLIS < waitTime) {
-            completed_ = true;
-            HILOG_ERROR("[%{public}s] Failed to wait requestId[%{public}d], responseId_[%{public}d]", __func__,
-                requestId, responseId_);
-            return false;
-        }
-        usleep(SLEEP_MILLIS);
-    } while (true);
-    HILOG_DEBUG("[%{public}s] Response [requestId:%{public}d] end", __func__, requestId);
-    return true;
-}
-
-int AccessibilityOperator::CreateRequestId()
-{
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
-    HILOG_INFO("[%{public}s] [requestId_:%{public}d]", __func__, requestId_);
-    requestId_++;
-    requestId_ = requestId_ % MAX_REQUEST;
-    HILOG_INFO("[%{public}s] [requestId_:%{public}d] end", __func__, requestId_);
-    return requestId_;
-}
-
-bool AccessibilityOperator::PerformCommonAction(const int channelId, const int action)
+bool AccessibilityOperator::ExecuteCommonAction(const int channelId, const int action)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->PerformCommonAction(action);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->ExecuteCommonAction(action);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return false;
-    }
-}
-
-void AccessibilityOperator::DisableAbility(const int channelId)
-{
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        connectService->DisableAbility();
-    } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
     }
 }
 
 void AccessibilityOperator::SetOnKeyPressEventResult(const int channelId, const bool handled, const int sequence)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        connectService->SetOnKeyPressEventResult(handled, sequence);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        channelService->SetOnKeyPressEventResult(handled, sequence);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
     }
 }
 
 float AccessibilityOperator::GetDisplayResizeScale(const int channelId, const int displayId)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->GetDisplayResizeScale(displayId);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->GetDisplayResizeScale(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return 1;
     }
 }
@@ -425,11 +362,11 @@ float AccessibilityOperator::GetDisplayResizeScale(const int channelId, const in
 float AccessibilityOperator::GetDisplayResizeCenterX(const int channelId, const int displayId)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->GetDisplayResizeCenterX(displayId);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->GetDisplayResizeCenterX(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return 1;
     }
 }
@@ -437,11 +374,11 @@ float AccessibilityOperator::GetDisplayResizeCenterX(const int channelId, const 
 float AccessibilityOperator::GetDisplayResizeCenterY(const int channelId, const int displayId)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->GetDisplayResizeCenterY(displayId);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->GetDisplayResizeCenterY(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return 1;
     }
 }
@@ -449,11 +386,11 @@ float AccessibilityOperator::GetDisplayResizeCenterY(const int channelId, const 
 Rect AccessibilityOperator::GetDisplayResizeRect(const int channelId, const int displayId)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->GetDisplayResizeRect(displayId);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->GetDisplayResizeRect(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         Rect rect {};
         return rect;
     }
@@ -462,11 +399,11 @@ Rect AccessibilityOperator::GetDisplayResizeRect(const int channelId, const int 
 bool AccessibilityOperator::ResetDisplayResize(const int channelId, const int displayId, const bool animate)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->ResetDisplayResize(displayId, animate);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->ResetDisplayResize(displayId, animate);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return false;
     }
 }
@@ -476,39 +413,26 @@ bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
     const float centerY, const bool animate)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->SetDisplayResizeScaleAndCenter(displayId, scale, centerX,
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        return channelService->SetDisplayResizeScaleAndCenter(displayId, scale, centerX,
             centerY, animate);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
         return false;
     }
 }
 
 void AccessibilityOperator::SendSimulateGesture(const int channelId,
-    const int sequence, const std::vector<GesturePathDefine> &gestureSteps)
+    const int sequenceNum, const std::vector<GesturePathDefine> &gestureSteps)
 {
     HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        connectService->SendSimulateGesture(sequence, gestureSteps);
+    auto channelService = GetChannel(channelId);
+    if (channelService != nullptr) {
+        channelService->SendSimulateGesture(sequenceNum, gestureSteps);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
     }
 }
-
-bool AccessibilityOperator::IsFingerprintGestureDetectionValid(const int channelId)
-{
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
-    auto connectService = GetChannel(channelId);
-    if (connectService != nullptr) {
-        return connectService->IsFingerprintGestureDetectionValid();
-    } else {
-        HILOG_ERROR("[%{public}s] Failed to Get connection to aams [channelId:%{public}d]", __func__, channelId);
-        return false;
-    }
-}
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

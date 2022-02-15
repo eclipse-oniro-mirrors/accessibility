@@ -60,9 +60,6 @@ sptr<SystemAbilityManager> SystemAbilityManager::GetInstance()
     return instance;
 }
 
-void SystemAbilityManager::DoSADataStorageInit()
-{}
-
 sptr<IRemoteObject> SystemAbilityManager::GetSystemAbility(int32_t systemAbilityId)
 {
     HILOG_ERROR("SystemAbilityManager::GetSystemAbility");
@@ -71,17 +68,6 @@ sptr<IRemoteObject> SystemAbilityManager::GetSystemAbility(int32_t systemAbility
         return iter->second.remoteObj;
     }
     HILOG_ERROR("SystemAbilityManager::GetSystemAbility nullptr");
-    return nullptr;
-}
-
-bool SystemAbilityManager::GetSystemAbilityInfoList(int32_t systemAbilityId, const std::u16string &capability,
-    std::list<std::shared_ptr<SystemAbilityInfo>> &saInfoList)
-{
-    return true;
-}
-
-sptr<IRemoteObject> SystemAbilityManager::CheckLocalAbilityManager(const u16string &strName)
-{
     return nullptr;
 }
 
@@ -105,13 +91,13 @@ sptr<IRemoteObject> SystemAbilityManager::CheckSystemAbility(int32_t systemAbili
     return nullptr;
 }
 
-int32_t SystemAbilityManager::FindSystemAbilityManagerNotify(int32_t systemAbilityId, int code)
+int32_t SystemAbilityManager::FindSystemAbilityNotify(int32_t systemAbilityId, int32_t code)
 {
     return 0;
 }
 
-int32_t SystemAbilityManager::FindSystemAbilityManagerNotify(
-    int32_t systemAbilityId, const std::string &deviceId, int code)
+int32_t SystemAbilityManager::FindSystemAbilityNotify(int32_t systemAbilityId,
+    const std::string& deviceId, int32_t code)
 {
     return ERR_OK;
 }
@@ -127,11 +113,6 @@ int32_t SystemAbilityManager::AddOnDemandSystemAbilityInfo(
     return ERR_OK;
 }
 
-int32_t SystemAbilityManager::RecycleOnDemandSystemAbility()
-{
-    return ERR_OK;
-}
-
 int32_t SystemAbilityManager::StartOnDemandAbility(int32_t systemAbilityId)
 {
     return ERR_INVALID_VALUE;
@@ -142,24 +123,8 @@ sptr<IRemoteObject> SystemAbilityManager::CheckSystemAbility(int32_t systemAbili
     return nullptr;
 }
 
-int32_t SystemAbilityManager::ConnectSystemAbility(
-    int32_t systemAbilityId, const sptr<ISystemAbilityConnectionCallback> &connectionCallback)
-{
-    return ERR_OK;
-}
-
-int32_t SystemAbilityManager::DisConnectSystemAbility(
-    int32_t systemAbilityId, const sptr<ISystemAbilityConnectionCallback> &connectionCallback)
-{
-    return ERR_OK;
-}
-
-bool SystemAbilityManager::CheckCapability(const std::u16string &capability)
-{
-    return true;
-}
-
-int32_t SystemAbilityManager::AddLocalAbilityManager(const u16string &strName, const sptr<IRemoteObject> &ability)
+int32_t SystemAbilityManager::LoadSystemAbility(int32_t systemAbilityId,
+    const sptr<ISystemAbilityLoadCallback>& callback)
 {
     return ERR_OK;
 }
@@ -168,22 +133,9 @@ void SystemAbilityManager::DoInsertSaData(
     const u16string &strName, const sptr<IRemoteObject> &ability, const SAExtraProp &extraProp)
 {}
 
-void SystemAbilityManager::DeleteStartingAbilityMember(int32_t systemAbilityId)
-{}
-
 int32_t SystemAbilityManager::RemoveSystemAbility(int32_t systemAbilityId)
 {
     abilityMap_.clear();
-    return ERR_OK;
-}
-
-int32_t SystemAbilityManager::RemoveLocalAbilityManager(const u16string &strName)
-{
-    return ERR_OK;
-}
-
-int32_t SystemAbilityManager::RemoveLocalAbilityManager(const sptr<IRemoteObject> &ability)
-{
     return ERR_OK;
 }
 
@@ -198,24 +150,16 @@ vector<u16string> SystemAbilityManager::ListSystemAbilities(unsigned int dumpFla
     return list;
 }
 
-u16string SystemAbilityManager::GetSystemAbilityName(int32_t index)
-{
-    return u16string();
-}
-
-int32_t SystemAbilityManager::SubscribeSystemAbility(int32_t systemAbilityId, const u16string &listenerName)
+int32_t SystemAbilityManager::SubscribeSystemAbility(int32_t systemAbilityId,
+    const sptr<ISystemAbilityStatusChange>& listener)
 {
     return ERR_OK;
 }
 
-int32_t SystemAbilityManager::UnSubscribeSystemAbility(int32_t systemAbilityId, const u16string &listenerName)
+int32_t SystemAbilityManager::UnSubscribeSystemAbility(int32_t systemAbilityId,
+    const sptr<ISystemAbilityStatusChange>& listener)
 {
     return ERR_OK;
-}
-
-const std::u16string SystemAbilityManager::CheckOnDemandSystemAbility(int32_t systemAbilityId)
-{
-    return deviceName_;
 }
 
 void SystemAbilityManager::SetDeviceName(const u16string &name)
@@ -226,11 +170,6 @@ const u16string &SystemAbilityManager::GetDeviceName() const
     return deviceName_;
 }
 
-bool SystemAbilityManager::GetDeviceId(string &deviceId)
-{
-    return false;
-}
-
 void SystemAbilityManager::NotifyRemoteSaDied(const std::u16string &name)
 {}
 
@@ -238,9 +177,6 @@ void SystemAbilityManager::NotifyRemoteDeviceOffline(const std::string &deviceId
 {}
 
 void SystemAbilityManager::ParseRemoteSaName(const std::u16string &name, std::string &deviceId, std::u16string &saName)
-{}
-
-void SystemAbilityManager::OnDemandConnected(int32_t systemAbilityId, const sptr<IRemoteObject> &ability)
 {}
 
 int32_t SystemAbilityManager::AddSystemAbility(
@@ -260,40 +196,8 @@ bool SystemAbilityManager::IsLocalDeviceId(const std::string &deviceId)
     return false;
 }
 
-bool SystemAbilityManager::CheckRemoteSa(const std::string &saName, std::string &selectedDeviceId)
+int32_t SystemAbilityManager::AddSystemProcess(const std::u16string& procName, const sptr<IRemoteObject>& procObject)
 {
-    return false;
-}
-
-bool SystemAbilityManager::CheckPermission(const std::string &permission)
-{
-    return true;
-}
-
-int32_t SystemAbilityManager::AddSystemCapability(const string &sysCap)
-{
-    int32_t ret = ERR_INVALID_VALUE;
-    return ret;
-}
-
-vector<string> SystemAbilityManager::GetSystemAvailableCapabilities()
-{
-    vector<string> sysCaps;
-    return sysCaps;
-}
-
-int32_t SystemAbilityManager::RegisterSystemReadyCallback(const sptr<IRemoteObject> &systemReadyCallback)
-{
-    return ERR_OK;
-}
-
-int32_t SystemAbilityManager::GetCoreSystemAbilityList(vector<int32_t> &coreSaList, int dumpMode)
-{
-    return ERR_OK;
-}
-
-bool SystemAbilityManager::HasSystemCapability(const string &sysCap)
-{
-    return false;
+    return 0;
 }
 }  // namespace OHOS

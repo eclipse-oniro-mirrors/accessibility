@@ -14,10 +14,10 @@
  */
 
 #include "accessibility_element_info.h"
-#include "parcel_util.h"
-#include "hilog_wrapper.h"
-#include "accessibility_operator.h"
 #include <gtest/gtest.h>
+#include "accessibility_operator.h"
+#include "hilog_wrapper.h"
+#include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -32,7 +32,7 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-AccessibilityElementInfo* AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
+sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -110,12 +110,14 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &operation,
     return true;
 }
 
-bool AccessibilityElementInfo::GetByContent(const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityElementInfo::GetByContent(const std::string &text,
+    std::vector<AccessibilityElementInfo> &elementInfos)
 {
     return true;
 }
 
-bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode,
+    std::vector<AccessibilityElementInfo> &elementInfos)
 {
     return true;
 }
@@ -173,7 +175,7 @@ bool AccessibilityElementInfo::IsFocusable() const
 void AccessibilityElementInfo::SetFocusable(const bool focusable)
 {}
 
-bool AccessibilityElementInfo::IsFocused()
+bool AccessibilityElementInfo::IsFocused() const
 {
     return focused_;
 }
@@ -402,7 +404,8 @@ void AccessibilityElementInfo::SetHint(const std::string &hintText)
 {}
 
 std::string AccessibilityElementInfo::GetDescriptionInfo() const
-{    return contentDescription_;
+{
+    return contentDescription_;
 }
 
 void AccessibilityElementInfo::SetDescriptionInfo(const std::string contentDescription)
@@ -435,7 +438,7 @@ bool AccessibilityElementInfo::GetContentInvalid() const
 void AccessibilityElementInfo::SetError(const std::string &error)
 {}
 
-std::string AccessibilityElementInfo::GetError()
+std::string AccessibilityElementInfo::GetError() const
 {
     return error_;
 }
@@ -506,7 +509,7 @@ bool AccessibleAction::Marshalling(Parcel &parcel) const
     return true;
 };
 
-AccessibleAction* AccessibleAction::Unmarshalling(Parcel& parcel)
+sptr<AccessibleAction> AccessibleAction::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -514,12 +517,12 @@ AccessibleAction* AccessibleAction::Unmarshalling(Parcel& parcel)
 AccessibleAction::AccessibleAction(ActionType operationType, std::string description)
 {}
 
-ActionType AccessibleAction::GetActionType()
+ActionType AccessibleAction::GetActionType() const
 {
     return actionType_;
 }
 
-std::string AccessibleAction::GetDescriptionInfo()
+std::string AccessibleAction::GetDescriptionInfo() const
 {
     return description_;
 }
@@ -534,7 +537,7 @@ bool RangeInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-RangeInfo* RangeInfo::Unmarshalling(Parcel& parcel)
+sptr<RangeInfo> RangeInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
@@ -542,17 +545,17 @@ RangeInfo* RangeInfo::Unmarshalling(Parcel& parcel)
 RangeInfo::RangeInfo(int min, int max, int current)
 {}
 
-int RangeInfo::GetMin()
+int RangeInfo::GetMin() const
 {
     return min_;
 }
 
-int RangeInfo::GetMax()
+int RangeInfo::GetMax() const
 {
     return max_;
 }
 
-int RangeInfo::GetCurrent()
+int RangeInfo::GetCurrent() const
 {
     return current_;
 }
@@ -566,7 +569,8 @@ void RangeInfo::SetMax(int max)
 void RangeInfo::SetCurrent(int current)
 {}
 
-bool GridInfo::ReadFromParcel(Parcel &parcel) {
+bool GridInfo::ReadFromParcel(Parcel &parcel)
+{
     return true;
 }
 
@@ -575,33 +579,31 @@ bool GridInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridInfo* GridInfo::Unmarshalling(Parcel& parcel)
+sptr<GridInfo> GridInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
 
-GridInfo::GridInfo(int rowCount, int columnCount,
-                int mode)
+GridInfo::GridInfo(int rowCount, int columnCount, int mode)
 {}
 
-void GridInfo::SetGrid(int rowCount, int columnCount,
-            int mode)
+void GridInfo::SetGrid(int rowCount, int columnCount, int mode)
 {}
 
 void GridInfo::SetGrid(GridInfo other)
 {}
 
-int GridInfo::GetRowCount()
+int GridInfo::GetRowCount() const
 {
     return rowCount_;
 }
 
-int GridInfo:: GetColumnCount()
+int GridInfo::GetColumnCount() const
 {
     return columnCount_;
 }
 
-int GridInfo::GetSelectionMode()
+int GridInfo::GetSelectionMode() const
 {
     return selectionMode_;
 }
@@ -616,48 +618,47 @@ bool GridItemInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridItemInfo* GridItemInfo::Unmarshalling(Parcel& parcel)
+sptr<GridItemInfo> GridItemInfo::Unmarshalling(Parcel& parcel)
 {
     return nullptr;
 }
 
-GridItemInfo::GridItemInfo(int rowIndex, int rowSpan, int columnIndex, int columnSpan,
-            bool heading, bool selected)
+GridItemInfo::GridItemInfo(int rowIndex, int rowSpan, int columnIndex, int columnSpan, bool heading, bool selected)
 {}
 
 void GridItemInfo::SetGridItemInfo(GridItemInfo other)
 {}
 
 void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
-            int columnIndex, int columnSpan, bool heading, bool selected)
+    int columnIndex, int columnSpan, bool heading, bool selected)
 {}
 
-int GridItemInfo::GetColumnIndex()
+int GridItemInfo::GetColumnIndex() const
 {
     return columnIndex_;
 }
 
-int GridItemInfo::GetRowIndex()
+int GridItemInfo::GetRowIndex() const
 {
     return rowIndex_;
 }
 
-int GridItemInfo::GetColumnSpan()
+int GridItemInfo::GetColumnSpan() const
 {
     return columnSpan_;
 }
 
-int GridItemInfo::GetRowSpan()
+int GridItemInfo::GetRowSpan() const
 {
     return rowSpan_;
 }
 
-bool GridItemInfo::IsHeading()
+bool GridItemInfo::IsHeading() const
 {
     return heading_;
 }
 
-bool GridItemInfo::IsSelected()
+bool GridItemInfo::IsSelected() const
 {
     return selected_;
 }
@@ -672,11 +673,10 @@ bool Rect::Marshalling(Parcel &parcel) const
     return true;
 };
 
-Rect *Rect::Unmarshalling(Parcel& parcel)
+sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
 {
-    Rect *rect = new Rect();
+    sptr<Rect> rect = new Rect();
     return rect;
 }
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

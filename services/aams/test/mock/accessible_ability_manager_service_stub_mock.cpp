@@ -40,30 +40,13 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityInteractionOperation(
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityElementOperator(
     MessageParcel &data, MessageParcel &reply)
 {
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityInteractionOperation(
-    MessageParcel &data, MessageParcel &reply)
-{
-    return ErrCode::NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleInterrupt(MessageParcel &data, MessageParcel &reply)
-{
-    return ErrCode::NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetSuggestedInterval(MessageParcel &data,
-    MessageParcel &reply)
-{
-    return ErrCode::NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAbilityConnectionClientTmp(
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityElementOperator(
     MessageParcel &data, MessageParcel &reply)
 {
     return ErrCode::NO_ERROR;

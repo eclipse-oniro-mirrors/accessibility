@@ -20,9 +20,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 /* AccessibilityElementInfo       Parcel struct                 */
-bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel) {
+bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
+{
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -39,7 +39,7 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel) {
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
     for (int i = 0; i < operationsSize; i++) {
-        std::shared_ptr<AccessibleAction> accessibleOperation(parcel.ReadParcelable<AccessibleAction>());
+        AccessibleAction* accessibleOperation = parcel.ReadParcelable<AccessibleAction>();
         if (!accessibleOperation) {
             HILOG_ERROR("ReadParcelable<accessibleOperation> failed");
         }
@@ -47,7 +47,7 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel) {
     }
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
-    std::shared_ptr<Rect> rect(parcel.ReadParcelable<Rect>());
+    Rect* rect = parcel.ReadParcelable<Rect>();
     if (!rect) {
         return false;
     }
@@ -74,17 +74,17 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel) {
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex_);
-    std::shared_ptr<RangeInfo> rangeInfo(parcel.ReadParcelable<RangeInfo>());
+    RangeInfo* rangeInfo = parcel.ReadParcelable<RangeInfo>();
     if (!rangeInfo) {
         return false;
     }
     rangeInfo_ = *rangeInfo;
-    std::shared_ptr<GridInfo> grid(parcel.ReadParcelable<GridInfo>());
+    GridInfo* grid = parcel.ReadParcelable<GridInfo>();
     if (!grid) {
         return false;
     }
     grid_ = *grid;
-    std::shared_ptr<GridItemInfo> gridItem(parcel.ReadParcelable<GridItemInfo>());
+    GridItemInfo* gridItem = parcel.ReadParcelable<GridItemInfo>();
     if (!gridItem) {
         return false;
     }
@@ -101,7 +101,8 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel) {
     return true;
 }
 
-bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const{
+bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
+{
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -158,7 +159,7 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const{
     return true;
 };
 
-AccessibilityElementInfo* AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
+sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
     AccessibilityElementInfo *accessibilityInfo = new AccessibilityElementInfo();
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
@@ -180,7 +181,7 @@ bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInf
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d],\
         elementId_[%{public}d], focus[%{public}d]",
         __func__, channelId_, windowId_, elementId_, focus);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
         result =  instance->FindFocusedElementInfo(channelId_, windowId_, elementId_, focus, elementInfo);
@@ -195,7 +196,7 @@ bool AccessibilityElementInfo::GetNext(const FocusMoveDirection direction, Acces
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d],\
         elementId_[%{public}d], direction[%{public}d]",
         __func__, channelId_, windowId_, elementId_, direction);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
         result = instance->FocusMoveSearch(channelId_, windowId_, elementId_, direction, elementInfo);
@@ -229,14 +230,14 @@ bool AccessibilityElementInfo::GetChild(const int index, AccessibilityElementInf
         HILOG_ERROR("[%{public}s] called] index[%{public}d] is invalid", __func__, index);
         return false;
     }
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     std::vector<AccessibilityElementInfo> elementInfos {};
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, GetChildId(index), 0, elementInfos);
+            windowId_, GetChildId(index), 0, elementInfos);
         if (elementInfos.empty()) {
-                result = false;
+            result = false;
         } else {
             elementInfo = elementInfos.front();
         }
@@ -342,9 +343,9 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
 {
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
         __func__, channelId_, windowId_, elementId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
-        return instance->PerformAction(channelId_,
+        return instance->ExecuteAction(channelId_,
                 windowId_, elementId_, action,
                 const_cast<std::map<std::string, std::string> &>(actionArguments));
     } else {
@@ -359,7 +360,7 @@ bool AccessibilityElementInfo::GetByContent(const std::string &text,
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d],\
         elementId_[%{public}d], text[%{public}s]",
         __func__, channelId_, windowId_, elementId_, text.c_str());
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByText(channelId_, windowId_, elementId_, text, elementInfos);
@@ -373,7 +374,7 @@ bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
@@ -401,12 +402,12 @@ bool AccessibilityElementInfo::GetParent(AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], parentId_[%{public}d]",
         __func__, channelId_, windowId_, parentId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, parentId_, 0, elementInfos);
+            windowId_, parentId_, 0, elementInfos);
         if (elementInfos.empty()) {
             result = false;
         } else {
@@ -478,7 +479,7 @@ void AccessibilityElementInfo::SetFocusable(const bool focusable)
     HILOG_DEBUG("[%{public}s] focusable_[%{public}d]", __func__, focusable_);
 }
 
-bool AccessibilityElementInfo::IsFocused()
+bool AccessibilityElementInfo::IsFocused() const
 {
     HILOG_DEBUG("[%{public}s] focused_[%{public}d]", __func__, focused_);
     return focused_;
@@ -879,7 +880,7 @@ void AccessibilityElementInfo::SetError(const std::string &error)
     HILOG_DEBUG("[%{public}s] error_[%{public}s]", __func__, error_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetError()
+std::string AccessibilityElementInfo::GetError() const
 {
     HILOG_DEBUG("[%{public}s] error_[%{public}s]", __func__, error_.c_str());
     return error_;
@@ -894,7 +895,7 @@ void AccessibilityElementInfo::SetLabeled(const int componentId)
 bool AccessibilityElementInfo::GetLabeled(AccessibilityElementInfo &elementInfo) const
 {
     HILOG_DEBUG("[%{public}s] labeled_[%{public}d]", __func__, labeled_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
@@ -1004,10 +1005,10 @@ bool AccessibleAction::Marshalling(Parcel &parcel) const
     return true;
 };
 
-AccessibleAction* AccessibleAction::Unmarshalling(Parcel& parcel)
+sptr<AccessibleAction> AccessibleAction::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    AccessibleAction* accessibleOperation = new AccessibleAction();
+    sptr<AccessibleAction> accessibleOperation = new AccessibleAction();
     if (!accessibleOperation->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         delete accessibleOperation;
@@ -1023,13 +1024,13 @@ AccessibleAction::AccessibleAction(ActionType actionType, std::string descriptio
     description_ = description;
 }
 
-ActionType AccessibleAction::GetActionType()
+ActionType AccessibleAction::GetActionType() const
 {
     HILOG_DEBUG("[%{public}s] actionType_[%{public}d]", __func__, actionType_);
     return actionType_;
 }
 
-std::string AccessibleAction::GetDescriptionInfo()
+std::string AccessibleAction::GetDescriptionInfo() const
 {
     HILOG_DEBUG("[%{public}s] description_[%{public}s]", __func__, description_.c_str());
     return description_;
@@ -1055,10 +1056,10 @@ bool RangeInfo::Marshalling(Parcel &parcel) const
     return true;
 }
 
-RangeInfo* RangeInfo::Unmarshalling(Parcel& parcel)
+sptr<RangeInfo> RangeInfo::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    RangeInfo* rangeInfo = new RangeInfo();
+    sptr<RangeInfo> rangeInfo = new RangeInfo();
     if (!rangeInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         delete rangeInfo;
@@ -1078,19 +1079,19 @@ RangeInfo::RangeInfo(int min, int max, int current)
     HILOG_DEBUG("[%{public}s] current_[%{public}d]", __func__, current_);
 }
 
-int RangeInfo::GetMin()
+int RangeInfo::GetMin() const
 {
     HILOG_DEBUG("[%{public}s] min_[%{public}d]", __func__, min_);
     return min_;
 }
 
-int RangeInfo::GetMax()
+int RangeInfo::GetMax() const
 {
     HILOG_DEBUG("[%{public}s] max_[%{public}d]", __func__, max_);
     return max_;
 }
 
-int RangeInfo::GetCurrent()
+int RangeInfo::GetCurrent() const
 {
     HILOG_DEBUG("[%{public}s] current_[%{public}d]", __func__, current_);
     return current_;
@@ -1134,10 +1135,10 @@ bool GridInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridInfo* GridInfo::Unmarshalling(Parcel& parcel)
+sptr<GridInfo> GridInfo::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    GridInfo* grid = new GridInfo();
+    sptr<GridInfo> grid = new GridInfo();
     if (!grid->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         delete grid;
@@ -1184,20 +1185,20 @@ void GridInfo::SetGrid(GridInfo other)
     HILOG_DEBUG("[%{public}s] selectionMode_[%{public}d]", __func__, selectionMode_);
 }
 
-int GridInfo::GetRowCount()
+int GridInfo::GetRowCount() const
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     HILOG_DEBUG("[%{public}s] rowCount_[%{public}d]", __func__, rowCount_);
     return rowCount_;
 }
 
-int GridInfo::GetColumnCount()
+int GridInfo::GetColumnCount() const
 {
     HILOG_DEBUG("[%{public}s] columnCount_[%{public}d]", __func__, columnCount_);
     return columnCount_;
 }
 
-int GridInfo::GetSelectionMode()
+int GridInfo::GetSelectionMode() const
 {
     HILOG_DEBUG("[%{public}s] selectionMode_[%{public}d]", __func__, selectionMode_);
     return selectionMode_;
@@ -1229,10 +1230,10 @@ bool GridItemInfo::Marshalling(Parcel &parcel) const
     return true;
 };
 
-GridItemInfo* GridItemInfo::Unmarshalling(Parcel& parcel)
+sptr<GridItemInfo> GridItemInfo::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    GridItemInfo* gridItem = new GridItemInfo();
+    sptr<GridItemInfo> gridItem = new GridItemInfo();
     if (!gridItem->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         delete gridItem;
@@ -1279,7 +1280,7 @@ void GridItemInfo::SetGridItemInfo(GridItemInfo other)
 }
 
 void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
-            int columnIndex, int columnSpan, bool heading, bool selected)
+                                int columnIndex, int columnSpan, bool heading, bool selected)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     rowIndex_ = rowIndex;
@@ -1297,37 +1298,37 @@ void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
     HILOG_DEBUG("[%{public}s] selected_[%{public}d]", __func__, selected_);
 }
 
-int GridItemInfo::GetColumnIndex()
+int GridItemInfo::GetColumnIndex() const
 {
     HILOG_DEBUG("[%{public}s] columnIndex_[%{public}d]", __func__, columnIndex_);
     return columnIndex_;
 }
 
-int GridItemInfo::GetRowIndex()
+int GridItemInfo::GetRowIndex() const
 {
     HILOG_DEBUG("[%{public}s] rowIndex_[%{public}d]", __func__, rowIndex_);
     return rowIndex_;
 }
 
-int GridItemInfo::GetColumnSpan()
+int GridItemInfo::GetColumnSpan() const
 {
     HILOG_DEBUG("[%{public}s] columnSpan_[%{public}d]", __func__, columnSpan_);
     return columnSpan_;
 }
 
-int GridItemInfo::GetRowSpan()
+int GridItemInfo::GetRowSpan() const
 {
     HILOG_DEBUG("[%{public}s] rowSpan_[%{public}d]", __func__, rowSpan_);
     return rowSpan_;
 }
 
-bool GridItemInfo::IsHeading()
+bool GridItemInfo::IsHeading() const
 {
     HILOG_DEBUG("[%{public}s] heading_[%{public}d]", __func__, heading_);
     return heading_;
 }
 
-bool GridItemInfo::IsSelected()
+bool GridItemInfo::IsSelected() const
 {
     HILOG_DEBUG("[%{public}s] selected_[%{public}d]", __func__, selected_);
     return selected_;
@@ -1353,10 +1354,10 @@ bool Rect::Marshalling(Parcel &parcel) const
     return true;
 };
 
-Rect *Rect::Unmarshalling(Parcel& parcel)
+sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    Rect *rect = new Rect();
+    sptr<Rect> rect = new Rect();
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         delete rect;
@@ -1365,5 +1366,5 @@ Rect *Rect::Unmarshalling(Parcel& parcel)
     return rect;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

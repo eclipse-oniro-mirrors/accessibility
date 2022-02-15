@@ -54,21 +54,6 @@ public:
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
 
     /**
-     * @brief Called when the accessibility service is interrupted through the proxy object.
-     * @param
-     * @return
-     */
-    virtual void OnInterrupt() override;
-
-    /**
-     * @brief Called when a user performs a specified gesture on the device that
-     *        your accessibility application has requested to be in touch exploration mode through the proxy object.
-     * @param gestureId The id of gesture.
-     * @return
-     */
-    virtual void OnGesture(const int gestureId) override;
-
-    /**
      * @brief Called when a key event occurs through the proxy object.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
@@ -86,7 +71,7 @@ public:
      * @param centerY Indicates the Y coordinate of the center for resizing the display.
      * @return
      */
-    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
+    virtual void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY) override;
 
     /**
@@ -96,21 +81,6 @@ public:
      * @return
      */
     virtual void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) override;
-
-    /**
-     * @brief Called when the validity status of the fingerprint sensor's gesture detection changes
-     *        through the proxy object.
-     * @param validity The validity status of the fingerprint sensor's gesture detection.
-     * @return
-     */
-    virtual void OnFingerprintGestureValidityChanged(const bool validity) override;
-
-    /**
-     * @brief Called when the fingerprint sensor detects a gesture through the proxy object.
-     * @param gesture The gesture which is detected by fingerprint sensor.
-     * @return
-     */
-    virtual void OnFingerprintGesture(const int gesture) override;
 
 private:
     bool WriteInterfaceToken(MessageParcel &data);

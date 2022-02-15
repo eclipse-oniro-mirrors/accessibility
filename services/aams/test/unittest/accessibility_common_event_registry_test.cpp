@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
 #include "accessibility_common_event_registry.h"
+#include <gtest/gtest.h>
 #include "common_event_manager.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
@@ -39,6 +39,7 @@ public:
 
     shared_ptr<AccessibilityCommonEventRegistry> accessibilityCommonEventRegistry_ = nullptr;
     shared_ptr<CommonEventManager> commonEventManagerMock_ = nullptr;
+    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 };
 
 void AccessibilityCommonEventRegistryUnitTest::SetUpTestCase()
@@ -54,12 +55,12 @@ void AccessibilityCommonEventRegistryUnitTest::TearDownTestCase()
 void AccessibilityCommonEventRegistryUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    //注册bundleservice
-    auto bundleObject = new OHOS::AppExecFwk::BundleMgrService();
+    // 注册bundleservice
+    mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, bundleObject, saExtraProp);
+    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
 
     accessibilityCommonEventRegistry_ = make_shared<AccessibilityCommonEventRegistry>();
     commonEventManagerMock_ = make_shared<CommonEventManager>();
@@ -70,6 +71,7 @@ void AccessibilityCommonEventRegistryUnitTest::TearDown()
     GTEST_LOG_(INFO) << "TearDown";
     accessibilityCommonEventRegistry_ = nullptr;
     commonEventManagerMock_ = nullptr;
+    mock_ = nullptr;
 }
 
 /**
@@ -77,7 +79,8 @@ void AccessibilityCommonEventRegistryUnitTest::TearDown()
  * @tc.name: StartRegister
  * @tc.desc: Test function StartRegister
  */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_StartRegister_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_StartRegister_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_StartRegister_001 start";
 
@@ -87,53 +90,12 @@ HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegis
 }
 
 /**
- * @tc.number: AccessibilityCommonEventRegistry_Unittest_HandleSwitchedUser_001
- * @tc.name: HandleSwitchedUser
- * @tc.desc: Test function HandleSwitchedUser
- */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandleSwitchedUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandleSwitchedUser_001 start";
-
-    accessibilityCommonEventRegistry_->StartRegister();
-
-    CommonEventData data;
-    Want want;
-    want.SetAction(CommonEventSupport::COMMON_EVENT_USER_SWITCHED);
-    data.SetWant(want);
-
-    commonEventManagerMock_->PublishCommonEvent(data);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandleSwitchedUser_001 end";
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_Unittest_HandleUnlockedUser_001
- * @tc.name: HandleUnlockedUser
- * @tc.desc: Test function HandleUnlockedUser
- */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandleUnlockedUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandleUnlockedUser_001 start";
-
-    accessibilityCommonEventRegistry_->StartRegister();
-
-    CommonEventData data;
-    Want want;
-    want.SetAction(CommonEventSupport::COMMON_EVENT_USER_UNLOCKED);
-    data.SetWant(want);
-
-    commonEventManagerMock_->PublishCommonEvent(data);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandleUnlockedUser_001 end";
-}
-
-/**
  * @tc.number: AccessibilityCommonEventRegistry_Unittest_HandleRemovedUser_001
  * @tc.name: HandleRemovedUser
  * @tc.desc: Test function HandleRemovedUser
  */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandleRemovedUser_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandleRemovedUser_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandleRemovedUser_001 start";
 
@@ -154,7 +116,8 @@ HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegis
  * @tc.name: HandlePresentUser
  * @tc.desc: Test function HandlePresentUser
  */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePresentUser_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePresentUser_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandlePresentUser_001 start";
 
@@ -175,7 +138,8 @@ HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegis
  * @tc.name: HandlePackageRemoved
  * @tc.desc: Test function HandlePackageRemoved
  */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePackageRemoved_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePackageRemoved_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandlePackageRemoved_001 start";
 
@@ -196,7 +160,8 @@ HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegis
  * @tc.name: HandlePackageChanged
  * @tc.desc: Test function HandlePackageChanged
  */
-HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePackageChanged_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegistry_Unittest_HandlePackageChanged_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandlePackageChanged_001 start";
 

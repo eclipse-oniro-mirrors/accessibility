@@ -33,7 +33,7 @@
 // DEFINE_HILOG_LABEL("EventRunner");
 
 // namespace OHOS {
-// namespace AppExecFwk {
+//namespace AppExecFwk {
 // namespace {
 // // Invoke system call to set name of current thread.
 // inline void SystemCallSetThreadName(const std::string &name)
@@ -431,5 +431,5 @@
 // {
 //     return mainRunner_;
 // }
-// }  // namespace AppExecFwk
+// }  //namespace AppExecFwk
 // }  // namespace OHOS

@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include <gtest/gtest.h>
-#include "accessible_ability_manager_service_state_stub.h"
-#include "accessible_ability_manager_service_state_proxy.h"
+#include <memory>
+
 #include "accessibility_system_ability_client.h"
+#include "accessible_ability_manager_service_state_proxy.h"
+#include "accessible_ability_manager_service_state_stub.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -33,23 +34,28 @@ public:
     ASACStateProxyUnitTest() {}
     ~ASACStateProxyUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest SetUp()";
         mockStub_ = new AccessibleAbilityManagerServiceStateStub();
         mockProxy_ = new AccessibleAbilityManagerServiceStateProxy(mockStub_);
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest TearDown()";
         mockStub_ = nullptr;
     }
 
-    void WriteInterfaceToken(MessageParcel &data) {
+    void WriteInterfaceToken(MessageParcel &data)
+    {
         GTEST_LOG_(INFO) << "ASACStateProxyUnitTest WriteInterfaceToken";
         data.WriteInterfaceToken(AccessibleAbilityManagerServiceStateStub::GetDescriptor());
     }
@@ -69,5 +75,5 @@ HWTEST_F(ASACStateProxyUnitTest, OnStateChanged_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "OnStateChanged_001 end";
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

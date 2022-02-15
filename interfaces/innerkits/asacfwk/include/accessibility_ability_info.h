@@ -19,7 +19,9 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
-#include "ability_info.h"
+
+#include "extension_ability_info.h"
+#include "nlohmann/json.hpp"
 #include "parcel.h"
 
 namespace OHOS {
@@ -45,15 +47,6 @@ namespace Accessibility {
         ACCESSIBILITY_ABILITY_TYPE_ALL = 0xFFFFFFFF,
     };
 
-    // The swipe types of fingerprint gesture.
-    // enum FingerprintGestureTypes : uint32_t {
-    //     FINGERPRINT_GESTURE_UP = 0x1,
-    //     FINGERPRINT_GESTURE_DOWN = 0x2,
-    //     FINGERPRINT_GESTURE_LEFT = 0x4,
-    //     FINGERPRINT_GESTURE_RIGHT = 0x8,
-    //     FINGERPRINT_GESTURE_ALL = 0xFFFFFFFF,
-    // };
-
     // The interception types of key event.
     // enum KeyEventInterceptionTypes : uint32_t{
     //     INTERCEPT_KEY_POWER = 0x001,
@@ -68,14 +61,7 @@ public:
     AccessibilityAbilityInfo() = default;
     ~AccessibilityAbilityInfo() = default;
 
-    AccessibilityAbilityInfo(AppExecFwk::AbilityInfo abilityInfo);
-
-    /**
-     * @brief Obtains information about the application with the accessible ability.
-     * @param
-     * @return Return information about the application with the accessible ability.
-     */
-    const AppExecFwk::AbilityInfo &GetAbilityInfo();
+    AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityInfo abilityInfo);
 
     /**
      * @brief Obtains the types of the accessible ability.
@@ -126,6 +112,8 @@ public:
      */
     std::string GetPackageName();
 
+    void SetPackageName(std::string bundleName);
+
     /**
      * @brief Obtains the target bundles's name that you are listening on.
      * @param
@@ -139,28 +127,6 @@ public:
      * @return Return the setting ability of the accessible ability.
      */
     std::string GetSettingsAbility();
-
-    /**
-     * @brief Get notification timeout in ms.
-     * @param
-     * @return Return notification timeout in ms.
-     */
-    uint32_t GetNotificationTimeout();
-
-    /**
-     * @brief Get UI interactive timeout in ms
-     * @param
-     * @return Return UI interactive timeout in ms
-     */
-    uint32_t GetUiInteractiveTime();
-
-    /* get UI noninteractive timeout in ms. */
-    /**
-     * @brief Get UI noninteractive timeout in ms.
-     * @param
-     * @return Return UI noninteractive timeout in ms.
-     */
-    uint32_t GetUiNoninteractiveTime();
 
     /**
      * @brief read this sequenceable object from a Parcel.
@@ -197,16 +163,18 @@ private:
      * @param
      * @return Return true if parses config files successfully, else return false.
      */
-    bool ParseAAConfig();
+    bool ParseAAConfig(nlohmann::json sourceJson);
 
-    AppExecFwk::AbilityInfo abilityInfo_;
-    uint32_t abilityTypes_ = 0;
-    uint32_t capabilities_ = 0;
-    uint32_t eventTypes_ = 0;
-    uint32_t notificationTimeout_ = 0;
-    uint32_t uiInteractiveTimeout_ = 10000;
-    uint32_t uiNoninteractiveTimeout_ = 2000;
+    std::string bundleName_;
+    std::string moduleName_;
+    std::string name_;
     std::string description_;
+
+    uint32_t capabilities_ = 0;
+    std::string rationale_;
+
+    uint32_t abilityTypes_ = 0;
+    uint32_t eventTypes_ = 0;
     std::string settingsAbility_;
     std::vector<std::string> targetBundleNames_;
 };

@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <memory>
 #include "accessible_ability_manager_service_stub.h"
+#include "accessibility_caption.h"
 
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -26,7 +28,7 @@ namespace Accessibility {
 
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub()
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SEND_EVENT)] =
         &AccessibleAbilityManagerServiceClientStub::HandleSendEvent;
@@ -34,20 +36,50 @@ AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClient
         &AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ABILITYLIST)] =
         &AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList;
-    memberFuncMap_[static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::REGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityInteractionOperation;
-    memberFuncMap_[static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityInteractionOperation;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::INTERRUPT)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleInterrupt;
-    memberFuncMap_[static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::GET_SUGGESTED_INTERVAL)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleGetSuggestedInterval;
-    memberFuncMap_[static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::REGISTER_ABILITY_CONNECTION_CLIENT)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleRegisterAbilityConnectionClientTmp;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::REGISTER_INTERACTION_CONNECTION)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityElementOperator;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_INTERACTION_CONNECTION)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityElementOperator;
+
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_PROPERTY)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetCaptionProperty;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_PROPERTY)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetCaptionProperty;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetCaptionState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetEnabled;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetEnabled;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetCaptionState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_TOUCH_GUIDE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetTouchGuideState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_GESTURE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetGestureState;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::GET_KEY_EVENT_OBSERVE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetKeyEventObserverState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_TOUCH_GUIDE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetTouchGuideState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_GESTURE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetGestureState;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::SET_KEY_EVENT_OBSERVE_STATE)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED_OBJECT)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_INSTALLED)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleSetInstalled;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED_OBJECT)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_INSTALLED)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback;
 }
 
 AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClientStub()
@@ -56,14 +88,14 @@ AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClien
     memberFuncMap_.clear();
 }
 
-int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
- MessageParcel &reply, MessageOption &option)
- {
+int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(
+    uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
+{
     HILOG_DEBUG("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
-        code, option.GetFlags());
+        code,
+        option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceClientStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -73,16 +105,16 @@ int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, Me
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;
         if (func != nullptr) {
-            return (this->*func)(data,reply);
+            return (this->*func)(data, reply);
         }
     }
     HILOG_WARN("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest, default case, need check.");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
     std::shared_ptr<AccessibilityEventInfo> uiEvent(data.ReadParcelable<AccessibilityEventInfo>());
     if (!uiEvent) {
@@ -95,13 +127,13 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback(MessageParcel &data,
-    MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback(
+    MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
-    sptr <IRemoteObject> obj = data.ReadRemoteObject();
-    sptr <IAccessibleAbilityManagerServiceState> client = iface_cast<IAccessibleAbilityManagerServiceState>(obj);
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    sptr<IAccessibleAbilityManagerServiceState> client = iface_cast<IAccessibleAbilityManagerServiceState>(obj);
     int userId = data.ReadInt32();
     uint64_t result = RegisterStateCallback(client, userId);
     reply.WriteUint64(result);
@@ -109,9 +141,9 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback(M
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
     int abilityTypes = data.ReadInt32();
     int stateType = data.ReadInt32();
@@ -120,7 +152,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
 
     int32_t abilityInfoSize = abilityInfos.size();
     reply.WriteInt32(abilityInfoSize);
-    for (auto &abilityInfo : abilityInfos) {
+    for (auto& abilityInfo : abilityInfos) {
         if (!reply.WriteParcelable(&abilityInfo)) {
             HILOG_ERROR("ReadParcelable<accessibilityAbilityInfo> failed");
             return ERROR;
@@ -129,64 +161,261 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityInteractionOperation(
-    MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityElementOperator(
+    MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
     int windowId = data.ReadInt32();
-    sptr <IRemoteObject> obj = data.ReadRemoteObject();
-    sptr <IAccessibilityInteractionOperation> operation = iface_cast<IAccessibilityInteractionOperation>(obj);
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
     int userId = data.ReadInt32();
-    RegisterInteractionOperation(windowId, operation, userId);
+    RegisterElementOperator(windowId, operation, userId);
 
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityInteractionOperation(
-    MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityElementOperator(
+    MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
     int windowId = data.ReadInt32();
-    DeregisterInteractionOperation(windowId);
+    DeregisterElementOperator(windowId);
 
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleInterrupt(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionProperty(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
+    CaptionProperty caption = GetCaptionProperty();
+
+    reply.WriteParcelable(&caption);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionProperty(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::shared_ptr<CaptionProperty> caption(data.ReadParcelable<CaptionProperty>());
+    if (!caption) {
+        HILOG_DEBUG("ReadParcelable<CaptionProperty> failed");
+        return ERROR;
+    }
+    SetCaptionProperty(*caption);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool state = data.ReadBool();
+
+    SetCaptionState(state);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabled(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool state = data.ReadBool();
+
+    SetEnabled(state);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    sptr<IAccessibleAbilityManagerServiceCaptionProperty> client =
+        iface_cast<IAccessibleAbilityManagerServiceCaptionProperty>(obj);
     int userId = data.ReadInt32();
-    Interrupt(userId);
-
-    return ErrCode::NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetSuggestedInterval(MessageParcel &data,
-    MessageParcel &reply)
-{
-    HILOG_DEBUG("%{public}s" , __func__);
-
-    uint64_t result = GetSuggestedInterval();
-
+    uint64_t result = RegisterCaptionPropertyCallback(client, userId);
     reply.WriteUint64(result);
 
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAbilityConnectionClientTmp(
-    MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabled(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 
-    sptr <IRemoteObject> obj = data.ReadRemoteObject();
-
-    RegisterAbilityConnectionClientTmp(obj);
+    bool result = GetEnabledState();
+    reply.WriteBool(result);
 
     return ErrCode::NO_ERROR;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool result = GetCaptionState();
+    reply.WriteBool(result);
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetTouchGuideState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool result = GetTouchGuideState();
+    reply.WriteBool(result);
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetGestureState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool result = GetGestureState();
+    reply.WriteBool(result);
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetKeyEventObserverState(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool result = GetKeyEventObserverState();
+    reply.WriteBool(result);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetTouchGuideState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool state = data.ReadBool();
+
+    SetTouchGuideState(state);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetGestureState(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool state = data.ReadBool();
+
+    SetGestureState(state);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverState(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    bool state = data.ReadBool();
+
+    SetKeyEventObserverState(state);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::map<std::string, AppExecFwk::ElementName> it{};
+    int dev_num = data.ReadInt32();
+
+    if (dev_num == 0) {
+        HILOG_DEBUG("ReadParcelable failed");
+        return ERROR;
+    }
+    std::vector<AppExecFwk::ElementName> temp{};
+    for (int i = dev_num; i > 0; i--) {
+        std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        temp.push_back(*iter);
+    }
+
+    for (int i = 0; i < dev_num; i++) {
+        it.insert(make_pair(temp[i].GetURI(), temp[i]));
+    }
+
+    SetEnabledObj(it);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetInstalled(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::vector<AccessibilityAbilityInfo> it{};
+    int dev_num = data.ReadInt32();
+
+    for (int i = dev_num; i > 0; i--) {
+        std::unique_ptr<AccessibilityAbilityInfo> dev(data.ReadParcelable<AccessibilityAbilityInfo>());
+        it.push_back(*dev);
+    }
+
+    if (dev_num == 0) {
+        HILOG_DEBUG("ReadParcelable failed");
+        return ERROR;
+    }
+    SetInstalled(it);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::map<std::string, AppExecFwk::ElementName> it = GetEnabledAbilities();
+
+    reply.WriteInt32(it.size());
+
+    std::map<std::string, AppExecFwk::ElementName>::iterator iter;
+
+    for (iter = it.begin(); iter != it.end();) {
+        bool ret = reply.WriteParcelable(&iter->second);
+        if (!ret) {
+            return ERROR;
+        }
+        ++iter;
+    }
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
+
+    reply.WriteInt32(it.size());
+
+    int num = it.size();
+    for (int i = 0; i < num; i++) {
+        bool ret = reply.WriteParcelable(&it[i]);
+        if (!ret) {
+            return ErrCode::ERROR;
+        }
+    }
+    return ErrCode::NO_ERROR;
+}
+
+}  // namespace Accessibility
+}  // namespace OHOS

@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include <gtest/gtest.h>
+#include <memory>
+
+#include "accessibility_operator.h"
 #include "accessibility_window_info.h"
 #include "mock_accessible_ability_channel_impl.h"
-#include "accessibility_operator.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -30,16 +31,20 @@ public:
     AccessibilityWindowInfoUnitTest() {}
     ~AccessibilityWindowInfoUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityWindowInfoUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityWindowInfoUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "AccessibilityWindowInfoUnitTest SetUp()";
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "AccessibilityWindowInfoUnitTest TearDown()";
     }
 };
@@ -69,7 +74,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetWindowTitle_001, TestSize.Level1)
     AccessibilityWindowInfo window {};
     string title = "test";
     window.SetWindowTitle(title);
-    EXPECT_TRUE(strcmp(window.GetWindowTitle().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(window.GetWindowTitle().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetWindowTitle_001 end";
 }
 
@@ -236,5 +241,5 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, ReadFromParcel_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "ReadFromParcel_001 end";
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

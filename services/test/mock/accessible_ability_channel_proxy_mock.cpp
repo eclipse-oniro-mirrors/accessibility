@@ -12,21 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "accessible_ability_channel_proxy.h"
-#include "parcel.h"
+
 #include "accessibility_errorcode.h"
+#include "parcel.h"
 
 using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
     const sptr<IRemoteObject> &object): IRemoteProxy<IAccessibleAbilityChannel>(object)
-{
-
-}
+{}
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
 {
@@ -40,7 +37,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::M
 }
 
 bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-    const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+    const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int mode)
 {
     return true;
@@ -48,27 +45,27 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
 
 bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibilityWindowId,
     const long elementId, const std::string &text, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return true;
 }
 
 bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibilityWindowId,
     const long elementId, const int focusType, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return true;
 }
 
 bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-    const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::PerformAction(const int accessibilityWindowId, const long elementId,
+bool AccessibleAbilityChannelProxy::ExecuteAction(const int accessibilityWindowId, const long elementId,
     const int action, std::map<std::string, std::string> &actionArguments, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback)
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return true;
 }
@@ -80,13 +77,9 @@ vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows()
     return windows;
 }
 
-bool AccessibleAbilityChannelProxy::PerformCommonAction(const int action)
+bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int action)
 {
     return true;
-}
-
-void AccessibleAbilityChannelProxy::DisableAbility()
-{
 }
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int sequence)
@@ -110,7 +103,7 @@ float AccessibleAbilityChannelProxy::GetDisplayResizeCenterY(const int displayId
 
 Rect AccessibleAbilityChannelProxy::GetDisplayResizeRect(const int displayId)
 {
-    Rect rect(0,0,0,0);
+    Rect rect(0, 0, 0, 0);
     return rect;
 }
 
@@ -120,20 +113,15 @@ bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int displayId, cons
 }
 
 bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-                                        const float centerX, const float centerY, const bool animate)
+    const float centerX, const float centerY, const bool animate)
 {
     return false;
 }
 
-void AccessibleAbilityChannelProxy::SendSimulateGesture(const int sequence,
-                                                            const std::vector<GesturePathDefine> &gestureSteps)
+void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
+    const std::vector<GesturePathDefine> &gestureSteps)
 {
     return;
-}
-
-bool AccessibleAbilityChannelProxy::IsFingerprintGestureDetectionValid()
-{
-    return false;
 }
 
 } // namespace Accessibility

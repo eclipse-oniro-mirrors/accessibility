@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,27 +13,28 @@
  * limitations under the License.
  */
 
+#include "accessible_ability_connection.h"
+
 #include <algorithm>
 #include <map>
 #include <vector>
-#include "accessible_ability_connection.h"
+
 #include "ability_manager_client.h"
+#include "accessibility_window_connection.h"
 #include "accessibility_window_manager.h"
-#include "accessibility_interaction_connection.h"
-#include "singleton.h"
+#include "accessibility_extension_context.h"
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
+#include "singleton.h"
 #include "system_ability_definition.h"
-#include "accessible_ability.h"
-#include "dummy.h"
 
 using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
-    AccessibleAbilityConnection& connection): connection_(connection) {
+    AccessibleAbilityConnection& connection): connection_(connection)
+{
     aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     if (!aams_) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl failed: no aams");
@@ -41,18 +42,15 @@ AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     HILOG_DEBUG("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl successfully");
 }
 
-AccessibleAbilityChannelStubImpl::~AccessibleAbilityChannelStubImpl() {
-
-}
 bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-    const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+    const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int mode)
 {
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
-                                                                                       FOCUS_TYPE_INVALID);
-    sptr<AccessibilityInteractionConnection> connection =
-        accountData->GetAccessibilityInteractionConnection(realWindowId);
+                                                                                           FOCUS_TYPE_INVALID);
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(realWindowId);
     if (!connection) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId failed: no connection");
         return false;
@@ -73,14 +71,14 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const 
 
 bool AccessibleAbilityChannelStubImpl::SearchElementInfosByText(const int accessibilityWindowId,
     const long elementId, const string &text, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback) {
-
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
-                                                                                       FOCUS_TYPE_INVALID);
+                                                                                           FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityInteractionConnection> connection =
-        accountData->GetAccessibilityInteractionConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(realWindowId);
     if (!connection) {
         HILOG_ERROR("SearchElementInfosByText failed");
         return false;
@@ -95,14 +93,14 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfosByText(const int access
 
 bool AccessibleAbilityChannelStubImpl::FindFocusedElementInfo(const int accessibilityWindowId,
     const long elementId, const int focusType, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback) {
-
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
-                                                                                       focusType);
+                                                                                           focusType);
 
-    sptr<AccessibilityInteractionConnection> connection =
-        accountData->GetAccessibilityInteractionConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(realWindowId);
     if (!connection) {
         HILOG_ERROR("FindFocusedElementInfo failed");
         return false;
@@ -116,14 +114,14 @@ bool AccessibleAbilityChannelStubImpl::FindFocusedElementInfo(const int accessib
 }
 
 bool AccessibleAbilityChannelStubImpl::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-    const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) {
-
+    const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
-                                                                                       FOCUS_TYPE_INVALID);
+                                                                                           FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityInteractionConnection> connection =
-        accountData->GetAccessibilityInteractionConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(realWindowId);
     if (!connection) {
         HILOG_ERROR("FocusMoveSearch failed");
         return false;
@@ -136,29 +134,31 @@ bool AccessibleAbilityChannelStubImpl::FocusMoveSearch(const int accessibilityWi
     return true;
 }
 
-bool AccessibleAbilityChannelStubImpl::PerformAction(const int accessibilityWindowId, const long elementId,
+bool AccessibleAbilityChannelStubImpl::ExecuteAction(const int accessibilityWindowId, const long elementId,
     const int action, std::map<std::string, std::string> &actionArguments, const int requestId,
-    const sptr<IAccessibilityInteractionOperationCallback> &callback) {
-    HILOG_DEBUG("PerformAction accessibilityWindowId = %{public}d", accessibilityWindowId);
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
+{
+    HILOG_DEBUG("ExecuteAction accessibilityWindowId = %{public}d", accessibilityWindowId);
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
-                                                                                       FOCUS_TYPE_INVALID);
+                                                                                           FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityInteractionConnection> connection =
-        accountData->GetAccessibilityInteractionConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(realWindowId);
     if (!connection) {
-        HILOG_ERROR("PerformAction failed");
+        HILOG_ERROR("ExecuteAction failed");
         return false;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-        HILOG_ERROR("AccessibleAbilityChannelStubImpl::PerformAction failed: no capability");
+        HILOG_ERROR("AccessibleAbilityChannelStubImpl::ExecuteAction failed: no capability");
         return false;
     }
-    connection->GetProxy()->PerformAction(elementId, action, actionArguments, requestId, callback);
+    connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
     return true;
 }
 
-vector<AccessibilityWindowInfo> AccessibleAbilityChannelStubImpl::GetWindows() {
+vector<AccessibilityWindowInfo> AccessibleAbilityChannelStubImpl::GetWindows()
+{
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::GetWindows failed: no capability");
         vector<AccessibilityWindowInfo> windows;
@@ -175,61 +175,47 @@ vector<AccessibilityWindowInfo> AccessibleAbilityChannelStubImpl::GetWindows() {
     return windowInfos;
 }
 
-bool AccessibleAbilityChannelStubImpl::PerformCommonAction(int action) {
-    HILOG_DEBUG("PerformCommonAction action = %{public}d", action);
+bool AccessibleAbilityChannelStubImpl::ExecuteCommonAction(int action)
+{
+    HILOG_DEBUG("ExecuteCommonAction action = %{public}d", action);
     bool ret = true;
-    switch (action)
-    {
-    case GlobalAction::GLOBAL_ACTION_BACK:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_BACK");
-        break;
-    case GlobalAction::GLOBAL_ACTION_HOME:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_HOME");
-        break;
-    case GlobalAction::GLOBAL_ACTION_RECENT:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_RECENT");
-        break;
-    case GlobalAction::GLOBAL_ACTION_NOTIFICATION:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_NOTIFICATION");
-        break;
-    case GlobalAction::GLOBAL_ACTION_POP_UP_POWER_DIALOG:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_POP_UP_POWER_DIALOG");
-        break;
-    case GlobalAction::GLOBAL_ACTION_DIVIDE_SCREEN:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_DIVIDE_SCREEN");
-        break;
-    case GlobalAction::GLOBAL_ACTION_LOCK_SCREEN:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_LOCK_SCREEN");
-        break;
-    case GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN:
-        HILOG_DEBUG("PerformCommonAction action = GLOBAL_ACTION_CAPTURE_SCREEN");
-        break;
-    default:
-        HILOG_DEBUG("The action is not exist. %{public}d", action);
-        ret = false;
-        break;
+    switch (action) {
+        case GlobalAction::GLOBAL_ACTION_BACK:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_BACK");
+            break;
+        case GlobalAction::GLOBAL_ACTION_HOME:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_HOME");
+            break;
+        case GlobalAction::GLOBAL_ACTION_RECENT:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_RECENT");
+            break;
+        case GlobalAction::GLOBAL_ACTION_NOTIFICATION:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_NOTIFICATION");
+            break;
+        case GlobalAction::GLOBAL_ACTION_POP_UP_POWER_DIALOG:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_POP_UP_POWER_DIALOG");
+            break;
+        case GlobalAction::GLOBAL_ACTION_DIVIDE_SCREEN:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_DIVIDE_SCREEN");
+            break;
+        case GlobalAction::GLOBAL_ACTION_LOCK_SCREEN:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_LOCK_SCREEN");
+            break;
+        case GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN:
+            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_CAPTURE_SCREEN");
+            break;
+        default:
+            HILOG_DEBUG("The action is not exist. %{public}d", action);
+            ret = false;
+            break;
     }
 
     // TODO: need external dependence
     return ret;
 }
 
-void AccessibleAbilityChannelStubImpl::DisableAbility()
+void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handled, const int sequence)
 {
-    connection_.GetAccountData()->RemoveEnabledAbility(connection_.GetElementName());
-
-#if 0
-    aams_->UpdateAbilities();
-
-#else
-    connection_.GetProxy()->Disconnect(connection_.GetChannelId());
-    connection_.OnAbilityDisconnectDone(connection_.GetElementName(), 0);
-
-#endif // 0
-
-}
-
-void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handled, const int sequence) {
     sptr<KeyEventFilter> keyEventFilter = aams_->GetKeyEventFilter();
     if (!keyEventFilter) {
         return;
@@ -237,23 +223,28 @@ void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handl
     keyEventFilter->SetServiceOnKeyEventResult(connection_, handled, sequence);
 }
 
-float AccessibleAbilityChannelStubImpl::GetDisplayResizeScale(const int displayId) {
+float AccessibleAbilityChannelStubImpl::GetDisplayResizeScale(const int displayId)
+{
     return AccessibilityZoomProxy::GetInstance().GetScale(displayId);
 }
 
-float AccessibleAbilityChannelStubImpl::GetDisplayResizeCenterX(const int displayId) {
+float AccessibleAbilityChannelStubImpl::GetDisplayResizeCenterX(const int displayId)
+{
     return AccessibilityZoomProxy::GetInstance().GetCenterX(displayId);
 }
 
-float AccessibleAbilityChannelStubImpl::GetDisplayResizeCenterY(const int displayId) {
+float AccessibleAbilityChannelStubImpl::GetDisplayResizeCenterY(const int displayId)
+{
     return AccessibilityZoomProxy::GetInstance().GetCenterY(displayId);
 }
 
-Rect AccessibleAbilityChannelStubImpl::GetDisplayResizeRect(const int displayId) {
+Rect AccessibleAbilityChannelStubImpl::GetDisplayResizeRect(const int displayId)
+{
     return AccessibilityZoomProxy::GetInstance().GetDisplayResizeRect(displayId);
 }
 
-bool AccessibleAbilityChannelStubImpl::ResetDisplayResize(const int displayId, const bool animate) {
+bool AccessibleAbilityChannelStubImpl::ResetDisplayResize(const int displayId, const bool animate)
+{
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM)) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::ResetDisplayResize failed: no capability");
         return false;
@@ -262,7 +253,8 @@ bool AccessibleAbilityChannelStubImpl::ResetDisplayResize(const int displayId, c
 }
 
 bool AccessibleAbilityChannelStubImpl::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-    const float centerX, const float centerY, const bool animate) {
+    const float centerX, const float centerY, const bool animate)
+{
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM)) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::SetDisplayResizeScaleAndCenter failed: no capability");
         return false;
@@ -270,42 +262,36 @@ bool AccessibleAbilityChannelStubImpl::SetDisplayResizeScaleAndCenter(const int 
     return AccessibilityZoomProxy::GetInstance().SetScaleAndCenter(displayId, scale, centerX, centerY);
 }
 
-void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int sequence,
-    const std::vector<GesturePathDefine> &gestureSteps) {
+void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
+    const std::vector<GesturePathDefine> &gestureSteps)
+{
     sptr<IAccessibleAbilityClient> proxy = connection_.GetProxy();
     if (!proxy) {
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_GESTURE)) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::SendSimulateGesture failed: no capability");
-        proxy->OnGestureSimulateResult(sequence, false);
+        proxy->OnGestureSimulateResult(requestId, false);
         return;
     }
     sptr<TouchEventInjector> touchEventInjector = aams_->GetTouchEventInjector();
     if (!touchEventInjector) {
-        proxy->OnGestureSimulateResult(sequence, false);
+        proxy->OnGestureSimulateResult(requestId, false);
         return;
     }
-    touchEventInjector->InjectEvents(gestureSteps, connection_.GetProxy(), sequence);
+    touchEventInjector->InjectEvents(gestureSteps, connection_.GetProxy(), requestId);
 }
 
-bool AccessibleAbilityChannelStubImpl::IsFingerprintGestureDetectionValid() {
-    // if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_TOUCH_GUIDE)) {
-    //     HILOG_ERROR("AccessibleAbilityChannelStubImpl::IsFingerprintGestureDetectionValid failed: no capability");
-    //     return false;
-    // }
-    return false;
-}
-
-AccessibleAbilityConnection::AccessibleAbilityConnection(const wptr<AccessibilityAccountData> &accountData,
-    int connectionId, AccessibilityAbilityInfo &abilityInfo) {
-
+AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData,
+    int connectionId, AccessibilityAbilityInfo &abilityInfo)
+{
     connectionId_ = connectionId;
     abilityInfo_ = abilityInfo;
     accountData_ = accountData;
 }
 
-AccessibleAbilityConnection::~AccessibleAbilityConnection() {
+AccessibleAbilityConnection::~AccessibleAbilityConnection()
+{
     HILOG_DEBUG(" %{public}s", __func__);
     if (proxy_ && proxy_->AsObject()) {
         proxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
@@ -314,7 +300,8 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection() {
 }
 
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
-        const sptr<IRemoteObject> &remoteObject, int resultCode) {
+    const sptr<IRemoteObject> &remoteObject, int resultCode)
+{
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
@@ -323,7 +310,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         accountData_->RemoveConnectingA11yAbility(elementName_);
 
         // TODO: Notify setting
-
         return;
     }
 
@@ -343,7 +329,8 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
-        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
+        wptr<AccessibilityAccountData> data(accountData_);
+        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(data, elementName_);
     }
 
     if (!proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
@@ -358,7 +345,8 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
 }
 
-void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) {
+void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     if (resultCode != NO_ERROR) {
@@ -375,7 +363,8 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     }
 }
 
-void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo) {
+void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
+{
     HILOG_INFO("OnAccessibilityEvent called");
     if (!proxy_) {
         HILOG_ERROR("OnAccessibilityEvent​ failed");
@@ -384,7 +373,7 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
 
     bool send = false;
     if (IsWhiteListEvent(eventInfo.GetEventType())) {
-        HILOG_DEBUG("Get event type is whilte list!");
+        HILOG_DEBUG("Get event type is white list!");
         send = true;
     } else {
         int windowId = eventInfo.GetWindowId();
@@ -392,7 +381,7 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
         vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
         if (validWindow && IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() ||
             find(filterBundleNames.begin(), filterBundleNames.end(),
-            eventInfo.GetBundleName()) != filterBundleNames.end())) {
+                eventInfo.GetBundleName()) != filterBundleNames.end())) {
             send = true;
         }
     }
@@ -407,8 +396,8 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     return;
 }
 
-
-bool AccessibleAbilityConnection::IsWhiteListEvent(EventType eventType) {
+bool AccessibleAbilityConnection::IsWhiteListEvent(EventType eventType)
+{
     bool ret = false;
     switch (eventType) {
         case EventType::TYPE_PAGE_STATE_UPDATE:
@@ -422,6 +411,8 @@ bool AccessibleAbilityConnection::IsWhiteListEvent(EventType eventType) {
         case EventType::TYPE_TOUCH_END:
         case EventType::TYPE_VIEW_HOVER_ENTER_EVENT:
         case EventType::TYPE_VIEW_HOVER_EXIT_EVENT:
+        case EventType::TYPE_INTERRUPT_EVENT:
+        case EventType::TYPE_GESTURE_EVENT:
         case EventType::TYPE_WINDOW_UPDATE: {
             ret = true;
             break;
@@ -432,23 +423,8 @@ bool AccessibleAbilityConnection::IsWhiteListEvent(EventType eventType) {
     return ret;
 }
 
-void AccessibleAbilityConnection::OnInterrupt() {
-    if (!proxy_) {
-        HILOG_ERROR("OnInterrupt failed");
-        return;
-    }
-    proxy_->OnInterrupt();
-}
-
-void AccessibleAbilityConnection::OnGesture(const int gestureId) {
-    if (!proxy_) {
-        HILOG_ERROR("OnGesture failed");
-        return;
-    }
-    proxy_->OnGesture(gestureId);
-}
-
-bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence) {
+bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
+{
     if (!proxy_) {
         HILOG_ERROR("OnKeyPressEvent failed");
         return false;
@@ -459,24 +435,26 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
         return false;
     }
 
-    if (DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->
-            IsWantedKeyEvent(const_cast<MMI::KeyEvent&>(keyEvent))) {
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (aams->IsWantedKeyEvent(const_cast<MMI::KeyEvent&>(keyEvent))) {
         proxy_->OnKeyPressEvent(keyEvent, sequence);
         return true;
     }
     return false;
 }
 
-void AccessibleAbilityConnection::OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale,
-    const float centerX, const float centerY) {
+void AccessibleAbilityConnection::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
+    const float centerX, const float centerY)
+{
     if (!proxy_) {
-        HILOG_ERROR("OnDisplayResizeChanged​ failed");
+        HILOG_ERROR("OnDisplayResized​ failed");
         return;
     }
-    proxy_->OnDisplayResizeChanged(displayId, rect, scale, centerX, centerY);
+    proxy_->OnDisplayResized(displayId, rect, scale, centerX, centerY);
 }
 
-void AccessibleAbilityConnection::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) {
+void AccessibleAbilityConnection::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully)
+{
     if (!proxy_) {
         HILOG_ERROR("OnGestureSimulateResult failed");
         return;
@@ -484,23 +462,8 @@ void AccessibleAbilityConnection::OnGestureSimulateResult(const int sequence, co
     proxy_->OnGestureSimulateResult(sequence, completedSuccessfully);
 }
 
-void AccessibleAbilityConnection::OnFingerprintGestureValidityChanged(const bool validity) {
-    if (!proxy_) {
-        HILOG_ERROR("OnFingerprintGestureValidityChanged failed");
-        return;
-    }
-    proxy_->OnFingerprintGestureValidityChanged(validity);
-}
-
-void AccessibleAbilityConnection::OnFingerprintGesture(const int gesture) {
-    if (!proxy_) {
-        HILOG_ERROR("OnFingerprintGesture failed");
-        return;
-    }
-    proxy_->OnFingerprintGesture(gesture);
-}
-
-bool AccessibleAbilityConnection::IsWantedEvent(int eventType) {
+bool AccessibleAbilityConnection::IsWantedEvent(int eventType)
+{
     uint32_t type = static_cast<uint32_t>(eventType);
     if ((type & abilityInfo_.GetEventTypes()) != type) {
         return false;
@@ -508,14 +471,16 @@ bool AccessibleAbilityConnection::IsWantedEvent(int eventType) {
     return true;
 }
 
-AAFwk::Want CreateWant(AppExecFwk::ElementName& element) {
+AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
+{
     AAFwk::Want want;
     want.SetElement(element);
 
     return want;
 }
 
-void AccessibleAbilityConnection::Disconnect() {
+void AccessibleAbilityConnection::Disconnect()
+{
     proxy_->Disconnect(connectionId_);
 
     // TODO:
@@ -529,9 +494,21 @@ void AccessibleAbilityConnection::Disconnect() {
 #endif
 }
 
-void AccessibleAbilityConnection::Connect() {
+void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
+{
+    HILOG_DEBUG(" %{public}s start", __func__);
+    elementName_ = element;
     AAFwk::Want want = CreateWant(elementName_);
-    if (AAFwk::AbilityManagerClient::GetInstance()->ConnectAbility(want, this, nullptr) != ERR_OK) {
+    HILOG_DEBUG("GetBundleName is %{public}s ", elementName_.GetBundleName().c_str());
+    HILOG_DEBUG("GetAbilityName is %{public}s ", elementName_.GetAbilityName().c_str());
+    HILOG_DEBUG("current accountId is %{public}d ", accountData_->GetAccountId());
+
+    int uid = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetBundleMgrProxy()->
+    GetUidByBundleName(elementName_.GetBundleName(), accountData_->GetAccountId());
+    HILOG_DEBUG("uid is %{public}d ", uid);
+
+    if (AAFwk::AbilityManagerClient::GetInstance()->ConnectAbility(
+        want, this, nullptr, uid / 200000) != ERR_OK) {
         HILOG_ERROR("ConnectAbility failed!");
         // TODO: Remove this enabled ability from Setting
         return;
@@ -559,9 +536,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     recipientAccountData_->RemoveConnectedAbility(connection);
     recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
-
     // TODO: notify setting
-
 }
 
 } // namespace Accessibility

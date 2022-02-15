@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 #include "accessible_ability_channel_proxy.h"
 #include "mock_accessible_ability_channel_stub.h"
-#include "accessibility_interaction_operation_callback_proxy.h"
+#include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_operator.h"
 #include "gesture_simulation.h"
 
@@ -83,11 +83,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int requestId = 0;
     int mode = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_001 end";
 }
@@ -110,11 +113,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int requestId = 0;
     int mode = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_002 end";
 }
@@ -137,11 +143,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     std::string text = "";
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_001 end";
 }
@@ -164,11 +173,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     std::string text = "";
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_002 end";
 }
@@ -191,11 +203,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int focusType = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_001 end";
 }
@@ -218,11 +233,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int focusType = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_002 end";
 }
@@ -245,11 +263,14 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int direction = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_001 end";
 }
@@ -272,23 +293,26 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     int direction = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH, mock_->code_);
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_002 end";
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_001
- * @tc.name: PerformAction
- * @tc.desc: Test function PerformAction
+ * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001
+ * @tc.name: ExecuteAction
+ * @tc.desc: Test function ExecuteAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_001 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001 start";
 
     EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
         .Times(1)
@@ -300,23 +324,26 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     std::map<std::string, std::string> actionArguments {};
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
-    proxy_->PerformAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+    proxy_->ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::PERFORM_ACTION, mock_->code_);
 
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_001 end";
+    stub = nullptr;
+    callback = nullptr;
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001 end";
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_002
- * @tc.name: PerformAction
- * @tc.desc: Test function PerformAction
+ * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002
+ * @tc.name: ExecuteAction
+ * @tc.desc: Test function ExecuteAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_002 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002 start";
 
     EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
         .Times(1)
@@ -328,13 +355,16 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
     std::map<std::string, std::string> actionArguments {};
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
-    proxy_->PerformAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+    proxy_->ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::PERFORM_ACTION, mock_->code_);
 
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformAction_002 end";
+    stub = nullptr;
+    callback = nullptr;
+
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002 end";
 }
 
 /**
@@ -376,13 +406,13 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_001
- * @tc.name: PerformCommonAction
- * @tc.desc: Test function PerformCommonAction
+ * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001
+ * @tc.name: ExecuteCommonAction
+ * @tc.desc: Test function ExecuteCommonAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_001 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001 start";
 
     EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
         .Times(1)
@@ -390,20 +420,20 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
 
     int action = 0;
 
-    proxy_->PerformCommonAction(action);
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::PERFORM_COMMON_ACTION, mock_->code_);
+    proxy_->ExecuteCommonAction(action);
+    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION, mock_->code_);
 
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_001 end";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001 end";
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_002
- * @tc.name: PerformCommonAction
- * @tc.desc: Test function PerformCommonAction
+ * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002
+ * @tc.name: ExecuteCommonAction
+ * @tc.desc: Test function ExecuteCommonAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_002 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002 start";
 
     EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
         .Times(1)
@@ -411,48 +441,10 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
 
     int action = 0;
 
-    proxy_->PerformCommonAction(action);
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::PERFORM_COMMON_ACTION, mock_->code_);
+    proxy_->ExecuteCommonAction(action);
+    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION, mock_->code_);
 
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_PerformCommonAction_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_001
- * @tc.name: DisableAbility
- * @tc.desc: Test function DisableAbility
- */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_001 start";
-
-    EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
-        .Times(1)
-        .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeSendRequest));
-
-    proxy_->DisableAbility();
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::DISABLE_ABILITY, mock_->code_);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_002
- * @tc.name: DisableAbility
- * @tc.desc: Test function DisableAbility
- */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_002 start";
-
-    EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
-        .Times(1)
-        .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeErrorSendRequest));
-
-    proxy_->DisableAbility();
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::DISABLE_ABILITY, mock_->code_);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_DisableAbility_002 end";
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002 end";
 }
 
 /**
@@ -774,10 +766,10 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
         .Times(1)
         .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeSendRequest));
 
-    int sequence = 0;
+    int requestId = 0;
     std::vector<GesturePathDefine> gestureSteps {};
 
-    proxy_->SendSimulateGesture(sequence, gestureSteps);
+    proxy_->SendSimulateGesture(requestId, gestureSteps);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE, mock_->code_);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_001 end";
@@ -796,49 +788,11 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
         .Times(1)
         .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeErrorSendRequest));
 
-    int sequence = 0;
+    int requestId = 0;
     std::vector<GesturePathDefine> gestureSteps {};
 
-    proxy_->SendSimulateGesture(sequence, gestureSteps);
+    proxy_->SendSimulateGesture(requestId, gestureSteps);
     EXPECT_EQ((int)IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE, mock_->code_);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_001
- * @tc.name: IsFingerprintGestureDetectionValid
- * @tc.desc: Test function IsFingerprintGestureDetectionValid
- */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_001 start";
-
-    EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
-        .Times(1)
-        .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeSendRequest));
-
-    proxy_->IsFingerprintGestureDetectionValid();
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::IS_FINGERPRINT_GESTURE_DETECTION_VALID, mock_->code_);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_002
- * @tc.name: IsFingerprintGestureDetectionValid
- * @tc.desc: Test function IsFingerprintGestureDetectionValid
- */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_002 start";
-
-    EXPECT_CALL(*mock_, SendRequest(_, _, _, _))
-        .Times(1)
-        .WillOnce(Invoke(mock_.GetRefPtr(), &AccessibleAbilityChannelStubMock::InvokeErrorSendRequest));
-
-    proxy_->IsFingerprintGestureDetectionValid();
-    EXPECT_EQ((int)IAccessibleAbilityChannel::Message::IS_FINGERPRINT_GESTURE_DETECTION_VALID, mock_->code_);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_IsFingerprintGestureDetectionValid_002 end";
 }

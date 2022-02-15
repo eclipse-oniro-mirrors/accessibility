@@ -13,20 +13,26 @@
  * limitations under the License.
  */
 
-#include <vector>
-#include "hilog_wrapper.h"
-#include "napi_accessibility_event_info.h"
-#include "napi_accessibility_info.h"
 #include "napi_accessibility_utils.h"
-#include "napi_accessibility_window_info.h"
+
+#include <vector>
+
+#include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessible_ability.h"
+#include "napi_accessibility_event_info.h"
+#include "napi_accessibility_info.h"
+#include "napi_accessibility_window_info.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-std::string GetStringFromNAPI(napi_env env, napi_value value) {
+napi_value NElementInfo::cons_ = nullptr;
+napi_value NAccessibilityWindowInfo::cons_ = nullptr;
+napi_value NAccessibilityEventInfo::cons_ = nullptr;
+
+std::string GetStringFromNAPI(napi_env env, napi_value value)
+{
     std::string result;
     size_t size = 0;
 
@@ -43,7 +49,8 @@ std::string GetStringFromNAPI(napi_env env, napi_value value) {
     return result;
 }
 
-bool ParseString(napi_env env, std::string &param, napi_value args) {
+bool ParseString(napi_env env, std::string& param, napi_value args)
+{
     napi_status status;
     napi_valuetype valuetype;
     status = napi_typeof(env, args, &valuetype);
@@ -57,7 +64,7 @@ bool ParseString(napi_env env, std::string &param, napi_value args) {
     return true;
 }
 
-bool ParseUint32(napi_env env, uint32_t &param, napi_value args)
+bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
 {
     napi_status status;
     napi_valuetype valuetype;
@@ -72,7 +79,8 @@ bool ParseUint32(napi_env env, uint32_t &param, napi_value args)
     return true;
 }
 
-napi_value GetErrorValue(napi_env env, int errCode) {
+napi_value GetErrorValue(napi_env env, int errCode)
+{
     napi_value result = nullptr;
     napi_value eCode = nullptr;
     NAPI_CALL(env, napi_create_int32(env, errCode, &eCode));
@@ -84,7 +92,8 @@ napi_value GetErrorValue(napi_env env, int errCode) {
 /**********************************************************
  * Convert native object to js object
  *********************************************************/
-void ConvertRectToJS(napi_env env, napi_value result, Accessibility::Rect& rect) {
+static void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect& rect)
+{
     napi_value nLeftTopX;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetLeftTopXScreenPostion(), &nLeftTopX));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "leftTopX", nLeftTopX));
@@ -102,14 +111,14 @@ void ConvertRectToJS(napi_env env, napi_value result, Accessibility::Rect& rect)
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rightBottomY", nRightBottomY));
 }
 
-static std::string ConvertWindowTypeToString(WindowType type) {
+static std::string ConvertWindowTypeToString(WindowType type)
+{
     static const std::map<WindowType, const std::string> windowTypeTable = {
         {WindowType::TYPE_ACCESSIBILITY_OVERLAY, "accessibilityOverlay"},
         {WindowType::TYPE_APPLICATION, "application"},
         {WindowType::TYPE_INPUT_METHOD, "inputMethod"},
         {WindowType::TYPE_SPLIT_SCREEN_DIVIDER, "screenDivider"},
-        {WindowType::TYPE_SYSTEM, "system"}
-    };
+        {WindowType::TYPE_SYSTEM, "system"}};
 
     if (windowTypeTable.find(type) == windowTypeTable.end()) {
         return "";
@@ -118,7 +127,121 @@ static std::string ConvertWindowTypeToString(WindowType type) {
     return windowTypeTable.at(type);
 }
 
-void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value result, AccessibilityAbilityInfo& info)
+static std::string CoverGestureTypeToString(GestureType type)
+{
+    static const std::map<GestureType, const std::string> gestureTypeTable = {
+        {GestureType::GESTURE_SWIPE_LEFT, "left"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT, "leftThenRight"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_UP, "leftThenUp"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN, "leftThenDown"},
+        {GestureType::GESTURE_SWIPE_RIGHT, "right"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT, "rightThenLeft"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_UP, "rightThenUp"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN, "rightThenDown"},
+        {GestureType::GESTURE_SWIPE_UP, "up"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_LEFT, "upThenLeft"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_RIGHT, "upThenRight"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_DOWN, "upThenDown"},
+        {GestureType::GESTURE_SWIPE_DOWN, "down"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT, "downThenLeft"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT, "downThenRight"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_UP, "downThenUp"}
+    };
+
+    if (gestureTypeTable.find(type) == gestureTypeTable.end()) {
+        return "";
+    }
+
+    return gestureTypeTable.at(type);
+}
+
+static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
+{
+    std::vector<std::string> result;
+    static std::map<EventType, std::string> accessibilityEventTable = {{EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
+        {EventType::TYPE_VIEW_LONG_CLICKED_EVENT, "longClick"},
+        {EventType::TYPE_VIEW_SELECTED_EVENT, "select"},
+        {EventType::TYPE_VIEW_FOCUSED_EVENT, "focus"},
+        {EventType::TYPE_VIEW_TEXT_UPDATE_EVENT, "textUpdate"},
+        {EventType::TYPE_PAGE_STATE_UPDATE, "pageStateUpdate"},
+        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
+        {EventType::TYPE_VIEW_HOVER_ENTER_EVENT, "hoverEnter"},
+        {EventType::TYPE_VIEW_HOVER_EXIT_EVENT, "hoverExit"},
+        {EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN, "touchGuideGestureBegin"},
+        {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
+        {EventType::TYPE_PAGE_CONTENT_UPDATE, "pageContentUpdate"},
+        {EventType::TYPE_VIEW_SCROLLED_EVENT, "scroll"},
+        {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
+        {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
+        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
+        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
+        {EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT, "textMoveUnit"},
+        {EventType::TYPE_TOUCH_GUIDE_BEGIN, "touchGuideBegin"},
+        {EventType::TYPE_TOUCH_GUIDE_END, "touchGuideEnd"},
+        {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
+        {EventType::TYPE_TOUCH_END, "touchEnd"},
+        {EventType::TYPE_WINDOW_UPDATE, "windowUpdate"},
+        {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
+        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
+
+    for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
+         itr != accessibilityEventTable.end();) {
+        if (eventTypesValue & itr->first) {
+            result.push_back(itr->second);
+        }
+        ++itr;
+    }
+
+    return result;
+}
+
+static std::vector<std::string> ParseAbilityTypesToVec(uint32_t abilityTypesValue)
+{
+    std::vector<std::string> result;
+
+    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) {
+        result.push_back("spoken");
+    }
+    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) {
+        result.push_back("haptic");
+    }
+    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE) {
+        result.push_back("audible");
+    }
+    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL) {
+        result.push_back("visual");
+    }
+    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC) {
+        result.push_back("generic");
+    }
+
+    return result;
+}
+
+static std::vector<std::string> ParseCapabilitiesToVec(uint32_t capabilitiesValue)
+{
+    std::vector<std::string> result;
+
+    if (capabilitiesValue & Capability::CAPABILITY_RETRIEVE) {
+        result.push_back("retrieve");
+    }
+    if (capabilitiesValue & Capability::CAPABILITY_TOUCH_GUIDE) {
+        result.push_back("touchGuide");
+    }
+    if (capabilitiesValue & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
+        result.push_back("keyEventObserver");
+    }
+    if (capabilitiesValue & Capability::CAPABILITY_ZOOM) {
+        result.push_back("zoom");
+    }
+    if (capabilitiesValue & Capability::CAPABILITY_GESTURE) {
+        result.push_back("gesture");
+    }
+
+    return result;
+}
+
+static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, AccessibilityAbilityInfo& info)
 {
     napi_value nId;
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetId().c_str(), NAPI_AUTO_LENGTH, &nId));
@@ -129,14 +252,9 @@ void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value result, Accessibi
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "name", nName));
 
     napi_value nBundleName;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetPackageName().c_str(), NAPI_AUTO_LENGTH, &nBundleName));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, info.GetPackageName().c_str(), NAPI_AUTO_LENGTH, &nBundleName));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", nBundleName));
-
-    napi_value ability;
-    napi_create_object(env, &ability);
-    OHOS::AppExecFwk::AbilityInfo abilityInfo = info.GetAbilityInfo();
-    ConvertAbilityInfoToJS(env, ability, abilityInfo);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "abilityInfo", ability));
 
     napi_value nAbilityType;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nAbilityType));
@@ -161,7 +279,8 @@ void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value result, Accessibi
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "capabilities", nCapabilities));
 
     napi_value description;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetDescription().c_str(), NAPI_AUTO_LENGTH, &description));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, info.GetDescription().c_str(), NAPI_AUTO_LENGTH, &description));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", description));
 
     napi_value nEventTypes;
@@ -175,298 +294,23 @@ void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value result, Accessibi
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "eventTypes", nEventTypes));
 
-    // napi_value fingerprintGestureInterception;
-    // NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, info.GetFingerprintGestureInterception(),
-    //     &fingerprintGestureInterception));
-    // NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fingerprintGestureInterception",
-    //     fingerprintGestureInterception));
-
-    // napi_value keyEventInterception;
-    // NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, info.GetKeyEventType(), &keyEventInterception));
-    // NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyEventInterception", keyEventInterception));
-
-    // napi_value uiInteractiveTime;
-    // NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, info.GetUiInteractiveTime(), &uiInteractiveTime));
-    // NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "uiInteractiveTime", uiInteractiveTime));
-
-    // napi_value uiNoninteractiveTime;
-    // NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, info.GetUiNoninteractiveTime(), &uiNoninteractiveTime));
-    // NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "uiNoninteractiveTime", uiNoninteractiveTime));
-
     napi_value filterBundleNames;
     size_t idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &filterBundleNames));
     std::vector<std::string> strFilterBundleNames = info.GetFilterBundleNames();
     for (auto filterBundleName : strFilterBundleNames) {
         napi_value bundleName;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, filterBundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
+        NAPI_CALL_RETURN_VOID(
+            env, napi_create_string_utf8(env, filterBundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, filterBundleNames, idx, bundleName));
         idx++;
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "filterBundleNames", filterBundleNames));
 }
 
-void ConvertAbilityApplicationInfoToJS(napi_env env, napi_value result, OHOS::AppExecFwk::ApplicationInfo& info)
+void ConvertAccessibilityWindowInfoToJS(
+    napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
 {
-    napi_value name;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.name.c_str(), NAPI_AUTO_LENGTH, &name));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "name", name));
-
-    napi_value bundleName;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.bundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", bundleName));
-
-    napi_value description;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.description.c_str(), NAPI_AUTO_LENGTH, &description));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", description));
-
-    napi_value iconPath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.iconPath.c_str(), NAPI_AUTO_LENGTH, &iconPath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "iconPath", iconPath));
-
-    napi_value label;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.label.c_str(), NAPI_AUTO_LENGTH, &label));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "label", label));
-
-    napi_value labelId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, int32_t(info.labelId), &labelId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "labelId", labelId));
-
-    napi_value iconId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, int32_t(info.iconId), &iconId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "iconId", iconId));
-
-    napi_value descriptionId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, int32_t(info.descriptionId), &descriptionId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "descriptionId", descriptionId));
-
-    napi_value deviceId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.deviceId.c_str(), NAPI_AUTO_LENGTH, &deviceId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deviceId", deviceId));
-
-    napi_value signatureKey;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.signatureKey.c_str(), NAPI_AUTO_LENGTH, &signatureKey));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "signatureKey", signatureKey));
-
-    napi_value isSystemApp;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.isSystemApp, &isSystemApp));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "systemApp", isSystemApp));
-
-    napi_value isLauncherApp;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.isLauncherApp, &isLauncherApp));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isLauncherApp", isLauncherApp));
-
-    napi_value supportedModes;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, int32_t(info.supportedModes), &supportedModes));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "supportedModes", supportedModes));
-
-    napi_value process;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.process.c_str(), NAPI_AUTO_LENGTH, &process));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "process", process));
-
-    napi_value permissions;
-    size_t idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &permissions));
-    for (auto permission : info.permissions) {
-        napi_value per;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, permission.c_str(), NAPI_AUTO_LENGTH, &per));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, permissions, idx, per));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "permissions", permissions));
-
-    napi_value moduleSourceDirs;
-    idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &moduleSourceDirs));
-    for (auto moduleSourceDir : info.moduleSourceDirs) {
-        napi_value moduleSource;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, moduleSourceDir.c_str(), NAPI_AUTO_LENGTH, &moduleSource));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, moduleSourceDirs, idx, moduleSource));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "moduleSourceDirs", moduleSourceDirs));
-
-    napi_value moduleInfos;
-    idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &moduleInfos));
-    for (auto moduleInfo : info.moduleInfos) {
-        napi_value module = 0;
-        napi_value moduleName;
-        napi_value moduleSourceDir;
-        napi_create_object(env, &module);
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, moduleInfo.moduleName.c_str(), NAPI_AUTO_LENGTH, &moduleName));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, module, "moduleName", moduleName));
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, moduleInfo.moduleSourceDir.c_str(), NAPI_AUTO_LENGTH, &moduleSourceDir));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, module, "moduleSourceDir", moduleSourceDir));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, moduleInfos, idx, module));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "moduleInfos", moduleInfos));
-
-    napi_value entryDir;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.entryDir.c_str(), NAPI_AUTO_LENGTH, &entryDir));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "entryDir", entryDir));
-
-    napi_value codePath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.codePath.c_str(), NAPI_AUTO_LENGTH, &codePath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "codePath", codePath));
-
-    napi_value dataDir;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.dataDir.c_str(), NAPI_AUTO_LENGTH, &dataDir));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "dataDir", dataDir));
-
-    napi_value dataBaseDir;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.dataBaseDir.c_str(), NAPI_AUTO_LENGTH, &dataBaseDir));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "dataBaseDir", dataBaseDir));
-
-    napi_value cacheDir;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.cacheDir.c_str(), NAPI_AUTO_LENGTH, &cacheDir));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "cacheDir", cacheDir));
-
-    napi_value flags;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, int32_t(info.flags), &flags));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "flags", flags));
-
-    napi_value enabled;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.enabled, &enabled));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "enabled", enabled));
-}
-
-void ConvertAbilityInfoToJS(napi_env env, napi_value result, OHOS::AppExecFwk::AbilityInfo& info)
-{
-    napi_value name;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.name.c_str(), NAPI_AUTO_LENGTH, &name));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "name", name));
-
-    napi_value label;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.label.c_str(), NAPI_AUTO_LENGTH, &label));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "label", label));
-
-    napi_value description;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.description.c_str(), NAPI_AUTO_LENGTH, &description));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", description));
-
-    napi_value iconPath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.iconPath.c_str(), NAPI_AUTO_LENGTH, &iconPath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "iconPath", iconPath));
-
-    napi_value visible;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.visible, &visible));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "visible", visible));
-
-    napi_value kind;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.kind.c_str(), NAPI_AUTO_LENGTH, &kind));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "kind", kind));
-
-    napi_value type;
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, uint32_t(info.type), &type));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", type));
-
-    napi_value orientation;
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, uint32_t(info.orientation), &orientation));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "orientation", orientation));
-
-    napi_value launchMode;
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, uint32_t(info.launchMode), &launchMode));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "launchMode", launchMode));
-
-    napi_value permissions;
-    size_t idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &permissions));
-    for (auto permission : info.permissions) {
-        napi_value per;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, permission.c_str(), NAPI_AUTO_LENGTH, &per));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, permissions, idx, per));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "permissions", permissions));
-
-    napi_value process;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.process.c_str(), NAPI_AUTO_LENGTH, &process));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "process", process));
-
-    napi_value deviceTypes;
-    idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &deviceTypes));
-    for (auto deviceType : info.deviceTypes) {
-        napi_value device;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, deviceType.c_str(), NAPI_AUTO_LENGTH, &device));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, deviceTypes, idx, device));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deviceTypes", deviceTypes));
-
-    napi_value deviceCapabilities;
-    idx = 0;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &deviceCapabilities));
-    for (auto deviceCap : info.deviceCapabilities) {
-        napi_value cap;
-        NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, deviceCap.c_str(), NAPI_AUTO_LENGTH, &cap));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, deviceCapabilities, idx, cap));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deviceCapabilities", deviceCapabilities));
-
-    napi_value uri;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.uri.c_str(), NAPI_AUTO_LENGTH, &uri));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "uri", uri));
-
-    napi_value targetAbility;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.targetAbility.c_str(), NAPI_AUTO_LENGTH, &targetAbility));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "targetAbility", targetAbility));
-
-    napi_value applicationInfo = 0;
-    napi_create_object(env, &applicationInfo);
-    ConvertAbilityApplicationInfoToJS(env, applicationInfo, info.applicationInfo);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "applicationInfo", applicationInfo));
-
-    napi_value isLauncherAbility;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.isLauncherAbility, &isLauncherAbility));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isLauncherAbility", isLauncherAbility));
-
-    napi_value isNativeAbility;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.isNativeAbility, &isNativeAbility));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isNativeAbility", isNativeAbility));
-
-    napi_value enabled;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, info.enabled, &enabled));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "enabled", enabled));
-
-    napi_value package;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.package.c_str(), NAPI_AUTO_LENGTH, &package));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "package", package));
-
-    napi_value bundleName;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.bundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", bundleName));
-
-    napi_value moduleName;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.moduleName.c_str(), NAPI_AUTO_LENGTH, &moduleName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "moduleName", moduleName));
-
-    napi_value applicationName;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.applicationName.c_str(), NAPI_AUTO_LENGTH, &applicationName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "applicationName", applicationName));
-
-    napi_value deviceId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.deviceId.c_str(), NAPI_AUTO_LENGTH, &deviceId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deviceId", deviceId));
-
-    napi_value codePath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.codePath.c_str(), NAPI_AUTO_LENGTH, &codePath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "codePath", codePath));
-
-    napi_value resourcePath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.resourcePath.c_str(), NAPI_AUTO_LENGTH, &resourcePath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "resourcePath", resourcePath));
-
-    napi_value libPath;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.libPath.c_str(), NAPI_AUTO_LENGTH, &libPath));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "libPath", libPath));
-
-}
-
-void ConvertAccessibilityWindowInfoToJS(napi_env env, napi_value result, AccessibilityWindowInfo& accessibilityWindowInfo) {
     napi_value nRect;
     NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nRect));
     Accessibility::Rect rect = accessibilityWindowInfo.GetRectInScreen();
@@ -487,16 +331,15 @@ void ConvertAccessibilityWindowInfoToJS(napi_env env, napi_value result, Accessi
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "title", nTitle));
 
     napi_value nWindowType;
-    WindowType windowType = accessibilityWindowInfo.GetWindowType();
-    std::string strWindowType = ConvertWindowTypeToString(windowType);
+    std::string strWindowType = ConvertWindowTypeToString(accessibilityWindowInfo.GetWindowType());
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strWindowType.c_str(), NAPI_AUTO_LENGTH, &nWindowType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", nWindowType));
 
+    uint32_t idx = 0;
     napi_value nChildIds;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nChildIds));
     std::vector<int> childIds = accessibilityWindowInfo.GetChildIds();
     for (auto childId : childIds) {
-        size_t idx = 0;
         napi_value nChildId;
         NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, childId, &nChildId));
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nChildIds, idx, nChildId));
@@ -509,34 +352,37 @@ void ConvertAccessibilityWindowInfoToJS(napi_env env, napi_value result, Accessi
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "parentId", nParentId));
 
     napi_value nAccessibilityFocused;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env,
-        accessibilityWindowInfo.IsAccessibilityFocused(), &nAccessibilityFocused));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_get_boolean(env, accessibilityWindowInfo.IsAccessibilityFocused(), &nAccessibilityFocused));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isAccessibilityFocused", nAccessibilityFocused));
 
     napi_value nIsActive;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env,
-        accessibilityWindowInfo.IsActive(), &nIsActive));
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, accessibilityWindowInfo.IsActive(), &nIsActive));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isActive", nIsActive));
 
     napi_value nIsFocused;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env,
-        accessibilityWindowInfo.IsFocused(), &nIsFocused));
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, accessibilityWindowInfo.IsFocused(), &nIsFocused));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isFocused", nIsFocused));
 
     // Bind js object to a Native object
     AccessibilityWindowInfo* pAccessibilityWindowInfo = new AccessibilityWindowInfo();
     *pAccessibilityWindowInfo = accessibilityWindowInfo;
-    napi_status sts = napi_wrap(env, result, pAccessibilityWindowInfo,
-                                [](napi_env env, void* data, void* hint) {
-                                    AccessibilityWindowInfo* info = (AccessibilityWindowInfo*)data;
-                                    delete info;
-                                },
-                                nullptr, nullptr);
+    napi_status sts = napi_wrap(
+        env,
+        result,
+        pAccessibilityWindowInfo,
+        [](napi_env env, void* data, void* hint) {
+            AccessibilityWindowInfo* info = (AccessibilityWindowInfo*)data;
+            delete info;
+        },
+        nullptr,
+        nullptr);
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 
-void ConvertAccessibilityWindowInfosToJS(napi_env env, napi_value result,
-    std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos) {
+void ConvertAccessibilityWindowInfosToJS(
+    napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
+{
     size_t idx = 0;
 
     if (accessibilityWindowInfos.empty()) {
@@ -552,7 +398,7 @@ void ConvertAccessibilityWindowInfosToJS(napi_env env, napi_value result,
     }
 }
 
-void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value result,
+void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos)
 {
     size_t index = 0;
@@ -570,7 +416,8 @@ void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value result,
     }
 }
 
-static const std::string ConvertAccessibilityEventTypeToString(EventType type) {
+static const std::string ConvertAccessibilityEventTypeToString(EventType type)
+{
     static const std::map<EventType, const std::string> a11yEvtTypeTable = {
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
@@ -595,8 +442,8 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type) {
         {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
         {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
         {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
-        // {EventType::TYPE_VIEW_CONTEXT_CLICKED_EVENT, ""}
-    };
+        {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
+        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -605,8 +452,9 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type) {
     return a11yEvtTypeTable.at(type);
 }
 
-static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type) {
-    static const std::map<WindowUpdateType, const std::string> WindowUpdateTypeTable = {
+static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
+{
+    static const std::map<WindowUpdateType, const std::string> windowUpdateTypeTable = {
         {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
         {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"},
         {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
@@ -617,17 +465,17 @@ static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type) 
         {WindowUpdateType::WINDOW_UPDATE_LAYER, "layer"},
         {WindowUpdateType::WINDOW_UPDATE_PARENT, "parent"},
         {WindowUpdateType::WINDOW_UPDATE_CHILDREN, "children"},
-        {WindowUpdateType::WINDOW_UPDATE_PIP, "pip"}
-    };
+        {WindowUpdateType::WINDOW_UPDATE_PIP, "pip"}};
 
-    if (WindowUpdateTypeTable.find(type) == WindowUpdateTypeTable.end()) {
+    if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
         return "";
     }
 
-    return WindowUpdateTypeTable.at(type);
+    return windowUpdateTypeTable.at(type);
 }
 
-static const std::string ConvertOperationTypeToString(ActionType type) {
+static const std::string ConvertOperationTypeToString(ActionType type)
+{
     static const std::map<ActionType, const std::string> triggerActionTable = {
         {ActionType::ACCESSIBILITY_ACTION_FOCUS, "focus"},
         {ActionType::ACCESSIBILITY_ACTION_CLEAR_FOCUS, "clearFocus"},
@@ -660,14 +508,13 @@ static const std::string ConvertOperationTypeToString(ActionType type) {
     return triggerActionTable.at(type);
 }
 
-static const std::string CovertTextMoveStepToString(TextMoveUnit step) {
-    static const std::map<TextMoveUnit, const std::string> textMoveStepTable = {
-        {TextMoveUnit::STEP_CHARACTER, "char"},
+static const std::string CovertTextMoveStepToString(TextMoveUnit step)
+{
+    static const std::map<TextMoveUnit, const std::string> textMoveStepTable = {{TextMoveUnit::STEP_CHARACTER, "char"},
         {TextMoveUnit::STEP_WORD, "word"},
         {TextMoveUnit::STEP_LINE, "line"},
         {TextMoveUnit::STEP_PAGE, "page"},
-        {TextMoveUnit::STEP_PARAGRAPH, "paragraph"}
-    };
+        {TextMoveUnit::STEP_PARAGRAPH, "paragraph"}};
 
     if (textMoveStepTable.find(step) == textMoveStepTable.end()) {
         return "";
@@ -676,7 +523,8 @@ static const std::string CovertTextMoveStepToString(TextMoveUnit step) {
     return textMoveStepTable.at(step);
 }
 
-static const std::string ConvertCategoryNotificationToString(NotificationCategory category) {
+static const std::string ConvertCategoryNotificationToString(NotificationCategory category)
+{
     static const std::map<NotificationCategory, const std::string> categoryTable = {
         {NotificationCategory::CATEGORY_CALL, "call"},
         {NotificationCategory::CATEGORY_MSG, "msg"},
@@ -700,8 +548,8 @@ static const std::string ConvertCategoryNotificationToString(NotificationCategor
     return categoryTable.at(category);
 }
 
-void ConvertAccessibilityEventInfoToJS(napi_env env,napi_value objEventInfo, const AccessibilityEventInfo &eventInfo) {
-
+void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo)
+{
     napi_value nType;
     EventType type = eventInfo.GetEventType();
     std::string strType = ConvertAccessibilityEventTypeToString(type);
@@ -712,8 +560,8 @@ void ConvertAccessibilityEventInfoToJS(napi_env env,napi_value objEventInfo, con
     napi_value nWindowUpdateType;
     WindowUpdateType windowUpdateType = eventInfo.GetWindowChangeTypes();
     std::string strWindowUpdateType = ConvertWindowUpdateTypeToString(windowUpdateType);
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, strWindowUpdateType.c_str(), NAPI_AUTO_LENGTH, &nWindowUpdateType));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, strWindowUpdateType.c_str(), NAPI_AUTO_LENGTH, &nWindowUpdateType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "windowUpdateType", nWindowUpdateType));
     HILOG_DEBUG("%{public}s: windowUpdateType[%{public}s]", __func__, strWindowUpdateType.c_str());
 
@@ -759,8 +607,8 @@ void ConvertAccessibilityEventInfoToJS(napi_env env,napi_value objEventInfo, con
     napi_value nTriggerAction;
     ActionType triggerAction = eventInfo.GetTriggerAction();
     std::string strTriggerAction = ConvertOperationTypeToString(triggerAction);
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, strTriggerAction.c_str(), NAPI_AUTO_LENGTH, &nTriggerAction));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, strTriggerAction.c_str(), NAPI_AUTO_LENGTH, &nTriggerAction));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "triggerAction", nTriggerAction));
 
     napi_value nTextMoveUnit;
@@ -805,32 +653,39 @@ void ConvertAccessibilityEventInfoToJS(napi_env env,napi_value objEventInfo, con
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, itemCount, &nItemCount));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "itemCount", nItemCount));
 
-    // napi_value nBeforeText;
-    // std::string beforeText = eventInfo.GetBeforeText();
-    // NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, beforeText.c_str(), NAPI_AUTO_LENGTH, &nBeforeText));
-    // NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "beforeText", nBeforeText));
-
     napi_value nCategoryNotification;
     NotificationCategory categoryNotification = eventInfo.GetNotificationInfo();
     std::string strCategoryNotification = ConvertCategoryNotificationToString(categoryNotification);
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, strCategoryNotification.c_str(), NAPI_AUTO_LENGTH, &nCategoryNotification));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_set_named_property(env, objEventInfo, "categoryNotification", nCategoryNotification));
+
+    napi_value nGestureType;
+    GestureType gestureType = eventInfo.GetGestureType();
+    std::string strGestureType = CoverGestureTypeToString(gestureType);
     NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, strCategoryNotification.c_str(), NAPI_AUTO_LENGTH, &nCategoryNotification));
-    NAPI_CALL_RETURN_VOID(env,
-        napi_set_named_property(env, objEventInfo, "categoryNotification", nCategoryNotification));
+        napi_create_string_utf8(env, strGestureType.c_str(), NAPI_AUTO_LENGTH, &nGestureType));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "gestureType", nGestureType));
 
     // Bind js object to a Native object
     AccessibilityEventInfo* pAccessibilityEventInfo = new AccessibilityEventInfo();
     *pAccessibilityEventInfo = eventInfo;
-    napi_status sts = napi_wrap(env, objEventInfo, pAccessibilityEventInfo,
-                                [](napi_env env, void* data, void* hint) {
-                                    AccessibilityEventInfo* info = (AccessibilityEventInfo*)data;
-                                    delete info;
-                                },
-                                nullptr, nullptr);
+    napi_status sts = napi_wrap(
+        env,
+        objEventInfo,
+        pAccessibilityEventInfo,
+        [](napi_env env, void* data, void* hint) {
+            AccessibilityEventInfo* info = (AccessibilityEventInfo*)data;
+            delete info;
+        },
+        nullptr,
+        nullptr);
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 
-void ConvertOperationToJS(napi_env env, napi_value result, AccessibleAction& operation) {
+static void ConvertOperationToJS(napi_env env, napi_value result, const AccessibleAction& operation)
+{
     napi_value nType;
     ActionType type = operation.GetActionType();
     std::string strType = ConvertOperationTypeToString(type);
@@ -844,21 +699,8 @@ void ConvertOperationToJS(napi_env env, napi_value result, AccessibleAction& ope
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
 }
 
-void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, OHOS::Accessibility::RangeInfo& rangeInfo) {
-    napi_value nMin;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMin(), &nMin));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "min", nMin));
-
-    napi_value nMax;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMax(), &nMax));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "max", nMax));
-
-    napi_value nCurrent;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetCurrent(), &nCurrent));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "current", nCurrent));
-}
-
-void ConvertGridInfoToJS(napi_env env, napi_value nGrid, OHOS::Accessibility::GridInfo& grid) {
+static void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid)
+{
     napi_value nRowCount;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetRowCount(), &nRowCount));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "rowCount", nRowCount));
@@ -872,7 +714,37 @@ void ConvertGridInfoToJS(napi_env env, napi_value nGrid, OHOS::Accessibility::Gr
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "selectionMode", nSelectionMode));
 }
 
-void ConvertGridItemToJS(napi_env env, napi_value nGridItem, GridItemInfo& gridItem) {
+void ConvertElementInfosToJS(
+    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
+{
+    size_t index = 0;
+
+    for (auto& elementInfo : elementInfos) {
+        napi_value obj = nullptr;
+        napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
+        ConvertElementInfoToJS(env, obj, elementInfo);
+        napi_set_element(env, result, index, obj);
+        index++;
+    }
+}
+
+static void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo)
+{
+    napi_value nMin;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMin(), &nMin));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "min", nMin));
+
+    napi_value nMax;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMax(), &nMax));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "max", nMax));
+
+    napi_value nCurrent;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetCurrent(), &nCurrent));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "current", nCurrent));
+}
+
+static void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo& gridItem)
+{
     napi_value nHeading;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsHeading(), &nHeading));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "heading", nHeading));
@@ -898,22 +770,8 @@ void ConvertGridItemToJS(napi_env env, napi_value nGridItem, GridItemInfo& gridI
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "selected", nSelected));
 }
 
-void ConvertElementInfosToJS(napi_env env, napi_value result,
-    std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
+void ConvertElementInfoToJS(napi_env env, napi_value result, const AccessibilityElementInfo& elementInfo)
 {
-    size_t index = 0;
-
-    for (auto& elementInfo : elementInfos) {
-        napi_value obj = nullptr;
-        napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
-        ConvertElementInfoToJS(env, obj, elementInfo);
-        napi_set_element(env, result, index, obj);
-        index++;
-    }
-}
-
-void ConvertElementInfoToJS(napi_env env, napi_value result, AccessibilityElementInfo& elementInfo) {
-
     napi_value nWindowsId;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetWindowId(), &nWindowsId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowId", nWindowsId));
@@ -937,8 +795,8 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, AccessibilityElemen
 
     napi_value nComponentType;
     std::string strComponentType = elementInfo.GetComponentType();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strComponentType.c_str(), NAPI_AUTO_LENGTH,
-                          &nComponentType));
+    NAPI_CALL_RETURN_VOID(
+        env, napi_create_string_utf8(env, strComponentType.c_str(), NAPI_AUTO_LENGTH, &nComponentType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentType", nComponentType));
     HILOG_DEBUG("%{public}s: componentType[%{public}s]", __func__, strComponentType.c_str());
 
@@ -1136,16 +994,21 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, AccessibilityElemen
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "endSelected", nEndSelected));
     // Bind js object to a Native object
     AccessibilityElementInfo* pElementInfo = new AccessibilityElementInfo(elementInfo);
-    napi_status sts = napi_wrap(env, result, pElementInfo,
-                                [](napi_env env, void* data, void* hint) {
-                                    AccessibilityElementInfo* info = (AccessibilityElementInfo*)data;
-                                    delete info;
-                                },
-                                nullptr, nullptr);
+    napi_status sts = napi_wrap(
+        env,
+        result,
+        pElementInfo,
+        [](napi_env env, void* data, void* hint) {
+            AccessibilityElementInfo* info = (AccessibilityElementInfo*)data;
+            delete info;
+        },
+        nullptr,
+        nullptr);
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 
-static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type) {
+static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)
+{
     static const std::map<const std::string, WindowUpdateType> windowsUpdateTypesTable = {
         {"accessibilityFocus", WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED},
         {"focus", WindowUpdateType::WINDOW_UPDATE_FOCUSED},
@@ -1157,8 +1020,7 @@ static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type) {
         {"layer", WindowUpdateType::WINDOW_UPDATE_LAYER},
         {"parent", WindowUpdateType::WINDOW_UPDATE_PARENT},
         {"children", WindowUpdateType::WINDOW_UPDATE_CHILDREN},
-        {"pip", WindowUpdateType::WINDOW_UPDATE_PIP}
-    };
+        {"pip", WindowUpdateType::WINDOW_UPDATE_PIP}};
 
     if (windowsUpdateTypesTable.find(type) == windowsUpdateTypesTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1168,7 +1030,8 @@ static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type) {
     return windowsUpdateTypesTable.at(type);
 }
 
-static EventType ConvertStringToEventInfoTypes(std::string type) {
+static EventType ConvertStringToEventInfoTypes(std::string type)
+{
     static const std::map<const std::string, EventType> eventInfoTypesTable = {
         {"click", EventType::TYPE_VIEW_CLICKED_EVENT},
         {"longClick", EventType::TYPE_VIEW_LONG_CLICKED_EVENT},
@@ -1192,8 +1055,9 @@ static EventType ConvertStringToEventInfoTypes(std::string type) {
         {"touchGuideEnd", EventType::TYPE_TOUCH_GUIDE_END},
         {"touchBegin", EventType::TYPE_TOUCH_BEGIN},
         {"touchEnd", EventType::TYPE_TOUCH_END},
-        {"windowUpdate", EventType::TYPE_WINDOW_UPDATE}
-    };
+        {"windowUpdate", EventType::TYPE_WINDOW_UPDATE},
+        {"interrupt", EventType::TYPE_INTERRUPT_EVENT},
+        {"gesture", EventType::TYPE_GESTURE_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1203,7 +1067,8 @@ static EventType ConvertStringToEventInfoTypes(std::string type) {
     return eventInfoTypesTable.at(type);
 }
 
-ActionType ConvertStringToAccessibleOperationType(std::string type) {
+ActionType ConvertStringToAccessibleOperationType(std::string type)
+{
     std::map<const std::string, ActionType> accessibleOperationTypeTable = {
         {"focus", ActionType::ACCESSIBILITY_ACTION_FOCUS},
         {"clearFocus", ActionType::ACCESSIBILITY_ACTION_CLEAR_FOCUS},
@@ -1226,8 +1091,7 @@ ActionType ConvertStringToAccessibleOperationType(std::string type) {
         {"fold", ActionType::ACCESSIBILITY_ACTION_FOLD},
         {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
         {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM},
-        {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}
-    };
+        {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1260,8 +1124,7 @@ AbilityStateType ConvertStringToAbilityStateTypes(std::string type)
     std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
         {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
         {"disable", AbilityStateType::ABILITY_STATE_DISABLE},
-        {"install", AbilityStateType::ABILITY_STATE_INSTALLED}
-    };
+        {"install", AbilityStateType::ABILITY_STATE_INSTALLED}};
 
     if (abilityStateTypeTable.find(type) == abilityStateTypeTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1273,16 +1136,14 @@ AbilityStateType ConvertStringToAbilityStateTypes(std::string type)
 
 GlobalAction ConvertStringToGlobalAction(std::string type)
 {
-    std::map<const std::string, GlobalAction> globalActionTable = {
-        {"back", GlobalAction::GLOBAL_ACTION_BACK},
+    std::map<const std::string, GlobalAction> globalActionTable = {{"back", GlobalAction::GLOBAL_ACTION_BACK},
         {"home", GlobalAction::GLOBAL_ACTION_HOME},
         {"recent", GlobalAction::GLOBAL_ACTION_RECENT},
         {"notification", GlobalAction::GLOBAL_ACTION_NOTIFICATION},
         {"popUpPowerDialog", GlobalAction::GLOBAL_ACTION_POP_UP_POWER_DIALOG},
         {"divideScreen", GlobalAction::GLOBAL_ACTION_DIVIDE_SCREEN},
         {"lockScreen", GlobalAction::GLOBAL_ACTION_LOCK_SCREEN},
-        {"captureScreen", GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN}
-    };
+        {"captureScreen", GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN}};
 
     if (globalActionTable.find(type) == globalActionTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1292,14 +1153,13 @@ GlobalAction ConvertStringToGlobalAction(std::string type)
     return globalActionTable.at(type);
 }
 
-static TextMoveUnit ConvertStringToTextMoveStep(std::string type) {
-    static const std::map<const std::string, TextMoveUnit> textMoveStepTable = {
-        {"char", TextMoveUnit::STEP_CHARACTER},
+static TextMoveUnit ConvertStringToTextMoveStep(std::string type)
+{
+    static const std::map<const std::string, TextMoveUnit> textMoveStepTable = {{"char", TextMoveUnit::STEP_CHARACTER},
         {"word", TextMoveUnit::STEP_WORD},
         {"line", TextMoveUnit::STEP_LINE},
         {"page", TextMoveUnit::STEP_PAGE},
-        {"paragraph", TextMoveUnit::STEP_PARAGRAPH}
-    };
+        {"paragraph", TextMoveUnit::STEP_PARAGRAPH}};
 
     if (textMoveStepTable.find(type) == textMoveStepTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1309,7 +1169,8 @@ static TextMoveUnit ConvertStringToTextMoveStep(std::string type) {
     return textMoveStepTable.at(type);
 }
 
-static NotificationCategory ConvertStringToNotificationCategory(std::string type) {
+static NotificationCategory ConvertStringToNotificationCategory(std::string type)
+{
     static const std::map<const std::string, NotificationCategory> notificationCategoryTable = {
         {"call", NotificationCategory::CATEGORY_CALL},
         {"msg", NotificationCategory::CATEGORY_MSG},
@@ -1322,8 +1183,7 @@ static NotificationCategory ConvertStringToNotificationCategory(std::string type
         {"err", NotificationCategory::CATEGORY_ERR},
         {"transport", NotificationCategory::CATEGORY_TRANSPORT},
         {"sys", NotificationCategory::CATEGORY_SYS},
-        {"service", NotificationCategory::CATEGORY_SERVICE}
-    };
+        {"service", NotificationCategory::CATEGORY_SERVICE}};
 
     if (notificationCategoryTable.find(type) == notificationCategoryTable.end()) {
         HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
@@ -1333,23 +1193,41 @@ static NotificationCategory ConvertStringToNotificationCategory(std::string type
     return notificationCategoryTable.at(type);
 }
 
-void ConvertActionArgsJSToNAPI(napi_env env, napi_value object, std::map<std::string, std::string> &args,
-    OHOS::Accessibility::ActionType action)
+static GestureType ConvertStringToGestureType(std::string type)
+{
+    static const std::map<const std::string, GestureType> gestureTypesTable = {
+        {"left", GestureType::GESTURE_SWIPE_LEFT},
+        {"leftThenRight", GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT},
+        {"leftThenUp", GestureType::GESTURE_SWIPE_LEFT_THEN_UP},
+        {"leftThenDown", GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN},
+        {"right", GestureType::GESTURE_SWIPE_RIGHT},
+        {"rightThenLeft", GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT},
+        {"rightThenUp", GestureType::GESTURE_SWIPE_RIGHT_THEN_UP},
+        {"rightThenDown", GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN},
+        {"up", GestureType::GESTURE_SWIPE_UP},
+        {"upThenLeft", GestureType::GESTURE_SWIPE_UP_THEN_LEFT},
+        {"upThenRight", GestureType::GESTURE_SWIPE_UP_THEN_RIGHT},
+        {"upThenDown", GestureType::GESTURE_SWIPE_UP_THEN_DOWN},
+        {"down", GestureType::GESTURE_SWIPE_DOWN},
+        {"downThenLeft", GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT},
+        {"downThenRight", GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT},
+        {"downThenUp", GestureType::GESTURE_SWIPE_DOWN_THEN_UP}};
+
+    if (gestureTypesTable.find(type) == gestureTypesTable.end()) {
+        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        return GESTURE_INVALID;
+    }
+    return gestureTypesTable.at(type);
+}
+
+void ConvertActionArgsJSToNAPI(
+    napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     std::string str = "";
-    switch(action) {
+    switch (action) {
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
-            napi_create_string_utf8(env, "htmlItem", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
-            if (hasProperty) {
-                napi_value value = nullptr;
-                napi_get_property(env, object, propertyNameValue, &value);
-                str = GetStringFromNAPI(env, value);
-                args.insert(std::pair<std::string, std::string>("htmlItem", str.c_str()));
-            }
-            break;
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
             napi_create_string_utf8(env, "htmlItem", NAPI_AUTO_LENGTH, &propertyNameValue);
             napi_has_property(env, object, propertyNameValue, &hasProperty);
@@ -1361,15 +1239,6 @@ void ConvertActionArgsJSToNAPI(napi_env env, napi_value object, std::map<std::st
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT:
-            napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
-            if (hasProperty) {
-                napi_value value = nullptr;
-                napi_get_property(env, object, propertyNameValue, &value);
-                str = GetStringFromNAPI(env, value);
-                args.insert(std::pair<std::string, std::string>("textMoveUnit", str.c_str()));
-            }
-            break;
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT:
             napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
             napi_has_property(env, object, propertyNameValue, &hasProperty);
@@ -1413,7 +1282,7 @@ void ConvertActionArgsJSToNAPI(napi_env env, napi_value object, std::map<std::st
     }
 }
 
-void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEventInfo &eventInfo)
+void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEventInfo& eventInfo)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
@@ -1524,12 +1393,12 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     if (hasProperty) {
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
-        void *datas = nullptr;
+        void* datas = nullptr;
         size_t dataLen = 0;
         napi_get_arraybuffer_info(env, value, &datas, &dataLen);
-        auto rawData = (std::string *)datas;
+        auto rawData = (std::string*)datas;
         for (int i = 0; i < int(dataLen); i++) {
-            eventInfo.AddContent(*(rawData+i));
+            eventInfo.AddContent(*(rawData + i));
         }
     }
 
@@ -1578,16 +1447,6 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         eventInfo.SetItemCounts(dataValue);
     }
 
-    // napi_create_string_utf8(env, "beforeText", NAPI_AUTO_LENGTH, &propertyNameValue);
-    // napi_has_property(env, object, propertyNameValue, &hasProperty);
-    // if (hasProperty) {
-    //     napi_value value = nullptr;
-    //     napi_get_property(env, object, propertyNameValue, &value);
-    //     str = GetStringFromNAPI(env, value);
-    //     eventInfo.SetBeforeText(str);
-    // }
-
-
     napi_create_string_utf8(env, "categoryNotification", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
@@ -1596,127 +1455,385 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         str = GetStringFromNAPI(env, value);
         eventInfo.SetNotificationInfo(ConvertStringToNotificationCategory(str));
     }
+
+    napi_create_string_utf8(env, "gestureType", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        str = GetStringFromNAPI(env, value);
+        eventInfo.SetGestureType(ConvertStringToGestureType(str));
+    }
 }
 
-std::vector<std::string>  ParseAbilityTypesToVec(uint32_t abilityTypesValue)
+static void ConvertGesturePathPositionJSToNAPI(
+    napi_env env, napi_value object, GesturePathPositionDefine& gesturePathPosition)
 {
-    std::vector<std::string> result;
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    double position = 0;
 
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) {
-        result.push_back("spoken");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) {
-        result.push_back("haptic");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE) {
-        result.push_back("audible");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL) {
-        result.push_back("visual");
-    }
-    if (abilityTypesValue & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC) {
-        result.push_back("generic");
+    napi_create_string_utf8(env, "posX", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_double(env, value, &position);
+        gesturePathPosition.SetPositionX((float)position);
     }
 
-    return result;
+    napi_create_string_utf8(env, "posY", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_double(env, value, &position);
+        gesturePathPosition.SetPositionY((float)position);
+    }
 }
 
-std::vector<std::string>  ParseCapabilitiesToVec(uint32_t capabilitiesValue)
+static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object, GesturePathDefine& gesturePath)
 {
-    std::vector<std::string> result;
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    GesturePathPositionDefine gesturePathPosition;
 
-    if (capabilitiesValue & Capability::CAPABILITY_RETRIEVE) {
-        result.push_back("retrieve");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_TOUCH_GUIDE) {
-        result.push_back("touchGuide");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
-        result.push_back("keyEventObserver");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_ZOOM) {
-        result.push_back("zoom");
-    }
-    if (capabilitiesValue & Capability::CAPABILITY_GESTURE) {
-        result.push_back("gesture");
+    napi_create_string_utf8(env, "startPos", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        ConvertGesturePathPositionJSToNAPI(env, value, gesturePathPosition);
+        gesturePath.SetStartPosition(gesturePathPosition);
     }
 
-    return result;
+    napi_create_string_utf8(env, "endPos", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        ConvertGesturePathPositionJSToNAPI(env, value, gesturePathPosition);
+        gesturePath.SetEndPosition(gesturePathPosition);
+    }
+
+    uint32_t durationTime = 0;
+    napi_create_string_utf8(env, "durationTime", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_uint32(env, value, &durationTime);
+        gesturePath.SetDurationTime(durationTime);
+    }
 }
 
-std::vector<std::string>  ParseEventTypesToVec(uint32_t eventTypesValue)
+void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<GesturePathDefine>& gesturePaths)
 {
-    std::vector<std::string> result;
+    uint32_t arraySize = 0;
+    bool isArray = false;
+    napi_value jsValue = nullptr;
+    gesturePaths.clear();
 
-    if (eventTypesValue & EventType::TYPE_VIEW_CLICKED_EVENT) {
-        result.push_back("click");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_LONG_CLICKED_EVENT) {
-        result.push_back("longClick");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_SELECTED_EVENT) {
-        result.push_back("select");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_FOCUSED_EVENT) {
-        result.push_back("focus");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_TEXT_UPDATE_EVENT) {
-        result.push_back("textUpdate");
-    }
-    if (eventTypesValue & EventType::TYPE_PAGE_STATE_UPDATE) {
-        result.push_back("pageStateUpdate");
-    }
-    if (eventTypesValue & EventType::TYPE_NOTIFICATION_UPDATE_EVENT) {
-        result.push_back("notificationUpdate");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_HOVER_ENTER_EVENT) {
-        result.push_back("hoverEnter");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_HOVER_EXIT_EVENT) {
-        result.push_back("hoverExit");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN) {
-        result.push_back("touchGuideGestureBegin");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_GUIDE_GESTURE_END) {
-        result.push_back("touchGuideGestureEnd");
-    }
-    if (eventTypesValue & EventType::TYPE_PAGE_CONTENT_UPDATE) {
-        result.push_back("pageContentUpdate");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_SCROLLED_EVENT) {
-        result.push_back("scroll");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT) {
-        result.push_back("textSelectionUpdate");
-    }
-    if (eventTypesValue & EventType::TYPE_PUBLIC_NOTICE_EVENT) {
-        result.push_back("publicNotice");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
-        result.push_back("accessibilityFocus");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT) {
-        result.push_back("accessibilityFocusClear");
-    }
-    if (eventTypesValue & EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT) {
-        result.push_back("textMoveUnit");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_GUIDE_BEGIN) {
-        result.push_back("touchGuideBegin");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_GUIDE_END) {
-        result.push_back("touchGuideEnd");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_BEGIN) {
-        result.push_back("touchBegin");
-    }
-    if (eventTypesValue & EventType::TYPE_TOUCH_END) {
-        result.push_back("touchEnd");
-    }
-    if (eventTypesValue & EventType::TYPE_WINDOW_UPDATE) {
-        result.push_back("windowUpdate");
+    if (napi_is_array(env, object, &isArray) != napi_ok || isArray == false) {
+        HILOG_ERROR("object is not an array.");
+        return;
     }
 
-    return result;
+    if (napi_get_array_length(env, object, &arraySize) != napi_ok) {
+        HILOG_ERROR("get array length failed.");
+        return;
+    }
+
+    for (uint32_t i = 0; i < arraySize; i++) {
+        jsValue = nullptr;
+        GesturePathDefine path;
+        if (napi_get_element(env, object, i, &jsValue) != napi_ok) {
+            HILOG_ERROR("get element of paths failed and i = %{public}d", i);
+            return;
+        }
+
+        ConvertGesturePathJSToNAPI(env, object, path);
+        gesturePaths.push_back(path);
+    }
 }
+
+void ConvertKeyEventToJS(napi_env env, napi_value result, OHOS::MMI::KeyEvent& keyEvent)
+{
+    napi_value keyCode;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent.GetKeyCode(), &keyCode));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyCode", keyCode));
+
+    napi_value keyAction;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent.GetKeyAction(), &keyAction));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyAction", keyAction));
+
+    napi_value keys;
+    uint32_t idx = 0;
+    std::vector<OHOS::MMI::KeyEvent::KeyItem> keyItems = keyEvent.GetKeyItems();
+    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keys));
+    for (auto key : keyItems) {
+        napi_value keyItem = nullptr;
+        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyItem));
+
+        napi_value pressed;
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.IsPressed(), &pressed));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "pressed", pressed));
+
+        napi_value downTime;
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetDownTime(), &downTime));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "downTime", downTime));
+
+        napi_value deviceId;
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetDeviceId(), &deviceId));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "deviceId", deviceId));
+
+        napi_value keyCode;
+        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetKeyCode(), &keyCode));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "keyCode", keyCode));
+
+        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, keys, idx, keyItem));
+        idx++;
+    }
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keys", keys));
+}
+
+void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessibility::CaptionProperty captionProperty)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    napi_value value;
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontFamily", value));
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, captionProperty.GetFontScale(), &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontScale", value));
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontColor", value));
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontEdgeType", value));
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "backgroundColor", value));
+
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
+
+    HILOG_DEBUG("%{public}s end", __func__);
+}
+
+void ConvertObjToCaptionProperty(
+    napi_env env, napi_value object, OHOS::Accessibility::CaptionProperty* ptrCaptionProperty)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+    int32_t num = 0;
+
+    napi_create_string_utf8(env, "fontFamily", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        ptrCaptionProperty->SetFontFamily(std::string(outBuffer));
+    }
+
+    napi_create_string_utf8(env, "fontScale", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_int32(env, value, &num);
+        ptrCaptionProperty->SetFontScale(num);
+    }
+
+    napi_create_string_utf8(env, "fontColor", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        ptrCaptionProperty->SetFontColor(std::string(outBuffer));
+    }
+
+    napi_create_string_utf8(env, "fontEdgeType", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        ptrCaptionProperty->SetFontEdgeType(std::string(outBuffer));
+    }
+
+    napi_create_string_utf8(env, "backgroundColor", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        ptrCaptionProperty->SetBackgroundColor(std::string(outBuffer));
+    }
+
+    napi_create_string_utf8(env, "windowColor", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        ptrCaptionProperty->SetWindowColor(std::string(outBuffer));
+    }
+    HILOG_DEBUG("%{public}s end", __func__);
+}
+
+void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos)
+{
+    if (!accessibleAbilityInfos.empty()) {
+        accessibleAbilityInfos.clear();
+    }
+
+    bool hasElement = true;
+    for (int i = 0; hasElement == true; i++) {
+        napi_has_element(env, arrayValue, i, &hasElement);
+        if (hasElement) {
+            napi_value value = nullptr;
+            napi_get_element(env, arrayValue, i, &value);
+
+            AccessibilityAbilityInfo info{};
+            ConvertJSToAccessibleAbilityInfo(env, value, info);
+            accessibleAbilityInfos.push_back(info);
+            HILOG_DEBUG("%{public}s size = %{public}d ", __func__, accessibleAbilityInfos.size());
+        }
+    }
+}
+
+void ConvertJSToAccessibleAbilityInfo(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityAbilityInfo& abilityInfo)
+{
+    napi_value propertyNameValue = nullptr;
+    bool hasProperty = false;
+
+    napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        napi_get_property(env, object, propertyNameValue, &value);
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        abilityInfo.SetPackageName(std::string(outBuffer));
+        HILOG_INFO(
+            "%{public}s abilityInfo.GetPackageName = %{public}s", __func__, abilityInfo.GetPackageName().c_str());
+    }
+}
+
+void ConvertEnabledAbilitiesToJS(
+    napi_env env, napi_value result, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities)
+{
+    size_t index = 0;
+
+    if (enabledAbilities.empty()) {
+        return;
+    }
+
+    for (auto& abilitie : enabledAbilities) {
+        napi_value str = nullptr;
+        std::string bundleName = abilitie.second.GetBundleName();
+        napi_create_string_utf8(env, bundleName.c_str(), bundleName.size(), &str);
+        napi_set_element(env, result, index, str);
+        index++;
+    }
+}
+
+void ConvertJSToEnabledAbilities(
+    napi_env env, napi_value arrayValue, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities)
+{
+    if (!enabledAbilities.empty()) {
+        enabledAbilities.clear();
+    }
+
+    bool hasElement = true;
+    for (int i = 0; hasElement == true; i++) {
+        napi_has_element(env, arrayValue, i, &hasElement);
+        if (hasElement) {
+            napi_value value = nullptr;
+            napi_get_element(env, arrayValue, i, &value);
+
+            char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+            size_t outSize = 0;
+            napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+
+            OHOS::AppExecFwk::ElementName elementName("", std::string(outBuffer), "");
+            enabledAbilities.insert(
+                std::pair<std::string, OHOS::AppExecFwk::ElementName>(elementName.GetURI(), elementName));
+        }
+    }
+}
+
+
+void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    napi_value keyCode;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, value, &keyCode));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "enabled", keyCode));
+
+    HILOG_DEBUG("%{public}s END.", __func__);
+}
+
+
+// void ConvertJSToEnabled(napi_env env, napi_value captionsManager, bool& result)
+// {
+//     napi_value propertyNameValue = nullptr;
+//     bool hasProperty = false;
+
+//     napi_create_string_utf8(env, "enabled", NAPI_AUTO_LENGTH, &propertyNameValue);
+//     napi_has_property(env, captionsManager, propertyNameValue, &hasProperty);
+//     if (hasProperty) {
+//         napi_value value = nullptr;
+//         napi_get_property(env, captionsManager, propertyNameValue, &value);
+//         napi_get_value_bool(env, value, &result);
+//     }
+// }
+
+
+void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    napi_value keyCode;
+    NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyCode));
+
+    ConvertCaptionPropertyToJS(env, keyCode, captionProperty_);
+
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "style", keyCode));
+
+    HILOG_DEBUG("%{public}s END.", __func__);
+}
+
+
+// void ConvertJSToStyle(napi_env env, napi_value captionsManager, bool& result)
+// {
+//     napi_value propertyNameValue = nullptr;
+//     bool hasProperty = false;
+
+//     napi_create_string_utf8(env, "enabled", NAPI_AUTO_LENGTH, &propertyNameValue);
+//     napi_has_property(env, captionsManager, propertyNameValue, &hasProperty);
+//     if (hasProperty) {
+//         napi_value value = nullptr;
+//         napi_get_property(env, captionsManager, propertyNameValue, &value);
+//         napi_get_value_bool(env, value, &result);
+//     }
+// }

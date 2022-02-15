@@ -13,24 +13,28 @@
 
 import("//base/accessibility/accessibility.gni")
 
-asacfwk_files = [  
+asacfwk_files = [
   "${asacfwk_path}/src/accessibility_event_info.cpp",
-  "${asacfwk_path}/src/accessibility_element_info.cpp",  
-  "${asacfwk_path}/src/accessibility_window_info.cpp", 
+  "${asacfwk_path}/src/accessibility_element_info.cpp",
+  "${asacfwk_path}/src/accessibility_window_info.cpp",
   "${asacfwk_path}/src/accessibility_state_event.cpp",
   "${asacfwk_path}/src/accessibility_system_ability_client.cpp",
   "${asacfwk_path}/src/accessible_ability_manager_service_proxy.cpp",
   "${asacfwk_path}/src/accessible_ability_manager_service_state_proxy.cpp",
   "${asacfwk_path}/src/accessible_ability_manager_service_state_stub.cpp",
   "${asacfwk_path}/src/accessible_ability_manager_service_stub.cpp",
-  "${asacfwk_path}/src/accessibility_interaction_operation_callback_proxy.cpp",
-  "${asacfwk_path}/src/accessibility_interaction_operation_callback_stub.cpp",
-  "${asacfwk_path}/src/accessibility_interaction_operation_proxy.cpp",
-  "${asacfwk_path}/src/accessibility_interaction_operation_stub.cpp",
+  "${asacfwk_path}/src/accessibility_element_operator_callback_proxy.cpp",
+  "${asacfwk_path}/src/accessibility_element_operator_callback_stub.cpp",
+  "${asacfwk_path}/src/accessibility_element_operator_proxy.cpp",
+  "${asacfwk_path}/src/accessibility_element_operator_stub.cpp",
   "${asacfwk_path}/src/accessibility_ability_info.cpp",
+  "${asacfwk_path}/src/accessible_ability_manager_service_caption_property_proxy.cpp",
+  "${asacfwk_path}/src/accessible_ability_manager_service_caption_property_stub.cpp",
+  "${asacfwk_path}/src/accessibility_caption.cpp",
   "${asacfwk_path}/src/accessible_ability_channel_proxy.cpp",
   "${asacfwk_path}/src/accessible_ability_channel_stub.cpp",
   "${asacfwk_path}/src/accessibility_operator.cpp",
+  "${asacfwk_path}/src/accessibility_element_operator_async_mng.cpp",
   "${asacfwk_path}/src/gesture_simulation.cpp",
   "//base/accessibility/util/src/json_utils.cpp",
 ]

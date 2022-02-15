@@ -16,9 +16,8 @@
 #ifndef ACCESSIBILITY_ZOOM_GESTURE_H
 #define ACCESSIBILITY_ZOOM_GESTURE_H
 
-// #include "accessibility_gesture_recognizer.h"
-#include "touch_event.h"
-// #include "accessibility_zoom_mock.h"
+#include "hilog_wrapper.h"
+#include "pointer_event.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -31,38 +30,38 @@ public:
     /**
      * @brief Is it a triple tip.
      */
-    bool Triple(TouchEvent &event);
+    bool Triple(MMI::PointerEvent &event);
     void Up();
     void Clear();
 
 private:
     int distance_ = 0;
-    int timeout_ = 0;
+    unsigned long timeout_ = 0;
     int upCount_ = 0;
     int downCount_ = 0;
-    TouchEvent lastDown_ {};
+    std::shared_ptr<MMI::PointerEvent> pLastDown_ = nullptr;
 
     void Initialize();
-    void Reset(const TouchEvent &event);
+    void Reset(const MMI::PointerEvent &event);
 
     /**
      * @brief Is it a valid continuous DOWN event.
      */
-    bool ValidDown(TouchEvent &event);
+    bool ValidDown(MMI::PointerEvent &event);
 
 
     /**
-     * @brief Gets the effective distance between two touch events
+     * @brief Gets the effective distance between two pointer events
      *        set by the system.
      */
     int GetSysDistance() const;
 
     /**
-     * @brief Gets the effective time interval between two touch events
+     * @brief Gets the effective time interval between two pointer events
      *        set by the system.
      */
     int GetSysTimeout() const;
 };
-}  // namespace accessibility
+}  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_GESTURE_H

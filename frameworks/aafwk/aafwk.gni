@@ -17,8 +17,10 @@ aafwk_files = [
   "${aafwk_path}/src/accessible_ability_client_stub.cpp",
   "${aafwk_path}/src/accessible_ability_client_proxy.cpp",
   "${aafwk_path}/src/accessible_ability_client_stub_impl.cpp",
-  "${aafwk_path}/src/accessible_ability_event_handler.cpp",
-  "${aafwk_path}/src/accessible_ability.cpp",
+  "${aafwk_path}/src/accessibility_extension_context.cpp",
+  "${aafwk_path}/src/accessibility_extension.cpp",
   "${aafwk_path}/src/display_resize_controller.cpp",
-  "${aafwk_path}/src/fingerprint_controller.cpp",
+  "${aafwk_path}/src/js_accessibility_extension.cpp",
+  "${aafwk_path}/src/js_accessibility_extension_context.cpp",
+  "//base/accessibility/interfaces/kits/napi/src/napi_accessibility_utils.cpp",
 ]

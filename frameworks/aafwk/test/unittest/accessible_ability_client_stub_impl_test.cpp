@@ -15,7 +15,8 @@
 
 #include <memory>
 #include <gtest/gtest.h>
-#include "accessible_ability_listener.h"
+#include "accessibility_extension.h"
+#include "accessibility_extension_context.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_channel_proxy.h"
 #include "mock_accessible_ability_channel_stub.h"
@@ -26,12 +27,27 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace std;
 
-const string AA_UT_NAME = "AccessibleAbilityClientStubImplUnitTest";
-
-class UnitTestAccessibleAbilityListener : public AccessibleAbilityListener {
+class UnitTestAccessibleAbilityListener : public AccessibilityExtension {
 public:
-    UnitTestAccessibleAbilityListener() {}
+    UnitTestAccessibleAbilityListener()
+    {
+        GTEST_LOG_(INFO) << "mock aa listener's constructor";
+        std::shared_ptr<AppExecFwk::AbilityLocalRecord> record = nullptr;
+        std::shared_ptr<AppExecFwk::OHOSApplication> application = nullptr;
+        std::shared_ptr<AppExecFwk::AbilityHandler> handler = nullptr;
+        sptr<IRemoteObject> token = nullptr;
+        Init(record, application, handler, token);
+    }
     virtual ~UnitTestAccessibleAbilityListener() {}
+
+    void Init(const std::shared_ptr<AppExecFwk::AbilityLocalRecord> &record,
+        const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
+        std::shared_ptr<AppExecFwk::AbilityHandler> &handler,
+        const sptr<IRemoteObject> &token) override
+    {
+        GTEST_LOG_(INFO) << "UnitTestAccessibleAbilityListener Init";
+        AccessibilityExtension::Init(record, application, handler, token);
+    }
 
     void OnAbilityConnected() override
     {
@@ -43,17 +59,7 @@ public:
         GTEST_LOG_(INFO) << "UnitTestAccessibleAbilityListener OnAccessibilityEvent";
     }
 
-    void OnGesture(uint32_t gestureId) override
-    {
-        GTEST_LOG_(INFO) << "UnitTestAccessibleAbilityListener OnGesture";
-    }
-
-    void OnInterrupt() override
-    {
-        GTEST_LOG_(INFO) << "UnitTestAccessibleAbilityListener OnInterrupt";
-    }
-
-    bool OnKeyPressEvent(const KeyEvent& keyEvent) override
+    bool OnKeyPressEvent(const MMI::KeyEvent& keyEvent) override
     {
         GTEST_LOG_(INFO) << "UnitTestAccessibleAbilityListener OnKeyPressEvent";
         return true;
@@ -72,8 +78,6 @@ public:
 
     void InitToSetChannelId();
 
-    shared_ptr<AccessibleAbilityEventHandler> accessibleAbilityEventHandler_ =
-        make_shared<AccessibleAbilityEventHandler>(AppExecFwk::EventRunner::Create(AA_UT_NAME));
     sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
 };
 
@@ -90,7 +94,9 @@ void AccessibleAbilityClientStubImplUnitTest::TearDownTestCase()
 void AccessibleAbilityClientStubImplUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    stub_ = new AccessibleAbilityClientStubImpl(accessibleAbilityEventHandler_);
+    std::shared_ptr<AbilityRuntime::ContextImpl> contextImpl = std::make_shared<AbilityRuntime::ContextImpl>();
+    contextImpl->InitAppContext();
+    stub_ = new AccessibleAbilityClientStubImpl();
 }
 
 void AccessibleAbilityClientStubImplUnitTest::TearDown()
@@ -102,12 +108,17 @@ void AccessibleAbilityClientStubImplUnitTest::TearDown()
 void AccessibleAbilityClientStubImplUnitTest::InitToSetChannelId()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImplUnitTest InitToSetChannelId";
+    shared_ptr<AccessibilityExtension> listener = make_shared<UnitTestAccessibleAbilityListener>();
     sptr<AccessibleAbilityChannelStubMock> stub = new AccessibleAbilityChannelStubMock();
     sptr<IAccessibleAbilityChannel> channel = new AccessibleAbilityChannelProxy(stub->AsObject());
     int channelId = 0;
 
+    stub_->RegisterListenerImpl(listener);
     stub_->Init(channel, channelId);
     sleep(1); // sleep for task completed.
+
+    stub = nullptr;
+    channel = nullptr;
 }
 
 /**
@@ -120,27 +131,11 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_001 start";
 
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
+    shared_ptr<AccessibilityExtension> listener = make_shared<UnitTestAccessibleAbilityListener>();
     stub_->RegisterListenerImpl(listener);
     stub_->RegisterListenerImpl(listener);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_002
- * @tc.name: RegisterListenerImpl
- * @tc.desc: Test function RegisterListenerImpl
- *           Register a listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_002 start";
-
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
-    stub_->RegisterListenerImpl(listener);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_002 end";
 }
 
 /**
@@ -160,6 +155,9 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
     stub_->Init(channel, channelId);
     sleep(1); // sleep for task completed.
 
+    stub = nullptr;
+    channel = nullptr;
+
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Init_001 end";
 }
 
@@ -173,7 +171,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Init_002 start";
 
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
+    shared_ptr<AccessibilityExtension> listener = make_shared<UnitTestAccessibleAbilityListener>();
     sptr<AccessibleAbilityChannelStubMock> stub = new AccessibleAbilityChannelStubMock();
     sptr<IAccessibleAbilityChannel> channel = new AccessibleAbilityChannelProxy(stub->AsObject());
     int channelId = 0;
@@ -181,6 +179,9 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
     stub_->RegisterListenerImpl(listener);
     stub_->Init(channel, channelId);
     sleep(1); // sleep for task completed.
+
+    stub = nullptr;
+    channel = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Init_002 end";
 }
@@ -194,13 +195,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Disconnect_001 start";
 
-    sptr<AccessibleAbilityChannelStubMock> stub = new AccessibleAbilityChannelStubMock();
-    sptr<IAccessibleAbilityChannel> channel = new AccessibleAbilityChannelProxy(stub->AsObject());
     int channelId = 0;
-
-    stub_->Init(channel, channelId);
-    sleep(1); // sleep for task Init completed.
-
+    InitToSetChannelId();
     stub_->Disconnect(channelId);
     sleep(1); // sleep for task Disconnect completed.
 
@@ -211,7 +207,6 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
- *           Invoke OnAccessibilityEvent without listener.
  */
 HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
 {
@@ -227,151 +222,32 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
 }
 
 /**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_002
- * @tc.name: OnAccessibilityEvent
- * @tc.desc: Test function OnAccessibilityEvent
- *           Invoke OnAccessibilityEvent with listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_002 start";
-
-    AccessibilityEventInfo eventInfo {};
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
-
-    stub_->RegisterListenerImpl(listener);
-    InitToSetChannelId();
-    stub_->OnAccessibilityEvent(eventInfo);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_001
- * @tc.name: OnInterrupt
- * @tc.desc: Test function OnInterrupt
- *           Invoke OnInterrupt without listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_001 start";
-
-    InitToSetChannelId();
-    stub_->OnInterrupt();
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_002
- * @tc.name: OnInterrupt
- * @tc.desc: Test function OnInterrupt
- *           Invoke OnInterrupt with listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_002 start";
-
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
-
-    stub_->RegisterListenerImpl(listener);
-    InitToSetChannelId();
-    stub_->OnInterrupt();
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnInterrupt_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnGesture_001
- * @tc.name: OnGesture
- * @tc.desc: Test function OnGesture
- *           Invoke OnGesture without listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnGesture_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGesture_001 start";
-
-    int gestureId = 1;
-
-    InitToSetChannelId();
-    stub_->OnGesture(gestureId);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGesture_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnGesture_002
- * @tc.name: OnGesture
- * @tc.desc: Test function OnGesture
- *           Invoke OnGesture with listener.
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnGesture_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGesture_002 start";
-
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
-    int gestureId = 1;
-
-    stub_->RegisterListenerImpl(listener);
-    InitToSetChannelId();
-    stub_->OnGesture(gestureId);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGesture_002 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001
  * @tc.name: OnKeyPressEvent
  * @tc.desc: Test function OnKeyPressEvent
- *           Invoke OnKeyPressEvent without listener.
  */
 HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001 start";
 
-    KeyEvent keyEvent {};
+    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
     int sequence = 0;
 
-    stub_->OnKeyPressEvent(keyEvent, sequence);
+    InitToSetChannelId();
+    stub_->OnKeyPressEvent(*keyEvent, sequence);
     sleep(1); // sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001 end";
 }
 
 /**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_002
- * @tc.name: OnKeyPressEvent
- * @tc.desc: Test function OnKeyPressEvent
- *           Invoke OnKeyPressEvent with listener.
+ * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001
+ * @tc.name: OnDisplayResized
+ * @tc.desc: Test function OnDisplayResized
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_002 start";
-
-    shared_ptr<AccessibleAbilityListener> listener = make_shared<UnitTestAccessibleAbilityListener>();
-    KeyEvent keyEvent {};
-    int sequence = 0;
-
-    stub_->RegisterListenerImpl(listener);
-    stub_->OnKeyPressEvent(keyEvent, sequence);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_002 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnDisplayResizeChanged_001
- * @tc.name: OnDisplayResizeChanged
- * @tc.desc: Test function OnDisplayResizeChanged
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnDisplayResizeChanged_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResizeChanged_001 start";
+    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001 start";
 
     int displayId = 0;
     Rect rect {};
@@ -380,10 +256,10 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
     float centerY = 0;
 
     InitToSetChannelId();
-    stub_->OnDisplayResizeChanged(displayId, rect, scale, centerX, centerY);
+    stub_->OnDisplayResized(displayId, rect, scale, centerX, centerY);
     sleep(1); // sleep for task completed.
 
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResizeChanged_001 end";
+    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001 end";
 }
 
 /**
@@ -403,40 +279,4 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
     sleep(1); // sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGestureValidityChanged_001
- * @tc.name: OnFingerprintGestureValidityChanged
- * @tc.desc: Test function OnFingerprintGestureValidityChanged
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGestureValidityChanged_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGestureValidityChanged_001 start";
-
-    bool validity = true;
-
-    InitToSetChannelId();
-    stub_->OnFingerprintGestureValidityChanged(validity);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGestureValidityChanged_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGesture_001
- * @tc.name: OnFingerprintGesture
- * @tc.desc: Test function OnFingerprintGesture
- */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGesture_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGesture_001 start";
-
-    int gesture = 0;
-
-    InitToSetChannelId();
-    stub_->OnFingerprintGesture(gesture);
-    sleep(1); // sleep for task completed.
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnFingerprintGesture_001 end";
 }

@@ -13,9 +13,8 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
 #include "common_event_subscribe_info.h"
-
+#include <gtest/gtest.h>
 namespace OHOS {
 namespace EventFwk {
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const MatchingSkills &matchingSkills)
@@ -98,5 +97,5 @@ CommonEventSubscribeInfo *CommonEventSubscribeInfo::Unmarshalling(Parcel &parcel
     CommonEventSubscribeInfo *commonEventSubscribeInfo = new CommonEventSubscribeInfo();
     return commonEventSubscribeInfo;
 }
-}  // namespace EventFwk
+}  //namespace EventFwk
 }  // namespace OHOS

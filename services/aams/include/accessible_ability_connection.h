@@ -25,43 +25,39 @@
 #include "accessibility_ability_info.h"
 #include "accessible_ability_manager_service.h"
 #include "common_event_manager.h"
-#include "dummy.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 
 class AccessibilityAccountData;
 class AccessibleAbilityManagerService;
 class AccessibleAbilityConnection;
 
 class AccessibleAbilityChannelStubImpl : public AccessibleAbilityChannelStub {
-
 public:
     AccessibleAbilityChannelStubImpl(AccessibleAbilityConnection &connection);
-    ~AccessibleAbilityChannelStubImpl();
+    ~AccessibleAbilityChannelStubImpl() = default;
     bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, const long elementId,
-        const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback, const int mode) override;
+        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode) override;
 
     bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
         const std::string &text, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
         const int focusType, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, const int direction,
-        const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+    bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
         std::map<std::string, std::string> &actionArguments, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     std::vector<AccessibilityWindowInfo> GetWindows() override;
 
-    bool PerformCommonAction(const int action) override;
-
-    void DisableAbility() override;
+    bool ExecuteCommonAction(const int action) override;
 
     void SetOnKeyPressEventResult(const bool handled, const int sequence) override;
 
@@ -78,9 +74,7 @@ public:
     bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
         const float centerY, const bool animate) override;
 
-    void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps) override;
-
-    bool IsFingerprintGestureDetectionValid() override;
+    void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) override;
 
 private:
     AccessibleAbilityConnection& connection_;
@@ -89,7 +83,7 @@ private:
 
 class AccessibleAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
-    AccessibleAbilityConnection(const wptr<AccessibilityAccountData> &accountData, const int connectionId,
+    AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData, const int connectionId,
         AccessibilityAbilityInfo &abilityInfo);
 
     virtual ~AccessibleAbilityConnection();
@@ -100,36 +94,40 @@ public:
 
     virtual void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
 
-    //For AccessibleAbilityClientProxy
+    // For AccessibleAbilityClientProxy
     void OnAccessibilityEvent(AccessibilityEventInfo &eventInfo);
-
-    void OnInterrupt();
-
-    void OnGesture(const int gestureId);
 
     bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence);
 
-    void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
+    void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY);
 
     void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully);
 
-    void OnFingerprintGestureValidityChanged(const bool validity);
+    // Get Attribution
+    inline AccessibilityAbilityInfo& GetAbilityInfo()
+    {
+        return abilityInfo_;
+    }
 
-    void OnFingerprintGesture(const int gesture);
+    inline AppExecFwk::ElementName& GetElementName()
+    {
+        return elementName_;
+    }
 
-    //Get Attribution
-    inline AccessibilityAbilityInfo& GetAbilityInfo() {return abilityInfo_;}
+    inline wptr<AccessibilityAccountData> GetAccountData()
+    {
+        return accountData_;
+    }
 
-    inline AppExecFwk::ElementName& GetElementName() {return elementName_;}
-
-    inline wptr<AccessibilityAccountData> GetAccountData() {return accountData_;}
-
-    inline sptr<IAccessibleAbilityClient> GetProxy() {return proxy_;}
+    inline sptr<IAccessibleAbilityClient> GetProxy()
+    {
+        return proxy_;
+    }
 
     void Disconnect();
 
-    void Connect();
+    void Connect(const AppExecFwk::ElementName &element);
 
     int GetChannelId();
 
@@ -156,7 +154,7 @@ private:
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
     AccessibilityAbilityInfo abilityInfo_;
     AppExecFwk::ElementName elementName_;
-    wptr<AccessibilityAccountData> accountData_;
+    sptr<AccessibilityAccountData> accountData_;
 
     int connectionId_;
 };

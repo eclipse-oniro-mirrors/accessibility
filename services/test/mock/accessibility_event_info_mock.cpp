@@ -17,13 +17,13 @@
 
 using namespace OHOS::Accessibility;
 
-bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const{
-
+bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
+{
     return true;
 };
 
-bool AccessibilityMemo::Marshalling(Parcel &parcel) const{
-
+bool AccessibilityMemo::Marshalling(Parcel &parcel) const
+{
     return true;
 };
 
@@ -38,7 +38,7 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
 }
 
 AccessibilityEventInfo::AccessibilityEventInfo(
-            int windowId, WindowUpdateType windowChangeTypes)
+    int windowId, WindowUpdateType windowChangeTypes)
 {
     eventType_ = TYPE_WINDOW_UPDATE;
     windowChangeTypes_ = windowChangeTypes;
@@ -83,4 +83,14 @@ WindowsContentChangeTypes AccessibilityEventInfo::GetWindowContentChangeTypes() 
 std::string AccessibilityEventInfo::GetBundleName() const
 {
     return bundleName_;
+}
+
+void AccessibilityEventInfo::SetGestureType(const GestureType gestureType)
+{
+    gestureType_ = gestureType;
+}
+
+GestureType AccessibilityEventInfo::GetGestureType() const
+{
+    return gestureType_;
 }

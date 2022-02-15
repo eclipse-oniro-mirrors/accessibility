@@ -69,7 +69,7 @@ ohos_systemtest("asac_system_test") {
     "samgr_standard:samgr_proxy",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
-    "ability_runtime:want",
+    "ability_base:want",
     "ability_runtime:ability_manager",
   ]
 }

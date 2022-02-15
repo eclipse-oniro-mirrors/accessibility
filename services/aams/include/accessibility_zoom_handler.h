@@ -18,13 +18,13 @@
 
 #include <vector>
 #include <mutex>
-// #include "accessibility_gesture_recognizer.h"
 #include "accessibility_event_transmission.h"
 #include "accessibility_zoom_proxy.h"
 #include "accessibility_zoom_gesture.h"
 
 namespace OHOS {
 namespace Accessibility {
+#define POINTER_COUNT_1 1
 
 /**
  * @brief Zoom state machine.
@@ -58,7 +58,7 @@ public:
     ZoomObserver() {}
     virtual ~ZoomObserver() {}
     virtual void OnTransitionTo(const int state) {}
-    virtual void OnBack(TouchEvent &event) {}
+    virtual void OnBack(MMI::PointerEvent &event) {}
     virtual void OnZoomIn() {}
     virtual void OnZoomOut() {}
 };
@@ -67,7 +67,7 @@ class ZoomState {
 public:
     virtual void Enter() {}
     virtual void Exit() {}
-    virtual void OnTouchEvent(TouchEvent &event) {}
+    virtual void OnPointerEvent(MMI::PointerEvent &event) {}
     std::vector<ZoomObserver> observer_ {};
 
 public:
@@ -115,8 +115,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    virtual void OnTouchEvent(TouchEvent &event) override;
-    //AccessibilityZoomProxy &GetProxy();
+    virtual void OnPointerEvent(MMI::PointerEvent &event) override;
 
 private:
 
@@ -124,7 +123,7 @@ private:
     public:
         virtual void Enter() override;
         virtual void Exit() override;
-        virtual void OnTouchEvent(TouchEvent &event) override;
+        virtual void OnPointerEvent(MMI::PointerEvent &event) override;
     private:
         AccessibilityZoomGesture gesture_ {};
     };
@@ -136,7 +135,7 @@ private:
     public:
         virtual void Enter() override;
         virtual void Exit() override;
-        virtual void OnTouchEvent(TouchEvent &event) override;
+        virtual void OnPointerEvent(MMI::PointerEvent &event) override;
     private:
         AccessibilityZoomGesture gesture_ {};
     };
@@ -144,45 +143,27 @@ private:
     /**
      * the two fingers are pressed down.
      */
-    class SlidingState: public ZoomState /*,public XXX.GestureRecognizeListener*/ {
+    class SlidingState: public ZoomState {
     public:
         virtual void Enter() override;
         virtual void Exit() override;
-        virtual void OnTouchEvent(TouchEvent &event) override;
-        virtual bool OnScroll( /*TouchEvent first, TouchEvent second, float distanceX, float distanceY*/ );  // override;
-        virtual bool OnScale();  // override;
+        virtual void OnPointerEvent(MMI::PointerEvent &event) override;
+        virtual bool OnScroll();
+        virtual bool OnScale();
     };
 
     ZoomState currentState_ {};
-
     ReadyState readyState_ {};
     ZoomInState zoomInState_ {};
     SlidingState slidingState_ {};
-
     std::recursive_mutex stateMutex_ {};
-
     int displayId_ = 0;
-
-    // AccessibilityZoomProxy zoomProxy_ {};
-
     void Initialize();
-
-    // void HandleEvent(TouchEvent &event);
-    void OnBack(TouchEvent &event) override;
-
+    void OnBack(MMI::PointerEvent &event) override;
     void OnTransitionTo(const int state) override;
-
     void OnZoomIn() override;
     void OnZoomOut() override;
-
-    // 屏幕关闭会结束放大. 需要监听屏幕事件.
-    /*
-    class AccessibilityScreenListener : public *** {
-    public:
-        void onScreenTurnedOff();
-    }
-    */
 };
-}  // namespace accessibility
+}  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_HANDLER_H

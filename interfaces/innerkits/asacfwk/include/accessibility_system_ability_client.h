@@ -25,15 +25,16 @@
 
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
-#include "accessibility_interaction_operation.h"
+#include "accessibility_element_operator.h"
 #include "accessibility_ability_info.h"
 #include "context.h"
 #include "refbase.h"
+#include "accessibility_caption.h"
 
 namespace OHOS {
 namespace Accessibility {
 #define ACCESSIBILITY_DECLARE_IMPL() \
-    struct Impl;                        \
+    struct Impl;                     \
     std::unique_ptr<Impl> pimpl
 
 enum AccessibilityControlType : int {
@@ -42,7 +43,7 @@ enum AccessibilityControlType : int {
     CONTENT_TEXT = 0x00000004,
 };
 
-enum AbilityStateType: int {
+enum AbilityStateType : int {
     ABILITY_STATE_INVALID = 0,
     ABILITY_STATE_ENABLE,
     ABILITY_STATE_DISABLE,
@@ -50,54 +51,27 @@ enum AbilityStateType: int {
 };
 
 /*
-* The class register the accessibility service observer to AAMS,and
-* dispatch the accessibility service status changed. such as Service Enable，
-* Accessibility Enable. It calls AAMS API to send the event to AA.
-* It supply sington instance for each process.
-*/
-class CaptionProperties {
-public:
-    CaptionProperties() {}
-    bool CheckProperty(const std::string &property);
-    int GetBackgroundColor() const;   //remained
-    int GetForegroundColor() const;   //remained
-    int GetEdgeType() const;          //remained
-    int GetEdgeColor() const;         //remained
-    int GetWindowColor() const;       //remained
-
-private:
-    bool HasBackgroundColor();
-    bool HasForegroundColor();
-    bool HasEdgeType();
-    bool HasEdgeColor();
-    bool HasWindowColor();
-
-    bool hasBackgroundColor_ = false;
-    bool hasEdgeType_ = false;
-    bool hasEdgeColor_ = false;
-    bool hasWindowColor_ = false;
-    bool hasForegroundColor_ = false;
-    int backgroundColor_ = 0; //remained
-    int edgeType_ = 0;        //remained
-    int edgeColor_ = 0;       //remained
-    int windowColor_ = 0;     //remained
-    int foregroundColor_ =0; //remained
-};
+ * The class register the accessibility service observer to AAMS,and
+ * dispatch the accessibility service status changed. such as Service Enable，
+ * Accessibility Enable. It calls AAMS API to send the event to AA.
+ * It supply sington instance for each process.
+ */
 
 class AccessibilitySystemAbilityClient {
 public:
     static const int NUM_INT32 = 32;
     static const uint32_t STATE_ACCESSIBILITY_ENABLED = 0x00000001;
     static const uint32_t STATE_EXPLORATION_ENABLED = 0x00000002;
-    static const uint32_t STATE_ACCESSIBILITY_DISABLED = 0x00000004;
-    static const uint32_t STATE_EXPLORATION_DISABLED = 0x00000008;
+    static const uint32_t STATE_CAPTION_ENABLED = 0x00000004;
+    static const uint32_t STATE_KEYEVENT_ENABLED = 0x00000008;
+    static const uint32_t STATE_GESTURE_ENABLED = 0x00000010;
 
     /**
      * @brief Construct.
      * @param context Indicates the context of the associated ability.
      * @param accountId User Id
      */
-    AccessibilitySystemAbilityClient(const AppExecFwk::Context &context, int accountId);
+    AccessibilitySystemAbilityClient(const AppExecFwk::Context& context, int accountId);
 
     /**
      * @brief Register the interaction operation, so the AA can get node info from ACE.
@@ -106,15 +80,15 @@ public:
      * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
-    int RegisterInteractionOperation(const int windowId,
-            const std::shared_ptr<AccessibilityInteractionOperation> &operation, int accountId);
+    int RegisterElementOperator(
+        const int windowId, const std::shared_ptr<AccessibilityElementOperator>& operation, int accountId);
 
     /**
      * @brief Deregister the interaction operation.
      * @param windowId Window ID
      * @return
      */
-    void DeregisterInteractionOperation(const int windowId);
+    void DeregisterElementOperator(const int windowId);
 
     /**
      * @brief Checks whether accessibility ability is enabled.
@@ -130,6 +104,8 @@ public:
      */
     bool IsTouchExplorationEnabled();
 
+    bool IsCaptionEnabled();
+
     /**
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by
@@ -140,15 +116,15 @@ public:
      *                  4 indicates that the ability has been installed.
      * @return
      */
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int accessibilityAbilityTypes,
-        const AbilityStateType stateType);
+    std::vector<AccessibilityAbilityInfo> GetAbilityList(
+        const int accessibilityAbilityTypes, const AbilityStateType stateType);
 
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.
      * @param abilityContext Indicates the context of the associated ability.
      * @return AccessibilitySystemAbilityClient instance
      */
-    static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance(const AppExecFwk::Context &abilityContext);
+    static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance(const AppExecFwk::Context& abilityContext);
 
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.
@@ -158,21 +134,16 @@ public:
     static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance();
 
     /**
-     * @brief Obtains the suggested interval for switching the UI.
-     * Remained.
-     * @param timeout Indicates the interval at which the UI is changed.
-     * @param contentType Indicates the type of the UI control.
-     * @return Returns the interval.
-     */
-    int GetSuggestedInterval(const int timeout, const int contentType);
-
-    /**
      * @brief Obtains the properties of the accessibility caption function.
      * Remained for caption.
      * @param -
      * @return Returns the properties of the accessibility caption function.
      */
-    CaptionProperties GetAccessibilityCaptionProperties() const;
+    CaptionProperty GetCaptionProperty() const;
+
+    bool SetCaptionProperty(const CaptionProperty& caption);
+
+    bool SetCaptionState(const bool state);
 
     /**
      * @brief Checks whether the accessibility caption function is enabled.
@@ -195,7 +166,7 @@ public:
      * @param event Indicates the accessibility event information specified by AccessibilityEventInfo.
      * @return true: send ok; otherwise is refused.
      */
-    bool SendEvent(const AccessibilityEventInfo &event);
+    bool SendEvent(const AccessibilityEventInfo& event);
 
     /**
      * @brief Subscribes to the specified type of accessibility status change events.
@@ -205,7 +176,7 @@ public:
      *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
      * @return true: send ok; otherwise is refused.
      */
-    bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer, const int eventType);
+    bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer, const int eventType);
 
     /**
      * @brief Unsubscribe the specified type of accessibility status change events.
@@ -214,14 +185,14 @@ public:
      *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
      * @return true: send ok; otherwise is refused.
      */
-    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer, const int eventType);
+    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer, const int eventType);
 
     /**
      * @brief Unsubscribe the accessibility status change events from the observer.
      * @param observer Indicates the registered accessibility status event observer.
      * @return true is succeed otherwise is failed.
      */
-    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer);
+    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer);
 
     /**
      * @brief Inner function for aams status update;
@@ -229,7 +200,7 @@ public:
      * @param enabled true is enabled otherwise is disabled.
      * @return -
      */
-    void SetEnabled(const bool enabled);
+    void UpdateEnabled(const bool enabled);
 
     /**
      * @brief Inner function for aams status update;
@@ -237,19 +208,39 @@ public:
      * @param enabled true is enabled otherwise is disabled.
      * @return -
      */
-    void SetTouchExplorationEnabled(const bool enabled);
+    void UpdateTouchExplorationEnabled(const bool enabled);
 
     /**
-     * @brief Check otherwise Accessibility Ability(AA) is conflicted with other AA.
-     *        Remained for setting subsystem.
-     * @param abilityName The AA specified (include deviceId/bundleName/abilityName)
+     * @brief Update the properties of caption.
+     * @param
+     * @return
+     */
+    void UpdatecaptionProperty(const CaptionProperty& property);
+
+    void SetCaptionEnabled(const bool enabled);
+
+    bool SetEnabled(const bool state);
+
+    /**
+     * @brief Get eventlist that accessibility abilities are needed.
+     * @return enabled eventlist mask.
+     */
+    int GetEnabledEventMask();
+
+    /**
+     * @brief Check otherwise Accessibility Ability(AA) is conflicted with
+     * other AA. Remained for setting subsystem.
+     * @param abilityName The AA specified (include
+     * deviceId/bundleName/abilityName)
      * @return LAUNCH_CONFLICT_NONE: no conflict;
      *          LAUNCH_CONFLICT_TOUCH_BROWSER: conflict with touch browser;
      *          LAUNCH_CONFLICT_DISPLAY_RESIZE: conflict with display resize;
      *          LAUNCH_CONFLICT_KEY_EVENT: conflict with key event;
-     *          LAUNCH_CONFLICT_FINGERPRINT_GESTURE: conflict with fingerprint gesture.
      */
-    int CheckConflictWithEnabledAbility(const AppExecFwk::ElementName &abilityName) { return 0;}
+    int CheckConflictWithEnabledAbility(const AppExecFwk::ElementName& abilityName)
+    {
+        return 0;
+    }
 
     /**
      * @brief Get the AA specified capability.
@@ -257,15 +248,10 @@ public:
      * @param abilityName The AA specified (include deviceId/bundleName/abilityName)
      * @return refer to AccessibilityAbilityInfo.Capability
      */
-    int GetAccessibleAbilityCapability(const AppExecFwk::ElementName &abilityName) { return 0;}
-
-    /**
-     * @brief Requests feedback interruption from all accessibility services.
-     *        Remained.
-     * @param -
-     * @return
-     */
-    void Interrupt();
+    int GetAccessibleAbilityCapability(const AppExecFwk::ElementName& abilityName)
+    {
+        return 0;
+    }
 
     /**
      * @brief Inner function.
@@ -273,8 +259,27 @@ public:
      * @param windowId The window id related the operation object registed.
      * @return The callback object of ACE.
      */
-    std::shared_ptr<AccessibilityInteractionOperation> GetInteractionObject(int windowId);
+    std::shared_ptr<AccessibilityElementOperator> GetOperatorObject(int windowId);
 
+    void AddCaptionListener(std::shared_ptr<CaptionObserver>& ob);
+    bool DeleteCaptionListener(std::shared_ptr<CaptionObserver>& ob);
+
+    bool GetEnabledState();
+    bool GetCaptionState();
+    bool GetTouchGuideState();
+    bool GetGestureState();
+    bool GetKeyEventObserverState();
+
+    bool SetTouchGuideState(const bool state);
+    bool SetGestureState(const bool state);
+    bool SetKeyEventObserverState(const bool state);
+
+    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
+    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it);
+    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities();
+    std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities();
+    bool SetCaptionPropertyTojson(const CaptionProperty& caption);
+    bool SetCaptionStateTojson(const bool state);
 private:
     /**
      * @brief Clean the AAMS object data.
@@ -298,25 +303,64 @@ private:
     void NotifyTouchExplorationStateChanged();
 
     /**
+     * @brief Notify the state of caption is changed.
+     * @param
+     * @return
+     */
+    void NotifyCaptionStateChanged();
+
+    /**
+     * @brief Notify the properties of caption is changed.
+     * @param
+     * @return
+     */
+    void NotifyCaptionChanged();
+
+    /**
      * @brief Check the event type is valid or not.
      * @param eventType The data of event type.
      * @return True: The data of event type is valid; otherwise is not.
      */
     bool CheckEventType(EventType eventType);
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAceessibilityState_{};
+
+    /**
+     * @brief Check the action type is valid or not.
+     * @param eventType The data of event type.
+     * @return True: The data of event type is valid; otherwise is not.
+     */
+    bool CheckActionType(ActionType actionType);
+
+    void NotifyKeyEventStateChanged();
+
+    void NotifyGestureStateChanged();
+
+
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_{};
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_{};
-    CaptionProperties captionProperties_ {};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersCaptionState_{};
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_{};
+
+    CaptionProperty captionProperty_;
     int accountId_ = 0;
     bool isEnabled_ = 0;
     bool isTouchExplorationEnabled_ = 0;
+    bool isCaptionEnabled_ = 0;
     std::recursive_mutex asacProxyLock_;
-    static std::shared_ptr<AccessibilitySystemAbilityClient> instance_ ;
-    std::shared_ptr<AccessibilityInteractionOperation> interactionOperator_;
-    std::map<int, std::shared_ptr<AccessibilityInteractionOperation>> interactionOperators_{};
+    static std::shared_ptr<AccessibilitySystemAbilityClient> instance_;
+    std::shared_ptr<AccessibilityElementOperator> interactionOperator_;
+    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_{};
     int connectionWindowId_ = 0;
     ACCESSIBILITY_DECLARE_IMPL();
+
+    std::vector<AccessibilityAbilityInfo> installedAbilities_{};
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};
+
+    bool isFilteringKeyEventsEnabled_ = 0;
+    bool isGesturesSimulationEnabled_ = 0;
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_{};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_{};
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+}  // namespace Accessibility
+}  // namespace OHOS
 #endif

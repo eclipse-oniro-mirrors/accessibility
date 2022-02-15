@@ -18,25 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility{
-void EventTransmission::OnTouchEvent(TouchEvent &event)
-{
-    HILOG_DEBUG();
-
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->OnTouchEvent(event);
-    }
-}
-
-void EventTransmission::OnMouseEvent(MouseEvent &event)
-{
-    HILOG_DEBUG();
-
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->OnMouseEvent(event);
-    }
-}
 
 void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
 {
@@ -46,6 +27,16 @@ void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
     if (next != nullptr) {
         next->OnKeyEvent(event);
     }
+}
+
+void EventTransmission::OnPointerEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    auto next = GetNext();
+    if (next != nullptr) {
+        next->OnPointerEvent(event);
+  }
 }
 
 void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo &event)

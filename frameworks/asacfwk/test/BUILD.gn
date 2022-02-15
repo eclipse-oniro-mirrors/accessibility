@@ -62,21 +62,22 @@ ohos_unittest("asac_unit_test") {
     "unittest/accessibility_ability_info_test.cpp",
     "unittest/accessible_ability_manager_service_stub_test.cpp",
     "unittest/accessible_ability_manager_service_proxy_test.cpp",
-    "unittest/accessibility_interaction_operation_proxy_test.cpp",
-    "unittest/accessibility_interaction_operation_stub_test.cpp",
     "unittest/accessible_ability_manager_service_state_stub_test.cpp",
     "unittest/accessible_ability_manager_service_state_proxy_test.cpp",
-    "unittest/accessibility_interaction_operation_callback_proxy_test.cpp",
+    "unittest/accessibility_element_operator_callback_proxy_test.cpp",
+    "unittest/accessibility_element_operator_proxy_test.cpp",
+    "unittest/accessibility_element_operator_stub_test.cpp",
     "../src/accessibility_event_info.cpp",
     "../src/accessibility_operator.cpp",
     "../src/accessibility_element_info.cpp",
     "../src/accessibility_ability_info.cpp",
     "../src/accessibility_state_event.cpp",
     "../src/accessibility_window_info.cpp",
-    "../src/accessibility_interaction_operation_proxy.cpp",
-    "../src/accessibility_interaction_operation_stub.cpp",
-    "../src/accessibility_interaction_operation_callback_proxy.cpp",
-    "../src/accessibility_interaction_operation_callback_stub.cpp",
+    "../src/accessibility_element_operator_proxy.cpp",
+    "../src/accessibility_element_operator_stub.cpp",
+    "../src/accessibility_element_operator_callback_proxy.cpp",
+    "../src/accessibility_element_operator_callback_stub.cpp",
+    "../src/accessibility_element_operator_async_mng.cpp",
     "../src/accessibility_system_ability_client.cpp",
     "../src/accessible_ability_channel_proxy.cpp",
     "../src/accessible_ability_channel_stub.cpp",
@@ -86,8 +87,8 @@ ohos_unittest("asac_unit_test") {
     "../src/accessible_ability_manager_service_state_stub.cpp",
     "../src/gesture_simulation.cpp",
     "//base/accessibility/util/src/json_utils.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_value.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
+    "../src/accessibility_caption.cpp",
+    "../src/accessible_ability_manager_service_caption_property_stub.cpp"
   ]
 
   configs = [
@@ -102,7 +103,8 @@ ohos_unittest("asac_unit_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
-    "//base/miscservices/time/services:time_service",    
+    "//base/miscservices/time/services:time_service",
+    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = [
@@ -112,7 +114,7 @@ ohos_unittest("asac_unit_test") {
     "samgr_standard:samgr_proxy",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
-    "ability_runtime:want",
+    "ability_base:want",
     "ability_runtime:ability_manager",
   ]
 }

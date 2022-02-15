@@ -25,7 +25,7 @@ AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {}
 
 int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
-                                                        MessageOption &option)
+    MessageOption &option)
 {
     return 0;
 }
@@ -45,37 +45,17 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnInterrupt(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnGesture(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnDisplayResizeChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGestureValidityChanged(MessageParcel &data, MessageParcel &reply)
-{
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGesture(MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }

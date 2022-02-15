@@ -19,10 +19,9 @@
 #include <memory>
 #include "refbase.h"
 #include "accessible_ability_client_stub.h"
-#include "accessible_ability_event_handler.h"
 #include "hilog_wrapper.h"
 #include "accessibility_operator.h"
-#include "accessible_ability_listener.h"
+#include "accessibility_extension.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -30,8 +29,7 @@ namespace Accessibility {
 class AccessibleAbilityClientStubImpl : public AccessibleAbilityClientStub
 {
 public:
-    AccessibleAbilityClientStubImpl(
-        const std::shared_ptr<AccessibleAbilityEventHandler> &accessibleAbilityEventHandler);
+    AccessibleAbilityClientStubImpl() = default;
     ~AccessibleAbilityClientStubImpl() = default;
 
     static const uint32_t INVALID_CHANNEL_ID = 0xFFFFFFFF;
@@ -41,7 +39,7 @@ public:
      * @param listener The listener used to receive notification.
      * @return
      */
-    void RegisterListenerImpl(const std::shared_ptr<AccessibleAbilityListener> &listener);
+    void RegisterListenerImpl(const std::shared_ptr<AccessibilityExtension> &listener);
 
     /**
      * @brief Init accessible ability.
@@ -66,21 +64,6 @@ public:
     void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
 
     /**
-     * @brief Called when the accessibility service is interrupted.
-     * @param
-     * @return
-     */
-    void OnInterrupt() override;
-
-    /**
-     * @brief Called when a user performs a specified gesture on the device that
-     *        your accessibility application has requested to be in touch exploration mode.
-     * @param gestureId The id of gesture.
-     * @return
-     */
-    void OnGesture(const int gestureId) override;
-
-    /**
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
@@ -97,7 +80,7 @@ public:
      * @param centerY Indicates the Y coordinate of the center for resizing the display.
      * @return
      */
-    void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
+    void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY) override;
 
     /**
@@ -108,19 +91,6 @@ public:
      */
     void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) override;
 
-    /**
-     * @brief Called when the validity status of the fingerprint sensor's gesture detection changes.
-     * @param validity The validity status of the fingerprint sensor's gesture detection.
-     * @return
-     */
-    void OnFingerprintGestureValidityChanged(const bool validity) override;
-
-    /**
-     * @brief Called when the fingerprint sensor detects a gesture.
-     * @param gesture The gesture which is detected by fingerprint sensor.
-     * @return
-     */
-    void OnFingerprintGesture(const int gesture) override;
 
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -140,25 +110,16 @@ private:
 
     void OnAccessibilityEventInner(const AccessibilityEventInfo &eventInfo);
 
-    void OnInterruptInner();
-
-    void OnGestureInner(const int gestureId);
-
     void OnKeyPressEventInner(const MMI::KeyEvent &keyEvent, const int sequence);
 
-    void OnDisplayResizeChangedInner(const int displayId, const Rect &rect, const float scale, const float centerX,
+    void OnDisplayResizedInner(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY);
 
     void OnGestureSimulateResultInner(const int sequence, const bool completedSuccessfully);
 
-    void OnFingerprintGestureValidityChangedInner(const bool validity);
-
-    void OnFingerprintGestureInner(const int gesture);
-
     sptr<IRemoteObject::DeathRecipient> deathRecipient_{};
     sptr<IAccessibleAbilityChannel> channel_ = nullptr;
-    std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
-    std::shared_ptr<AccessibleAbilityEventHandler> handler_ = nullptr;
+    std::shared_ptr<AccessibilityExtension> listener_ = nullptr;
     uint32_t channelId_ = INVALID_CHANNEL_ID;
 };
 

@@ -30,10 +30,10 @@
       "sub_component": [
         "//base/accessibility/services/aams:accessibleabilityms",
         "//base/accessibility/frameworks/aafwk:accessibleability",
+        "//base/accessibility/frameworks/aafwk:accessibility_extension_module",
         "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-        "//base/accessibility/interfaces/kits/napi:accessibility",
+        "//base/accessibility/interfaces/kits/napi:napi_packages",
         "//base/accessibility/sa_profile:aams_sa_profile",
-        "//base/accessibility/interfaces/kits/napi:tts",
         "//base/accessibility/sa_profile:accessibility_cfg"
       ],
       "inner_kits": [
@@ -46,11 +46,9 @@
               "accessible_ability_client_proxy.h",
               "accessible_ability_client_stub.h",
               "accessible_ability_client_stub_impl.h",
-              "accessible_ability_event_handler.h",
-              "accessible_ability.h",
-              "accessible_ability_listener.h",
-              "display_resize_controller.h",
-              "fingerprint_controller.h"
+              "accessibility_extension_context.h",
+              "accessibility_extension.h",
+              "display_resize_controller.h"
             ],
             "header_base": "//base/accessibility/frameworks/aafwk/include"
           }
