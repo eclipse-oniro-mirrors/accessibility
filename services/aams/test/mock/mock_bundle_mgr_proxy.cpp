@@ -450,5 +450,17 @@ bool BundleMgrProxy::VerifyCallingPermission(const std::string &permission)
 {
     return true;
 }
+
+std::vector<std::string> BundleMgrProxy::GetAccessibleAppCodePaths(int32_t userId)
+{
+    std::vector<std::string> v;
+    return v;
+}
+
+bool BundleMgrProxy::QueryExtensionAbilityInfoByUri(const std::string &uri, int32_t userId,
+        ExtensionAbilityInfo &extensionAbilityInfo)
+{
+    return true;
+}
 }  // namespace AppExecFwk
 }  // namespace OHOS
