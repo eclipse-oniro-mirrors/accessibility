@@ -23,14 +23,14 @@ std::function<void(std::shared_ptr<MMI::PointerEvent>)> g_pointerCallback = null
 namespace MMI {
 int MTtouchAction = -1;
 
-InputManager *InputManager::mInstance_ = nullptr;
+InputManager *InputManager::instance_ = nullptr;
 
 InputManager *InputManager::GetInstance()
 {
-    if (mInstance_ == nullptr) {
-        mInstance_ = new InputManager();
+    if (instance_ == nullptr) {
+        instance_ = new InputManager();
     }
-    return mInstance_;
+    return instance_;
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
