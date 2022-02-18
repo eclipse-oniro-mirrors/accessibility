@@ -24,6 +24,7 @@ config("accessibilityclient_private_config") {
     "//base/accessibility/dummyData",
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
   ]
 
   defines = [
@@ -57,7 +58,7 @@ ohos_shared_library("accessibilityclient") {
 
   external_deps = [
     "ability_runtime:ability_manager",
-    "ability_runtime:want",
+    "ability_base:want",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",

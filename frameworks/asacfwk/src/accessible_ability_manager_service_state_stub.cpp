@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessible_ability_manager_service_state_stub.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -71,11 +72,30 @@ void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t sta
     }
 
     if (stateType & AccessibilitySystemAbilityClient::STATE_EXPLORATION_ENABLED) {
-        instance->SetTouchExplorationEnabled(true);
+        instance->UpdateTouchExplorationEnabled(true);
     } else {
-        instance->SetTouchExplorationEnabled(false);
+        instance->UpdateTouchExplorationEnabled(false);
     }
+
+    if (stateType & AccessibilitySystemAbilityClient::STATE_CAPTION_ENABLED) {
+        instance->SetCaptionEnabled(true);
+    } else {
+        instance->SetCaptionEnabled(false);
+    }
+
+    if (stateType & AccessibilitySystemAbilityClient::STATE_KEYEVENT_ENABLED) {
+        instance->SetKeyEventObserverState(true);
+    } else {
+        instance->SetKeyEventObserverState(false);
+    }
+
+    if (stateType & AccessibilitySystemAbilityClient::STATE_GESTURE_ENABLED) {
+        instance->SetGestureState(true);
+    } else {
+        instance->SetGestureState(false);
+    }
+
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

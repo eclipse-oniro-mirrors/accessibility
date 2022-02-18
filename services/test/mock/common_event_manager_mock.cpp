@@ -13,22 +13,20 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
 #include "common_event_manager.h"
+#include <gtest/gtest.h>
 #include "singleton.h"
-
 namespace OHOS {
 namespace EventFwk {
-
-static std::shared_ptr<CommonEventSubscriber> subscriberMOCK = nullptr;
+static std::shared_ptr<CommonEventSubscriber> g_subscriberMOCK = nullptr;
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data)
 {
     GTEST_LOG_(INFO) << "MOCK CommonEventManager PublishCommonEvent";
-    if (!subscriberMOCK) {
-        GTEST_LOG_(INFO) << "subscriberMOCK is nullptr";
+    if (!g_subscriberMOCK) {
+        GTEST_LOG_(INFO) << "g_subscriberMOCK is nullptr";
     }
-    subscriberMOCK->OnReceiveEvent(data);
+    g_subscriberMOCK->OnReceiveEvent(data);
     return true;
 }
 
@@ -46,15 +44,15 @@ bool CommonEventManager::PublishCommonEvent(const CommonEventData &data, const C
 bool CommonEventManager::SubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     GTEST_LOG_(INFO) << "MOCK CommonEventManager SubscribeCommonEvent";
-    subscriberMOCK = subscriber;
+    g_subscriberMOCK = subscriber;
     return true;
 }
 
 bool CommonEventManager::UnSubscribeCommonEvent(const std::shared_ptr<CommonEventSubscriber> &subscriber)
 {
     GTEST_LOG_(INFO) << "MOCK CommonEventManager UnSubscribeCommonEvent";
-    if (subscriberMOCK == subscriber) {
-        subscriberMOCK = nullptr;
+    if (g_subscriberMOCK == subscriber) {
+        g_subscriberMOCK = nullptr;
     }
 
     return true;
@@ -64,5 +62,5 @@ bool CommonEventManager::GetStickyCommonEvent(const std::string &event, CommonEv
 {
     return true;
 }
-}  // namespace EventFwk
+}  //namespace EventFwk
 }  // namespace OHOS

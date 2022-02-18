@@ -982,29 +982,9 @@ CommonEventSupport::~CommonEventSupport()
 
 void CommonEventSupport::Init()
 {
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_LOCKED_BOOT_COMPLETED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SHUTDOWN);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BATTERY_LOW);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_BATTERY_OKAY);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_CONNECTED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_DISCONNECTED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_OFF);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SCREEN_ON);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USER_PRESENT);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TIME_TICK);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TIME_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DATE_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_TIMEZONE_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CLOSE_SYSTEM_DIALOGS);
-
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REPLACED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_REPLACED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_FULLY_REMOVED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED);
@@ -1012,88 +992,9 @@ void CommonEventSupport::Init()
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_DATA_CLEARED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGES_SUSPENDED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGES_UNSUSPENDED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_SUSPENDED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_MY_PACKAGE_UNSUSPENDED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_UID_REMOVED);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_FIRST_LAUNCH);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_NEEDS_VERIFICATION);
     commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_PACKAGE_VERIFIED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_EXTERNAL_APPLICATIONS_AVAILABLE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_EXTERNAL_APPLICATIONS_UNAVAILABLE);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CONFIGURATION_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_LOCALE_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DRIVE_MODE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HOME_MODE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_OFFICE_MODE);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HWID_LOGIN);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HWID_LOGOUT);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HWID_TOKEN_INVALID);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_HWID_LOGOFF);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NFC_ACTION_ADAPTER_STATE_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NFC_ACTION_RF_FIELD_ON_DETECTED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_NFC_ACTION_RF_FIELD_OFF_DETECTED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISCHARGING);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CHARGING);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_IDLE_MODE_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_POWER_SAVE_MODE_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ABILITY_ADDED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ABILITY_REMOVED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ABILITY_UPDATED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_LOCATION_MODE_STATE_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_SLEEP);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_PAUSE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_STANDBY);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_LASTMODE_SAVE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_ABNORMAL);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_HIGH_TEMPERATURE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_EXTREME_TEMPERATURE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_TEMPERATURE_ABNORMAL);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_VOLTAGE_RECOVERY);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_TEMPERATURE_RECOVERY);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_IVI_ACTIVE);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_STATE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_PORT_CHANGED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_DEVICE_ATTACHED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_DEVICE_DETACHED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_ATTACHED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_USB_ACCESSORY_DETACHED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_STORAGE_LOW);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_STORAGE_OK);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DEVICE_STORAGE_FULL);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_CONNECTIVITY_CHANGE);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_REMOVED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTED);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_MOUNTED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_BAD_REMOVAL);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_UNMOUNTABLE);
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_DISK_EJECT);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_VISIBLE_ACCOUNTS_UPDATED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_ACCOUNT_DELETED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_FOUNDATION_READY);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SIM_CARD_DEFAULT_VOICE_SUBSCRIPTION_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_SIM_STATE_CHANGED);
-
-    commonEventSupport_.emplace_back(CommonEventSupport::COMMON_EVENT_AIRPLANE_MODE_CHANGED);
-
     return;
 }
 
@@ -1101,5 +1002,5 @@ bool CommonEventSupport::IsSystemEvent(std::string &str)
 {
     return true;
 }
-}  // namespace EventFwk
+}  //namespace EventFwk
 }  // namespace OHOS

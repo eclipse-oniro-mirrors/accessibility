@@ -23,7 +23,7 @@
 #include "accessibility_ability_info.h"
 #include "accessible_ability_manager_service_state_interface.h"
 #include "accessibility_event_info.h"
-#include "accessibility_interaction_operation_interface.h"
+#include "accessibility_element_operator_interface.h"
 #include "iremote_broker.h"
 #include "iremote_object.h"
 
@@ -37,28 +37,23 @@ public:
 
     void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) {}
 
-    uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId) {
+    uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId)
+    {
         return 1;
     }
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) {
+    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType)
+    {
         AccessibilityAbilityInfo info {};
         std::vector<AccessibilityAbilityInfo> infos;
         infos.push_back(info);
         return infos;
     }
-    void RegisterInteractionOperation(const int windowId,
-            const sptr<IAccessibilityInteractionOperation> &operation,
+    void RegisterElementOperator(const int windowId,
+            const sptr<IAccessibilityElementOperator> &operation,
             const int accountId) {}
-    void DeregisterInteractionOperation(const int windowId) {}
-    void Interrupt(const int accountId) {}
-
-    void RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj) {}
-
-    uint64_t GetSuggestedInterval() {
-        return 1;
-    }
+    void DeregisterElementOperator(const int windowId) {}
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

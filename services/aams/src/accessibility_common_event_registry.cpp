@@ -28,10 +28,6 @@ namespace Accessibility{
 AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
 {
     HILOG_DEBUG("AccessibilityCommonEventRegistry AccessibilityCommonEventRegistry");
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_SWITCHED] =
-        &AccessibilityCommonEventRegistry::HandleSwitchedUser;
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_UNLOCKED] =
-        &AccessibilityCommonEventRegistry::HandleUnlockedUser;
         handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
     &AccessibilityCommonEventRegistry::HandleRemovedUser;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
@@ -125,23 +121,6 @@ void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
     }
     HILOG_DEBUG("Handle event: %{public}s", action.c_str());
     it->second(want);
-}
-
-void AccessibilityCommonEventRegistry::HandleSwitchedUser(const Want &want) const
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    // TODO: To make sure the invalid accoundId. -1 is temporary.
-    int32_t accountId = want.GetIntParam(CommonEventSupport::COMMON_EVENT_USER_SWITCHED, -1);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->SwitchedUser(accountId);
-}
-
-void AccessibilityCommonEventRegistry::HandleUnlockedUser(const Want &want) const
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    int32_t accountId = want.GetIntParam(CommonEventSupport::COMMON_EVENT_USER_UNLOCKED, -1);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UnlockedUser(accountId);
 }
 
 void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const

@@ -19,7 +19,6 @@
 #include "accessibility_display_manager.h"
 #include "accessibility_window_manager.h"
 #include "accessible_ability_connection.h"
-#include "dummy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -37,7 +36,7 @@ AccessibilityInteractionBridge& AccessibilityInteractionBridge::GetInstance()
 AccessibilityInteractionBridge::AccessibilityInteractionBridge()
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    AppExecFwk::AbilityInfo info;
+    AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
     accountData_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountData();
@@ -60,16 +59,17 @@ AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(
     return FindFocusedElementInfo(ANY_WINDOW_ID);
 }
 
-bool AccessibilityInteractionBridge::PerformActionOnAccessibilityFocusedItem(const ActionType& action)
+bool AccessibilityInteractionBridge::ExecuteActionOnAccessibilityFocused(const ActionType& action)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     auto focus = FindFocusedElementInfo();
-    std::map<std::string, std::string> actionArguments{};
+    std::map<std::string, std::string> actionArguments {};
     HILOG_DEBUG("[%{public}s ExecuteAction]", __func__);
     return focus.ExecuteAction(action, actionArguments);
 }
 
-bool Intersect(Rect& focus, Rect source) {
+bool Intersect(Rect& focus, Rect source)
+{
     HILOG_DEBUG("[%{public}s]", __func__);
     int minx = std::max(focus.GetLeftTopXScreenPostion(), source.GetLeftTopXScreenPostion());
     int miny = std::max(focus.GetLeftTopYScreenPostion(), source.GetLeftTopYScreenPostion());
@@ -79,12 +79,13 @@ bool Intersect(Rect& focus, Rect source) {
         HILOG_DEBUG("The two Rects do not intersect");
         return false;
     }
-    focus.SetLeftTopScreenPostion(minx,miny);
-    focus.SetRightBottomScreenPostion(maxx,maxy);
+    focus.SetLeftTopScreenPostion(minx, miny);
+    focus.SetRightBottomScreenPostion(maxx, maxy);
     return true;
 }
 
-bool Intersect(Rect& rect, AccessibilityWindowInfo window) {
+bool Intersect(Rect& rect, AccessibilityWindowInfo window)
+{
     HILOG_DEBUG("[%{public}s]", __func__);
     if (!Intersect(rect, window.GetRectInScreen())) {
         return false;
@@ -92,25 +93,25 @@ bool Intersect(Rect& rect, AccessibilityWindowInfo window) {
     return true;
 }
 
-bool Intersect(Rect& rect, WMDisplayInfo display) {
+bool Intersect(Rect& rect, Rosen::Display& display)
+{
     HILOG_DEBUG("[%{public}s]", __func__);
-    Rect source(0, 0, display.width, display.height);
-    if (!Intersect(rect,source)) {
+    Rect source(0, 0, display.GetWidth(), display.GetHeight());
+    if (!Intersect(rect, source)) {
         return false;
     }
     return true;
 }
 
-
-bool AccessibilityInteractionBridge::GetAccessibilityFocusClickPointInScreen(MmiPoint &point)
+bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MMI::PointerEvent::PointerItem &point)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     auto focus = FindFocusedElementInfo();
     auto focusRect = focus.GetRectInScreen();
-    /* Apply magnification if needed.**/
-    //TODO
-    /* Apply magnification if needed.**/
-    //Intersect with window
+    float denominator = 2.0;
+    /* Apply magnification if needed. */
+
+    // Intersect with window
     auto windowManager = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfo window;
     auto result = windowManager.GetAccessibilityWindow(windowManager.activeWindowId_, window);
@@ -120,26 +121,24 @@ bool AccessibilityInteractionBridge::GetAccessibilityFocusClickPointInScreen(Mmi
     if (!Intersect(focusRect, window)) {
         return false;
     }
-    //Intersect with display  dummy
-    auto displayInfo = AccessibilityDisplayManager::GetInstance().GetDefaultDisplay();
-    if (!Intersect(focusRect, displayInfo)) {
-        return false;
+    // Intersect with display dummy
+    auto display = AccessibilityDisplayManager::GetInstance().GetDefaultDisplay();
+    if (!Intersect(focusRect, *display)) {
+      return false;
     }
 
-    float px = (focusRect.GetLeftTopXScreenPostion() + focusRect.GetRightBottomXScreenPostion())/2;
-    float py = (focusRect.GetLeftTopYScreenPostion() + focusRect.GetRightBottomYScreenPostion())/2;
-    point.Setxy(px, py);
+    float px = (focusRect.GetLeftTopXScreenPostion() + focusRect.GetRightBottomXScreenPostion()) / denominator;
+    float py = (focusRect.GetLeftTopYScreenPostion() + focusRect.GetRightBottomYScreenPostion()) / denominator;
+    point.SetGlobalX(px);
+    point.SetGlobalY(py);
     return true;
 }
 AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(const int &windowId)
 {
     HILOG_DEBUG("[%{public}s with window]", __func__);
     AccessibilityElementInfo info {};
-    bool result = AccessibilityOperator::GetInstance().FindFocusedElementInfo(INTERACTION_BRIDGE_CHANNEL_ID,
-        windowId,NONE_ID,FOCUS_TYPE_ACCESSIBILITY, info);
-    if (!result) {
-        HILOG_ERROR("result is false");
-    }
+    AccessibilityOperator::GetInstance().FindFocusedElementInfo(INTERACTION_BRIDGE_CHANNEL_ID,
+        windowId, NONE_ID, FOCUS_TYPE_ACCESSIBILITY, info);
     return info;
 }
 

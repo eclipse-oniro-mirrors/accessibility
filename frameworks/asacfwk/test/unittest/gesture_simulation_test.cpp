@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-#include <vector>
-#include <memory>
 #include <gtest/gtest.h>
-#include "parcel.h"
+#include <memory>
+#include <vector>
+
 #include "gesture_simulation.h"
+#include "parcel.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -32,14 +33,10 @@ class UnitTestGestureResultListener : public GestureResultListener {
 public:
     UnitTestGestureResultListener() {}
     virtual ~UnitTestGestureResultListener() {}
-    void OnCancelled(std::vector<GesturePathDefine> &gesturePathDefine) override
-    {
-        GTEST_LOG_(INFO) << "UnitTestGestureResultListener OnCancelled";
-    }
 
-    void OnCompleted(std::vector<GesturePathDefine> &gesturePathDefine) override
+    void OnGestureInjectResult(uint32_t sequence, bool result) override
     {
-        GTEST_LOG_(INFO) << "UnitTestGestureResultListener OnCompleted";
+        GTEST_LOG_(INFO) << "UnitTestGestureResultListener OnGestureInjectResult";
     }
 };
 
@@ -75,7 +72,8 @@ void GestureSimulationUnitTest::TearDown()
  * @tc.name: GesturePathPositionDefine_GetPositionX
  * @tc.desc: Test function GetPositionX in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionX_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionX_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionX_001 start";
 
@@ -93,7 +91,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_GetPositionY
  * @tc.desc: Test function GetPositionY in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionY_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionY_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_GetPositionY_001 start";
 
@@ -111,7 +110,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_SetPositionX
  * @tc.desc: Test function SetPositionX in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionX_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionX_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionX_001 start";
 
@@ -127,7 +127,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_SetPositionY
  * @tc.desc: Test function SetPositionY in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionY_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionY_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_SetPositionY_001 start";
 
@@ -143,7 +144,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_ReadFromParcel
  * @tc.desc: Test function ReadFromParcel in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_ReadFromParcel_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_ReadFromParcel_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_ReadFromParcel_001 start";
 
@@ -161,7 +163,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_Marshalling
  * @tc.desc: Test function Marshalling in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_Marshalling_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_Marshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_Marshalling_001 start";
 
@@ -177,7 +180,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositi
  * @tc.name: GesturePathPositionDefine_Unmarshalling
  * @tc.desc: Test function Unmarshalling in class GesturePathPositionDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathPositionDefine_Unmarshalling_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathPositionDefine_Unmarshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathPositionDefine_Unmarshalling_001 start";
 
@@ -238,7 +242,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_GetMaxStrokeDuration
  * @tc.desc: Test function GetMaxStrokeDuration in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_GetMaxStrokeDuration_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_GetMaxStrokeDuration_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_GetMaxStrokeDuration_001 start";
 
@@ -308,7 +313,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_GetStartPosition
  * @tc.desc: Test function GetStartPosition in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_GetStartPosition_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_GetStartPosition_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_GetStartPosition_001 start";
 
@@ -330,7 +336,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_SetDurationTime
  * @tc.desc: Test function SetDurationTime in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_SetDurationTime_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_SetDurationTime_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_SetDurationTime_001 start";
 
@@ -347,7 +354,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_SetEndPosition
  * @tc.desc: Test function SetEndPosition in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_SetEndPosition_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_SetEndPosition_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_SetEndPosition_001 start";
 
@@ -363,7 +371,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_SetStartPosition
  * @tc.desc: Test function SetStartPosition in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_SetStartPosition_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_SetStartPosition_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_SetStartPosition_001 start";
 
@@ -379,7 +388,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_ReadFromParcel
  * @tc.desc: Test function ReadFromParcel in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_ReadFromParcel_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_ReadFromParcel_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_ReadFromParcel_001 start";
 
@@ -397,7 +407,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_Marshalling
  * @tc.desc: Test function Marshalling in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_Marshalling_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_Marshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_Marshalling_001 start";
 
@@ -413,7 +424,8 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
  * @tc.name: GesturePathDefine_Unmarshalling
  * @tc.desc: Test function Unmarshalling in class GesturePathDefine
  */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine_Unmarshalling_001, TestSize.Level1)
+HWTEST_F(GestureSimulationUnitTest,
+    GestureSimulation_Unittest_GesturePathDefine_Unmarshalling_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_Unmarshalling_001 start";
 
@@ -441,64 +453,4 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
     EXPECT_EQ(obj->GetEndPosition().GetPositionY(), endposition.GetPositionY());
 
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_Unmarshalling_001 end";
-}
-
-/**
- * @tc.number: GestureSimulation_Unittest_GestureResultListenerInfo_GetGestureResultListener_001
- * @tc.name: GestureResultListenerInfo_GetGestureResultListener
- * @tc.desc: Test function GetGestureResultListener in class GestureResultListenerInfo
- */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GestureResultListenerInfo_GetGestureResultListener_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGestureResultListener_001 start";
-
-    vector<GesturePathDefine> paths {};
-    GesturePathDefine path {};
-    paths.push_back(path);
-    shared_ptr<GestureResultListener> listener = make_shared<UnitTestGestureResultListener>();
-    shared_ptr<GestureResultListenerInfo> listenerInfo = make_shared<GestureResultListenerInfo>(paths, listener);
-
-    EXPECT_NE(listenerInfo->GetGestureResultListener(), nullptr);
-
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGestureResultListener_001 end";
-}
-
-/**
- * @tc.number: GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_001
- * @tc.name: GestureResultListenerInfo_GetGesturePathDefine
- * @tc.desc: Test function GetGesturePathDefine in class GestureResultListenerInfo
- */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_001 start";
-
-    vector<GesturePathDefine> paths {};
-    GesturePathDefine path {};
-    paths.push_back(path);
-    shared_ptr<GestureResultListener> listener = make_shared<UnitTestGestureResultListener>();
-    shared_ptr<GestureResultListenerInfo> listenerInfo = make_shared<GestureResultListenerInfo>(paths, listener);
-
-    EXPECT_EQ((int)listenerInfo->GetGesturePathDefine().size(), 1);
-
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_001 end";
-}
-
-/**
- * @tc.number: GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_002
- * @tc.name: GestureResultListenerInfo_GetGesturePathDefine
- * @tc.desc: Test function GetGesturePathDefine in class GestureResultListenerInfo
- *           Get path when there is no path in listenerInfos.
- */
-HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_002 start";
-
-    vector<GesturePathDefine> paths {};
-    shared_ptr<GestureResultListener> listener = make_shared<UnitTestGestureResultListener>();
-    shared_ptr<GestureResultListenerInfo> listenerInfo = make_shared<GestureResultListenerInfo>(paths, listener);
-
-    EXPECT_EQ((int)listenerInfo->GetGesturePathDefine().size(), 0);
-    EXPECT_EQ(listenerInfo->GetGestureResultListener(), nullptr);
-
-    GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GestureResultListenerInfo_GetGesturePathDefine_002 end";
 }

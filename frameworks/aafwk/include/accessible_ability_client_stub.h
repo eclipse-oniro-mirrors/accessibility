@@ -40,13 +40,9 @@ private:
     ErrCode HandleInit(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleDisconnect(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnAccessibilityEvent(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnInterrupt(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnGesture(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnDisplayResizeChanged(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnGestureSimulateResult(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnFingerprintGestureValidityChanged(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnFingerprintGesture(MessageParcel &data, MessageParcel &reply);
 
     using AccessibleAbilityClientFunc =
             ErrCode (AccessibleAbilityClientStub::*)(MessageParcel &data, MessageParcel &reply);

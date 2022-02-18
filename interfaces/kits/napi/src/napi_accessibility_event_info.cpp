@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "napi_accessibility_event_info.h"
 
 #include <map>
 #include <memory>
@@ -19,22 +20,19 @@
 #include <vector>
 
 #include "accessibility_event_info.h"
-
 #include "hilog_wrapper.h"
-#include "napi_accessibility_def.h"
-#include "napi_accessibility_utils.h"
-#include "napi_accessibility_window_info.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_event_info.h"
+#include "napi_accessibility_def.h"
 #include "napi_accessibility_info.h"
+#include "napi_accessibility_utils.h"
+#include "napi_accessibility_window_info.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NAccessibilityEventInfo::cons_ = nullptr;
-
-void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env) {
+void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
+{
     napi_property_descriptor descForAccessibilityEventInfo[] = {
         DECLARE_NAPI_FUNCTION("getSource", NAccessibilityEventInfo::GetSource),
     };
@@ -50,13 +48,15 @@ void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env) {
             &NAccessibilityEventInfo::cons_));
 }
 
-napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)
+{
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
     return jsthis;
 }
 
-napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};
@@ -91,12 +91,14 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        // execute async to call c++ function
+        [](napi_env env, void* data) {
             NAccessibilityEventInfoData *callbackInfo = (NAccessibilityEventInfoData*)data;
             AccessibilityEventInfo eventInfo = callbackInfo->eventInfo_;
             callbackInfo->result_ = eventInfo.GetSource(callbackInfo->nodeInfo_);
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        // execute the complete function
+        [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetSource execute back");
             NAccessibilityEventInfoData* callbackInfo = (NAccessibilityEventInfoData*)data;
             napi_value jsReturnValue = 0;

@@ -17,7 +17,7 @@
 #define _AAMS_ST_ABILITY_B1_
 #include <string>
 #include "ability_loader.h"
-#include "accessibility_interaction_operation.h"
+#include "accessibility_element_operator.h"
 #include "accessibility_state_event.h"
 #include "accessible_ability.h"
 #include "key_event.h"

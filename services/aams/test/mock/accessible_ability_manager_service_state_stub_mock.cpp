@@ -13,18 +13,17 @@
  * limitations under the License.
  */
 #include "accessible_ability_manager_service_state_stub.h"
+#include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
 #include "ipc_types.h"
 #include "iremote_object.h"
-#include "accessibility_system_ability_client.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateStub()
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("%{public}s", __func__);
 }
 
 int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -43,6 +42,5 @@ void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t sta
 {
     return;
 }
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

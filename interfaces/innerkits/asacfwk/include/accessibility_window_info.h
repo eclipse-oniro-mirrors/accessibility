@@ -153,7 +153,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetParentId();
+    int GetParentId() const;
 
     /**
      * @brief Get the anchor window
@@ -162,7 +162,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetAnchorId();
+    int GetAnchorId() const;
 
     /**
      * @brief Get the parent window
@@ -171,7 +171,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<int>  GetChildIds();
+    std::vector<int>  GetChildIds() const;
 
     /**
      * @brief Get the widnow id of current window.

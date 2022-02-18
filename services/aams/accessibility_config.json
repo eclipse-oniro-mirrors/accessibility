@@ -1,0 +1,23 @@
+{
+  "Capability": {
+    "accessible": "on",
+    "touchGuide": "on",
+    "gesture": "on",
+    "keyEventObserver": "off"
+  },
+
+  "Enabled": [
+    {"BundleName": "tallback"}
+  ],
+
+  "CaptionState": "on",
+
+  "CaptionsStyle": {
+    "fontFamily": "default",
+    "fontScale": 75,
+    "fontColor": "red",
+    "fontEdgeType": "none",
+    "backgroundColor": "white",
+    "windowColor": "white"
+  }
+}

@@ -53,5 +53,5 @@ void AccessibilityStateEvent::SetEventMsg(std::string &description)
     describeEvent_ = description;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

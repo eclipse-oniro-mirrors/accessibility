@@ -13,66 +13,27 @@
  * limitations under the License.
  */
 
-#include "hilog_wrapper.h"
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "mock_bundle_manager.h"
+#include "ability_config.h"
 #include "ability_info.h"
 #include "application_info.h"
-#include "ability_config.h"
+#include "hilog_wrapper.h"
+#include "bundle_mgr_client.h"
+
 using namespace OHOS::AAFwk;
-
 namespace OHOS {
+const static std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
 namespace AppExecFwk {
-
-int BundleMgrProxy::QueryWantAbility(
-    const AAFwk::Want &__attribute__((unused)) want, std::vector<AbilityInfo> &__attribute__((unused)) abilityInfos)
-{
-    return 0;
-}
-
-bool BundleMgrProxy::QueryAbilityInfo(const AAFwk::Want &want, AbilityInfo &abilityInfo)
-{
-    HILOG_DEBUG(" mock BundleMgrProxy QueryAbilityInfo ------------ start");
-    ElementName eleName = want.GetElement();
-    if (eleName.GetBundleName().empty()) {
-        return false;
-    }
-    abilityInfo.name = eleName.GetAbilityName();
-    abilityInfo.bundleName = eleName.GetBundleName();
-    abilityInfo.applicationName = eleName.GetAbilityName() + "App";
-    if (abilityInfo.bundleName != "com.ix.hiworld") {
-        abilityInfo.applicationInfo.isLauncherApp = false;
-    }
-    HILOG_DEBUG(" mock BundleMgrProxy QueryAbilityInfo ------------ end");
-    return true;
-}
-
-bool BundleMgrProxy::GetBundleInfo(const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo)
-{
-    return true;
-}
-
-bool BundleMgrProxy::QueryAbilityInfoByUri(const std::string &uri, AbilityInfo &abilityInfo)
-{
-    return false;
-}
-
-bool BundleMgrProxy::GetApplicationInfo(
-    const std::string &appName, const ApplicationFlag flag, const int userId, ApplicationInfo &appInfo)
-{
-    if (appName.empty()) {
-        return false;
-    }
-    appInfo.name = "Helloworld";
-    appInfo.bundleName = "com.ix.hiworld";
-    return true;
-}
 
 int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     return 0;
 }
 
-bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo)
+bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo, int32_t userId)
 {
     return true;
 }
@@ -81,10 +42,8 @@ bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want &want, AbilityInfo &ab
 {
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo ------------ start");
     if (CheckWantEntity(want, abilityInfo)) {
-
         HILOG_DEBUG(" mock BundleMgrService CheckWantEntity true ------------ start");
         return true;
-
     }
 
     ElementName elementTemp = want.GetElement();
@@ -151,7 +110,7 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     // filter ams onstart
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------2");
     for (const auto &entity : entityVector) {
-        if (entity == Want::FLAG_HW_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
+        if (entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
             element.GetBundleName().empty()) {
             find = true;
             break;
@@ -161,15 +120,82 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     auto bundleName = element.GetBundleName();
     auto abilityName = element.GetAbilityName();
     if (find || (bundleName == AbilityConfig::SYSTEM_UI_BUNDLE_NAME &&
-                    (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
-                        abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
+        (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
+        abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
         GTEST_LOG_(INFO) << "QueryAbilityInfo ++> system luncher, find :" << find;
-    HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------4");
+        HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------4");
         return true;
     }
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------5");
     return false;
 }
 
-}  // namespace AppExecFwk
+bool BundleMgrService::QueryAbilityInfos(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::QueryAbilityInfosForClone(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo> &formInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::GetFormsInfoByApp(const std::string &bundleName, std::vector<FormInfo> &formInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::GetFormsInfoByModule(const std::string &bundleName, const std::string &moduleName,
+    std::vector<FormInfo> &formInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::GetShortcutInfos(const std::string &bundleName, std::vector<ShortcutInfo> &shortcutInfos)
+{
+    return true;
+}
+
+bool BundleMgrService::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords)
+{
+    return true;
+}
+
+bool BundleMgrService::NotifyAbilityLifeStatus(const std::string &bundleName, const std::string &abilityName,
+    const int64_t launchTime, const int uid)
+{
+    return true;
+}
+
+BundleMgrClient::BundleMgrClient()
+{}
+
+BundleMgrClient::~BundleMgrClient()
+{}
+bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo &extensionInfo, const std::string &metadataName,
+    std::vector<std::string> &profileInfos) const
+{
+    std::ifstream jsonFileStream;
+    jsonFileStream.open(AccessibleAbility_JSON_FILE_PATH, std::ios::in);
+    if (!jsonFileStream.is_open()) {
+        HILOG_ERROR("Open json file failed.");
+        return false;
+    }
+
+    std::ostringstream buf;
+    char ch;
+    while (buf && jsonFileStream.get(ch)) {
+        buf.put(ch);
+    }
+    jsonFileStream.close();
+
+    profileInfos.push_back(buf.str());
+    return true;
+}
+}  //namespace AppExecFwk
 }  // namespace OHOS

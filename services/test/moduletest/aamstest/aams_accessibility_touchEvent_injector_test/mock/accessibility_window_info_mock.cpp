@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 /* AccessibleAction     Parcel struct                   */
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
@@ -119,20 +118,21 @@ void AccessibilityWindowInfo::SetParentId(const int parentId)
     parentId_ = parentId;
 }
 
-int AccessibilityWindowInfo::GetParentId()
+int AccessibilityWindowInfo::GetParentId() const
 {
     return parentId_;
 }
 
-std::vector<int>  AccessibilityWindowInfo::GetChildIds()
+std::vector<int>  AccessibilityWindowInfo::GetChildIds() const
 {
     return childIds_;
 }
 
-int AccessibilityWindowInfo::GetAnchorId()
+int AccessibilityWindowInfo::GetAnchorId() const
 {
     return anchorId_;
 }
+
 int AccessibilityWindowInfo::GetWindowId() const
 {
     return windowId_;
@@ -161,9 +161,9 @@ Rect AccessibilityWindowInfo::GetRectInScreen() const
 void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
 {
     boundsInScreen_.SetLeftTopScreenPostion(const_cast<Rect &>(bounds).GetLeftTopXScreenPostion(),
-    const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
+        const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
     boundsInScreen_.SetRightBottomScreenPostion(const_cast<Rect &>(bounds).GetRightBottomXScreenPostion(),
-    const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
+        const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
 }
 
 bool AccessibilityWindowInfo::IsActive() const
@@ -214,9 +214,6 @@ void AccessibilityWindowInfo::AddChild(const int childId)
 }
 
 AccessibilityWindowInfo::AccessibilityWindowInfo()
-{
-
-}
-
-} //namespace Accessibility
-} //namespace OHOS
+{}
+} // namespace Accessibility
+} // namespace OHOS

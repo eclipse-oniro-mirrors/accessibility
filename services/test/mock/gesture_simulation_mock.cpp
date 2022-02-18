@@ -13,14 +13,11 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include "gesture_simulation.h"
-
+#include <memory>
 #include "parcel_util.h"
-
 namespace OHOS {
 namespace Accessibility {
-
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)
 {
     positionX_ = positionX;
@@ -60,12 +57,11 @@ bool GesturePathPositionDefine::Marshalling(Parcel &parcel) const
 GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parcel)
 {
     GesturePathPositionDefine *gesturePathPositionDefine = new GesturePathPositionDefine();
-
     return gesturePathPositionDefine;
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-                                    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+    GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {}
 
 uint32_t GesturePathDefine::GetDurationTime()
@@ -121,23 +117,7 @@ bool GesturePathDefine::Marshalling(Parcel &parcel) const
 GesturePathDefine *GesturePathDefine::Unmarshalling(Parcel &parcel)
 {
     GesturePathDefine *gesturePathDefine = new GesturePathDefine();
-
     return gesturePathDefine;
 }
-
-GestureResultListenerInfo::GestureResultListenerInfo(std::vector<GesturePathDefine> gesturePathDefine,
-                                                    std::shared_ptr<GestureResultListener>& gestureResultListener)
-{}
-
-std::shared_ptr<GestureResultListener>& GestureResultListenerInfo::GetGestureResultListener()
-{
-    return gestureResultListener_;
-}
-
-std::vector<GesturePathDefine> GestureResultListenerInfo::GetGesturePathDefine()
-{
-    return gesturePathDefine_;
-}
-
 } // namespace Accessibility
 } // namespace OHOS

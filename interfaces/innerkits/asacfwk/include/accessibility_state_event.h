@@ -24,6 +24,9 @@ namespace Accessibility {
 enum AccessibilityStateEventType : int {
     EVENT_ACCESSIBILITY_STATE_CHANGED = 0x00000001,
     EVENT_TOUCH_GUIDE_STATE_CHANGED = 0x00000002,
+    EVENT_CAPTION_STATE_CHANGED = 0x00000004,
+    EVENT_KEVEVENT_STATE_CHANGED = 0x00000008,
+    EVENT_GESTURE_STATE_CHANGED = 0x00000010,
 };
 /*
 * This class is used for ASAC as the listener of AAMS.
@@ -116,6 +119,6 @@ public:
     virtual ~AccessibilityStateObserver() = default;
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

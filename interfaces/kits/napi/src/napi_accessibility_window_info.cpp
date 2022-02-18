@@ -13,17 +13,17 @@
  * limitations under the License.
  */
 
-#include "hilog_wrapper.h"
 #include "napi_accessibility_window_info.h"
-#include "napi_accessibility_utils.h"
+
+#include "hilog_wrapper.h"
 #include "napi_accessibility_info.h"
+#include "napi_accessibility_utils.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NAccessibilityWindowInfo::cons_ = nullptr;
-
-void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env) {
+void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env)
+{
     napi_property_descriptor descForAccessibilityWindowInfo[] = {
         DECLARE_NAPI_FUNCTION("getAnchorElementInfo", NAccessibilityWindowInfo::GetAnchorElementInfo),
         DECLARE_NAPI_FUNCTION("getRootElementInfo", NAccessibilityWindowInfo::GetRootElementInfo),
@@ -42,13 +42,15 @@ void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env) {
             &NAccessibilityWindowInfo::cons_));
 }
 
-napi_value NAccessibilityWindowInfo::JSConstructor(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityWindowInfo::JSConstructor(napi_env env, napi_callback_info info)
+{
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
     return jsthis;
 }
 
-napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_callback_info info)
+{
     HILOG_DEBUG("GetAnchorElementInfo called");
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};
@@ -83,12 +85,14 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        // execute async to call c++ function
+        [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->result_ = windowInfo.GetAnchor(callbackInfo->nodeInfo_ );
+            callbackInfo->result_ = windowInfo.GetAnchor(callbackInfo->nodeInfo_);
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        // execute the complete function
+        [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetAnchorElementInfo execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -97,7 +101,6 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            // napi_create_object(env, &argv);
             napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
@@ -126,7 +129,8 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
     return promise;
 }
 
-napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callback_info info)
+{
     HILOG_DEBUG("GetRootElementInfo called");
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};
@@ -143,7 +147,7 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
     if (!windowInfo) {
         HILOG_DEBUG("windowInfo is null!!");
     }
-
+    //todo
     NAccessibilityWindowInfoData *callbackInfo = new NAccessibilityWindowInfoData();
     callbackInfo->nativeWindowInfo_ = *windowInfo;
 
@@ -161,12 +165,14 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        // execute async to call c++ function
+        [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->result_ = windowInfo.GetRootAccessibilityInfo(callbackInfo->nodeInfo_);
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        // execute the complete function
+        [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetRootElementInfo execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -175,7 +181,6 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            // napi_create_object(env, &argv);
             napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
@@ -204,7 +209,8 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
     return promise;
 }
 
-napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info info)
+{
     HILOG_DEBUG("GetParent called");
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};
@@ -239,12 +245,14 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        // execute async to call c++ function
+        [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->window_ = windowInfo.GetParent();
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        // execute the complete function
+        [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetParent execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -277,7 +285,8 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
     return promise;
 }
 
-napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info info) {
+napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info info)
+{
     HILOG_DEBUG("GetChild called");
     size_t argc = ARGS_SIZE_TWO;
     napi_value argv[ARGS_SIZE_TWO] = {0};
@@ -316,12 +325,14 @@ napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info i
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        // execute async to call c++ function
+        [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->window_ = windowInfo.GetChild(callbackInfo->childIndex_ );
+            callbackInfo->window_ = windowInfo.GetChild(callbackInfo->childIndex_);
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        // execute the complete function
+        [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetChild execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
             napi_value jsReturnValue = 0;

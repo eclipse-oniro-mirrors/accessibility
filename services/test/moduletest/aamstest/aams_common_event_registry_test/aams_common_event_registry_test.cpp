@@ -78,7 +78,7 @@ void AccessibilityCommonEventRegistryTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     aams_->OnStop();
-    delete mock_;
+    mock_ = nullptr;
     aams_ = nullptr;
     accountData_ = nullptr;
     aastub_ = nullptr;
@@ -90,70 +90,20 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest AddAccessibleAbilityConnection";
     // accessibleAbility connection
-    AppExecFwk::AbilityInfo info;
+    AppExecFwk::ExtensionAbilityInfo info;
     AAFwk::Want want;
     AppExecFwk::ElementName name;
     name.SetAbilityName("com.example.aalisttest.MainAbility");
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
-    aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
+    // aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("name","bundleName","id");
-    std::shared_ptr<AppExecFwk::EventRunner> runner = AppExecFwk::EventRunner::Create("test");
-    aastub_ = new AccessibleAbilityClientStubImpl(std::make_shared<AccessibleAbilityEventHandler>(runner));
+    aastub_ = new AccessibleAbilityClientStubImpl();
     AAConnection_->OnAbilityConnectDone(*elementName_, aastub_, 0);
     accountData_->AddInstalledAbility(*abilityInfo);
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_SwitchedUser_001
- * @tc.name: SwitchedUser
- * @tc.desc: Switched user, the old user data is cleared and new user is added.
- */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_SwitchedUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_SwitchedUser_001 start";
-    AddAccessibleAbilityConnection();
-    EXPECT_EQ(0, aams_->GetCurrentAccountId());
-    EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
-    /* SwitchedUser */
-    GTEST_LOG_(INFO) << "SwitchedUser start";
-    aams_->SwitchedUser(2);
-    EXPECT_EQ(0, int(accountData_->GetInstalledAbilities().size()));
-    EXPECT_EQ(2, aams_->GetCurrentAccountId());
-
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_SwitchedUser_001 end";
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_PackageRemoved_001
- * @tc.name: PackageRemoved
- * @tc.desc: There is a connected ability. The package is Removed. Remove connecting ability and install ability.
- */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageRemoved_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageRemoved_001 start";
-    AddAccessibleAbilityConnection();
-    /* add enable ability */
-    accountData_->AddEnabledAbility(*elementName_);
-    /* add connecting ability */
-    accountData_->AddConnectingA11yAbility(*elementName_);
-    EXPECT_EQ(1, int(accountData_->GetEnabledAbilities().size()));
-    EXPECT_EQ(1, int(accountData_->GetConnectingA11yAbilities().size()));
-    std::string str = "bundleName";
-    /* PackageRemoved */
-    aams_->PackageRemoved(str);
-    EXPECT_EQ(0, int(accountData_->GetEnabledAbilities().size()));
-    EXPECT_EQ(0, int(accountData_->GetConnectingA11yAbilities().size()));
-
-    accountData_->ClearInstalledAbility();
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageRemoved_001 end";
 }
 
 /**
@@ -196,78 +146,6 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 end";
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_UnlockedUser_001
- * @tc.name: UnlockedUser
- * @tc.desc: There is an enabled ability which is not connected. The ability will be connected after Unlocking account.
- */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_UnlockedUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_UnlockedUser_001 start";
-    ASSERT_TRUE(aams_);
-
-    GTEST_LOG_(INFO) << "Add an installed ability.";
-    AppExecFwk::AbilityInfo info;
-    AAFwk::Want want;
-    AppExecFwk::ElementName elementname;
-    elementname.SetAbilityName("com.example.aamsModuleTest.MainAbility");
-    elementname.SetBundleName("com.example.aamsModuleTest");
-    want.SetElement(elementname);
-    aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
-    aams_->GetCurrentAccountData()->AddInstalledAbility(*abilityInfo);
-    aams_->GetCurrentAccountData()->AddEnabledAbility(elementname);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetEnabledAbilities().size(), 1);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 0);
-
-    GTEST_LOG_(INFO) << "Unlock account.";
-    int accountId = aams_->GetCurrentAccountId();
-    aams_->UnlockedUser((int32_t)accountId);
-    AAConnection_ = new AccessibleAbilityConnection(aams_->GetCurrentAccountData(), 0, *abilityInfo);
-    std::shared_ptr<AppExecFwk::EventRunner> runner = AppExecFwk::EventRunner::Create("test");
-    aastub_ = new Accessibility::AccessibleAbilityClientStubImpl(
-        std::make_shared<Accessibility::AccessibleAbilityEventHandler>(runner));
-    AAConnection_->OnAbilityConnectDone(elementname, aastub_, 0);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_UnlockedUser_001 end";
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_RemovedUser_001
- * @tc.name: RemovedUser
- * @tc.desc: 1. Swich account0 to account1.
- *           2. Remove account0.
- *           3. Swich account1 to account0. The account0 is not the previous one, it's a new one.
- */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_RemovedUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_RemovedUser_001 start";
-    ASSERT_TRUE(aams_);
-
-    GTEST_LOG_(INFO) << "Add an account0.";
-    AddAccessibleAbilityConnection();
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);
-
-    GTEST_LOG_(INFO) << "Switch to account1.";
-    int32_t accountId = 1;
-    aams_->SwitchedUser(accountId);
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
-
-    GTEST_LOG_(INFO) << "Remove account0.";
-    aams_->RemovedUser(0);
-
-    GTEST_LOG_(INFO) << "Switch to account0 and account0 is not the previous one, it's a new one.";
-    accountId = 0;
-    aams_->SwitchedUser(accountId);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 0);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 0);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_RemovedUser_001 end";
 }
 
 /**

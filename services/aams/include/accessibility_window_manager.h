@@ -19,13 +19,19 @@
 #include <map>
 #include <memory>
 #include <vector>
+
 #include "accessibility_window_info.h"
-#include "dummy.h"
 #include "window_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityWindowInfoManager: public Rosen::IWindowUpdateListener {
+
+class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {
+public:
+    virtual void OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type) override;
+};
+
+class AccessibilityWindowInfoManager {
 public:
     ~AccessibilityWindowInfoManager() = default;
     static AccessibilityWindowInfoManager &GetInstance();
@@ -40,8 +46,6 @@ public:
     bool GetAccessibilityWindow(int windowId, AccessibilityWindowInfo &window);
     bool IsValidWindow(int windowId);
 
-    virtual void OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type) override;
-
     // test for ut to resize a window
     void SetWindowSize(int windowId, Rect rect);
 
@@ -51,10 +55,10 @@ public:
     int inputFocusedWindowId_ = 0;
 
     bool registerFlag_ = false;
+    sptr<AccessibilityWindowListener> windowListener_ = nullptr;
 
 private:
-    AccessibilityWindowInfoManager() = default;
-    void OnWindowChanged(const sptr<Rosen::WindowInfo>& windowInfo, bool add);
+    AccessibilityWindowInfoManager() : windowListener_(new AccessibilityWindowListener()) {}
 };
 }  // namespace Accessibility
 }  // namespace OHOS

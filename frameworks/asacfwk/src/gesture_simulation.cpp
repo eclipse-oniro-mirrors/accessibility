@@ -197,34 +197,5 @@ GesturePathDefine *GesturePathDefine::Unmarshalling(Parcel &parcel)
 
     return gesturePathDefine;
 }
-
-GestureResultListenerInfo::GestureResultListenerInfo(std::vector<GesturePathDefine> gesturePathDefine,
-                                                    std::shared_ptr<GestureResultListener>& gestureResultListener)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (gesturePathDefine.empty()) {
-        HILOG_ERROR("There is no gesture path.");
-        gestureResultListener = nullptr;
-    } else {
-        for (auto gesturePath : gesturePathDefine) {
-            gesturePathDefine_.push_back(gesturePath);
-        }
-        gestureResultListener_ = gestureResultListener;
-    }
-}
-
-std::shared_ptr<GestureResultListener>& GestureResultListenerInfo::GetGestureResultListener()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    return gestureResultListener_;
-}
-
-std::vector<GesturePathDefine> GestureResultListenerInfo::GetGesturePathDefine()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    return gesturePathDefine_;
-}
-
 } // namespace Accessibility
 } // namespace OHOS

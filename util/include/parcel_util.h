@@ -21,8 +21,7 @@
 #include "parcel.h"
 
 namespace OHOS {
-namespace Accessibility{
-
+namespace Accessibility {
 #define READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data) \
     do                                                           \
     {                                                            \
@@ -41,26 +40,23 @@ namespace Accessibility{
         }                                                         \
     } while (0)
 
-template <class T>
+template<class T>
 std::vector<T> TranslateListToVector(const std::list<T> &originList)
 {
     int len = originList.size();
     std::vector<T> destVector(len);
     std::copy(originList.begin(), originList.end(), destVector.begin());
-
     return destVector;
 }
 
-template <class T>
+template<class T>
 std::list<T> TranslateVectorToList(const std::vector<T> &originVector)
 {
     int len = originVector.length();
     std::list<T> destList(len);
     std::copy(originVector.begin(), originVector.end(), destList.begin());
-
     return destList;
 }
-
 } // namespace Accessibility
 } // namespace OHOS
 

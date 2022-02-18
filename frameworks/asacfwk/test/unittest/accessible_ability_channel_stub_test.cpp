@@ -15,9 +15,9 @@
 
 #include <gtest/gtest.h>
 #include "mock_accessible_ability_channel_stub_impl.h"
-#include "accessible_ability_channel_stub.h"
-#include "accessibility_interaction_operation_callback_proxy.h"
+#include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_operator.h"
+#include "accessible_ability_channel_stub.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -72,7 +72,8 @@ void AccessibleAbilityChannelStubUnitTest::WriteInterfaceToken(MessageParcel &da
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleSearchElementInfoByAccessibilityId
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_001 start";
 
@@ -84,8 +85,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     int requestId = 0;
     int mode = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     WriteInterfaceToken(data);
     data.WriteInt32(accessibilityWindowId);
@@ -94,9 +95,14 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteRemoteObject(callback->AsObject());
     data.WriteInt32(mode);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_001 end";
 }
@@ -106,7 +112,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleSearchElementInfosByText
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_002 start";
 
@@ -119,8 +126,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     std::string text = "";
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     WriteInterfaceToken(data);
     data.WriteInt32(accessibilityWindowId);
@@ -129,9 +136,14 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteInt32(requestId);
     data.WriteRemoteObject(callback->AsObject());
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_002 end";
 }
@@ -141,7 +153,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleFindFocusedElementInfo
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_003, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_003 start";
 
@@ -154,8 +167,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     int focusType = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     WriteInterfaceToken(data);
     data.WriteInt32(accessibilityWindowId);
@@ -164,9 +177,14 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteInt32(requestId);
     data.WriteRemoteObject(callback->AsObject());
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_003 end";
 }
@@ -176,7 +194,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleFocusMoveSearch
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_004, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_004 start";
 
@@ -189,8 +208,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     int direction = 0;
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     WriteInterfaceToken(data);
     data.WriteInt32(accessibilityWindowId);
@@ -199,9 +218,14 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteInt32(requestId);
     data.WriteRemoteObject(callback->AsObject());
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_004 end";
 }
@@ -209,9 +233,10 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
 /**
  * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_005
  * @tc.name: OnRemoteRequest
- * @tc.desc: Test function HandlePerformAction
+ * @tc.desc: Test function HandleExecuteAction
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_005, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_005 start";
 
@@ -225,8 +250,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     std::map<std::string, std::string> actionArguments {};
     int requestId = 0;
     sptr<AccessibilityOperator> stub = new AccessibilityOperator();
-    sptr<IAccessibilityInteractionOperationCallback> callback =
-        new AccessibilityInteractionOperationCallbackProxy(stub->AsObject());
+    sptr<IAccessibilityElementOperatorCallback> callback =
+        new AccessibilityElementOperatorCallbackProxy(stub->AsObject());
 
     WriteInterfaceToken(data);
     data.WriteInt32(accessibilityWindowId);
@@ -244,9 +269,14 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteInt32(requestId);
     data.WriteRemoteObject(callback->AsObject());
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_ACTION), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_ACTION),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
+
+    stub = nullptr;
+    callback = nullptr;
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_005 end";
 }
@@ -256,7 +286,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleGetWindows
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_006, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_006 start";
 
@@ -266,7 +297,9 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
 
     WriteInterfaceToken(data);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_EQ(reply.ReadInt32(), 1);
 
@@ -276,9 +309,10 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
 /**
  * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_007
  * @tc.name: OnRemoteRequest
- * @tc.desc: Test function HandlePerformCommonAction
+ * @tc.desc: Test function HandleExecuteCommonAction
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_007, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_007, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_007 start";
 
@@ -290,7 +324,9 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     WriteInterfaceToken(data);
     data.WriteInt32(action);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_COMMON_ACTION), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
 
@@ -298,32 +334,12 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_008
- * @tc.name: OnRemoteRequest
- * @tc.desc: Test function HandleDisableAbility
- */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_008, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_008 start";
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    WriteInterfaceToken(data);
-
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::DISABLE_ABILITY), data, reply, option);
-    EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_008 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_009
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleSetOnKeyPressEventResult
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_009, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_009, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_009 start";
 
@@ -337,7 +353,9 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteBool(handled);
     data.WriteInt32(sequence);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_009 end";
@@ -348,7 +366,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleGetDisplayResizeScale
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_010, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_010, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_010 start";
 
@@ -360,7 +379,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     WriteInterfaceToken(data);
     data.WriteInt32(displayId);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_SCALE), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_SCALE), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_EQ(reply.ReadFloat(), 0);
 
@@ -372,7 +392,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleGetDisplayResizeCenterX
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_011, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_011, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_011 start";
 
@@ -384,7 +405,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     WriteInterfaceToken(data);
     data.WriteInt32(displayId);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_CETER_X), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_CETER_X), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_EQ(reply.ReadFloat(), 0);
 
@@ -396,7 +418,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleGetDisplayResizeCenterY
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_012, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_012, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_012 start";
 
@@ -408,7 +431,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     WriteInterfaceToken(data);
     data.WriteInt32(displayId);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_CETER_Y), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_CETER_Y), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_EQ(reply.ReadFloat(), 0);
 
@@ -420,7 +444,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleGetDisplayResizeRect
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_013, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_013, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_013 start";
 
@@ -432,10 +457,11 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     WriteInterfaceToken(data);
     data.WriteInt32(displayId);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_RECT), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_RECT), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
 
-    std::shared_ptr<Rect> result(reply.ReadParcelable<Rect>());
+    sptr<Rect> result = reply.ReadStrongParcelable<Rect>();
     EXPECT_NE(result, nullptr);
     EXPECT_EQ(result->GetLeftTopXScreenPostion(), 1);
     EXPECT_EQ(result->GetLeftTopYScreenPostion(), 1);
@@ -448,7 +474,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleResetDisplayResize
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_014, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_014, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_014 start";
 
@@ -462,7 +489,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteInt32(displayId);
     data.WriteBool(animate);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::RESET_DISPALYRESIZE), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::RESET_DISPALYRESIZE), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
 
@@ -474,7 +502,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleSetDisplayResizeScaleAndCenter
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_015, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_015, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_015 start";
 
@@ -495,7 +524,9 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
     data.WriteFloat(centerY);
     data.WriteBool(animate);
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_DISPLAYRESIZE_SCALE_AND_CENTER), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_DISPLAYRESIZE_SCALE_AND_CENTER),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
     EXPECT_TRUE(reply.ReadBool());
 
@@ -507,7 +538,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function HandleSendSimulateGesture
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016 start";
 
@@ -525,32 +557,12 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
         data.WriteParcelable(&step);
     }
 
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE), data, reply, option);
+    int res = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE),
+        data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_017
- * @tc.name: OnRemoteRequest
- * @tc.desc: Test function HandleIsFingerprintGestureDetectionValid
- */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_017, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_017 start";
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    WriteInterfaceToken(data);
-
-    int res = stub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityChannel::Message::IS_FINGERPRINT_GESTURE_DETECTION_VALID), data, reply, option);
-    EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
-    EXPECT_TRUE(reply.ReadBool());
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_017 end";
 }
 
 /**
@@ -558,7 +570,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitT
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function OnRemoteRequest when code is error.
  */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest, AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_018, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelStubUnitTest,
+    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_018, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_018 start";
 

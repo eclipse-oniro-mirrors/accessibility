@@ -63,7 +63,6 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
 
     GTEST_LOG_(INFO) << "GetChannel start";
     EXPECT_TRUE(instance.GetChannel(1) != nullptr);
-    EXPECT_FALSE(instance.GetOperationStatus());
 
     GTEST_LOG_(INFO) << "AddChannel 2";
     instance.AddChannel(2, service);
@@ -77,9 +76,6 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
     info.SetWindowId(100);
     infos.push_back(info);
     instance.SetSearchElementInfoByAccessibilityIdResult(infos, 1);
-
-    GTEST_LOG_(INFO) << "DisableAbility start";
-    instance.DisableAbility(1);
 
     GTEST_LOG_(INFO) << "SetOnKeyPressEventResult start";
     instance.SetOnKeyPressEventResult(1, true, 1);
@@ -105,10 +101,6 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
     GTEST_LOG_(INFO) << "SendSimulateGesture start";
     std::vector<GesturePathDefine> gestureSteps{};
     instance.SendSimulateGesture(1, 1, gestureSteps);
-
-    GTEST_LOG_(INFO) << "IsFingerprintGestureDetectionValid start";
-    instance.IsFingerprintGestureDetectionValid(1);
-    GTEST_LOG_(INFO) << "GetChannel_001 end";
 
 }
 
@@ -144,7 +136,6 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     GTEST_LOG_(INFO) << "GetRoot start";
     instance->GetRoot(1, info);
     GTEST_LOG_(INFO) << "GetRoot end";
-    EXPECT_TRUE(instance->GetOperationStatus());
 
     GTEST_LOG_(INFO) << "GetWindows start";
     instance->GetWindows(1);
@@ -154,34 +145,29 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
 
     GTEST_LOG_(INFO) << "SearchElementInfosByText start";
     instance->SearchElementInfosByText(1, 1, 1, "test", infos);
-    EXPECT_TRUE(instance->GetOperationStatus());
 
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult start";
     instance->SetFindFocusedElementInfoResult(info, 3);
 
     GTEST_LOG_(INFO) << "FindFocusedElementInfo start";
     instance->FindFocusedElementInfo(1, 1, 1, 1, info);
-    EXPECT_TRUE(instance->GetOperationStatus());
 
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult start";
     instance->SetFocusMoveSearchResult(info, 4);
 
     GTEST_LOG_(INFO) << "FocusMoveSearch start";
     instance->FocusMoveSearch(1, 1, 1, 1, info);
-    EXPECT_TRUE(instance->GetOperationStatus());
 
     std::map<std::string, std::string> actionArguments;
-    GTEST_LOG_(INFO) << "SetPerformActionResult start";
-    instance->SetPerformActionResult(true, 5);
+    GTEST_LOG_(INFO) << "SetExecuteActionResult start";
+    instance->SetExecuteActionResult(true, 5);
 
-    GTEST_LOG_(INFO) << "PerformAction start";
-    instance->PerformAction(1, 1, 1, 1, actionArguments);
-    EXPECT_TRUE(instance->GetOperationStatus());
+    GTEST_LOG_(INFO) << "ExecuteAction start";
+    instance->ExecuteAction(1, 1, 1, 1, actionArguments);
 
-    EXPECT_TRUE(instance->PerformCommonAction(1, 1));
+    EXPECT_TRUE(instance->ExecuteCommonAction(1, 1));
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetSource_001 start";
     AccessibilityMemo record {};
     record.SetChannelId(1);
@@ -192,39 +178,33 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     element.SetChannelId(1);
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetFocus start";
     element.GetFocus(1, info);
     GTEST_LOG_(INFO) << "GetFocus end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetNext start";
     FocusMoveDirection direction = FocusMoveDirection::UP;
     element.GetNext(direction, info);
     GTEST_LOG_(INFO) << "GetNext end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetByContent start";
     string str = "text";
     element.GetByContent(str, infos);
     GTEST_LOG_(INFO) << "GetByContent end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetParent start";
     element.GetParent(element);
     GTEST_LOG_(INFO) << "GetParent end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetLabeled start";
     element.GetLabeled(element);
     GTEST_LOG_(INFO) << "GetLabeled end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     AccessibilityWindowInfo window {};
     window.SetChannelId(1);
     GTEST_LOG_(INFO) << "GetRootAccessibilityInfo start";
@@ -232,13 +212,11 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     GTEST_LOG_(INFO) << "GetRootAccessibilityInfo end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetAnchor start";
     window.GetAnchor(element);
     GTEST_LOG_(INFO) << "GetAnchor end";
 
     //Dont' remove the instance
-    instance->SetOperationStatus(false);
     GTEST_LOG_(INFO) << "GetParent start";
     window.GetParent();
     GTEST_LOG_(INFO) << "GetParent end";
@@ -246,5 +224,5 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     GTEST_LOG_(INFO) << "Operator_001 end";
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

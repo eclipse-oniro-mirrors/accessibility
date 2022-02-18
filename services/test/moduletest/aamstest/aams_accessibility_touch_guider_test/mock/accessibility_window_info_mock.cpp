@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "accessibility_window_info.h"
 #include "accessibility_operator.h"
 #include "hilog_wrapper.h"
@@ -119,17 +118,17 @@ void AccessibilityWindowInfo::SetParentId(const int parentId)
     parentId_ = parentId;
 }
 
-int AccessibilityWindowInfo::GetParentId()
+int AccessibilityWindowInfo::GetParentId() const
 {
     return parentId_;
 }
 
-std::vector<int>  AccessibilityWindowInfo::GetChildIds()
+std::vector<int>  AccessibilityWindowInfo::GetChildIds() const
 {
     return childIds_;
 }
 
-int AccessibilityWindowInfo::GetAnchorId()
+int AccessibilityWindowInfo::GetAnchorId() const
 {
     return anchorId_;
 }
@@ -218,5 +217,5 @@ AccessibilityWindowInfo::AccessibilityWindowInfo()
 
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

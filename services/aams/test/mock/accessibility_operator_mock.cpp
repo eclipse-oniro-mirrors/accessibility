@@ -13,48 +13,24 @@
  * limitations under the License.
  */
 
-#include "accessibility_operator.h"
-
 #include <unistd.h>
+#include "accessibility_operator.h"
 
 namespace OHOS {
 namespace Accessibility {
 std::map<int, sptr<IAccessibleAbilityChannel>> AccessibilityOperator::channels_ = {};
 std::vector<sptr<AccessibilityOperator>>  AccessibilityOperator::instances_ = {};
 std::recursive_mutex AccessibilityOperator::mutex_ = {};
-int AccessibilityOperator::requestId_ = 0;
 
 AccessibilityOperator::AccessibilityOperator()
 {
-    performActionResult_ = false;
-    responseId_ = 1;
+    executeActionResult_ = false;
 }
 
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     sptr<AccessibilityOperator> inst = new AccessibilityOperator();
     return *inst;
-}
-
-AccessibilityOperator &AccessibilityOperator::GetInstanceForThread(std::thread::id threadId)
-{
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
-    if (instances_.size() >= MAX_INSTANCE) {
-        for (auto iter = instances_.begin(); iter != instances_.end();iter++) {
-            if (iter->GetRefPtr() != nullptr &&
-                iter->GetRefPtr()->GetOperationStatus()) {
-                HILOG_DEBUG("[%{public}s] complete instance is removed", __func__);
-                instances_.erase(iter);
-                break;
-            }
-        }
-    }
-    HILOG_DEBUG("[%{public}s] new instance instanceSize[%{public}u]", __func__, instances_.size());
-    sptr<AccessibilityOperator> inst(new AccessibilityOperator());
-    instances_.push_back(inst);
-
-    HILOG_DEBUG("[%{public}s] End instanceSize[%{public}u]", __func__, instances_.size());
-    return *(inst.GetRefPtr());
 }
 
 sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
@@ -67,17 +43,6 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
         HILOG_ERROR("[%{public}s] Failed to find aams [channelId:%{public}d]", __func__, channelId);
         return nullptr;
     }
-}
-
-bool AccessibilityOperator::GetOperationStatus()
-{
-    HILOG_DEBUG("[%{public}s] [completed_:%{public}d]", __func__, completed_);
-    return completed_;
-}
-
-void AccessibilityOperator::SetOperationStatus(bool status)
-{
-    completed_ = status;
 }
 
 void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel)
@@ -121,8 +86,8 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
     return true;
 }
 
-bool AccessibilityOperator::SearchElementInfosByText(int channelId,
-    int accessibilityWindowId, int elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessibilityWindowId,
+    int elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     return true;
 }
@@ -131,7 +96,11 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
     int elementId, int focusType, AccessibilityElementInfo &elementInfo)
 {
     AccessibilityElementInfo focus;
-    Rect rect(0,200,600,800);
+    int leftTopX = 0;
+    int leftTopY = 200;
+    int rightBottomX = 600;
+    int rightBottomY = 800;
+    Rect rect(leftTopX, leftTopY, rightBottomX, rightBottomY);
     focus.SetRectInScreen(rect);
     elementInfo = focus;
     return true;
@@ -143,7 +112,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
     return true;
 }
 
-bool AccessibilityOperator::PerformAction(int channelId, int accessibilityWindowId,
+bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindowId,
     int elementId, int action,  std::map<std::string, std::string> &actionArguments)
 {
     return true;
@@ -167,27 +136,13 @@ void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementI
 {
 }
 
-void AccessibilityOperator::SetPerformActionResult(const bool succeeded, const int requestId)
+void AccessibilityOperator::SetExecuteActionResult(const bool succeeded, const int requestId)
 {
 }
 
-bool AccessibilityOperator::WaitForResultTimedLocked(const int requestId)
+bool AccessibilityOperator::ExecuteCommonAction(const int channelId, const int action)
 {
     return true;
-}
-
-int AccessibilityOperator::CreateRequestId()
-{
-    return requestId_;
-}
-
-bool AccessibilityOperator::PerformCommonAction(const int channelId, const int action)
-{
-    return true;
-}
-
-void AccessibilityOperator::DisableAbility(const int channelId)
-{
 }
 
 void AccessibilityOperator::SetOnKeyPressEventResult(const int channelId, const bool handled, const int sequence)
@@ -228,14 +183,9 @@ bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
 }
 
 void AccessibilityOperator::SendSimulateGesture(const int channelId,
-    const int sequence, const std::vector<GesturePathDefine> &gestureSteps)
+    const int requestId, const std::vector<GesturePathDefine> &gestureSteps)
 {
 }
 
-bool AccessibilityOperator::IsFingerprintGestureDetectionValid(const int channelId)
-{
-    return false;
-}
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

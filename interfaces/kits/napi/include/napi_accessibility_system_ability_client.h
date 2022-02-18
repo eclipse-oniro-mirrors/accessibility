@@ -23,16 +23,30 @@
 #include "accessibility_state_event.h"
 #include "accessibility_ability_info.h"
 
+const uint32_t START_WORK_ARGS_SIZE = 2;
 class StateListener : public OHOS::Accessibility::AccessibilityStateObserver {
 public:
     StateListener();
     static void NotifyJS(napi_env env, bool enabled, std::string stateType, std::string desc, napi_ref handlerRef);
-    std::string GetEventType() {return eventType_;}
-    napi_value StartWork(napi_env env, size_t functionIndex, napi_value *args);
+    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
     void OnStateChanged(const OHOS::Accessibility::AccessibilityStateEvent& stateEvent) override;
     OHOS::Accessibility::AccessibilityStateEventType GetStateType();
-    napi_env GetEnv() {return env_;};
-    napi_ref GetHandler() {return handlerRef_;}
+
+    std::string GetEventType() const
+    {
+        return eventType_;
+    }
+
+    napi_env GetEnv() const
+    {
+        return env_;
+    }
+
+    napi_ref GetHandler() const
+    {
+        return handlerRef_;
+    }
+
 private:
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
@@ -41,26 +55,79 @@ private:
 };
 
 struct NAccessibilitySystemAbilityClient {
-    napi_async_work work_ {};
-    napi_deferred deferred_ {};
-    napi_ref thisRefer_ {};
-    napi_ref callback_ {};
-    napi_env env_ {};
+    napi_async_work work_{};
+    napi_deferred deferred_{};
+    napi_ref thisRefer_{};
+    napi_ref callback_{};
+    napi_env env_{};
     bool enabled_ = false;
     bool touchEnabled_ = false;
     OHOS::Accessibility::AbilityStateType stateTypes_;
     int32_t abilityTypes_ = 0;
-    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
-    OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_{};
+    std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_{};
+    OHOS::Accessibility::CaptionProperty captionProperty_{};
+    bool setCaptionPropertyReturn_ = false;
+    bool captionState_ = false;
+    bool setCaptionStateReturn_ = false;
+    bool enabledState_ = false;
+    bool setEnabledReturn_ = false;
+    bool touchGuideState_ = false;
+    bool setTouchGuideStateReturn_ = false;
+    bool gestureState_ = false;
+    bool setGestureStateReturn_ = false;
+    bool keyEventObserverState_ = false;
+    bool setKeyEvenReturn_ = false;
+    bool setInstalledReturn_ = false;
+    bool setExtentionReturn_ = false;
+    OHOS::Accessibility::AccessibilityEventInfo eventInfo_{};
     bool result_ = false;
-    std::vector<std::shared_ptr<StateListener>> stateListener_ {};
+    std::vector<std::shared_ptr<StateListener>> stateListener_{};
     std::string eventType_ = "";
 };
 
-napi_value IsOpenAccessibility(napi_env env, napi_callback_info info);
-napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info);
-napi_value GetAbilityList(napi_env env, napi_callback_info info);
-napi_value SubscribeState(napi_env env, napi_callback_info info);
-napi_value UnsubscribeState(napi_env env, napi_callback_info info);
-napi_value SendEvent(napi_env env, napi_callback_info info);
-#endif // NAPI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H
+class NAccessibilityClient {
+public:
+    static napi_value IsOpenAccessibility(napi_env env, napi_callback_info info);
+    static napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info);
+    static napi_value GetAbilityList(napi_env env, napi_callback_info info);
+    static napi_value SubscribeState(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
+    static napi_value SendEvent(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionProperty(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionProperty(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionState(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionState(napi_env env, napi_callback_info info);
+    static napi_value GetEnabled(napi_env env, napi_callback_info info);
+    static napi_value SetEnabled(napi_env env, napi_callback_info info);
+    static napi_value GetTouchGuideState(napi_env env, napi_callback_info info);
+    static napi_value SetTouchGuideState(napi_env env, napi_callback_info info);
+    static napi_value GetGestureState(napi_env env, napi_callback_info info);
+    static napi_value SetGestureState(napi_env env, napi_callback_info info);
+    static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
+    static napi_value SetKeyEventObserverState(napi_env env, napi_callback_info info);
+    static napi_value GetInstalled(napi_env env, napi_callback_info info);
+    static napi_value SetInstalled(napi_env env, napi_callback_info info);
+    static napi_value GetExtentionEnabled(napi_env env, napi_callback_info info);
+    static napi_value SetExtentionEnabled(napi_env env, napi_callback_info info);
+
+    static void DefineJSCaptionsManager(napi_env env);
+    static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionsManager(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionStateEnabled(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionStateEnabled(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionStyle(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionStyle(napi_env env, napi_callback_info info);
+    static napi_value RegisterOnCallback(napi_env env, napi_callback_info info);
+    static napi_value RegisterOffCallback(napi_env env, napi_callback_info info);
+
+    static napi_value aaCons_;
+
+    static std::vector<std::shared_ptr<StateListener>> listeners_;
+
+private:
+    NAccessibilityClient() = default;
+    ~NAccessibilityClient() = default;
+};
+
+#endif  // NAPI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H

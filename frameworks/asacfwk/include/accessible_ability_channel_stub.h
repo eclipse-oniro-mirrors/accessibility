@@ -29,7 +29,8 @@
 namespace OHOS {
 namespace Accessibility {
 
-class AccessibleAbilityChannelStub : public IRemoteStub<IAccessibleAbilityChannel> {
+class AccessibleAbilityChannelStub : public IRemoteStub<IAccessibleAbilityChannel>
+{
 public:
     /**
      * @brief construct function
@@ -89,12 +90,12 @@ private:
     ErrCode HandleFocusMoveSearch(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandlePerformAction.
+     * @brief Handle the IPC request for the function:HandleExecuteAction.
      * @param data The data of prcess communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandlePerformAction(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleExecuteAction(MessageParcel &data, MessageParcel &reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleGetWindows.
@@ -105,20 +106,12 @@ private:
     ErrCode HandleGetWindows(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandlePerformCommonAction.
+     * @brief Handle the IPC request for the function:HandleExecuteCommonAction.
      * @param data The data of prcess communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandlePerformCommonAction(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleDisableAbility.
-     * @param data The data of prcess communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleDisableAbility(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleExecuteCommonAction(MessageParcel &data, MessageParcel &reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleSetOnKeyPressEventResult.
@@ -184,15 +177,7 @@ private:
      */
     ErrCode HandleSendSimulateGesture(MessageParcel &data, MessageParcel &reply);
 
-    /**
-     * @brief Handle the IPC request for the function:HandleIsFingerprintGestureDetectionValid.
-     * @param data The data of prcess communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleIsFingerprintGestureDetectionValid(MessageParcel &data, MessageParcel &reply);
-
-    using AccessibleAbilityConnectionFunc = ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, 
+    using AccessibleAbilityConnectionFunc = ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data,
                                                         MessageParcel &reply);
     std::map<uint32_t, AccessibleAbilityConnectionFunc> memberFuncMap_;
 

@@ -16,46 +16,48 @@
 #ifndef MOCK_ACCESSIBLE_ABILITY_CHANNEL_IMPL_H
 #define MOCK_ACCESSIBLE_ABILITY_CHANNEL_IMPL_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
-#include "accessibility_interaction_operation_callback_interface.h"
 #include "accessibility_element_info.h"
+#include "accessibility_element_operator_callback_interface.h"
 #include "accessibility_window_info.h"
+#include "accessible_ability_channel_interface.h"
 #include "gesture_simulation.h"
 #include "iremote_broker.h"
 #include "refbase.h"
-#include "accessible_ability_channel_interface.h"
+
 
 namespace OHOS {
 namespace Accessibility {
-
 class MockAccessibleAbilityChannel : public IAccessibleAbilityChannel {
 public:
     MockAccessibleAbilityChannel() {}
+    virtual ~MockAccessibleAbilityChannel() {}
     bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-        const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+        const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int mode) override;
 
     bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
-        const std::string &text, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const std::string &text, const int requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
-        const int focusType, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const int focusType, const int requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     bool FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-        const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const int direction, const int requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+    bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
         std::map<std::string, std::string> &actionArguments, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     std::vector<AccessibilityWindowInfo> GetWindows() override;
 
-    bool PerformCommonAction(const int action) override;
-
-    void DisableAbility() override;
+    bool ExecuteCommonAction(const int action) override;
 
     void SetOnKeyPressEventResult(const bool handled, const int sequence) override;
 
@@ -72,9 +74,8 @@ public:
     bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
         const float centerY, const bool animate) override;
 
-    void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps) override;
+    void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) override;
 
-    bool IsFingerprintGestureDetectionValid() override;
     sptr<IRemoteObject> AsObject() override;
 
 };

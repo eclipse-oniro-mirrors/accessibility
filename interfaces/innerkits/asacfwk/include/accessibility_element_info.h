@@ -90,11 +90,11 @@ static const std::string HTML_ITEM_HEADING = "heading";
 static const std::string HTML_ITEM_BUTTON = "button";
 static const std::string HTML_ITEM_CHECKBOX = "checkBox";
 static const std::string HTML_ITEM_LANDMARK = "landmark";
-static const std::string HTML_ITEM_TEXT_FIELD= "textField";
+static const std::string HTML_ITEM_TEXT_FIELD = "textField";
 static const std::string HTML_ITEM_FOCUSABLE = "focusable";
 static const std::string HTML_ITEM_H1 = "h1";
 static const std::string HTML_ITEM_H2 = "h2";
-static const std::string HTML_ITEM_H3= "h3";
+static const std::string HTML_ITEM_H3 = "h3";
 static const std::string HTML_ITEM_H4 = "h4";
 static const std::string HTML_ITEM_H5 = "h5";
 static const std::string HTML_ITEM_H6 = "h6";
@@ -137,7 +137,7 @@ static const int SELECTION_MODE_MULTIPLE = 2;
 /*
 * class define the action on Accessibility info
 */
-class AccessibleAction : public Parcelable{
+class AccessibleAction : public Parcelable {
 public:
     /**
      * @brief Construct
@@ -159,14 +159,14 @@ public:
      * @param -
      * @return The type of action, refer to [ActionType]
      */
-    ActionType GetActionType();
+    ActionType GetActionType() const;
 
     /**
      * @brief Gets the action description.
      * @param -
      * @return he description message of action.
      */
-    std::string GetDescriptionInfo();
+    std::string GetDescriptionInfo() const;
 
     /**
      * @brief Used for IPC communication
@@ -187,7 +187,7 @@ public:
      * @param parcel
      * @return Read AccessibleAction from parcel data
      */
-    static AccessibleAction *Unmarshalling(Parcel &parcel);
+    static sptr<AccessibleAction> Unmarshalling(Parcel &parcel);
 private:
     ActionType actionType_ = ACCESSIBILITY_ACTION_INVALID;
     std::string description_ = "";
@@ -198,7 +198,7 @@ private:
  * @note
  * @retval None
  */
-class RangeInfo : public Parcelable{
+class RangeInfo : public Parcelable {
 public:
     /**
      * @brief Construct
@@ -221,21 +221,21 @@ public:
      * @param
      * @return min value
      */
-    int GetMin();
+    int GetMin() const;
 
     /**
      * @brief Gets the max value.
      * @param
      * @return max value.
      */
-    int GetMax();
+    int GetMax() const;
 
     /**
      * @brief Gets the current value.
      * @param
      * @return
      */
-    int GetCurrent();
+    int GetCurrent() const;
 
     /**
      * @brief Sets the min value.
@@ -258,7 +258,6 @@ public:
      */
     void SetCurrent(int current);
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -278,7 +277,7 @@ public:
      * @param parcel
      * @return
      */
-    static RangeInfo *Unmarshalling(Parcel &parcel);
+    static sptr<RangeInfo> Unmarshalling(Parcel &parcel);
 private:
     int min_ = 0;
     int max_ = 0;
@@ -290,7 +289,7 @@ private:
  * @note
  * @retval None
  */
-class GridInfo : public Parcelable{
+class GridInfo : public Parcelable {
 public:
     /**
      * @brief Construct
@@ -339,7 +338,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetRowCount();
+    int GetRowCount() const;
 
     /**
      * @brief Gets the number of columns.
@@ -348,7 +347,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetColumnCount();
+    int GetColumnCount() const;
 
     /**
      * @brief Get the mode of grid
@@ -357,9 +356,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetSelectionMode();
+    int GetSelectionMode() const;
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -386,14 +384,14 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static GridInfo *Unmarshalling(Parcel &parcel);
+    static sptr<GridInfo> Unmarshalling(Parcel &parcel);
 private:
     int rowCount_ = 0;
     int columnCount_ = 0;
     int selectionMode_ = 0;
 };
 
-class GridItemInfo : public Parcelable{
+class GridItemInfo : public Parcelable {
 public:
     /**
      * @brief Construct
@@ -449,7 +447,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetColumnIndex();
+    int GetColumnIndex() const;
 
     /**
      * @brief Gets the row index at which the item is located.
@@ -458,7 +456,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetRowIndex();
+    int GetRowIndex() const;
 
     /**
      * @brief Gets the number of columns the item spans.
@@ -467,7 +465,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetColumnSpan();
+    int GetColumnSpan() const;
 
     /**
      * @brief Gets the number of rows the item spans.
@@ -476,7 +474,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetRowSpan();
+    int GetRowSpan() const;
 
     /**
      * @brief Checks if the grid item is a heading.
@@ -485,7 +483,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    bool IsHeading();
+    bool IsHeading() const;
 
     /**
      * @brief Checks if the grid item is a selected.
@@ -494,9 +492,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    bool IsSelected();
+    bool IsSelected() const;
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -525,7 +522,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static GridItemInfo *Unmarshalling(Parcel &parcel);
+    static sptr<GridItemInfo> Unmarshalling(Parcel &parcel);
 private:
     bool heading_ = false;
     int columnIndex_ = 0;
@@ -565,7 +562,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    Rect(int leftTopX, int leftTopY, int rightBottomX, int rightBottomY) {
+    Rect(int leftTopX, int leftTopY, int rightBottomX, int rightBottomY)
+    {
         leftTopX_ = leftTopX;
         leftTopY_ = leftTopY;
         rightBottomX_ = rightBottomX;
@@ -579,7 +577,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetLeftTopXScreenPostion() {
+    int GetLeftTopXScreenPostion() const
+    {
         return leftTopX_;
     }
 
@@ -590,7 +589,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetLeftTopYScreenPostion() {
+    int GetLeftTopYScreenPostion() const
+    {
         return leftTopY_;
     }
 
@@ -601,7 +601,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetRightBottomXScreenPostion() {
+    int GetRightBottomXScreenPostion() const
+    {
         return rightBottomX_;
     }
 
@@ -612,7 +613,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int GetRightBottomYScreenPostion() {
+    int GetRightBottomYScreenPostion() const
+    {
         return rightBottomY_;
     }
     /**
@@ -623,7 +625,8 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetLeftTopScreenPostion(int leftTopX, int leftTopY) {
+    void SetLeftTopScreenPostion(int leftTopX, int leftTopY)
+    {
         leftTopY_ = leftTopY;
         leftTopX_ = leftTopX;
     }
@@ -636,12 +639,12 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetRightBottomScreenPostion(int rightBottomX, int rightBottomY) {
+    void SetRightBottomScreenPostion(int rightBottomX, int rightBottomY)
+    {
         rightBottomY_ = rightBottomY;
         rightBottomX_ = rightBottomX;
     }
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -670,12 +673,12 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static Rect *Unmarshalling(Parcel &parcel);
+    static sptr<Rect> Unmarshalling(Parcel &parcel);
 
 private:
     int leftTopX_ = 0;
     int leftTopY_ = 0;
-    int rightBottomX_= 0;
+    int rightBottomX_ = 0;
     int rightBottomY_ = 0;
 };
 
@@ -876,9 +879,9 @@ public:
     /**
      * @brief Searches for node information by elementId.
      * @param elementId The unique id of the accessibility ID. It composed by componentId(component id) and virtualId
-     *                       accessibility ID Low 32 bit: It is componentId(component id), the id of component
-     *                       accessibility ID High 32 bit: virtualId, It is used when the component is complex and
-     *                              componentId can't describe the component clearly otherwise the virtualId maybe is -1.
+     *                  accessibility ID Low 32 bit: It is componentId(component id), the id of component
+     *                  accessibility ID High 32 bit: virtualId, It is used when the component is complex and
+     *                  componentId can't describe the component clearly otherwise the virtualId maybe is -1.
      * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
      *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
      *              PREFETCH_CHILDREN: Need to make the child node info also.
@@ -1013,7 +1016,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    bool IsFocused();
+    bool IsFocused() const;
 
     /**
      * @brief Set whether this node has gained focus.
@@ -1440,8 +1443,6 @@ public:
 
     /**
      * @brief Set whether this node has live region
-     * @note If the node has live region, the changed information will be notified to user. such as:
-     *       Input error password.
      * @param liveRegion live region: 0: not live region; 1: interrupt current talkback; 2: talk back by order
      * @return
      * @since 3
@@ -1493,7 +1494,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetError();
+    std::string GetError() const;
 
     /**
      * @brief Set the id of component labeled
@@ -1739,7 +1740,6 @@ public:
      */
     void SetValidElement(const bool valid);
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -1749,7 +1749,6 @@ public:
      */
     bool ReadFromParcel(Parcel &parcel);
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -1759,7 +1758,6 @@ public:
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication
      * @param parcel
@@ -1767,7 +1765,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    static AccessibilityElementInfo *Unmarshalling(Parcel &parcel);
+    static sptr<AccessibilityElementInfo> Unmarshalling(Parcel &parcel);
 
 private:
     int windowId_ = -1;
@@ -1808,8 +1806,8 @@ private:
     bool isEssential_ = false;
     int currentIndex_ = 0;
     int beginIndex_ = 0;
-    int endIndex_= 0;
-    RangeInfo rangeInfo_ {};
+    int endIndex_ = 0;
+    RangeInfo rangeInfo_{};
     GridInfo grid_{};
     GridItemInfo gridItem_{};
     int liveRegion_ = 0;
@@ -1822,6 +1820,6 @@ private:
     bool validElement_ = true;
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

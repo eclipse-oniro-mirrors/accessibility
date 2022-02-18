@@ -13,9 +13,8 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
 #include "common_event_data.h"
-
+#include <gtest/gtest.h>
 namespace OHOS {
 namespace EventFwk {
 CommonEventData::CommonEventData() : code_(0)
@@ -79,5 +78,5 @@ CommonEventData *CommonEventData::Unmarshalling(Parcel &parcel)
 
     return commonEventData;
 }
-}  // namespace EventFwk
+}  //namespace EventFwk
 }  // namespace OHOS

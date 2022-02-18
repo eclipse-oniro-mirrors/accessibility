@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include <gtest/gtest.h>
+#include <memory>
+
 #include "accessibility_element_info.h"
-#include "mock_accessible_ability_channel_impl.h"
 #include "accessibility_operator.h"
+#include "mock_accessible_ability_channel_impl.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -30,16 +31,20 @@ public:
     AccessibilityElementInfoUnitTest() {}
     ~AccessibilityElementInfoUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityElementInfoUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityElementInfoUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "AccessibilityElementInfoUnitTest SetUp()";
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "AccessibilityElementInfoUnitTest TearDown()";
     }
 };
@@ -227,31 +232,31 @@ HWTEST_F(AccessibilityElementInfoUnitTest, GetElementStr_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetElementStr_001 start";
     AccessibilityElementInfo element {};
     element.SetBundleName("test");
-    EXPECT_TRUE(strcmp(element.GetBundleName().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetBundleName().c_str(), "test") == 0);
 
     element.SetComponentType("test");
-    EXPECT_TRUE(strcmp(element.GetComponentType().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetComponentType().c_str(), "test") == 0);
 
     element.SetContent("test");
-    EXPECT_TRUE(strcmp(element.GetContent().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetContent().c_str(), "test") == 0);
 
     element.SetAccessibilityContent("test");
-    EXPECT_TRUE(strcmp(element.GetAccessibilityContent().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetAccessibilityContent().c_str(), "test") == 0);
 
     element.SetAccessibilityDescription("test");
-    EXPECT_TRUE(strcmp(element.GetAccessibilityDescription().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetAccessibilityDescription().c_str(), "test") == 0);
 
     element.SetHint("test");
-    EXPECT_TRUE(strcmp(element.GetHint().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetHint().c_str(), "test") == 0);
 
     element.SetDescriptionInfo("test");
-    EXPECT_TRUE(strcmp(element.GetDescriptionInfo().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetDescriptionInfo().c_str(), "test") == 0);
 
     element.SetComponentResourceId("test");
-    EXPECT_TRUE(strcmp(element.GetComponentResourceId().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetComponentResourceId().c_str(), "test") == 0);
 
     element.SetError("test");
-    EXPECT_TRUE(strcmp(element.GetError().c_str(),"test") == 0);
+    EXPECT_TRUE(strcmp(element.GetError().c_str(), "test") == 0);
     GTEST_LOG_(INFO) << "GetElementStr_001 end";
 }
 
@@ -321,5 +326,5 @@ HWTEST_F(AccessibilityElementInfoUnitTest, Marshalling_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "Marshalling_001 end";
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -27,7 +27,8 @@
 namespace OHOS {
 namespace Accessibility {
 
-class AccessibleAbilityChannelProxy : public IRemoteProxy<IAccessibleAbilityChannel> {
+class AccessibleAbilityChannelProxy : public IRemoteProxy<IAccessibleAbilityChannel>
+{
 public:
     /**
      * @brief construct function
@@ -52,26 +53,26 @@ public:
      * @param mode PREFETCH_PREDECESSORS: Need to make the parent element info also.
      *             PREFETCH_SIBLINGS: Need to make the sister/brothers element info also.
      *             PREFETCH_CHILDREN: Need to make the child element info also.
-     *             otherwise: Make the element information by elementId only. 
+     *             otherwise: Make the element information by elementId only.
      * @return Return true if search elementInfo successfully, else return false.
      */
-    virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, 
-        const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+    virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
+        const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int mode) override;
 
     /**
      * @brief Make the child element information by accessibility ID and filtered by text and
      *        set the result by callback through the proxy object.
      * @param accessibilityWindowId The id of accessibility window.
-     * @param elementId: The unique id of the component ID. 
-     * @param text  Filter for the child components to matched with the text 
+     * @param elementId: The unique id of the component ID.
+     * @param text  Filter for the child components to matched with the text
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return true if search elementInfo successfully, else return false.
      */
     virtual bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
         const std::string &text, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief Make the element information of the component focused
@@ -84,9 +85,9 @@ public:
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return true if find elementInfo successfully, else return false.
      */
-    virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId, 
+    virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
         const int focusType, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief Make the element info by current focus move direction through the proxy object.
@@ -97,9 +98,9 @@ public:
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return true if search elementInfo successfully, else return false.
      */
-    virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, 
+    virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId,
         const int direction, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief To perform action through the proxy object.
@@ -111,9 +112,9 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @return Return true if perform action successfully, else return false.
      */
-    virtual bool PerformAction(const int accessibilityWindowId, const long elementId, const int action, 
-        std::map<std::string, std::string> &actionArguments, const int requestId, 
-        const sptr<IAccessibilityInteractionOperationCallback> &callback) override;
+    virtual bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
+        std::map<std::string, std::string> &actionArguments, const int requestId,
+        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device,
@@ -128,19 +129,12 @@ public:
      * @param action The action of OHOS::Accessibility::GlobalAction.
      * @return Return true if performs action successfully, else return false.
      */
-    virtual bool PerformCommonAction(const int action) override;
-
-    /**
-     * @brief Disable the accessible ability through the proxy object.
-     * @param
-     * @return
-     */
-    virtual void DisableAbility() override;
+    virtual bool ExecuteCommonAction(const int action) override;
 
     /**
      * @brief Set the result of key press event through the proxy object.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
-     * @param sequence The sequence of key press event result. 
+     * @param sequence The sequence of key press event result.
      * @return
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int sequence) override;
@@ -190,24 +184,16 @@ public:
      * @param animate Specifies whether animation is required.
      * @return Returns true if the center coordinates and scale are successfully set; returns false otherwise.
      */
-    virtual bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX, 
+    virtual bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
         const float centerY, const bool animate) override;
 
     /**
      * @brief Send simulation gesture through the proxy object.
-     * @param sequence The sequence of simulation gesture.
+     * @param requestId The sequence of simulation gesture.
      * @param gestureSteps The gesture to send.
      * @return
      */
-    virtual void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps) override;
-
-    /**
-     * @brief Judge whether the gesture detection function of the fingerprint sensor is available
-     *        through the proxy object.
-     * @param
-     * @return Return true if the fingerprint sensor is available, else return false.
-     */ 
-    virtual bool IsFingerprintGestureDetectionValid() override;
+    virtual void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) override;
 
 private:
     /**
@@ -228,7 +214,6 @@ private:
             MessageParcel &reply,  MessageOption &option);
     static inline BrokerDelegator<AccessibleAbilityChannelProxy> delegator;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 

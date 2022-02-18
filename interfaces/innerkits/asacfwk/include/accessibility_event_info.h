@@ -73,6 +73,9 @@ enum EventType : int {
     TYPE_TOUCH_BEGIN = 0x00100000,
     TYPE_TOUCH_END = 0x00200000,
     TYPE_WINDOW_UPDATE = 0x00400000,
+    TYPE_INTERRUPT_EVENT = 0x00800000,
+    TYPE_GESTURE_EVENT = 0x01000000,
+    TYPE_MAX_NUM = 0x02000000,
     TYPES_ALL_MASK = 0xFFFFFFFF,
 };
 
@@ -92,6 +95,38 @@ enum NotificationCategory : int {
     CATEGORY_SERVICE = 0x00000800,
     CATEGORY_OTHERS = 0x00001000,
 };
+
+// The types of swipe gestures which are performed on the touch screen.
+enum GestureType : uint32_t {
+    GESTURE_INVALID = 0,
+    GESTURE_SWIPE_UP = 0x0001,
+    GESTURE_SWIPE_DOWN = 0x0002,
+    GESTURE_SWIPE_LEFT = 0x0003,
+    GESTURE_SWIPE_RIGHT = 0x0004,
+    GESTURE_SWIPE_LEFT_THEN_RIGHT = 0x0005,
+    GESTURE_SWIPE_RIGHT_THEN_LEFT = 0x0006,
+    GESTURE_SWIPE_UP_THEN_DOWN = 0x0007,
+    GESTURE_SWIPE_DOWN_THEN_UP = 0x0008,
+    GESTURE_SWIPE_LEFT_THEN_UP = 0x0009,
+    GESTURE_SWIPE_LEFT_THEN_DOWN = 0x000A,
+    GESTURE_SWIPE_RIGHT_THEN_UP = 0x000B,
+    GESTURE_SWIPE_RIGHT_THEN_DOWN = 0x000C,
+    GESTURE_SWIPE_UP_THEN_LEFT = 0x000D,
+    GESTURE_SWIPE_UP_THEN_RIGHT = 0x000E,
+    GESTURE_SWIPE_DOWN_THEN_LEFT = 0x000F,
+    GESTURE_SWIPE_DOWN_THEN_RIGHT = 0x0010,
+
+    GESTURE_TAP = 0x0011,
+    GESTURE_DOUBLETAP = 0x0012,
+    GESTURE_DOUBLETAP_HOLD = 0x0013,
+    GESTURE_DRAG = 0x0014,
+    GESTURE_SWIPE_SLOWLY = 0x0015,
+    GESTURE_TRIPLETAP = 0x0016,
+    GESTURE_SCALE = 0x0017,
+    GESTURE_SCROLL = 0x0018,
+    GESTURE_GESTURE_ALL = 0xFFFFFFFF
+};
+
 /*
 * The class supply the content information about the event.
 * The SetXxx() API is almost supplied to ACE to set the information.
@@ -344,7 +379,7 @@ public:
      */
     void SetDescription(const std::string &contentDescription);
 
-    /*Parcel*//**
+    /*
      * @brief Used for IPC communication
      * @param parcel
      * @return rue: Read parcel data successfully; ohterwise is not.
@@ -394,7 +429,7 @@ private:
 * AA can get event properties, such as: action triggerred
 * the event and the source.
 */
-class AccessibilityEventInfo : public AccessibilityMemo{
+class AccessibilityEventInfo : public AccessibilityMemo {
 public:
     /**
      * @brief Construct
@@ -619,7 +654,24 @@ public:
      */
     NotificationCategory  GetNotificationInfo() const;
 
-    /*Parcel*/
+    /**
+     * @brief Set the custemize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
+     * @param category Refer to [GestureType], It maybe changed from APP
+     * @return -
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetGestureType(const GestureType gestureType);
+
+    /**
+     * @brief Get the custemize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
+     * @param -
+     * @return Refer to [GestureType], It maybe changed from APP
+     * @since 3
+     * @sysCap Accessibility
+     */
+    GestureType GetGestureType() const;
+
     /**
      * @brief Used for IPC comminication
      * @param parcel
@@ -674,6 +726,7 @@ private:
     TextMoveUnit textMoveStep_ = STEP_CHARACTER;
     WindowsContentChangeTypes windowContentChangeTypes_ = CONTENT_CHANGE_TYPE_INVALID;
     WindowUpdateType windowChangeTypes_ = WINDOW_UPDATE_INVALID;
+    GestureType gestureType_;
     int recordsCount_ = 0;
     std::vector<AccessibilityEventInfo> records_{};
     NotificationCategory category_ = CATEGORY_INVALID;
@@ -681,5 +734,5 @@ private:
 };
 
 } //namesapce Accessibility
-} //namespace OHOS
+} // namespace OHOS
 #endif

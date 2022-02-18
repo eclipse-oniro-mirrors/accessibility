@@ -26,9 +26,10 @@
 #include "accessible_ability_channel_interface.h"
 #include "accessible_ability_channel_proxy.h"
 #include "accessibility_element_info.h"
+#include "accessibility_element_operator_async_mng.h"
+#include "accessibility_element_operator_callback_interface.h"
+#include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_window_info.h"
-#include "accessibility_interaction_operation_callback_interface.h"
-#include "accessibility_interaction_operation_callback_stub.h"
 #include "gesture_simulation.h"
 #include "refbase.h"
 
@@ -41,7 +42,8 @@ namespace Accessibility {
 * --> UI process and set Callback).
 * It supply one instance for each thread to use this class.
 */
-class AccessibilityOperator : public AccessibilityInteractionOperationCallbackStub{
+class AccessibilityOperator : public AccessibilityElementOperatorCallbackStub
+{
 public:
     static const int NONE_ID = -1;
     static const int MAX_INSTANCE = 10;
@@ -58,14 +60,6 @@ public:
      * @return The instance of AccessibilityOperator
      */
     static AccessibilityOperator &GetInstance();
-
-    /**
-     * @brief Inner function: Get the instance of AccessibilityOperator for each thread.
-     *    The max instance is MAX_INSTANCE.
-     * @param threadId The thread id that request to get instance.
-     * @return The instance of AccessibilityOperator
-     */
-    static AccessibilityOperator &GetInstanceForThread(std::thread::id threadId);
 
     /**
      * @brief Inner function: Get the object connected from AA to AAMS by channel id.
@@ -182,50 +176,50 @@ public:
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      * @return true: Perform action successfully; otherwise is not.
      */
-    bool PerformAction(int channelId, int accessibilityWindowId,
+    bool ExecuteAction(int channelId, int accessibilityWindowId,
             int elementId, int action,  std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Save the elements information searched in ACE side
      * @param infos The elements info searched by accessibility id.
-     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param sequenceNum The request id from AA, it is used to match with request and response.
      * @return
      */
     void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
-        const int requestId) override;
+        const int sequenceNum) override;
 
     /**
      * @brief Save the elements information searched in ACE side
      * @param infos The elements info searched by accessibility id.
-     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param sequenceNum The request id from AA, it is used to match with request and response.
      * @return
      */
     void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
-        const int requestId) override;
+        const int sequenceNum) override;
 
     /**
      * @brief Save the element information searched in ACE side
      * @param infos The element info searched by accessibility id.
-     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param sequenceNum The request id from AA, it is used to match with request and response.
      * @return
      */
-    void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int requestId) override;
+    void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int sequenceNum) override;
 
     /**
      * @brief Save the element information searched in ACE side
      * @param infos The element info searched by accessibility id.
-     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param sequenceNum The request id from AA, it is used to match with request and response.
      * @return
      */
-    void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int requestId) override;
+    void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int sequenceNum) override;
 
     /**
      * @brief Save the result of action executed in ACE.
      * @param succeeded True: The action is executed successfully; otherwise is false.
-     * @param requestId The request id from AA, it is used to match with request and response.
+     * @param sequenceNum The request id from AA, it is used to match with request and response.
      * @return
      */
-    void SetPerformActionResult(const bool succeeded, const int requestId) override;
+    void SetExecuteActionResult(const bool succeeded, const int sequenceNum) override;
 
     /**
      * @brief Wrap the function of function expect for ACE related
@@ -233,14 +227,7 @@ public:
      * @param action: The common action
      * @return true: Perform successfully; otherwise is not.
      */
-    bool PerformCommonAction(const int channelId, const int action);
-
-    /**
-     * @brief Wrap the function of function expect for ACE related
-     * @param channelId The id matched the object connected from AA to AAMS.
-     * @return -
-     */
-    void DisableAbility(const int channelId);
+    bool ExecuteCommonAction(const int channelId, const int action);
 
     /**
      * @brief Wrap the function of function expect for ACE related
@@ -308,65 +295,25 @@ public:
     /**
      * @brief Wrap the function of function expect for ACE related
      * @param channelId The id matched the object connected from AA to AAMS.
-     * @param sequence  The number of sequence.
+     * @param sequenceNum  The number of sequence.
      * @param gestureSteps The value of gesture.
      * @return -
      */
-    void SendSimulateGesture(const int channelId, const int sequence,
+    void SendSimulateGesture(const int channelId, const int sequenceNum,
         const std::vector<GesturePathDefine> &gestureSteps);
 
-    /**
-     * @brief Wrap the function of function expect for ACE related
-     * @param channelId The id matched the object connected from AA to AAMS.
-     * @return true: It is valid fingerprint; otherwise is not.
-     */
-    bool IsFingerprintGestureDetectionValid(const int channelId);
-
-    /**
-     * @brief Inner function: The status requested from AA to ACE.
-     * @param
-     * @return true: The requestion is completed; otherwise is not.
-     */
-    bool GetOperationStatus();
-
-    /**
-     * @brief Inner function: Set the status requested from AA to ACE.
-     * @param status true: The requestion is completed; otherwise is not.
-     * @return -
-     */
-    void SetOperationStatus(bool status);
 private:
-    /**
-     * @brief Inner function: Set the timer related with the requestion from AA to ACE.
-     * @param requestId The request id from AA, it is used to match with request and response.
-     * @return -
-     */
-    bool WaitForResultTimedLocked(int requestId);
-
-    /**
-     * @brief Inner function: Count the unique id requested
-     * @param
-     * @return The request id from AA, it is used to match with request and response.
-     */
-    int CreateRequestId();
-    static const long TIMEOUT_OPERATOR_MILLIS = 500000;
-    static const long SLEEP_MILLIS = 5000;
-    static const uint32_t SECOND_TO_MILLIS = 1000000;
     static const uint32_t MAX_REQUEST = 0x7FFFFFFF;
     static std::vector<sptr<AccessibilityOperator>> instances_;
     static std::map<int, sptr<IAccessibleAbilityChannel>> channels_;
-    int responseId_ = 0;
-
-    static int requestId_;    //matched request with callback result
+    AccessibilityElementAsyncOperatorMng asyncElementOperatorMng_ {};
     AccessibilityElementInfo accessibilityInfoResult_{};
     std::vector<AccessibilityElementInfo> accessibilityInfosResult_{};
     std::vector<AccessibilityWindowInfo> windows_{};
-    bool performActionResult_ = false;
+    bool executeActionResult_ = false;
     static std::recursive_mutex mutex_;
-    bool completed_ = false;
-
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

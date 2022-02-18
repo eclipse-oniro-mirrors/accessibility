@@ -14,12 +14,13 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_interaction_bridge.h"
+
 #include "accessibility_display_manager.h"
+#include "accessibility_interaction_bridge.h"
+#include "accessibility_element_operator_stub.h"
 #include "accessibility_window_manager.h"
-#include "accessibility_interaction_operation_stub.h"
-#include "mock_bundle_manager.h"
 #include "iservice_registry.h"
+#include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
 
 using namespace testing;
@@ -30,7 +31,6 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityInteractionBridgeTest : public testing::Test {
 public:
 
@@ -43,7 +43,6 @@ public:
     void TearDown() override;
 
     shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> ins_ = nullptr;
-    //static AccessibilityInteractionBridge interactionBridge;
 };
 
 void AccessibilityInteractionBridgeTest::SetUpTestCase()
@@ -61,7 +60,7 @@ void AccessibilityInteractionBridgeTest::SetUp()
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest SetUp";
 
     ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    auto bundleObject = new OHOS::AppExecFwk::BundleMgrService();
+    sptr<IRemoteObject> bundleObject = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
     SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
@@ -69,7 +68,6 @@ void AccessibilityInteractionBridgeTest::SetUp()
 
     ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     ins_->OnStart();
-    //interactionBridge = AccessibilityInteractionBridge::GetInstance();
 }
 
 void AccessibilityInteractionBridgeTest::TearDown()
@@ -102,176 +100,193 @@ HWTEST_F(AccessibilityInteractionBridgeTest, FindFocusedElementInfo_001, TestSiz
 }
 
 /**
- * @tc.number: AccessibilityInteractionBridgeTest_PerformActionOnAccessibilityFocusedItem_001
- * @tc.name: PerformActionOnAccessibilityFocusedItem
- * @tc.desc: Test function PerformActionOnAccessibilityFocusedItem
+ * @tc.number: AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_001
+ * @tc.name: GetPointerItermOfAccessibilityFocusClick
+ * @tc.desc: Test function GetPointerItermOfAccessibilityFocusClick 1 focus in window and display
  */
-HWTEST_F(AccessibilityInteractionBridgeTest, PerformActionOnAccessibilityFocusedItem_001, TestSize.Level1)
+HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_Unittest_PerformActionOnAccessibilityFocusedItem_001 start";
-
-    auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-
-    auto ret = interactionBridge.PerformActionOnAccessibilityFocusedItem(ActionType::ACCESSIBILITY_ACTION_FOCUS);
-
-    EXPECT_EQ(ret, true);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_Unittest_FindFocusedElementInfo_001 end";
-}
-
-/**
- * @tc.number: AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_001
- * @tc.name: GetAccessibilityFocusClickPointInScreen
- * @tc.desc: Test function GetAccessibilityFocusClickPointInScreen 1 focus in window and display
- */
-HWTEST_F(AccessibilityInteractionBridgeTest, GetAccessibilityFocusClickPointInScreen_001, TestSize.Level1)
-{
-   GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002 start";
-    //regist InteractionConnection
-    GTEST_LOG_(INFO) << "4 start";
-    sptr<AccessibilityInteractionOperationStub> aamsInteractionOperator = new AccessibilityInteractionOperationStub();
-    GTEST_LOG_(INFO) << "5 start";
-    ins_->RegisterInteractionOperation(0,aamsInteractionOperator, 0);
-    GTEST_LOG_(INFO) << "1 start";
-    //Set window info
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_001 start";
+    // regist InteractionConnection
+    sptr<AccessibilityElementOperatorStub> aamsInteractionOperator = new AccessibilityElementOperatorStub();
+    ins_->RegisterElementOperator(0, aamsInteractionOperator, 0);
+    // Set window info
+    sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
+    // auto AccessibilityWindowInfoManager::GetInstance() = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
+    int windowId = 0;
+    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
+
+    winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    winInfo->wid_ = 0;
+    winInfo->windowRect_.width_ = 1;
+    winInfo->windowRect_.height_ = 1;
+    winInfo->windowRect_.posX_ = 1;
+    winInfo->windowRect_.posY_ = 1;
+    winInfo->focused_ = true;
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
     GTEST_LOG_(INFO) << "2 start";
-    Rect rect(0,100,800,900);
+    Rect rect(0, 100, 800, 900);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
     GTEST_LOG_(INFO) << "3 start";
-    //Set display Info
-    WMDisplayInfo displayInfo;
-    displayInfo.width = 1000;
-    displayInfo.height = 1000;
-    AccessibilityDisplayManager::GetInstance().SetDisplay(displayInfo);
     auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-    MmiPoint point;
-    interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
-    auto ret = interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
+    MMI::PointerEvent::PointerItem point;
+    auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
     EXPECT_EQ(ret, true);
-    EXPECT_EQ(point.GetX(), 300);
-    EXPECT_EQ(point.GetY(), 500);
+    EXPECT_EQ(point.GetGlobalX(), 300);
+    EXPECT_EQ(point.GetGlobalY(), 500);
 
-    AccessibilityWindowInfoManager::GetInstance().OnWindowDestroy(0);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002 end";
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_002 end";
 }
 
 /**
- * @tc.number: AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002
- * @tc.name: GetAccessibilityFocusClickPointInScreen
- * @tc.desc: Test function GetAccessibilityFocusClickPointInScreen 2 focus intersect with window and in display
+ * @tc.number: AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_002
+ * @tc.name: GetPointerItermOfAccessibilityFocusClick
+ * @tc.desc: Test function GetPointerItermOfAccessibilityFocusClick 2 focus intersect with window and in display
  */
-HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_002, TestSize.Level1)
+HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002 start";
-    //Set window info
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_002 start";
+    // Set window info
+    sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
-    Rect rect(0,100,800,400);
+    int windowId = 0;
+    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
+    winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    winInfo->wid_ = 0;
+    winInfo->windowRect_.width_ = 1;
+    winInfo->windowRect_.height_ = 1;
+    winInfo->windowRect_.posX_ = 1;
+    winInfo->windowRect_.posY_ = 1;
+    winInfo->focused_ = true;
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    Rect rect(0, 100, 800, 400);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
-    //Set display Info
-    WMDisplayInfo displayInfo;
-    displayInfo.width = 1000;
-    displayInfo.height = 1000;
-    AccessibilityDisplayManager::GetInstance().SetDisplay(displayInfo);
 
     auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-    MmiPoint point;
-    auto ret = interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
+    MMI::PointerEvent::PointerItem point;
+    auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
 
     EXPECT_EQ(ret, true);
-    EXPECT_EQ(point.GetX(), 300);
-    EXPECT_EQ(point.GetY(), 300);
-    AccessibilityWindowInfoManager::GetInstance().OnWindowDestroy(0);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_002 end";
+    EXPECT_EQ(point.GetGlobalX(), 300);
+    EXPECT_EQ(point.GetGlobalY(), 300);
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_002 end";
 }
 
 /**
- * @tc.number: AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_003
- * @tc.name: GetAccessibilityFocusClickPointInScreen
- * @tc.desc: Test function GetAccessibilityFocusClickPointInScreen 3 focus intersect with window and in display
+ * @tc.number: AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_003
+ * @tc.name: GetPointerItermOfAccessibilityFocusClick
+ * @tc.desc: Test function GetPointerItermOfAccessibilityFocusClick 3 focus intersect with window and in display
  */
-HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_003, TestSize.Level1)
+HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_003, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_003 start";
-    //Set window info
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_003 start";
+    // Set window info
+    sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
-    Rect rect(0,100,800,400);
+    int windowId = 0;
+    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
+    winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    winInfo->wid_ = 0;
+    winInfo->windowRect_.width_ = 1;
+    winInfo->windowRect_.height_ = 1;
+    winInfo->windowRect_.posX_ = 1;
+    winInfo->windowRect_.posY_ = 1;
+    winInfo->focused_ = true;
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    Rect rect(0, 100, 800, 400);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
-    //Set display Info
-    WMDisplayInfo displayInfo;
-    displayInfo.width = 1000;
-    displayInfo.height = 300;
-    AccessibilityDisplayManager::GetInstance().SetDisplay(displayInfo);
 
     auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-    MmiPoint point;
-    auto ret = interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
+    MMI::PointerEvent::PointerItem point;
+    auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
 
     EXPECT_EQ(ret, true);
-    EXPECT_EQ(point.GetX(), 300);
-    EXPECT_EQ(point.GetY(), 250);
-    AccessibilityWindowInfoManager::GetInstance().OnWindowDestroy(0);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_003 end";
+    EXPECT_EQ(point.GetGlobalX(), 300);
+    EXPECT_EQ(point.GetGlobalY(), 300);
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    AccessibilityWindowInfoManager::GetInstance().a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_003 end";
 }
 
 /**
- * @tc.number: AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_004
- * @tc.name: GetAccessibilityFocusClickPointInScreen
- * @tc.desc: Test function GetAccessibilityFocusClickPointInScreen 4 focus in window and outside display
+ * @tc.number: AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_004
+ * @tc.name: GetPointerItermOfAccessibilityFocusClick
+ * @tc.desc: Test function GetPointerItermOfAccessibilityFocusClick 4 focus in window and outside display
  */
-HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_004, TestSize.Level1)
+HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_004, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_004 start";
-    //Set window info
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_004 start";
+    // Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
-    Rect rect(0,100,800,400);
+    sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
+    winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    winInfo->wid_ = 0;
+    winInfo->windowRect_.width_ = 1;
+    winInfo->windowRect_.height_ = 1;
+    winInfo->windowRect_.posX_ = 1;
+    winInfo->windowRect_.posY_ = 1;
+    winInfo->focused_ = true;
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    Rect rect(0, 100, 800, 400);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
-    //Set display Info
-    WMDisplayInfo displayInfo;
-    displayInfo.width = -1000;
-    displayInfo.height = -1000;
-    AccessibilityDisplayManager::GetInstance().SetDisplay(displayInfo);
 
     auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-    MmiPoint point;
-    auto ret = interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
+    MMI::PointerEvent::PointerItem point;
+    auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
 
     EXPECT_EQ(ret, false);
-    AccessibilityWindowInfoManager::GetInstance().OnWindowDestroy(0);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_004 end";
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_004 end";
 }
 
 /**
- * @tc.number: AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_004
- * @tc.name: GetAccessibilityFocusClickPointInScreen
- * @tc.desc: Test function GetAccessibilityFocusClickPointInScreen 4 focus outside window and in display
+ * @tc.number: AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_004
+ * @tc.name: GetPointerItermOfAccessibilityFocusClick
+ * @tc.desc: Test function GetPointerItermOfAccessibilityFocusClick 4 focus outside window and in display
  */
-HWTEST_F(AccessibilityInteractionBridgeTest,GetAccessibilityFocusClickPointInScreen_005, TestSize.Level1)
+HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_005, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_005 start";
-    //Set window info
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_005 start";
+    // Set window info
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
-    AccessibilityWindowInfoManager::GetInstance().OnWindowCreate(0);
-    Rect rect(0,0,-800,-400);
+    sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
+    winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    winInfo->wid_ = 0;
+    winInfo->windowRect_.width_ = 1;
+    winInfo->windowRect_.height_ = 1;
+    winInfo->windowRect_.posX_ = 1;
+    winInfo->windowRect_.posY_ = 1;
+    winInfo->focused_ = true;
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    Rect rect(0, 0, -800, -400);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
-    //Set display Info
-    WMDisplayInfo displayInfo;
-    displayInfo.width = 1000;
-    displayInfo.height = 1000;
-    AccessibilityDisplayManager::GetInstance().SetDisplay(displayInfo);
 
     auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
-    MmiPoint point;
-    auto ret = interactionBridge.GetAccessibilityFocusClickPointInScreen(point);
+    MMI::PointerEvent::PointerItem point;
+    interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
 
-    EXPECT_EQ(ret, false);
-    AccessibilityWindowInfoManager::GetInstance().OnWindowDestroy(0);
-    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetAccessibilityFocusClickPointInScreen_005 end";
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
+        winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_005 end";
 }
-
-
 }  // namespace Accessibility
 }  // namespace OHOS

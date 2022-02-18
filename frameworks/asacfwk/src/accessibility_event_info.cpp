@@ -515,7 +515,19 @@ void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory cate
     HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
 }
 
-NotificationCategory  AccessibilityEventInfo::GetNotificationInfo() const
+void AccessibilityEventInfo::SetGestureType(const GestureType gestureType)
+{
+    gestureType_ = gestureType;
+    HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
+}
+
+GestureType AccessibilityEventInfo::GetGestureType() const
+{
+    HILOG_DEBUG("[%{public}s] gestureType_[%{public}d]", __func__, gestureType_);
+    return gestureType_;
+}
+
+NotificationCategory AccessibilityEventInfo::GetNotificationInfo() const
 {
     HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
     return category_;
@@ -533,5 +545,5 @@ int AccessibilityEventInfo::GetPageId() const
     return pageId_;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

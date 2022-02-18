@@ -24,7 +24,10 @@ GestureHandler::GestureHandler(
 
 }
 
-void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) {
+void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
+{
+    HILOG_DEBUG();
+
     switch (event->GetInnerEventId()) {
         case AccessibilityGestureRecognizer::LONG_PRESS_MSG:
             RemoveEvent(AccessibilityGestureRecognizer::SINGLE_TAP_MSG);
@@ -41,15 +44,18 @@ void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) 
     }
 }
 
-AccessibilityGestureRecognizer::AccessibilityGestureRecognizer() {
+AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
+{
+    HILOG_DEBUG();
+
     AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
-    struct WMDisplayInfo displayInfo = displayMgr.GetDefaultDisplay();
+    auto display = displayMgr.GetDefaultDisplay();
 
-    threshold_ = CALCULATION_DIMENSION(displayInfo.width);
-    xMinPixels_= MIN_PIXELS(displayInfo.width);
-    yMinPixels_ = MIN_PIXELS(displayInfo.height);
+    threshold_ = CALCULATION_DIMENSION(display->GetWidth());
+    xMinPixels_ = MIN_PIXELS(display->GetWidth());
+    yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
-    float densityPixels = displayInfo.dpi;
+    float densityPixels = display->GetVirtualPixelRatio();
     int slop = (int) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
@@ -65,29 +71,42 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer() {
     }
 }
 
-void AccessibilityGestureRecognizer::registerListener(AccessibilityGestureRecognizeListener *listener) {
-    listener_ = listener;
+void AccessibilityGestureRecognizer::RegisterListener(AccessibilityGestureRecognizeListener& listener)
+{
+    HILOG_DEBUG();
+
+    listener_ = &listener;
 }
 
-void AccessibilityGestureRecognizer::UnregisterListener(AccessibilityGestureRecognizeListener *listener) {
+void AccessibilityGestureRecognizer::UnregisterListener()
+{
+    HILOG_DEBUG();
+
     listener_ = nullptr;
 }
 
-bool AccessibilityGestureRecognizer::OnTouchEvent(TouchEvent &event) {
-    switch (event.GetAction()) {
-        case TouchEnum::PRIMARY_POINT_DOWN:
-            HandleTouchDownEvent(event);
-            break;
-        case TouchEnum::POINT_MOVE:
+bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    switch (event.GetPointerAction()) {
+        case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                HandleTouchDownEvent(event);
+            } else {
+                isRecognizingGesture_ = false;
+                isGestureStarted_ = false;
+                pointerRoute_.clear();
+            }
+          break;
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
             return HandleTouchMoveEvent(event);
-        case TouchEnum::PRIMARY_POINT_UP:
-            return HandleTouchUpEvent(event);
-        case TouchEnum::OTHER_POINT_DOWN:
-            isRecognizingGesture_ = false;
-            isGestureStarted_ = false;
-            pointerRoute_.clear();
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                return HandleTouchUpEvent(event);
+            }
             break;
-        case TouchEnum::CANCEL:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             Clear();
             break;
         default:
@@ -99,7 +118,10 @@ bool AccessibilityGestureRecognizer::OnTouchEvent(TouchEvent &event) {
     return StandardGestureRecognizer(event);
 }
 
-void AccessibilityGestureRecognizer::Clear() {
+void AccessibilityGestureRecognizer::Clear()
+{
+    HILOG_DEBUG();
+
     isFirstTapUp_ = false;
     isDoubleTap_ = false;
     isGestureStarted_ = false;
@@ -109,32 +131,43 @@ void AccessibilityGestureRecognizer::Clear() {
     StandardGestureCancled();
 }
 
-void AccessibilityGestureRecognizer::HandleTouchDownEvent(TouchEvent &event) {
+void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     Pointer mp;
-    MmiPoint point = event.GetPointerPosition(event.GetIndex());
-    unsigned int eventTime = event.GetOccurredTime();
-    mp.px_ = point.GetX();
-    mp.py_ = point.GetY();
+    MMI::PointerEvent::PointerItem pointerIterm;
+    if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
+        HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+    }
+    mp.px_ = pointerIterm.GetGlobalX();
+    mp.py_ = pointerIterm.GetGlobalY();
     isDoubleTap_ = false;
     isRecognizingGesture_ = true;
     isGestureStarted_ = false;
     pointerRoute_.clear();
     pointerRoute_.push_back(mp);
-    prePointer_ = point;
-    startPointer_ = point;
-    startTime_ = eventTime;
+    prePointer_ = pointerIterm;
+    startPointer_ = pointerIterm;
+    startTime_ = event.GetActionTime();
 }
 
-bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(TouchEvent &event) {
+bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     Pointer mp;
-    MmiPoint point = event.GetPointerPosition(event.GetIndex());
-    unsigned int eventTime = event.GetOccurredTime();
-    float offsetX = startPointer_.GetX() - point.GetX();
-    float offsetY = startPointer_.GetY() - point.GetY();
+    MMI::PointerEvent::PointerItem pointerIterm;
+    if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
+        HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+    }
+    unsigned int eventTime = event.GetActionTime();
+    float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
+    float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
     double duration = hypot(offsetX, offsetY);
     if (isRecognizingGesture_) {
         if (duration > threshold_) {
-            startPointer_ = point;
+            startPointer_ = pointerIterm;
             startTime_ = eventTime;
             isFirstTapUp_ = false;
             isDoubleTap_ = false;
@@ -144,7 +177,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(TouchEvent &event) {
             }
         } else if (!isFirstTapUp_) {
             unsigned int durationTime = eventTime - startTime_;
-            unsigned int thresholdTime = isGestureStarted_ ? 
+            unsigned int thresholdTime = isGestureStarted_ ?
                 GESTURE_STARTED_TIME_THRESHOLD : GESTURE_NOT_STARTED_TIME_THRESHOLD;
             if (durationTime > thresholdTime) {
                 isRecognizingGesture_ = false;
@@ -153,11 +186,11 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(TouchEvent &event) {
                 return listener_->OnCancelled(event);
             }
         }
-        if ((abs(point.GetX() - prePointer_.GetX())) >= xMinPixels_ ||
-                (abs(point.GetY() - prePointer_.GetY())) >= yMinPixels_) {
-            prePointer_ = point;
-            mp.px_ = point.GetX();
-            mp.py_ = point.GetY();
+        if ((abs(pointerIterm.GetGlobalX() - prePointer_.GetGlobalX())) >= xMinPixels_ ||
+            (abs(pointerIterm.GetGlobalY() - prePointer_.GetGlobalY())) >= yMinPixels_) {
+            prePointer_ = pointerIterm;
+            mp.px_ = pointerIterm.GetGlobalX();
+            mp.py_ = pointerIterm.GetGlobalY();
             pointerRoute_.push_back(mp);
         }
     }
@@ -167,18 +200,24 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(TouchEvent &event) {
     return StandardGestureRecognizer(event);
 }
 
-bool AccessibilityGestureRecognizer::HandleTouchUpEvent(TouchEvent &event) {
+bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     Pointer mp;
-    MmiPoint point = event.GetPointerPosition(event.GetIndex());
+    MMI::PointerEvent::PointerItem pointerIterm;
+    if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
+        HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+    }
 
     if (isDoubleTap_) {
         return DoubleTapRecognized(event);
     }
     if (isGestureStarted_) {
-        if ((abs(point.GetX() - prePointer_.GetX())) >= xMinPixels_ ||
-            (abs(point.GetY() - prePointer_.GetY())) >= yMinPixels_) {
-            mp.px_ = point.GetX();
-            mp.py_ = point.GetY();
+        if ((abs(pointerIterm.GetGlobalX() - prePointer_.GetGlobalX())) >= xMinPixels_ ||
+            (abs(pointerIterm.GetGlobalY() - prePointer_.GetGlobalY())) >= yMinPixels_) {
+            mp.px_ = pointerIterm.GetGlobalX();
+            mp.py_ = pointerIterm.GetGlobalY();
             pointerRoute_.push_back(mp);
         }
         return recognizeDirectionGesture(event);
@@ -189,44 +228,53 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(TouchEvent &event) {
     return StandardGestureRecognizer(event);
 }
 
-bool AccessibilityGestureRecognizer::StandardGestureRecognizer(TouchEvent &event) {
-    switch (event.GetAction()) {
-        case TouchEnum::PRIMARY_POINT_DOWN:
-            if (pCurDown_ && pPreUp_ && isDoubleTap(event)) {
-                isDoubleTapdetecting_ = true;
-                isDoubleTap_ = true;
-            } else {
-                handler_->SendEvent(SINGLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT);
-            }
-            pCurDown_ = std::make_shared<TouchEvent>(event);
-            isTapDown_ = true;
-            continueDown_ = true;
-            isLongpress_ = false;
-            handler_->RemoveEvent(LONG_PRESS_MSG);
-            handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT);
-            break;
-        case TouchEnum::PRIMARY_POINT_UP:
-            continueDown_ = false;
-            if (isLongpress_) {
-                handler_->RemoveEvent(SINGLE_TAP_MSG);
+bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    switch (event.GetPointerAction()) {
+        case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                if (pCurDown_ && pPreUp_ && isDoubleTap(event)) {
+                    isDoubleTapdetecting_ = true;
+                    isDoubleTap_ = true;
+                } else {
+                    handler_->SendEvent(SINGLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT);
+                }
+                pCurDown_ = std::make_shared<MMI::PointerEvent>(event);
+                isTapDown_ = true;
+                continueDown_ = true;
                 isLongpress_ = false;
-            } else if (!isDoubleTapdetecting_ && isTapDown_) {
-                isFirstTapUp_ = true;
+                handler_->RemoveEvent(LONG_PRESS_MSG);
+                handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT);
+            }else{
+                StandardGestureCancled();
             }
-            pPreUp_ = std::make_unique<TouchEvent>(event);
-            isDoubleTapdetecting_ = false;
-            handler_->RemoveEvent(LONG_PRESS_MSG);
             break;
-        case TouchEnum::OTHER_POINT_DOWN:
-            StandardGestureCancled();
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                continueDown_ = false;
+                if (isLongpress_) {
+                    handler_->RemoveEvent(SINGLE_TAP_MSG);
+                    isLongpress_ = false;
+                } else if (!isDoubleTapdetecting_ && isTapDown_) {
+                    isFirstTapUp_ = true;
+                }
+                pPreUp_ = std::make_unique<MMI::PointerEvent>(event);
+                isDoubleTapdetecting_ = false;
+                handler_->RemoveEvent(LONG_PRESS_MSG);
+            }
             break;
         default:
             break;
-    }
+          }
     return false;
 }
 
-void AccessibilityGestureRecognizer::StandardGestureCancled() {
+void AccessibilityGestureRecognizer::StandardGestureCancled()
+{
+    HILOG_DEBUG();
+
     handler_->RemoveEvent(LONG_PRESS_MSG);
     handler_->RemoveEvent(SINGLE_TAP_MSG);
     isLongpress_ = false;
@@ -234,11 +282,17 @@ void AccessibilityGestureRecognizer::StandardGestureCancled() {
     isTapDown_ = false;
 }
 
-void AccessibilityGestureRecognizer::SingleTapDetected() {
+void AccessibilityGestureRecognizer::SingleTapDetected()
+{
+    HILOG_DEBUG();
+
     Clear();
 }
 
-void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(TouchEvent &event) {
+void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     if (!isDoubleTap_) {
         return;
     }
@@ -246,12 +300,18 @@ void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(TouchEvent &event) 
     listener_->OnDoubleTapLongPress(event);
 }
 
-bool AccessibilityGestureRecognizer::DoubleTapRecognized(TouchEvent &event) {
+bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     Clear();
     return listener_->OnDoubleTap(event);
 }
 
-bool AccessibilityGestureRecognizer::recognizeDirectionGesture(TouchEvent &event) {
+bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
     if (pointerRoute_.size() < 2) {
         return listener_->OnCancelled(event);
     }
@@ -272,7 +332,8 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(TouchEvent &event
     return listener_->OnCancelled(event);
 }
 
-int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer secondP) {
+int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer secondP)
+{
     float offsetX = secondP.px_ - firstP.px_;
     float offsetY = secondP.py_ - firstP.py_;
     if (abs(offsetX) > abs(offsetY)) {
@@ -282,7 +343,10 @@ int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer se
     }
 }
 
-std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<Pointer> &route) {
+std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<Pointer> &route)
+{
+    HILOG_DEBUG();
+
     std::vector<Pointer> pointerPath;
     Pointer firstSeparation = route[0];
     Pointer nextPoint;
@@ -328,16 +392,23 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
     return pointerPath;
 }
 
-bool AccessibilityGestureRecognizer::isDoubleTap(TouchEvent &event) {
-    int durationTime = event.GetOccurredTime() - pPreUp_->GetOccurredTime();
+bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+    int durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
         return false;
     }
 
-    MmiPoint firstMp = pCurDown_->GetPointerPosition(event.GetIndex());
-    MmiPoint secondMp = event.GetPointerPosition(event.GetIndex());
-    int durationX = (int)firstMp.GetX() - (int)secondMp.GetX();
-    int durationY = (int)firstMp.GetY() - (int)secondMp.GetY();
+    MMI::PointerEvent::PointerItem curPI;
+    if (!event.GetPointerItem(event.GetPointerId(), curPI)) {
+        HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+    }
+
+    MMI::PointerEvent::PointerItem firstPI;
+    pCurDown_->GetPointerItem(pCurDown_->GetPointerId(), firstPI);
+    int durationX = (int)firstPI.GetGlobalX() - (int)curPI.GetGlobalX();
+    int durationY = (int)firstPI.GetGlobalY() - (int)curPI.GetGlobalY();
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }

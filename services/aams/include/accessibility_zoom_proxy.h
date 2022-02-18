@@ -16,11 +16,8 @@
 #ifndef ACCESSIBILITY_ZOOM_PROXY_H
 #define ACCESSIBILITY_ZOOM_PROXY_H
 
-// #include "accessibility_ability_manager_service.h"
 #include <vector>
-#include "accessibility_zoom_mock.h"
 #include "refbase.h"
-// #include "gfx_utils/rect.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -30,9 +27,7 @@ namespace Accessibility {
  * @since 1.0
  * @version 1.0
  */
-// WMS需要定义的接口, 目前WMS还没有这些功能和接口.
-// 需要包括下面的几种情况：区域改变，旋转，用户变更.
-class AccessibilityDisplayResizeListener /*: public WMS***.DisplayResizeCallbacks*/ {
+class AccessibilityDisplayResizeListener {
 public:
     /**
      * @brief
@@ -51,7 +46,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    virtual void OnDisplayResizeChanged(Rect &outRegion) {}
+    virtual void OnDisplayResized(Rect &outRegion) {}
 
     /**
      * @brief Callback function when rotation.
@@ -118,19 +113,10 @@ public:
      */
     void DeleteListener(AccessibilityDisplayResizeListener &listener) {}
 
-    // 假定鸿蒙也有display、windows，activity的对应关系.
-    // android: 一个activity对应一个window，一个display对应一个屏幕，一个display可以有多个windows.
-    // 放大的效果是整个屏幕放大,不是某个window. 如果进行应用切换，即windows的切换，放大要保持不变.
-    // android: 当放大时会启动一个放大图层，处于最外层。和别的图层最终合成一个屏幕.
-    //
-    // 下面内容不确定，display不确定，待定.
-    // -----------------------------------------
     void Register(int displayId) {}
     void Unregister(int displayId) {}
     bool IsRegistered(int displayId) { return false; }
     bool IsRunning(int displayId) { return false; }
-    // -----------------------------------------
-
 
     /**
      * @brief Gets the scale.
@@ -206,10 +192,6 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    // 下面两个函数参数需要参考display屏幕设置的参数，需要屏幕生效，需要确认鸿蒙：屏幕、window的关系和api.
-    // 还需要确认鸿蒙下，动画的API使用，动画与WMS之间的关系，是否有关联.
-    // 动画与放大需要联动.
-    // 参数：需要不需要带x，y坐标，动画是否执行，需要依照WMS的实现来定。目前WMS尚不支持该功能.
     bool SetScale(int displayId, float scale, float pivotX, float pivotY,
         bool animate, int id)
     {
@@ -239,18 +221,7 @@ private:
      * @version 1.0
      */
     void SetDisplayResizeOffset(int displayId, float offsetX, float offsetY) {}
-
-private:
-    // 动画使用什么控件？是否需要 继承动画事件？
-/*
-    class AccessibilityAnimationListener : public ValueAnimator.AnimatorUpdateListener {
-    private:
-        explicit AnimationListener(int displayId);
-        virtual ~AnimationListener();
-        void onAnimationUpdate(ValueAnimator animation);
-    };
-*/
 };
-}  // namespace accessibility
+}  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_PROXY_H

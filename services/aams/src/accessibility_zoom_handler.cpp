@@ -26,7 +26,6 @@ namespace Accessibility {
 AccessibilityZoomHandler::AccessibilityZoomHandler(int displayId)
 {
     displayId_ = displayId;
-    // zoomProxy_ = proxy;
 
     readyState_.Register(*this);
     zoomInState_.Register(*this);
@@ -44,26 +43,17 @@ AccessibilityZoomHandler::~AccessibilityZoomHandler()
 
 void AccessibilityZoomHandler::Initialize()
 {
-    // currentState_ = readyState_;
 }
 
-/*
-AccessibilityZoomProxy &AccessibilityZoomHandler::GetProxy()
+void AccessibilityZoomHandler::OnPointerEvent(MMI::PointerEvent &event)
 {
-    return zoomProxy_;
-}
-*/
-
-void AccessibilityZoomHandler::OnTouchEvent(TouchEvent &event)
-{
-    currentState_.OnTouchEvent(event);
+    currentState_.OnPointerEvent(event);
 }
 
 void AccessibilityZoomHandler::OnTransitionTo(const int state)
 {
     currentState_.Exit();
     {
-        // std::lock_guard<std::recursive_mutex> lock(stateMutex_);
         switch (state) {
             case READY_STATE:
                 currentState_ = readyState_;
@@ -84,17 +74,15 @@ void AccessibilityZoomHandler::OnTransitionTo(const int state)
 
 void AccessibilityZoomHandler::OnZoomIn()
 {
-
 }
 
 void AccessibilityZoomHandler::OnZoomOut()
 {
-
 }
 
-void AccessibilityZoomHandler::OnBack(TouchEvent &event)
+void AccessibilityZoomHandler::OnBack(MMI::PointerEvent &event)
 {
-    EventTransmission::OnTouchEvent(event);
+    EventTransmission::OnPointerEvent(event);
 }
 
 void AccessibilityZoomHandler::ReadyState::Enter()
@@ -109,24 +97,28 @@ void AccessibilityZoomHandler::ReadyState::Exit()
     gesture_.Clear();
 }
 
-void AccessibilityZoomHandler::ReadyState::OnTouchEvent(TouchEvent &event)
+void AccessibilityZoomHandler::ReadyState::OnPointerEvent(MMI::PointerEvent &event)
 {
-    switch (event.GetAction()) {
-        case TouchEnum::PRIMARY_POINT_UP:
-            gesture_.Up();
-            observer_[0].OnBack(event);
-            break;
-        case TouchEnum::PRIMARY_POINT_DOWN:
-            if (gesture_.Triple(event)) {
-                observer_[0].OnTransitionTo(ZOOMIN_STATE);
-            } else {
+    switch (event.GetPointerAction()) {
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                gesture_.Up();
                 observer_[0].OnBack(event);
+            }
+            break;
+        case MMI::PointerEvent::POINTER_ACTION_DOWN:
+          if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                if (gesture_.Triple(event)) {
+                    observer_[0].OnTransitionTo(ZOOMIN_STATE);
+                } else {
+                    observer_[0].OnBack(event);
+                }
             }
             break;
         default:
             observer_[0].OnBack(event);
             break;
-    }
+          }
 }
 
 void AccessibilityZoomHandler::ZoomInState::Enter()
@@ -143,31 +135,33 @@ void AccessibilityZoomHandler::ZoomInState::Exit()
     observer_[0].OnZoomOut();
 }
 
-void AccessibilityZoomHandler::ZoomInState::OnTouchEvent(TouchEvent &event)
+void AccessibilityZoomHandler::ZoomInState::OnPointerEvent(MMI::PointerEvent &event)
 {
-    switch (event.GetAction()) {
-        case TouchEnum::PRIMARY_POINT_UP:
-            gesture_.Up();
-            observer_[0].OnBack(event);
-            break;
-        case TouchEnum::PRIMARY_POINT_DOWN:
-            if (gesture_.Triple(event)) {
-                observer_[0].OnTransitionTo(READY_STATE);
-            } else {
+    switch (event.GetPointerAction()) {
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                gesture_.Up();
                 observer_[0].OnBack(event);
             }
             break;
-        case TouchEnum::OTHER_POINT_DOWN:
-            observer_[0].OnTransitionTo(SLIDING_STATE);
+        case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                if (gesture_.Triple(event)) {
+                    observer_[0].OnTransitionTo(READY_STATE);
+                } else {
+                    observer_[0].OnBack(event);
+                }
+            } else {
+                observer_[0].OnTransitionTo(SLIDING_STATE);
+            }
             break;
-        case TouchEnum::CANCEL:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             observer_[0].OnTransitionTo(READY_STATE);
             break;
         default:
             observer_[0].OnBack(event);
             break;
-    }
-
+          }
 }
 
 void AccessibilityZoomHandler::SlidingState::Enter()
@@ -180,16 +174,18 @@ void AccessibilityZoomHandler::SlidingState::Exit()
     HILOG_DEBUG("AccessibilityZoomHandler SLIDING_STATE Exit.");
 }
 
-void AccessibilityZoomHandler::SlidingState::OnTouchEvent(TouchEvent &event)
+void AccessibilityZoomHandler::SlidingState::OnPointerEvent(MMI::PointerEvent &event)
 {
-    switch (event.GetAction()) {
-        case TouchEnum::OTHER_POINT_UP:
-            observer_[0].OnTransitionTo(ZOOMIN_STATE);
+    switch (event.GetPointerAction()) {
+        case MMI::PointerEvent::POINTER_ACTION_UP:
+            if (event.GetPointersIdList().size() > POINTER_COUNT_1) {
+                observer_[0].OnTransitionTo(ZOOMIN_STATE);
+            }
             break;
-        case TouchEnum::POINT_MOVE:
-            OnScroll(/*event*/);
+        case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            OnScroll();
             break;
-        case TouchEnum::CANCEL:
+        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             observer_[0].OnTransitionTo(READY_STATE);
             observer_[0].OnZoomOut();
             break;
@@ -200,15 +196,15 @@ void AccessibilityZoomHandler::SlidingState::OnTouchEvent(TouchEvent &event)
 
 }
 
-bool AccessibilityZoomHandler::SlidingState::OnScroll( /*TouchEvent &event*/ )
+bool AccessibilityZoomHandler::SlidingState::OnScroll()
 {
     return true;
 }
 
-bool AccessibilityZoomHandler::SlidingState::OnScale( /*TouchEvent &event*/ )
+bool AccessibilityZoomHandler::SlidingState::OnScale()
 {
     return true;
 }
 
-}  // namespace accessibility
+}  // namespace Accessibility
 }  // namespace OHOS

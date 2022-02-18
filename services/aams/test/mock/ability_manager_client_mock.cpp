@@ -23,7 +23,6 @@
 #include "if_system_ability_manager.h"
 #include "system_ability_definition.h"
 #include "accessible_ability_client_stub_impl.h"
-#include "accessible_ability_event_handler.h"
 
 namespace OHOS {
 namespace AAFwk {
@@ -42,8 +41,8 @@ std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
     return instance_;
 }
 
-ErrCode AbilityManagerClient::ConnectAbility(
-    const Want &want, const sptr<IAbilityConnection> &connect, const sptr<IRemoteObject> &callerToken)
+ErrCode AbilityManagerClient::ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect,
+    const sptr<IRemoteObject> &callerToken, int32_t userId)
 {
     GTEST_LOG_(INFO) << "MOCK AbilityManagerClient ConnectAbility";
     return ERR_OK;
@@ -67,7 +66,7 @@ ErrCode AbilityManagerClient::AttachAbilityThread(
     return ERR_OK;
 }
 
-ErrCode AbilityManagerClient::AbilityTransitionDone(const sptr<IRemoteObject> &token, int state)
+ErrCode AbilityManagerClient::AbilityTransitionDone(const sptr<IRemoteObject> &token, int state, const PacMap &saveData)
 {
     return ERR_OK;
 }
@@ -91,12 +90,13 @@ ErrCode AbilityManagerClient::ScheduleCommandAbilityDone(const sptr<IRemoteObjec
 void AbilityManagerClient::AddWindowInfo(const sptr<IRemoteObject> &token, int32_t windowToken)
 {}
 
-ErrCode AbilityManagerClient::StartAbility(const Want &want, int requestCode)
+ErrCode AbilityManagerClient::StartAbility(const Want &want, int requestCode, int32_t userId)
 {
     return ERR_OK;
 }
 
-ErrCode AbilityManagerClient::StartAbility(const Want &want, const sptr<IRemoteObject> &callerToken, int requestCode)
+ErrCode AbilityManagerClient::StartAbility(
+    const Want &want, const sptr<IRemoteObject> &callerToken, int requestCode, int32_t userId)
 {
     return ERR_OK;
 }
@@ -148,13 +148,12 @@ ErrCode AbilityManagerClient::StopServiceAbility(const Want &want)
     return ERR_OK;
 }
 
-ErrCode AbilityManagerClient::GetRecentMissions(
-    const int32_t numMax, const int32_t flags, std::vector<RecentMissionInfo> &recentList)
+ErrCode GetRecentMissions(const int32_t numMax, const int32_t flags, std::vector<AbilityMissionInfo> &recentList)
 {
     return ERR_OK;
 }
 
-ErrCode AbilityManagerClient::GetMissionSnapshot(const int32_t missionId, MissionSnapshotInfo &snapshot)
+ErrCode AbilityManagerClient::GetMissionSnapshot(const int32_t missionId, MissionSnapshot &snapshot)
 {
     return ERR_OK;
 }
@@ -178,5 +177,12 @@ ErrCode AbilityManagerClient::KillProcess(const std::string &bundleName)
 {
     return ERR_OK;
 }
+
+int AbilityManagerClient::SetAbilityController(const sptr<AppExecFwk::IAbilityController> &abilityController,
+        bool imAStabilityTest)
+{
+    return 0;
+}
+
 }  // namespace AAFwk
 }  // namespace OHOS

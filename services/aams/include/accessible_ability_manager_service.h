@@ -26,17 +26,17 @@
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
 #include "accessibility_common_event_registry.h"
-#include "accessibility_input_filter.h"
+#include "accessibility_display_manager.h"
+#include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_zoom_proxy.h"
 #include "accessibility_window_info.h"
 #include "bundlemgr/bundle_mgr_interface.h"
+#include "input_manager.h"
 #include "singleton.h"
 #include "system_ability.h"
-#include "dummy.h"
-#include "multimoduleDummy.h"
-
+#include "window_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -52,87 +52,97 @@ public:
     void OnStop() override;
 
     /* For AccessibleAbilityManagerServiceClientStub */
-    void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) override;
+    void SendEvent(const AccessibilityEventInfo& uiEvent, const int accountId) override;
 
-    uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback,
-        const int accountId) override;
+    uint32_t RegisterStateCallback(
+        const sptr<IAccessibleAbilityManagerServiceState>& callback, const int accountId) override;
+
+    uint32_t RegisterCaptionPropertyCallback(
+        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) override;
 
     std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) override;
 
-    void RegisterInteractionOperation(const int windowId,
-        const sptr<IAccessibilityInteractionOperation> &operation,
-        const int accountId) override;
+    void RegisterElementOperator(
+        const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) override;
 
-    void DeregisterInteractionOperation(const int windowId) override;
+    void DeregisterElementOperator(const int windowId) override;
 
-    void Interrupt(const int accountId) override;
+    CaptionProperty GetCaptionProperty() override;
+    bool SetCaptionProperty(const CaptionProperty& caption) override;
+    bool SetCaptionState(const bool state) override;
+    bool SetEnabled(const bool state) override;
 
-    uint64_t GetSuggestedInterval() override;
-
-    void PersistElementNamesToSetting(std::string &bundleName, std::map<std::string, AppExecFwk::ElementName> &componentNames,
-        int accountId);
+    void PersistElementNamesToSetting(
+        const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId);
 
     /* For InputFilter */
-    void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
+    void SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector);
 
-    inline sptr<TouchEventInjector> GetTouchEventInjector() {return touchEventInjector_;}
+    inline sptr<TouchEventInjector> GetTouchEventInjector()
+    {
+        return touchEventInjector_;
+    }
 
-     /* For Key Event Filter */
-    bool IsWantedKeyEvent(MMI::KeyEvent &event);
+    /* For Key Event Filter */
+    bool IsWantedKeyEvent(MMI::KeyEvent& event);
 
-    inline sptr<KeyEventFilter> GetKeyEventFilter() {return keyEventFilter_;}
+    inline sptr<KeyEventFilter> GetKeyEventFilter()
+    {
+        return keyEventFilter_;
+    }
 
-    void SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter);
+    void SetKeyEventFilter(const sptr<KeyEventFilter>& keyEventFilter);
 
     /* For DisplayResize */
-    void NotifyDisplayResizeStateChanged(int displayId, Rect &rect, float scale, float centerX, float centerY);
+    void NotifyDisplayResizeStateChanged(int displayId, Rect& rect, float scale, float centerX, float centerY);
 
-    /* For TouchExplore */
-    inline void OnTouchInteractionStart() {isTouchInteraction_ = true;}
+    inline int32_t GetCurrentAccountId()
+    {
+        return currentAccountId_;
+    }
 
-    inline void OnTouchInteractionEnd() {isTouchInteraction_ = false;}
+    inline uint32_t GetConnectCounter()
+    {
+        return connectCounter_;
+    }
 
-    void OnGesture(int id);
+    inline std::shared_ptr<AAMSEventHandler>& GetMainHandler()
+    {
+        return handler_;
+    }
 
-    void RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj) override;
-
-    inline sptr<AccessibilityInputFilter> GetInputFilter() {return inputFilter_;}
-
-    inline int32_t GetCurrentAccountId() {return currentAccountId_;}
-
-    inline uint32_t GetConnectCounter() {return connectCounter_;}
-
-    inline std::shared_ptr<AAMSEventHandler>& GetMainHandler() {return handler_;}
-
-    inline std::shared_ptr<AppExecFwk::EventRunner>& GetMainRunner() {return runner_;}
+    inline std::shared_ptr<AppExecFwk::EventRunner>& GetMainRunner()
+    {
+        return runner_;
+    }
 
     sptr<AccessibilityAccountData> GetCurrentAccountData();
-
-    bool HasInputFilter() {return hasInputFilter_;}
-
-    std::shared_ptr<MultimodalInputManager> GetInputManager() {return inputManager_;}
-
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
-    sptr<IWindowManagerService> GetWindowMgrProxy();
-
-    /* Interaction Bridge*/
-    AccessibilityElementInfo FindFocusedElementInfo();
-
-    bool PerformActionOnAccessibilityFocusedItem(const ActionType& action);
-
-    bool GetAccessibilityFocusClickPointInScreen(MmiPoint &point);
 
     /* For common event */
-    void SwitchedUser(int32_t accountId);
-    void UnlockedUser(int32_t accountId);
     void RemovedUser(int32_t accountId);
     void PresentUser();
     void PackageChanged();
-    void PackageRemoved(std::string &bundleName);
-    void PackageUpdateFinished(std::string &bundleName);
+    void PackageRemoved(std::string& bundleName);
+    void PackageUpdateFinished(std::string& bundleName);
 
     void UpdateAccessibilityManagerService();
     void UpdateAbilities();
+
+    bool GetEnabledState() override;
+    bool GetCaptionState() override;
+    bool GetTouchGuideState() override;
+    bool GetGestureState() override;
+    bool GetKeyEventObserverState() override;
+
+    bool SetTouchGuideState(const bool state) override;
+    bool SetGestureState(const bool state) override;
+    bool SetKeyEventObserverState(const bool state) override;
+
+    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
+    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) override;
+    std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
+    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
 
 private:
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -146,7 +156,7 @@ private:
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId) {};
+        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId){};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 
@@ -154,46 +164,51 @@ private:
         int windowId_ = INVALID_WINDOW_ID;
     };
 
+    class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        CaptionPropertyCallbackDeathRecipient() = default;
+        ~CaptionPropertyCallbackDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(CaptionPropertyCallbackDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject>& remote) final;
+    };
+
     bool Init();
-    void SendEventInner(AccessibilityEventInfo &uiEvent);
-    void InterruptInner();
-    sptr<AccessibilityInteractionConnection> GetAccessibilityInteractionConnection(int windowId);
+    void SendEventInner(AccessibilityEventInfo& uiEvent);
+    sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int windowId);
     void ClearFocus(int windowId);
     void OutsideTouch(int windowId);
     void OnChanging(bool selfChange, Uri &uri);
-    void UpdateAccessibilityWindowStateByAccessibilityEvent(const AccessibilityEventInfo &event);
-    /* For common event */
-    void PublicNoticeEventInner();
+    void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
 
     void UpdateAccessibilityState();
     void UpdateInputFilter();
     void UpdateMagnification();
     void UpdateWindowChangeListener();
+    void UpdateCaptionProperty();
 
     bool isRunning_ = false;
     int32_t currentAccountId_ = 0;
     uint32_t connectCounter_ = 1;
-    bool isTouchInteraction_ = false;
     AccessibilityCommonEventRegistry accessibilityCommonEventRegistry_;
     std::map<int, sptr<AccessibilityAccountData>> a11yAccountsData_;
     sptr<AppExecFwk::IBundleMgr> bundleManager_;
-    sptr<IWindowManagerService> windowManager_;
 
-    sptr<AccessibilityInputFilter> inputFilter_;
+    sptr<AccessibilityInputInterceptor> inputInterceptor_;
     sptr<TouchEventInjector> touchEventInjector_;
     sptr<KeyEventFilter> keyEventFilter_;
-    std::shared_ptr<MultimodalInputManager> inputManager_;
-
-    bool hasInputFilter_ = false;
+    int32_t interceptorId_ = 0;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
 
     sptr<IRemoteObject::DeathRecipient> stateCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> interactionOperationDeathRecipient_ = nullptr;
+    sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerService);
 };
-} // namespace Accessibility
-} // namespace OHOS
-#endif // ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
+
+}  // namespace Accessibility
+}  // namespace OHOS
+#endif  // ACCESSIBLE_ABILITY_MANAGER_SERVICE_H

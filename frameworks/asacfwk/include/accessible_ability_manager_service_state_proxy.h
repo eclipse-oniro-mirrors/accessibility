@@ -23,7 +23,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityManagerServiceStateProxy : public IRemoteProxy<IAccessibleAbilityManagerServiceState> {
+class AccessibleAbilityManagerServiceStateProxy : public IRemoteProxy<IAccessibleAbilityManagerServiceState>
+{
 public:
     /**
      * @brief construct function
@@ -58,6 +59,6 @@ private:
     static inline BrokerDelegator<AccessibleAbilityManagerServiceStateProxy> delegator;
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

@@ -20,11 +20,13 @@
 namespace OHOS {
 namespace Accessibility {
 
-bool AccessibilityMemo::ReadFromParcel(Parcel &parcel) {
+bool AccessibilityMemo::ReadFromParcel(Parcel &parcel)
+{
     return true;
 }
 
-bool AccessibilityMemo::Marshalling(Parcel &parcel) const{
+bool AccessibilityMemo::Marshalling(Parcel &parcel) const
+{
     return true;
 };
 
@@ -56,7 +58,8 @@ int AccessibilityMemo::GetViewId() const
 }
 
 int AccessibilityMemo::GetAccessibilityId() const
-{    return elementId_;
+{
+    return elementId_;
 }
 
 void AccessibilityMemo::SetWindowId(const int windowId)
@@ -198,7 +201,9 @@ void AccessibilityEventInfo::SetWindowChangeTypes(const WindowUpdateType changeT
 {}
 
 void AccessibilityEventInfo::SetEventType(const EventType eventType)
-{}
+{
+    eventType_ = eventType;
+}
 
 long long AccessibilityEventInfo::GetTimeStamp() const
 {
@@ -232,8 +237,7 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
     return triggerAction_;
 }
 
-AccessibilityEventInfo::AccessibilityEventInfo(
-            int windowId, WindowUpdateType windowChangeTypes)
+AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
 {}
 
 AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
@@ -242,10 +246,14 @@ AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
 void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory category)
 {}
 
-NotificationCategory  AccessibilityEventInfo::GetNotificationInfo() const
+NotificationCategory AccessibilityEventInfo::GetNotificationInfo() const
 {
     return category_;
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+GestureType AccessibilityEventInfo::GetGestureType() const
+{
+    return gestureType_;
+}
+} // namespace Accessibility
+} // namespace OHOS

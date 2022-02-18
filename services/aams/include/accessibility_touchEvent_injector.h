@@ -18,7 +18,7 @@
 #define ACCESSIBILITY_TOUCHEVENT_INJECTOR_H
 
 #include <time.h>
-#include "touch_event.h"
+#include "pointer_event.h"
 #include "singleton.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -35,7 +35,7 @@ namespace Accessibility {
 class AccessibleAbilityManagerService;
 
 struct SendEventArgs {
-    TouchEvent event_;
+    std::shared_ptr<MMI::PointerEvent> event_;
     bool isLastEvent_;
 };
 
@@ -71,18 +71,11 @@ public:
     ~TouchEventInjector() {}
 
     /**
-     * @brief Handle touch events from previous event stream node.
-     * @param event the touch event from Multimodal
+     * @brief Handle pointer events from previous event stream node.
+     * @param event the pointer event from Multimodal
      * @return
      */
-    void OnTouchEvent(TouchEvent &event) override;
-
-    /**
-     * @brief Handle mouse events from previous event stream node.
-     * @param event the mouse event from Multimodal
-     * @return
-     */
-    void OnMouseEvent(MouseEvent &event) override;
+    void OnPointerEvent(MMI::PointerEvent &event) override;
 
     /**
      * @brief Clear event state from specific input source.
@@ -109,11 +102,11 @@ public:
         const sptr<IAccessibleAbilityClient> &service, int sequence );
 
     /**
-     * @brief Send touch event to next stream node.
+     * @brief Send pointer event to next stream node.
      * @param event the touch event prepared to send
      * @return
      */
-    void SendTouchEvent(TouchEvent &event);
+    void SendPointerEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Parsing inject simulated gestures.
@@ -183,14 +176,11 @@ private:
 
     /**
      * @brief create touchevent.
-     * @param startTime the starttime of gesture
-     * @param occurredTime the occurredtime of event
      * @param action the action of event
      * @param point the endpoint of event
      * @return the created touchevent
      */
-    TouchEvent obtainTouchEvent(long startTime, long occurredTime,
-        int action, MmiPoint point);
+    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action, MMI::PointerEvent::PointerItem point);
 
     /**
      * @brief Get the number of milliseconds elapsed since the system was booted.
@@ -208,7 +198,7 @@ private:
     sptr<IAccessibleAbilityClient> currentGestureService_ = nullptr;
     std::shared_ptr<TouchInjectHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
-    std::vector<TouchEvent> injectedEvents_;
+    std::vector<std::shared_ptr<MMI::PointerEvent>> injectedEvents_;
 };
 }  // namespace Accessibility
 }  // namespace OHOS

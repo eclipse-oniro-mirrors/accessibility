@@ -17,39 +17,32 @@
 #include "hilog_wrapper.h"
 
 namespace OHOS {
-namespace Accessibility{
-std::vector<int> TouchAction;
-int UTtouchAction = -1;
-bool isMouseEvent = false;
-bool isClearEvents = false;
-bool isDestroyEvents = false;
+namespace Accessibility {
+std::vector<int> g_touchAction;
+int g_uTtouchAction = -1;
+bool g_isMouseEvent = false;
+bool g_isClearEvents = false;
+bool g_isDestroyEvents = false;
 
-void EventTransmission::OnTouchEvent(TouchEvent &event)
+void EventTransmission::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    UTtouchAction = event.GetAction();
-    TouchAction.push_back(UTtouchAction);
+    g_uTtouchAction = event.GetPointerAction();
+    g_touchAction.push_back(g_uTtouchAction);
     auto next = GetNext();
     if (next != nullptr) {
-        next->OnTouchEvent(event);
+        next->OnPointerEvent(event);
     }
-}
-
-void EventTransmission::OnMouseEvent(MouseEvent &event)
-{
-    HILOG_DEBUG();
-    isMouseEvent = true;
-
 }
 
 void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 }
+
 void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo &event)
 {
     HILOG_DEBUG();
-
 }
 
 void EventTransmission::SetNext(const sptr<EventTransmission> &next)
@@ -68,13 +61,12 @@ sptr<EventTransmission> EventTransmission::GetNext()
 
 void EventTransmission::ClearEvents(uint32_t inputSource)
 {
-    isClearEvents = true;
+    g_isClearEvents = true;
 }
 
 void EventTransmission::DestroyEvents()
 {
-    isDestroyEvents = true;
+    g_isDestroyEvents = true;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,21 +21,11 @@
 #include <vector>
 #include "refbase.h"
 
-#define ACCESSIBLE_ABILITY_MANAGER_SERVICE_ID 801 // to be deleted
-
 namespace OHOS {
 namespace Accessibility {
-
 class IASACStub {};
 class IClient {};
-// class TouchEventInjector:public OHOS::RefBase{};
- /*class AccessibilityInputFilter:public OHOS::RefBase{};
- class KeyEventFilter:public OHOS::RefBase{};
-
-class AccessibilityZoomProxy:public OHOS::RefBase{};*/
-
-struct AccessibilityAbilityInfoDummy
-{
+struct AccessibilityAbilityInfoDummy {
     uint32_t accessibilityEventTypes = 0xFFFFFFFF;   // TYPES_ALL_MASK
 
     // ACCESSIBILITY_ABILITY_TYPE_SPOKEN | ACCESSIBILITY_ABILITY_TYPE_HAPTIC | ACCESSIBILITY_ABILITY_TYPE_AUDIBLE
@@ -57,45 +47,6 @@ struct AccessibilityAbilityInfoDummy
     uint32_t uiNoninteractiveTime = 0;
     std::vector<std::string> filterBundleNames{};
 };
-
-// WMS dummy start
-enum WMError {
-    WM_OK = 0,
-    WM_NG
-};
-
-struct WMDisplayInfo:public OHOS::RefBase {
-    int32_t id;
-    uint32_t width;
-    uint32_t height;
-    uint32_t phyWidth;
-    uint32_t phyHeight;
-    uint32_t vsync;
-    uint32_t dpi; // 额外的像素密度，比如hi3516的mipi屏是 60mmx120mm, 480x960, dpi=203
-};
-class IWindowManagerDisplayListenerClazz {
-public:
-    IWindowManagerDisplayListenerClazz() = default;
-    virtual ~IWindowManagerDisplayListenerClazz() {};
-    virtual void OnScreenPlugin(int32_t did) = 0;
-    virtual void OnScreenPlugout(int32_t did) = 0;
-};
-
-class IWindowManagerService : public RefBase {
-public:
-    WMError GetDisplays(std::vector<struct WMDisplayInfo> &displays)
-    {
-        WMDisplayInfo display;
-        display.dpi = 1;
-        display.width = 1000;
-        display.height = 1000;
-
-        displays.push_back(display);
-        return WM_OK;
-    }
-    WMError AddDisplayChangeListener(IWindowManagerDisplayListenerClazz *listener) {return WM_OK;}
-};
-// WMS dummy end
 
 } // namespace Accessibility
 } // namespace OHOS

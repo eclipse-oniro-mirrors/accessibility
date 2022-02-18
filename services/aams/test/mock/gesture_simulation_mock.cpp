@@ -124,20 +124,5 @@ GesturePathDefine *GesturePathDefine::Unmarshalling(Parcel &parcel)
 
     return gesturePathDefine;
 }
-
-GestureResultListenerInfo::GestureResultListenerInfo(std::vector<GesturePathDefine> gesturePathDefine,
-                                                    std::shared_ptr<GestureResultListener>& gestureResultListener)
-{}
-
-std::shared_ptr<GestureResultListener>& GestureResultListenerInfo::GetGestureResultListener()
-{
-    return gestureResultListener_;
-}
-
-std::vector<GesturePathDefine> GestureResultListenerInfo::GetGesturePathDefine()
-{
-    return gesturePathDefine_;
-}
-
 } // namespace Accessibility
 } // namespace OHOS

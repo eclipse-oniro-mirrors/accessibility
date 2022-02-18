@@ -53,21 +53,6 @@ public:
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) = 0;
 
     /**
-     * @brief Called when the accessibility service is interrupted.
-     * @param
-     * @return
-     */
-    virtual void OnInterrupt() = 0;
-
-    /**
-     * @brief Called when a user performs a specified gesture on the device that
-     *        your accessibility application has requested to be in touch exploration mode.
-     * @param gestureId The id of gesture.
-     * @return
-     */
-    virtual void OnGesture(const int gestureId) = 0;
-
-    /**
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
@@ -84,7 +69,7 @@ public:
      * @param centerY Indicates the Y coordinate of the center for resizing the display.
      * @return
      */
-    virtual void OnDisplayResizeChanged(const int displayId, const Rect &rect, const float scale, const float centerX,
+    virtual void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY) = 0;
 
     /**
@@ -95,31 +80,13 @@ public:
      */
     virtual void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) = 0;
 
-    /**
-     * @brief Called when the validity status of the fingerprint sensor's gesture detection changes.
-     * @param validity The validity status of the fingerprint sensor's gesture detection.
-     * @return
-     */
-    virtual void OnFingerprintGestureValidityChanged(const bool validity) = 0;
-
-    /**
-     * @brief Called when the fingerprint sensor detects a gesture.
-     * @param gesture The gesture which is detected by fingerprint sensor.
-     * @return
-     */
-    virtual void OnFingerprintGesture(const int gesture) = 0;
-
     enum class Message {
         INIT = 0,
         DISCONNECT,
         ON_ACCESSIBILITY_EVENT,
-        ON_INTERRUPT,
-        ON_GESTURE,
         ON_KEY_PRESS_EVENT,
         ON_DISPALYRESIZE_CHANGED,
         ON_GESTURE_SIMULATE_RESULT,
-        ON_FINGERPRINT_GESTURE_VALIDITY_CHANGED,
-        ON_FINGERPRINT_GESTURE,
     };
 };
 

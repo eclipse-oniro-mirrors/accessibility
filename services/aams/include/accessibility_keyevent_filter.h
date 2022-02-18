@@ -24,7 +24,7 @@
 #include "event_handler.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 
 class AccessibleAbilityConnection;
 class AccessibleAbilityManagerService;
@@ -121,7 +121,7 @@ private:
     uint32_t sequenceNum_ = 0;
 };
 
-class KeyEventFilterEventHandler : public AppExecFwk::EventHandler{
+class KeyEventFilterEventHandler : public AppExecFwk::EventHandler {
 public:
     /**
      * @brief A constructor used to create a KeyEventFilterEventHandler instance.

@@ -19,7 +19,7 @@
 #include "accessible_ability_manager_service.h"
 #include "accessibility_element_info.h"
 #include "accessibility_operator.h"
-#include "accessibility_interaction_operation_interface.h"
+#include "accessibility_element_operator_interface.h"
 #include "mmi_point.h"
 namespace OHOS {
 namespace Accessibility{
@@ -44,8 +44,8 @@ public:
      * @param action the action of Accessibility node.
      * @return Returns true if the action perform successfully; returns false code otherwise.
      */
-    bool PerformActionOnAccessibilityFocusedItem(const ActionType &action);
-    bool GetAccessibilityFocusClickPointInScreen(MmiPoint &point);
+    bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
+    bool GetPointerItermOfAccessibilityFocusClick(MMI::PointerEvent::PointerItem &point);
     ~AccessibilityInteractionBridge() = default;
 private:
     AccessibilityInteractionBridge();

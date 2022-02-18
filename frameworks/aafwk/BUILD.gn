@@ -30,6 +30,10 @@ config("accessibleability_private_config") {
     "//base/accessibility/util/include",
     "//base/accessibility/common/log/include",
     "//base/accessibility/dummyData",
+    "//base/accessibility/interfaces/kits/napi/include",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native/src",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include"
   ]
 
   defines = [
@@ -56,20 +60,54 @@ ohos_shared_library("accessibleability") {
   public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//utils/native/base:utils",
+     "//utils/native/base:utils",
+     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+  ]
+
+  public_deps = [
+    "//base/global/i18n_standard/frameworks/intl:intl_util",
+    "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
   ]
 
   external_deps = [
+    "ability_runtime:ability_context_native",
+    "ability_base:want",
+    "ability_runtime:runtime",
     "ability_runtime:ability_manager",
-    "ability_runtime:want",
+    "ipc:ipc_core",
+    "hiviewdfx_hilog_native:libhilog",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
+  ]
+
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
+}
+
+ohos_shared_library("accessibility_extension_module") {
+  include_dirs =
+      [ "//base/accessibility/frameworks/aafwk/include",
+        "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include"
+      ]
+
+  sources = [ "//base/accessibility/frameworks/aafwk/src/accessibility_extension_module_loader.cpp" ]
+
+  configs = [ ":accessibleability_private_config" ]
+
+  deps = [
+    ":accessibleability"
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:runtime",
+    "hiviewdfx_hilog_native:libhilog",
   ]
 
   subsystem_name = "barrierfree"

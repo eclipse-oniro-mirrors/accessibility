@@ -28,8 +28,7 @@ class MockGestureResultListener : public GestureResultListener {
 public:
     MockGestureResultListener() {}
     virtual ~MockGestureResultListener() {}
-    void OnCancelled(std::vector<GesturePathDefine> &gesturePathDefine) override;
-    void OnCompleted(std::vector<GesturePathDefine> &gesturePathDefine) override;
+    void OnGestureInjectResult(uint32_t sequence, bool result) override;
 };
 
 } // namespace Accessibility

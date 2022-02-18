@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed On an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -21,64 +21,46 @@
 namespace OHOS {
 namespace Accessibility {
 
-void GetDisplayFromWms(std::vector<WMDisplayInfo> &displays) {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    sptr<IWindowManagerService> wms = aams->GetWindowMgrProxy();
-    WMError err = wms->GetDisplays(displays);
-    if (err != WM_OK) {
-        HILOG_ERROR("GetDisplayFromWms failed");
-    }
+AccessibilityDisplayManager::AccessibilityDisplayManager()
+{
 }
 
-AccessibilityDisplayManager::AccessibilityDisplayManager() {
-    GetDisplayFromWms(displays_);
-}
-
-AccessibilityDisplayManager &AccessibilityDisplayManager::GetInstance() {
+AccessibilityDisplayManager &AccessibilityDisplayManager::GetInstance()
+{
     static AccessibilityDisplayManager displayMgr;
     return displayMgr;
 }
 
-WMDisplayInfo AccessibilityDisplayManager::GetDisplay(int id) {
-    for (auto display : displays_) {
-        if (display.id == id) {
-            return display;
-        }
-    }
-
-    HILOG_ERROR("Invalid display id!! Return default display");
-    return displays_.front();
+const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int id)
+{
+    return Rosen::DisplayManager::GetInstance().GetDisplayById((Rosen::DisplayId)id);
 }
 
-std::vector<WMDisplayInfo> AccessibilityDisplayManager::GetDisplays() {
-    return displays_;
+std::vector<const sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
+{
+    return Rosen::DisplayManager::GetInstance().GetAllDisplays();
 }
 
-WMDisplayInfo AccessibilityDisplayManager::GetDefaultDisplay() {
-    return displays_.front();
+const sptr<Rosen::Display> AccessibilityDisplayManager::GetDefaultDisplay()
+{
+    return Rosen::DisplayManager::GetInstance().GetDefaultDisplay();
 }
 
-void AccessibilityDisplayManager::RegisterDisplayChangeListener() {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    sptr<IWindowManagerService> wms = aams->GetWindowMgrProxy();
-    wms->AddDisplayChangeListener(this);
+void AccessibilityDisplayManager::RegisterDisplayChangeListener()
+{
+    Rosen::DisplayManager::GetInstance().RegisterDisplayListener(this);
 }
 
-void AccessibilityDisplayManager::OnScreenPlugin(int32_t did) {
-    // TODO: Do something for zoom
-    displays_.clear();
-    GetDisplayFromWms(displays_);
+void AccessibilityDisplayManager::OnCreate(Rosen::DisplayId did)
+{
 }
 
-void AccessibilityDisplayManager::OnScreenPlugout(int32_t did) {
-    // TODO: Do something for zoom
-    displays_.clear();
-    GetDisplayFromWms(displays_);
+void AccessibilityDisplayManager::OnDestroy(Rosen::DisplayId did)
+{
 }
+void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event)
+{
 
-void AccessibilityDisplayManager::SetDisplay(WMDisplayInfo newWM) {
-    displays_.clear();
-    displays_.push_back(newWM);
 }
 
 }  // namespace Accessibility

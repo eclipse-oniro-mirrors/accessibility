@@ -21,16 +21,19 @@
 #include <vector>
 #include "accessibility_ability_info.h"
 #include "accessible_ability_manager_service_state_interface.h"
+#include "accessible_ability_manager_service_caption_property_interface.h"
 #include "accessibility_event_info.h"
-#include "accessibility_interaction_operation_interface.h"
+#include "accessibility_element_operator_interface.h"
 #include "iremote_broker.h"
 #include "iremote_object.h"
+#include "accessibility_caption.h"
+#include "element_name.h"
 
 namespace OHOS {
 namespace Accessibility {
 /*
-* The class define the interface to call ABMS API.
-*/
+ * The class define the interface to call ABMS API.
+ */
 class IAccessibleAbilityManagerServiceClient : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityManagerServiceClient");
@@ -41,7 +44,7 @@ public:
      * @param accountId The user id.
      * @return true: send ok; otherwise is refused.
      */
-    virtual void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) = 0;
+    virtual void SendEvent(const AccessibilityEventInfo& uiEvent, const int accountId) = 0;
 
     /**
      * @brief Register the state observer of AAMS.
@@ -49,8 +52,11 @@ public:
      * @param accountId The user id.
      * @return 0: Register ok; otherwise is refused.
      */
-    virtual uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback,
-        const int accountId) = 0;
+    virtual uint32_t RegisterStateCallback(
+        const sptr<IAccessibleAbilityManagerServiceState>& callback, const int accountId) = 0;
+
+    virtual uint32_t RegisterCaptionPropertyCallback(
+        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) = 0;
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -69,39 +75,34 @@ public:
      * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
-    virtual void RegisterInteractionOperation(const int windowId,
-            const sptr<IAccessibilityInteractionOperation> &operation,
-            const int accountId) = 0;
+    virtual void RegisterElementOperator(
+        const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) = 0;
 
     /**
      * @brief Deregister the interaction operation.
      * @param windowId Window ID
      * @return
      */
-    virtual void DeregisterInteractionOperation(const int windowId) = 0;
+    virtual void DeregisterElementOperator(const int windowId) = 0;
 
-    /**
-     * @brief Requests feedback interruption from all accessibility services.
-     *      Remained.
-     * @param -
-     * @return
-     */
-    virtual void Interrupt(const int accountId) = 0; //Remained
+    virtual CaptionProperty GetCaptionProperty() = 0;
+    virtual bool GetEnabledState() = 0;
+    virtual bool GetCaptionState() = 0;
+    virtual bool GetTouchGuideState() = 0;
+    virtual bool GetGestureState() = 0;
+    virtual bool GetKeyEventObserverState() = 0;
 
-    /**
-     * @brief Register AA connection to AAMS.
-     *      Temp Solution.
-     * @param obj IPC object
-     * @return
-     */
-    virtual void RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj) = 0;
+    virtual bool SetCaptionProperty(const CaptionProperty& caption) = 0;
+    virtual bool SetCaptionState(const bool state) = 0;
+    virtual bool SetEnabled(const bool state) = 0;
+    virtual bool SetTouchGuideState(const bool state) = 0;
+    virtual bool SetGestureState(const bool state) = 0;
+    virtual bool SetKeyEventObserverState(const bool state) = 0;
 
-    /**
-     * @brief Obtains the suggested interval for switching the UI.
-     * @param
-     * @return Returns the interval.
-     */
-    virtual uint64_t GetSuggestedInterval() = 0;
+    virtual bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) = 0;
+    virtual bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) = 0;
+    virtual std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() = 0;
+    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
 
     enum class Message {
         SEND_EVENT = 0,
@@ -109,12 +110,27 @@ public:
         GET_ABILITYLIST,
         REGISTER_INTERACTION_CONNECTION,
         DEREGISTER_INTERACTION_CONNECTION,
-        INTERRUPT,
-        GET_SUGGESTED_INTERVAL,
-        REGISTER_ABILITY_CONNECTION_CLIENT  // Temp Solution
+        GET_CAPTION_PROPERTY,
+        SET_CAPTION_PROPERTY,
+        SET_CAPTION_STATE,
+        SET_ENABLED,
+        REGISTER_CAPTION_PROPERTY_CALLBACK,
+        GET_ENABLED,
+        GET_CAPTION_STATE,
+        SET_TOUCH_GUIDE_STATE,
+        SET_GESTURE_STATE,
+        SET_KEY_EVENT_OBSERVE_STATE,
+        GET_TOUCH_GUIDE_STATE,
+        GET_GESTURE_STATE,
+        GET_KEY_EVENT_OBSERVE_STATE,
+        SET_ENABLED_OBJECT,
+        SET_INSTALLED,
+        GET_ENABLED_OBJECT,
+        GET_INSTALLED
+
     };
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+}  // namespace Accessibility
+}  // namespace OHOS
 #endif

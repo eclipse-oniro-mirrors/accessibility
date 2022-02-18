@@ -49,22 +49,11 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     return abilityInfos;
 }
 
-void AccessibleAbilityManagerServiceClientProxy::RegisterInteractionOperation(int windowId,
-        const sptr <IAccessibilityInteractionOperation> &operation, const int userId)
+void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(int windowId,
+        const sptr <IAccessibilityElementOperator> &operation, const int userId)
 {}
 
-void AccessibleAbilityManagerServiceClientProxy::DeregisterInteractionOperation(const int windowId)
-{}
-
-void AccessibleAbilityManagerServiceClientProxy::Interrupt(const int userId)
-{}
-
-uint64_t AccessibleAbilityManagerServiceClientProxy::GetSuggestedInterval()
-{
-    return 0;
-}
-
-void AccessibleAbilityManagerServiceClientProxy::RegisterAbilityConnectionClientTmp(const sptr<IRemoteObject>& obj)
+void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {}
 
 sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
@@ -72,5 +61,83 @@ sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
     return this->AsObject();
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCallback(
+        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
+{
+    return 0;
+}
+
+
+CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
+{
+    CaptionProperty cap;
+    return cap;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const CaptionProperty& caption)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool state)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
+{
+    return true;
+}
+
+bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool state)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool state)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const bool state)
+{
+    return true;
+}
+
+bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    return true;
+}
+bool AccessibleAbilityManagerServiceClientProxy::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
+{
+    return true;
+}
+std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceClientProxy::GetEnabledAbilities()
+{
+    std::map<std::string, AppExecFwk::ElementName> test;
+    return test;
+}
+std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetInstalledAbilities()
+{
+    std::vector<AccessibilityAbilityInfo> test;
+    return test;
+}
+
+
+} // namespace Accessibility
+} // namespace OHOS

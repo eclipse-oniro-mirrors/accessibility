@@ -28,10 +28,10 @@ public:
     UnitTestDisplayResizeListener() {}
     virtual ~UnitTestDisplayResizeListener() {}
 
-    void OnDisplayResizeChanged(const DisplayResizeController& controller, const Rect& rect, const float scale,
+    void OnDisplayResized(const DisplayResizeController& controller, const Rect& rect, const float scale,
                                             const float centerX, const float centerY) override
     {
-        GTEST_LOG_(INFO) << "UnitTestDisplayResizeListener OnDisplayResizeChanged";
+        GTEST_LOG_(INFO) << "UnitTestDisplayResizeListener OnDisplayResized";
     }
 };
 
@@ -226,13 +226,13 @@ HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_SetSc
 }
 
 /**
- * @tc.number: DisplayResizeController_Unittest_DispatchOnDisplayResizeChanged_001
- * @tc.name: DispatchOnDisplayResizeChanged
- * @tc.desc: Test function DispatchOnDisplayResizeChanged
+ * @tc.number: DisplayResizeController_Unittest_DispatchOnDisplayResized_001
+ * @tc.name: DispatchOnDisplayResized
+ * @tc.desc: Test function DispatchOnDisplayResized
  */
-HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_DispatchOnDisplayResizeChanged_001, TestSize.Level1)
+HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_DispatchOnDisplayResized_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResizeChanged_001 start";
+    GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResized_001 start";
 
     Rect rect {};
     float scale = 1;
@@ -242,8 +242,8 @@ HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_Dispa
     std::shared_ptr<DisplayResizeListener> listener = make_shared<UnitTestDisplayResizeListener>();
     displayResizeController_->AddListener(listener);
 
-    displayResizeController_->DispatchOnDisplayResizeChanged(rect, scale, centerX, centerY);
+    displayResizeController_->DispatchOnDisplayResized(rect, scale, centerX, centerY);
 
     displayResizeController_->DeleteListener(listener);
-    GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResizeChanged_001 end";
+    GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResized_001 end";
 }

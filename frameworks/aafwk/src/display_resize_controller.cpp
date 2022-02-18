@@ -105,12 +105,12 @@ bool DisplayResizeController::SetScale(float scale, bool isShouldAnimate)
         channelId_, displayId_, scale, invalidValue, invalidValue, isShouldAnimate);
 }
 
-void DisplayResizeController::DispatchOnDisplayResizeChanged(const Rect& rect,
+void DisplayResizeController::DispatchOnDisplayResized(const Rect& rect,
     const float scale, const float centerX, const float centerY)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
     for (auto listener : displayResizeListeners_) {
-        listener->OnDisplayResizeChanged(*this, rect, scale, centerX, centerY);
+        listener->OnDisplayResized(*this, rect, scale, centerX, centerY);
     }
 }
 

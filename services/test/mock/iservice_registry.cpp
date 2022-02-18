@@ -25,7 +25,6 @@ SystemAbilityManagerClient &SystemAbilityManagerClient::GetInstance()
 
 sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
 {
-
     return SystemAbilityManager::GetInstance();
 }
 
@@ -35,6 +34,5 @@ sptr<IRemoteObject> SystemAbilityManagerClient::GetRegistryRemoteObject()
 }
 
 void SystemAbilityManagerClient::DestroySystemAbilityManagerObject()
-{
-}
+{}
 }  // namespace OHOS

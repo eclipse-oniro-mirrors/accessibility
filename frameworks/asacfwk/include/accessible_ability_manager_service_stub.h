@@ -19,18 +19,20 @@
 #include <cstdint>
 #include "accessibility_ability_info.h"
 #include "accessible_ability_manager_service_state_interface.h"
+#include "accessible_ability_manager_service_caption_property_interface.h"
 #include "accessible_ability_manager_service_interface.h"
 #include "accessibility_event_info.h"
 #include "accessibility_errorcode.h"
 #include "iremote_object.h"
 #include "iremote_stub.h"
 #include "nocopyable.h"
+#include "element_name.h"
 
 namespace OHOS {
 namespace Accessibility {
 /*
-* The class define the interface to call ABMS API.
-*/
+ * The class define the interface to call ABMS API.
+ */
 class AccessibleAbilityManagerServiceClientStub : public IRemoteStub<IAccessibleAbilityManagerServiceClient> {
 public:
     /**
@@ -55,8 +57,9 @@ public:
      * @param option The option paramter of IPC,such as: async,sync
      * @return
      */
-    virtual int OnRemoteRequest(uint32_t code, MessageParcel &data,
-                                    MessageParcel &reply, MessageOption &option) override;
+    virtual int OnRemoteRequest(
+        uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option) override;
+
 private:
     /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
@@ -64,7 +67,7 @@ private:
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleSendEvent(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSendEvent(MessageParcel& data, MessageParcel& reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleRegisterStateCallback.
@@ -72,7 +75,7 @@ private:
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleRegisterStateCallback(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleRegisterStateCallback(MessageParcel& data, MessageParcel& reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleGetAbilityList.
@@ -80,55 +83,53 @@ private:
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleGetAbilityList(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAbilityList(MessageParcel& data, MessageParcel& reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleRegisterAccessibilityInteractionOperation.
+     * @brief Handle the IPC request for the function:HandleRegisterAccessibilityElementOperator.
      * @param data The data of prcess communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleRegisterAccessibilityInteractionOperation(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleRegisterAccessibilityElementOperator(MessageParcel& data, MessageParcel& reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleDeregisterAccessibilityInteractionOperation.
+     * @brief Handle the IPC request for the function:HandleDeregisterAccessibilityElementOperator.
      * @param data The data of prcess communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleDeregisterAccessibilityInteractionOperation(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleDeregisterAccessibilityElementOperator(MessageParcel& data, MessageParcel& reply);
 
-    /**
-     * @brief Handle the IPC request for the function:HandleInterrupt.
-     * @param data The data of prcess communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleInterrupt(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetEnabledEventMask(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetCaptionProperty(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetCaptionProperty(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetCaptionState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetEnabled(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleRegisterCaptionPropertyCallback(MessageParcel& data, MessageParcel& reply);
 
-    /**
-     * @brief Handle the IPC request for the function:HandleGetSuggestedInterval.
-     * @param data The data of prcess communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleGetSuggestedInterval(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetEnabled(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetCaptionState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetTouchGuideState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetGestureState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetKeyEventObserverState(MessageParcel& data, MessageParcel& reply);
 
-    /**
-     * @brief Handle the IPC request for the function:HandleRegisterAbilityConnectionClientTmp.
-     * @param data The data of prcess communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleRegisterAbilityConnectionClientTmp(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetTouchGuideState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetGestureState(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetKeyEventObserverState(MessageParcel& data, MessageParcel& reply);
 
-    using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)
-    (MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleSetInstalled(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetInstalledAbilities(MessageParcel& data, MessageParcel& reply);
+
+    using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)(
+        MessageParcel& data, MessageParcel& reply);
     std::map<uint32_t, AccessibilityAbilityManagerServiceFunc> memberFuncMap_;
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceClientStub);
 };
 
-} //namespace Accessibility
-} //namespace OHOS
+}  // namespace Accessibility
+}  // namespace OHOS
 #endif

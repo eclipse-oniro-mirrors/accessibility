@@ -56,8 +56,6 @@ public:
 private:
     bool RegisterSubscriber();
 
-    void HandleSwitchedUser(const AAFwk::Want &want) const;
-    void HandleUnlockedUser(const AAFwk::Want &want) const;
     void HandleRemovedUser(const AAFwk::Want &want) const;
     void HandlePresentUser(const AAFwk::Want &want) const;
 

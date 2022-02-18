@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AAMSEventHandler: public AppExecFwk::EventHandler {
+class AAMSEventHandler : public AppExecFwk::EventHandler {
 public:
     explicit AAMSEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner);
     virtual ~AAMSEventHandler() override;
@@ -30,14 +30,7 @@ public:
      * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
-
-    // T.B.D
-    // enum {
-    //     ACCESSIBILITY_XXX_XXX = 1,
-    //     ACCESSIBILITY_XXX_XXX,
-    // };
 };
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBILITY_ABILITY_MANAGER_SERVICE_EVENT_HANDLER_H

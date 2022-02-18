@@ -28,21 +28,12 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
         &AccessibleAbilityClientStub::HandleDisconnect;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_ACCESSIBILITY_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnAccessibilityEvent;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_INTERRUPT)] =
-        &AccessibleAbilityClientStub::HandleOnInterrupt;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE)] =
-        &AccessibleAbilityClientStub::HandleOnGesture;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnKeyPressEvent;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_DISPALYRESIZE_CHANGED)] =
-        &AccessibleAbilityClientStub::HandleOnDisplayResizeChanged;
+        &AccessibleAbilityClientStub::HandleOnDisplayResized;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE_SIMULATE_RESULT)] =
         &AccessibleAbilityClientStub::HandleOnGestureSimulateResult;
-    memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityClient::Message::ON_FINGERPRINT_GESTURE_VALIDITY_CHANGED)] =
-        &AccessibleAbilityClientStub::HandleOnFingerprintGestureValidityChanged;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_FINGERPRINT_GESTURE)] =
-        &AccessibleAbilityClientStub::HandleOnFingerprintGesture;
 }
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
@@ -114,28 +105,13 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnInterrupt(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    OnInterrupt();
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnGesture(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    int gestureId = data.ReadInt32();
-    OnGesture(gestureId);
-    return NO_ERROR;
-}
-
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-#if 0 // TODO: Use AccessibilityKeyEvent to instead KeyEvent
-    std::unique_ptr<KeyEvent> keyEvent(data.ReadParcelable<KeyEvent>());
+#if 0 // TODO: Use AccessibilityKeyEvent to instead MMI::KeyEvent
+    std::unique_ptr<MMI::KeyEvent> keyEvent(data.ReadParcelable<MMI::KeyEvent>());
     if (!keyEvent) {
-        HILOG_ERROR("ReadParcelable<KeyEvent> failed");
+        HILOG_ERROR("ReadParcelable<MMI::KeyEvent> failed");
         return ERR_INVALID_VALUE;
     }
 
@@ -146,14 +122,14 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityClientStub::HandleOnDisplayResizeChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
     int displayId = data.ReadInt32();
 
-    std::unique_ptr<Rect> rect(data.ReadParcelable<Rect>());
+    sptr<Rect> rect = data.ReadStrongParcelable<Rect>();
     if (!rect) {
-        HILOG_ERROR("ReadParcelable<Rect> failed");
+        HILOG_ERROR("ReadStrongParcelable<Rect> failed");
         return ERR_INVALID_VALUE;
     }
 
@@ -161,7 +137,7 @@ ErrCode AccessibleAbilityClientStub::HandleOnDisplayResizeChanged(MessageParcel 
     float centerX = data.ReadFloat();
     float centerY = data.ReadFloat();
 
-    OnDisplayResizeChanged(displayId, *rect, scale, centerX, centerY);
+    OnDisplayResized(displayId, *rect, scale, centerX, centerY);
     return NO_ERROR;
 }
 
@@ -172,23 +148,6 @@ ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel
     bool completedSuccessfully = data.ReadBool();
 
     OnGestureSimulateResult(sequence, completedSuccessfully);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGestureValidityChanged(
-    MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    bool validity = data.ReadBool();
-    OnFingerprintGestureValidityChanged(validity);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnFingerprintGesture(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    int gesture = data.ReadInt32();
-    OnFingerprintGesture(gesture);
     return NO_ERROR;
 }
 

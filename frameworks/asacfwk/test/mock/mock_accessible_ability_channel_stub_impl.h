@@ -34,7 +34,7 @@ public:
     {}
 
     virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
-        const long elementId, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback,
+        const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int mode)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock SearchElementInfoByAccessibilityId";
@@ -42,31 +42,31 @@ public:
     }
 
     virtual bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
-        const std::string &text, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
+        const std::string &text, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock SearchElementInfosByText";
         return true;
     }
 
     virtual bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
-        const int focusType, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
+        const int focusType, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock FindFocusedElementInfo";
         return true;
     }
 
     virtual bool FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-        const int direction, const int requestId, const sptr<IAccessibilityInteractionOperationCallback> &callback)
+        const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock FocusMoveSearch";
         return true;
     }
 
-    virtual bool PerformAction(const int accessibilityWindowId, const long elementId, const int action,
+    virtual bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
         std::map<std::string, std::string> &actionArguments, const int requestId,
-        const sptr<IAccessibilityInteractionOperationCallback> &callback)
+        const sptr<IAccessibilityElementOperatorCallback> &callback)
     {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock PerformAction";
+        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock ExecuteAction";
         return true;
     }
 
@@ -79,15 +79,10 @@ public:
         return windowInfos;
     }
 
-    virtual bool PerformCommonAction(const int action)
+    virtual bool ExecuteCommonAction(const int action)
     {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock PerformCommonAction";
+        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock ExecuteCommonAction";
         return true;
-    }
-
-    virtual void DisableAbility()
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock DisableAbility";
     }
 
     virtual void SetOnKeyPressEventResult(const bool handled, const int sequence)
@@ -134,16 +129,11 @@ public:
         return true;
     }
 
-    virtual void SendSimulateGesture(const int sequence, const std::vector<GesturePathDefine> &gestureSteps)
+    virtual void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps)
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock SendSimulateGesture";
     }
 
-    virtual bool IsFingerprintGestureDetectionValid()
-    {
-        GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock IsFingerprintGestureDetectionValid";
-        return true;
-    }
 };
 
 } // namespace Accessibility

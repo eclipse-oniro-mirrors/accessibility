@@ -19,22 +19,20 @@
 #include <cstdint>
 
 #include "key_event.h"
-#include "mouse_event.h"
-#include "touch_event.h"
+#include "pointer_event.h"
 #include "refbase.h"
 
 #include "accessibility_event_info.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 
 class EventTransmission : public RefBase {
 public:
     EventTransmission() {};
     virtual ~EventTransmission() {};
-    virtual void OnTouchEvent(TouchEvent &event);
-    virtual void OnMouseEvent(MouseEvent &event);
     virtual void OnKeyEvent(MMI::KeyEvent &event);
+    virtual void OnPointerEvent(MMI::PointerEvent &event);
     virtual void OnAccessibilityEvent(AccessibilityEventInfo &event);
     void SetNext(const sptr<EventTransmission> &next);
     sptr<EventTransmission> GetNext();
