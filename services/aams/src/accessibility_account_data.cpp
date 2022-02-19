@@ -757,5 +757,26 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
 }
+
+void AccessibilityAccountData::AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    if (!uiTestConnectedA11yAbility_) {
+        HILOG_DEBUG("Add uiTestConnectedA11yAbility success");
+        uiTestConnectedA11yAbility_ = connection;
+    }
+}
+
+void AccessibilityAccountData::RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    uiTestConnectedA11yAbility_ = nullptr;
+}
+
+const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConnectedAbilityConnection()
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    return uiTestConnectedA11yAbility_;
+}
 }  // namespace Accessibility
 }  // namespace OHOS

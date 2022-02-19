@@ -579,5 +579,19 @@ bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, App
     return result;
 }
 
+bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+{
+    return true;
+}
+
+bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
+{
+    return true;
+}
+
+int AccessibleAbilityManagerService::GetActiveWindow()
+{
+    return 0;
+}
 }   // namespace OHOS
 }   // Accessibility

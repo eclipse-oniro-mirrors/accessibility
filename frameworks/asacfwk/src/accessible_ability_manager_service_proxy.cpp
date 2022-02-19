@@ -754,7 +754,8 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
     return true;
 }
 
-int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow() {
+int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
+{
     HILOG_DEBUG("%{public}s", __func__);
 
     int error = NO_ERROR;
@@ -766,6 +767,7 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow() {
         HILOG_ERROR("%{public}s fail, connection write Token", __func__);
         return false;
     }
+
     error = Remote()->SendRequest(
         static_cast<uint32_t>(
             IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW),
@@ -777,5 +779,45 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow() {
     return reply.ReadInt32();
 }
 
+bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+{
+    if (!data.WriteRemoteObject(obj)) {
+        HILOG_ERROR("%{public}s fail, connection write obj", __func__);
+        return false;
+    }
+
+    error = Remote()->SendRequest(static_cast<uint32_t>
+        (IAccessibleAbilityManagerServiceClient::Message::REGISTER_UITEST_ABILITY_CONNECTION_CLIENT),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+        return false;
+    }
+    return reply.ReadBool();
+}
+
+bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnectionClient()
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    int error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        return false;
+    }
+
+    error = Remote()->SendRequest(static_cast<uint32_t>
+        (IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+        return false;
+    }
+    return reply.ReadBool();
+}
 }  // namespace Accessibility
 }  // namespace OHOS

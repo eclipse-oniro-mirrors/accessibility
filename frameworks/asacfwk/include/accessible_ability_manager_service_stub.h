@@ -123,6 +123,8 @@ private:
     ErrCode HandleGetInstalledAbilities(MessageParcel& data, MessageParcel& reply);
 
     ErrCode HandleDisableAbilities(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleRegisterUITestAbilityConnectionClient(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleDeregisterUITestAbilityConnectionClient(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)(

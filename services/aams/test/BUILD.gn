@@ -65,6 +65,7 @@ config("module_private_config") {
     "//foundation/windowmanager/interfaces/innerkits",
     "//foundation/windowmanager/dm/include",
     "//foundation/graphic/standard/rosen/modules/render_service_base/include",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",

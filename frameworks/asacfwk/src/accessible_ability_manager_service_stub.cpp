@@ -81,6 +81,12 @@ AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClient
         IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback;
     memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::REGISTER_UITEST_ABILITY_CONNECTION_CLIENT)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleRegisterUITestAbilityConnectionClient;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleDeregisterUITestAbilityConnectionClient;
+    memberFuncMap_[static_cast<uint32_t>(
         IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW)] =
         &AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow;
 }
@@ -425,6 +431,19 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
     return ErrCode::NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterUITestAbilityConnectionClient(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    bool result = RegisterUITestAbilityConnectionClient(obj);
+    if (!reply.WriteBool(result)) {
+        HILOG_ERROR("WriteBool failed");
+        return ErrCode::ERROR;
+    }
+    return ErrCode::NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("%{public}s", __func__);
@@ -435,6 +454,16 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow(Message
     return ErrCode::NO_ERROR;
 }
 
-
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterUITestAbilityConnectionClient(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+    bool result = DeregisterUITestAbilityConnectionClient();
+    if (!reply.WriteBool(result)) {
+        HILOG_ERROR("WriteBool failed");
+        return ErrCode::ERROR;
+    }
+    return ErrCode::NO_ERROR;
+}
 }  // namespace Accessibility
 }  // namespace OHOS

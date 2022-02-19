@@ -888,10 +888,67 @@ bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, App
     return result;
 }
 
+bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
+
+    if (connection) {
+        HILOG_ERROR(" %{public}s connection is existed!!", __func__);
+        return false;
+    }
+
+    std::function<void()> addUITestClientFunc =
+        std::bind(&AccessibleAbilityManagerService::AddUITestClient, this, obj);
+    handler_->PostTask(addUITestClientFunc, "AddUITestClient");
+    return true;
+}
+
+void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>& obj)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    auto currentAccountData = GetCurrentAccountData();
+    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    abilityInfo->SetPackageName("com.example.uitest");
+    currentAccountData->AddInstalledAbility(*abilityInfo);
+    sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName();
+    elementName->SetBundleName("com.example.uitest");
+    elementName->SetAbilityName("uitestability");
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
+        currentAccountData, connectCounter_++, *abilityInfo);
+    currentAccountData->AddUITestConnectedAbility(connection);
+    connection->OnAbilityConnectDone(*elementName, obj, 0);
+}
+
+bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
+
+    if (connection == nullptr) {
+        HILOG_ERROR(" %{public}s connection is not existed!!", __func__);
+        return false;
+    }
+    std::function<void()> removeUITestClientFunc =
+        std::bind(&AccessibleAbilityManagerService::RemoveUITestClient, this, connection);
+    handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
+    return true;
+}
+
+void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    auto currentAccountData = GetCurrentAccountData();
+    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    abilityInfo->SetPackageName("com.example.uitest");
+    currentAccountData->RemoveInstalledAbility(*abilityInfo);
+    currentAccountData->RemoveUITestConnectedAbility(connection);
+    connection->OnAbilityDisconnectDone(connection->GetElementName(), 0);
+}
+
 int AccessibleAbilityManagerService::GetActiveWindow()
 {
     return AccessibilityWindowInfoManager::GetInstance().activeWindowId_;
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

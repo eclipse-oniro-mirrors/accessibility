@@ -106,6 +106,9 @@ public:
     virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) =0;
     virtual int GetActiveWindow() = 0;
 
+    virtual bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) = 0;
+    virtual bool DeregisterUITestAbilityConnectionClient() = 0;
+
     enum class Message {
         SEND_EVENT = 0,
         REGISTER_STATE_CALLBACK,
@@ -129,6 +132,8 @@ public:
         GET_ENABLED_OBJECT,
         GET_INSTALLED,
         DISABLE_ABILITIES,
+        REGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
+        DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
         GET_ACTIVE_WINDOW
 
     };

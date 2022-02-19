@@ -319,6 +319,12 @@ public:
 
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
 
+    void AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
+
+    void RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
+
+    const sptr<AccessibleAbilityConnection> GetUITestConnectedAbilityConnection();
+
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -372,6 +378,8 @@ private:
     std::vector<AccessibilityAbilityInfo> installedAbilities_{};
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};         // key: The URI of the ElementName.
     std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_{};  // key: The URI of the ElementName.
+
+    sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr; // key: UI test ability id.
 };
 }  // namespace Accessibility
 }  // namespace OHOS

@@ -55,6 +55,7 @@ config("aams_service_config") {
     "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//foundation/windowmanager/interfaces/innerkits/wm",
     "//foundation/windowmanager/interfaces/innerkits/dm",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [

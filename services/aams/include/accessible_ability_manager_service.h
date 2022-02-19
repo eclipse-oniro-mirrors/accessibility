@@ -143,9 +143,14 @@ public:
     std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
+    bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
+    bool DeregisterUITestAbilityConnectionClient() override;
     int GetActiveWindow() override;
 
 private:
+    void AddUITestClient(const sptr<IRemoteObject>& obj);
+    void RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection);
+
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;

@@ -20,6 +20,7 @@
 #include <string>
 #include <stdint.h>
 
+#include "accessibility_event_info.h"
 #include "extension_ability_info.h"
 #include "nlohmann/json.hpp"
 #include "parcel.h"
@@ -170,11 +171,12 @@ private:
     std::string name_;
     std::string description_;
 
-    uint32_t capabilities_ = 0;
-    std::string rationale_;
+    uint32_t capabilities_ = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
+        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
+    std::string rationale_ = "on";
 
-    uint32_t abilityTypes_ = 0;
-    uint32_t eventTypes_ = 0;
+    uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_ALL;
+    uint32_t eventTypes_ = EventType::TYPES_ALL_MASK;
     std::string settingsAbility_;
     std::vector<std::string> targetBundleNames_;
 };

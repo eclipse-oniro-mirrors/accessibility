@@ -349,6 +349,11 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
+    if (!proxy_) {
+        HILOG_ERROR("proxy_ is nullptr");
+        return;
+    }
+    proxy_->Disconnect(connectionId_);
 
     if (resultCode != NO_ERROR) {
         HILOG_ERROR("Disconnect failed!");
@@ -483,8 +488,6 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG(" %{public}s start", __func__);
-    proxy_->Disconnect(connectionId_);
-
     // TODO:
 #if 1
     if (AAFwk::AbilityManagerClient::GetInstance()->DisconnectAbility(this) != ERR_OK) {

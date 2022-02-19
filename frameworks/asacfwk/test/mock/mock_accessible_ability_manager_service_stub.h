@@ -101,6 +101,19 @@ public:
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) {
         return true;
     }
+
+    bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+    {
+        return true;
+    }
+    bool DeregisterUITestAbilityConnectionClient()
+    {
+        return true;
+    }
+
+    int GetActiveWindow() {
+        return 0;
+    }
 private:
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityManagerServiceStub);
 };

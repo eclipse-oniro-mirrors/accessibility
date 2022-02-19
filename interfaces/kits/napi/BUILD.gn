@@ -25,6 +25,7 @@ ohos_shared_library("accessibility") {
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
     "./include",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [

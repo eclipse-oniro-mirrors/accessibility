@@ -115,6 +115,9 @@ public:
     virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
     virtual int GetActiveWindow() override;
 
+    virtual bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
+    virtual bool DeregisterUITestAbilityConnectionClient() override;
+
     /**
      * @brief Get IPC object.
      * @param
