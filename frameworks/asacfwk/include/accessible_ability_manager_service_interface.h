@@ -104,6 +104,7 @@ public:
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
 
     virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) =0;
+    virtual int GetActiveWindow() = 0;
 
     enum class Message {
         SEND_EVENT = 0,
@@ -127,7 +128,8 @@ public:
         SET_ENABLED_OBJECT,
         GET_ENABLED_OBJECT,
         GET_INSTALLED,
-        DISABLE_ABILITIES
+        DISABLE_ABILITIES,
+        GET_ACTIVE_WINDOW
 
     };
 };

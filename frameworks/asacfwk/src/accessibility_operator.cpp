@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_operator.h"
+#include "accessibility_system_ability_client.h"
 #include <sys/time.h>
 #include <unistd.h>
 
@@ -97,7 +98,8 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
 {
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = SearchElementInfosByAccessibilityId(channelId, ACTIVE_WINDOW_ID, NONE_ID, 0, elementInfos);
+    int activeWindow = AccessibilitySystemAbilityClient::GetInstance()->GetActiveWindow();
+    bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
     for (auto& info : elementInfos) {
         HILOG_DEBUG("[%{public}s] element [elementSize:%{public}d]", __func__, accessibilityInfosResult_.size());
         elementInfo = info;
@@ -124,7 +126,8 @@ std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int chann
 bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
     int accessibilityWindowId, int elementId, int mode, std::vector<AccessibilityElementInfo>& elementInfos)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[%{public}s] [channelId:%{public}d] [windowId:%{public}d]",
+                __func__, channelId, accessibilityWindowId);
     bool result = false;
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {

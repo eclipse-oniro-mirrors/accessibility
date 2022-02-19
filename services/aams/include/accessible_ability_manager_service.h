@@ -143,6 +143,7 @@ public:
     std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
+    int GetActiveWindow() override;
 
 private:
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {

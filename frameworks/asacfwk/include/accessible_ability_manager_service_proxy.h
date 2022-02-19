@@ -113,6 +113,7 @@ public:
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
 
     virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
+    virtual int GetActiveWindow() override;
 
     /**
      * @brief Get IPC object.

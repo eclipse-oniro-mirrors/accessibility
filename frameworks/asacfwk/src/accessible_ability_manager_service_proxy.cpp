@@ -754,5 +754,28 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
     return true;
 }
 
+int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow() {
+    HILOG_DEBUG("%{public}s", __func__);
+
+    int error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        return false;
+    }
+    error = Remote()->SendRequest(
+        static_cast<uint32_t>(
+            IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("GetActiveWindow fail, error: %{public}d", error);
+        return false;
+    }
+    return reply.ReadInt32();
+}
+
 }  // namespace Accessibility
 }  // namespace OHOS

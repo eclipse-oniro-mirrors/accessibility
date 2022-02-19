@@ -280,6 +280,8 @@ public:
     bool SetCaptionPropertyTojson(const CaptionProperty& caption);
     bool SetCaptionStateTojson(const bool state);
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
+    int GetActiveWindow();
+
 private:
     /**
      * @brief Clean the AAMS object data.

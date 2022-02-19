@@ -80,6 +80,9 @@ AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClient
     memberFuncMap_[static_cast<uint32_t>(
         IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow;
 }
 
 AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClientStub()
@@ -418,6 +421,16 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
     }
 
     DisableAbilities(it);
+
+    return ErrCode::NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    int activeWindow = GetActiveWindow();
+    reply.WriteInt32(activeWindow);
 
     return ErrCode::NO_ERROR;
 }

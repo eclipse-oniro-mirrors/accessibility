@@ -879,13 +879,19 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
 }
 
 
-bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it){
+bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = false;
     result = accountData->DisableAbilities(it);
     UpdateAbilities();
     return result;
-    }
+}
+
+int AccessibleAbilityManagerService::GetActiveWindow()
+{
+    return AccessibilityWindowInfoManager::GetInstance().activeWindowId_;
+}
 
 }  // namespace Accessibility
 }  // namespace OHOS

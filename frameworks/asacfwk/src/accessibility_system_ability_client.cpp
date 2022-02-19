@@ -24,6 +24,7 @@
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
+#include "accessibility_window_info.h"
 
 using namespace OHOS::AppExecFwk;
 using namespace std;
@@ -914,6 +915,18 @@ bool AccessibilitySystemAbilityClient::DisableAbilities(std::map<std::string, Ap
     proxyService->DisableAbilities(it);
 
     return true;
+}
+
+int AccessibilitySystemAbilityClient::GetActiveWindow()
+{
+    HILOG_DEBUG("[%{public}s]", __func__);
+    auto proxyService = pimpl->GetService();
+    if (proxyService == nullptr) {
+        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        return INVALID_WINDOW_ID;
+    }
+
+    return proxyService->GetActiveWindow();
 }
 
 }  // namespace Accessibility

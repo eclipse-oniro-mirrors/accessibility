@@ -123,6 +123,7 @@ private:
     ErrCode HandleGetInstalledAbilities(MessageParcel& data, MessageParcel& reply);
 
     ErrCode HandleDisableAbilities(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)(
         MessageParcel& data, MessageParcel& reply);
