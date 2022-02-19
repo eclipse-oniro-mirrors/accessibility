@@ -54,6 +54,13 @@ public:
      */
     AccessibilityOperator();
 
+	/**
+     * @brief destruct function
+     * @param object The object of IPC
+     * @return
+     */
+    virtual ~AccessibilityOperator();
+
     /**
      * @brief Get the instance of AccessibilityOperator
      * @param

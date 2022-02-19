@@ -27,6 +27,8 @@ config("module_private_config") {
   }
   include_dirs = [
     "mock/multimodalinput/include",
+    "mock/powermanager/include",
+    "mock/aafwk/include",
     "../aams/test/mock/",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -35,8 +37,6 @@ config("module_private_config") {
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
-    "//foundation/aafwk/standard/services/abilitymgr/include",
     "//base/accessibility/util/include",
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
@@ -49,8 +49,8 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
+    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//utils/native/base/include",
-    "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
@@ -83,6 +83,15 @@ MockMultiModalInputSrc = [
   "mock/multimodalinput/src/mock_key_event.cpp",
   "mock/multimodalinput/src/mock_pointer_event.cpp",
 ]
+
+MockPowerManagerSrc = [
+  "mock/powermanager/src/mock_power_mgr_client.cpp",
+]
+
+MockAafwkSrc = [
+  "mock/aafwk/src/mock_ability_manager_client.cpp"
+]
+
 
 ################################################################################
 ohos_moduletest("aams_accessibility_touch_guider_test") {
@@ -133,6 +142,8 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
@@ -140,17 +151,14 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
 
   deps = [
     "//third_party/jsoncpp:jsoncpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -162,6 +170,12 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################
@@ -213,6 +227,8 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
@@ -220,18 +236,15 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
 
   deps = [
     "//third_party/jsoncpp:jsoncpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/accessibility/frameworks/aafwk:accessibleability",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -243,6 +256,12 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################
@@ -304,6 +323,8 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
@@ -311,18 +332,15 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
 
   deps = [
     "//third_party/jsoncpp:jsoncpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -334,6 +352,12 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################
@@ -396,6 +420,8 @@ ohos_moduletest("aams_server_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
@@ -403,18 +429,15 @@ ohos_moduletest("aams_server_test") {
 
   deps = [
     "//third_party/jsoncpp:jsoncpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -426,6 +449,12 @@ ohos_moduletest("aams_server_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################
@@ -477,6 +506,8 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
@@ -484,17 +515,14 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
 
   deps = [
     "//third_party/jsoncpp:jsoncpp",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -506,6 +534,12 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################
@@ -557,8 +591,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//base/accessibility/services/test/mock/common_event_subscriber_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_data_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_ability_info_mock.cpp",
-    "//base/accessibility/services/test/mock/ability_manager_client_mock.cpp",
-    "//foundation/aafwk/standard/services/abilitymgr/src/ability_connect_callback_stub.cpp",
+    #"//base/accessibility/services/test/mock/ability_manager_client_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
@@ -567,23 +600,23 @@ ohos_moduletest("aams_common_event_registry_test") {
   ]
 
   sources += MockMultiModalInputSrc
+  sources += MockPowerManagerSrc
+  sources += MockAafwkSrc
 
   configs = [
     ":module_private_config",
   ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
   ]
@@ -597,6 +630,12 @@ ohos_moduletest("aams_common_event_registry_test") {
     "ability_runtime:runtime",
     "os_account_standard:os_account_innerkits",
   ]
+
+  public_deps = [
+    "//foundation/graphic/standard:libwmclient",
+    "//foundation/windowmanager/wm:libwm",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+]
 }
 
 ################################################################################

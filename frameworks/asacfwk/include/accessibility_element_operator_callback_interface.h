@@ -23,7 +23,6 @@
 #include "accessibility_element_info.h"
 
 #include "iremote_broker.h"
-#include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {

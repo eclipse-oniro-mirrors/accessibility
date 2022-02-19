@@ -636,7 +636,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
         if (!ret) {
             return false;
         }
-        ++iter;
+        iter++;
     }
 
     error = Remote()->SendRequest(
@@ -646,39 +646,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
         option);
     if (error != NO_ERROR) {
         HILOG_ERROR("SetEnabledObj fail, error: %{public}d", error);
-        return false;
-    }
-    return true;
-}
-
-bool AccessibleAbilityManagerServiceClientProxy::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG("%{public}s", __func__);
-
-    int error = NO_ERROR;
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
-        return false;
-    }
-
-    data.WriteInt32(it.size());
-
-    int num = it.size();
-    for (int i = 0; i < num; i++) {
-        bool ret = data.WriteParcelable(&it[i]);
-        if (!ret) {
-            return false;
-        }
-    }
-
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_INSTALLED), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetInstalled fail, error: %{public}d", error);
         return false;
     }
     return true;
@@ -749,6 +716,42 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         it.push_back(*dev);
     }
     return it;
+}
+
+bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    int error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        return false;
+    }
+
+    data.WriteInt32(it.size());
+    std::map<std::string, AppExecFwk::ElementName>::iterator iter;
+
+    for (iter = it.begin(); iter != it.end(); iter++) {
+        bool ret = data.WriteParcelable(&iter->second);
+        if (!ret) {
+            return false;
+        }
+    }
+
+    error = Remote()->SendRequest(
+        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DISABLE_ABILITIES),
+        data,
+        reply,
+        option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("SetEnabledObj fail, error: %{public}d", error);
+        return false;
+    }
+    return true;
 }
 
 }  // namespace Accessibility

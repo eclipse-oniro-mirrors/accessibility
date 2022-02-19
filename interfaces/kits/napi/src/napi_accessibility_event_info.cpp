@@ -23,7 +23,6 @@
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_def.h"
 #include "napi_accessibility_info.h"
 #include "napi_accessibility_utils.h"
 #include "napi_accessibility_window_info.h"

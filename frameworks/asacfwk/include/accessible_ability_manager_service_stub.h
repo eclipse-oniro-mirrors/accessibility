@@ -119,9 +119,10 @@ private:
     ErrCode HandleSetKeyEventObserverState(MessageParcel& data, MessageParcel& reply);
 
     ErrCode HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply);
-    ErrCode HandleSetInstalled(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleGetInstalledAbilities(MessageParcel& data, MessageParcel& reply);
+
+    ErrCode HandleDisableAbilities(MessageParcel& data, MessageParcel& reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)(
         MessageParcel& data, MessageParcel& reply);

@@ -89,9 +89,6 @@ public:
     bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) {
         return true;
     }
-    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) {
-        return true;
-    }
     std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() {
         std::map<std::string, AppExecFwk::ElementName> test;
         return test;
@@ -99,6 +96,10 @@ public:
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() {
         std::vector<AccessibilityAbilityInfo> test;
         return test;
+    }
+
+    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) {
+        return true;
     }
 private:
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityManagerServiceStub);

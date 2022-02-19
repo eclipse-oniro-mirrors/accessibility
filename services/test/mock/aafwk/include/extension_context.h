@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,13 +13,21 @@
  * limitations under the License.
  */
 
-#ifndef NAPI_ACCESSIBILITY_DEF_H
-#define NAPI_ACCESSIBILITY_DEF_H
+#ifndef EXTENSION_CONTEXT_H
+#define EXTENSION_CONTEXT_H
 
-enum AccessibleAbilityObserverFlag: uint32_t {
-    A11Y_OBSERVER_FLAG_ABILITY_CONNECTED = 0x01,
-    A11Y_OBSERVER_FLAG_ACCESSIBILITY_EVENT = 0x02,
-    A11Y_OBSERVER_FLAG_KEY_PRESS = 0x04,
+#include "context_impl.h"
+
+namespace OHOS {
+namespace AbilityRuntime {
+/**
+ * @brief context supply for extension
+ *
+ */
+class ExtensionContext {
+public:
+    ExtensionContext() = default;
 };
-
-#endif // NAPI_ACCESSIBILITY_DEF_H
+}  // namespace AbilityRuntime
+}  // namespace OHOS
+#endif  // EXTENSION_CONTEXT_H

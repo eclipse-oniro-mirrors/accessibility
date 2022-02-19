@@ -27,7 +27,6 @@
 #include "accessibility_window_info.h"
 #include "accessibility_event_info.h"
 #include "extension_context.h"
-#include "iremote_object.h"
 #include "accessible_ability_manager_service_interface.h"
 #include "display_resize_controller.h"
 #include "gesture_simulation.h"

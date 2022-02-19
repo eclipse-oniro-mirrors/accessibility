@@ -50,10 +50,8 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("setGestureState", NAccessibilityClient::SetGestureState),
         DECLARE_NAPI_FUNCTION("getKeyEventObserverState", NAccessibilityClient::GetKeyEventObserverState),
         DECLARE_NAPI_FUNCTION("setKeyEventObserverState", NAccessibilityClient::SetKeyEventObserverState),
-        DECLARE_NAPI_FUNCTION("getInstalled", NAccessibilityClient::GetInstalled),
-        DECLARE_NAPI_FUNCTION("setInstalled", NAccessibilityClient::SetInstalled),
-        DECLARE_NAPI_FUNCTION("getExtentionEnabled", NAccessibilityClient::GetExtentionEnabled),
-        DECLARE_NAPI_FUNCTION("setExtentionEnabled", NAccessibilityClient::SetExtentionEnabled),
+        DECLARE_NAPI_FUNCTION("extentionEnabled", NAccessibilityClient::ExtentionEnabled),
+        DECLARE_NAPI_FUNCTION("extentionDisabled", NAccessibilityClient::ExtentionDisabled),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 

@@ -103,6 +103,10 @@ private:
 
 };
 
+enum CaptionObserverType : int {
+    CAPTION_ENABLE = 0,
+    CAPTION_PROPERTY,
+};
 class CaptionObserver {
 public:
     /**
@@ -110,7 +114,23 @@ public:
      * @param caption current caption property.
      * @return
      */
+    virtual void OnCaptionStateChanged(const bool& enable) = 0;
     virtual void OnCaptionPropertyChanged(const CaptionProperty& caption) = 0;
+
+    /**
+     * @brief
+     * @param
+     * @return
+     */
+
+    CaptionObserver() {}
+
+    /**
+     * @brief
+     * @param
+     * @return
+     */
+    virtual ~CaptionObserver() = default;
 };
 
 }  // namespace Accessibility

@@ -315,9 +315,9 @@ public:
 
     bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
 
-    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it);
-
     void init();
+
+    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
 
 private:
     /**

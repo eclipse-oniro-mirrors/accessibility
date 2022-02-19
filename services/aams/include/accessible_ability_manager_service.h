@@ -140,9 +140,9 @@ public:
     bool SetKeyEventObserverState(const bool state) override;
 
     bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
-    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) override;
     std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
 
 private:
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {

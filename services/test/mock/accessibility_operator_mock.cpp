@@ -27,6 +27,10 @@ AccessibilityOperator::AccessibilityOperator()
     executeActionResult_ = false;
 }
 
+AccessibilityOperator::~AccessibilityOperator()
+{
+}
+
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     sptr<AccessibilityOperator> inst = new AccessibilityOperator();

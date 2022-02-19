@@ -54,6 +54,39 @@ private:
     std::string description_ = "";
 };
 
+
+class CaptionListener : public OHOS::Accessibility::CaptionObserver {
+public:
+    CaptionListener();
+    static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
+    static void NotifyPropertyChangedJS(napi_env env, OHOS::Accessibility::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
+    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
+    void OnCaptionStateChanged(const bool& enable) override;
+    void OnCaptionPropertyChanged(const OHOS::Accessibility::CaptionProperty& caption) override;
+    OHOS::Accessibility::CaptionObserverType GetStateType();
+
+    std::string GetEventType() const
+    {
+        return eventType_;
+    }
+
+    napi_env GetEnv() const
+    {
+        return env_;
+    }
+
+    napi_ref GetHandler() const
+    {
+        return handlerRef_;
+    }
+
+private:
+    napi_ref handlerRef_ = nullptr;
+    napi_env env_ = nullptr;
+    std::string eventType_ = "";
+    std::string description_ = "";
+};
+
 struct NAccessibilitySystemAbilityClient {
     napi_async_work work_{};
     napi_deferred deferred_{};
@@ -78,11 +111,11 @@ struct NAccessibilitySystemAbilityClient {
     bool setGestureStateReturn_ = false;
     bool keyEventObserverState_ = false;
     bool setKeyEvenReturn_ = false;
-    bool setInstalledReturn_ = false;
     bool setExtentionReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_{};
     bool result_ = false;
     std::vector<std::shared_ptr<StateListener>> stateListener_{};
+    std::vector<std::shared_ptr<CaptionListener>> captionListener_{};
     std::string eventType_ = "";
 };
 
@@ -107,9 +140,9 @@ public:
     static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value SetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value GetInstalled(napi_env env, napi_callback_info info);
-    static napi_value SetInstalled(napi_env env, napi_callback_info info);
     static napi_value GetExtentionEnabled(napi_env env, napi_callback_info info);
-    static napi_value SetExtentionEnabled(napi_env env, napi_callback_info info);
+    static napi_value ExtentionEnabled(napi_env env, napi_callback_info info);
+    static napi_value ExtentionDisabled(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);
@@ -118,12 +151,13 @@ public:
     static napi_value SetCaptionStateEnabled(napi_env env, napi_callback_info info);
     static napi_value GetCaptionStyle(napi_env env, napi_callback_info info);
     static napi_value SetCaptionStyle(napi_env env, napi_callback_info info);
-    static napi_value RegisterOnCallback(napi_env env, napi_callback_info info);
-    static napi_value RegisterOffCallback(napi_env env, napi_callback_info info);
+    static napi_value RegisterCaptionStateCallback(napi_env env, napi_callback_info info);
+    static napi_value DeregisterCaptionStateCallback(napi_env env, napi_callback_info info);
 
     static napi_value aaCons_;
 
     static std::vector<std::shared_ptr<StateListener>> listeners_;
+    static std::vector<std::shared_ptr<CaptionListener>> captionListeners_;
 
 private:
     NAccessibilityClient() = default;

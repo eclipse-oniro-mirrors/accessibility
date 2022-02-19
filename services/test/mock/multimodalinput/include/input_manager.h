@@ -19,6 +19,7 @@
 #include "key_event.h"
 #include "pointer_event.h"
 #include "i_input_event_consumer.h"
+#include "uri.h"
 
 namespace OHOS {
 namespace MMI {

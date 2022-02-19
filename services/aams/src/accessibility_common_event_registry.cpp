@@ -33,6 +33,8 @@ AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
         &AccessibilityCommonEventRegistry::HandlePresentUser;
 
+    handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
+        &AccessibilityCommonEventRegistry::HandlePackageRemoved;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =
         &AccessibilityCommonEventRegistry::HandlePackageRemoved;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED] =

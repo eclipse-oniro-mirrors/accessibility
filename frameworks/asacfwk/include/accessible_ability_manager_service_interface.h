@@ -100,9 +100,10 @@ public:
     virtual bool SetKeyEventObserverState(const bool state) = 0;
 
     virtual bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) = 0;
-    virtual bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) = 0;
     virtual std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() = 0;
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
+
+    virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) =0;
 
     enum class Message {
         SEND_EVENT = 0,
@@ -124,9 +125,9 @@ public:
         GET_GESTURE_STATE,
         GET_KEY_EVENT_OBSERVE_STATE,
         SET_ENABLED_OBJECT,
-        SET_INSTALLED,
         GET_ENABLED_OBJECT,
-        GET_INSTALLED
+        GET_INSTALLED,
+        DISABLE_ABILITIES
 
     };
 };

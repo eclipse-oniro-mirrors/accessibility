@@ -95,7 +95,7 @@ void AccessibilityAccountData::OnAccountSwitched()
 // add connect ability.
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, connection->GetElementName().GetURI().c_str());
     if (!connectedA11yAbilities_.count(connection->GetElementName().GetURI())) {
         connectedA11yAbilities_.insert(make_pair(connection->GetElementName().GetURI(), connection));
     }
@@ -106,7 +106,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 // remove connect ability.
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, connection->GetElementName().GetURI().c_str());
     std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it =
         connectedA11yAbilities_.find(connection->GetElementName().GetURI());
     if (it != connectedA11yAbilities_.end()) {
@@ -257,11 +257,17 @@ void AccessibilityAccountData::ClearInstalledAbility()
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string elementName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
-    if (connectedA11yAbilities_.count(elementName) > 0) {
-        return connectedA11yAbilities_[elementName];
+    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, elementName.c_str());
+    for (auto& connected : connectedA11yAbilities_) {
+        std::string::size_type  idx = connected.first.find(elementName);
+        if (idx == std::string::npos) {
+            continue;
+        } else {
+            HILOG_DEBUG("founded URI = %{public}s ", connected.first.c_str());
+            return connected.second;
+        }
     }
-
+    HILOG_DEBUG("URI %{public}s not found ", elementName.c_str());
     return nullptr;
 }
 
@@ -329,7 +335,7 @@ const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstall
 
 const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s by state(%{public}d) start.", __func__, state);
     if (state == ABILITY_STATE_ENABLE) {
         std::vector<AccessibilityAbilityInfo> enabledAbilities;
         for (auto ability : connectedA11yAbilities_) {
@@ -371,7 +377,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
             return;
         }
     }
-    isEventTouchGuideState_ = false;
+    isEventTouchGuideState_ = true; // TBD
 }
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
@@ -613,21 +619,6 @@ bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::E
     }
 
     JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
-    return true;
-}
-
-bool AccessibilityAccountData::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    // add ability to the last of installedAbilities_
-    for(auto& ability : it){
-        installedAbilities_.push_back(ability);
-    }
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
 }
 
@@ -739,6 +730,32 @@ void AccessibilityAccountData::init()
         AppExecFwk::ElementName elementName("", BundleName, "");
         enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(elementName.GetURI(), elementName));
     }
+}
+
+bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    for (auto &disAbilities : it){
+        enabledAbilities_.erase(disAbilities.first);
+    }
+
+    // todo  write json config
+    nlohmann::json jsonObj;
+    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH))
+    {
+        HILOG_ERROR("Get JsonObj from json failed.");
+        return false;
+    }
+    std::string BundleName = "";
+    for (auto& disableAbility : it) {
+        BundleName = disableAbility.second.GetBundleName();
+        HILOG_DEBUG("BundleName = %{public}s", BundleName.c_str());
+        JsonUtils::RemoveVecValue(jsonObj, JSON_OBJECT_ENABLED, BundleName);
+    }
+    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
+    return true;
 }
 }  // namespace Accessibility
 }  // namespace OHOS

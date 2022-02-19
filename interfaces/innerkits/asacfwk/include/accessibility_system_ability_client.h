@@ -261,8 +261,8 @@ public:
      */
     std::shared_ptr<AccessibilityElementOperator> GetOperatorObject(int windowId);
 
-    void AddCaptionListener(std::shared_ptr<CaptionObserver>& ob);
-    bool DeleteCaptionListener(std::shared_ptr<CaptionObserver>& ob);
+    bool AddCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type);
+    bool DeleteCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type);
 
     bool GetEnabledState();
     bool GetCaptionState();
@@ -275,11 +275,11 @@ public:
     bool SetKeyEventObserverState(const bool state);
 
     bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
-    bool SetInstalled(std::vector<AccessibilityAbilityInfo> it);
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities();
     std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities();
     bool SetCaptionPropertyTojson(const CaptionProperty& caption);
     bool SetCaptionStateTojson(const bool state);
+    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
 private:
     /**
      * @brief Clean the AAMS object data.
@@ -337,8 +337,8 @@ private:
 
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_{};
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_{};
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersCaptionState_{};
     std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_{};
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_{};
 
     CaptionProperty captionProperty_;
     int accountId_ = 0;

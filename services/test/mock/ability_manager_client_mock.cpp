@@ -179,11 +179,10 @@ ErrCode AbilityManagerClient::KillProcess(const std::string &bundleName)
     return ERR_OK;
 }
 
-int AbilityManagerClient::SetAbilityController(const sptr<AppExecFwk::IAbilityController> &abilityController,
-        bool imAStabilityTest)
+ErrCode AbilityManagerClient::SetAbilityController(const sptr<AppExecFwk::IAbilityController> &abilityController,
+    bool imAStabilityTest)
 {
-    return 0;
+    return ERR_OK;
 }
-
 }  //namespace AAFwk
 }  // namespace OHOS

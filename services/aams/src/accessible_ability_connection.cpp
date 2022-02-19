@@ -302,6 +302,7 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
+    HILOG_DEBUG("%{public}s start.", __func__);
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
@@ -481,6 +482,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 
 void AccessibleAbilityConnection::Disconnect()
 {
+    HILOG_DEBUG(" %{public}s start", __func__);
     proxy_->Disconnect(connectionId_);
 
     // TODO:

@@ -71,12 +71,12 @@ AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClient
         &AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverState;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED_OBJECT)] =
         &AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_INSTALLED)] =
-        &AccessibleAbilityManagerServiceClientStub::HandleSetInstalled;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED_OBJECT)] =
         &AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_INSTALLED)] =
         &AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DISABLE_ABILITIES)] =
+        &AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities;
     memberFuncMap_[static_cast<uint32_t>(
         IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback;
@@ -356,27 +356,6 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
     return ErrCode::NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetInstalled(MessageParcel& data, MessageParcel& reply)
-{
-    HILOG_DEBUG("%{public}s", __func__);
-
-    std::vector<AccessibilityAbilityInfo> it{};
-    int dev_num = data.ReadInt32();
-
-    for (int i = dev_num; i > 0; i--) {
-        std::unique_ptr<AccessibilityAbilityInfo> dev(data.ReadParcelable<AccessibilityAbilityInfo>());
-        it.push_back(*dev);
-    }
-
-    if (dev_num == 0) {
-        HILOG_DEBUG("ReadParcelable failed");
-        return ERROR;
-    }
-    SetInstalled(it);
-
-    return ErrCode::NO_ERROR;
-}
-
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("%{public}s", __func__);
@@ -392,7 +371,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(Mes
         if (!ret) {
             return ERROR;
         }
-        ++iter;
+        iter++;
     }
 
     return ErrCode::NO_ERROR;
@@ -416,6 +395,33 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
     }
     return ErrCode::NO_ERROR;
 }
+
+ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("%{public}s", __func__);
+
+    std::map<std::string, AppExecFwk::ElementName> it{};
+    int dev_num = data.ReadInt32();
+
+    if (dev_num == 0) {
+        HILOG_DEBUG("ReadParcelable failed");
+        return ERROR;
+    }
+    std::vector<AppExecFwk::ElementName> temp{};
+    for (int i = dev_num; i > 0; i--) {
+        std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        temp.push_back(*iter);
+    }
+
+    for (int i = 0; i < dev_num; i++) {
+        it.insert(make_pair(temp[i].GetURI(), temp[i]));
+    }
+
+    DisableAbilities(it);
+
+    return ErrCode::NO_ERROR;
+}
+
 
 }  // namespace Accessibility
 }  // namespace OHOS

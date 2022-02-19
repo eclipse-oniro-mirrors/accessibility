@@ -808,24 +808,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyE
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetKeyEventObserverState end";
 }
 
-
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetInstalled, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetInstalled start";
-    const int accountId = 1;
-    AppExecFwk::ExtensionAbilityInfo info;
-    info.bundleName = "TEST_BUNDLE_NAME";
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-
-    accountData->AddInstalledAbility(*abilityInfo);
-
-    bool test = accountData->SetInstalled(accountData->GetInstalledAbilities());
-    EXPECT_TRUE(test);
-
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetInstalled end";
-}
-
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCaptionProperty, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetCaptionProperty start";

@@ -336,20 +336,6 @@ HWTEST_F(ASACClientSystemTest, GetEnabledAbilities, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetEnabledAbilities end";
 }
 
-HWTEST_F(ASACClientSystemTest, SetInstalled, TestSize.Level1)
-{
-    shared_ptr<AccessibilitySystemAbilityClient> instance = AccessibilitySystemAbilityClient::GetInstance();
-
-    GTEST_LOG_(INFO) << "SetInstalled start";
-    std::vector<AccessibilityAbilityInfo> it{};
-    it = instance->GetInstalledAbilities();
-
-    bool result = instance->SetInstalled(it);
-    EXPECT_TRUE(result);
-
-    GTEST_LOG_(INFO) << "SetInstalled end";
-}
-
 HWTEST_F(ASACClientSystemTest, SetEnabledObj, TestSize.Level1)
 {
     shared_ptr<AccessibilitySystemAbilityClient> instance = AccessibilitySystemAbilityClient::GetInstance();

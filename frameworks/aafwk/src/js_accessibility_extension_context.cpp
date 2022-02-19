@@ -16,6 +16,7 @@
 #include "js_accessibility_extension_context.h"
 
 #include "hilog_wrapper.h"
+#include "napi_accessibility_window_info.h"
 #include "js_extension_context.h"
 #include "js_runtime_utils.h"
 #include "napi_accessibility_info.h"
@@ -112,6 +113,7 @@ private:
                 bool ret = context->GetFocusElementInfo(focus, elementInfo);
                 if (ret && elementInfo.has_value()) {
                     // wrap elementInfo
+                    NElementInfo::DefineJSElementInfo(reinterpret_cast<napi_env>(&engine));
                     napi_value napiElementInfo = nullptr;
                     napi_new_instance(reinterpret_cast<napi_env>(&engine),
                         NElementInfo::cons_, 0, nullptr, &napiElementInfo);
@@ -155,9 +157,11 @@ private:
                 bool ret = context->GetRootElementInfo(elementInfo);
                 if (ret && elementInfo.has_value()) {
                     // wrap elementInfo
+                    NElementInfo::DefineJSElementInfo(reinterpret_cast<napi_env>(&engine));
                     napi_value napiElementInfo = nullptr;
-                    napi_new_instance(reinterpret_cast<napi_env>(&engine),
+                    napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine),
                         NElementInfo::cons_, 0, nullptr, &napiElementInfo);
+                    HILOG_DEBUG("napi_new_instance result is %{public}d", result);
                     ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine), napiElementInfo, *elementInfo);
                     NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
                     task.Resolve(engine, nativeElementInfo);
@@ -198,6 +202,7 @@ private:
                 accessibilityWindows = context->GetWindows();
                 if (!accessibilityWindows.empty()) {
                     // wrap accessibilityWindows
+                    NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(reinterpret_cast<napi_env>(&engine));
                     napi_value napiWindowInfos = nullptr;
                     ConvertAccessibilityWindowInfosToJS(
                         reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);

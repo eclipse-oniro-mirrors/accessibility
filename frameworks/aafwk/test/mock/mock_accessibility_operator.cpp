@@ -31,11 +31,21 @@ AccessibilityOperator::AccessibilityOperator()
     executeActionResult_ = true;
 }
 
+AccessibilityOperator::~AccessibilityOperator()
+{
+    GTEST_LOG_(INFO) << "MOCK ~AccessibilityOperator";
+}
+
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator GetInstance";
-    static AccessibilityOperator accessibilityOperator;
-    return accessibilityOperator;
+    static sptr<AccessibilityOperator> accessibilityOperator = nullptr;
+    if (accessibilityOperator == nullptr) {
+        accessibilityOperator = new AccessibilityOperator();
+        return *accessibilityOperator;
+    }
+
+    return *accessibilityOperator;
 }
 
 

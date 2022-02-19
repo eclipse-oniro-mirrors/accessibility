@@ -453,12 +453,12 @@ bool BundleMgrProxy::VerifyCallingPermission(const std::string &permission)
 
 std::vector<std::string> BundleMgrProxy::GetAccessibleAppCodePaths(int32_t userId)
 {
-    std::vector<std::string> v;
-    return v;
+    std::vector<std::string> vec;
+    return vec;
 }
 
 bool BundleMgrProxy::QueryExtensionAbilityInfoByUri(const std::string &uri, int32_t userId,
-        ExtensionAbilityInfo &extensionAbilityInfo)
+    ExtensionAbilityInfo &extensionAbilityInfo)
 {
     return true;
 }

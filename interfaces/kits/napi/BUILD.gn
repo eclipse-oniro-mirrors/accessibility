@@ -48,7 +48,6 @@ ohos_shared_library("accessibility") {
   deps = [
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/ace/napi:ace_napi",
-    "//base/accessibility/frameworks/aafwk:accessibleability",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//utils/native/base:utils",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",

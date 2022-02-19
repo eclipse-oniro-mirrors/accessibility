@@ -513,14 +513,6 @@ bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExe
     return result;
 }
 
-bool AccessibleAbilityManagerService::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG(" %{public}s", __func__);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    bool result = accountData->SetInstalled(it);
-    return result;
-}
-
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::GetEnabledAbilities()
 {
     HILOG_DEBUG(" %{public}s", __func__);
@@ -578,5 +570,14 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
     }
     accountData->RemoveCaptionPropertyCallback(remote);
 }
+
+bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    bool result = accountData->DisableAbilities(it);
+    return result;
+}
+
 }   // namespace OHOS
 }   // Accessibility

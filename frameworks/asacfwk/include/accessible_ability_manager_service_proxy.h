@@ -109,9 +109,10 @@ public:
     virtual bool SetKeyEventObserverState(const bool state) override;
 
     virtual bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
-    virtual bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) override;
     virtual std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+
+    virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
 
     /**
      * @brief Get IPC object.

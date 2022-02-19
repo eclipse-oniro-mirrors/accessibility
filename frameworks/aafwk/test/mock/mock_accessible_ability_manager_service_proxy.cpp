@@ -123,10 +123,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
 {
     return true;
 }
-bool AccessibleAbilityManagerServiceClientProxy::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    return true;
-}
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceClientProxy::GetEnabledAbilities()
 {
     std::map<std::string, AppExecFwk::ElementName> test;
@@ -138,6 +134,10 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     return test;
 }
 
+bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    return true;
+}
 
 } // namespace Accessibility
 } // namespace OHOS

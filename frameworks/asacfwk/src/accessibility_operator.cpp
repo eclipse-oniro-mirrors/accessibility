@@ -28,6 +28,10 @@ AccessibilityOperator::AccessibilityOperator()
     executeActionResult_ = false;
 }
 
+AccessibilityOperator::~AccessibilityOperator()
+{
+}
+
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     std::thread::id tid = std::this_thread::get_id();

@@ -86,6 +86,8 @@ void AccessibleAbilityManagerService::OnStart()
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     HILOG_INFO("AccessibleAbilityManagerService::call accountData->init().");
     accountData->init();
+    UpdateAbilities();
+    UpdateAccessibilityManagerService();
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -244,7 +246,8 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
     const int abilityTypes, const int stateType)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG(" %{public}s  abilityTypes(%{public}d) stateType(%{public}d)",
+              __func__, abilityTypes, stateType);
     vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("stateType is out of range!!");
@@ -260,11 +263,14 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
+    HILOG_DEBUG(" %{public}s:abilityes count is %{public}d", __func__, abilities.size());
     for (auto& ability : abilities) {
-        if (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes)) {
+        if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
+           (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes))) {
             infoList.push_back(ability);
         }
     }
+    HILOG_DEBUG(" %{public}s:infoList count is %{public}d", __func__, infoList.size());
     return infoList;
 }
 
@@ -367,7 +373,7 @@ void AccessibleAbilityManagerService::PersistElementNamesToSetting(
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG(" %{public}s: currentAccoutId is %{public}d ", __func__, currentAccountId_);
     auto iter = a11yAccountsData_.find(currentAccountId_);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
@@ -646,6 +652,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
                 connection->Connect(element);
             }
         } else {
+            HILOG_DEBUG("not in enabledAbilites list .");
             if (connection) {
                 connection->Disconnect();
             }
@@ -748,7 +755,7 @@ void AccessibleAbilityManagerService::UpdateWindowChangeListener()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
-    bool isWindowRetrieve = false;
+    bool isWindowRetrieve = true; // TBD for test
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -847,14 +854,6 @@ bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExe
     return result;
 }
 
-bool AccessibleAbilityManagerService::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG(" %{public}s", __func__);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    bool result = accountData->SetInstalled(it);
-    return result;
-}
-
 // std::vector<WMDisplayInfo> AccessibleAbilityManagerService::GetDisplayList()
 // {
 //     std::vector<WMDisplayInfo> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
@@ -878,6 +877,15 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
     it = accountData->GetInstalledAbilities();
     return it;
 }
+
+
+bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it){
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    bool result = false;
+    result = accountData->DisableAbilities(it);
+    UpdateAbilities();
+    return result;
+    }
 
 }  // namespace Accessibility
 }  // namespace OHOS
