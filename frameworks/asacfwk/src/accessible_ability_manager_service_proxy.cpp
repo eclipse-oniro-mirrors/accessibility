@@ -781,6 +781,18 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 
 bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
+    HILOG_DEBUG("%{public}s", __func__);
+
+    int error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        return false;
+    }
+
     if (!data.WriteRemoteObject(obj)) {
         HILOG_ERROR("%{public}s fail, connection write obj", __func__);
         return false;
