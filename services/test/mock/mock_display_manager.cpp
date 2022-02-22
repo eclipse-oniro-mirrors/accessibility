@@ -19,16 +19,12 @@
 
 #include <cinttypes>
 
-// #include "display_manager_adapter.h"
 #include "display_manager_agent.h"
 #include "dm_common.h"
 #include "singleton_delegator.h"
-// #include "window_manager_hilog.h"
 
 namespace OHOS::Rosen {
-
 WM_IMPLEMENT_SINGLE_INSTANCE(DisplayManager)
-
 class DisplayManager::Impl : public RefBase {
 friend class DisplayManager;
 private:
@@ -82,7 +78,7 @@ DisplayManager::~DisplayManager()
 
 DisplayId DisplayManager::GetDefaultDisplayId()
 {
-    DisplayId id{0};
+    DisplayId id {0};
     return id;
 }
 
@@ -104,13 +100,7 @@ std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId display
 
 const sptr<Display> DisplayManager::GetDefaultDisplay()
 {
-    DisplayInfo info;
-    info.id_ = 1;
-    info.width_ = 0;
-    info.height_ = 0;
-    info.freshRate_ = 0;
-    sptr<Display> display = new Display("name", &info);
-    return display;
+    return nullptr;
 }
 
 std::vector<DisplayId> DisplayManager::GetAllDisplayIds()
