@@ -49,70 +49,67 @@ config("module_private_config") {
 ohos_unittest("asac_unit_test") {
   module_out_path = module_output_path
   sources = [
+    "../src/accessibility_ability_info.cpp",
+    "../src/accessibility_caption.cpp",
+    "../src/accessibility_element_info.cpp",
+    "../src/accessibility_element_operator_async_mng.cpp",
+    "../src/accessibility_element_operator_callback_proxy.cpp",
+    "../src/accessibility_element_operator_callback_stub.cpp",
+    "../src/accessibility_element_operator_proxy.cpp",
+    "../src/accessibility_element_operator_stub.cpp",
+    "../src/accessibility_event_info.cpp",
+    "../src/accessibility_operator.cpp",
+    "../src/accessibility_state_event.cpp",
+    "../src/accessibility_system_ability_client.cpp",
+    "../src/accessibility_window_info.cpp",
+    "../src/accessible_ability_channel_proxy.cpp",
+    "../src/accessible_ability_channel_stub.cpp",
+    "../src/accessible_ability_manager_service_caption_property_stub.cpp",
+    "../src/accessible_ability_manager_service_proxy.cpp",
+    "../src/accessible_ability_manager_service_state_proxy.cpp",
+    "../src/accessible_ability_manager_service_state_stub.cpp",
+    "../src/accessible_ability_manager_service_stub.cpp",
+    "../src/gesture_simulation.cpp",
+    "//base/accessibility/util/src/json_utils.cpp",
     "mock/mock_accessible_ability_channel_impl.cpp",
-    "unittest/accessibility_event_info_test.cpp",
-    "unittest/accessibility_element_info_test.cpp",
-    "unittest/accessibility_operator_test.cpp",
-    "unittest/accessibility_window_info_test.cpp",
-    "unittest/accessible_ability_channel_proxy_test.cpp",
-    "unittest/accessible_ability_channel_stub_test.cpp",
-    "unittest/accessibility_system_ability_client_test.cpp",
-    "unittest/gesture_simulation_test.cpp",
     "unittest/accessibility_ability_info_test.cpp",
-    "unittest/accessible_ability_manager_service_stub_test.cpp",
-    "unittest/accessible_ability_manager_service_proxy_test.cpp",
-    "unittest/accessible_ability_manager_service_state_stub_test.cpp",
-    "unittest/accessible_ability_manager_service_state_proxy_test.cpp",
+    "unittest/accessibility_element_info_test.cpp",
     "unittest/accessibility_element_operator_callback_proxy_test.cpp",
     "unittest/accessibility_element_operator_proxy_test.cpp",
     "unittest/accessibility_element_operator_stub_test.cpp",
-    "../src/accessibility_event_info.cpp",
-    "../src/accessibility_operator.cpp",
-    "../src/accessibility_element_info.cpp",
-    "../src/accessibility_ability_info.cpp",
-    "../src/accessibility_state_event.cpp",
-    "../src/accessibility_window_info.cpp",
-    "../src/accessibility_element_operator_proxy.cpp",
-    "../src/accessibility_element_operator_stub.cpp",
-    "../src/accessibility_element_operator_callback_proxy.cpp",
-    "../src/accessibility_element_operator_callback_stub.cpp",
-    "../src/accessibility_element_operator_async_mng.cpp",
-    "../src/accessibility_system_ability_client.cpp",
-    "../src/accessible_ability_channel_proxy.cpp",
-    "../src/accessible_ability_channel_stub.cpp",
-    "../src/accessible_ability_manager_service_proxy.cpp",
-    "../src/accessible_ability_manager_service_stub.cpp",
-    "../src/accessible_ability_manager_service_state_proxy.cpp",
-    "../src/accessible_ability_manager_service_state_stub.cpp",
-    "../src/gesture_simulation.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
-    "../src/accessibility_caption.cpp",
-    "../src/accessible_ability_manager_service_caption_property_stub.cpp"
+    "unittest/accessibility_event_info_test.cpp",
+    "unittest/accessibility_operator_test.cpp",
+    "unittest/accessibility_system_ability_client_test.cpp",
+    "unittest/accessibility_window_info_test.cpp",
+    "unittest/accessible_ability_channel_proxy_test.cpp",
+    "unittest/accessible_ability_channel_stub_test.cpp",
+    "unittest/accessible_ability_manager_service_proxy_test.cpp",
+    "unittest/accessible_ability_manager_service_state_proxy_test.cpp",
+    "unittest/accessible_ability_manager_service_state_stub_test.cpp",
+    "unittest/accessible_ability_manager_service_stub_test.cpp",
+    "unittest/gesture_simulation_test.cpp",
   ]
 
-  configs = [
-    ":module_private_config",
-  ]
+  configs = [ ":module_private_config" ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//base/miscservices/time/services:time_service",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
-    "//base/miscservices/time/services:time_service",
     "//third_party/jsoncpp:jsoncpp",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
-    "samgr_standard:samgr_proxy",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr_standard:samgr_proxy",
   ]
 }
-
 
 ###############################################################################
 
@@ -120,8 +117,6 @@ group("unittest") {
   testonly = true
   deps = []
 
-  deps += [
-    ":asac_unit_test",
-  ]
+  deps += [ ":asac_unit_test" ]
 }
 ###############################################################################

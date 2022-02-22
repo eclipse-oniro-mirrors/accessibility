@@ -16,7 +16,8 @@ import("//build/ohos.gni")
 
 ts2abc_gen_abc("gen_accessibility_extension_context_abc") {
   src_js = rebase_path("accessibility_extension_context.js")
-  dst_file = rebase_path(target_out_dir + "/accessibility_extension_context.abc")
+  dst_file =
+      rebase_path(target_out_dir + "/accessibility_extension_context.abc")
   in_puts = [ "accessibility_extension_context.js" ]
   out_puts = [ target_out_dir + "/accessibility_extension_context.abc" ]
   extra_args = [ "--module" ]
@@ -28,8 +29,9 @@ gen_js_obj("accessibility_extension_context_js") {
 }
 
 gen_js_obj("accessibility_extension_context_abc") {
-  input = get_label_info(":gen_accessibility_extension_context_abc", "target_out_dir") +
-          "/accessibility_extension_context.abc"
+  input =
+      get_label_info(":gen_accessibility_extension_context_abc",
+                     "target_out_dir") + "/accessibility_extension_context.abc"
   output = target_out_dir + "/accessibility_extension_context_abc.o"
   dep = ":gen_accessibility_extension_context_abc"
 }

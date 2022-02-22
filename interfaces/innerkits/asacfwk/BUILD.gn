@@ -57,8 +57,8 @@ ohos_shared_library("accessibilityclient") {
   ]
 
   external_deps = [
-    "ability_runtime:ability_manager",
     "ability_base:want",
+    "ability_runtime:ability_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",

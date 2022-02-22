@@ -61,11 +61,11 @@ ohos_shared_library("accessibleability") {
   public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
-     "//utils/native/base:utils",
-     "//base/accessibility/interfaces/kits/napi:accessibility",
-     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//base/accessibility/interfaces/kits/napi:accessibility",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//utils/native/base:utils",
   ]
 
   public_deps = [
@@ -74,15 +74,15 @@ ohos_shared_library("accessibleability") {
   ]
 
   external_deps = [
-    "ability_runtime:ability_context_native",
     "ability_base:want",
-    "ability_runtime:runtime",
+    "ability_runtime:ability_context_native",
     "ability_runtime:ability_manager",
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
+    "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
     "samgr_standard:samgr_proxy",
@@ -93,18 +93,16 @@ ohos_shared_library("accessibleability") {
 }
 
 ohos_shared_library("accessibility_extension_module") {
-  include_dirs =
-      [ "//base/accessibility/frameworks/aafwk/include",
-        "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include"
-      ]
+  include_dirs = [
+    "//base/accessibility/frameworks/aafwk/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
+  ]
 
   sources = [ "//base/accessibility/frameworks/aafwk/src/accessibility_extension_module_loader.cpp" ]
 
   configs = [ ":accessibleability_private_config" ]
 
-  deps = [
-    ":accessibleability"
-  ]
+  deps = [ ":accessibleability" ]
 
   external_deps = [
     "ability_base:want",

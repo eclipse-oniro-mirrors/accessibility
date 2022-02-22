@@ -14,7 +14,6 @@
 import("//build/ohos.gni")
 
 ohos_shared_library("accessibility") {
-
   include_dirs = [
     "//foundation/ace/napi/interfaces/kits",
     "//third_party/node/src",
@@ -34,12 +33,12 @@ ohos_shared_library("accessibility") {
   ]
 
   sources = [
-    "./src/native_module.cpp",
+    "./src/napi_accessibility_event_info.cpp",
+    "./src/napi_accessibility_info.cpp",
     "./src/napi_accessibility_system_ability_client.cpp",
     "./src/napi_accessibility_utils.cpp",
-    "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_window_info.cpp",
-    "./src/napi_accessibility_info.cpp",
+    "./src/native_module.cpp",
   ]
 
   configs = [
@@ -47,23 +46,23 @@ ohos_shared_library("accessibility") {
   ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/ace/napi:ace_napi",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-    "//utils/native/base:utils",
-    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
+    "//foundation/ace/napi:ace_napi",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
     "ability_runtime:runtime",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "multimodalinput_base:libmmi-client",
-    "bundle_framework:appexecfwk_base",
-    "bundle_framework:appexecfwk_core",
-    "ability_base:want",
-    "ability_runtime:ability_manager",
   ]
 
   relative_install_dir = "module"

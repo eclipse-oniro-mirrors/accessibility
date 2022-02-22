@@ -53,48 +53,46 @@ MockMultiModalInputSrc = [
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
   sources = [
+    "../../asacfwk/src/accessibility_caption.cpp",
     "../src/accessibility_extension.cpp",
     "../src/accessibility_extension_context.cpp",
-    "../src/display_resize_controller.cpp",
-    "../src/accessible_ability_client_proxy.cpp",
-    "../src/accessible_ability_client_stub_impl.cpp",
-    "../src/accessible_ability_client_stub.cpp",
     "../src/accessibility_ui_test_ability.cpp",
-    "unittest/accessibility_extension_context_test.cpp",
-    "unittest/display_resize_controller_test.cpp",
-    "unittest/accessible_ability_client_proxy_test.cpp",
-    "unittest/accessible_ability_client_stub_test.cpp",
-    "unittest/accessible_ability_client_stub_impl_test.cpp",
-    "mock/mock_accessibility_operator.cpp",
+    "../src/accessible_ability_client_proxy.cpp",
+    "../src/accessible_ability_client_stub.cpp",
+    "../src/accessible_ability_client_stub_impl.cpp",
+    "../src/display_resize_controller.cpp",
     "mock/mock_accessibility_element_info.cpp",
-    "mock/mock_gesture_simulation.cpp",
+    "mock/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/mock_accessibility_event_info.cpp",
+    "mock/mock_accessibility_operator.cpp",
+    "mock/mock_accessibility_window_info.cpp",
     "mock/mock_accessible_ability_channel_proxy.cpp",
     "mock/mock_accessible_ability_manager_service_proxy.cpp",
-    "mock/mock_accessibility_element_operator_callback_stub.cpp",
-    "mock/mock_accessibility_window_info.cpp",
-    "../../asacfwk/src/accessibility_caption.cpp"
+    "mock/mock_gesture_simulation.cpp",
+    "unittest/accessibility_extension_context_test.cpp",
+    "unittest/accessible_ability_client_proxy_test.cpp",
+    "unittest/accessible_ability_client_stub_impl_test.cpp",
+    "unittest/accessible_ability_client_stub_test.cpp",
+    "unittest/display_resize_controller_test.cpp",
   ]
 
   sources += MockMultiModalInputSrc
 
-  configs = [
-    ":module_private_config",
-  ]
+  configs = [ ":module_private_config" ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
-    "samgr_standard:samgr_proxy",
     "ability_base:want",
+    "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "samgr_standard:samgr_proxy",
   ]
 }
 
@@ -104,8 +102,6 @@ group("unittest") {
   testonly = true
   deps = []
 
-  deps += [
-    ":accessible_ability_test",
-  ]
+  deps += [ ":accessible_ability_test" ]
 }
 ###############################################################################

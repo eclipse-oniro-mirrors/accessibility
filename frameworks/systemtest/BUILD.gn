@@ -43,44 +43,41 @@ config("module_private_config") {
 
 ohos_systemtest("asac_system_test") {
   module_out_path = module_output_path
-  sources = [
-    "./accessibility_system_ability_client_test.cpp",
-  ]
+  sources = [ "./accessibility_system_ability_client_test.cpp" ]
 
   configs = [
     ":module_private_config",
-  #  "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
+    #  "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
   ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//base/miscservices/time/services:time_service",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
-    "//base/miscservices/time/services:time_service",
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
   ]
 
   external_deps = [
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
-    "multimodalinput_base:libmmi-client",
-    "samgr_standard:samgr_proxy",
-    "bundle_framework:appexecfwk_base",
-    "bundle_framework:appexecfwk_core",
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "multimodalinput_base:libmmi-client",
+    "samgr_standard:samgr_proxy",
   ]
 }
+
 ###############################################################################
 
 group("systemtest") {
   testonly = true
   deps = []
 
-  deps += [
-    ":asac_system_test",
-  ]
+  deps += [ ":asac_system_test" ]
 }
 ###############################################################################

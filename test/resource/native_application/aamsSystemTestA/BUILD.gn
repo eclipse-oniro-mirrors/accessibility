@@ -11,7 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import("//build/ohos.gni")
-SUBDEMOSYSTEM_DIR = "//base/accessibility/test/resource/native_application/aamsSystemTestA"
+SUBDEMOSYSTEM_DIR =
+    "//base/accessibility/test/resource/native_application/aamsSystemTestA"
 config("aamsSystemTestAConfig") {
   visibility = [ ":*" ]
   include_dirs = [
@@ -35,20 +36,18 @@ config("aamsSystemTestAConfig") {
   ]
 }
 ohos_shared_library("aamsSystemTestA") {
-  sources = [
-    "${SUBDEMOSYSTEM_DIR}/src/amsstabilitya1.cpp",
-  ]
+  sources = [ "${SUBDEMOSYSTEM_DIR}/src/amsstabilitya1.cpp" ]
   configs = [ ":aamsSystemTestAConfig" ]
   deps = [
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/want:want",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
-    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
-    "//utils/native/base:utilsbase",
     "//base/accessibility/frameworks/aafwk:accessibleability",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//base/accessibility/services/aams:accessibleabilityms",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
+    "//foundation/aafwk/standard/interfaces/innerkits/want:want",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
+    "//utils/native/base:utilsbase",
   ]
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
