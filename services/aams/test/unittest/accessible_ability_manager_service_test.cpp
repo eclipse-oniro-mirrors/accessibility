@@ -305,6 +305,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     bundleName = "bundleName2";
     ins_->PackageChanged(bundleName);
-    EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
+    EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }
