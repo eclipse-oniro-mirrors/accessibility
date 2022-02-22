@@ -295,14 +295,16 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     GTEST_LOG_(INFO) << "GetInstalledAbilities start";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "PackageChanged start";
-    ins_->PackageChanged();
+    std::string bundleName = "bundleName1";
+    ins_->PackageChanged(bundleName);
     GTEST_LOG_(INFO) << "PackageChanged end";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
     /* add install ability */
     RegisterAbilityConnectionClient(stub_);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
-    ins_->PackageChanged();
+    bundleName = "bundleName2";
+    ins_->PackageChanged(bundleName);
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }

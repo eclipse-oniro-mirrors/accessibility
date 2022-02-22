@@ -24,7 +24,6 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "power_mgr_client.h"
-#include "input_manager.h"
 #include "key_event.h"
 #include "input_event.h"
 
@@ -46,72 +45,61 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
     HILOG_DEBUG();
 
     ams_ = nullptr;
-    eventHandler_ = nullptr;
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
     ams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (ams_ != nullptr) {
-        eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(ams_->GetMainRunner());
+    if (ams_ == nullptr) {
+        HILOG_DEBUG("ams_ is null.");
     }
+    inputManager_ = MMI::InputManager::GetInstance();
 }
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 {
     HILOG_DEBUG();
 
-    RemoveAllInterceptors();
+    DestroyInterceptor();
     DestroyTransmitters();
     ams_ = nullptr;
-    eventHandler_ = nullptr;
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
-}
-
-void AccessibilityInputInterceptor::InterceptKeyEventCallBack(std::shared_ptr<MMI::KeyEvent> keyEvent)
-{
-    HILOG_DEBUG();
-
-    if ((nullptr == instance_) || (nullptr == instance_->eventHandler_)) {
-        HILOG_DEBUG("eventHandler_ is empty.");
-        return;
-    }
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
-    instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-    return;
-}
-
-void AccessibilityInputInterceptor::InterceptPointerEventCallBack(std::shared_ptr<MMI::PointerEvent> pointerEvent)
-{
-    HILOG_DEBUG();
-
-    if ((nullptr == instance_) || (nullptr == instance_->eventHandler_)) {
-        HILOG_DEBUG("eventHandler_ is empty.");
-        return;
-    }
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, instance_, pointerEvent);
-    instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-    return;
+    interceptorId_ = -1;
+    inputManager_ = nullptr;
+    inputEventConsumer_ = nullptr;
 }
 
 void AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
+
     event.AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
     std::shared_ptr<MMI::KeyEvent> keyEvent = std::make_shared<MMI::KeyEvent>(event);
-    MMI::InputManager::GetInstance()->SimulateInputEvent(keyEvent);
+    if (inputManager_ != nullptr) {
+        inputManager_->SimulateInputEvent(keyEvent);
+    } else {
+        HILOG_DEBUG("inputManager_ is null.");
+    }
 }
 
 void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    HILOG_DEBUG("PointerAction is %{public}d.", event.GetPointerAction());
+    HILOG_DEBUG("SourceType is %{public}d.", event.GetSourceType());
+    HILOG_DEBUG("PointerId is %{public}d.", event.GetPointerId());
+
     event.AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
     std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
-    MMI::InputManager::GetInstance()->SimulateInputEvent(pointerEvent);
+    if (inputManager_ != nullptr) {
+        inputManager_->SimulateInputEvent(pointerEvent);
+    } else {
+        HILOG_DEBUG("inputManager_ is null.");
+    }
 }
 
 void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunctions)
 {
-    HILOG_DEBUG("function[%d].", availableFunctions);
+    HILOG_DEBUG("function[%{public}d].", availableFunctions);
 
     if (availableFunctions_ == availableFunctions) {
         return;
@@ -123,36 +111,31 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 
 void AccessibilityInputInterceptor::CreateTransmitters()
 {
-    HILOG_DEBUG("function[%d].", availableFunctions_);
+    HILOG_DEBUG("function[%{public}d].", availableFunctions_);
 
     if (availableFunctions_ == 0) {
-        RemoveAllInterceptors();
+        DestroyInterceptor();
         return;
     }
 
     sptr<EventTransmission> header = nullptr;
     sptr<EventTransmission> current = nullptr;
-    bool isInterceptPointerEvent = false;
-    bool isInterceptKeyEvent = false;
 
     if (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) {
         sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
         SetNextEventTransmitter(header, current, touchEventInjector);
         ams_->SetTouchEventInjector(touchEventInjector);
-        isInterceptPointerEvent = true;
     }
 
     if (availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) {
         sptr<AccessibilityZoomHandler> zoomHandler = new AccessibilityZoomHandler(0);
         SetNextEventTransmitter(header, current, zoomHandler);
-        isInterceptPointerEvent = true;
     }
 
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
         sptr<TouchGuider> touchGuider = new TouchGuider();
         touchGuider->StartUp();
         SetNextEventTransmitter(header, current, touchGuider);
-        isInterceptPointerEvent = true;
     }
 
     SetNextEventTransmitter(header, current, instance_);
@@ -163,94 +146,46 @@ void AccessibilityInputInterceptor::CreateTransmitters()
         ams_->SetKeyEventFilter(keyEventFilter);
         keyEventFilter->SetNext(instance_);
         keyEventTransmitters_ = keyEventFilter;
-        isInterceptKeyEvent = true;
     }
 
-    CreateInterceptors(isInterceptPointerEvent, isInterceptKeyEvent);
+    CreateInterceptor();
 }
 
-void AccessibilityInputInterceptor::CreateInterceptors(bool isInterceptPointerEvent, bool isInterceptKeyEvent)
-{
-    HILOG_DEBUG();
-    MMI::InputManager* inputManager = MMI::InputManager::GetInstance();
-    int32_t id = 0;
-    if (interceptorId_.empty()) {
-        if (isInterceptPointerEvent) {
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_MOUSE,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::MOUSE, id));
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::TOUCHSCREEN, id));
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_TOUCHPAD,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::TOUCHPAD, id));
-        }
-        if (isInterceptKeyEvent) {
-            id = inputManager->AddInterceptor(InterceptKeyEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::KEY, id));
-        }
-        return;
-    }
-    if (isInterceptPointerEvent) {
-        if (interceptorId_.find(InterceptSourceType::MOUSE) == interceptorId_.end()) {
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_MOUSE,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::MOUSE, id));
-        }
-        if (interceptorId_.find(InterceptSourceType::TOUCHSCREEN) == interceptorId_.end()) {
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::TOUCHSCREEN, id));
-        }
-        if (interceptorId_.find(InterceptSourceType::TOUCHPAD) == interceptorId_.end()) {
-            id = inputManager->AddInterceptor(MMI::PointerEvent::SOURCE_TYPE_TOUCHPAD,
-                InterceptPointerEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::TOUCHPAD, id));
-        }
-    } else {
-        if (interceptorId_.find(InterceptSourceType::MOUSE) != interceptorId_.end()) {
-            id = interceptorId_.at(InterceptSourceType::MOUSE);
-            inputManager->RemoveInterceptor(id);
-            interceptorId_.erase(InterceptSourceType::MOUSE);
-        }
-        if (interceptorId_.find(InterceptSourceType::TOUCHSCREEN) != interceptorId_.end()) {
-            id = interceptorId_.at(InterceptSourceType::TOUCHSCREEN);
-            inputManager->RemoveInterceptor(id);
-            interceptorId_.erase(InterceptSourceType::TOUCHSCREEN);
-        }
-        if (interceptorId_.find(InterceptSourceType::TOUCHPAD) != interceptorId_.end()) {
-            id = interceptorId_.at(InterceptSourceType::TOUCHPAD);
-            inputManager->RemoveInterceptor(id);
-            interceptorId_.erase(InterceptSourceType::TOUCHPAD);
-        }
-    }
-    if (isInterceptKeyEvent) {
-        if (interceptorId_.find(InterceptSourceType::KEY) == interceptorId_.end()) {
-            id = inputManager->AddInterceptor(InterceptKeyEventCallBack);
-            interceptorId_.insert(std::make_pair(InterceptSourceType::KEY, id));
-        }
-    } else {
-        if (interceptorId_.find(InterceptSourceType::KEY) != interceptorId_.end()) {
-            id = interceptorId_.at(InterceptSourceType::KEY);
-            inputManager->RemoveInterceptor(id);
-            interceptorId_.erase(InterceptSourceType::KEY);
-        }
-    }
-}
-
-void AccessibilityInputInterceptor::RemoveAllInterceptors()
+void AccessibilityInputInterceptor::CreateInterceptor()
 {
     HILOG_DEBUG();
 
-    if (interceptorId_.empty()) {
+    if (inputManager_ == nullptr) {
+        HILOG_DEBUG("inputManger is null.");
         return;
     }
 
-    for (auto iter = interceptorId_.begin(); iter != interceptorId_.end(); iter++) {
-        MMI::InputManager::GetInstance()->RemoveInterceptor(iter->second);
+    if (interceptorId_ != -1) {
+        HILOG_DEBUG("Interceptor is already added, id is %{public}d.", interceptorId_);
+        return;
     }
-    interceptorId_.clear();
+
+    inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
+    interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
+
+    HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
+}
+
+void AccessibilityInputInterceptor::DestroyInterceptor()
+{
+    HILOG_DEBUG();
+
+    if (inputManager_ == nullptr) {
+        HILOG_DEBUG("inputManager_ is null.");
+        return;
+    }
+
+    if (interceptorId_ == -1) {
+        HILOG_DEBUG("Interceptor is not added.");
+        return;
+    }
+
+    inputManager_->RemoveInterceptor(interceptorId_);
 }
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
@@ -281,7 +216,7 @@ void AccessibilityInputInterceptor::NotifyAccessibilityEvent(AccessibilityEventI
     }
 }
 
-void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event)
+void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
 {
     HILOG_DEBUG();
 
@@ -293,7 +228,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
     pointerEventTransmitters_->OnPointerEvent(*event);
 }
 
-void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event)
+void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const
 {
     HILOG_DEBUG();
 
@@ -316,6 +251,67 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmissi
         header = next;
     }
     current = next;
+}
+
+AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
+{
+    HILOG_DEBUG();
+
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (aams != nullptr) {
+        eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(aams->GetMainRunner());
+    }
+}
+
+AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
+{
+    HILOG_DEBUG();
+
+    eventHandler_ = nullptr;
+}
+
+void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
+{
+    HILOG_DEBUG("OnInputEvent keyEvent start.");
+    
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_DEBUG("interceptor is null.");
+        return;
+    }
+
+    if (nullptr == eventHandler_) {
+        HILOG_DEBUG("eventHandler_ is empty.");
+        return;
+    }
+
+    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
+    eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
+    HILOG_DEBUG("OnInputEvent keyEvent end.");
+    return;
+}
+
+void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
+{
+    HILOG_DEBUG("OnInputEvent pointerEvent start.");
+    HILOG_DEBUG("PointerAction is %{public}d.", pointerEvent->GetPointerAction());
+    HILOG_DEBUG("SourceType is %{public}d.", pointerEvent->GetSourceType());
+    HILOG_DEBUG("PointerId is %{public}d.", pointerEvent->GetPointerId());
+
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor == nullptr) {
+        HILOG_DEBUG("interceptor is null.");
+        return;
+    }
+
+    if (nullptr == eventHandler_) {
+        HILOG_DEBUG("eventHandler_ is empty.");
+        return;
+    }
+    auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, interceptor, pointerEvent);
+    eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
+    HILOG_DEBUG("OnInputEvent pointerEvent end.");
+    return;
 }
 }
 }  // namespace Accessibility

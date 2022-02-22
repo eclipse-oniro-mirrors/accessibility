@@ -210,7 +210,7 @@ bool AccessibleAbilityChannelStubImpl::ExecuteCommonAction(int action)
             break;
     }
 
-    // TODO: need external dependence
+    // temp deal: need external dependence
     return ret;
 }
 
@@ -310,7 +310,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         accountData_->RemoveEnabledAbility(elementName_);
         accountData_->RemoveConnectingA11yAbility(elementName_);
 
-        // TODO: Notify setting
+        // temp deal: Notify setting
         return;
     }
 
@@ -488,7 +488,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG(" %{public}s start", __func__);
-    // TODO:
+    // temp deal:
 #if 1
     if (AAFwk::AbilityManagerClient::GetInstance()->DisconnectAbility(this) != ERR_OK) {
         HILOG_ERROR("Disconnect failed!");
@@ -513,9 +513,9 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
     HILOG_DEBUG("uid is %{public}d ", uid);
 
     if (AAFwk::AbilityManagerClient::GetInstance()->ConnectAbility(
-        want, this, nullptr, uid / 200000) != ERR_OK) {
+        want, this, nullptr, uid / UID_MASK) != ERR_OK) {
         HILOG_ERROR("ConnectAbility failed!");
-        // TODO: Remove this enabled ability from Setting
+        // temp deal: Remove this enabled ability from Setting
         return;
     }
     accountData_->AddConnectingA11yAbility(elementName_);
@@ -541,8 +541,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     recipientAccountData_->RemoveConnectedAbility(connection);
     recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
-    // TODO: notify setting
+    // temp deal: notify setting
 }
-
 } // namespace Accessibility
 } // namespace OHOS

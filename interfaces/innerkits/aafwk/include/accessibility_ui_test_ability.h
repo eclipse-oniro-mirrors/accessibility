@@ -26,6 +26,8 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilityUITestAbility final : public AccessibilityExtensionContext {
 public:
+    ~AccessibilityUITestAbility() = default;
+
     /**
      * @brief Gets an instance of AccessibleAbility.
      * @param
@@ -56,12 +58,12 @@ public:
 
 private:
     AccessibilityUITestAbility();
-    ~AccessibilityUITestAbility() = default;
 
     void GetService();
 
     sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
     sptr<AccessibleAbilityManagerServiceClientProxy> serviceProxy_ = nullptr;
+    static std::shared_ptr<AccessibilityUITestAbility> instance_;
 };
 } // namespace Accessibility
 } // namespace OHOS

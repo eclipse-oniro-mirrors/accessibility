@@ -27,7 +27,6 @@ class PowerMgrClient final : public DelayedRefSingleton<PowerMgrClient> {
 
 public:
     void RefreshActivity(UserActivityType type = UserActivityType::USER_ACTIVITY_TYPE_OTHER);
-
 };
 } // namespace PowerMgr
 } // namespace OHOS

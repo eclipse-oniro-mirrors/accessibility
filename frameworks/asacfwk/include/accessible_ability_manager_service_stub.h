@@ -59,7 +59,6 @@ public:
      */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option) override;
-
 private:
     /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
@@ -133,7 +132,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceClientStub);
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

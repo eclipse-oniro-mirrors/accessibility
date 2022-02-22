@@ -24,12 +24,24 @@
 
 #include "accessibility_event_transmission.h"
 #include "i_input_event_consumer.h"
+#include "input_manager.h"
 #include "key_event.h"
 #include "pointer_event.h"
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibleAbilityManagerService;
+
+class AccessibilityInputEventConsumer : public MMI::IInputEventConsumer {
+public:
+    AccessibilityInputEventConsumer();
+    ~AccessibilityInputEventConsumer();
+    void OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const override;
+    void OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const override;
+    void OnInputEvent(std::shared_ptr<MMI::AxisEvent> axisEvent) const override {};
+private:
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+};
 
 class AccessibilityInputInterceptor : public EventTransmission {
 public:
@@ -47,40 +59,31 @@ public:
 
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
-	static void InterceptPointerEventCallBack(std::shared_ptr<OHOS::MMI::PointerEvent> pointerEvent);
-    static void InterceptKeyEventCallBack(std::shared_ptr<OHOS::MMI::KeyEvent> keyEvent);
+    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
+    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const;
     void OnKeyEvent(MMI::KeyEvent &event) override;
     void OnPointerEvent(MMI::PointerEvent &event) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
     void NotifyAccessibilityEvent(AccessibilityEventInfo &event) const;
 
 private:
-    enum InterceptSourceType {
-        MOUSE = 1,
-        TOUCHSCREEN,
-        TOUCHPAD,
-        KEY
-    };
-
     AccessibilityInputInterceptor();
     static sptr<AccessibilityInputInterceptor> instance_;
-    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event);
-    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event);
     void CreateTransmitters();
     void DestroyTransmitters();
     void SetNextEventTransmitter(sptr<EventTransmission> &header, sptr<EventTransmission> &current,
         const sptr<EventTransmission> &next);
-    void CreateInterceptors(bool isInterceptPointEvent, bool isInterceptKeyEvent);
-    void RemoveAllInterceptors();
+    void CreateInterceptor();
+    void DestroyInterceptor();
 
     std::shared_ptr<AccessibleAbilityManagerService> ams_ = nullptr;
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
-    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
     uint32_t availableFunctions_ = 0;
-    std::map<InterceptSourceType, int32_t> interceptorId_ = {};
+    int32_t interceptorId_ = -1;
+    MMI::InputManager *inputManager_ = nullptr;
+    std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_INPUT_INTERCEPTOR_H

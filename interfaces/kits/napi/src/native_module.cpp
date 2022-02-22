@@ -58,6 +58,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
     NAccessibilityClient::DefineJSCaptionsManager(env);
+    NAccessibilityClient::DefineJSCaptionsStyle(env);
     NElementInfo::DefineJSElementInfo(env);
     NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
@@ -71,13 +72,15 @@ EXTERN_C_END
 /*
  * Module define
  */
-static napi_module _module = {.nm_version = 1,
+static napi_module _module = {
+    .nm_version = 1,
     .nm_flags = 0,
     .nm_filename = nullptr,
     .nm_register_func = Init,
     .nm_modname = "accessibility",
     .nm_priv = ((void*)0),
-    .reserved = {0}};
+    .reserved = {0},
+};
 /*
  * Module register function
  */

@@ -337,10 +337,10 @@ private:
     void NotifyGestureStateChanged();
 
 
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_{};
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_{};
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_{};
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_{};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_ = {};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_ = {};
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_ = {};
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_ = {};
 
     CaptionProperty captionProperty_;
     int accountId_ = 0;
@@ -349,18 +349,18 @@ private:
     bool isCaptionEnabled_ = 0;
     std::recursive_mutex asacProxyLock_;
     static std::shared_ptr<AccessibilitySystemAbilityClient> instance_;
-    std::shared_ptr<AccessibilityElementOperator> interactionOperator_;
-    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_{};
+    std::shared_ptr<AccessibilityElementOperator> interactionOperator_ = nullptr;
+    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_ = {};
     int connectionWindowId_ = 0;
     ACCESSIBILITY_DECLARE_IMPL();
 
-    std::vector<AccessibilityAbilityInfo> installedAbilities_{};
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};
+    std::vector<AccessibilityAbilityInfo> installedAbilities_ = {};
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_ = {};
 
     bool isFilteringKeyEventsEnabled_ = 0;
     bool isGesturesSimulationEnabled_ = 0;
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_{};
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_{};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_ = {};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_ = {};
 };
 
 }  // namespace Accessibility

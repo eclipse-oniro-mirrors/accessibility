@@ -56,80 +56,57 @@ napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_in
 
 napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};
-    napi_status status;
     napi_value thisVar;
     void* data = nullptr;
     AccessibilityEventInfo* eventInfo = nullptr;
-
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
-
-    status = napi_unwrap(env, thisVar, (void**)&eventInfo);
-    HILOG_DEBUG("napi_unwrap status: %{public}d", (int)status);
-    if (!eventInfo) {
-        HILOG_DEBUG("eventInfo is null!!");
-    }
-
+    napi_unwrap(env, thisVar, (void**)&eventInfo);
     NAccessibilityEventInfoData *callbackInfo = new NAccessibilityEventInfoData();
     callbackInfo->eventInfo_ = *eventInfo;
-
     napi_value promise = nullptr;
     if (argc > 0) {
-        HILOG_DEBUG("GetSource callback mode");
         napi_create_reference(env, argv[PARAM0], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("GetSource promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetSource", NAPI_AUTO_LENGTH, &resource);
-
     napi_create_async_work(
         env, nullptr, resource,
-        // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityEventInfoData *callbackInfo = (NAccessibilityEventInfoData*)data;
             AccessibilityEventInfo eventInfo = callbackInfo->eventInfo_;
             callbackInfo->result_ = eventInfo.GetSource(callbackInfo->nodeInfo_);
         },
-        // execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            HILOG_DEBUG("GetSource execute back");
             NAccessibilityEventInfoData* callbackInfo = (NAccessibilityEventInfoData*)data;
             napi_value jsReturnValue = 0;
             napi_value argv[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
             napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
-
             argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
-                // Callback mode
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, argv, &jsReturnValue);
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
-                // Promise mode
                 if (callbackInfo->result_) {
                     napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
                 } else {
                     napi_reject_deferred(env, callbackInfo->deferred_, argv[PARAM0]);
                 }
             }
-
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
-
     return promise;
 }

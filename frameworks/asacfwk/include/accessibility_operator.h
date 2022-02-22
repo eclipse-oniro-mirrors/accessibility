@@ -308,15 +308,14 @@ public:
      */
     void SendSimulateGesture(const int channelId, const int sequenceNum,
         const std::vector<GesturePathDefine> &gestureSteps);
-
 private:
     static const uint32_t MAX_REQUEST = 0x7FFFFFFF;
     static std::vector<sptr<AccessibilityOperator>> instances_;
     static std::map<int, sptr<IAccessibleAbilityChannel>> channels_;
-    AccessibilityElementAsyncOperatorMng asyncElementOperatorMng_ {};
-    AccessibilityElementInfo accessibilityInfoResult_{};
-    std::vector<AccessibilityElementInfo> accessibilityInfosResult_{};
-    std::vector<AccessibilityWindowInfo> windows_{};
+    AccessibilityElementAsyncOperatorMng asyncElementOperatorMng_ = {};
+    AccessibilityElementInfo accessibilityInfoResult_ = {};
+    std::vector<AccessibilityElementInfo> accessibilityInfosResult_ = {};
+    std::vector<AccessibilityWindowInfo> windows_ = {};
     bool executeActionResult_ = false;
     static std::recursive_mutex mutex_;
 };

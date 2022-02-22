@@ -20,13 +20,11 @@
 #include "want.h"
 
 namespace OHOS {
-
 namespace AbilityRuntime {
 class Extension : public std::enable_shared_from_this<Extension> {
 public:
     Extension() = default;
     virtual ~Extension() = default;
-
     /**
      * @brief Called when this Service extension is connected for the first time.
      *
@@ -39,7 +37,6 @@ public:
     {
         return nullptr;
     }
-
 };
 }
 }

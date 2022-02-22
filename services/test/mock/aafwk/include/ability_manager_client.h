@@ -16,9 +16,11 @@
 #ifndef OHOS_AAFWK_ABILITY_MANAGER_CLIENT_H
 #define OHOS_AAFWK_ABILITY_MANAGER_CLIENT_H
 
+#include <mutex>
+
+#include "ability_connect_callback_interface.h"
 #include "iremote_object.h"
 #include "want.h"
-#include "ability_connect_callback_interface.h"
 
 namespace OHOS {
 namespace AAFwk {
@@ -28,23 +30,23 @@ namespace AAFwk {
  */
 class AbilityManagerClient {
 public:
-    AbilityManagerClient()
-    {}
-    virtual ~AbilityManagerClient()
-    {}
+    AbilityManagerClient() {}
+    virtual ~AbilityManagerClient() {}
     ErrCode ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect, 
         const sptr<IRemoteObject> &callerToken, int32_t userId)
-    {return ERR_OK;}
+    {
+        return ERR_OK;
+    }
 
     ErrCode DisconnectAbility(const sptr<IAbilityConnection> &connect)
-    {return ERR_OK;}
+    {
+        return ERR_OK;
+    }
     static std::shared_ptr<AbilityManagerClient> GetInstance();
-
 private:
     static std::shared_ptr<AbilityManagerClient> instance_;
+    static std::mutex mutex_;
 };
-
-
 }  // namespace AAFwk
 }  // namespace OHOS
 #endif  // OHOS_AAFWK_ABILITY_MANAGER_H

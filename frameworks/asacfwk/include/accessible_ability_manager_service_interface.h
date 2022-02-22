@@ -134,11 +134,9 @@ public:
         DISABLE_ABILITIES,
         REGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
         DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
-        GET_ACTIVE_WINDOW
-
+        GET_ACTIVE_WINDOW,
     };
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

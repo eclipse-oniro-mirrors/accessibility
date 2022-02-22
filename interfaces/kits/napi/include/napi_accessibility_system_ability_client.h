@@ -54,12 +54,12 @@ private:
     std::string description_ = "";
 };
 
-
 class CaptionListener : public OHOS::Accessibility::CaptionObserver {
 public:
     CaptionListener();
     static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
-    static void NotifyPropertyChangedJS(napi_env env, OHOS::Accessibility::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
+    static void NotifyPropertyChangedJS(
+        napi_env env, OHOS::Accessibility::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
     void OnCaptionStateChanged(const bool& enable) override;
     void OnCaptionPropertyChanged(const OHOS::Accessibility::CaptionProperty& caption) override;
@@ -154,7 +154,24 @@ public:
     static napi_value RegisterCaptionStateCallback(napi_env env, napi_callback_info info);
     static napi_value DeregisterCaptionStateCallback(napi_env env, napi_callback_info info);
 
-    static napi_value aaCons_;
+    static void DefineJSCaptionsStyle(napi_env env);
+    static napi_value AccessibleAbilityConstructorStyle(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionsFontFamily(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionsFontFamily(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionsFontScale(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionsFontScale(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionFrontColor(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionFrontColor(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionFontEdgeType(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionFontEdgeType(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionBackgroundColor(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionBackgroundColor(napi_env env, napi_callback_info info);
+    static napi_value GetCaptionWindowColor(napi_env env, napi_callback_info info);
+    static napi_value SetCaptionWindowColor(napi_env env, napi_callback_info info);
+
+
+    static napi_value aaCons_;          // CaptionsManager
+    static napi_value aaStyleCons_;     // CaptionsStyle
 
     static std::vector<std::shared_ptr<StateListener>> listeners_;
     static std::vector<std::shared_ptr<CaptionListener>> captionListeners_;

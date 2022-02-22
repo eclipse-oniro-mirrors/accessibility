@@ -28,7 +28,7 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
-extern std::function<void(std::shared_ptr<MMI::PointerEvent>)> g_pointerCallback;
+extern std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer;
 namespace Accessibility {
 class AccessibilityInputInterceptorTest : public testing::Test {
 public:
@@ -59,6 +59,7 @@ void AccessibilityInputInterceptorTest::TearDownTestCase()
 
 void AccessibilityInputInterceptorTest::SetUp()
 {
+    g_inputEventConsumer = nullptr;
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -171,8 +172,8 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_pointerCallback != nullptr) {
-        g_pointerCallback(event);
+    if (g_inputEventConsumer != nullptr) {
+        g_inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessTouchEvent */
     sleep(3);
@@ -201,8 +202,8 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_pointerCallback != nullptr) {
-        g_pointerCallback(event);
+    if (g_inputEventConsumer != nullptr) {
+        g_inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessTouchEvent */
     sleep(3);
@@ -250,8 +251,8 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_pointerCallback != nullptr) {
-        g_pointerCallback(event);
+    if (g_inputEventConsumer != nullptr) {
+        g_inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessMouseEvent */
     sleep(3);
@@ -278,8 +279,8 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_pointerCallback != nullptr) {
-        g_pointerCallback(event);
+    if (g_inputEventConsumer != nullptr) {
+        g_inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessMouseEvent */
     sleep(3);

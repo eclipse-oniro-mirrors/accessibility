@@ -16,9 +16,9 @@
 #ifndef OHOS_AAFWK_ABILITY_CONNECT_CALLBACK_STUB_H
 #define OHOS_AAFWK_ABILITY_CONNECT_CALLBACK_STUB_H
 
-#include "ability_connect_callback_interface.h"
 #include <iremote_object.h>
 #include <iremote_stub.h>
+#include "ability_connect_callback_interface.h"
 
 namespace OHOS {
 namespace AAFwk {
@@ -28,15 +28,9 @@ namespace AAFwk {
  */
 class AbilityConnectionStub : public IRemoteStub<IAbilityConnection> {
 public:
-    AbilityConnectionStub()
-    {}
-    virtual ~AbilityConnectionStub()
-    {}
-
-    // virtual int OnRemoteRequest(
-    //      uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+    AbilityConnectionStub() {}
+    virtual ~AbilityConnectionStub() {}
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif  // OHOS_AAFWK_ABILITY_CONNECT_CALLBACK_STUB_H

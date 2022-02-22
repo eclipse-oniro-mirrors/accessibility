@@ -16,20 +16,32 @@
 #ifndef OHOS_AAFWK_WANT_H
 #define OHOS_AAFWK_WANT_H
 #include <string>
-#include "uri.h"
 #include <unistd.h>
+#include "uri.h"
 #include "element_name.h"
 
 namespace OHOS {
 namespace AAFwk {
-class Want{
+class Want {
 public:
-    std::string GetBundle() const {return "1";}
-    int GetIntParam(const std::string &key, int defaultValue) const{return 0;}
-    std::string GetAction() const{return "1";}
-    void SetElement(const AppExecFwk::ElementName &element){}
-    Want(){}
-    ~Want(){}
+    std::string GetBundle() const
+    {
+        return "1";
+    }
+
+    int GetIntParam(const std::string &key, int defaultValue) const
+    {
+        return 0;
+    }
+
+    std::string GetAction() const
+    {
+        return "1";
+    }
+
+    void SetElement(const AppExecFwk::ElementName &element) {}
+    Want() {}
+    ~Want() {}
 };
 }  // namespace AAFwk
 }  // namespace OHOS

@@ -29,7 +29,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
         return;
     }
 
-    auto winMgr = AccessibilityWindowInfoManager::GetInstance();
+    auto& winMgr = AccessibilityWindowInfoManager::GetInstance();
     switch (type) {
         case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED:
         {
@@ -72,6 +72,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
         break;
         case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED:
         {
+            winMgr.SetActiveWindow(windowInfo->wid_);
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_FOCUSED);
             aams->SendEvent(evtInf, aams->GetCurrentAccountId());
         }
@@ -79,6 +80,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
         default:
         break;
     }
+    HILOG_DEBUG("%{public}s: winMgr.a11yWindows[%{public}d]", __func__, winMgr.a11yWindows_.size());
 }
 
 AccessibilityWindowInfoManager &AccessibilityWindowInfoManager::GetInstance()
@@ -158,7 +160,7 @@ void AccessibilityWindowInfoManager::DeregisterWindowChangeListener()
 
 void AccessibilityWindowInfoManager::SetActiveWindow(int windowId)
 {
-    HILOG_DEBUG("%{public}s start", __func__);
+    HILOG_DEBUG("%{public}s start windowId(%{public}d)", __func__, windowId);
     if (windowId == INVALID_WINDOW_ID) {
         if (a11yWindows_.count(activeWindowId_)) {
             a11yWindows_[activeWindowId_].SetActive(false);

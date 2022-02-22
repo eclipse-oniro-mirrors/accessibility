@@ -15,12 +15,12 @@
 
 #include "js_accessibility_extension_context.h"
 
-#include "hilog_wrapper.h"
-#include "napi_accessibility_window_info.h"
 #include "js_extension_context.h"
 #include "js_runtime_utils.h"
+#include "hilog_wrapper.h"
 #include "napi_accessibility_info.h"
 #include "napi_accessibility_utils.h"
+#include "napi_accessibility_window_info.h"
 
 using namespace OHOS::AbilityRuntime;
 
@@ -30,7 +30,7 @@ namespace {
 constexpr int32_t ERROR_CODE_ONE = 1;
 class JsAccessibilityExtensionContext final {
 public:
-    JsAccessibilityExtensionContext(
+    explicit JsAccessibilityExtensionContext(
         const std::shared_ptr<AccessibilityExtensionContext>& context) : context_(context) {}
     ~JsAccessibilityExtensionContext() = default;
 

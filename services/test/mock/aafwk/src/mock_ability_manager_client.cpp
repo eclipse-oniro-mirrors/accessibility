@@ -13,23 +13,22 @@
  * limitations under the License.
  */
 
-
 #include "ability_manager_client.h"
 
 namespace OHOS {
 namespace AAFwk {
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::instance_ = nullptr;
+std::mutex AbilityManagerClient::mutex_;
 
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
 {
     if (instance_ == nullptr) {
+        std::lock_guard<std::mutex> lock_l(mutex_);
         if (instance_ == nullptr) {
             instance_ = std::make_shared<AbilityManagerClient>();
         }
     }
     return instance_;
 }
-
-
 }  // namespace AAFwk
 }  // namespace OHOS

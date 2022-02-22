@@ -26,6 +26,7 @@ config("module_private_config") {
     cflags_cc = [ "-fexceptions" ]
   }
   include_dirs = [
+    #"mock/distributedschedule/include",
     "mock/multimodalinput/include",
     "mock/powermanager/include",
     "mock/aafwk/include",
@@ -53,8 +54,8 @@ config("module_private_config") {
     "//utils/native/base/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
-    "//foundation/distributedschedule/samgr/services/samgr/native/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
+    #"//foundation/distributedschedule/samgr/services/samgr/native/include",
+    #"//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
     "//foundation/appexecfwk/standard/common/log/include",
     "//third_party/jsoncpp/include/json",
@@ -90,9 +91,13 @@ MockPowerManagerSrc = [
 ]
 
 MockAafwkSrc = [
-  "mock/aafwk/src/mock_ability_manager_client.cpp"
+  "mock/aafwk/src/mock_ability_manager_client.cpp",
 ]
 
+MockDistributedscheduleSrc = [
+  #"mock/distributedschedule/src/iservice_registry.cpp",
+  #"mock/distributedschedule/src/system_ability_manager.cpp",
+]
 
 ################################################################################
 ohos_moduletest("aams_accessibility_touch_guider_test") {
@@ -145,6 +150,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -230,6 +236,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -262,7 +269,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "//foundation/graphic/standard:libwmclient",
     "//foundation/windowmanager/wm:libwm",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-]
+  ]
 }
 
 ################################################################################
@@ -304,10 +311,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//base/accessibility/services/test/mock/accessibility_event_transmission_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
     "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/iservice_registry.cpp",
-    "//base/accessibility/services/test/mock/system_ability_manager.cpp",
+    #"//base/accessibility/services/test/mock/system_ability_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
-    "//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
+    #"//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
     "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
     "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
@@ -326,6 +332,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -341,7 +348,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
+    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -398,10 +405,9 @@ ohos_moduletest("aams_server_test") {
     "../aams/test/mock/gesture_simulation_mock.cpp",
     "../aams/test/mock/accessibility_event_transmission_mock.cpp",
     "../aams/test/mock/accessibility_operator_mock.cpp",
-    "../aams/test/mock/iservice_registry.cpp",
-    "../aams/test/mock/system_ability_manager.cpp",
+    #"../aams/test/mock/system_ability_manager.cpp",
     "../aams/test/mock/mock_bundle_manager.cpp",
-    "../aams/test/mock/mock_system_ability_manager_stub.cpp",
+    #"../aams/test/mock/mock_system_ability_manager_stub.cpp",
     "../aams/test/mock/common_event_support_mock.cpp",
     "../aams/test/mock/common_event_manager_mock.cpp",
     "../aams/test/mock/matching_skill_mock.cpp",
@@ -423,6 +429,7 @@ ohos_moduletest("aams_server_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -438,7 +445,7 @@ ohos_moduletest("aams_server_test") {
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
+    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/windowmanager/utils:libwmutil",
   ]
 
@@ -509,6 +516,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -581,10 +589,9 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//base/accessibility/services/test/mock/accessibility_event_transmission_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
     "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/iservice_registry.cpp",
-    "//base/accessibility/services/test/mock/system_ability_manager.cpp",
+    #"//base/accessibility/services/test/mock/system_ability_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
-    "//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
+    #"//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
     "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
     "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
@@ -603,6 +610,7 @@ ohos_moduletest("aams_common_event_registry_test") {
   sources += MockMultiModalInputSrc
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
+  sources += MockDistributedscheduleSrc
 
   configs = [
     ":module_private_config",
@@ -617,7 +625,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
+    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
   ]

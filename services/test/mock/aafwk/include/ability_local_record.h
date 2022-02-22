@@ -20,10 +20,8 @@
 
 namespace OHOS {
 namespace AppExecFwk {
-
 class AbilityLocalRecord {
 public:
-
 };
 }  // namespace AppExecFwk
 }  // namespace OHOS

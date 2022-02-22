@@ -350,16 +350,15 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }
+
     std::vector<AppExecFwk::ElementName> temp{};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
         temp.push_back(*iter);
     }
-
     for (int i = 0; i < dev_num; i++) {
         it.insert(make_pair(temp[i].GetURI(), temp[i]));
     }
-
     SetEnabledObj(it);
 
     return ErrCode::NO_ERROR;
@@ -370,17 +369,14 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(Mes
     HILOG_DEBUG("%{public}s", __func__);
 
     std::map<std::string, AppExecFwk::ElementName> it = GetEnabledAbilities();
-
-    reply.WriteInt32(it.size());
-
     std::map<std::string, AppExecFwk::ElementName>::iterator iter;
 
-    for (iter = it.begin(); iter != it.end();) {
+    reply.WriteInt32(it.size());
+    for (iter = it.begin(); iter != it.end(); ++iter) {
         bool ret = reply.WriteParcelable(&iter->second);
         if (!ret) {
             return ERROR;
         }
-        iter++;
     }
 
     return ErrCode::NO_ERROR;
@@ -392,10 +388,9 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
     HILOG_DEBUG("%{public}s", __func__);
 
     std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
+    int num = it.size();
 
     reply.WriteInt32(it.size());
-
-    int num = it.size();
     for (int i = 0; i < num; i++) {
         bool ret = reply.WriteParcelable(&it[i]);
         if (!ret) {
@@ -411,21 +406,19 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
 
     std::map<std::string, AppExecFwk::ElementName> it{};
     int dev_num = data.ReadInt32();
-
     if (dev_num == 0) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }
+
     std::vector<AppExecFwk::ElementName> temp{};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
         temp.push_back(*iter);
     }
-
     for (int i = 0; i < dev_num; i++) {
         it.insert(make_pair(temp[i].GetURI(), temp[i]));
     }
-
     DisableAbilities(it);
 
     return ErrCode::NO_ERROR;

@@ -631,12 +631,11 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
     data.WriteInt32(it.size());
     std::map<std::string, AppExecFwk::ElementName>::iterator iter;
 
-    for (iter = it.begin(); iter != it.end();) {
+    for (iter = it.begin(); iter != it.end(); ++iter) {
         bool ret = data.WriteParcelable(&iter->second);
         if (!ret) {
             return false;
         }
-        iter++;
     }
 
     error = Remote()->SendRequest(
@@ -696,7 +695,6 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-
     std::vector<AccessibilityAbilityInfo> it{};
 
     if (!WriteInterfaceToken(data)) {
@@ -709,7 +707,6 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         HILOG_ERROR("Interrupt fail, error: %{public}d", error);
         return it;
     }
-
     int dev_num = reply.ReadInt32();
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AccessibilityAbilityInfo> dev(reply.ReadParcelable<AccessibilityAbilityInfo>());
@@ -731,22 +728,18 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
         HILOG_ERROR("%{public}s fail, connection write Token", __func__);
         return false;
     }
-
     data.WriteInt32(it.size());
     std::map<std::string, AppExecFwk::ElementName>::iterator iter;
 
-    for (iter = it.begin(); iter != it.end(); iter++) {
+    for (iter = it.begin(); iter != it.end(); ++iter) {
         bool ret = data.WriteParcelable(&iter->second);
         if (!ret) {
             return false;
         }
     }
-
     error = Remote()->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DISABLE_ABILITIES),
-        data,
-        reply,
-        option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("SetEnabledObj fail, error: %{public}d", error);
         return false;

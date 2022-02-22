@@ -62,6 +62,7 @@ private:
     void HandlePackageRemoved(const AAFwk::Want &want) const;
     void HandlePackageUpdateFinished(const AAFwk::Want &want) const;
     void HandlePackageChanged(const AAFwk::Want &want) const;
+    void HandlePackageAdd(const AAFwk::Want &want) const;
 
     typedef void (AccessibilityCommonEventRegistry::*HandleEventFunc)(const AAFwk::Want&) const;
     std::map<std::string, HandleEventFunc> handleEventFunc_;

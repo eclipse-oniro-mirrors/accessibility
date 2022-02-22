@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "accessibility_window_info.h"
+#include "singleton.h"
 #include "window_manager.h"
 
 namespace OHOS {
@@ -59,6 +60,7 @@ public:
 
 private:
     AccessibilityWindowInfoManager() : windowListener_(new AccessibilityWindowListener()) {}
+    DISALLOW_COPY_AND_MOVE(AccessibilityWindowInfoManager);
 };
 }  // namespace Accessibility
 }  // namespace OHOS

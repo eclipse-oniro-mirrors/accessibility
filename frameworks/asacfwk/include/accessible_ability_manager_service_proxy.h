@@ -124,7 +124,6 @@ public:
      * @return IPC object
      */
     sptr<IRemoteObject> GetObject();
-
 private:
     /**
      * @brief Write the descriptor of IPC.
@@ -134,7 +133,6 @@ private:
     bool WriteInterfaceToken(MessageParcel& data);
     static inline BrokerDelegator<AccessibleAbilityManagerServiceClientProxy> delegator;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

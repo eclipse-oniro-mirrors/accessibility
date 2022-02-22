@@ -260,7 +260,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     if (instance_ == nullptr) {
-        int accountId = 100;    //TBD
+        int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
     } else {
         HILOG_DEBUG("IAccessibleAbilityManagerServiceClient had construct instance");
@@ -274,7 +274,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
     HILOG_DEBUG("[%{public}s]", __func__);
     AbilityContext abilityContext{};
     if (instance_ == nullptr) {
-        int accountId = 100;    //TBD
+        int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
     } else {
         HILOG_DEBUG("IAccessibleAbilityManagerServiceClient had construct instance");
@@ -360,7 +360,6 @@ bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
     HILOG_DEBUG("[%{public}s]", __func__);
     bool ret = false;
     if (isCaptionEnabled_ != state) {
-
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
             HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
@@ -439,7 +438,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& e
         HILOG_ERROR("[%{public}s] bundleName is invalid", __func__);
         return false;
     }
-    if(!CheckActionType(event.GetTriggerAction())) {
+    if (!CheckActionType(event.GetTriggerAction())) {
         return false;
     }
     auto proxyService = pimpl->GetService();
@@ -459,7 +458,7 @@ bool AccessibilitySystemAbilityClient::SubscribeStateObserver(
         eventType != AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED &&
-        eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED ) {
+        eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED) {
         HILOG_ERROR("[%{public}s] Input eventType is out of scope", __func__);
         return false;
     }
@@ -497,8 +496,8 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(
     if (eventType != AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
-        eventType != AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED&&
-        eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED ) {
+        eventType != AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED &&
+        eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED) {
         HILOG_ERROR("[%{public}s] Input eventType is out of scope", __func__);
         return false;
     }
@@ -670,11 +669,17 @@ void AccessibilitySystemAbilityClient::NotifyCaptionStateChanged()
 
 bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type)
 {
+    HILOG_DEBUG("[%{public}s]", __func__);
     bool result = true;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
-        observersCaptionEnable_.push_back(ob);
+        if (observersCaptionEnable_.size() == 0) {
+          observersCaptionEnable_.push_back(ob);
+        }
+        
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
-        observersCaptionProperty_.push_back(ob);
+        if (observersCaptionProperty_.size() == 0) {
+          observersCaptionProperty_.push_back(ob);
+        }
     } else {
         result = false;
         HILOG_ERROR("%{public}s Type Error ", __func__);
@@ -685,6 +690,7 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
 
 bool AccessibilitySystemAbilityClient::DeleteCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type)
 {
+    HILOG_DEBUG("[%{public}s]", __func__);
     bool result = false;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
         for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); it++) {
@@ -795,8 +801,7 @@ bool AccessibilitySystemAbilityClient::GetKeyEventObserverState()
 bool AccessibilitySystemAbilityClient::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    if (isTouchExplorationEnabled_ != state)
-    {
+    if (isTouchExplorationEnabled_ != state) {
         isTouchExplorationEnabled_ = state;
         NotifyTouchExplorationStateChanged();
     }
@@ -806,10 +811,8 @@ bool AccessibilitySystemAbilityClient::SetTouchGuideState(const bool state)
 bool AccessibilitySystemAbilityClient::SetGestureState(const bool state)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    if (isGesturesSimulationEnabled_ != state)
-    {
+    if (isGesturesSimulationEnabled_ != state) {
         isGesturesSimulationEnabled_ = state;
-
         NotifyGestureStateChanged();
     }
     return true;
@@ -818,8 +821,7 @@ bool AccessibilitySystemAbilityClient::SetGestureState(const bool state)
 bool AccessibilitySystemAbilityClient::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    if (isFilteringKeyEventsEnabled_ != state)
-    {
+    if (isFilteringKeyEventsEnabled_ != state) {
         isFilteringKeyEventsEnabled_ = state;
         NotifyKeyEventStateChanged();
     }
@@ -853,10 +855,10 @@ std::map<std::string, AppExecFwk::ElementName> AccessibilitySystemAbilityClient:
 std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetInstalledAbilities()
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    std::vector<AccessibilityAbilityInfo> it{};
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
         HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        std::vector<AccessibilityAbilityInfo> it;
         return it;
     }
     return proxyService->GetInstalledAbilities();

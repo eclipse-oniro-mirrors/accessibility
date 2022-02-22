@@ -122,8 +122,9 @@ public:
     /* For common event */
     void RemovedUser(int32_t accountId);
     void PresentUser();
-    void PackageChanged();
+    void PackageChanged(std::string& bundleName);
     void PackageRemoved(std::string& bundleName);
+    void PackageAdd(std::string& bundleName);
     void PackageUpdateFinished(std::string& bundleName);
 
     void UpdateAccessibilityManagerService();

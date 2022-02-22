@@ -184,8 +184,7 @@ bool AccessibilityOperator::ResetDisplayResize(const int channelId, const int di
 }
 
 bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
-    const int displayId, const float scale, const float centerX,
-    const float centerY, const bool animate)
+    const int displayId, const float scale, const float centerX, const float centerY, const bool animate)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SetDisplayResizeScaleAndCenter";
     return true;

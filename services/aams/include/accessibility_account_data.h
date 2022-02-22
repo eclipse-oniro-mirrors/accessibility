@@ -31,6 +31,7 @@
 
 namespace OHOS {
 namespace Accessibility {
+using CaptionPropertyCallbacks = std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>>;
 class AccessibleAbilityConnection;
 
 class IAccessibleAbilityManagerServiceState;
@@ -165,7 +166,7 @@ public:
      */
     const std::vector<sptr<IAccessibleAbilityManagerServiceState>> GetStateCallbacks();
 
-    const std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>> GetCaptionPropertyCallbacks();
+    const CaptionPropertyCallbacks GetCaptionPropertyCallbacks();
 
     /**
      * @brief Get interface operation interactive connection list.
@@ -361,6 +362,9 @@ private:
      * @return
      */
     void UpdateMagnificationCapability();
+    void CaptionInit(nlohmann::json jsonObj);
+    void CapbilityInit(nlohmann::json jsonObj);
+    void EnabledListInit(nlohmann::json jsonObj);
 
     int id_;
     bool isEnabled_ = false;
@@ -374,7 +378,7 @@ private:
                                                                                          // ElementName.
     std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_{};
     std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_{};  // key: windowId
-    std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>> captionPropertyCallbacks_{};
+    CaptionPropertyCallbacks captionPropertyCallbacks_{};
     std::vector<AccessibilityAbilityInfo> installedAbilities_{};
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};         // key: The URI of the ElementName.
     std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_{};  // key: The URI of the ElementName.

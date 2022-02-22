@@ -20,7 +20,6 @@ namespace OHOS {
 namespace AbilityRuntime {
 class JsRuntime {
 public:
-
 };
 }  // namespace AbilityRuntime
 }  // namespace OHOS

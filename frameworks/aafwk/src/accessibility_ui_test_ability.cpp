@@ -21,11 +21,15 @@
 
 namespace OHOS {
 namespace Accessibility {
+std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::instance_ = nullptr;
 AccessibilityUITestAbility& AccessibilityUITestAbility::GetInstance()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-    static AccessibilityUITestAbility instance;
-    return instance;
+    if (instance_ == nullptr) {
+        std::shared_ptr<AccessibilityUITestAbility> temp(new AccessibilityUITestAbility);
+        instance_ = temp;
+    }
+    return *instance_;
 }
 
 AccessibilityUITestAbility::AccessibilityUITestAbility()

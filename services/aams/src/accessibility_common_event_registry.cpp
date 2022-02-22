@@ -34,7 +34,7 @@ AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
         &AccessibilityCommonEventRegistry::HandlePresentUser;
 
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
-        &AccessibilityCommonEventRegistry::HandlePackageRemoved;
+        &AccessibilityCommonEventRegistry::HandlePackageAdd;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =
         &AccessibilityCommonEventRegistry::HandlePackageRemoved;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED] =
@@ -49,8 +49,7 @@ bool AccessibilityCommonEventRegistry::StartRegister()
         eventHandles_.clear();
     }
 
-    for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it)
-    {
+    for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
         eventHandles_.emplace(it->first, bind(it->second, this, placeholders::_1));
     }
@@ -75,7 +74,6 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
     }
 
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscribeInfo.SetPermission("ohos.permission.MANAGE_USERS");
     accessibilityCommonEventSubscriber_ =
         std::make_shared<AccessibilityCommonEventSubscriber>(subscribeInfo, eventHandles_);
 
@@ -146,6 +144,13 @@ void AccessibilityCommonEventRegistry::HandlePackageRemoved(const Want &want) co
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageRemoved(bundleName);
 }
 
+void AccessibilityCommonEventRegistry::HandlePackageAdd(const Want &want) const
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    string bundleName = want.GetBundle();
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageAdd(bundleName);
+}
+
 void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &want) const
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -156,8 +161,8 @@ void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &w
 void AccessibilityCommonEventRegistry::HandlePackageChanged(const Want &want) const
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageChanged();
+    string bundleName = want.GetBundle();
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageChanged(bundleName);
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

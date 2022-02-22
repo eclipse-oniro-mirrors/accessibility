@@ -140,7 +140,8 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
     AddAccessibleAbilityConnection();
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
     /* PackageChanged */
-    aams_->PackageChanged();
+    std::string bundleName = "bundleName";
+    aams_->PackageChanged(bundleName);
     EXPECT_EQ(0, int(accountData_->GetInstalledAbilities().size()));
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);

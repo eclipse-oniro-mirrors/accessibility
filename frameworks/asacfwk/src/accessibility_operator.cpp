@@ -99,6 +99,7 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     int activeWindow = AccessibilitySystemAbilityClient::GetInstance()->GetActiveWindow();
+    HILOG_DEBUG("[%{public}s] activeWindow is %{public}d", __func__, activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
     for (auto& info : elementInfos) {
         HILOG_DEBUG("[%{public}s] element [elementSize:%{public}d]", __func__, accessibilityInfosResult_.size());
@@ -193,13 +194,15 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
     auto channelService = GetChannel(channelId);
+
     if (channelService != nullptr) {
         int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
-        result = channelService->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, sequenceNum,
-            this);
+        result = channelService->FindFocusedElementInfo(accessibilityWindowId, elementId,
+            focusType, sequenceNum, this);
         if (!result) {
             return result;
         }
+
         HILOG_DEBUG(
             "FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
             focusType[%{public}d] sequenceNum[%{public}d]",
@@ -218,8 +221,8 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
         HILOG_DEBUG("[%{public}s] Can't find the component info", __func__);
         result = false;
     } else {
-      elementInfo = accessibilityInfoResult_;
-      result = true;
+        elementInfo = accessibilityInfoResult_;
+        result = true;
     }
 
     return result;

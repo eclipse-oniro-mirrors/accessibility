@@ -30,15 +30,13 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }

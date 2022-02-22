@@ -34,8 +34,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-// The global action types
 enum GlobalAction : uint32_t {
     GLOBAL_ACTION_INVALID = 0x0000,
     GLOBAL_ACTION_BACK = 0x0001,
@@ -56,7 +54,7 @@ public:
     /**
      * @brief Obtains elementInfo of focus.
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
-     * @param elementInfo The elementInfo of focus.
+     * @param elementInfo The accessibilityElementInfo of focus.
      * @return Return true if obtains elementInfo successfully, else return false.
      */
     bool GetFocusElementInfo(uint32_t focusType, std::optional<AccessibilityElementInfo>& elementInfo);
@@ -101,7 +99,7 @@ public:
     /**
      * @brief Executes a specified action.
      * @param action The action of OHOS::Accessibility::GlobalAction.
-     * @return Return true if performs action successfully, else return false.
+     * @return Return true if executes action successfully, else return false.
      */
     bool ExecuteCommonAction(uint32_t action);
 
@@ -133,8 +131,6 @@ private:
     std::map<uint32_t, std::shared_ptr<DisplayResizeController>> displayResizeControllers_ {};
     uint32_t channelId_ = 0xFFFFFFFF;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // ACCESSIBILITY_EXTENSION_CONTEXT_H
+#endif // ACCESSIBILITY_EXTENSION_CONTEXT_H

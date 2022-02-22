@@ -20,6 +20,7 @@ namespace OHOS {
 int g_mTkeyCode = -1;
 std::vector<int32_t> g_mtTouchAction;
 std::function<void(std::shared_ptr<MMI::PointerEvent>)> g_pointerCallback = nullptr;
+std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer = nullptr;
 namespace MMI {
 int MTtouchAction = -1;
 
@@ -29,6 +30,7 @@ InputManager::~InputManager()
 {
     g_mtTouchAction.clear();
     g_pointerCallback = nullptr;
+    g_inputEventConsumer = nullptr;
 }
 
 InputManager *InputManager::GetInstance()
@@ -52,6 +54,7 @@ void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent
 
 int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interceptorId)
 {
+    g_inputEventConsumer = interceptorId;
     return 0;
 }
 

@@ -155,7 +155,21 @@ public:
      * @param capabilities the capabilities to set.
      * @return
      */
-    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;};
+    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;}
+
+    /**
+     * @brief Set the types of the ability.
+     * @param abilityTypes the ability to set.
+     * @return
+     */
+    inline void SetAccessibilityAbilityType(uint32_t abilityTypes) {abilityTypes_ = abilityTypes;}
+
+    /**
+     * @brief Set the types of the event.
+     * @param eventTypes the event to set.
+     * @return
+     */
+    inline void SetEventTypes(uint32_t eventTypes) {eventTypes_ = eventTypes;}
 
 private:
 
@@ -171,12 +185,11 @@ private:
     std::string name_;
     std::string description_;
 
-    uint32_t capabilities_ = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
-        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
-    std::string rationale_ = "on";
+    uint32_t capabilities_ = 0;
+    std::string rationale_ = "";
 
-    uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_ALL;
-    uint32_t eventTypes_ = EventType::TYPES_ALL_MASK;
+    uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_INVALID;
+    uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
     std::string settingsAbility_;
     std::vector<std::string> targetBundleNames_;
 };
