@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,12 +17,12 @@
 #include "windowmanager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
-class MockDisplay : public Display {
+class MockDisplayInfo : public DisplayInfo {
 public:
-    MockDisplay(const std::string &name, sptr<DisplayInfo> info);
+    MockDisplayInfo();
 };
 
-MockDisplay::MockDisplay(const std::string& name, sptr<DisplayInfo> info) : Display(name, info)
+MockDisplayInfo::MockDisplayInfo() : DisplayInfo()
 {
 }
 } // namespace OHOS::Rosen
