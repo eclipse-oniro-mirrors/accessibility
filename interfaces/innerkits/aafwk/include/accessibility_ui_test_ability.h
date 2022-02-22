@@ -46,7 +46,7 @@ public:
      * @brief Connect to AAMS.
      * @param
      * @return
-     */ 
+     */
     bool Connect();
 
     /**

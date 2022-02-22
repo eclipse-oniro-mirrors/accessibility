@@ -1603,26 +1603,26 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessib
 
     napi_value value;
 
-    NAPI_CALL_RETURN_VOID(env, 
+    NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontFamily", value));
 
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, captionProperty.GetFontScale(), &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontScale", value));
 
-    NAPI_CALL_RETURN_VOID(env, 
+    NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontColor", value));
 
-    NAPI_CALL_RETURN_VOID(env, 
+    NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontEdgeType", value));
 
-    NAPI_CALL_RETURN_VOID(env, 
+    NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "backgroundColor", value));
 
-    NAPI_CALL_RETURN_VOID(env, 
+    NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 

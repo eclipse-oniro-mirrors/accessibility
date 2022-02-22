@@ -738,7 +738,7 @@ void AccessibilityAccountData::EnabledListInit(nlohmann::json jsonObj)
     }
 }
 
-void AccessibilityAccountData::init() 
+void AccessibilityAccountData::init()
 {
     nlohmann::json jsonObj;
     if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {

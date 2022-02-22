@@ -32,7 +32,7 @@ class AbilityManagerClient {
 public:
     AbilityManagerClient() {}
     virtual ~AbilityManagerClient() {}
-    ErrCode ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect, 
+    ErrCode ConnectAbility(const Want &want, const sptr<IAbilityConnection> &connect,
         const sptr<IRemoteObject> &callerToken, int32_t userId)
     {
         return ERR_OK;

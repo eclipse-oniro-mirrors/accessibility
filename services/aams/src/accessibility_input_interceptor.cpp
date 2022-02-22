@@ -273,7 +273,7 @@ AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
 {
     HILOG_DEBUG("OnInputEvent keyEvent start.");
-    
+
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (interceptor == nullptr) {
         HILOG_DEBUG("interceptor is null.");

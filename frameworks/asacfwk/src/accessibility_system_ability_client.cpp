@@ -675,7 +675,7 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
         if (observersCaptionEnable_.size() == 0) {
           observersCaptionEnable_.push_back(ob);
         }
-        
+
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
         if (observersCaptionProperty_.size() == 0) {
           observersCaptionProperty_.push_back(ob);

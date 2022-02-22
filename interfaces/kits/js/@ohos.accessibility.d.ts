@@ -197,7 +197,7 @@ declare namespace accessibility {
       * Indicates the style of captions.
       */
      style: CaptionsStyle;
- 
+
      /**
       * Register the observe of the enable state.
       */
@@ -215,7 +215,7 @@ declare namespace accessibility {
       */
      off(type: 'styleChange', callback?: Callback<CaptionsStyle>): void;
    }
- 
+
    /**
     * Indicates the edge type of the captions font.
     * @syscap SystemCapability.Barrierfree.Accessibility.Hearing
