@@ -341,8 +341,7 @@ HWTEST_F(ASACClientSystemTest, SetEnabledObj, TestSize.Level1)
     shared_ptr<AccessibilitySystemAbilityClient> instance = AccessibilitySystemAbilityClient::GetInstance();
 
     GTEST_LOG_(INFO) << "SetEnabledObj start";
-    std::map<std::string, AppExecFwk::ElementName> it{};
-    it = instance->GetEnabledAbilities();
+    std::map<std::string, AppExecFwk::ElementName> it = instance->GetEnabledAbilities();
     bool result = instance->SetEnabledObj(it);
     EXPECT_TRUE(result);
 

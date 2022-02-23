@@ -717,7 +717,7 @@ void ConvertElementInfosToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
 {
     size_t index = 0;
-
+    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}d)", elementInfos.size());
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
         napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
@@ -786,11 +786,13 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     int componentId = elementInfo.GetAccessibilityId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentId", nComponentId));
+    HILOG_DEBUG("%{public}s: componentId[%{public}d]", __func__, componentId);
 
     napi_value nBundleName;
     std::string strBundleName = elementInfo.GetBundleName();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strBundleName.c_str(), NAPI_AUTO_LENGTH, &nBundleName));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", nBundleName));
+    HILOG_DEBUG("%{public}s: strBundleName[%{public}s]", __func__, strBundleName.c_str());
 
     napi_value nComponentType;
     std::string strComponentType = elementInfo.GetComponentType();
@@ -803,6 +805,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     int inputType = elementInfo.GetInputType();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, inputType, &nInputType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "inputType", nInputType));
+    HILOG_DEBUG("%{public}s: inputType[%{public}d]", __func__, inputType);
 
     napi_value nText;
     std::string strText = elementInfo.GetContent();
@@ -814,11 +817,13 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     std::string strHintText = elementInfo.GetHint();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strHintText.c_str(), NAPI_AUTO_LENGTH, &nHintText));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "hintText", nHintText));
+    HILOG_DEBUG("%{public}s: strHintText[%{public}s]", __func__, strHintText.c_str());
 
     napi_value nDescription;
     std::string strDescription = elementInfo.GetDescriptionInfo();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strDescription.c_str(), NAPI_AUTO_LENGTH, &nDescription));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
+    HILOG_DEBUG("%{public}s: strHintText[%{public}s]", __func__, strHintText.c_str());
 
     napi_value nResourceName;
     std::string strResourceName = elementInfo.GetComponentResourceId();

@@ -546,7 +546,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
     for (auto newAbility : extensionInfos) {
         if (newAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package added is an extension ability and\
-            extension ability's name is %{public}s", newAbility.name.c_str());
+                extension ability's name is %{public}s", newAbility.name.c_str());
             sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo(newAbility);
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}d",
@@ -682,7 +682,8 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(elementName);
         if (accountData->GetEnabledAbilities().count(elementName)) {
             if (!connection) {
-                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);// this is a temp deal for ace test
+                // this is a temp deal for ace test
+                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }

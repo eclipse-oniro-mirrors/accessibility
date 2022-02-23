@@ -23,7 +23,9 @@
 #include "singleton_delegator.h"
 
 namespace OHOS::Rosen {
+
 WM_IMPLEMENT_SINGLE_INSTANCE(DisplayManager)
+
 class DisplayManager::Impl : public RefBase {
 friend class DisplayManager;
 private:
@@ -99,7 +101,7 @@ std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId display
 
 const sptr<Display> DisplayManager::GetDefaultDisplay()
 {
-    return nullptr;
+    return GetDisplayById(GetDefaultDisplayId());
 }
 
 std::vector<DisplayId> DisplayManager::GetAllDisplayIds()

@@ -249,7 +249,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
     /* disconnect */
     accountData->RemoveConnectedAbility(connection);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    // EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
     AppExecFwk::ElementName& elementName = connection->GetElementName();
     bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
         accountData->GetConnectingA11yAbilities().end();

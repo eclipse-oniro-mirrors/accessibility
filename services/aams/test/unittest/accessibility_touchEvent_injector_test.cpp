@@ -19,6 +19,7 @@
 #include "accessibility_touchEvent_injector.h"
 #include "accessible_ability_client_proxy.h"
 #include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service.h"
 
 using namespace std;
 using namespace testing;

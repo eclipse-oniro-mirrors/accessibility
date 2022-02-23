@@ -110,14 +110,13 @@ int AccessibilityWindowInfoManager::ConvertToRealWindowId(int windowId, int focu
     return windowId;
 }
 
-WindowType ConvertWindowType(Rosen::WindowType type)//chigw
+WindowType ConvertWindowType(Rosen::WindowType type)
 {
     WindowType winType = TYPE_WINDOW_INVALID;
 
     if (type < Rosen::WindowType::SYSTEM_WINDOW_BASE) {
         winType = TYPE_APPLICATION;
-    } else if ((type >= Rosen::WindowType::SYSTEM_WINDOW_BASE) &&
-               (type <= Rosen::WindowType::SYSTEM_WINDOW_END)){
+    } else if ((type >= Rosen::WindowType::SYSTEM_WINDOW_BASE) && (type <= Rosen::WindowType::SYSTEM_WINDOW_END)) {
         winType = TYPE_SYSTEM;
     }
     else{

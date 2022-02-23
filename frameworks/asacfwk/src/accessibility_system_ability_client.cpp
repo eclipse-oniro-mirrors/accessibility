@@ -45,10 +45,10 @@ struct AccessibilitySystemAbilityClient::Impl {
             AccessibilitySystemAbilityClient::GetInstance()->ResetService(remote);
         }
     };
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_{};
-    sptr<AccessibleAbilityManagerServiceStateStub> stateCallback_{};
-    sptr<AccessibleAbilityManagerServiceClientProxy> serviceProxy_{};
-    sptr<AccessibleAbilityManagerServiceCaptionPropertyStub> captionPropertyCallback_{};
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
+    sptr<AccessibleAbilityManagerServiceStateStub> stateCallback_ = nullptr;
+    sptr<AccessibleAbilityManagerServiceClientProxy> serviceProxy_ = nullptr;
+    sptr<AccessibleAbilityManagerServiceCaptionPropertyStub> captionPropertyCallback_ = nullptr;
     sptr<IAccessibleAbilityManagerServiceClient> GetService()
     {
         if (serviceProxy_ != nullptr) {
@@ -295,18 +295,6 @@ CaptionProperty AccessibilitySystemAbilityClient::GetCaptionProperty() const
     return proxyService->GetCaptionProperty();
 }
 
-// CaptionProperties AccessibilitySystemAbilityClient::GetAccessibilityCaptionProperties() const
-// {
-//     HILOG_DEBUG("[%{public}s]", __func__);
-//     CaptionProperty cp;
-//     auto proxyService = pimpl->GetService();
-//     if (proxyService == nullptr) {
-//         HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
-//         return cp;
-//     }
-//     return proxyService->GetCaptionProperty();
-// }
-
 bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty& caption)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
@@ -317,7 +305,6 @@ bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty&
         (strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) != 0) ||
         (strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) != 0) ||
         (strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str()) != 0)) {
-
         captionProperty_ = caption;
         NotifyCaptionChanged();
     }
@@ -432,13 +419,6 @@ bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& e
 {
     HILOG_DEBUG("[%{public}s] EventType[%{public}d]", __func__, event.GetEventType());
     if (!CheckEventType(event.GetEventType())) {
-        return false;
-    }
-    if (event.GetBundleName() == "") {
-        HILOG_ERROR("[%{public}s] bundleName is invalid", __func__);
-        return false;
-    }
-    if (!CheckActionType(event.GetTriggerAction())) {
         return false;
     }
     auto proxyService = pimpl->GetService();
@@ -673,12 +653,11 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
     bool result = true;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
         if (observersCaptionEnable_.size() == 0) {
-          observersCaptionEnable_.push_back(ob);
+            observersCaptionEnable_.push_back(ob);
         }
-
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
         if (observersCaptionProperty_.size() == 0) {
-          observersCaptionProperty_.push_back(ob);
+            observersCaptionProperty_.push_back(ob);
         }
     } else {
         result = false;
@@ -688,12 +667,13 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
     return result;
 }
 
-bool AccessibilitySystemAbilityClient::DeleteCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type)
+bool AccessibilitySystemAbilityClient::DeleteCaptionListener(
+    const std::shared_ptr<CaptionObserver>& ob, const int type)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     bool result = false;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
-        for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); it++) {
+        for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); ++it) {
             if (*it == ob) {
                 observersCaptionEnable_.erase(it);
                 result = true;
@@ -701,7 +681,7 @@ bool AccessibilitySystemAbilityClient::DeleteCaptionListener(const std::shared_p
             }
         }
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
-        for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); it++) {
+        for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); ++it) {
             if (*it == ob) {
                 observersCaptionProperty_.erase(it);
                 result = true;
@@ -731,7 +711,7 @@ void AccessibilitySystemAbilityClient::NotifyCaptionChanged()
         HILOG_DEBUG("%{public}s observersCaptionProperty_ is null", __func__);
         return;
     }
-    for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); it++) {
+    for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); ++it) {
         if (*it != nullptr && it->get() != nullptr) {
             it->get()->OnCaptionPropertyChanged(captionProperty_);
         } else {

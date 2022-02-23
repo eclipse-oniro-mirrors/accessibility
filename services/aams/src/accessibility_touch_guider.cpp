@@ -22,8 +22,8 @@ namespace Accessibility{
 
 TGEventHandler::TGEventHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner, TouchGuider &tgServer)
-    : AppExecFwk::EventHandler(runner),tgServer_(tgServer) {
-
+    : AppExecFwk::EventHandler(runner), tgServer_(tgServer)
+{
 }
 
 TouchGuider::TouchGuider()
@@ -376,18 +376,18 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
       case MMI::PointerEvent::POINTER_ACTION_DOWN:
-           if (event.GetPointersIdList().size() == POINTER_COUNT_1){
-                HandleTouchGuidingStateInnerDown(event);
-           }else{
-                CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
-                CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
-           }
+	        if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+	            HandleTouchGuidingStateInnerDown(event);
+	        } else {
+	            CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
+	            CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
+	        }
         break;
       case MMI::PointerEvent::POINTER_ACTION_MOVE:
-            HandleTouchGuidingStateInnerMove(event);
-            break;
+        	HandleTouchGuidingStateInnerMove(event);
+        	break;
       case MMI::PointerEvent::POINTER_ACTION_UP:
-        if (event.GetPointersIdList().size() == POINTER_COUNT_1){
+        if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
             OnTouchInteractionEnd();
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                 PostHoverExit();

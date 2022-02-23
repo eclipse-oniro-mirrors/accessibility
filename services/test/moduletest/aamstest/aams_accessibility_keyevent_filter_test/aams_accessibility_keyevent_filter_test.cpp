@@ -135,7 +135,7 @@ void AamsKeyEventFilterTest::WritefileAll(const char* fname, const char* data) c
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
+    (void)fprintf(fp, "%s", data);
     fclose(fp);
 }
 

@@ -25,14 +25,12 @@
 #include "hilog_wrapper.h"
 #include "gesture_simulation.h"
 #include "accessibility_event_transmission.h"
-#include "accessible_ability_manager_service.h"
 #include "accessible_ability_client_interface.h"
 
 namespace OHOS {
 namespace Accessibility {
 
 #define DOUBLE_TAP_MIN_TIME 50
-class AccessibleAbilityManagerService;
 
 struct SendEventArgs {
     std::shared_ptr<MMI::PointerEvent> event_;

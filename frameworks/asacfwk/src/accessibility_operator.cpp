@@ -15,7 +15,6 @@
 
 #include "accessibility_operator.h"
 #include "accessibility_system_ability_client.h"
-#include <sys/time.h>
 #include <unistd.h>
 
 namespace OHOS {
@@ -102,7 +101,7 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
     HILOG_DEBUG("[%{public}s] activeWindow is %{public}d", __func__, activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
     for (auto& info : elementInfos) {
-        HILOG_DEBUG("[%{public}s] element [elementSize:%{public}d]", __func__, accessibilityInfosResult_.size());
+        HILOG_DEBUG("[%{public}s] element [elementSize:%{public}d]", __func__, elementInfosResult_.size());
         elementInfo = info;
         break;
     }
@@ -149,12 +148,12 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
         }
     }
     HILOG_DEBUG("[%{public}s] search element info OK [channelId:%{public}d]", __func__, channelId);
-    for (auto& info : accessibilityInfosResult_) {
+    for (auto& info : elementInfosResult_) {
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] search element info End[size:%{public}d]", __func__, accessibilityInfosResult_.size());
-    elementInfos = accessibilityInfosResult_;
+    HILOG_DEBUG("[%{public}s] search element info End[size:%{public}d]", __func__, elementInfosResult_.size());
+    elementInfos = elementInfosResult_;
     return result;
 }
 
@@ -178,12 +177,12 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
         }
     }
 
-    for (auto& info : accessibilityInfosResult_) {
+    for (auto& info : elementInfosResult_) {
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] [size:%{public}d] end", __func__, accessibilityInfosResult_.size());
-    elementInfos = accessibilityInfosResult_;
+    HILOG_DEBUG("[%{public}s] [size:%{public}d] end", __func__, elementInfosResult_.size());
+    elementInfos = elementInfosResult_;
 
     return result;
 }
@@ -288,11 +287,12 @@ bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindow
 void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    HILOG_DEBUG("[%{public}s] Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+                 __func__, infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         HILOG_DEBUG("[%{public}s] Response", __func__);
-        accessibilityInfosResult_.push_back(*iter);
+        elementInfosResult_.push_back(*iter);
     }
     HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }
@@ -300,10 +300,11 @@ void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
 void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
     const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    HILOG_DEBUG("[%{public}s] Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+                     __func__, infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
-        accessibilityInfosResult_.push_back(*iter);
+        elementInfosResult_.push_back(*iter);
     }
     HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
 }

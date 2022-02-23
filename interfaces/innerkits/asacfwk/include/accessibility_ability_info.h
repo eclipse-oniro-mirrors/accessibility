@@ -48,14 +48,6 @@ namespace Accessibility {
         ACCESSIBILITY_ABILITY_TYPE_ALL = 0xFFFFFFFF,
     };
 
-    // The interception types of key event.
-    // enum KeyEventInterceptionTypes : uint32_t{
-    //     INTERCEPT_KEY_POWER = 0x001,
-    //     INTERCEPT_KEY_VOLUME_UP = 0x002,
-    //     INTERCEPT_KEY_VOLUME_DOWN = 0x004,
-    //     INETRCEPT_KEY_ALL = 0xFFFFFFFF,
-    // };
-
 class AccessibilityAbilityInfo : public Parcelable {
 public:
 
@@ -155,24 +147,32 @@ public:
      * @param capabilities the capabilities to set.
      * @return
      */
-    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;}
+    inline void SetCapabilityValues(uint32_t capabilities)
+    {
+        capabilities_ = capabilities;
+    }
 
     /**
      * @brief Set the types of the ability.
      * @param abilityTypes the ability to set.
      * @return
      */
-    inline void SetAccessibilityAbilityType(uint32_t abilityTypes) {abilityTypes_ = abilityTypes;}
+    inline void SetAccessibilityAbilityType(uint32_t abilityTypes)
+    {
+        abilityTypes_ = abilityTypes;
+    }
 
     /**
      * @brief Set the types of the event.
      * @param eventTypes the event to set.
      * @return
      */
-    inline void SetEventTypes(uint32_t eventTypes) {eventTypes_ = eventTypes;}
+    inline void SetEventTypes(uint32_t eventTypes)
+    {
+        eventTypes_ = eventTypes;
+    }
 
 private:
-
     /**
      * @brief Parse config files of the accessible ability.
      * @param

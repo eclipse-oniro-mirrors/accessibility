@@ -374,16 +374,15 @@ private:
     bool isGesturesSimulation_ = false;
     bool isCaptionState_ = false;
     CaptionProperty captionProperty_;
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_{};  // key: The URI of the
-                                                                                         // ElementName.
-    std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_{};
-    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_{};  // key: windowId
-    CaptionPropertyCallbacks captionPropertyCallbacks_{};
-    std::vector<AccessibilityAbilityInfo> installedAbilities_{};
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_{};         // key: The URI of the ElementName.
-    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_{};  // key: The URI of the ElementName.
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_;   // key: The URI of the
+    std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_;
+    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_;    // key: windowId
+    CaptionPropertyCallbacks captionPropertyCallbacks_;
+    std::vector<AccessibilityAbilityInfo> installedAbilities_;
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;   // key: The URI of the ElementName.
+    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_;    // key: The URI of the ElementName.
 
-    sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr; // key: UI test ability id.
+    sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr;    // key: UI test ability id.
 };
 }  // namespace Accessibility
 }  // namespace OHOS

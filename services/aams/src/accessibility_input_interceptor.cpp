@@ -288,7 +288,6 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
     eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
     HILOG_DEBUG("OnInputEvent keyEvent end.");
-    return;
 }
 
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
@@ -311,7 +310,6 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, interceptor, pointerEvent);
     eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
     HILOG_DEBUG("OnInputEvent pointerEvent end.");
-    return;
-}
 }
 }  // namespace Accessibility
+}  // namespace OHOS

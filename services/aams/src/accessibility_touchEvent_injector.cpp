@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_touchEvent_injector.h"
+#include "accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {

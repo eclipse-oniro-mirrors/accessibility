@@ -23,7 +23,6 @@
 #include "accessible_ability_client_proxy.h"
 #include "accessible_ability_channel_stub.h"
 #include "accessibility_ability_info.h"
-#include "accessible_ability_manager_service.h"
 #include "common_event_manager.h"
 
 namespace OHOS {
@@ -80,7 +79,6 @@ public:
 
 private:
     AccessibleAbilityConnection& connection_;
-    std::shared_ptr<AccessibleAbilityManagerService> aams_ = nullptr;
 };
 
 class AccessibleAbilityConnection : public AAFwk::AbilityConnectionStub {

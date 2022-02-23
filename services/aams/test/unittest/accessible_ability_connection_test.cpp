@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #include "accessible_ability_connection.h"
 #include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service.h"
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_display_manager.h"

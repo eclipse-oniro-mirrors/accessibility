@@ -314,7 +314,7 @@ private:
     static std::map<int, sptr<IAccessibleAbilityChannel>> channels_;
     AccessibilityElementAsyncOperatorMng asyncElementOperatorMng_ = {};
     AccessibilityElementInfo accessibilityInfoResult_ = {};
-    std::vector<AccessibilityElementInfo> accessibilityInfosResult_ = {};
+    std::vector<AccessibilityElementInfo> elementInfosResult_ = {};
     std::vector<AccessibilityWindowInfo> windows_ = {};
     bool executeActionResult_ = false;
     static std::recursive_mutex mutex_;

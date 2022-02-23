@@ -21,6 +21,7 @@
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
 #include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"

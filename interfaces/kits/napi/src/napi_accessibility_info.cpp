@@ -154,11 +154,11 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
     callbackInfo->content_ = content;
     napi_value promise = nullptr;
     if (argc > ARGS_SIZE_ONE) {
-        HILOG_ERROR("callback mode");
+        HILOG_DEBUG("callback mode");
         napi_create_reference(env, argv[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_ERROR("promise mode");
+        HILOG_DEBUG("promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -186,12 +186,12 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
-                // Callback mode
+                HILOG_DEBUG("callback mode");
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, argv, &jsReturnValue);
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
-                // Promise mode
+                HILOG_DEBUG("Promise mode");
                 if (callbackInfo->ret_) {
                     napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
                 } else {

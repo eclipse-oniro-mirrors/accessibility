@@ -15,6 +15,7 @@
 
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
+#include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
 #include "json_utils.h"
@@ -42,11 +43,11 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
         state |= AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED;
-        if(!isEnabled_){
+        if (!isEnabled_) {
             SetEnabled(true);
         }
     } else {
-        if(isEnabled_) {
+        if (isEnabled_) {
             SetEnabled(false);
         }
     }
@@ -631,7 +632,6 @@ bool AccessibilityAccountData::ReadConfigurationForAccountData()
 }
 
 // get installedAbilities_.
-#define THREE_SECOND (3)
 void AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -643,8 +643,8 @@ void AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     do {
         bms = aams->GetBundleMgrProxy();
         if (!bms) {
-            HILOG_ERROR("Get bms failed! sleep 3s and retry is %{public}d", retry);
-            sleep(THREE_SECOND);
+            HILOG_ERROR("Get bms failed! sleep 1s and retry is %{public}d", retry);
+            sleep(1);
             retry ++;
         } else {
             HILOG_DEBUG("Get bms successful and retry is %{public}d", retry);
@@ -667,11 +667,11 @@ void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)
     int FONTSCALE = JsonUtils::GetIntValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTSCALE);
     std::string FONTCOLOR = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTCOLOR);
     std::string FONTEDGETYPE = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE);
     std::string BACKGROUNDCOLOR = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR);
     std::string WINDOWCOLOR = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
     captionProperty_.SetFontScale(FONTSCALE);

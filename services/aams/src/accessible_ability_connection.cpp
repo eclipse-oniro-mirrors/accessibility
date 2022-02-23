@@ -23,6 +23,7 @@
 #include "accessibility_window_connection.h"
 #include "accessibility_window_manager.h"
 #include "accessibility_extension_context.h"
+#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "singleton.h"
@@ -34,13 +35,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     AccessibleAbilityConnection& connection): connection_(connection)
-{
-    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams_) {
-        HILOG_ERROR("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl failed: no aams");
-    }
-    HILOG_DEBUG("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl successfully");
-}
+{}
 
 bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -216,7 +211,8 @@ bool AccessibleAbilityChannelStubImpl::ExecuteCommonAction(int action)
 
 void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handled, const int sequence)
 {
-    sptr<KeyEventFilter> keyEventFilter = aams_->GetKeyEventFilter();
+    sptr<KeyEventFilter> keyEventFilter =
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetKeyEventFilter();
     if (!keyEventFilter) {
         return;
     }
@@ -274,7 +270,8 @@ void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
         proxy->OnGestureSimulateResult(requestId, false);
         return;
     }
-    sptr<TouchEventInjector> touchEventInjector = aams_->GetTouchEventInjector();
+    sptr<TouchEventInjector> touchEventInjector =
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetTouchEventInjector();
     if (!touchEventInjector) {
         proxy->OnGestureSimulateResult(requestId, false);
         return;

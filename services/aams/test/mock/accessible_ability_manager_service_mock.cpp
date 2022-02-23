@@ -592,6 +592,7 @@ int AccessibleAbilityManagerService::GetActiveWindow()
 }
 
 void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
-{}
+{
+}
 }   // namespace OHOS
 }   // Accessibility
