@@ -161,11 +161,10 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
-    AccessibilityElementInfo *accessibilityInfo = new AccessibilityElementInfo();
+    sptr<AccessibilityElementInfo> accessibilityInfo = new AccessibilityElementInfo();
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete accessibilityInfo;
-        accessibilityInfo = nullptr;
+        return nullptr;
     }
     return accessibilityInfo;
 }
@@ -1360,8 +1359,7 @@ sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
     sptr<Rect> rect = new Rect();
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete rect;
-        rect = nullptr;
+        return nullptr;
     }
     return rect;
 }
