@@ -133,11 +133,6 @@ bool AccessibleAbilityManagerService::Init()
         }
     }
 
-    if (!accessibilityCommonEventRegistry_.StartRegister()) {
-        HILOG_ERROR("AccessibleAbilityManagerService::Init failed:Failed to subscribe common event");
-        return false;
-    }
-
     // temp deal: set current account Id to 100.
     // This is a temporary countermeasure, after which a formal countermeasure is required.
     currentAccountId_ = 100;
@@ -148,8 +143,13 @@ bool AccessibleAbilityManagerService::Init()
     // Get ExtensionInfo from BMS
     accountData->GetInstalledAbilitiesFromBMS();
 
+    // Register common event
+    if (!accessibilityCommonEventRegistry_.StartRegister()) {
+        HILOG_ERROR("AccessibleAbilityManagerService::Init failed:Failed to subscribe common event");
+        return false;
+    }
+    
     // temp deal: [setting] Add listener of setting's URI.
-
     HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
 }
@@ -940,8 +940,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
     // add installed ability
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     abilityInfo->SetPackageName("com.example.uitest");
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
-        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
