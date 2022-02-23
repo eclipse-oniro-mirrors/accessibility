@@ -358,7 +358,7 @@ void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId) {}
 void AccessibleAbilityManagerService::PresentUser() {}
-void AccessibleAbilityManagerService::PackageChanged() {}
+void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName) {}
 void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName) {}
 void AccessibleAbilityManagerService::PackageUpdateFinished(std::string &bundleName) {}
 

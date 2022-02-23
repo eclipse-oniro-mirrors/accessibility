@@ -18,6 +18,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+const int LEFT_TOP_Y = 200;
+const int RIGHT_BOTTOM_X = 600;
+const int RIGHT_BOTTOM_Y = 800;
 std::map<int, sptr<IAccessibleAbilityChannel>> AccessibilityOperator::channels_ = {};
 std::vector<sptr<AccessibilityOperator>>  AccessibilityOperator::instances_ = {};
 std::recursive_mutex AccessibilityOperator::mutex_ = {};
@@ -25,6 +28,10 @@ std::recursive_mutex AccessibilityOperator::mutex_ = {};
 AccessibilityOperator::AccessibilityOperator()
 {
     executeActionResult_ = false;
+}
+
+AccessibilityOperator::~AccessibilityOperator()
+{
 }
 
 AccessibilityOperator &AccessibilityOperator::GetInstance()
@@ -77,7 +84,7 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
 
 std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int channelId)
 {
-     return windows_;
+    return windows_;
 }
 
 bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
@@ -86,8 +93,8 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
     return true;
 }
 
-bool AccessibilityOperator::SearchElementInfosByText(int channelId,
-    int accessibilityWindowId, int elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessibilityWindowId,
+    int elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     return true;
 }
@@ -96,7 +103,7 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
     int elementId, int focusType, AccessibilityElementInfo &elementInfo)
 {
     AccessibilityElementInfo focus;
-    Rect rect(0,200,600,800);
+    Rect rect(0, LEFT_TOP_Y, RIGHT_BOTTOM_X, RIGHT_BOTTOM_Y);
     focus.SetRectInScreen(rect);
     elementInfo = focus;
     return true;
@@ -109,7 +116,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
 }
 
 bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindowId,
-    int elementId, int action,  std::map<std::string, std::string> &actionArguments)
+    int elementId, int action, std::map<std::string, std::string> &actionArguments)
 {
     return true;
 }
@@ -182,6 +189,5 @@ void AccessibilityOperator::SendSimulateGesture(const int channelId,
     const int requestId, const std::vector<GesturePathDefine> &gestureSteps)
 {
 }
-
 } // namespace Accessibility
 } // namespace OHOS

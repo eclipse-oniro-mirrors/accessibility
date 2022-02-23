@@ -29,6 +29,8 @@
 namespace OHOS {
 namespace Accessibility {
 
+#define UID_MASK 200000
+
 class AccessibilityAccountData;
 class AccessibleAbilityManagerService;
 class AccessibleAbilityConnection;

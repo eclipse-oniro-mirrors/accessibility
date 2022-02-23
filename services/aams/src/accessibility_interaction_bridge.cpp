@@ -112,7 +112,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
     /* Apply magnification if needed. */
 
     // Intersect with window
-    auto windowManager = AccessibilityWindowInfoManager::GetInstance();
+    auto& windowManager = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfo window;
     auto result = windowManager.GetAccessibilityWindow(windowManager.activeWindowId_, window);
     if (!result) {

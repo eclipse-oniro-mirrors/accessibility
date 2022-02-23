@@ -17,11 +17,12 @@
 #define ACCESSIBLE_ABILITY_CLIENT_STUB_IMPL_H
 
 #include <memory>
-#include "refbase.h"
 #include "accessible_ability_client_stub.h"
-#include "hilog_wrapper.h"
-#include "accessibility_operator.h"
 #include "accessibility_extension.h"
+#include "accessibility_operator.h"
+#include "accessibility_ui_test_ability_listener.h"
+#include "hilog_wrapper.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -40,6 +41,10 @@ public:
      * @return
      */
     void RegisterListenerImpl(const std::shared_ptr<AccessibilityExtension> &listener);
+
+    void SetUITestEnabled();
+
+    bool RegisterUITestAbilityListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener);
 
     /**
      * @brief Init accessible ability.
@@ -120,7 +125,9 @@ private:
     sptr<IRemoteObject::DeathRecipient> deathRecipient_{};
     sptr<IAccessibleAbilityChannel> channel_ = nullptr;
     std::shared_ptr<AccessibilityExtension> listener_ = nullptr;
+    std::shared_ptr<IAccessibleUITestAbilityListener> uiTestListener_ = nullptr;
     uint32_t channelId_ = INVALID_CHANNEL_ID;
+    bool uiTestEnabled_ = false;
 };
 
 } // namespace Accessibility

@@ -109,9 +109,14 @@ public:
     virtual bool SetKeyEventObserverState(const bool state) override;
 
     virtual bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
-    virtual bool SetInstalled(std::vector<AccessibilityAbilityInfo> it) override;
     virtual std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+
+    virtual bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
+    virtual int GetActiveWindow() override;
+
+    virtual bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
+    virtual bool DeregisterUITestAbilityConnectionClient() override;
 
     /**
      * @brief Get IPC object.
@@ -119,7 +124,6 @@ public:
      * @return IPC object
      */
     sptr<IRemoteObject> GetObject();
-
 private:
     /**
      * @brief Write the descriptor of IPC.
@@ -129,7 +133,6 @@ private:
     bool WriteInterfaceToken(MessageParcel& data);
     static inline BrokerDelegator<AccessibleAbilityManagerServiceClientProxy> delegator;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

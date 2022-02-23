@@ -59,7 +59,6 @@ public:
      */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option) override;
-
 private:
     /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
@@ -119,9 +118,13 @@ private:
     ErrCode HandleSetKeyEventObserverState(MessageParcel& data, MessageParcel& reply);
 
     ErrCode HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply);
-    ErrCode HandleSetInstalled(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleGetInstalledAbilities(MessageParcel& data, MessageParcel& reply);
+
+    ErrCode HandleDisableAbilities(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleRegisterUITestAbilityConnectionClient(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleDeregisterUITestAbilityConnectionClient(MessageParcel& data, MessageParcel& reply);
+    ErrCode HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceClientStub::*)(
         MessageParcel& data, MessageParcel& reply);
@@ -129,7 +132,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceClientStub);
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

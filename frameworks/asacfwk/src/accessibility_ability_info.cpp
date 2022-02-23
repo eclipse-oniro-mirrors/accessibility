@@ -83,7 +83,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s types(%{public}d)start.", __func__, abilityTypes_);
     return abilityTypes_;
 }
 

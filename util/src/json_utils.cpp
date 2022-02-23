@@ -24,6 +24,7 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+const int NUM_4 = 4;
 bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &jsonPath)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -208,7 +209,9 @@ bool JsonUtils::RemoveVecValue(nlohmann::json& json, const std::string& key, con
         HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
         for (unsigned int i = 0; i < json[key].size(); i++) {
             HILOG_DEBUG("Find Size = %{public}d\n", json[key].size());
-            if (value == json[key][i]) {
+            std::string val = std::string(json[key][i]["BundleName"]);
+            HILOG_DEBUG("Find key[%{public}s] successful.", val.c_str());
+            if (strcmp(value.c_str(), val.c_str()) == 0) {
                 json[key].erase(i);
                 HILOG_DEBUG("erase successful");
             }
@@ -340,7 +343,7 @@ bool JsonUtils::ToJson(const nlohmann::json& jsonObj, const std::string& jsonPat
 {
     HILOG_DEBUG("%{public}s start.", __func__);
     std::ofstream ofs(jsonPath);
-    ofs << jsonObj.dump(4) << std::endl;
+    ofs << jsonObj.dump(NUM_4) << std::endl;
     return true;
 }
 
@@ -393,7 +396,6 @@ string JsonUtils::GetStrValue(nlohmann::json& json, const std::string& key)
     return value;
 }
 
-
 vector<std::string> JsonUtils::GetVecValue(nlohmann::json& json, const std::string& key)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -413,6 +415,5 @@ vector<std::string> JsonUtils::GetVecValue(nlohmann::json& json, const std::stri
     }
     return vecvalue;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -30,7 +30,7 @@ declare namespace accessibility {
    * @syscap SystemCapability.Barrierfree.Accessibility.Core
    * @since 7
    */
-  type AbilityType = 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual';
+  type AbilityType = 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all';
 
   /**
    * The action that the ability can execute.
@@ -197,7 +197,7 @@ declare namespace accessibility {
       * Indicates the style of captions.
       */
      style: CaptionsStyle;
- 
+
      /**
       * Register the observe of the enable state.
       */
@@ -215,7 +215,7 @@ declare namespace accessibility {
       */
      off(type: 'styleChange', callback?: Callback<CaptionsStyle>): void;
    }
- 
+
    /**
     * Indicates the edge type of the captions font.
     * @syscap SystemCapability.Barrierfree.Accessibility.Hearing

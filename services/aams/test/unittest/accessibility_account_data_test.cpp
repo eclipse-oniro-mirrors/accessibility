@@ -33,7 +33,6 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilityAccountDataTest : public testing::Test {
 public:
-
     AccessibilityAccountDataTest() {}
     ~AccessibilityAccountDataTest() {}
 
@@ -127,7 +126,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
     /* add connecting A11y ability */
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     accountData->AddConnectingA11yAbility(elementName);
     bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
         accountData->GetConnectingA11yAbilities().end();
@@ -158,7 +157,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     /* add connected ability */
     accountData->AddConnectedAbility(connection);
     /* add connecting A11y ability */
@@ -269,7 +268,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
     /* add connecting A11y ability */
     accountData->AddConnectingA11yAbility(elementName);
@@ -294,7 +293,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
     /* add */
     accountData->AddEnabledAbility(elementName);
@@ -688,7 +687,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetCaptionState end";
 }
 
-
 /**
  * @tc.number: AccessibilityAccountData_Unittest_OnAccountSwitched001
  * @tc.name: OnAccountSwitched
@@ -708,7 +706,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     //new aastub
     sptr<AccessibleAbilityClientStubImpl> aastub = new AccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     AAConnection->OnAbilityConnectDone(elementName, aastub, 0);
     GTEST_LOG_(INFO) << "add connected A11y Ability";
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
@@ -748,7 +746,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectingA11yAbility001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
     /* add connecting A11y ability */
     accountData->AddConnectingA11yAbility(elementName);
@@ -808,24 +806,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyE
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetKeyEventObserverState end";
 }
 
-
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetInstalled, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetInstalled start";
-    const int accountId = 1;
-    AppExecFwk::ExtensionAbilityInfo info;
-    info.bundleName = "TEST_BUNDLE_NAME";
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-
-    accountData->AddInstalledAbility(*abilityInfo);
-
-    bool test = accountData->SetInstalled(accountData->GetInstalledAbilities());
-    EXPECT_TRUE(test);
-
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetInstalled end";
-}
-
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCaptionProperty, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetCaptionProperty start";
@@ -862,12 +842,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     accountData->RemoveEnabledAbility(elementName);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility end";
 }
-
 
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnabledObj, TestSize.Level1)
 {
@@ -875,7 +854,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    const AppExecFwk::ElementName elementName("aaa", "TEST_BUNDLE_NAME" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "TEST_BUNDLE_NAME", "ccc");
 
     /* add */
     accountData->AddEnabledAbility(elementName);
@@ -887,6 +866,5 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabledObj end";
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

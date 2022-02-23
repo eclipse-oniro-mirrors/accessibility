@@ -23,16 +23,13 @@
 #include "accessibility_element_info.h"
 
 #include "iremote_broker.h"
-#include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {
 /*
 * The class supply the callback to feedback the result from UI to AA.
-
 */
-class IAccessibilityElementOperatorCallback : public IRemoteBroker
-{
+class IAccessibilityElementOperatorCallback : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibilityElementOperatorCallback");
 
@@ -86,7 +83,6 @@ public:
         SET_RESULT_PERFORM_ACTION,
     };
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

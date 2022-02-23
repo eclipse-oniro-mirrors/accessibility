@@ -22,5 +22,5 @@ aafwk_files = [
   "${aafwk_path}/src/display_resize_controller.cpp",
   "${aafwk_path}/src/js_accessibility_extension.cpp",
   "${aafwk_path}/src/js_accessibility_extension_context.cpp",
-  "//base/accessibility/interfaces/kits/napi/src/napi_accessibility_utils.cpp",
+  "${aafwk_path}/src/accessibility_ui_test_ability.cpp",
 ]

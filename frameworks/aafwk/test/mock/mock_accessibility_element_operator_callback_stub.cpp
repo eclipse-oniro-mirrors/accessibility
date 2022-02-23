@@ -14,12 +14,6 @@
  */
 
 #include "accessibility_element_operator_callback_stub.h"
-#include <vector>
-#include "accessibility_errorcode.h"
-#include "hilog_wrapper.h"
-#include "ipc_skeleton.h"
-#include "ipc_types.h"
-#include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -36,15 +30,13 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }

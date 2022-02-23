@@ -81,7 +81,7 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
     }
     HILOG_INFO("JsAccessibilityExtension::Init CreateJsAccessibilityExtensionContext.");
     NativeValue* contextObj = CreateJsAccessibilityExtensionContext(engine, context);
-    auto shellContextRef = jsRuntime_.LoadSystemModule("accessibility.AccessibilityExtensionContext", &contextObj, 1);
+    auto shellContextRef = jsRuntime_.LoadSystemModule("application.AccessibilityExtensionContext", &contextObj, 1);
     contextObj = shellContextRef->Get();
     HILOG_INFO("JsAccessibilityExtension::Init Bind.");
     context->Bind(jsRuntime_, shellContextRef.release());
@@ -139,6 +139,7 @@ void JsAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo
     HandleScope handleScope(jsRuntime_);
     NativeEngine* nativeEngine = &jsRuntime_.GetNativeEngine();
     // wrap eventInfo
+    NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(reinterpret_cast<napi_env>(nativeEngine));
     napi_value napiEventInfo = nullptr;
     napi_new_instance(
         reinterpret_cast<napi_env>(nativeEngine), NAccessibilityEventInfo::cons_, 0, nullptr, &napiEventInfo);

@@ -25,16 +25,17 @@ config("module_private_config") {
   include_dirs = [
     "mock",
     "//third_party/json/include",
-    "//utils/native/base/include",
     "//utils/system/safwk/native/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
     "//base/accessibility/common/log/include",
-    "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
+    "//base/accessibility/services/test/mock/aafwk/include",
+    "//base/accessibility/services/test/mock/multimodalinput/include",
     "//base/accessibility/dummyData",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
@@ -42,52 +43,56 @@ config("module_private_config") {
   ]
 }
 
+MockMultiModalInputSrc = [
+  "//base/accessibility/services/test/mock/multimodalinput/src/mock_input_event.cpp",
+  "//base/accessibility/services/test/mock/multimodalinput/src/mock_input_manager.cpp",
+  "//base/accessibility/services/test/mock/multimodalinput/src/mock_key_event.cpp",
+  "//base/accessibility/services/test/mock/multimodalinput/src/mock_pointer_event.cpp",
+]
+
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
   sources = [
+    "../../asacfwk/src/accessibility_caption.cpp",
     "../src/accessibility_extension.cpp",
     "../src/accessibility_extension_context.cpp",
-    "../src/display_resize_controller.cpp",
+    "../src/accessibility_ui_test_ability.cpp",
     "../src/accessible_ability_client_proxy.cpp",
-    "../src/accessible_ability_client_stub_impl.cpp",
     "../src/accessible_ability_client_stub.cpp",
-    "unittest/accessibility_extension_context_test.cpp",
-    "unittest/display_resize_controller_test.cpp",
-    "unittest/accessible_ability_client_proxy_test.cpp",
-    "unittest/accessible_ability_client_stub_test.cpp",
-    "unittest/accessible_ability_client_stub_impl_test.cpp",
-    "mock/mock_accessibility_operator.cpp",
+    "../src/accessible_ability_client_stub_impl.cpp",
+    "../src/display_resize_controller.cpp",
     "mock/mock_accessibility_element_info.cpp",
-    "mock/mock_gesture_simulation.cpp",
+    "mock/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/mock_accessibility_event_info.cpp",
+    "mock/mock_accessibility_operator.cpp",
+    "mock/mock_accessibility_window_info.cpp",
     "mock/mock_accessible_ability_channel_proxy.cpp",
     "mock/mock_accessible_ability_manager_service_proxy.cpp",
-    "mock/mock_accessibility_element_operator_callback_stub.cpp",
-    "mock/mock_accessibility_window_info.cpp",
-    "../../asacfwk/src/accessibility_caption.cpp"
+    "mock/mock_gesture_simulation.cpp",
+    "unittest/accessibility_extension_context_test.cpp",
+    "unittest/accessible_ability_client_proxy_test.cpp",
+    "unittest/accessible_ability_client_stub_impl_test.cpp",
+    "unittest/accessible_ability_client_stub_test.cpp",
+    "unittest/display_resize_controller_test.cpp",
   ]
 
-  configs = [
-    ":module_private_config",
-    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
-  ]
+  sources += MockMultiModalInputSrc
+
+  configs = [ ":module_private_config" ]
 
   deps = [
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
   ]
 
   external_deps = [
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
-    "multimodalinput_base:libmmi-client",
-    "samgr_standard:samgr_proxy",
     "ability_base:want",
-    "ability_runtime:runtime",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr_standard:samgr_proxy",
   ]
 }
 
@@ -97,8 +102,6 @@ group("unittest") {
   testonly = true
   deps = []
 
-  deps += [
-    ":accessible_ability_test",
-  ]
+  deps += [ ":accessible_ability_test" ]
 }
 ###############################################################################

@@ -11,14 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
 import("//base/accessibility/services/aams/accessibleabilityms.gni")
+import("//build/ohos.gni")
 
 ohos_prebuilt_etc("accessibility_service.rc") {
-   source = "etc/accessibility_service.rc"
-   relative_install_dir = "init"
-   part_name = "accessibility"
-   subsystem_name = "barrierfree"
+  source = "etc/accessibility_service.rc"
+  relative_install_dir = "init"
+  part_name = "accessibility"
+  subsystem_name = "barrierfree"
 }
 
 config("aams_service_config") {
@@ -55,6 +55,7 @@ config("aams_service_config") {
     "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//foundation/windowmanager/interfaces/innerkits/wm",
     "//foundation/windowmanager/interfaces/innerkits/dm",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [
@@ -75,35 +76,33 @@ ohos_shared_library("accessibleabilityms") {
 
   sources = accessibleabilityms_files
 
-  configs = [
-    ":aams_service_config",
-  ]
+  configs = [ ":aams_service_config" ]
 
   deps = [
-     "//utils/native/base:utils",
-     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
-     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-     "//base/account/os_account/frameworks/osaccount/core:os_account_core",
-     "//base/accessibility/frameworks/aafwk:accessibleability",
-     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-     "//foundation/windowmanager/wm:libwm",
-     "//foundation/windowmanager/dm:libdm",
+    "//base/accessibility/frameworks/aafwk:accessibleability",
+    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//base/account/os_account/frameworks/osaccount/core:os_account_core",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
+    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/windowmanager/dm:libdm",
+    "//foundation/windowmanager/wm:libwm",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ability_runtime:runtime",
-    "ipc:ipc_core",
-    "hiviewdfx_hilog_native:libhilog",
-    "multimodalinput_base:libmmi-client",
     "ability_base:want",
-    "ces_standard:cesfwk_innerkits",
-    "os_account_standard:os_account_innerkits",
+    "ability_runtime:runtime",
     "bundle_framework:appexecfwk_core",
+    "ces_standard:cesfwk_innerkits",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "multimodalinput_base:libmmi-client",
+    "os_account_standard:os_account_innerkits",
   ]
 
   subsystem_name = "barrierfree"

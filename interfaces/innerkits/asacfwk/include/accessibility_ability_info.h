@@ -20,6 +20,7 @@
 #include <string>
 #include <stdint.h>
 
+#include "accessibility_event_info.h"
 #include "extension_ability_info.h"
 #include "nlohmann/json.hpp"
 #include "parcel.h"
@@ -154,7 +155,21 @@ public:
      * @param capabilities the capabilities to set.
      * @return
      */
-    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;};
+    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;}
+
+    /**
+     * @brief Set the types of the ability.
+     * @param abilityTypes the ability to set.
+     * @return
+     */
+    inline void SetAccessibilityAbilityType(uint32_t abilityTypes) {abilityTypes_ = abilityTypes;}
+
+    /**
+     * @brief Set the types of the event.
+     * @param eventTypes the event to set.
+     * @return
+     */
+    inline void SetEventTypes(uint32_t eventTypes) {eventTypes_ = eventTypes;}
 
 private:
 
@@ -171,10 +186,10 @@ private:
     std::string description_;
 
     uint32_t capabilities_ = 0;
-    std::string rationale_;
+    std::string rationale_ = "";
 
-    uint32_t abilityTypes_ = 0;
-    uint32_t eventTypes_ = 0;
+    uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_INVALID;
+    uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
     std::string settingsAbility_;
     std::vector<std::string> targetBundleNames_;
 };

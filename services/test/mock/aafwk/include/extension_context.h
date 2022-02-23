@@ -13,26 +13,21 @@
  * limitations under the License.
  */
 
-#include "iservice_registry.h"
-#include "system_ability_manager.h"
+#ifndef EXTENSION_CONTEXT_H
+#define EXTENSION_CONTEXT_H
+
+#include "context_impl.h"
 
 namespace OHOS {
-SystemAbilityManagerClient &SystemAbilityManagerClient::GetInstance()
-{
-    static auto instance = new SystemAbilityManagerClient();
-    return *instance;
-}
-
-sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager()
-{
-    return SystemAbilityManager::GetInstance();
-}
-
-sptr<IRemoteObject> SystemAbilityManagerClient::GetRegistryRemoteObject()
-{
-    return nullptr;
-}
-
-void SystemAbilityManagerClient::DestroySystemAbilityManagerObject()
-{}
+namespace AbilityRuntime {
+/**
+ * @brief context supply for extension
+ *
+ */
+class ExtensionContext {
+public:
+    ExtensionContext() = default;
+};
+}  // namespace AbilityRuntime
 }  // namespace OHOS
+#endif  // EXTENSION_CONTEXT_H

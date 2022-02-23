@@ -246,10 +246,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
 
     vector<AccessibilityAbilityInfo> installedAbilities = accountData->GetInstalledAbilities();
     for (auto &installAbility : installedAbilities) {
-        // TODO:
-        // AppExecFwk::ElementName element(installAbility.GetAbilityInfo().deviceId,
-            // installAbility.GetPackageName(),
-            // installAbility.GetName());
+        // temp deal
         std::string deviceId;
         AppExecFwk::ElementName element(deviceId,
                                         installAbility.GetPackageName(),
@@ -388,7 +385,7 @@ void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId) {}
 void AccessibleAbilityManagerService::PresentUser() {}
-void AccessibleAbilityManagerService::PackageChanged() {}
+void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName) {}
 void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName) {}
 void AccessibleAbilityManagerService::PackageUpdateFinished(std::string &bundleName) {}
 CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
@@ -513,14 +510,6 @@ bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExe
     return result;
 }
 
-bool AccessibleAbilityManagerService::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG(" %{public}s", __func__);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    bool result = accountData->SetInstalled(it);
-    return result;
-}
-
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::GetEnabledAbilities()
 {
     HILOG_DEBUG(" %{public}s", __func__);
@@ -534,7 +523,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    std::vector<AccessibilityAbilityInfo> it{};
+    std::vector<AccessibilityAbilityInfo> it {};
     it = accountData->GetInstalledAbilities();
     return it;
 }
@@ -578,5 +567,31 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
     }
     accountData->RemoveCaptionPropertyCallback(remote);
 }
+
+bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    bool result = accountData->DisableAbilities(it);
+    return result;
+}
+
+bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+{
+    return true;
+}
+
+bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
+{
+    return true;
+}
+
+int AccessibleAbilityManagerService::GetActiveWindow()
+{
+    return 0;
+}
+
+void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
+{}
 }   // namespace OHOS
 }   // Accessibility

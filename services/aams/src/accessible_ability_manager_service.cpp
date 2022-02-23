@@ -86,6 +86,8 @@ void AccessibleAbilityManagerService::OnStart()
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     HILOG_INFO("AccessibleAbilityManagerService::call accountData->init().");
     accountData->init();
+    UpdateAbilities();
+    UpdateAccessibilityManagerService();
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -135,30 +137,18 @@ bool AccessibleAbilityManagerService::Init()
         HILOG_ERROR("AccessibleAbilityManagerService::Init failed:Failed to subscribe common event");
         return false;
     }
-#if 0
-    std::vector<int> ids {};
-    AccountSA::OsAccountManager::QueryActiveOsAccountIds(ids);
-    HILOG_DEBUG("QueryActiveOsAccountIds ids.size() is %{public}d", ids.size());
-    for (auto id : ids) {
-        HILOG_DEBUG("QueryActiveOsAccountIds id is %{public}d", id);
-        // Todo check active userid
-    }
-    //Get current accountId
-    AccountSA::OsAccountInfo osAccountInfo;
-    OHOS::ErrCode result = AccountSA::OsAccountManager::QueryCurrentOsAccount(osAccountInfo);
-    HILOG_DEBUG(" the result of QueryCurrentOsAccount is %{public}d", result);
-    currentAccountId_ = osAccountInfo.GetLocalId();
-#else  // TBD set currentAccountId_ user 100
+
+    // temp deal: set current account Id to 100.
+    // This is a temporary countermeasure, after which a formal countermeasure is required.
     currentAccountId_ = 100;
     HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
-#endif
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
 
     // Get ExtensionInfo from BMS
     accountData->GetInstalledAbilitiesFromBMS();
 
-    // TODO: [setting] Add listener of setting's URI.
+    // temp deal: [setting] Add listener of setting's URI.
 
     HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
@@ -244,7 +234,8 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
     const int abilityTypes, const int stateType)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG(" %{public}s  abilityTypes(%{public}d) stateType(%{public}d)",
+                __func__, abilityTypes, stateType);
     vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("stateType is out of range!!");
@@ -252,7 +243,6 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
     }
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-
     if (!accountData) {
         HILOG_ERROR("Get current account data failed!!");
         return infoList;
@@ -260,11 +250,14 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
+    HILOG_DEBUG(" %{public}s:abilityes count is %{public}d", __func__, abilities.size());
     for (auto& ability : abilities) {
-        if (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes)) {
+        if (static_cast<uint32_t>(abilityTypes) == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
+           (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes))) {
             infoList.push_back(ability);
         }
     }
+    HILOG_DEBUG(" %{public}s:infoList count is %{public}d", __func__, infoList.size());
     return infoList;
 }
 
@@ -362,12 +355,12 @@ bool AccessibleAbilityManagerService::SetEnabled(const bool state)
 void AccessibleAbilityManagerService::PersistElementNamesToSetting(
     const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId)
 {
-    // TODO: Update specified item to setting.
+    // temp deal: Update specified item to setting.
 }
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG(" %{public}s: currentAccoutId is %{public}d ", __func__, currentAccountId_);
     auto iter = a11yAccountsData_.find(currentAccountId_);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
@@ -430,7 +423,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy(
 sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessibilityWindowConnection(
     int windowId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG(" %{public}s windowId(%{public}d)", __func__, windowId);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Get account data failed");
@@ -460,7 +453,7 @@ void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri& uri)
     if (!accountData) {
         return;
     }
-    // TODO: Do something for Setting
+    // temp deal: Do something for Setting
     UpdateAbilities();
 }
 
@@ -519,7 +512,7 @@ void AccessibleAbilityManagerService::PresentUser()
 
 void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start", __func__);
+    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
 
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
     if (packageAccount->GetEnabledAbilities().empty()) {
@@ -542,24 +535,74 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
     }
 }
 
-void AccessibleAbilityManagerService::PackageChanged()
+void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start", __func__);
-
-    sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (packageAccount->GetInstalledAbilities().empty()) {
-        return;
+    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+    bool hasNewExtensionAbility = false;
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    GetBundleMgrProxy()->QueryExtensionAbilityInfos(
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
+    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
+    for (auto newAbility : extensionInfos) {
+        if (newAbility.bundleName == bundleName) {
+            HILOG_DEBUG("The package added is an extension ability and\
+            extension ability's name is %{public}s", newAbility.name.c_str());
+            sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo(newAbility);
+            GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
+            HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}d",
+                GetCurrentAccountData()->GetInstalledAbilities().size());
+            hasNewExtensionAbility = true;
+            break;
+        }
     }
 
-    packageAccount->ClearInstalledAbility();
-    if (packageAccount->ReadConfigurationForAccountData()) {
+    if (hasNewExtensionAbility) {
+        HILOG_DEBUG("add new extension ability and update abilities.");
+        UpdateAbilities();
+    }
+}
+
+void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
+{
+    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+
+    bool hasChanged = false;
+    sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
+    if (packageAccount->GetInstalledAbilities().empty()) {
+        HILOG_DEBUG("There is no installed abilities.");
+        return;
+    }
+    sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo();
+    accessibilityInfo->SetPackageName(bundleName);
+    packageAccount->RemoveInstalledAbility(*accessibilityInfo);
+
+    // add installed ability
+    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
+    GetBundleMgrProxy()->QueryExtensionAbilityInfos(
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
+    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
+    for (auto changedAbility : extensionInfos) {
+        if (changedAbility.bundleName == bundleName) {
+            HILOG_DEBUG("The package changed is an extension ability and\
+            extension ability's name is %{public}s", changedAbility.name.c_str());
+            AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(changedAbility);
+            GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
+            HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}d",
+                GetCurrentAccountData()->GetInstalledAbilities().size());
+            hasChanged = true;
+            break;
+        }
+    }
+
+    if (hasChanged) {
+        HILOG_DEBUG("update new extension ability and update abilities.");
         UpdateAbilities();
     }
 }
 
 void AccessibleAbilityManagerService::PackageUpdateFinished(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start", __func__);
+    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
     if (packageAccount->GetConnectingA11yAbilities().empty()) {
         return;
@@ -624,15 +667,12 @@ void AccessibleAbilityManagerService::UpdateAbilities()
     vector<AccessibilityAbilityInfo> installedAbilities = accountData->GetInstalledAbilities();
     HILOG_DEBUG("installedAbilities is %{public}d.", installedAbilities.size());
     for (auto& installAbility : installedAbilities) {
-        // TODO: deviceId
-        // AppExecFwk::ElementName element(installAbility.GetAbilityInfo().deviceId,
-        //                                 installAbility.GetPackageName(),
-        //                                 installAbility.GetName());
+        // temp deal: deviceId
         std::string deviceId;
         AppExecFwk::ElementName element(deviceId, installAbility.GetPackageName(), installAbility.GetName());
         HILOG_DEBUG("installAbility's packageName is %{public}s", installAbility.GetPackageName().c_str());
         HILOG_DEBUG("installAbility's abilityName is %{public}s", installAbility.GetName().c_str());
-        std::string elementName = "/" + installAbility.GetPackageName() + "/"; // TODO
+        std::string elementName = "/" + installAbility.GetPackageName() + "/"; // temp deal
 
         // wait for the connecting ability.
         if (accountData->GetConnectingA11yAbilities().count(elementName)) {
@@ -642,10 +682,12 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(elementName);
         if (accountData->GetEnabledAbilities().count(elementName)) {
             if (!connection) {
+                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);// this is a temp deal for ace test
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
         } else {
+            HILOG_DEBUG("not in enabledAbilites list .");
             if (connection) {
                 connection->Disconnect();
             }
@@ -748,7 +790,7 @@ void AccessibleAbilityManagerService::UpdateWindowChangeListener()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
-    bool isWindowRetrieve = false;
+    bool isWindowRetrieve = true; // this is a temp deal for test
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -847,25 +889,11 @@ bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExe
     return result;
 }
 
-bool AccessibleAbilityManagerService::SetInstalled(std::vector<AccessibilityAbilityInfo> it)
-{
-    HILOG_DEBUG(" %{public}s", __func__);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    bool result = accountData->SetInstalled(it);
-    return result;
-}
-
-// std::vector<WMDisplayInfo> AccessibleAbilityManagerService::GetDisplayList()
-// {
-//     std::vector<WMDisplayInfo> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
-//     return displays;
-// }
-
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::GetEnabledAbilities()
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    std::map<std::string, AppExecFwk::ElementName> it{};
+    std::map<std::string, AppExecFwk::ElementName> it {};
     it = accountData->GetEnabledAbilities();
     return it;
 }
@@ -874,10 +902,93 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    std::vector<AccessibilityAbilityInfo> it{};
+    std::vector<AccessibilityAbilityInfo> it {};
     it = accountData->GetInstalledAbilities();
     return it;
 }
 
+bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    bool result = accountData->DisableAbilities(it);
+    UpdateAbilities();
+    return result;
+}
+
+bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
+
+    if (connection) {
+        HILOG_ERROR(" %{public}s connection is existed!!", __func__);
+        return false;
+    }
+
+    std::function<void()> addUITestClientFunc =
+        std::bind(&AccessibleAbilityManagerService::AddUITestClient, this, obj);
+    handler_->PostTask(addUITestClientFunc, "AddUITestClient");
+    return true;
+}
+
+void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>& obj)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    auto currentAccountData = GetCurrentAccountData();
+
+    // add installed ability
+    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    abilityInfo->SetPackageName("com.example.uitest");
+    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
+        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
+    abilityInfo->SetCapabilityValues(capabilities);
+    abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
+    abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
+    currentAccountData->AddInstalledAbility(*abilityInfo);
+
+    // add connected ability
+    sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName();
+    elementName->SetBundleName("com.example.uitest");
+    elementName->SetAbilityName("uitestability");
+    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
+        currentAccountData, connectCounter_++, *abilityInfo);
+    currentAccountData->AddUITestConnectedAbility(connection);
+    connection->OnAbilityConnectDone(*elementName, obj, 0);
+}
+
+bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
+
+    if (connection == nullptr) {
+        HILOG_ERROR(" %{public}s connection is not existed!!", __func__);
+        return false;
+    }
+    std::function<void()> removeUITestClientFunc =
+        std::bind(&AccessibleAbilityManagerService::RemoveUITestClient, this, connection);
+    handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
+    return true;
+}
+
+void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_DEBUG(" %{public}s", __func__);
+    auto currentAccountData = GetCurrentAccountData();
+
+    // remove installed ability
+    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    abilityInfo->SetPackageName("com.example.uitest");
+    currentAccountData->RemoveInstalledAbility(*abilityInfo);
+
+    // remove connected ability
+    currentAccountData->RemoveUITestConnectedAbility(connection);
+    connection->OnAbilityDisconnectDone(connection->GetElementName(), 0);
+}
+
+int AccessibleAbilityManagerService::GetActiveWindow()
+{
+    return AccessibilityWindowInfoManager::GetInstance().activeWindowId_;
+}
 }  // namespace Accessibility
 }  // namespace OHOS

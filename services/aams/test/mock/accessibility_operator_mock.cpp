@@ -27,6 +27,10 @@ AccessibilityOperator::AccessibilityOperator()
     executeActionResult_ = false;
 }
 
+AccessibilityOperator::~AccessibilityOperator()
+{
+}
+
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     sptr<AccessibilityOperator> inst = new AccessibilityOperator();
@@ -77,7 +81,7 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
 
 std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int channelId)
 {
-     return windows_;
+    return windows_;
 }
 
 bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
@@ -186,6 +190,5 @@ void AccessibilityOperator::SendSimulateGesture(const int channelId,
     const int requestId, const std::vector<GesturePathDefine> &gestureSteps)
 {
 }
-
 } // namespace Accessibility
 } // namespace OHOS

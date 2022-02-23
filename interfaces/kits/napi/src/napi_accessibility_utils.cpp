@@ -185,11 +185,10 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_GESTURE_EVENT, "gesture"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
-         itr != accessibilityEventTable.end();) {
+         itr != accessibilityEventTable.end(); ++itr) {
         if (eventTypesValue & itr->first) {
             result.push_back(itr->second);
         }
-        ++itr;
     }
 
     return result;
@@ -1109,6 +1108,7 @@ AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(std::string t
         {"audible", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE},
         {"visual", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL},
         {"generic", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC},
+        {"all", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL},
     };
 
     if (accessibilityAbilityTypesTable.find(type) == accessibilityAbilityTypesTable.end()) {
@@ -1603,22 +1603,27 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessib
 
     napi_value value;
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontFamily", value));
 
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, captionProperty.GetFontScale(), &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontScale", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontColor", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontEdgeType", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "backgroundColor", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    NAPI_CALL_RETURN_VOID(env,
+        napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 
     HILOG_DEBUG("%{public}s end", __func__);
@@ -1712,7 +1717,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
             napi_value value = nullptr;
             napi_get_element(env, arrayValue, i, &value);
 
-            AccessibilityAbilityInfo info{};
+            AccessibilityAbilityInfo info = {};
             ConvertJSToAccessibleAbilityInfo(env, value, info);
             accessibleAbilityInfos.push_back(info);
             HILOG_DEBUG("%{public}s size = %{public}d ", __func__, accessibleAbilityInfos.size());
@@ -1783,7 +1788,6 @@ void ConvertJSToEnabledAbilities(
     }
 }
 
-
 void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -1793,22 +1797,6 @@ void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
 
     HILOG_DEBUG("%{public}s END.", __func__);
 }
-
-
-// void ConvertJSToEnabled(napi_env env, napi_value captionsManager, bool& result)
-// {
-//     napi_value propertyNameValue = nullptr;
-//     bool hasProperty = false;
-
-//     napi_create_string_utf8(env, "enabled", NAPI_AUTO_LENGTH, &propertyNameValue);
-//     napi_has_property(env, captionsManager, propertyNameValue, &hasProperty);
-//     if (hasProperty) {
-//         napi_value value = nullptr;
-//         napi_get_property(env, captionsManager, propertyNameValue, &value);
-//         napi_get_value_bool(env, value, &result);
-//     }
-// }
-
 
 void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_)
 {
@@ -1822,18 +1810,3 @@ void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibi
 
     HILOG_DEBUG("%{public}s END.", __func__);
 }
-
-
-// void ConvertJSToStyle(napi_env env, napi_value captionsManager, bool& result)
-// {
-//     napi_value propertyNameValue = nullptr;
-//     bool hasProperty = false;
-
-//     napi_create_string_utf8(env, "enabled", NAPI_AUTO_LENGTH, &propertyNameValue);
-//     napi_has_property(env, captionsManager, propertyNameValue, &hasProperty);
-//     if (hasProperty) {
-//         napi_value value = nullptr;
-//         napi_get_property(env, captionsManager, propertyNameValue, &value);
-//         napi_get_value_bool(env, value, &result);
-//     }
-// }

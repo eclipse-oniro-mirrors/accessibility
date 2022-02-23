@@ -16,6 +16,7 @@
 #include "accessible_ability_client_stub_impl.h"
 #include <string>
 #include "accessibility_extension_context.h"
+#include "accessibility_ui_test_ability.h"
 #include "display_resize_controller.h"
 
 using namespace std;
@@ -34,35 +35,83 @@ void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr
     listener_ = listener;
 }
 
+void AccessibleAbilityClientStubImpl::SetUITestEnabled()
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    uiTestEnabled_ = true;
+}
+
+bool AccessibleAbilityClientStubImpl::RegisterUITestAbilityListener(
+    const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    if (uiTestListener_) {
+        HILOG_DEBUG("listener already exists.");
+        return false;
+    }
+
+    uiTestListener_ = listener;
+    return true;
+}
+
 void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-    if (!channel) {
-        HILOG_DEBUG("channel is nullptr.");
-        return;
-    }
-    if (!listener_ || !listener_->GetContext()) {
-        HILOG_ERROR("listener_ is nullptr or there is no context in listener_.");
-        return;
-    }
+    if (!uiTestEnabled_) {
+        if (!channel) {
+            HILOG_DEBUG("channel is nullptr.");
+            return;
+        }
+        if (!listener_ || !listener_->GetContext()) {
+            HILOG_ERROR("listener_ is nullptr or there is no context in listener_.");
+            return;
+        }
 
-    listener_->GetContext()->SetChannelId(channelId);
-    AccessibilityOperator::AddChannel(channelId, channel);
-    channelId_ = channelId;
-    channel_ = channel;
+        listener_->GetContext()->SetChannelId(channelId);
+        AccessibilityOperator::AddChannel(channelId, channel);
+        channelId_ = channelId;
+        channel_ = channel;
 
-    // Add death recipient
-    if (!deathRecipient_) {
-        deathRecipient_ = new AccessibleAbilityDeathRecipient(channelId_, channel_);
+        // Add death recipient
+        if (!deathRecipient_) {
+            deathRecipient_ = new AccessibleAbilityDeathRecipient(channelId_, channel_);
+        }
+
+        auto object = channel_->AsObject();
+        if (object) {
+            HILOG_DEBUG("Add death recipient");
+            object->AddDeathRecipient(deathRecipient_);
+        }
+
+        listener_->OnAbilityConnected();
+    } else {
+        if (!channel) {
+            HILOG_DEBUG("channel is nullptr.");
+            return;
+        }
+        if (!uiTestListener_) {
+            HILOG_ERROR("listener_ is nullptr.");
+            return;
+        }
+
+        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId);
+        AccessibilityOperator::AddChannel(channelId, channel);
+        channelId_ = channelId;
+        channel_ = channel;
+
+        // Add death recipient
+        if (!deathRecipient_) {
+            deathRecipient_ = new AccessibleAbilityDeathRecipient(channelId_, channel_);
+        }
+
+        auto object = channel_->AsObject();
+        if (object) {
+            HILOG_DEBUG("Add death recipient");
+            object->AddDeathRecipient(deathRecipient_);
+        }
+
+        uiTestListener_->OnAbilityConnected();
     }
-
-    auto object = channel_->AsObject();
-    if (object) {
-        HILOG_DEBUG("Add death recipient");
-        object->AddDeathRecipient(deathRecipient_);
-    }
-
-    listener_->OnAbilityConnected();
 }
 
 void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
@@ -79,9 +128,15 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
     AccessibilityOperator::RemoveChannel(channelId);
     channelId_ = INVALID_CHANNEL_ID;
     channel_ = nullptr;
-    if (listener_ && listener_->GetContext()) {
-        HILOG_DEBUG("Clear extensionContext channelId.");
-        listener_->GetContext()->SetChannelId(channelId_);
+    if (!uiTestEnabled_) {
+        if (listener_ && listener_->GetContext()) {
+            HILOG_DEBUG("Clear extensionContext channelId.");
+            listener_->GetContext()->SetChannelId(channelId_);
+            listener_ = nullptr;
+        }
+    } else {
+        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId_);
+        uiTestListener_ = nullptr;
     }
 }
 
@@ -89,25 +144,28 @@ void AccessibleAbilityClientStubImpl::OnAccessibilityEvent(const AccessibilityEv
 {
     HILOG_DEBUG("%{public}s start.", __func__);
     if (channelId_ != INVALID_CHANNEL_ID) {
-        if (!listener_) {
-            HILOG_ERROR("listener is nullptr.");
-            return;
+        if (listener_) {
+            listener_->OnAccessibilityEvent(eventInfo);
         }
 
-        listener_->OnAccessibilityEvent(eventInfo);
+        if (uiTestListener_) {
+            uiTestListener_->OnAccessibilityEvent(eventInfo);
+        }
     }
 }
 
 void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-    if (!listener_) {
-        HILOG_ERROR("listener is nullptr.");
-        return;
+    if (listener_) {
+        bool handled = listener_->OnKeyPressEvent(keyEvent);
+        AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
     }
 
-    bool handled = listener_->OnKeyPressEvent(keyEvent);
-    AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
+    if (uiTestListener_) {
+        bool handled = uiTestListener_->OnKeyPressEvent(keyEvent, sequence);
+        AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
+    }
 }
 
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
@@ -136,6 +194,12 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
         if (listener_ && listener_->GetContext()) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
             listener_->GetContext()->DispatchOnSimulationGestureResult(sequence, completedSuccessfully);
+        }
+
+        if (uiTestEnabled_) {
+            HILOG_DEBUG("Dispatch the result of simulation gesture.");
+            AccessibilityUITestAbility::GetInstance().DispatchOnSimulationGestureResult(
+                sequence, completedSuccessfully);
         }
     }
 }

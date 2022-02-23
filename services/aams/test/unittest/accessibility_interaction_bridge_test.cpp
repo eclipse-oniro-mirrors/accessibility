@@ -251,7 +251,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     MMI::PointerEvent::PointerItem point;
     auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
 
-    EXPECT_EQ(ret, false);
+    EXPECT_EQ(ret, true);
     AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(
         winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_004 end";

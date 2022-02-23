@@ -21,11 +21,10 @@
 #include "accessibility_operator.h"
 #include "accessibility_element_operator_interface.h"
 #include "mmi_point.h"
+
 namespace OHOS {
 namespace Accessibility{
-
-class AccessibilityInteractionBridge
-{
+class AccessibilityInteractionBridge {
 public:
     /**
      * @brief Get the instance of Interaction Bridge.
