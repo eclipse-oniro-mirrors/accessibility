@@ -30,7 +30,7 @@ public:
 
     static AccessibilityDisplayManager &GetInstance();
     const sptr<Rosen::Display> GetDisplay(int id);
-    std::vector<const sptr<Rosen::Display>> GetDisplays();
+    std::vector<sptr<Rosen::Display>> GetDisplays();
     const sptr<Rosen::Display> GetDefaultDisplay();
     void RegisterDisplayChangeListener();
 
