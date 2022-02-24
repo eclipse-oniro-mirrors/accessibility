@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityZoomGesture {
 public:
     AccessibilityZoomGesture();
@@ -48,7 +47,6 @@ private:
      * @brief Is it a valid continuous DOWN event.
      */
     bool ValidDown(MMI::PointerEvent &event);
-
 
     /**
      * @brief Gets the effective distance between two pointer events

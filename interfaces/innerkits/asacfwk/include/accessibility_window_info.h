@@ -342,7 +342,7 @@ private:
     int windowId_ = INVALID_WINDOW_ID;
     int parentId_ = INVALID_WINDOW_ID;
     std::string windowTitle_ = "";
-    std::vector<int> childIds_{};
+    std::vector<int> childIds_;
     int anchorId_ = -1;
     int childNum_ = 0;
     int channelId_ = INVALID_WINDOW_ID;
@@ -351,7 +351,6 @@ private:
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

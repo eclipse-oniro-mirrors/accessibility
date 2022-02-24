@@ -30,6 +30,8 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
+napi_value NAccessibilityEventInfo::cons_ = nullptr;
+
 void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
 {
     napi_property_descriptor descForAccessibilityEventInfo[] = {

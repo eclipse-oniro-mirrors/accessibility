@@ -27,10 +27,6 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NElementInfo::cons_ = nullptr;
-napi_value NAccessibilityWindowInfo::cons_ = nullptr;
-napi_value NAccessibilityEventInfo::cons_ = nullptr;
-
 std::string GetStringFromNAPI(napi_env env, napi_value value)
 {
     std::string result;
@@ -720,7 +716,8 @@ void ConvertElementInfosToJS(
     HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}d)", elementInfos.size());
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
-        napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
+        napi_status status = napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
+        HILOG_INFO("status is %{public}d", status);
         ConvertElementInfoToJS(env, obj, elementInfo);
         napi_set_element(env, result, index, obj);
         index++;

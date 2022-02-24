@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include <vector>
 #include "input_manager.h"
 #include "pointer_event.h"
-#include <vector>
 
 namespace OHOS {
 std::vector<int32_t> g_mtTouchAction;
@@ -81,7 +81,8 @@ void InputManager::MarkConsumed(int32_t monitorId, int32_t eventId)
 {
 }
 
-int32_t InputManager::AddInterceptor(int32_t sourceType, std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
+int32_t InputManager::AddInterceptor(int32_t sourceType,
+    std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
 {
     g_pointerCallback = interceptor;
     return 0;

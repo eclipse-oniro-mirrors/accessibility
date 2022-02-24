@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "accessibility_interaction_bridge.h"
+
 #include <algorithm>
+#include "accessibility_interaction_bridge.h"
 #include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
@@ -133,6 +134,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
     point.SetGlobalY(py);
     return true;
 }
+
 AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(const int &windowId)
 {
     HILOG_DEBUG("[%{public}s with window]", __func__);
@@ -141,6 +143,5 @@ AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(
         windowId, NONE_ID, FOCUS_TYPE_ACCESSIBILITY, info);
     return info;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

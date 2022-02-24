@@ -18,18 +18,17 @@
 #define ACCESSIBILITY_TOUCHEVENT_INJECTOR_H
 
 #include <time.h>
-#include "pointer_event.h"
-#include "singleton.h"
-#include "event_handler.h"
-#include "event_runner.h"
-#include "hilog_wrapper.h"
-#include "gesture_simulation.h"
 #include "accessibility_event_transmission.h"
 #include "accessible_ability_client_interface.h"
+#include "event_handler.h"
+#include "event_runner.h"
+#include "gesture_simulation.h"
+#include "hilog_wrapper.h"
+#include "pointer_event.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 #define DOUBLE_TAP_MIN_TIME 50
 
 struct SendEventArgs {
@@ -131,12 +130,10 @@ public:
         return sequence_;
     }
 
-
     static constexpr uint32_t SEND_TOUCH_EVENT_MSG = 1;
     static constexpr uint32_t INJECT_EVENT_MSG = 2;
 
 private:
-
     /**
      * @brief Cancel the gesture.
      * @param
@@ -187,8 +184,6 @@ private:
      */
     long getSystemTime();
 
-
-
     int sequence_ = -1;
     bool isGestureUnderway_ = false;
     bool isDestroyEvent_ = false;
@@ -200,5 +195,4 @@ private:
 };
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif  // ACCESSIBILITY_TOUCHEVENT_INJECTOR_H

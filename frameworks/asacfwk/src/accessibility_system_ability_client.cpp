@@ -272,7 +272,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
 shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetInstance()
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    AbilityContext abilityContext{};
+    AbilityContext abilityContext = {};
     if (instance_ == nullptr) {
         int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
@@ -729,7 +729,7 @@ bool AccessibilitySystemAbilityClient::GetEnabledState()
         HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
         return false;
     }
-    return proxyService->GetEnabledState();;
+    return proxyService->GetEnabledState();
 }
 
 bool AccessibilitySystemAbilityClient::GetCaptionState()

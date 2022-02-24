@@ -34,7 +34,6 @@ extern bool g_isDestroyEvents;
 
 class TouchEventInjectorTest : public testing::Test {
 public:
-
     TouchEventInjectorTest() {}
     ~TouchEventInjectorTest() {}
 
@@ -45,13 +44,12 @@ public:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
 protected:
-    void CreateGesturePath(
-            GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+    void CreateGesturePath(GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
     sptr<IAccessibleAbilityClient> service = nullptr;
     MMI::PointerEvent CreateTouchEvent(int action);
     int pointId_ = -1;
 
-    std::vector<GesturePathDefine> getGesturePath {};
+    std::vector<GesturePathDefine> getGesturePath;
 };
 
 
@@ -185,8 +183,6 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     EXPECT_EQ(g_isDestroyEvents, true);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
     EXPECT_EQ(g_touchAction[0], expectValue);
-    // expectValue = MMI::PointerEvent::POINTER_ACTION_CANCEL;
-    // EXPECT_EQ(g_touchAction[1], expectValue);
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_005 end";
 }

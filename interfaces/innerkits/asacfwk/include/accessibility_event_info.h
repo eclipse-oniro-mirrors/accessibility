@@ -728,11 +728,10 @@ private:
     WindowUpdateType windowChangeTypes_ = WINDOW_UPDATE_INVALID;
     GestureType gestureType_;
     int recordsCount_ = 0;
-    std::vector<AccessibilityEventInfo> records_{};
+    std::vector<AccessibilityEventInfo> records_;
     NotificationCategory category_ = CATEGORY_INVALID;
     int pageId_ = 0;
 };
-
 } //namesapce Accessibility
 } // namespace OHOS
 #endif

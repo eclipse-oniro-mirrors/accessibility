@@ -39,15 +39,15 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
     for (int i = 0; i < operationsSize; i++) {
-        AccessibleAction* accessibleOperation = parcel.ReadParcelable<AccessibleAction>();
+        sptr<AccessibleAction> accessibleOperation = parcel.ReadStrongParcelable<AccessibleAction>();
         if (!accessibleOperation) {
-            HILOG_ERROR("ReadParcelable<accessibleOperation> failed");
+            HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
         }
         operations_.emplace_back(*accessibleOperation);
     }
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
-    Rect* rect = parcel.ReadParcelable<Rect>();
+    sptr<Rect> rect = parcel.ReadStrongParcelable<Rect>();
     if (!rect) {
         return false;
     }
@@ -74,17 +74,17 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex_);
-    RangeInfo* rangeInfo = parcel.ReadParcelable<RangeInfo>();
+    sptr<RangeInfo> rangeInfo = parcel.ReadStrongParcelable<RangeInfo>();
     if (!rangeInfo) {
         return false;
     }
     rangeInfo_ = *rangeInfo;
-    GridInfo* grid = parcel.ReadParcelable<GridInfo>();
+    sptr<GridInfo> grid = parcel.ReadStrongParcelable<GridInfo>();
     if (!grid) {
         return false;
     }
     grid_ = *grid;
-    GridItemInfo* gridItem = parcel.ReadParcelable<GridItemInfo>();
+    sptr<GridItemInfo> gridItem = parcel.ReadStrongParcelable<GridItemInfo>();
     if (!gridItem) {
         return false;
     }

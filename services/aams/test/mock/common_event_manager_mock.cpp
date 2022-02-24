@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace EventFwk {
-
 static std::shared_ptr<CommonEventSubscriber> subscriberMOCK = nullptr;
 
 bool CommonEventManager::PublishCommonEvent(const CommonEventData &data)

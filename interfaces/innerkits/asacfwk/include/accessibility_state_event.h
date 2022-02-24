@@ -92,24 +92,6 @@ private:
 class AccessibilityStateObserver {
 public:
     /**
-     * @brief Receives notifications on accessibility status changes.
-     * @param stateEvent Indicates the status change event.
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    virtual void OnStateChanged(const AccessibilityStateEvent& stateEvent) = 0;
-
-    /**
-     * @brief Construct
-     * @param
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    AccessibilityStateObserver() {}
-
-    /**
      * @brief Destruct
      * @param
      * @return
@@ -117,8 +99,16 @@ public:
      * @sysCap Accessibility
      */
     virtual ~AccessibilityStateObserver() = default;
-};
 
+    /**
+     * @brief Receives notifications on accessibility status changes.
+     * @param stateEvent Indicates the status change event.
+     * @return
+     * @since 3
+     * @sysCap Accessibility
+     */
+    virtual void OnStateChanged(const AccessibilityStateEvent& stateEvent) = 0;
+};
 } // namespace Accessibility
 } // namespace OHOS
 #endif

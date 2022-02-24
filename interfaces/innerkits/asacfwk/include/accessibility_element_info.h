@@ -1779,11 +1779,11 @@ private:
     std::string accessibilityDescription_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
-    std::vector<int>childNodeIds_{};
+    std::vector<int> childNodeIds_;
     int childCount_ = 0;
-    std::vector<AccessibleAction> operations_{};
+    std::vector<AccessibleAction> operations_;
     int textLengthLimit_ = -1;
-    int channelId_ = UNDEFINED_CHANNEL_ID; //rename
+    int channelId_ = UNDEFINED_CHANNEL_ID; // rename
     Rect bounds_ {};
     bool accessibilityGroup_ = false;
     bool checkable_ = false;
@@ -1807,19 +1807,18 @@ private:
     int currentIndex_ = 0;
     int beginIndex_ = 0;
     int endIndex_ = 0;
-    RangeInfo rangeInfo_{};
+    RangeInfo rangeInfo_ {};
     GridInfo grid_{};
-    GridItemInfo gridItem_{};
+    GridItemInfo gridItem_ {};
     int liveRegion_ = 0;
     bool contentInvalid_ = true;
     std::string error_ = "";
     int labeled_ = 0;
     int beginSelected_ = 0;
     int endSelected_ = 0;
-    int inputType_ = 0; //text input type added
+    int inputType_ = 0; // text input type added
     bool validElement_ = true;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

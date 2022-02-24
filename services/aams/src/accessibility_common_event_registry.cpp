@@ -24,7 +24,6 @@ using namespace OHOS::AAFwk;
 
 namespace OHOS{
 namespace Accessibility{
-
 AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
 {
     HILOG_DEBUG("AccessibilityCommonEventRegistry AccessibilityCommonEventRegistry");

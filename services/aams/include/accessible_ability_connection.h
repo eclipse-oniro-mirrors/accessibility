@@ -27,7 +27,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 #define UID_MASK 200000
 
 class AccessibilityAccountData;
@@ -158,8 +157,6 @@ private:
 
     int connectionId_;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_

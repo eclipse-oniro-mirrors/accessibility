@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility{
-
 void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
@@ -82,6 +81,5 @@ void EventTransmission::DestroyEvents()
         next->DestroyEvents();
     }
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

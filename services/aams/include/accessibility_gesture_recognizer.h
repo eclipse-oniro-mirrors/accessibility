@@ -31,7 +31,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 #define GESTURE_STARTED_TIME_THRESHOLD 300
 #define GESTURE_NOT_STARTED_TIME_THRESHOLD 150
 #define DOUBLE_TAP_SLOP 100

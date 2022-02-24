@@ -312,5 +312,3 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestS
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 end";
 }
-
-

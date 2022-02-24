@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 const static std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
 const static std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_EVENT_TYPES = "accessibilityEventTypes";
 const static std::string AccessibleAbility_JSON_KEY_TARGET_BUNDLE_NAMES = "targetBundleNames";
@@ -35,7 +34,6 @@ const static std::string AccessibleAbility_JSON_KEY_DESCRIPTION = "description";
 const static std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY = "settingsAbility";
 const static std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE =
     "accessibilityCapabilityRationale";
-
 const static std::string AccessibleAbility_Config_JSON_FILE_PATH = "/system/app/accessibility_config.json";
 
 // The json value of event types
@@ -123,7 +121,6 @@ public:
     static std::string GetStrValue(nlohmann::json& json, const std::string& key, const std::string& subkey);
     static std::string GetStrValue(nlohmann::json& json, const std::string& key);
     static std::vector<std::string> GetVecValue(nlohmann::json& json, const std::string& key);
-
 };
 
 class PraseVecUtils {
@@ -132,8 +129,6 @@ public:
     static void ParseAbilityTypesFromVec(const std::vector<std::string>& abilities, uint32_t& abilityTypes);
     static void ParseCapabilitiesFromVec(const std::vector<std::string>& capabilities, uint32_t& capabilitiesValue);
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif  // JSON_UTILS_H

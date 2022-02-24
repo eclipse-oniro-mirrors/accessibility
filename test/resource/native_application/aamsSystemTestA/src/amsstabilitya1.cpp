@@ -21,7 +21,6 @@ using namespace OHOS::Accessibility;
 
 namespace OHOS {
 namespace AppExecFwk {
-
 void AccessibleAbilityListenerTest::OnAbilityConnected()
 {
     HILOG_INFO("AamsStAbilityA1: Accessible application is connected.");
@@ -30,7 +29,8 @@ void AccessibleAbilityListenerTest::OnAbilityConnected()
 
 void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO("AamsStAbilityA1: An Accessibility event is received and eventType is %{public}d", eventInfo.GetEventType());
+    HILOG_INFO("AamsStAbilityA1: An Accessibility event is received and eventType is %{public}d",
+        eventInfo.GetEventType());
 }
 
 void AccessibleAbilityListenerTest::OnGesture(uint32_t gestureId)

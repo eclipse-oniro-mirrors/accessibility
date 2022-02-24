@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace AppExecFwk {
-
 using namespace OHOS::EventFwk;
 
 STPageAbilityEvent::STPageAbilityEvent(const std::string &className)
@@ -125,6 +124,5 @@ void STPageAbilityEventSubscriber::OnReceiveEvent(const CommonEventData &data)
         }
     }
 }
-
 }  // namespace AppExecFwk
 }  // namespace OHOS

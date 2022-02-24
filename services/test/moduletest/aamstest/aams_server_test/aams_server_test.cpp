@@ -373,6 +373,5 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest DeregisterElementOperator_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

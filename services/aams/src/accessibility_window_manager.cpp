@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type)
 {
     HILOG_DEBUG("%{public}s: windowId[%{public}d] type[%{public}d]", __func__, windowInfo->wid_, type);
@@ -68,10 +67,18 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
         }
         break;
         case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE:
+            if (!winMgr.a11yWindows_.count(windowInfo->wid_)) {
+                auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
+                winMgr.a11yWindows_.emplace(windowInfo->wid_, a11yWindowInfo);
+            }
             winMgr.SetActiveWindow(windowInfo->wid_);
         break;
         case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED:
         {
+            if (!winMgr.a11yWindows_.count(windowInfo->wid_)) {
+                auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
+                winMgr.a11yWindows_.emplace(windowInfo->wid_, a11yWindowInfo);
+            }
             winMgr.SetActiveWindow(windowInfo->wid_);
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_FOCUSED);
             aams->SendEvent(evtInf, aams->GetCurrentAccountId());
@@ -118,8 +125,7 @@ WindowType ConvertWindowType(Rosen::WindowType type)
         winType = TYPE_APPLICATION;
     } else if ((type >= Rosen::WindowType::SYSTEM_WINDOW_BASE) && (type <= Rosen::WindowType::SYSTEM_WINDOW_END)) {
         winType = TYPE_SYSTEM;
-    }
-    else{
+    } else {
         HILOG_ERROR("%{public}s: Unknown windowType[%{public}d]", __func__, type);
     }
     return winType;

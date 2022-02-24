@@ -17,16 +17,13 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 /* Accessibility errcode defines */
 enum ErrCode {
     NO_ERROR = 0,
     ERR_INVALID_STATE,
     ERR_INVALID_VALUE,
     ERROR,
-
 };
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif // ACCESSIBILITY_ERRORCODE_H

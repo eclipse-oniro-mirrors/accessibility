@@ -14,14 +14,14 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
+#include "accessibility_element_operator_proxy.h"
+#include "accessibility_element_operator_stub.h"
+#include "accessibility_system_ability_client.h"
+#include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service_state_proxy.h"
 #include "accessible_ability_manager_service_state_stub.h"
-#include "accessibility_system_ability_client.h"
-#include "accessibility_ability_info.h"
-#include "accessibility_element_operator_stub.h"
-#include "accessibility_element_operator_proxy.h"
-#include "accessible_ability_client_stub_impl.h"
 
 using namespace testing;
 using namespace testing::ext;

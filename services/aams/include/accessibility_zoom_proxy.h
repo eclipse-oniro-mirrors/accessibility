@@ -156,7 +156,11 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    Rect GetDisplayResizeRect(int displayId) { Rect rc {}; return rc; }
+    Rect GetDisplayResizeRect(int displayId)
+    {
+        Rect rc {};
+        return rc;
+    }
 
     /**
      * @brief Reset magnification.

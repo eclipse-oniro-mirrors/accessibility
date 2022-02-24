@@ -120,8 +120,6 @@ public:
     */
     virtual void OutsideTouch() = 0;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif

@@ -15,11 +15,11 @@
 
 #include <memory>
 #include <gtest/gtest.h>
+#include "accessibility_event_info.h"
 #include "accessibility_operator.h"
 #include "accessible_ability_channel_proxy.h"
 #include "accessible_ability_channel_stub.h"
 #include "mock_accessible_ability_channel_impl.h"
-#include "accessibility_event_info.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -101,7 +101,6 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
     GTEST_LOG_(INFO) << "SendSimulateGesture start";
     std::vector<GesturePathDefine> gestureSteps{};
     instance.SendSimulateGesture(1, 1, gestureSteps);
-
 }
 
 /**
@@ -223,6 +222,5 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
 
     GTEST_LOG_(INFO) << "Operator_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

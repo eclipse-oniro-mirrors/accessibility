@@ -40,7 +40,7 @@ public:
         return infos;
     }
     void RegisterElementOperator(const int windowId,
-            const sptr<IAccessibilityElementOperator> &operation, const int accountId) {}
+        const sptr<IAccessibilityElementOperator> &operation, const int accountId) {}
     void DeregisterElementOperator(const int windowId) {}
 
     uint32_t RegisterCaptionPropertyCallback(

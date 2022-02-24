@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ACCESSIBILITY_INTERACTION_BRIDGE_H
 #define ACCESSIBILITY_INTERACTION_BRIDGE_H
 

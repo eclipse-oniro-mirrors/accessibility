@@ -20,9 +20,8 @@
 #include <memory>
 #include <vector>
 
-#include "event_handler.h"
-
 #include "accessibility_event_transmission.h"
+#include "event_handler.h"
 #include "i_input_event_consumer.h"
 #include "input_manager.h"
 #include "key_event.h"

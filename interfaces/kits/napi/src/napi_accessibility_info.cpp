@@ -20,7 +20,10 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-void NElementInfo::DefineJSElementInfo(napi_env env) {
+napi_value NElementInfo::cons_ = nullptr;
+
+void NElementInfo::DefineJSElementInfo(napi_env env)
+{
     napi_property_descriptor descForElementInfo[] = {
         DECLARE_NAPI_FUNCTION("executeAction", NElementInfo::ExecuteAction),
         DECLARE_NAPI_FUNCTION("getByContent", NElementInfo::GetByContent),
@@ -41,13 +44,15 @@ void NElementInfo::DefineJSElementInfo(napi_env env) {
             &NElementInfo::cons_));
 }
 
-napi_value NElementInfo::JSConstructor(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::JSConstructor(napi_env env, napi_callback_info info)
+{
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
     return jsthis;
 }
 
-napi_value NElementInfo::ExecuteAction(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::ExecuteAction(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_THREE;
     napi_value argv[ARGS_SIZE_THREE] = {0};
@@ -171,7 +176,7 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             callbackInfo->ret_ = nodeInfo.GetByContent(callbackInfo->content_, callbackInfo->nodeInfos_);
         },
-        [](napi_env env, napi_status status, void* data) {   //execute the complete function
+        [](napi_env env, napi_status status, void* data) {   // execute the complete function
             HILOG_DEBUG("execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -182,7 +187,6 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
 
             napi_create_array(env, &argv[PARAM1]);
             ConvertElementInfosToJS(env, argv[PARAM1], callbackInfo->nodeInfos_);
-
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
@@ -209,7 +213,8 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
     return promise;
 }
 
-napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_TWO;
     napi_value argv[ARGS_SIZE_TWO] = {0};
@@ -296,7 +301,8 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info) {
     return promise;
 }
 
-static FocusMoveDirection CovertStringToDirection(std::string str) {
+static FocusMoveDirection CovertStringToDirection(std::string str)
+{
     static const std::map<std::string, FocusMoveDirection> focusMoveDirectionTable = {
         {"up", FocusMoveDirection::UP},
         {"down", FocusMoveDirection::DOWN},
@@ -313,7 +319,8 @@ static FocusMoveDirection CovertStringToDirection(std::string str) {
     return focusMoveDirectionTable.at(str);
 }
 
-napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_TWO;
     napi_value argv[ARGS_SIZE_TWO] = {0};
@@ -393,7 +400,8 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info) {
     return promise;
 }
 
-napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_TWO;
     napi_value argv[ARGS_SIZE_TWO] = {0};
@@ -472,7 +480,8 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info) {
     return promise;
 }
 
-napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info) {
+napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info)
+{
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv[ARGS_SIZE_ONE] = {0};

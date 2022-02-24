@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessibility_event_info.h"
 #include "accessibility_operator.h"
 
@@ -19,14 +20,13 @@ using namespace OHOS::Accessibility;
 
 bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
-
     return true;
-};
+}
 
 bool AccessibilityMemo::Marshalling(Parcel &parcel) const
 {
     return true;
-};
+}
 
 EventType AccessibilityEventInfo::GetEventType() const
 {

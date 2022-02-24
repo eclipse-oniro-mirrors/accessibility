@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "accessibility_operator.h"
 
+#include "accessibility_operator.h"
 #include <unistd.h>
 
 namespace OHOS {
@@ -179,8 +179,7 @@ bool AccessibilityOperator::ResetDisplayResize(const int channelId, const int di
 }
 
 bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
-    const int displayId, const float scale, const float centerX,
-    const float centerY, const bool animate)
+    const int displayId, const float scale, const float centerX, const float centerY, const bool animate)
 {
     return false;
 }

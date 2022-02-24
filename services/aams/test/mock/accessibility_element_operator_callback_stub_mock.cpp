@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {}
 

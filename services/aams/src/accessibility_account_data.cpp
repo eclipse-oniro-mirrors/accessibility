@@ -632,33 +632,25 @@ bool AccessibilityAccountData::ReadConfigurationForAccountData()
 }
 
 // get installedAbilities_.
-void AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
+bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    int retry = 1;
     sptr<AppExecFwk::IBundleMgr> bms = nullptr;
-    do {
-        bms = aams->GetBundleMgrProxy();
-        if (!bms) {
-            HILOG_ERROR("Get bms failed! sleep 1s and retry is %{public}d", retry);
-            sleep(1);
-            retry ++;
-        } else {
-            HILOG_DEBUG("Get bms successful and retry is %{public}d", retry);
-            break;
-        }
-    } while (1);
-
-    bms->QueryExtensionAbilityInfos(
-        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    bms = aams->GetBundleMgrProxy();
+    if(bms == nullptr) {
+        HILOG_ERROR("GetBundleMgrProxy failed.");
+        return false;
+    }
+    bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
     for (auto& info : extensionInfos) {
         AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(info);
         AddInstalledAbility(*accessibilityInfo);
     }
+    return true;
 }
 
 void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)

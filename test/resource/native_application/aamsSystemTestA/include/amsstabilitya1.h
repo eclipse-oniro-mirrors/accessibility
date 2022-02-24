@@ -13,20 +13,19 @@
  * limitations under the License.
  */
 
-#ifndef _AAMS_ST_ABILITY_A1_
-#define _AAMS_ST_ABILITY_A1_
-// #include "stpageabilityevent.h"
+#ifndef AAMS_ST_ABILITY_A1
+#define AAMS_ST_ABILITY_A1
+
 #include <memory>
 #include <string>
 #include "ability_loader.h"
-#include "hilog_wrapper.h"
 #include "accessible_ability.h"
 #include "accessibility_event_info.h"
+#include "hilog_wrapper.h"
 #include "key_event.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-
 class AccessibleAbilityListenerTest;
 
 class AamsStAbilityA1 : public Ability {
@@ -61,7 +60,6 @@ private:
     std::string shouldReturn;
     std::string targetBundle;
     std::string targetAbility;
-    // STPageAbilityEvent pageAbilityEvent;
 
     std::shared_ptr<AccessibleAbilityListenerTest> listener_ = nullptr;
 };
@@ -80,7 +78,6 @@ public:
 private:
     std::shared_ptr<AamsStAbilityA1> aamsStAbilityA1_ = std::make_shared<AamsStAbilityA1>();
 };
-
 }  // namespace AppExecFwk
 }  // namespace OHOS
-#endif  // _AMS_ST_ABILITY_A1_
+#endif  // AAMS_ST_ABILITY_A1

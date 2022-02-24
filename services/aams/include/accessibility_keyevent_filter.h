@@ -25,14 +25,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityConnection;
 class AccessibleAbilityManagerService;
 class KeyEventFilterEventHandler;
 
 class KeyEventFilter : public EventTransmission {
 public:
-
     struct ProcessingEvent {
         std::shared_ptr<MMI::KeyEvent> event_;
         uint32_t usedCount_;
@@ -115,7 +113,7 @@ private:
         uint32_t sequenceNum);
 
     std::shared_ptr<AccessibleAbilityManagerService> aams_ = nullptr;
-    std::map<sptr<AccessibleAbilityConnection>, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_ = {};
+    std::map<sptr<AccessibleAbilityConnection>, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_;
     std::shared_ptr<KeyEventFilterEventHandler> timeouthandler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     uint32_t sequenceNum_ = 0;
@@ -141,8 +139,6 @@ public:
 private:
     KeyEventFilter &keyEventFilter_;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif  // OHOS_KEYEVENT_FILTER_H_

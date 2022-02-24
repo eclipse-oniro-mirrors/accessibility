@@ -18,9 +18,9 @@
 
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
-#include "accessibility_input_interceptor.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
+#include "accessibility_input_interceptor.h"
 #include "accessibility_touch_guider.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_connection.h"
@@ -46,10 +46,8 @@ const int sleepTime = 2;
 const int testNum_2 = 2;
 class AamsTouchGuideTest : public testing::Test {
 public:
-    AamsTouchGuideTest()
-    {}
-    ~AamsTouchGuideTest()
-    {}
+    AamsTouchGuideTest() {}
+    ~AamsTouchGuideTest() {}
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp();
@@ -58,7 +56,7 @@ protected:
     std::shared_ptr<MMI::PointerEvent> CreateMoveEvent(int pointerCount, int pointId);
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action, int pointId);
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action, std::vector<MMI::PointerEvent::PointerItem> point,
-                            unsigned int occurredTime, unsigned int startTime, int pointId);
+        unsigned int occurredTime, unsigned int startTime, int pointId);
 
     sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
     shared_ptr<AccessibleAbilityManagerService> ins_ = nullptr;
@@ -82,7 +80,8 @@ void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
 void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
 {
     std::ostringstream os;
-    Json::Value    object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames;
+    Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
     if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
@@ -115,14 +114,17 @@ void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
     jsonStr = os.str();
     WritefileAll("/system/app/dummy_accessibility_ability_config.json",  jsonStr.c_str());
 }
+
 void AamsTouchGuideTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUpTestCase";
 }
+
 void AamsTouchGuideTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest TearDownTestCase";
 }
+
 void AamsTouchGuideTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUp";
@@ -793,6 +795,5 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent011, Test
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent011 ends";
 }
-
 }  // namespace Accessibility
 }  // namespace OHO

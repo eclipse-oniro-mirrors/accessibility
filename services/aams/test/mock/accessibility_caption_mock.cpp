@@ -120,6 +120,5 @@ CaptionProperty* CaptionProperty::Unmarshalling(Parcel& parcel)
     }
     return captionProperty;
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

@@ -288,7 +288,7 @@ void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int sequenceNum)
 {
     HILOG_DEBUG("[%{public}s] Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
-                 __func__, infos.size(), sequenceNum);
+        __func__, infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         HILOG_DEBUG("[%{public}s] Response", __func__);
@@ -301,7 +301,7 @@ void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<A
     const int sequenceNum)
 {
     HILOG_DEBUG("[%{public}s] Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
-                     __func__, infos.size(), sequenceNum);
+        __func__, infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         elementInfosResult_.push_back(*iter);

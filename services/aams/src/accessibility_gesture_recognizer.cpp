@@ -17,11 +17,10 @@
 
 namespace OHOS{
 namespace Accessibility{
-
 GestureHandler::GestureHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner, AccessibilityGestureRecognizer &server)
-    : AppExecFwk::EventHandler(runner),server_(server) {
-
+    : AppExecFwk::EventHandler(runner),server_(server)
+{
 }
 
 void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
@@ -370,8 +369,10 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
             float xNextUnitVector = nextPoint.px_ - newSeparation.px_;
             float yNextUnitVector = nextPoint.py_ - newSeparation.py_;
             float nextVectorLength = hypot(xNextUnitVector, yNextUnitVector);
-            xNextUnitVector /= nextVectorLength;
-            yNextUnitVector /= nextVectorLength;
+            if (nextVectorLength > 0.0f) {
+                xNextUnitVector /= nextVectorLength;
+                yNextUnitVector /= nextVectorLength;
+            }
 
             if ((xVector * xNextUnitVector + yVector * yNextUnitVector) < DEGREES_THRESHOLD) {
                 pointerPath.push_back(newSeparation);
@@ -385,8 +386,10 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
         yVector = nextPoint.py_ - firstSeparation.py_;
         vectorLength = hypot(xVector, yVector);
         numSinceFirstSep += 1;
-        xUnitVector += xVector / vectorLength;
-        yUnitVector += yVector / vectorLength;
+        if (vectorLength > 0.0f) {
+            xUnitVector += xVector / vectorLength;
+            yUnitVector += yVector / vectorLength;
+        }
     }
     pointerPath.push_back(nextPoint);
     return pointerPath;
@@ -412,6 +415,5 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

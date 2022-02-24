@@ -134,7 +134,6 @@ bool JsonUtils::SetStrValue( nlohmann::json& json, const std::string& key, const
         return false;
     }
     if (json.find(key) != json.end()) {
-
         HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
         HILOG_DEBUG("value [%{public}s] successful.", value.c_str());
         json[key] = value;

@@ -35,7 +35,8 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     AccessibleAbilityConnection& connection): connection_(connection)
-{}
+{
+}
 
 bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -58,8 +59,7 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const 
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId failed: no proxy");
         return false;
     }
-    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, requestId, callback,
-        mode);
+    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
     HILOG_ERROR("AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId successfully");
     return true;
 }

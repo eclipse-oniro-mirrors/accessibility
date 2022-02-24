@@ -74,7 +74,9 @@ KeyEvent::~KeyEvent()
 
 std::shared_ptr<KeyEvent> KeyEvent::Create()
 {
-    return std::shared_ptr<KeyEvent>(new KeyEvent(InputEvent::EVENT_TYPE_KEY));
+    KeyEvent *tmp = new KeyEvent(InputEvent::EVENT_TYPE_KEY);
+    std::shared_ptr<KeyEvent> keyEvent(tmp);
+    return keyEvent;
 }
 
 void KeyEvent::AddKeyItem(const KeyItem& keyItem)
@@ -91,6 +93,5 @@ void KeyEvent::SetKeyCode(int32_t keyCode)
 {
     keyCode_ = keyCode;
 }
-
 }
 }

@@ -13,17 +13,14 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include "display_manager.h"
 #include "display_manager_agent.h"
-#include "windowmanager/utils/include/display_info.h"
-
-#include <cinttypes>
-
 #include "dm_common.h"
 #include "singleton_delegator.h"
+#include "windowmanager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
-
 WM_IMPLEMENT_SINGLE_INSTANCE(DisplayManager)
 
 class DisplayManager::Impl : public RefBase {

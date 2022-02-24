@@ -271,7 +271,7 @@ public:
     {
         return isGesturesSimulation_;
     }
-    void GetInstalledAbilitiesFromBMS();
+    bool GetInstalledAbilitiesFromBMS();
 
     /**
      * @brief Add enabled event which is needed by accessible ability.

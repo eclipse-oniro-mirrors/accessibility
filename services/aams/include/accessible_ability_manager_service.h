@@ -147,6 +147,9 @@ public:
     bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
     bool DeregisterUITestAbilityConnectionClient() override;
     int GetActiveWindow() override;
+protected:
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
+    void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
     void AddUITestClient(const sptr<IRemoteObject>& obj);

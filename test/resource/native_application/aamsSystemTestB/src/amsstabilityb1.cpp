@@ -14,9 +14,8 @@
  */
 
 #include "amsstabilityb1.h"
-#include "accessibility_system_ability_client.h"
 #include "accessibility_ability_info.h"
-
+#include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
 #include "refbase.h"
 
@@ -24,7 +23,6 @@ using namespace OHOS::Accessibility;
 
 namespace OHOS {
 namespace AppExecFwk {
-
 #define TESTWINDOWID 0
 #define TESTUSERID 0
 #define STATETYPE 1
@@ -42,7 +40,7 @@ void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEven
 {
     HILOG_INFO("######################AamsStAbilityB1: An Accessibility event is received and eventType is %{public}d", eventInfo.GetEventType());
 
-    //Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo();
+    // Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo();
     std::optional<AccessibilityElementInfo> elementInfo;
     Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo(elementInfo);
 
@@ -79,9 +77,6 @@ void AamsStAbilityB1::OnStart(const Want &want)
     auto eventType = Accessibility::EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT;
     int componentId = 1;
     AccessibilitySystemAbilityClient::GetInstance(context)->SendEvent(eventType, componentId);
-    //RegisterListenerToAA();
-    //ConnectToAAMS();
-    //SendEventWithType();
 }
 
 void AamsStAbilityB1::OnForeground(const Want &want)
@@ -156,7 +151,8 @@ void AamsStAbilityB1::RegisterInteractionOperation()
     AbilityContext context;
     int windowId = 0;
     int userId = TESTUSERID;
-    std::shared_ptr<AccessibilityInteractionOperationTest> interactionOperation(new AccessibilityInteractionOperationTest());
+    std::shared_ptr<AccessibilityInteractionOperationTest> interactionOperation = 
+        std::make_shared<AccessibilityInteractionOperationTest>();
     Accessibility::AccessibilitySystemAbilityClient::GetInstance(context)->RegisterInteractionOperation(
         windowId, interactionOperation, userId);
 }
@@ -209,7 +205,8 @@ void AamsStAbilityB1::SubscribeStateObserver()
     HILOG_INFO("AamsStAbilityB1::SubscribeStateObserver");
     AbilityContext context;
     auto eventType = Accessibility::EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT;
-    std::shared_ptr<AccessibilityStateObserver> stateObserver(new AccessibilityStateObserverTest());
+    std::shared_ptr<AccessibilityStateObserver> stateObserver =
+        std::make_shared<AccessibilityStateObserverTest>();
 
     AccessibilitySystemAbilityClient::GetInstance(context)->SubscribeStateObserver(stateObserver, eventType);
 }
@@ -219,7 +216,8 @@ void AamsStAbilityB1::UnsubscribeStateObserver()
     HILOG_INFO("AamsStAbilityB1::UnsubscribeStateObserver");
     AbilityContext context;
     auto eventType = Accessibility::EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT;
-    std::shared_ptr<AccessibilityStateObserver> stateObserver(new AccessibilityStateObserverTest());
+    std::shared_ptr<AccessibilityStateObserver> stateObserver =
+        std::make_shared<AccessibilityStateObserverTest>();
 
     AccessibilitySystemAbilityClient::GetInstance(context)->UnsubscribeStateObserver(stateObserver, eventType);
 }
@@ -228,7 +226,8 @@ void AamsStAbilityB1::UnsubscribeStateObserverEventType()
 {
     HILOG_INFO("AamsStAbilityB1::UnsubscribeStateObserverEventType");
     AbilityContext context;
-    std::shared_ptr<AccessibilityStateObserver> stateObserver(new AccessibilityStateObserverTest());
+    std::shared_ptr<AccessibilityStateObserver> stateObserver =
+        std::make_shared<AccessibilityStateObserverTest>();
     AccessibilitySystemAbilityClient::GetInstance(context)->UnsubscribeStateObserver(stateObserver);
 }
 
@@ -270,11 +269,11 @@ void AccessibilityInteractionOperationTest::SearchElementInfoByAccessibilityId(c
     info.SetBundleName("testapp_B1");
     info.SetWindowId(0);
     info.SetCheckable(true);
-    info.SetHint("testapp_B1_findFocus_fang-ch");
-    info.AddChild(2);
+    info.SetHint("testapp_B1_findFocus");
+    int childId = 2;
+    info.AddChild(childId);
     std::list<AccessibilityElementInfo> infos{};
     infos.push_back(info);
-    //Accessibility::AccessibilityInteractionOperationStub::CallbackImpl tempCallback = const_cast<Accessibility::AccessibilityInteractionOperationCallback&>(callback);
     callback.SetSearchElementInfoByAccessibilityIdResult(infos,requestId);
 }
 
@@ -287,7 +286,7 @@ void AccessibilityInteractionOperationTest::SearchElementInfosByText(const long 
     info.SetWindowId(0);
     info.SetComponentType("2021年");
     info.SetCheckable(true);
-    info.SetHint("testapp_B1_findFocus_fang-ch");
+    info.SetHint("testapp_B1_findFocus");
     std::list<AccessibilityElementInfo> infos{};
     infos.push_back(info);
     callback.SetSearchElementInfoByTextResult(infos, requestId);
@@ -302,7 +301,7 @@ void AccessibilityInteractionOperationTest::FindFocusedElementInfo(const long el
     info.SetWindowId(0);
     info.SetBundleName("testapp_B1_findFocus");
     info.SetCheckable(true);
-    info.SetHint("testapp_B1_findFocus_fang-ch");
+    info.SetHint("testapp_B1_findFocus");
     callback.SetFindFocusedElementInfoResult(info, requestId);
     HILOG_INFO("###############################AamsStAbilityB1::=================FindFocusedElementInfo===========success=========");
 }
@@ -315,8 +314,9 @@ void AccessibilityInteractionOperationTest::FocusMoveSearch(const long elementId
     info.SetWindowId(0);
     info.SetBundleName("testapp_B1_FocusMoveSearch");
     info.SetCheckable(true);
-    info.SetHint("testapp_B1_FocusMoveSearch_fang-ch");
-    info.SetParent(2);
+    info.SetHint("testapp_B1_FocusMoveSearch");
+    int parentId = 2;
+    info.SetParent(parentId);
 
     callback.SetFocusMoveSearchResult(info, requestId);
     HILOG_INFO("###############################AamsStAbilityB1::=================FocusMoveSearch===========success=========");
@@ -330,7 +330,7 @@ void AccessibilityInteractionOperationTest::PerformAction(const long elementId, 
     info.SetWindowId(0);
     info.SetBundleName("testapp_B1_findFocus");
     info.SetCheckable(true);
-    info.SetHint("testapp_B1_findFocus_fang-ch");
+    info.SetHint("testapp_B1_findFocus");
     callback.SetPerformActionResult(true, requestId);
     HILOG_INFO("###############################AamsStAbilityB1::=================PerformAction===========success=========");
 }

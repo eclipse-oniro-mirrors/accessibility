@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #pragma once
+
 #include <string>
 #include <memory>
 #include <vector>
@@ -26,17 +27,6 @@ std::vector<string> SerializationStOperatorToVector(StOperator &ParentOperator);
 void DeserializationStOperatorFromVector(StOperator &ParentOperator, std::vector<string> &vectorOperator);
 
 class StOperator {
-private:
-    std::vector<std::shared_ptr<StOperator>> g_childOperator;
-    std::shared_ptr<StOperator> g_parentOperator;
-    string g_abilityType;
-    string g_bundleName;
-    string g_abilityName;
-    string g_operatorName;  // data ability
-    string g_message;
-    /* data */
-    static int countChild;
-
 public:
     StOperator();
     StOperator(const string &type, const string &bundle, const string &ability, const string &operatorName = "",
@@ -56,6 +46,16 @@ public:
     StOperator &AddChildOperator(std::shared_ptr<StOperator> childOperator);
     std::vector<std::shared_ptr<StOperator>> GetChildOperator();
     std::vector<std::shared_ptr<StOperator>> PopChildOperator();
-};
 
+private:
+    std::vector<std::shared_ptr<StOperator>> g_childOperator;
+    std::shared_ptr<StOperator> g_parentOperator;
+    string g_abilityType;
+    string g_bundleName;
+    string g_abilityName;
+    string g_operatorName;  // data ability
+    string g_message;
+    /* data */
+    static int countChild;
+};
 }  // namespace STtools

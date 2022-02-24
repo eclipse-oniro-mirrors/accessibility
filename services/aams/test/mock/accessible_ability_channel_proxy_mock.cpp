@@ -14,18 +14,16 @@
  */
 
 #include "accessible_ability_channel_proxy.h"
-#include "parcel.h"
 #include "accessibility_errorcode.h"
+#include "parcel.h"
 
 using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
-AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
-    const sptr<IRemoteObject> &object): IRemoteProxy<IAccessibleAbilityChannel>(object)
+AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(const sptr<IRemoteObject> &object)
+	: IRemoteProxy<IAccessibleAbilityChannel>(object)
 {
-
 }
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
@@ -106,7 +104,7 @@ float AccessibleAbilityChannelProxy::GetDisplayResizeCenterY(const int displayId
 
 Rect AccessibleAbilityChannelProxy::GetDisplayResizeRect(const int displayId)
 {
-    Rect rect(0,0,0,0);
+    Rect rect(0, 0, 0, 0);
     return rect;
 }
 
@@ -116,16 +114,15 @@ bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int displayId, cons
 }
 
 bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-                                        const float centerX, const float centerY, const bool animate)
+    const float centerX, const float centerY, const bool animate)
 {
     return false;
 }
 
 void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
-                                                            const std::vector<GesturePathDefine> &gestureSteps)
+    const std::vector<GesturePathDefine> &gestureSteps)
 {
     return;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

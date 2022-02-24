@@ -15,12 +15,10 @@
 
 #include <memory>
 #include "gesture_simulation.h"
-
 #include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)
 {
     positionX_ = positionX;
@@ -65,8 +63,9 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-                                    GesturePathPositionDefine &endPosition, uint32_t durationTime)
-{}
+    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+{
+}
 
 uint32_t GesturePathDefine::GetDurationTime()
 {

@@ -94,7 +94,7 @@ bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
 {
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
         __func__, channelId_, windowId_, elementId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;

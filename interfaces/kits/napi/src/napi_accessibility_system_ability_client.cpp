@@ -1510,7 +1510,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
     HILOG_INFO("%{public}s start", __func__);
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-    OHOS::Accessibility::CaptionProperty captionProperty{};
+    OHOS::Accessibility::CaptionProperty captionProperty = {};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         ConvertObjToCaptionProperty(env, parameters[PARAM0], &captionProperty);

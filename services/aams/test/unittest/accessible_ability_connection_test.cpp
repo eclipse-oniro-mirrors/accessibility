@@ -14,6 +14,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <stdio.h>
 #include "accessible_ability_connection.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service.h"
@@ -23,7 +24,6 @@
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
-#include <stdio.h>
 
 using namespace testing;
 using namespace testing::ext;
@@ -218,8 +218,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 start";
 
-    OHOS::Accessibility::Rect rect(0,0,0,0);
-    connection_->OnGestureSimulateResult(1,false);
+    OHOS::Accessibility::Rect rect(0, 0, 0, 0);
+    connection_->OnGestureSimulateResult(1, false);
     EXPECT_EQ(g_testGestureSimulateResult, 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 end";

@@ -40,8 +40,8 @@ int g_testGestureSimulate = -1;
 std::vector<EventType> g_mTeventType;
 int g_mTgestureId = -1;
 
-AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object):
-    IRemoteProxy<IAccessibleAbilityClient>(object)
+AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
+	: IRemoteProxy<IAccessibleAbilityClient>(object)
 {}
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)

@@ -22,6 +22,8 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
+napi_value NAccessibilityWindowInfo::cons_ = nullptr;
+
 void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env)
 {
     napi_property_descriptor descForAccessibilityWindowInfo[] = {
