@@ -14,13 +14,13 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_connection.h"
+#include "accessible_ability_manager_service.h"
 #include "common_event_manager.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
-#include "accessible_ability_manager_service.h"
-#include "accessible_ability_connection.h"
-#include "accessible_ability_client_stub_impl.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -50,7 +50,7 @@ public:
 
 void AccessibilityCommonEventRegistryTest::SetUpTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventRegistryTest Start ######################";
+    GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventRegistryTest Start ####################";
 }
 
 void AccessibilityCommonEventRegistryTest::TearDownTestCase()
@@ -96,7 +96,7 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     name.SetAbilityName("com.example.aalisttest.MainAbility");
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
-    // aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
+
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
@@ -112,7 +112,8 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
  * @tc.desc: There is a connected ability. The package is added to the connecting ability during the update.
  *           After the package update. Remove connecting ability.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 start";
     AddAccessibleAbilityConnection();
@@ -134,7 +135,8 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
  * @tc.name: PackageChanged
  * @tc.desc: There is a connected ability. The package has changed. Empty all install ability.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 start";
     AddAccessibleAbilityConnection();
@@ -154,7 +156,8 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
  * @tc.name: PresentUser
  * @tc.desc: After presenting user, the ability which is connected before is still connected.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001, TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 start";
     ASSERT_TRUE(aams_);

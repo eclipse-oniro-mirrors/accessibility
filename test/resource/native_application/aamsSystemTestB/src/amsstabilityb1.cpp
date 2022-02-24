@@ -40,7 +40,6 @@ void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEven
 {
     HILOG_INFO("######################AamsStAbilityB1: An Accessibility event is received and eventType is %{public}d", eventInfo.GetEventType());
 
-    // Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo();
     std::optional<AccessibilityElementInfo> elementInfo;
     Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo(elementInfo);
 

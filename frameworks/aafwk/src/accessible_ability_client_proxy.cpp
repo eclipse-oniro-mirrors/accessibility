@@ -22,7 +22,8 @@ namespace Accessibility {
 
 AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
     : IRemoteProxy<IAccessibleAbilityClient>(object)
-{}
+{
+}
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 {
@@ -34,7 +35,8 @@ bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
     return true;
 }
 
-void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId) {
+void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -65,7 +67,8 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
     }
 }
 
-void AccessibleAbilityClientProxy::Disconnect(const int channelId) {
+void AccessibleAbilityClientProxy::Disconnect(const int channelId)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -89,7 +92,8 @@ void AccessibleAbilityClientProxy::Disconnect(const int channelId) {
     }
 }
 
-void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) {
+void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -111,7 +115,8 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
     }
 }
 
-void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence) {
+void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -122,12 +127,6 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     if (!WriteInterfaceToken(data)) {
         return;
     }
-#if 0 // TODO: Use AccessibilityKeyEvent to instead MMI::KeyEvent
-    if (!data.WriteParcelable(&keyEvent)) {
-        HILOG_ERROR("%{public}s fail, keyEvent write parcelable error", __func__);
-        return;
-    }
-#endif
     if (!data.WriteInt32(sequence)) {
         HILOG_ERROR("%{public}s fail, sequence write int32 error", __func__);
         return;
@@ -140,7 +139,8 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
 }
 
 void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
-                                                            const float centerX, const float centerY) {
+    const float centerX, const float centerY)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -173,13 +173,14 @@ void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const R
     }
 
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_DISPALYRESIZE_CHANGED),
-                data, reply, option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnDisplayResized fail, error: %d", error);
     }
 }
 
-void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) {
+void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully)
+{
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
@@ -199,11 +200,10 @@ void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, c
         return;
     }
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE_SIMULATE_RESULT),
-                data, reply, option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnGestureSimulateResult fail, error: %d", error);
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

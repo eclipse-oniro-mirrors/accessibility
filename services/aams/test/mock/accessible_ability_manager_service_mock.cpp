@@ -65,6 +65,16 @@ void AccessibleAbilityManagerService::OnStop()
     HILOG_INFO("stop AccessibleAbilityManagerService");
 }
 
+void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_INFO("OnAddSystemAbility AccessibleAbilityManagerService");
+}
+
+void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_INFO("OnRemoveSystemAbility AccessibleAbilityManagerService");
+}
+
 bool AccessibleAbilityManagerService::Init()
 {
     if (!runner_) {

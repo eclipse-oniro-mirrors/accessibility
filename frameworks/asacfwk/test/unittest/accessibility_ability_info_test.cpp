@@ -87,7 +87,7 @@ void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig()
     accessibilityCapabilities[0] = "touchGuide";
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
     object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
+    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
 
     Json::StreamWriterBuilder writerBuilder;
 
@@ -237,8 +237,6 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, AccessibilityAbilityInfo_Unittest_Get
     GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_Unittest_GetFilterBundleNames_001 start";
 
     ASSERT_EQ((int)accessibilityAbilityInfo_->GetFilterBundleNames().size(), 0);
-    // EXPECT_STREQ(accessibilityAbilityInfo_->GetFilterBundleNames()[0].c_str(), "com.example.ohos.api1");
-    // EXPECT_STREQ(accessibilityAbilityInfo_->GetFilterBundleNames()[1].c_str(), "com.example.ohos.api2");
 
     GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_Unittest_GetFilterBundleNames_001 end";
 }

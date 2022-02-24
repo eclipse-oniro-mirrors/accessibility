@@ -167,7 +167,7 @@ void AamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent()
     accessibilityCapabilities[0] = "keyEventObserver";
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
     object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
+    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
 
     Json::StreamWriterBuilder writerBuilder;
 

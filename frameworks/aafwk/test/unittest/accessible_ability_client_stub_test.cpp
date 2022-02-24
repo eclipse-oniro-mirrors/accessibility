@@ -133,22 +133,6 @@ HWTEST_F(AccessibleAbilityClientStubUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubUnitTest_Unittest_OnRemoteRequest_003 start";
 
-#if 0 // TODO: fix me -> keyEvent
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
-    int sequence = 1;
-
-    WriteInterfaceToken(data);
-    data.WriteParcelable(&keyEvent);
-    data.WriteInt32(sequence);
-
-    int res = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT), data, reply, option);
-    EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
-
-#endif
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubUnitTest_Unittest_OnRemoteRequest_003 end";
 }
 

@@ -165,7 +165,7 @@ void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigForTouchGuide()
     accessibilityCapabilities[testNum_3] = "gesture";
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
     object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
+    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
 
     Json::StreamWriterBuilder writerBuilder;
 
@@ -202,7 +202,7 @@ void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigNoCapability()
     accessibilityCapabilities[1] = "touchGuide";
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
     object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
+    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
 
     Json::StreamWriterBuilder writerBuilder;
 
@@ -223,7 +223,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
     name.SetAbilityName("com.example.aalisttest.MainAbility");
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
-    // aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
+
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);

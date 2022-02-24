@@ -45,7 +45,6 @@ const int testNum_3 = 3;
 
 class AAMSServerTest : public testing::Test {
 public:
-
     AAMSServerTest() {}
     ~AAMSServerTest() {}
 
@@ -116,15 +115,15 @@ void AAMSServerTest::WritefileAll(const char* fname, const char* data)
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
+    (void)fprintf(fp, "%s", data);
     fclose(fp);
 }
 
 void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()
 {
     std::ostringstream os;
-    Json::Value object1,
-        targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames;
+    Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
     if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
@@ -149,7 +148,7 @@ void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()
     accessibilityCapabilities[testNum_3] = "gesture";
     object1["accessibilityCapabilities"] = accessibilityCapabilities;
     object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.android.accessibility.ServiceSettingsAbility";
+    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
 
     Json::StreamWriterBuilder writerBuilder;
 
@@ -170,7 +169,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
     name.SetAbilityName("com.example.aalisttest.MainAbility");
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
-    // aams_->GetBundleMgrProxy()->QueryAbilityInfo(want, info);
+
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);

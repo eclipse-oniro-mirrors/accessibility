@@ -42,8 +42,7 @@ const int windowID_500 = 500;
 const int sleepTimeSec2 = 2;
 class AccessibilityElementOperatorTest : public Accessibility::AccessibilityElementOperator {
 public:
-    AccessibilityElementOperatorTest()
-    {}
+    AccessibilityElementOperatorTest() {}
     virtual ~AccessibilityElementOperatorTest() = default;
     void SearchElementInfoByAccessibilityId(const long elementId, const int requestId,
         Accessibility::AccessibilityElementOperatorCallback& callback, const int mode) override;
@@ -122,10 +121,8 @@ void AccessibilityElementOperatorTest::OutsideTouch()
 
 class ASACClientSystemTest : public ::testing::Test {
 public:
-    ASACClientSystemTest()
-    {}
-    ~ASACClientSystemTest()
-    {}
+    ASACClientSystemTest() {}
+    ~ASACClientSystemTest() {}
 
     static void SetUpTestCase()
     {
@@ -141,7 +138,7 @@ public:
     void SetUp()
     {
         GTEST_LOG_(INFO) << "ASACClientSystemTest SetUp()";
-    };
+    }
     void TearDown()
     {
         GTEST_LOG_(INFO) << "ASACClientSystemTest TearDown()";
@@ -159,6 +156,7 @@ void ASACClientSystemTest::Uninstall(std::string bundleName)
 {
     system(("bm uninstall -n " + bundleName + " > /dev/null 2>&1").c_str());
 }
+
 /**
  * @tc.number: RegisterElementOperator_001
  * @tc.name: Function
@@ -315,7 +313,6 @@ HWTEST_F(ASACClientSystemTest, GetInstalledAbilities, TestSize.Level1)
         printf("test");
         printf("%s", BundleName.c_str());
     }
-    // EXPECT_FALSE(it.empty());
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
 }
 
@@ -332,7 +329,6 @@ HWTEST_F(ASACClientSystemTest, GetEnabledAbilities, TestSize.Level1)
         printf("test");
         printf("%s", BundleName.c_str());
     }
-    // EXPECT_FALSE(it.empty());
     GTEST_LOG_(INFO) << "GetEnabledAbilities end";
 }
 
@@ -470,6 +466,5 @@ HWTEST_F(ASACClientSystemTest, SetCaptionState, TestSize.Level1)
     EXPECT_TRUE(result);
     GTEST_LOG_(INFO) << "SetCaptionState end";
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

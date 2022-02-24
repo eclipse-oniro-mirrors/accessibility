@@ -1655,7 +1655,8 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
 }
 
 CaptionListener::CaptionListener()
-{}
+{
+}
 
 CaptionObserverType CaptionListener::GetStateType()
 {

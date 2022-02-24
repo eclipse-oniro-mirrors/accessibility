@@ -318,7 +318,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
     SetLatestContent(latestConent);
     int32_t elementId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId);
-    //SetSource(elementId);
+
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
     SetItemCounts(itemCounts);
@@ -494,8 +494,7 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
     return triggerAction_;
 }
 
-AccessibilityEventInfo::AccessibilityEventInfo(
-            int windowId, WindowUpdateType windowChangeTypes)
+AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     eventType_ = TYPE_WINDOW_UPDATE;
@@ -544,6 +543,5 @@ int AccessibilityEventInfo::GetPageId() const
     HILOG_DEBUG("[%{public}s] pageId_[%{public}d]", __func__, pageId_);
     return pageId_;
 }
-
 } // namespace Accessibility
 } // namespace OHOS
