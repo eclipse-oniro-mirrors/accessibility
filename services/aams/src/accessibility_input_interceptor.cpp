@@ -192,12 +192,12 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
 {
     HILOG_DEBUG();
 
-    if (nullptr != pointerEventTransmitters_) {
+    if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->DestroyEvents();
         ams_->SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
     }
-    if (nullptr != keyEventTransmitters_) {
+    if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();
         ams_->SetKeyEventFilter(nullptr);
         keyEventTransmitters_ = nullptr;
@@ -208,10 +208,10 @@ void AccessibilityInputInterceptor::NotifyAccessibilityEvent(AccessibilityEventI
 {
     HILOG_DEBUG();
 
-    if (nullptr != pointerEventTransmitters_) {
+    if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->OnAccessibilityEvent(event);
     }
-    if (nullptr != keyEventTransmitters_) {
+    if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->OnAccessibilityEvent(event);
     }
 }
@@ -220,7 +220,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 {
     HILOG_DEBUG();
 
-    if (nullptr == pointerEventTransmitters_) {
+    if (pointerEventTransmitters_ == nullptr) {
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
         return;
     }
@@ -232,7 +232,7 @@ void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEven
 {
     HILOG_DEBUG();
 
-    if (nullptr == keyEventTransmitters_) {
+    if (keyEventTransmitters_ == nullptr) {
         HILOG_DEBUG("keyEventTransmitters_ is empty.");
         return;
     }
@@ -280,7 +280,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent
         return;
     }
 
-    if (nullptr == eventHandler_) {
+    if (eventHandler_ == nullptr) {
         HILOG_DEBUG("eventHandler_ is empty.");
         return;
     }
@@ -303,7 +303,7 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
         return;
     }
 
-    if (nullptr == eventHandler_) {
+    if (eventHandler_ == nullptr) {
         HILOG_DEBUG("eventHandler_ is empty.");
         return;
     }

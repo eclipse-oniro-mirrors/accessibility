@@ -22,16 +22,15 @@ using namespace std;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AAFwk;
 
-namespace OHOS{
-namespace Accessibility{
+namespace OHOS {
+namespace Accessibility {
 AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
 {
     HILOG_DEBUG("AccessibilityCommonEventRegistry AccessibilityCommonEventRegistry");
-        handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
-    &AccessibilityCommonEventRegistry::HandleRemovedUser;
+    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
+        &AccessibilityCommonEventRegistry::HandleRemovedUser;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
         &AccessibilityCommonEventRegistry::HandlePresentUser;
-
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
         &AccessibilityCommonEventRegistry::HandlePackageAdd;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =

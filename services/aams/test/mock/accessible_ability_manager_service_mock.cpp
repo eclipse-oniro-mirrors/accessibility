@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_service.h"
+
 #include <ctime>
 #include <functional>
 #include <unistd.h>
@@ -22,8 +23,8 @@
 #include "accessibility_event_info.h"
 #include "accessibility_interaction_bridge.h"
 #include "accessibility_window_manager.h"
-#include "hilog_wrapper.h"
 #include "iservice_registry.h"
+#include "hilog_wrapper.h"
 #include "system_ability_definition.h"
 
 using namespace std;
@@ -524,8 +525,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    std::map<std::string, AppExecFwk::ElementName> it{};
-    it = accountData->GetEnabledAbilities();
+    std::map<std::string, AppExecFwk::ElementName> it = accountData->GetEnabledAbilities();
     return it;
 }
 

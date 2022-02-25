@@ -77,7 +77,7 @@ std::shared_ptr<DisplayResizeController>& AccessibilityExtensionContext::GetDisp
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
-    // TODO: To make sure the id of DEFAULT_DISPALY.
+    // this is a temp deal: To make sure the id of DEFAULT_DISPALY.
     uint32_t DEFAULT_DISPALY = 0;
     return GetDisplayResizeController(DEFAULT_DISPALY);
 }

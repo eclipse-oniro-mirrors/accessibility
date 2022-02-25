@@ -1554,7 +1554,7 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<Ge
             return;
         }
 
-        ConvertGesturePathJSToNAPI(env, object, path);
+        ConvertGesturePathJSToNAPI(env, jsValue, path);
         gesturePaths.push_back(path);
     }
 }

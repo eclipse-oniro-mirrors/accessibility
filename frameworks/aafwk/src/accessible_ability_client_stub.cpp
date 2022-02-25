@@ -107,6 +107,14 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
+    int sequence = data.ReadInt32();
+
+    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
+    if (!keyEvent->ReadFromParcel(data)) {
+        HILOG_ERROR("keyEvent ReadFromParcel failed");
+        return ERR_INVALID_VALUE;
+    }
+    OnKeyPressEvent(*keyEvent, sequence);
     return NO_ERROR;
 }
 

@@ -22,8 +22,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class GesturePathPositionDefine : public Parcelable
-{
+class GesturePathPositionDefine : public Parcelable {
 public:
     GesturePathPositionDefine() {}
     ~GesturePathPositionDefine() {}
@@ -80,18 +79,17 @@ public:
     static GesturePathPositionDefine *Unmarshalling(Parcel &parcel);
 
 private:
-    float positionX_ = 0;
-    float positionY_ = 0;
+    float positionX_ = .0f;
+    float positionY_ = .0f;
 };
 
-class GesturePathDefine : public Parcelable
-{
+class GesturePathDefine : public Parcelable {
 public:
     GesturePathDefine() {}
     ~GesturePathDefine() {}
 
     GesturePathDefine(GesturePathPositionDefine &startPosition,
-                        GesturePathPositionDefine &endPosition, uint32_t durationTime);
+        GesturePathPositionDefine &endPosition, uint32_t durationTime);
 
     /**
      * @brief Obtains the duration for completing the maximum number of gesture strokes.
@@ -179,10 +177,8 @@ private:
     uint32_t durationTime_ = 0;
 };
 
-class GestureResultListener
-{
+class GestureResultListener {
 public:
-
     /**
      * @brief Called when the gesture is finished.
      * @param sequence
@@ -191,8 +187,6 @@ public:
      */
     virtual void OnGestureInjectResult(uint32_t sequence, bool result) = 0;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // GESTURE_SIMULATION_H

@@ -100,7 +100,8 @@ public:
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      * @return
      */
-    virtual void ExecuteAction(const long elementId, const int action, const std::map<std::string, std::string> actionArguments,
+    virtual void ExecuteAction(const long elementId, const int action,
+        const std::map<std::string, std::string> actionArguments,
         const int requestId, AccessibilityElementOperatorCallback &callback) = 0;
 
     /**

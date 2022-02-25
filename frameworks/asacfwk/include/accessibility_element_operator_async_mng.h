@@ -21,8 +21,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityElementAsyncOperatorMng
-{
+class AccessibilityElementAsyncOperatorMng {
 public:
     /**
      * @brief construct function
@@ -75,7 +74,6 @@ private:
     static std::recursive_mutex mutex_;
     static int sequence_;    //matched request with callback result
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

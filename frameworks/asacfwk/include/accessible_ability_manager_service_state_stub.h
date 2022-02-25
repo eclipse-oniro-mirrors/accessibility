@@ -26,8 +26,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityManagerServiceStateStub : public IRemoteStub<IAccessibleAbilityManagerServiceState>
-{
+class AccessibleAbilityManagerServiceStateStub : public IRemoteStub<IAccessibleAbilityManagerServiceState> {
 public:
     /**
      * @brief construct function
@@ -74,7 +73,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceStateStub);
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

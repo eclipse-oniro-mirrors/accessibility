@@ -13,52 +13,55 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_UI_TEST_ABILITY_H
-#define ACCESSIBILITY_UI_TEST_ABILITY_H
+#ifndef ACCESSIBILITY_UI_TEST_ABILITY_IMPL_H
+#define ACCESSIBILITY_UI_TEST_ABILITY_IMPL_H
 
-#include <memory>
-#include "accessibility_extension_context.h"
-#include "accessibility_ui_test_ability_listener.h"
+#include "accessibility_ui_test_ability.h"
+#include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityUITestAbility : public AccessibilityExtensionContext {
+class AccessibilityUITestAbilityImpl final : public AccessibilityUITestAbility {
 public:
+    /**
+     * @brief Construct
+     * @param
+     * @return
+     */
+    AccessibilityUITestAbilityImpl();
+
     /**
      * @brief Destruct
      * @param
      * @return
      */
-    virtual ~AccessibilityUITestAbility() = default;
-
-    /**
-     * @brief Gets an instance of AccessibleAbility.
-     * @param
-     * @return Return an instance of AccessibleAbility.
-     */
-    static std::shared_ptr<AccessibilityUITestAbility> GetInstance();
+    ~AccessibilityUITestAbilityImpl() = default;
 
     /**
      * @brief RegisterListener
      * @param
      * @return
      */
-    virtual bool RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener) = 0;
+    virtual bool RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener) override;
 
     /**
      * @brief Connect to AAMS.
      * @param
      * @return
      */
-    virtual bool Connect() = 0;
+    virtual bool Connect() override;
 
     /**
-        * @brief disconnect to AAMS.
-        * @param
-        * @return
-        */
-    virtual bool Disconnect() = 0;
+     * @brief disconnect to AAMS.
+     * @param
+     * @return
+     */
+    virtual bool Disconnect() override;
+private:
+    sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
+    sptr<AccessibleAbilityManagerServiceClientProxy> serviceProxy_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_UI_TEST_ABILITY_H
+#endif  // ACCESSIBILITY_UI_TEST_ABILITY_IMPL_H

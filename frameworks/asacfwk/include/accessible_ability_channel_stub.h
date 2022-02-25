@@ -28,9 +28,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-class AccessibleAbilityChannelStub : public IRemoteStub<IAccessibleAbilityChannel>
-{
+class AccessibleAbilityChannelStub : public IRemoteStub<IAccessibleAbilityChannel> {
 public:
     /**
      * @brief construct function
@@ -55,7 +53,7 @@ public:
      * @return
      */
     virtual int OnRemoteRequest(uint32_t code, MessageParcel &data,
-                                    MessageParcel &reply, MessageOption &option) override;
+        MessageParcel &reply, MessageOption &option) override;
 private:
     /**
      * @brief Handle the IPC request for the function:HandleSearchElementInfoByAccessibilityId.
@@ -177,14 +175,12 @@ private:
      */
     ErrCode HandleSendSimulateGesture(MessageParcel &data, MessageParcel &reply);
 
-    using AccessibleAbilityConnectionFunc = ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data,
-                                                        MessageParcel &reply);
+    using AccessibleAbilityConnectionFunc =
+        ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibleAbilityConnectionFunc> memberFuncMap_;
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityChannelStub);
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBLE_ABILITY_CHANNEL_STUB_H

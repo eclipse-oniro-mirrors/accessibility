@@ -344,9 +344,8 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
         __func__, channelId_, windowId_, elementId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
-        return instance->ExecuteAction(channelId_,
-                windowId_, elementId_, action,
-                const_cast<std::map<std::string, std::string> &>(actionArguments));
+        return instance->ExecuteAction(channelId_, windowId_, elementId_, action,
+            const_cast<std::map<std::string, std::string> &>(actionArguments));
     } else {
         HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
         return false;
@@ -377,7 +376,7 @@ bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, elementId, mode, elementInfos);
+            windowId_, elementId, mode, elementInfos);
     } else {
         HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
     }
@@ -900,7 +899,7 @@ bool AccessibilityElementInfo::GetLabeled(AccessibilityElementInfo &elementInfo)
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, labeled_, 0, elementInfos);
+            windowId_, labeled_, 0, elementInfos);
         if (elementInfos.empty()) {
             result = false;
         } else {

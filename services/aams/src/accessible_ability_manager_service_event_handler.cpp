@@ -18,7 +18,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-AAMSEventHandler::AAMSEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner) : AppExecFwk::EventHandler(runner)
+AAMSEventHandler::AAMSEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner)
+    : AppExecFwk::EventHandler(runner)
 {
 }
 

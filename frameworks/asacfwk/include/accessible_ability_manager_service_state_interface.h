@@ -23,8 +23,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class IAccessibleAbilityManagerServiceState : public IRemoteBroker
-{
+class IAccessibleAbilityManagerServiceState : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityManagerServiceState");
 
@@ -42,7 +41,6 @@ public:
         ON_STATE_CHANGED,
     };
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

@@ -166,8 +166,7 @@ bool JsonUtils::SetVecValue(nlohmann::json& json, const std::string& key, std::s
         return false;
     }
 
-    if (json.find(key) != json.end() && json.at(key).is_array())
-    {
+    if (json.find(key) != json.end() && json.at(key).is_array()) {
         HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
         std::string str1 = "{\"BundleName\":\"";
         std::string str2 = "\"}";
@@ -176,7 +175,7 @@ bool JsonUtils::SetVecValue(nlohmann::json& json, const std::string& key, std::s
         HILOG_DEBUG("jsonStr = %{public}s .", jsonStr.c_str());
         nlohmann::json jsonobj = json.parse(jsonStr);
         json[key].push_back(jsonobj);
-        }
+    }
     return true;
 }
 

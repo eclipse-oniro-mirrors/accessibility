@@ -262,7 +262,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
  * @tc.name: RemoveConnectingA11yAbility
  * @tc.desc: Check the remove connecting A11y ability.GetAccessibilityWindows
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001 start";
     const int accountId = 1;
@@ -297,7 +298,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     /* add */
     accountData->AddEnabledAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-    bool test = accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
+    bool test =
+        accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
     EXPECT_TRUE(test);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 end";
@@ -318,7 +320,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     /* add */
     accountData->AddEnabledAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-    bool test = accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
+    bool test =
+        accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
     EXPECT_TRUE(test);
     /* remove */
     accountData->RemoveEnabledAbility(elementName);
@@ -397,7 +400,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
  * @tc.name: GetAccessibleAbilityConnection
  * @tc.desc: Check the get accessibility connection.
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 start";
     const int accountId = 1;
@@ -420,7 +424,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
  * @tc.name: GetAccessibleAbilityConnection
  * @tc.desc: Check the get accessibility connection.
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002 start";
     const int accountId = 1;
@@ -595,8 +600,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
  * @tc.name: AddAccessibilityWindowConnection
  * @tc.desc: Check the add accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001 star";
     const int accountId = 1;
@@ -621,8 +626,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAcce
  * @tc.name: GetAccessibilityWindowConnection
  * @tc.desc: Check the get accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001 star";
     const int accountId = 1;
@@ -648,8 +653,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
  * @tc.name: RemoveAccessibilityWindowConnection
  * @tc.desc: Check the remove accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001 star";
     const int accountId = 1;

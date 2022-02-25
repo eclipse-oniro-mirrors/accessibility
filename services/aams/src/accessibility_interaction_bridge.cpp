@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-#include <algorithm>
 #include "accessibility_interaction_bridge.h"
+
+#include <algorithm>
 #include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"

@@ -52,7 +52,7 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
     MessageParcel &reply, MessageOption &option)
  {
     HILOG_DEBUG("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, cmd = %d, flags= %d",
-            code, option.GetFlags());
+        code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
 

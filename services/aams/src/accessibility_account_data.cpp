@@ -640,7 +640,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AppExecFwk::IBundleMgr> bms = nullptr;
     bms = aams->GetBundleMgrProxy();
-    if(bms == nullptr) {
+    if (bms == nullptr) {
         HILOG_ERROR("GetBundleMgrProxy failed.");
         return false;
     }

@@ -71,7 +71,7 @@ napi_value NElementInfo::ExecuteAction(napi_env env, napi_callback_info info)
     }
     NAccessibilityInfoData *callbackInfo = new NAccessibilityInfoData();
     ConvertActionArgsJSToNAPI(env, argv[argc - 1], callbackInfo->actionArguments_,
-         ConvertStringToAccessibleOperationType(action));
+		ConvertStringToAccessibleOperationType(action));
     callbackInfo->nativeNodeInfo_ = *nodeInfo;
     callbackInfo->content_ = action;
     napi_value promise = nullptr;
@@ -361,7 +361,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             callbackInfo->ret_ = nodeInfo.GetNext(CovertStringToDirection(callbackInfo->content_),
-                                    callbackInfo->nodeInfo_);
+                callbackInfo->nodeInfo_);
         },
         [](napi_env env, napi_status status, void* data) {   //execute the complete function
             HILOG_DEBUG("GetNext execute back");

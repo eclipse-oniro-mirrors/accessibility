@@ -93,5 +93,15 @@ void KeyEvent::SetKeyCode(int32_t keyCode)
 {
     keyCode_ = keyCode;
 }
+
+bool KeyEvent::WriteToParcel(Parcel &out) const
+{
+    return true;
+}
+
+bool KeyEvent::ReadFromParcel(Parcel &in)
+{
+    return true;
+}
 }
 }

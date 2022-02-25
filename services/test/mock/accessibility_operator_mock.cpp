@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "accessibility_operator.h"
 #include <unistd.h>
+#include "accessibility_operator.h"
 
 namespace OHOS {
 namespace Accessibility {

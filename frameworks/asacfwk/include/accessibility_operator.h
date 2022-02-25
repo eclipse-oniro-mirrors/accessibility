@@ -42,8 +42,7 @@ namespace Accessibility {
 * --> UI process and set Callback).
 * It supply one instance for each thread to use this class.
 */
-class AccessibilityOperator : public AccessibilityElementOperatorCallbackStub
-{
+class AccessibilityOperator : public AccessibilityElementOperatorCallbackStub {
 public:
     static const int NONE_ID = -1;
     static const int MAX_INSTANCE = 10;
@@ -118,8 +117,8 @@ public:
      * @return -
      */
     bool SearchElementInfosByAccessibilityId(int channelId,
-            int accessibilityWindowId, int elementId,
-            int mode, std::vector<AccessibilityElementInfo> &elementInfos);
+        int accessibilityWindowId, int elementId,
+        int mode, std::vector<AccessibilityElementInfo> &elementInfos);
 
     /**
      * @brief Find the node information filtered by text.
@@ -145,7 +144,7 @@ public:
      * @return -
      */
     bool FindFocusedElementInfo(int channelId, int accessibilityWindowId,
-            int elementId, int focusType, AccessibilityElementInfo &elementInfo);
+        int elementId, int focusType, AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Find the node information by focus move direction.
@@ -158,7 +157,7 @@ public:
      * @return -
      */
     bool FocusMoveSearch(int channelId, int accessibilityWindowId,
-            int elementId, int direction, AccessibilityElementInfo &elementInfo);
+        int elementId, int direction, AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Perform the action on the component.
@@ -184,7 +183,7 @@ public:
      * @return true: Perform action successfully; otherwise is not.
      */
     bool ExecuteAction(int channelId, int accessibilityWindowId,
-            int elementId, int action,  std::map<std::string, std::string> &actionArguments);
+        int elementId, int action,  std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Save the elements information searched in ACE side
@@ -314,12 +313,11 @@ private:
     static std::map<int, sptr<IAccessibleAbilityChannel>> channels_;
     AccessibilityElementAsyncOperatorMng asyncElementOperatorMng_ = {};
     AccessibilityElementInfo accessibilityInfoResult_ = {};
-    std::vector<AccessibilityElementInfo> elementInfosResult_ = {};
-    std::vector<AccessibilityWindowInfo> windows_ = {};
+    std::vector<AccessibilityElementInfo> elementInfosResult_;
+    std::vector<AccessibilityWindowInfo> windows_;
     bool executeActionResult_ = false;
     static std::recursive_mutex mutex_;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

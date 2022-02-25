@@ -19,14 +19,16 @@
 #include <string>
 #include "accessible_ability_manager_service.h"
 #include "accessibility_element_info.h"
-#include "accessibility_operator.h"
 #include "accessibility_element_operator_interface.h"
+#include "accessibility_operator.h"
 #include "mmi_point.h"
 
 namespace OHOS {
 namespace Accessibility{
 class AccessibilityInteractionBridge {
 public:
+    ~AccessibilityInteractionBridge() = default;
+
     /**
      * @brief Get the instance of Interaction Bridge.
      * @return Returns Static reference the instance of Interaction Bridge.
@@ -46,7 +48,7 @@ public:
      */
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     bool GetPointerItermOfAccessibilityFocusClick(MMI::PointerEvent::PointerItem &point);
-    ~AccessibilityInteractionBridge() = default;
+
 private:
     AccessibilityInteractionBridge();
     AccessibilityElementInfo FindFocusedElementInfo(const int &windowId);

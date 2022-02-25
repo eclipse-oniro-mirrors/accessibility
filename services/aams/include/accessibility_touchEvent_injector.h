@@ -96,7 +96,7 @@ public:
      * @return
      */
     void InjectEvents(const std::vector<GesturePathDefine> &gesturePath,
-        const sptr<IAccessibleAbilityClient> &service, int sequence );
+        const sptr<IAccessibleAbilityClient> &service, int sequence);
 
     /**
      * @brief Send pointer event to next stream node.
@@ -117,7 +117,8 @@ public:
      * @param
      * @return the corresponding AccessiblityAbility
      */
-    sptr<IAccessibleAbilityClient> GetCurrentGestureService() {
+    sptr<IAccessibleAbilityClient> GetCurrentGestureService()
+    {
         return currentGestureService_;
     }
 
@@ -126,7 +127,8 @@ public:
      * @param
      * @return the sequence of gesture
      */
-    int GetSequence() {
+    int GetSequence()
+    {
         return sequence_;
     }
 
@@ -175,7 +177,8 @@ private:
      * @param point the endpoint of event
      * @return the created touchevent
      */
-    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action, MMI::PointerEvent::PointerItem point);
+    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action,
+        MMI::PointerEvent::PointerItem point, long actionTime);
 
     /**
      * @brief Get the number of milliseconds elapsed since the system was booted.

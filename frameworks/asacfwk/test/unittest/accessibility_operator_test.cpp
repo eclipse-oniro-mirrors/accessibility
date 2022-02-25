@@ -32,16 +32,20 @@ public:
     AccessibilityOperatorUnitTest() {}
     ~AccessibilityOperatorUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityOperatorUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "AccessibilityOperatorUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "AccessibilityOperatorUnitTest SetUp()";
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "AccessibilityOperatorUnitTest TearDown()";
     }
 };

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
+#include <cstdint>
 #include <gtest/gtest.h>
-#include <stdint.h>
 #include "accessibility_account_data.h"
 #include "accessibility_errorcode.h"
 #include "accessibility_event_info.h"
@@ -30,12 +30,11 @@ int g_testGesture = -1;
 int g_testKeyPressEvent = -1;
 int g_testDisplayId = -1;
 int g_testGestureSimulateResult = -1;
-OHOS::sptr<OHOS::Accessibility::IAccessibleAbilityChannel> testStub = nullptr;
-
 namespace OHOS {
 namespace Accessibility {
 std::vector<EventType> g_mTeventType;
 int g_mTgestureId = -1;
+sptr<OHOS::Accessibility::IAccessibleAbilityChannel> g_testStub = nullptr;
 
 AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
 	: IRemoteProxy<IAccessibleAbilityClient>(object)
@@ -49,7 +48,7 @@ bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 
 void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
 {
-    testStub = channel;
+    g_testStub = channel;
     g_testChannalId = channelId;
 }
 

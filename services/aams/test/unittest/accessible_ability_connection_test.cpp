@@ -18,9 +18,9 @@
 #include "accessible_ability_connection.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service.h"
+#include "accessibility_display_manager.h"
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_proxy.h"
-#include "accessibility_display_manager.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
@@ -178,7 +178,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 start";
     AccessibilityEventInfo eventInfo;
@@ -195,7 +196,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 start";
     AccessibilityEventInfo eventInfo;
@@ -214,7 +216,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnGestureSimulateResult
  * @tc.desc: Test function OnGestureSimulateResult
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 start";
 

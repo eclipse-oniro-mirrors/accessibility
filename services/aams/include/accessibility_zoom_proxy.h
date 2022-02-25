@@ -75,7 +75,7 @@ public:
      */
     static AccessibilityZoomProxy &GetInstance()
     {
-        static AccessibilityZoomProxy instance_ {};
+        static AccessibilityZoomProxy instance_;
         return instance_;
     }
 
@@ -114,9 +114,18 @@ public:
     void DeleteListener(AccessibilityDisplayResizeListener &listener) {}
 
     void Register(int displayId) {}
+
     void Unregister(int displayId) {}
-    bool IsRegistered(int displayId) { return false; }
-    bool IsRunning(int displayId) { return false; }
+
+    bool IsRegistered(int displayId)
+    {
+        return false;
+    }
+
+    bool IsRunning(int displayId)
+    {
+        return false;
+    }
 
     /**
      * @brief Gets the scale.
@@ -126,7 +135,10 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetScale(int displayId) { return 0.0; }
+    float GetScale(int displayId)
+    {
+        return 0.0;
+    }
 
     /**
      * @brief Gets the screen-relative X coordinate that is centered.
@@ -136,7 +148,10 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetCenterX(int displayId) { return 0.0; }
+    float GetCenterX(int displayId)
+    {
+        return 0.0;
+    }
 
     /**
      * @brief Gets the screen-relative Y coordinate that is centered.
@@ -146,7 +161,10 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetCenterY(int displayId) { return 0.0; }
+    float GetCenterY(int displayId)
+    {
+        return 0.0;
+    }
 
     /**
      * @brief Gets the current magnification area.
@@ -170,7 +188,10 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    bool Reset(int displayId) { return false; }
+    bool Reset(int displayId)
+    {
+        return false;
+    }
 
     /**
      * @brief Set the magnification center and scale.
@@ -182,10 +203,13 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    bool SetScaleAndCenter(int displayId, float scale, float centerX, float centerY) { return false; }
+    bool SetScaleAndCenter(int displayId, float scale, float centerX, float centerY)
+    {
+        return false;
+    }
 
 private:
-    std::vector<AccessibilityDisplayResizeListener> mListeners_ {};
+    std::vector<AccessibilityDisplayResizeListener> mListeners_;
 
     /**
      * @brief Set the magnification scale.
@@ -196,8 +220,7 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    bool SetScale(int displayId, float scale, float pivotX, float pivotY,
-        bool animate, int id)
+    bool SetScale(int displayId, float scale, float pivotX, float pivotY, bool animate, int id)
     {
         return false;
     }
@@ -211,7 +234,10 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    bool SetCenter(int displayId, float centerX, float centerY, bool animate, int id) { return false; }
+    bool SetCenter(int displayId, float centerX, float centerY, bool animate, int id)
+    {
+        return false;
+    }
 
     /**
      * @brief Set the magnifying offset.

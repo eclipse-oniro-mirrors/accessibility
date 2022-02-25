@@ -15,6 +15,7 @@
 
 #ifndef AAMS_ST_ABILITY_B1
 #define AAMS_ST_ABILITY_B1
+
 #include <string>
 #include "ability_loader.h"
 #include "accessibility_element_operator.h"

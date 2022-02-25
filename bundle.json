@@ -42,15 +42,11 @@
           "name": "//base/accessibility/frameworks/aafwk:accessibleability",
           "header": {
             "header_files": [
-              "accessible_ability_client_interface.h",
-              "accessible_ability_client_proxy.h",
-              "accessible_ability_client_stub.h",
-              "accessible_ability_client_stub_impl.h",
               "accessibility_extension_context.h",
-              "accessibility_extension.h",
-              "display_resize_controller.h"
+              "accessibility_ui_test_ability_listener.h",
+              "accessibility_ui_test_ability.h"
             ],
-            "header_base": "//base/accessibility/frameworks/aafwk/include"
+            "header_base": "//base/accessibility/interfaces/innerkits/aafwk/include"
           }
         },
         {

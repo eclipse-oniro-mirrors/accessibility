@@ -116,7 +116,7 @@ void AAMSServerTest::WritefileAll(const char* fname, const char* data)
     }
 
     (void)fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fclose(fp);
 }
 
 void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()

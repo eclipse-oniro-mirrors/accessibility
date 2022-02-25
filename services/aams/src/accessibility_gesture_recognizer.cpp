@@ -15,11 +15,10 @@
 
 #include "accessibility_gesture_recognizer.h"
 
-namespace OHOS{
-namespace Accessibility{
-GestureHandler::GestureHandler(
-    const std::shared_ptr<AppExecFwk::EventRunner> &runner, AccessibilityGestureRecognizer &server)
-    : AppExecFwk::EventHandler(runner),server_(server)
+namespace OHOS {
+namespace Accessibility {
+GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
+    AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
 }
 
@@ -148,7 +147,7 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     pointerRoute_.push_back(mp);
     prePointer_ = pointerIterm;
     startPointer_ = pointerIterm;
-    startTime_ = event.GetActionTime();
+    startTime_ = event.GetActionTime() / US_TO_MS;
 }
 
 bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
@@ -160,7 +159,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    unsigned int eventTime = event.GetActionTime();
+    unsigned int eventTime = event.GetActionTime() / US_TO_MS;
     float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
     float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
     double duration = hypot(offsetX, offsetY);
@@ -398,7 +397,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
 bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    int durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
+    int durationTime = (event.GetActionTime() - pPreUp_->GetActionTime()) / US_TO_MS;
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
         return false;
     }

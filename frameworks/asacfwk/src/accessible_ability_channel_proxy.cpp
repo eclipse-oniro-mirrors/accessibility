@@ -25,7 +25,6 @@ namespace Accessibility {
 AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
     const sptr<IRemoteObject> &object): IRemoteProxy<IAccessibleAbilityChannel>(object)
 {
-
 }
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
@@ -92,7 +91,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID,
-                        data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
         return false;
     }
@@ -134,7 +133,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibi
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT,
-                            data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by text");
         return false;
     }
@@ -273,7 +272,7 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int accessibilityWindowI
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::PERFORM_ACTION,
-                            data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("fail to perform accessibility action");
         return false;
     }
@@ -354,7 +353,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
         return;
     }
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT,
-                            data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("fail to set onKeyPressEvent result");
     }
 }
@@ -519,7 +518,7 @@ bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int dis
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_DISPLAYRESIZE_SCALE_AND_CENTER,
-                            data, reply, option)) {
+        data, reply, option)) {
         HILOG_ERROR("fail to set displayResize scale and center");
         return false;
     }

@@ -50,20 +50,19 @@ public:
 void AccessibilityAbilityInfoUnitTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if ((fp = fopen(fname, "w")) == NULL)
-    {
+    if ((fp = fopen(fname, "w")) == NULL) {
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
+    (void)fprintf(fp, "%s", data);
     fclose(fp);
 }
 
 void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig()
 {
     std::ostringstream os;
-    Json::Value	object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes,
-        accessibilityCapabilities;
+    Json::Value	object1, targetBundleNames;
+    Json::Value	accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
     if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {

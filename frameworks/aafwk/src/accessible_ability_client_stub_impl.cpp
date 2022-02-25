@@ -94,7 +94,7 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
             return;
         }
 
-        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId);
+        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId);
         AccessibilityOperator::AddChannel(channelId, channel);
         channelId_ = channelId;
         channel_ = channel;
@@ -135,7 +135,7 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
             listener_ = nullptr;
         }
     } else {
-        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId_);
+        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
         uiTestListener_ = nullptr;
     }
 }
@@ -198,7 +198,7 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
         if (uiTestEnabled_) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
-            AccessibilityUITestAbility::GetInstance().DispatchOnSimulationGestureResult(
+            AccessibilityUITestAbility::GetInstance()->DispatchOnSimulationGestureResult(
                 sequence, completedSuccessfully);
         }
     }

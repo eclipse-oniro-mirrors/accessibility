@@ -996,7 +996,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
             break;
         case BUNDLE_MGR_SERVICE_SYS_ABILITY_ID:
             // Get installed accessibility extension ability from BMS
-            if(accountData->GetInstalledAbilitiesFromBMS()) {
+            if (accountData->GetInstalledAbilitiesFromBMS()) {
                 UpdateAbilities();
                 UpdateAccessibilityManagerService();
             } else {

@@ -1443,7 +1443,7 @@ public:
 
     /**
      * @brief Set whether this node has live region
-     * @param liveRegion live region: 0: not live region; 1: interrupt current talkback; 2: talk back by order
+     * @param liveRegion live region: 0: not live region; 1: interrupt current talk back; 2: talk back by order
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1808,7 +1808,7 @@ private:
     int beginIndex_ = 0;
     int endIndex_ = 0;
     RangeInfo rangeInfo_ {};
-    GridInfo grid_{};
+    GridInfo grid_ {};
     GridItemInfo gridItem_ {};
     int liveRegion_ = 0;
     bool contentInvalid_ = true;

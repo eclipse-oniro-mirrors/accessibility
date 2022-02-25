@@ -444,7 +444,8 @@ void AccessibilityElementInfo::SetHint(const std::string &hintText)
 }
 
 std::string AccessibilityElementInfo::GetDescriptionInfo() const
-{    return contentDescription_;
+{
+    return contentDescription_;
 }
 
 void AccessibilityElementInfo::SetDescriptionInfo(const std::string contentDescription)

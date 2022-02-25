@@ -134,7 +134,8 @@ void PointerEvent::PointerItem::SetDeviceId(int32_t deviceId)
 
 PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType) {}
 
-PointerEvent::~PointerEvent() {
+PointerEvent::~PointerEvent()
+{
     pointers_.clear();
     pressedButtons_.clear();
     pressedKeys_.clear();
@@ -213,6 +214,5 @@ std::vector<int32_t> PointerEvent::GetPointersIdList() const
 
     return pointerIdList;
 }
-
 }
 }

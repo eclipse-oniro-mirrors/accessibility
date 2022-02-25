@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "input_event.h"
+#include "parcel.h"
 
 namespace OHOS {
 namespace MMI {
@@ -65,6 +66,10 @@ public:
     };
 
     void AddKeyItem(const KeyItem& keyItem);
+
+public:
+    bool WriteToParcel(Parcel &out) const;
+    bool ReadFromParcel(Parcel &in);
 
 protected:
     explicit KeyEvent(int32_t eventType);

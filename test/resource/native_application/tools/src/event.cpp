@@ -14,7 +14,6 @@
  */
 
 #include "event.h"
-#include <cstdio>
 #include <iostream>
 
 namespace STtools {

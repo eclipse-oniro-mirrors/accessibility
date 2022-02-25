@@ -17,6 +17,7 @@
 #include "ability_context.h"
 #include "accessibility_element_operator.h"
 #include "accessibility_element_operator_stub.h"
+#include "accessibility_window_info.h"
 #include "accessible_ability_manager_service_proxy.h"
 #include "accessible_ability_manager_service_state_stub.h"
 #include "accessible_ability_manager_service_caption_property_stub.h"
@@ -24,7 +25,6 @@
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
-#include "accessibility_window_info.h"
 
 using namespace OHOS::AppExecFwk;
 using namespace std;
@@ -388,8 +388,8 @@ bool AccessibilitySystemAbilityClient::CheckEventType(EventType eventType)
 bool AccessibilitySystemAbilityClient::CheckActionType(ActionType actionType)
 {
     if ((actionType < ActionType::ACCESSIBILITY_ACTION_FOCUS) ||
-        ((actionType > ActionType::ACCESSIBILITY_ACTION_DELETED)
-        && (actionType != ActionType::ACCESSIBILITY_ACTION_TYPE_MASK))) {
+        ((actionType > ActionType::ACCESSIBILITY_ACTION_DELETED) &&
+         (actionType != ActionType::ACCESSIBILITY_ACTION_TYPE_MASK))) {
         HILOG_ERROR("[%{public}s] action type is invalid", __func__);
         return false;
     } else {
@@ -823,10 +823,11 @@ bool AccessibilitySystemAbilityClient::SetEnabledObj(std::map<std::string, AppEx
 std::map<std::string, AppExecFwk::ElementName> AccessibilitySystemAbilityClient::GetEnabledAbilities()
 {
     HILOG_DEBUG("[%{public}s]", __func__);
-    std::map<std::string, AppExecFwk::ElementName> it{};
+
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
         HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        std::map<std::string, AppExecFwk::ElementName> it;
         return it;
     }
     return proxyService->GetEnabledAbilities();
@@ -910,6 +911,5 @@ int AccessibilitySystemAbilityClient::GetActiveWindow()
 
     return proxyService->GetActiveWindow();
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

@@ -56,7 +56,7 @@ ohos_unittest("accessible_ability_test") {
     "../../asacfwk/src/accessibility_caption.cpp",
     "../src/accessibility_extension.cpp",
     "../src/accessibility_extension_context.cpp",
-    "../src/accessibility_ui_test_ability.cpp",
+    "../src/accessibility_ui_test_ability_impl.cpp",
     "../src/accessible_ability_client_proxy.cpp",
     "../src/accessible_ability_client_stub.cpp",
     "../src/accessible_ability_client_stub_impl.cpp",

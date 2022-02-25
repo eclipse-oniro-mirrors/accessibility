@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,18 +13,17 @@
  * limitations under the License.
  */
 
-#ifndef DUMMY_H
-#define DUMMY_H
+#ifndef NAPI_ACCESSIBILITY_GESTURE_POS_H
+#define NAPI_ACCESSIBILITY_GESTURE_POS_H
 
-#include <stdint.h>
-#include <string>
-#include <vector>
-#include "refbase.h"
+#include "napi/native_api.h"
+#include "napi/native_node_api.h"
 
-namespace OHOS {
-namespace Accessibility {
-class IASACStub {};
-class IClient {};
-} // namespace Accessibility
-} // namespace OHOS
-#endif // DUMMY_H
+class NGesturePos {
+public:
+    static napi_value posCons_;
+    static void DefineJSGesturePos(napi_env env);
+    static napi_value JSPosConstructor(napi_env env, napi_callback_info info);
+};
+
+#endif // NAPI_ACCESSIBILITY_GESTURE_POS_H

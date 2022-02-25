@@ -26,9 +26,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-class AccessibleAbilityClientStubImpl : public AccessibleAbilityClientStub
-{
+class AccessibleAbilityClientStubImpl : public AccessibleAbilityClientStub {
 public:
     AccessibleAbilityClientStubImpl() = default;
     ~AccessibleAbilityClientStubImpl() = default;
@@ -122,15 +120,13 @@ private:
 
     void OnGestureSimulateResultInner(const int sequence, const bool completedSuccessfully);
 
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_{};
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityChannel> channel_ = nullptr;
     std::shared_ptr<AccessibilityExtension> listener_ = nullptr;
     std::shared_ptr<IAccessibleUITestAbilityListener> uiTestListener_ = nullptr;
     uint32_t channelId_ = INVALID_CHANNEL_ID;
     bool uiTestEnabled_ = false;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBLE_ABILITY_CLIENT_STUB_IMPL_H

@@ -18,8 +18,8 @@
 #include "accessibility_interaction_bridge.h"
 #include "securec.h"
 
-namespace OHOS{
-namespace Accessibility{
+namespace OHOS {
+namespace Accessibility {
 TGEventHandler::TGEventHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner, TouchGuider &tgServer)
     : AppExecFwk::EventHandler(runner), tgServer_(tgServer)
@@ -41,7 +41,7 @@ void TouchGuider::StartUp()
     runner_ = pAams_->GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
-        return;
+		return;
     }
 
     handler_ = std::make_shared<TGEventHandler>(runner_, *this);
@@ -167,7 +167,7 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int action)
     HILOG_DEBUG("action is %{public}d.", action);
     HILOG_DEBUG("SourceType is %{public}d.", event.GetSourceType());
 
-    switch(action){
+    switch (action) {
         case HOVER_MOVE:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
@@ -223,7 +223,7 @@ void TouchGuider::TouchGuideListener::OnDoubleTapLongPress(MMI::PointerEvent &ev
     }
     if (server_.getLastReceivedEvent() &&
         server_.getLastReceivedEvent()->GetPointersIdList().size() == 0) {
-      return;
+        return;
     }
     int ret = GetClickPosition(clickPoint);
     if (ret == CLICK_NONE) {
@@ -254,8 +254,8 @@ bool TouchGuider::TouchGuideListener::OnDoubleTap(MMI::PointerEvent &event)
     server_.ForceSendAndRemoveEvent(server_.SEND_TOUCH_GUIDE_END_MSG, event);
     server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
 
-    if (AccessibilityInteractionBridge::GetInstance()
-            .ExecuteActionOnAccessibilityFocused(ActionType::ACCESSIBILITY_ACTION_CLICK)) {
+    if (AccessibilityInteractionBridge::GetInstance().ExecuteActionOnAccessibilityFocused(
+            ActionType::ACCESSIBILITY_ACTION_CLICK)) {
         return true;
     }
     int ret = GetClickPosition(clickPoint);
@@ -685,7 +685,7 @@ void TouchGuider::RecordInjectedEvent(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             injectedRecorder_.downPointerNum++;
             injectedRecorder_.downPointers |= (1 << pointerId);
-            injectedRecorder_.lastDownTime = event.GetActionTime();
+            injectedRecorder_.lastDownTime = event.GetActionTime() / US_TO_MS;
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
             injectedRecorder_.downPointers &= ~(1 << pointerId);

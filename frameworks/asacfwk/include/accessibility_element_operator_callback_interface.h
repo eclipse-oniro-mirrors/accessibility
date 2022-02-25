@@ -21,7 +21,6 @@
 #include <string>
 
 #include "accessibility_element_info.h"
-
 #include "iremote_broker.h"
 
 namespace OHOS {

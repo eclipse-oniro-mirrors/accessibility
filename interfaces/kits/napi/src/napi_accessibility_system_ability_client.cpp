@@ -535,8 +535,8 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
         // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setCaptionPropertyReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(callbackInfo->captionProperty_);
+            callbackInfo->setCaptionPropertyReturn_ = AccessibilitySystemAbilityClient::GetInstance()
+                ->SetCaptionPropertyTojson(callbackInfo->captionProperty_);
         },
         // execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -672,7 +672,8 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
-                napi_status retStatus = napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+                napi_status retStatus =
+                    napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
                 napi_delete_reference(env, callbackInfo->callback_);
                 HILOG_DEBUG("napi_call_function return: %{public}d", retStatus);
             } else {
@@ -1530,7 +1531,7 @@ napi_value NAccessibilityClient::GetCaptionStyle(napi_env env, napi_callback_inf
 {
     HILOG_INFO("%{public}s start", __func__);
 
-    OHOS::Accessibility::CaptionProperty captionProperty{};
+    OHOS::Accessibility::CaptionProperty captionProperty {};
     napi_value captionStyle = nullptr;
 
     captionProperty = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
@@ -1825,7 +1826,8 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
         captionProperty.SetFontFamily(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -1873,7 +1875,8 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
         captionProperty.SetFontScale(num);
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -1922,7 +1925,8 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
         captionProperty.SetFontColor(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -1971,7 +1975,8 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
         captionProperty.SetFontEdgeType(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -2020,7 +2025,8 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
         captionProperty.SetBackgroundColor(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -2069,7 +2075,8 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
         captionProperty.SetWindowColor(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
 
-        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s", __func__, returnVal?"True":"False");
+        HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }

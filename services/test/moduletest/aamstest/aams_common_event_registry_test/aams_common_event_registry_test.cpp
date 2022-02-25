@@ -24,11 +24,11 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
 using namespace OHOS::EventFwk;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class AccessibilityCommonEventRegistryTest : public ::testing::Test {
 public:
     AccessibilityCommonEventRegistryTest() {}
@@ -112,8 +112,8 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
  * @tc.desc: There is a connected ability. The package is added to the connecting ability during the update.
  *           After the package update. Remove connecting ability.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest,
+	AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 start";
     AddAccessibleAbilityConnection();
@@ -135,8 +135,8 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
  * @tc.name: PackageChanged
  * @tc.desc: There is a connected ability. The package has changed. Empty all install ability.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest,
+	AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 start";
     AddAccessibleAbilityConnection();
@@ -156,8 +156,8 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
  * @tc.name: PresentUser
  * @tc.desc: After presenting user, the ability which is connected before is still connected.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityCommonEventRegistryTest,
+	AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 start";
     ASSERT_TRUE(aams_);
@@ -176,3 +176,5 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

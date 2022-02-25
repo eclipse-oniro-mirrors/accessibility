@@ -131,6 +131,12 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
         HILOG_ERROR("%{public}s fail, sequence write int32 error", __func__);
         return;
     }
+
+    if (!keyEvent.WriteToParcel(data)) {
+        HILOG_ERROR("%{public}s fail, keyEvent WriteToParcel error", __func__);
+        return;
+    }
+
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT),
                 data, reply, option);
     if (error != NO_ERROR) {
