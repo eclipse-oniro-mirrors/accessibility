@@ -52,6 +52,7 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
         HILOG_DEBUG("ams_ is null.");
     }
     inputManager_ = MMI::InputManager::GetInstance();
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(ams_->GetMainRunner());
 }
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
@@ -64,6 +65,7 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
     interceptorId_ = -1;
+    keyEventInterceptorId_ = -1;
     inputManager_ = nullptr;
     inputEventConsumer_ = nullptr;
 }
@@ -164,11 +166,31 @@ void AccessibilityInputInterceptor::CreateInterceptor()
         HILOG_DEBUG("Interceptor is already added, id is %{public}d.", interceptorId_);
         return;
     }
-
     inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
-    interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
-
+    if (availableFunctions_ & FEATURE_TOUCH_EXPLORATION ||
+        availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS ||
+        availableFunctions_ & FEATURE_TOUCH_EXPLORATION) {
+        interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
+    }
     HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
+    
+    if (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) {
+        keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
+        HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+    }
+}
+
+void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MMI::KeyEvent> keyEvent)
+{
+    HILOG_DEBUG(" start.");
+
+    if ((instance_ == nullptr) || (instance_->eventHandler_ == nullptr)) {
+        HILOG_ERROR("eventHandler is nullptr.");
+
+    }
+    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
+    instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
+    HILOG_DEBUG(" end.");
 }
 
 void AccessibilityInputInterceptor::DestroyInterceptor()
@@ -178,6 +200,9 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
     if (inputManager_ == nullptr) {
         HILOG_DEBUG("inputManager_ is null.");
         return;
+    }
+    if (keyEventInterceptorId_ != -1) {
+        inputManager_->RemoveInterceptor(keyEventInterceptorId_);
     }
 
     if (interceptorId_ == -1) {
