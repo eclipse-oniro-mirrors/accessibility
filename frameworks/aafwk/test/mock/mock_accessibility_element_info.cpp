@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
 {
     return true;
@@ -105,7 +104,7 @@ int AccessibilityElementInfo::GetTextLengthLimit() const
 }
 
 bool AccessibilityElementInfo::ExecuteAction(const ActionType &operation,
-        const std::map<std::string, std::string> &actionArguments)
+	const std::map<std::string, std::string> &actionArguments)
 {
     return true;
 }

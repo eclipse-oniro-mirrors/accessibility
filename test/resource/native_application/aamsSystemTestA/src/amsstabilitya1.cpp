@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include <unistd.h>
 #include "amsstabilitya1.h"
+#include <unistd.h>
 #include "accessibility_element_info.h"
 
 using namespace OHOS::Accessibility;

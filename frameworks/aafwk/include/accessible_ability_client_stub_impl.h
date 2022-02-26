@@ -94,7 +94,6 @@ public:
      */
     void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully) override;
 
-
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:

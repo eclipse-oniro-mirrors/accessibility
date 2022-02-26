@@ -15,8 +15,6 @@
 
 #include "js_accessibility_extension.h"
 
-#include <string>
-
 #include "accessible_ability_client_stub_impl.h"
 #include "ability_info.h"
 #include "hilog_wrapper.h"

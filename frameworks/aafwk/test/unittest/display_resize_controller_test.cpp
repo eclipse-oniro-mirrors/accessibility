@@ -230,7 +230,8 @@ HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_SetSc
  * @tc.name: DispatchOnDisplayResized
  * @tc.desc: Test function DispatchOnDisplayResized
  */
-HWTEST_F(DisplayResizeControllerUnitTest, DisplayResizeController_Unittest_DispatchOnDisplayResized_001, TestSize.Level1)
+HWTEST_F(DisplayResizeControllerUnitTest,
+	DisplayResizeController_Unittest_DispatchOnDisplayResized_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResized_001 start";
 

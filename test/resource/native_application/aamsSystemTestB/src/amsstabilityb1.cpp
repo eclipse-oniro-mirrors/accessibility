@@ -23,9 +23,9 @@ using namespace OHOS::Accessibility;
 
 namespace OHOS {
 namespace AppExecFwk {
-#define TESTWINDOWID 0
-#define TESTUSERID 0
-#define STATETYPE 1
+const int TESTWINDOWID = 0;
+const int TESTUSERID = 0;
+const int STATETYPE = 1;
 
 void AccessibleAbilityListenerTest::OnAbilityConnected()
 {

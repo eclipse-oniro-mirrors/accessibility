@@ -21,7 +21,6 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
     const sptr<IRemoteObject> &object): IRemoteProxy<IAccessibleAbilityChannel>(object)
 {
@@ -485,7 +484,7 @@ bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int displayId, cons
 }
 
 bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-                                        const float centerX, const float centerY, const bool animate)
+	const float centerX, const float centerY, const bool animate)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -555,6 +554,5 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
         HILOG_ERROR("fail to send simulation gesture");
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

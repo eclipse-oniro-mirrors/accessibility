@@ -17,6 +17,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+const int LIMIT_SIZE_TWO = 2;
+const int LIMIT_SIZE_THREE = 3;
+
 GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
@@ -310,7 +313,7 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
 {
     HILOG_DEBUG();
 
-    if (pointerRoute_.size() < 2) {
+    if (pointerRoute_.size() < LIMIT_SIZE_TWO) {
         return listener_->OnCancelled(event);
     }
 
@@ -319,10 +322,10 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
      */
     std::vector<Pointer> pointerPath = GetPointerPath(pointerRoute_);
 
-    if (pointerPath.size() == 2) {
+    if (pointerPath.size() == LIMIT_SIZE_TWO) {
         int swipeDirection = GetSwipeDirection(pointerPath[0], pointerPath[1]);
         return listener_->OnCompleted(GESTURE_DIRECTION[swipeDirection]);
-    } else if (pointerPath.size() == 3) {
+    } else if (pointerPath.size() == LIMIT_SIZE_THREE) {
         int swipeDirectionH = GetSwipeDirection(pointerPath[0], pointerPath[1]);
         int swipeDirectionHV = GetSwipeDirection(pointerPath[1], pointerPath[2]);
         return listener_->OnCompleted(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV]);
@@ -337,7 +340,7 @@ int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer se
     if (abs(offsetX) > abs(offsetY)) {
         return offsetX > 0.0 ? SWIPE_RIGHT : SWIPE_LEFT;
     } else {
-        return offsetY > 0.0 ? SWIPE_UP : SWIPE_DOWN;
+        return offsetY < 0.0 ? SWIPE_UP : SWIPE_DOWN;
     }
 }
 

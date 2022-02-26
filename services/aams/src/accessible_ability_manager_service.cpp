@@ -149,6 +149,7 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
 {
     HILOG_DEBUG(" %{public}s", __func__);
     HILOG_INFO("eventType[%{public}d]", (int)uiEvent.GetEventType());
+    HILOG_INFO("gestureId[%{public}d]", (int)uiEvent.GetGestureType());
     if (accountId != currentAccountId_) {
         HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
         return;
@@ -675,8 +676,9 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             if (!connection) {
                 // this is a temp deal for ace test
                 installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
-                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER |
-                                                    Capability::CAPABILITY_GESTURE);
+                                                   Capability::CAPABILITY_KEY_EVENT_OBSERVER |
+                                                   Capability::CAPABILITY_GESTURE |
+												   Capability::CAPABILITY_TOUCH_GUIDE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }

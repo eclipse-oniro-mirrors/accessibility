@@ -29,7 +29,6 @@ using EventHandle = std::function<void(const OHOS::AAFwk::Want&)>;
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityCommonEventSubscriber : public EventFwk::CommonEventSubscriber {
 public:
     AccessibilityCommonEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscriberInfo,
@@ -69,7 +68,6 @@ private:
     std::shared_ptr<AccessibilityCommonEventSubscriber> accessibilityCommonEventSubscriber_;
     std::map<std::string, EventHandle> eventHandles_;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 

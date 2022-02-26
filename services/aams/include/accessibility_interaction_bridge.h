@@ -24,7 +24,7 @@
 #include "mmi_point.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 class AccessibilityInteractionBridge {
 public:
     ~AccessibilityInteractionBridge() = default;

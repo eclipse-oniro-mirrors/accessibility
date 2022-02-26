@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathPositionDefine";
@@ -70,7 +69,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-                                    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+	GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathDefine";
 }

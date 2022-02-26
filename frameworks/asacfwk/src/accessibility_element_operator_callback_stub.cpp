@@ -14,7 +14,6 @@
  */
 
 #include "accessibility_element_operator_callback_stub.h"
-#include <vector>
 
 #include "accessibility_errorcode.h"
 #include "hilog_wrapper.h"

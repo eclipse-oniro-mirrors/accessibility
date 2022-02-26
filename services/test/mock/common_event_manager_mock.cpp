@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-#include "common_event_manager.h"
 #include <gtest/gtest.h>
+#include "common_event_manager.h"
 #include "singleton.h"
+
 namespace OHOS {
 namespace EventFwk {
 static std::shared_ptr<CommonEventSubscriber> g_subscriberMOCK = nullptr;

@@ -517,7 +517,7 @@ void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory cate
 void AccessibilityEventInfo::SetGestureType(const GestureType gestureType)
 {
     gestureType_ = gestureType;
-    HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
+    HILOG_DEBUG("[%{public}s] gestureType_[%{public}d]", __func__, gestureType_);
 }
 
 GestureType AccessibilityEventInfo::GetGestureType() const

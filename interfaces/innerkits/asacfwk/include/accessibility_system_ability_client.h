@@ -33,10 +33,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define ACCESSIBILITY_DECLARE_IMPL() \
-    struct Impl;                     \
-    std::unique_ptr<Impl> pimpl
-
 enum AccessibilityControlType : int {
     CONTENT_CONTROLS = 0x00000001,
     CONTENT_ICONS = 0x00000002,
@@ -350,7 +346,6 @@ private:
     std::shared_ptr<AccessibilityElementOperator> interactionOperator_ = nullptr;
     std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_;
     int connectionWindowId_ = 0;
-    ACCESSIBILITY_DECLARE_IMPL();
 
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;
@@ -359,6 +354,9 @@ private:
     bool isGesturesSimulationEnabled_ = 0;
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_;
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_;
+
+    struct Impl;
+    std::unique_ptr<Impl> pimpl;
 };
 }  // namespace Accessibility
 }  // namespace OHOS

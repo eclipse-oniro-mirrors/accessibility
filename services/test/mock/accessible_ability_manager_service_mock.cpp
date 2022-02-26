@@ -14,7 +14,7 @@
  */
 
 #include <functional>
-#include <time.h>
+#include <ctime>
 #include <unistd.h>
 #include "ability_info.h"
 #include "accessibility_display_manager.h"

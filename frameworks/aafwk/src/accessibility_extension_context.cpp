@@ -14,8 +14,6 @@
  */
 
 #include "accessibility_extension_context.h"
-#include <algorithm>
-#include <optional>
 #include "accessibility_element_info.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service_proxy.h"

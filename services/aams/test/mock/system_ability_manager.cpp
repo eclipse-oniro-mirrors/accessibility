@@ -14,10 +14,6 @@
  */
 
 #include "system_ability_manager.h"
-
-#include <cinttypes>
-#include <unistd.h>
-
 #include "ability_death_recipient.h"
 #include "datetime_ex.h"
 #include "errors.h"

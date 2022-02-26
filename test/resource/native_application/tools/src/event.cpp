@@ -14,7 +14,6 @@
  */
 
 #include "event.h"
-#include <iostream>
 
 namespace STtools {
 int WaitCompleted(Event &event, const std::string &eventName, const int code, const int timeout)

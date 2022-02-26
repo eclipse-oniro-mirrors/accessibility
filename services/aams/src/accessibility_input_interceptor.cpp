@@ -14,9 +14,6 @@
  */
 
 #include "accessibility_input_interceptor.h"
-
-#include <functional>
-
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_touch_guider.h"
 #include "accessibility_touchEvent_injector.h"

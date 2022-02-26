@@ -14,7 +14,6 @@
  */
 
 #include "system_ability.h"
-#include <stdio.h>
 
 using namespace OHOS;
 

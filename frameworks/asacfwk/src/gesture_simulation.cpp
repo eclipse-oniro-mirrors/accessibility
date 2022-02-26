@@ -13,14 +13,12 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include "gesture_simulation.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -83,7 +81,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-                                    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+	GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 

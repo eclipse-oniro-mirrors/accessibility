@@ -12,7 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+
+#ifndef AA_TEST_EVENT_H
+#define AA_TEST_EVENT_H
 
 #include <vector>
 
@@ -37,3 +39,4 @@ int WaitCompleted(Event &event, const std::string &eventName, const int code, co
 void Completed(Event &event, const std::string &eventName, const int code);
 void CleanMsg(Event &event);
 }  // namespace STtools
+#endif  //AA_TEST_EVENT_H

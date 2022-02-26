@@ -497,7 +497,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    AccessibilityEventInfo GetRecord(const int index);    //remained
+    AccessibilityEventInfo GetRecord(const int index);    // remained
 
     /**
      * @brief Gets the accessibility record list.
@@ -580,7 +580,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetTimeStamp(const long long eventTime);  //remained:for send event timestamp
+    void SetTimeStamp(const long long eventTime);  // remained:for send event timestamp
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
@@ -732,6 +732,6 @@ private:
     NotificationCategory category_ = CATEGORY_INVALID;
     int pageId_ = 0;
 };
-} //namesapce Accessibility
+} // namesapce Accessibility
 } // namespace OHOS
 #endif

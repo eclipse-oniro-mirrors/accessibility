@@ -40,7 +40,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityAccountData;
 class TouchEventInjector;
 
@@ -218,7 +217,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerService);
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBLE_ABILITY_MANAGER_SERVICE_H

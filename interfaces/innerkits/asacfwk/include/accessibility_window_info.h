@@ -308,7 +308,6 @@ public:
      */
     void AddChild(const int childId);
 
-    /*Parcel*/
     /**
      * @brief Used for IPC communication.
      * @param parcel Serializable data.

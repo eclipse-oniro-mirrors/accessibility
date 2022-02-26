@@ -50,7 +50,7 @@ public:
 
     sptr<AccessibleAbilityConnection> connection_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
-    sptr<AccessibleAbilityClientStubImpl> obj_= nullptr;
+    sptr<AccessibleAbilityClientStubImpl> obj_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
@@ -78,7 +78,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
 
-    //new Interaction proxy
+    // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy =
         new AccessibilityElementOperatorProxy(stub);
@@ -86,13 +86,13 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     // aams RegisterElementOperator
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->
         RegisterElementOperator(0, proxy, 0);
-    //new AAconnection
+    // new AAconnection
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = new AccessibilityAccountData(0);
-    accountData_->AddAccessibilityWindowConnection(0,connection);
+    accountData_->AddAccessibilityWindowConnection(0, connection);
     connection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
-    elementName_ = new AppExecFwk::ElementName("1","2","3");
+    elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new AccessibleAbilityClientStubImpl();
     connection_->OnAbilityConnectDone(*elementName_, obj_, 0);
 }
@@ -240,7 +240,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     AppExecFwk::ElementName element;
     connection_->Connect(element);
     auto accountData = connection_->GetAccountData();
-    EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()),1);
+    EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";
 }
@@ -254,7 +254,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Disconnect_001 start";
 
     connection_->Disconnect();
-    EXPECT_EQ(g_testChannalId,0);
+    EXPECT_EQ(g_testChannalId, 0);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Reset_001 end";
 }

@@ -12,7 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
+
+#ifndef AA_STOPERATOR_H
+#define AA_STOPERATOR_H
 
 #include <vector>
 
@@ -57,3 +59,4 @@ private:
     static int countChild;
 };
 }  // namespace STtools
+#endif  // AA_STOPERATOR_H

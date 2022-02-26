@@ -114,7 +114,6 @@ AccessibilitySystemAbilityClient::AccessibilitySystemAbilityClient(const Context
         isCaptionEnabled_ = false;
     }
 
-
     if (stateType & AccessibilitySystemAbilityClient::STATE_KEYEVENT_ENABLED) {
         isFilteringKeyEventsEnabled_ = true;
     } else {
@@ -321,7 +320,6 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
         (strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) != 0) ||
         (strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) != 0) ||
         (strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str()) != 0)) {
-
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
             HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);

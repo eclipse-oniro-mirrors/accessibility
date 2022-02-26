@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <stdint.h>
+
+#include <cstdint>
 #include "accessible_ability_client_proxy.h"
 #include "accessibility_errorcode.h"
 #include "parcel.h"

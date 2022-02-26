@@ -33,7 +33,7 @@ class TouchGuider;
 #define DIVIDE_2(num) ((num) / 2)
 #define INDEX_0 0
 #define INDEX_1 1
-#define INIT_POINT_ID -1
+#define INIT_POINT_ID (-1)
 #define INIT_MMIPOINT 0
 
 /**

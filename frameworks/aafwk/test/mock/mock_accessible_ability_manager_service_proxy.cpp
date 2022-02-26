@@ -44,7 +44,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     return abilityInfos;
 }
 void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(int windowId,
-        const sptr <IAccessibilityElementOperator> &operation, const int userId)
+	const sptr <IAccessibilityElementOperator> &operation, const int userId)
 {}
 void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {}
@@ -53,7 +53,7 @@ sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
     return this->AsObject();
 }
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCallback(
-        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
+	const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
 {
     return 0;
 }

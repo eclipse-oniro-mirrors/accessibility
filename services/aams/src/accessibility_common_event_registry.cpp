@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include <unistd.h>
 #include "accessibility_common_event_registry.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"

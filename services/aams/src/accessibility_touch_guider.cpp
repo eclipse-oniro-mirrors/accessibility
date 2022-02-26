@@ -279,9 +279,10 @@ bool TouchGuider::TouchGuideListener::OnStarted()
 
 bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("OnCompleted, gestureId is %{public}d", gestureId);
 
     if (server_.currentState_ != static_cast<int>(TouchGuideState::TRANSMITING)) {
+        HILOG_DEBUG("OnCompleted, state is not transmitting.");
         return false;
     }
     server_.OnTouchInteractionEnd();

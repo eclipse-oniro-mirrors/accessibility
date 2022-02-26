@@ -392,8 +392,9 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     if (send) {
         eventInfo.SetChannelId(connectionId_);
         proxy_->OnAccessibilityEvent(eventInfo);
-        HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d]",
-            eventInfo.GetWindowId(), (int)eventInfo.GetEventType(), (int)eventInfo.GetWindowChangeTypes());
+        HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
+            eventInfo.GetWindowId(), (int)eventInfo.GetEventType(), (int)eventInfo.GetWindowChangeTypes(),
+            eventInfo.GetGestureType());
     }
 
     return;

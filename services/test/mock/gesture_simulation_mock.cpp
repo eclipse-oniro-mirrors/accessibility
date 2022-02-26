@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-#include "gesture_simulation.h"
 #include <memory>
+#include "gesture_simulation.h"
 #include "parcel_util.h"
+
 namespace OHOS {
 namespace Accessibility {
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)

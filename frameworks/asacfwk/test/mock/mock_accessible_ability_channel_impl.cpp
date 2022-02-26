@@ -21,10 +21,10 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-#define  RECT_ONE 1
-#define  RECT_TWO 2
-#define  RECT_THREE 3
-#define  RECT_FOUR 4
+const int RECT_ONE = 1;
+const int RECT_TWO = 2;
+const int RECT_THREE = 3;
+const int RECT_FOUR = 4;
 bool MockAccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
@@ -100,7 +100,7 @@ float MockAccessibleAbilityChannel::GetDisplayResizeCenterY(const int displayId)
 Rect MockAccessibleAbilityChannel::GetDisplayResizeRect(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeRect start";
-    Rect rect( RECT_ONE,  RECT_TWO,  RECT_THREE,  RECT_FOUR);
+    Rect rect(RECT_ONE,  RECT_TWO,  RECT_THREE,  RECT_FOUR);
     return rect;
 }
 

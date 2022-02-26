@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "input_manager.h"
 #include <vector>
+#include "input_manager.h"
 
 namespace OHOS {
 int g_mTkeyCode = -1;

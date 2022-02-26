@@ -30,8 +30,8 @@ const string TEST_MODULE_NAME = "TestModuleName";
 const string TEST_NAME = "TestName";
 const string TEST_DESCRIPTION = "TestDescription";
 
-#define TIME_10000 10000
-#define SIZE_TWO 2
+const int TIME_10000 = 10000;
+const int SIZE_TWO = 2;
 class AccessibilityAbilityInfoUnitTest : public ::testing::Test {
 public:
     AccessibilityAbilityInfoUnitTest() {}

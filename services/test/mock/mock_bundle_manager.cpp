@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
+#include "mock_bundle_manager.h"
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "mock_bundle_manager.h"
 #include "ability_config.h"
 #include "ability_info.h"
 #include "application_info.h"
