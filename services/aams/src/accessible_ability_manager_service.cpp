@@ -675,7 +675,8 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             if (!connection) {
                 // this is a temp deal for ace test
                 installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
-                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER);
+                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER |
+                                                    Capability::CAPABILITY_GESTURE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
@@ -932,8 +933,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
     // add installed ability
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     abilityInfo->SetPackageName("com.example.uitest");
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
-        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);

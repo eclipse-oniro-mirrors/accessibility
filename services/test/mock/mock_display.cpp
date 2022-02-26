@@ -63,7 +63,7 @@ ScreenId Display::GetScreenId() const
     return pImpl_->GetDisplayInfo()->GetScreenId();
 }
 
-void Display::UpdateDisplayInfo(sptr<DisplayInfo> displayInfo)
+void Display::UpdateDisplayInfo(sptr<DisplayInfo> displayInfo) const
 {
     if (displayInfo == nullptr) {
         return;

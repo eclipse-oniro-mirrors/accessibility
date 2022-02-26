@@ -31,9 +31,9 @@ namespace Accessibility {
 enum Capability : uint32_t {
     CAPABILITY_RETRIEVE = 0x0001,
     CAPABILITY_TOUCH_GUIDE = 0x0002,
+    CAPABILITY_GESTURE = 0x0004,
     CAPABILITY_KEY_EVENT_OBSERVER = 0x0008,
     CAPABILITY_ZOOM = 0x0010,
-    CAPABILITY_GESTURE = 0x0020,
 };
 
 // The accessibility ability types for feedbacks.

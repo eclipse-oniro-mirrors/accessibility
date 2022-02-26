@@ -62,22 +62,8 @@ TouchEventInjector::TouchEventInjector()
 void TouchEventInjector::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("TouchEventInjector::OnPointerEvent: start");
-    switch (event.GetSourceType()) {
-        case MMI::PointerEvent::SOURCE_TYPE_MOUSE:
-            if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_MOVE &&
-                isGestureUnderway_) {
-                return;
-            }
-            CancelInjectedEvents();
-            EventTransmission::OnPointerEvent(event);
-            break;
-        case MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN:
-            CancelInjectedEvents();
-            SendPointerEvent(event);
-            break;
-        default:
-            break;
-    }
+
+    EventTransmission::OnPointerEvent(event);
 }
 
 void TouchEventInjector::ClearEvents(uint32_t inputSource)

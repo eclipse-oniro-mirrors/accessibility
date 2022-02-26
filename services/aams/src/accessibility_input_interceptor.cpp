@@ -168,8 +168,7 @@ void AccessibilityInputInterceptor::CreateInterceptor()
     }
     inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
     if (availableFunctions_ & FEATURE_TOUCH_EXPLORATION ||
-        availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS ||
-        availableFunctions_ & FEATURE_TOUCH_EXPLORATION) {
+        availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) {
         interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
     }
     HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);

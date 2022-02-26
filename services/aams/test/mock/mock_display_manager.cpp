@@ -15,7 +15,6 @@
 
 #include <cinttypes>
 #include "display_manager.h"
-#include "display_manager_agent.h"
 #include "dm_common.h"
 #include "singleton_delegator.h"
 #include "windowmanager/utils/include/display_info.h"
@@ -29,27 +28,6 @@ private:
     bool CheckRectValid(const Media::Rect& rect, int32_t oriHeight, int32_t oriWidth) const;
     bool CheckSizeValid(const Media::Size& size, int32_t oriHeight, int32_t oriWidth) const;
     void ClearDisplayStateCallback();
-};
-
-class DisplayManager::DisplayManagerListener : public DisplayManagerAgentDefault {
-public:
-    DisplayManagerListener(sptr<Impl> impl) : pImpl_(impl)
-    {
-    }
-
-    void OnDisplayCreate(sptr<DisplayInfo> displayInfo) override
-    {
-    };
-
-    void OnDisplayDestroy(DisplayId displayId) override
-    {
-    };
-
-    void OnDisplayChange(const sptr<DisplayInfo> displayInfo, DisplayChangeEvent event) override
-    {
-    };
-private:
-    sptr<Impl> pImpl_;
 };
 
 bool DisplayManager::Impl::CheckRectValid(const Media::Rect& rect, int32_t oriHeight, int32_t oriWidth) const
@@ -80,7 +58,7 @@ DisplayId DisplayManager::GetDefaultDisplayId()
     return id;
 }
 
-const sptr<Display> DisplayManager::GetDisplayById(DisplayId displayId)
+sptr<Display> DisplayManager::GetDisplayById(DisplayId displayId)
 {
     return nullptr;
 }
@@ -96,7 +74,7 @@ std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId display
     return nullptr;
 }
 
-const sptr<Display> DisplayManager::GetDefaultDisplay()
+sptr<Display> DisplayManager::GetDefaultDisplay()
 {
     return GetDisplayById(GetDefaultDisplayId());
 }
@@ -126,14 +104,6 @@ bool DisplayManager::RegisterDisplayPowerEventListener(sptr<IDisplayPowerEventLi
 bool DisplayManager::UnregisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
 {
     return true;
-}
-
-void DisplayManager::NotifyDisplayPowerEvent(DisplayPowerEvent event, EventStatus status)
-{
-}
-
-void DisplayManager::NotifyDisplayStateChanged(DisplayId id, DisplayState state)
-{
 }
 
 bool DisplayManager::WakeUpBegin(PowerStateChangeReason reason)
