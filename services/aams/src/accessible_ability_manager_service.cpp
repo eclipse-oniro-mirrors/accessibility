@@ -678,13 +678,8 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             if (!connection) {
                 // this is a temp deal for ace test
                 installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
-<<<<<<< HEAD
-                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER |
-                                                    Capability::CAPABILITY_GESTURE);
-=======
                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER |
                                                    Capability::CAPABILITY_GESTURE);
->>>>>>> close touch guide capbility
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
