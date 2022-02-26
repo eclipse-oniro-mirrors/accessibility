@@ -58,7 +58,7 @@ void AccessibilityDisplayManager::OnCreate(Rosen::DisplayId did)
 void AccessibilityDisplayManager::OnDestroy(Rosen::DisplayId did)
 {
 }
-void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event)
+void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId)
 {
 
 }
