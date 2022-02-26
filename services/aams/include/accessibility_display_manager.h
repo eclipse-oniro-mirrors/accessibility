@@ -36,7 +36,7 @@ public:
 
     virtual void OnCreate(Rosen::DisplayId dId) override;
     virtual void OnDestroy(Rosen::DisplayId dId) override;
-    virtual void OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event) override;
+    virtual void OnChange(Rosen::DisplayId dId) override;
 
 private:
     AccessibilityDisplayManager();
