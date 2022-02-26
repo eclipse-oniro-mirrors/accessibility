@@ -773,7 +773,7 @@ void AccessibleAbilityManagerService::UpdateMagnification()
         return;
     }
 
-    std::vector<const sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
+    std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
 
     if (accountData->GetScreenMagnificationFlag()) {
         for (sptr<Rosen::Display> display : displays) {
