@@ -677,8 +677,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
                 // this is a temp deal for ace test
                 installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
                                                    Capability::CAPABILITY_KEY_EVENT_OBSERVER |
-                                                   Capability::CAPABILITY_GESTURE |
-												   Capability::CAPABILITY_TOUCH_GUIDE);
+                                                   Capability::CAPABILITY_GESTURE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
