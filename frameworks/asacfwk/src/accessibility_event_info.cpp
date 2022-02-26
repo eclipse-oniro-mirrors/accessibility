@@ -248,6 +248,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     int eventType = TYPE_VIEW_INVALID;
+    int gestureType = GESTURE_INVALID;
     int triggerAction = ACCESSIBILITY_ACTION_INVALID;
     int textMoveStep = STEP_CHARACTER;
     int windowContentChangeTypes = CONTENT_CHANGE_TYPE_INVALID;
@@ -255,6 +256,8 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
     int category = CATEGORY_INVALID;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, eventType);
     eventType_ = static_cast<EventType>(eventType);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, gestureType);
+    gestureType_ = static_cast<GestureType>(gestureType);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, triggerAction);
     triggerAction_ = static_cast<ActionType>(triggerAction);
@@ -329,6 +332,7 @@ bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(eventType_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(gestureType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(triggerAction_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, timeStamp_);

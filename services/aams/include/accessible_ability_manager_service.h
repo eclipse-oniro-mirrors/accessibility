@@ -71,9 +71,6 @@ public:
     bool SetCaptionState(const bool state) override;
     bool SetEnabled(const bool state) override;
 
-    void PersistElementNamesToSetting(
-        const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId);
-
     /* For InputFilter */
     void SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector);
 

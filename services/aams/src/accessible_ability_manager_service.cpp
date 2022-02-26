@@ -344,12 +344,6 @@ bool AccessibleAbilityManagerService::SetEnabled(const bool state)
     return result;
 }
 
-void AccessibleAbilityManagerService::PersistElementNamesToSetting(
-    const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId)
-{
-    // temp deal: Update specified item to setting.
-}
-
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
     HILOG_DEBUG(" %{public}s: currentAccoutId is %{public}d ", __func__, currentAccountId_);
@@ -507,17 +501,25 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
     HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
 
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (packageAccount->GetEnabledAbilities().empty()) {
+    if (packageAccount->GetInstalledAbilities().empty()) {
+        HILOG_DEBUG("There is no installed abilities.");
         return;
     }
 
+    sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo();
+    accessibilityInfo->SetPackageName(bundleName);
+    packageAccount->RemoveInstalledAbility(*accessibilityInfo);
+
     bool needUpdateAbility = false;
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities = packageAccount->GetEnabledAbilities();
+    if (enabledAbilities.empty()) {
+        HILOG_DEBUG("There is no enabled abilities.");
+        return;
+    }
     for (auto& enableAbility : enabledAbilities) {
         if (enableAbility.second.GetBundleName() == bundleName) {
             packageAccount->RemoveEnabledAbility(enableAbility.second);
             packageAccount->RemoveConnectingA11yAbility(enableAbility.second);
-            PersistElementNamesToSetting(bundleName, enabledAbilities, currentAccountId_);
             needUpdateAbility = true;
         }
     }

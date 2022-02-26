@@ -230,8 +230,17 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
 // For UT
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s start and abilityInfo's bundle name is %{public}s",
+        __func__, abilityInfo.GetPackageName().c_str());
+    for (size_t i = 0; i < installedAbilities_.size(); i++) {
+        if (installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) {
+            HILOG_DEBUG("the ability is already exist.");
+            return;
+        }
+    }
     installedAbilities_.push_back(abilityInfo);
+    HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}d",
+        installedAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
