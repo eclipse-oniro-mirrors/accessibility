@@ -20,7 +20,6 @@
 #include "accessibility_element_info.h"
 #include "accessibility_operator.h"
 #include "accessibility_element_operator_interface.h"
-#include "mmi_point.h"
 
 namespace OHOS {
 namespace Accessibility{
