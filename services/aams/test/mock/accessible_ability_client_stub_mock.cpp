@@ -16,8 +16,8 @@
 #include "accessible_ability_client_stub.h"
 #include "parcel.h"
 
-using namespace OHOS::Accessibility;
-
+namespace OHOS {
+namespace Accessibility {
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {}
 
@@ -59,3 +59,5 @@ ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel
 {
     return NO_ERROR;
 }
+} // namespace Accessibility
+} // namespace OHOS

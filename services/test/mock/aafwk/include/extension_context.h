@@ -28,6 +28,6 @@ class ExtensionContext {
 public:
     ExtensionContext() = default;
 };
-}  // namespace AbilityRuntime
-}  // namespace OHOS
+} // namespace AbilityRuntime
+} // namespace OHOS
 #endif  // EXTENSION_CONTEXT_H

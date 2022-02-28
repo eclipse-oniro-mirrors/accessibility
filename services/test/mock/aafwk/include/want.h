@@ -44,7 +44,7 @@ public:
     Want() {}
     ~Want() {}
 };
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS
 
 #endif  // OHOS_AAFWK_WANT_H

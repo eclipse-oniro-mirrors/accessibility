@@ -200,5 +200,5 @@ bool AccessibilityZoomHandler::SlidingState::OnScale()
 {
     return true;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

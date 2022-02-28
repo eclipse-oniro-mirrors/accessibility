@@ -119,7 +119,7 @@ auto HiDataInfo = [](std::string bundleName, AbilityInfo &abilityInfo, ElementNa
     abilityInfo.process = "p6";
     return true;
 };
-}  // namespace
+} // namespace
 
 class BundleMgrStub : public IRemoteStub<IBundleMgr> {
 public:
@@ -229,7 +229,7 @@ public:
         std::function<bool(std::string bundleName, AbilityInfo &abilityInfo, ElementName &elementTemp)>;
     std::map<std::string, QueryAbilityInfoFunType> abilityInfoMap_;
 };
-}  //namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 
 #endif  // OHOS_AAFWK_ABILITY_MOCK_BUNDLE_MANAGER_H

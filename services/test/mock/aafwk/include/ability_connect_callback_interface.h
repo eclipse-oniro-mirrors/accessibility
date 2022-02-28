@@ -56,6 +56,6 @@ public:
         ON_ABILITY_DISCONNECT_DONE
     };
 };
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS
 #endif  // OHOS_AAFWK_ABILITY_CONNECT_CALLBACK_INTERFACE_H

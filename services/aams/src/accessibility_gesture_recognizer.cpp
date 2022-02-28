@@ -417,5 +417,5 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

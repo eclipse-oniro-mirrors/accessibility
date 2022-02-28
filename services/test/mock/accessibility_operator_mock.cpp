@@ -43,10 +43,10 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
 {
     auto channel = channels_.find(channelId);
     if (channel != channels_.end()) {
-        HILOG_DEBUG("[%{public}s] Find aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_DEBUG("Find aams [channelId:%{public}d]", channelId);
         return channel->second;
     } else {
-        HILOG_ERROR("[%{public}s] Failed to find aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to find aams [channelId:%{public}d]", channelId);
         return nullptr;
     }
 }
@@ -57,7 +57,7 @@ void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessib
     int tempId = *(const_cast<int *>(&channelId));
     for (auto iter = channels_.begin(); iter != channels_.end(); iter++) {
         if (iter->first == tempId) {
-            HILOG_ERROR("[%{public}s] Connection to aams [channelId:%{public}d] is exited", __func__, channelId);
+            HILOG_ERROR("Connection to aams [channelId:%{public}d] is exited", channelId);
             return;
         }
     }
@@ -72,7 +72,7 @@ void AccessibilityOperator::RemoveChannel(int channelId)
     if (iter != channels_.end()) {
         channels_.erase(iter);
     } else {
-        HILOG_DEBUG("[%{public}s] Failed to remove connection with aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_DEBUG("Failed to remove connection with aams [channelId:%{public}d]", channelId);
     }
 }
 

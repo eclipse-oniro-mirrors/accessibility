@@ -27,7 +27,7 @@ namespace Accessibility {
 bool AccessibilityExtensionContext::GetFocusElementInfo(
     uint32_t focusType, std::optional<AccessibilityElementInfo>& elementInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_DEBUG("focusType is not allowed.");
         return false;
@@ -44,7 +44,7 @@ bool AccessibilityExtensionContext::GestureSimulate(uint32_t sequence,
     const std::vector<GesturePathDefine>& gesturePathDefineList,
     const std::shared_ptr<GestureResultListener>& listener)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (gesturePathDefineList.size() > gesturePathDefineList.front().GetMaxStrokes() ||
         gesturePathDefineList.size() <= 0) {
@@ -73,7 +73,7 @@ bool AccessibilityExtensionContext::GestureSimulate(uint32_t sequence,
 
 std::shared_ptr<DisplayResizeController>& AccessibilityExtensionContext::GetDisplayResizeController()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     // this is a temp deal: To make sure the id of DEFAULT_DISPALY.
     uint32_t DEFAULT_DISPALY = 0;
@@ -82,7 +82,7 @@ std::shared_ptr<DisplayResizeController>& AccessibilityExtensionContext::GetDisp
 
 std::shared_ptr<DisplayResizeController>& AccessibilityExtensionContext::GetDisplayResizeController(uint32_t displayId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     auto it = displayResizeControllers_.find(displayId);
     if (it != displayResizeControllers_.end()) {
@@ -97,7 +97,7 @@ std::shared_ptr<DisplayResizeController>& AccessibilityExtensionContext::GetDisp
 
 bool AccessibilityExtensionContext::GetRootElementInfo(std::optional<AccessibilityElementInfo>& elementInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     AccessibilityElementInfo info {};
     bool result = AccessibilityOperator::GetInstance().GetRoot(channelId_, info);
     elementInfo = info;
@@ -106,14 +106,14 @@ bool AccessibilityExtensionContext::GetRootElementInfo(std::optional<Accessibili
 
 std::vector<AccessibilityWindowInfo>& AccessibilityExtensionContext::GetWindows()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     accessibilityWindow_ = AccessibilityOperator::GetInstance().GetWindows(channelId_);
     return accessibilityWindow_;
 }
 
 bool AccessibilityExtensionContext::ExecuteCommonAction(uint32_t action)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!CheckCommonAction(action)) {
         HILOG_ERROR("action is not allowed.");
         return false;
@@ -124,7 +124,7 @@ bool AccessibilityExtensionContext::ExecuteCommonAction(uint32_t action)
 
 void AccessibilityExtensionContext::DispatchOnSimulationGestureResult(uint32_t sequence, bool result)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (gestureResultListenerInfos_.empty()) {
         HILOG_ERROR("There is no informations of gestureResultListener");
@@ -149,13 +149,13 @@ void AccessibilityExtensionContext::DispatchOnSimulationGestureResult(uint32_t s
 
 void AccessibilityExtensionContext::SetChannelId(uint32_t channelId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     channelId_ = channelId;
 }
 
 bool AccessibilityExtensionContext::CheckCommonAction(uint32_t action)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if ((action != GLOBAL_ACTION_BACK) && (action != GLOBAL_ACTION_HOME) &&
         (action != GLOBAL_ACTION_RECENT) && (action != GLOBAL_ACTION_NOTIFICATION) &&
         (action != GLOBAL_ACTION_POP_UP_POWER_DIALOG) && (action != GLOBAL_ACTION_DIVIDE_SCREEN) &&

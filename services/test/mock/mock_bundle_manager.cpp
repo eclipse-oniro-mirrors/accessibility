@@ -196,5 +196,5 @@ bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo &extensionInfo
     profileInfos.push_back(buf.str());
     return true;
 }
-}  //namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

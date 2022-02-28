@@ -132,6 +132,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceClientStub);
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

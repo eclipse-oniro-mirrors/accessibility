@@ -16,8 +16,8 @@
 #ifndef GESTURE_SIMULATION_H
 #define GESTURE_SIMULATION_H
 
+#include <cstdint>
 #include <vector>
-#include <stdint.h>
 #include "parcel_util.h"
 
 namespace OHOS {

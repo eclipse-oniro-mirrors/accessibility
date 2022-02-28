@@ -58,5 +58,5 @@ private:
     /* data */
     static int countChild;
 };
-}  // namespace STtools
-#endif  // AA_STOPERATOR_H
+} // namespace STtools
+#endif // AA_STOPERATOR_H

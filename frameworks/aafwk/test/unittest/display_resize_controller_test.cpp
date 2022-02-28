@@ -19,10 +19,10 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class UnitTestDisplayResizeListener : public DisplayResizeListener {
 public:
     UnitTestDisplayResizeListener() {}
@@ -248,3 +248,5 @@ HWTEST_F(DisplayResizeControllerUnitTest,
     displayResizeController_->DeleteListener(listener);
     GTEST_LOG_(INFO) << "DisplayResizeController_Unittest_DispatchOnDisplayResized_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

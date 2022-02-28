@@ -24,7 +24,7 @@ namespace Accessibility {
 
 AccessibleAbilityManagerServiceCaptionPropertyStub::AccessibleAbilityManagerServiceCaptionPropertyStub()
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 }
 
 int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -49,7 +49,7 @@ int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t
 ErrCode AccessibleAbilityManagerServiceCaptionPropertyStub::HandleOnCaptionPropertyChanged(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
     CaptionProperty* caption = data.ReadParcelable<CaptionProperty>();
     OnCaptionPropertyChanged(*caption);
 
@@ -58,7 +58,7 @@ ErrCode AccessibleAbilityManagerServiceCaptionPropertyStub::HandleOnCaptionPrope
 
 void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChanged(const CaptionProperty& caption)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
     if (instance == nullptr) {
         HILOG_DEBUG("%{public}s Can't get asac instance" , __func__);
@@ -67,5 +67,5 @@ void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChange
     instance->UpdatecaptionProperty(caption);
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

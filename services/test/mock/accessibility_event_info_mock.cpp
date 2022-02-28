@@ -15,8 +15,8 @@
 #include "accessibility_event_info.h"
 #include "accessibility_operator.h"
 
-using namespace OHOS::Accessibility;
-
+namespace OHOS {
+namespace Accessibility {
 bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
     return true;
@@ -94,3 +94,5 @@ GestureType AccessibilityEventInfo::GetGestureType() const
 {
     return gestureType_;
 }
+} // namespace Accessibility
+} // namespace OHOS

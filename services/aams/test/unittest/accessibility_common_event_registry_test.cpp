@@ -22,11 +22,11 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
 using namespace OHOS::EventFwk;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class AccessibilityCommonEventRegistryUnitTest : public ::testing::Test {
 public:
     AccessibilityCommonEventRegistryUnitTest() {}
@@ -176,3 +176,5 @@ HWTEST_F(AccessibilityCommonEventRegistryUnitTest, AccessibilityCommonEventRegis
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_Unittest_HandlePackageChanged_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

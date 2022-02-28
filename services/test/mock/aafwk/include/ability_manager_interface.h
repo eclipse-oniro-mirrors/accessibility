@@ -29,6 +29,6 @@ namespace AAFwk {
 class IAbilityManager : public OHOS::IRemoteBroker {
 public:
 };
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS
 #endif  // OHOS_AAFWK_ABILITY_MANAGER_INTERFACE_H

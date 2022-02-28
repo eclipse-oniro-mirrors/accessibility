@@ -40,7 +40,7 @@ AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
 
 bool AccessibilityCommonEventRegistry::StartRegister()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!eventHandles_.empty()) {
         HILOG_DEBUG("eventHandles_ is not empty");
         eventHandles_.clear();
@@ -61,7 +61,7 @@ bool AccessibilityCommonEventRegistry::StartRegister()
 
 bool AccessibilityCommonEventRegistry::RegisterSubscriber()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     bool subscribeResult = false;
     MatchingSkills matchingSkills;
@@ -91,7 +91,7 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
 
 void AccessibilityCommonEventRegistry::UnRegister()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     eventHandles_.clear();
     if (accessibilityCommonEventSubscriber_ != nullptr) {
         bool subscribeResult = CommonEventManager::UnSubscribeCommonEvent(accessibilityCommonEventSubscriber_);
@@ -103,13 +103,13 @@ void AccessibilityCommonEventRegistry::UnRegister()
 
 void AccessibilityCommonEventSubscriber::OnReceiveEvent(const CommonEventData &data)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     HandleEvent(data.GetWant());
 }
 
 void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     auto action = want.GetAction();
     auto it = eventHandles_.find(action);
     if (it == eventHandles_.end()) {
@@ -122,7 +122,7 @@ void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
 
 void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int32_t accountId = want.GetIntParam(CommonEventSupport::COMMON_EVENT_USER_REMOVED, -1);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->RemovedUser(accountId);
@@ -130,36 +130,36 @@ void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const
 
 void AccessibilityCommonEventRegistry::HandlePresentUser(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PresentUser();
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageRemoved(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     string bundleName = want.GetBundle();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageRemoved(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageAdd(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     string bundleName = want.GetBundle();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageAdd(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     string bundleName = want.GetBundle();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageUpdateFinished(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageChanged(const Want &want) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     string bundleName = want.GetBundle();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageChanged(bundleName);
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

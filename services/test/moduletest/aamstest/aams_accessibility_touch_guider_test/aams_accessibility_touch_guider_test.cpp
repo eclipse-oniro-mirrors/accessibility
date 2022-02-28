@@ -73,8 +73,8 @@ void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fprintf(fp, "%s", data);
+    (void)fclose(fp);
 }
 
 void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
@@ -795,5 +795,5 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent011, Test
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent011 ends";
 }
-}  // namespace Accessibility
-}  // namespace OHO
+} // namespace Accessibility
+} // namespace OHOS

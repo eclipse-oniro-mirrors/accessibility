@@ -122,6 +122,6 @@ public:
     virtual void OnCaptionStateChanged(const bool& enable) = 0;
     virtual void OnCaptionPropertyChanged(const CaptionProperty& caption) = 0;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_CAPTION_H

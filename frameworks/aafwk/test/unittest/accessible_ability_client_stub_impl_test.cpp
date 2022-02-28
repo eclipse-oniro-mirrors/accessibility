@@ -23,10 +23,10 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class UnitTestAccessibleAbilityListener : public AccessibilityExtension {
 public:
     UnitTestAccessibleAbilityListener()
@@ -286,3 +286,5 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

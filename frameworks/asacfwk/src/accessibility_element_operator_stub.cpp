@@ -48,7 +48,7 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_.clear();
 }
 
@@ -68,7 +68,7 @@ int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParc
     if (memFunc != memberFuncMap_.end()) {
         auto func = memFunc->second;
         if (func != nullptr) {
-            return (this->*func)(data,reply);
+            return (this->*func)(data, reply);
         }
     }
     HILOG_WARN("AccessibilityElementOperatorStub::OnRemoteRequest, default case, need check.");
@@ -78,7 +78,7 @@ int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParc
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     long elementId = data.ReadInt32();
     int requestId = data.ReadInt32();
@@ -94,7 +94,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     long elementId = data.ReadInt32();
     std::string text = data.ReadString();
@@ -110,7 +110,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
 ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     long elementId = data.ReadInt32();
     int focusType = data.ReadInt32();
@@ -125,7 +125,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
 
 ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     long elementId = data.ReadInt32();
     int direction = data.ReadInt32();
@@ -140,9 +140,9 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
 
 ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
-    std::vector<std::string> argumentKey{};
-    std::vector<std::string> argumentValue{};
+    HILOG_DEBUG("start");
+    std::vector<std::string> argumentKey;
+    std::vector<std::string> argumentValue;
     long elementId = data.ReadInt32();
     int action = data.ReadInt32();
     if (!data.ReadStringVector(&argumentKey)) {
@@ -154,7 +154,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     if (argumentKey.size() != argumentValue.size()) {
         return ERROR;
     }
-    std::map<std::string, std::string> arguments{};
+    std::map<std::string, std::string> arguments{ };
     for (unsigned int i = 0;i < argumentKey.size(); i++) {
         arguments.insert(std::pair<std::string, std::string>(argumentKey[i],argumentValue[i]));
     }
@@ -169,7 +169,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
 
 ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     ClearFocus();
 
@@ -178,7 +178,7 @@ ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel &data, 
 
 ErrCode AccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     OutsideTouch();
 
@@ -188,7 +188,7 @@ ErrCode AccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel &data
 void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const long elementId,
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_ACCESSIBILITY_ID);
@@ -199,7 +199,7 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     if (obj != nullptr) {
         obj->SearchElementInfoByAccessibilityId(elementId, requestId, *tempCallback, mode);
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
@@ -207,7 +207,7 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     const std::string &text,
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_TEXT);
@@ -218,7 +218,7 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     if (obj != nullptr) {
         obj->SearchElementInfosByText(elementId, text, requestId, *tempCallback);
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
@@ -226,7 +226,7 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     const int focusType, const int requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_FIND_FOCUS);
@@ -237,7 +237,7 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     if (obj != nullptr) {
         obj->FindFocusedElementInfo(elementId, focusType, requestId, *tempCallback);
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
@@ -245,7 +245,7 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const int direction, const int requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_FOCUS_MOVE);
@@ -256,7 +256,7 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     if (obj != nullptr) {
         obj->FocusMoveSearch(elementId, direction, requestId, *tempCallback);
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
@@ -264,7 +264,7 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     const int action, const std::map<std::string, std::string> actionArguments,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_PERFORM_ACTION);
@@ -275,31 +275,31 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     if (obj != nullptr) {
         obj->ExecuteAction(elementId, action, actionArguments, requestId, *tempCallback);
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
 void AccessibilityElementOperatorStub::ClearFocus()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->ClearFocus();
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
 void AccessibilityElementOperatorStub::OutsideTouch()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->OutsideTouch();
     } else {
-        HILOG_DEBUG("%{public}s Can not find interaction object", __func__);
+        HILOG_DEBUG("Can not find interaction object");
     }
 }
 
@@ -318,7 +318,7 @@ AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -332,7 +332,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAcces
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -346,7 +346,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
 void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFindFocusedElementInfoResult(info, requestId);
@@ -359,7 +359,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoRe
 void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFocusMoveSearchResult(info, requestId);
@@ -372,7 +372,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
 void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetExecuteActionResult(succeeded, requestId);
@@ -384,7 +384,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
 
 AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     return aaCallbacks_;
 }
 
@@ -410,5 +410,5 @@ int AccessibilityElementOperatorStub::GetWindowId()
 {
     return windowId_;
 }
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

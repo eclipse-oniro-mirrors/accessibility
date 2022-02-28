@@ -25,8 +25,6 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
 namespace OHOS {
@@ -870,5 +868,5 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabledObj end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

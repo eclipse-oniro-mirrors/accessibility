@@ -253,26 +253,26 @@ void AccessibilityWindowInfo::SetActive(bool active)
 
 bool AccessibilityWindowInfo::IsFocused() const
 {
-    HILOG_DEBUG("[%{public}s] focused_[%{public}d]", __func__, focused_);
+    HILOG_DEBUG("focused_[%{public}d]", focused_);
     return focused_;
 }
 
 void AccessibilityWindowInfo::SetFocused(bool focused)
 {
     focused_ = focused;
-    HILOG_DEBUG("[%{public}s] focused_[%{public}d]", __func__, focused_);
+    HILOG_DEBUG("focused_[%{public}d]", focused_);
 }
 
 bool AccessibilityWindowInfo::IsAccessibilityFocused() const
 {
-    HILOG_DEBUG("[%{public}s] accessibilityFocused_[%{public}d]", __func__, accessibilityFocused_);
+    HILOG_DEBUG("accessibilityFocused_[%{public}d]", accessibilityFocused_);
     return accessibilityFocused_;
 }
 
 void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityfocused)
 {
     accessibilityFocused_ = accessibilityfocused;
-    HILOG_DEBUG("[%{public}s] accessibilityFocused_[%{public}d]", __func__, accessibilityFocused_);
+    HILOG_DEBUG("accessibilityFocused_[%{public}d]", accessibilityFocused_);
 }
 
 int AccessibilityWindowInfo::GetChildNum() const

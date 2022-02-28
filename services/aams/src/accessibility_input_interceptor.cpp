@@ -41,15 +41,15 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 {
     HILOG_DEBUG();
 
-    ams_ = nullptr;
+    aams_ = nullptr;
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
-    ams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (ams_ == nullptr) {
-        HILOG_DEBUG("ams_ is null.");
+    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (aams_ == nullptr) {
+        HILOG_DEBUG("aams_ is null.");
     }
     inputManager_ = MMI::InputManager::GetInstance();
-    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(ams_->GetMainRunner());
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(aams_->GetMainRunner());
 }
 
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
@@ -58,7 +58,7 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 
     DestroyInterceptor();
     DestroyTransmitters();
-    ams_ = nullptr;
+    aams_ = nullptr;
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
     interceptorId_ = -1;
@@ -123,7 +123,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     if (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) {
         sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
         SetNextEventTransmitter(header, current, touchEventInjector);
-        ams_->SetTouchEventInjector(touchEventInjector);
+        aams_->SetTouchEventInjector(touchEventInjector);
     }
 
     if (availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) {
@@ -142,7 +142,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
 
     if (availableFunctions_& FEATURE_FILTER_KEY_EVENTS) {
         sptr<KeyEventFilter> keyEventFilter = new KeyEventFilter();
-        ams_->SetKeyEventFilter(keyEventFilter);
+        aams_->SetKeyEventFilter(keyEventFilter);
         keyEventFilter->SetNext(instance_);
         keyEventTransmitters_ = keyEventFilter;
     }
@@ -164,8 +164,8 @@ void AccessibilityInputInterceptor::CreateInterceptor()
         return;
     }
     inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
-    if (availableFunctions_ & FEATURE_TOUCH_EXPLORATION ||
-        availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) {
+    if ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
+        (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
         interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
     }
     HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
@@ -182,7 +182,6 @@ void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MM
 
     if ((instance_ == nullptr) || (instance_->eventHandler_ == nullptr)) {
         HILOG_ERROR("eventHandler is nullptr.");
-
     }
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
     instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
@@ -215,12 +214,12 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
 
     if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->DestroyEvents();
-        ams_->SetTouchEventInjector(nullptr);
+        aams_->SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
     }
     if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();
-        ams_->SetKeyEventFilter(nullptr);
+        aams_->SetKeyEventFilter(nullptr);
         keyEventTransmitters_ = nullptr;
     }
 }
@@ -332,5 +331,5 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
     eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
     HILOG_DEBUG("OnInputEvent pointerEvent end.");
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

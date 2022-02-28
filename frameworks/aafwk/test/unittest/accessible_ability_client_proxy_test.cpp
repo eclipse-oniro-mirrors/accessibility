@@ -21,10 +21,10 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class AccessibleAbilityClientProxyUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityClientProxyUnitTest() {}
@@ -346,3 +346,5 @@ HWTEST_F(AccessibleAbilityClientProxyUnitTest,
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientProxyUnitTest_Unittest_OnGestureSimulateResult_002 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

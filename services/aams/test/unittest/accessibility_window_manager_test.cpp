@@ -990,5 +990,5 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
     mgr.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_SetWindowSize001 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -22,7 +22,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID)] =
         &AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId;
@@ -58,7 +58,7 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_.clear();
 }
 
@@ -88,7 +88,7 @@ int32_t AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParc
 ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int accessibilityWindowId = data.ReadInt32();
     int elementId = data.ReadInt64();
@@ -117,7 +117,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
 ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int accessibilityWindowId = data.ReadInt32();
     long elementId = data.ReadInt32();
@@ -137,7 +137,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
 
 ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int accessibilityWindowId = data.ReadInt32();
     long elementId = data.ReadInt32();
@@ -157,7 +157,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
 
 ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int accessibilityWindowId = data.ReadInt32();
     long elementId = data.ReadInt32();
@@ -177,15 +177,15 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
 
 ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int accessibilityWindowId = data.ReadInt32();
     long elementId = data.ReadInt32();
     int action = data.ReadInt32();
 
-    vector<string> actionArgumentsKey{};
-    vector<string> actionArgumentsValue{};
-    map<string, string> actionArguments{};
+    vector<string> actionArgumentsKey;
+    vector<string> actionArgumentsValue;
+    map<string, string> actionArguments;
 
     if (!data.ReadStringVector(&actionArgumentsKey)) {
         HILOG_ERROR("ReadStringVector actionArgumentsKey failed");
@@ -219,7 +219,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
 
 ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     vector<AccessibilityWindowInfo> windows = GetWindows();
     if (!reply.WriteInt32((int32_t)windows.size())) {
@@ -237,7 +237,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
 
 ErrCode AccessibleAbilityChannelStub::HandleExecuteCommonAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int action = data.ReadInt32();
     bool result = ExecuteCommonAction(action);
@@ -249,7 +249,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteCommonAction(MessageParcel &d
 
 ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     bool handled = data.ReadBool();
     int sequence = data.ReadInt32();
@@ -260,7 +260,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParc
 
 ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeScale(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     float result = GetDisplayResizeScale(displayId);
@@ -272,7 +272,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeScale(MessageParcel 
 
 ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeCenterX(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     float result = GetDisplayResizeCenterX(displayId);
@@ -284,7 +284,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeCenterX(MessageParce
 
 ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeCenterY(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     float result = GetDisplayResizeCenterY(displayId);
@@ -296,7 +296,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeCenterY(MessageParce
 
 ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeRect(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     Rect rect = GetDisplayResizeRect(displayId);
@@ -308,7 +308,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetDisplayResizeRect(MessageParcel &
 
 ErrCode AccessibleAbilityChannelStub::HandleResetDisplayResize(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     bool animate = data.ReadBool();
@@ -322,7 +322,7 @@ ErrCode AccessibleAbilityChannelStub::HandleResetDisplayResize(MessageParcel &da
 ErrCode AccessibleAbilityChannelStub::HandleSetDisplayResizeScaleAndCenter(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int displayId = data.ReadInt32();
     float scale = data.ReadFloat();
@@ -338,7 +338,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetDisplayResizeScaleAndCenter(Messa
 
 ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     int32_t requestId = data.ReadInt32();
 

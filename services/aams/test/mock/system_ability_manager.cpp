@@ -200,4 +200,4 @@ int32_t SystemAbilityManager::AddSystemProcess(const std::u16string& procName, c
 {
     return 0;
 }
-}  // namespace OHOS
+} // namespace OHOS

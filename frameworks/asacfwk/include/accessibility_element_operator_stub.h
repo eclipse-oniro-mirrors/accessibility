@@ -319,6 +319,6 @@ private:
     int windowId_ = 0;
     DISALLOW_COPY_AND_MOVE(AccessibilityElementOperatorStub);
 };
-}   // namespace Accessibility
-}   // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

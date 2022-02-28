@@ -349,7 +349,7 @@ private:
     std::shared_ptr<GestureHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 
 #endif  // ACCESSIBILITYGESTURERECOGNIZER_H

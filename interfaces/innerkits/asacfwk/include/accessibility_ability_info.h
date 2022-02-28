@@ -16,8 +16,8 @@
 #ifndef ACCESSIBILITY_ABILILTY_INFO_H
 #define ACCESSIBILITY_ABILILTY_INFO_H
 
+#include <cstdint>
 #include <vector>
-#include <stdint.h>
 #include <string>
 
 #include "accessibility_event_info.h"

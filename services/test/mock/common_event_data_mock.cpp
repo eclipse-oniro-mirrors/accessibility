@@ -79,5 +79,5 @@ CommonEventData *CommonEventData::Unmarshalling(Parcel &parcel)
 
     return commonEventData;
 }
-}  //namespace EventFwk
-}  // namespace OHOS
+} // namespace EventFwk
+} // namespace OHOS

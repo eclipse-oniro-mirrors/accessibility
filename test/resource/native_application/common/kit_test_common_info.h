@@ -423,6 +423,6 @@ enum class WantParamsApi {
     SetParam,
     End,
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // KIT_TEST_COMMON_INFO_H

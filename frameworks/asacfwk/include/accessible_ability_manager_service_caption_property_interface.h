@@ -39,7 +39,6 @@ public:
         ON_CAPTION_PROPERTY_CHANGED,
     };
 };
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

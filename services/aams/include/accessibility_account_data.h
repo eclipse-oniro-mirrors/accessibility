@@ -384,7 +384,7 @@ private:
 
     sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr;    // key: UI test ability id.
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 
 #endif  // ACCESSIBILITY_ACCOUNT_DATA_H

@@ -41,7 +41,7 @@ public:
 private:
     sptr<EventTransmission> next_ = nullptr;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 
 #endif  // OHOS_EVENT_TRANSMISSION_H_

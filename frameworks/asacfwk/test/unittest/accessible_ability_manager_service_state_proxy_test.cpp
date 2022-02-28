@@ -74,6 +74,5 @@ HWTEST_F(ASACStateProxyUnitTest, OnStateChanged_001, TestSize.Level1)
 
     GTEST_LOG_(INFO) << "OnStateChanged_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

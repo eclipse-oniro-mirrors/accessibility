@@ -36,4 +36,4 @@ sptr<IRemoteObject> SystemAbilityManagerClient::GetRegistryRemoteObject()
 void SystemAbilityManagerClient::DestroySystemAbilityManagerObject()
 {
 }
-}  // namespace OHOS
+} // namespace OHOS

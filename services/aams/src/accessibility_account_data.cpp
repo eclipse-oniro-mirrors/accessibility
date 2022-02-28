@@ -32,14 +32,14 @@ AccessibilityAccountData::~AccessibilityAccountData()
 
 int AccessibilityAccountData::GetAccountId()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return id_;
 }
 
 // get client state.
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
         state |= AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED;
@@ -74,7 +74,7 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 // switch the user causes state changed.
 void AccessibilityAccountData::OnAccountSwitched()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     // reset AccessibleAbilityConnection
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         itr->second->Disconnect();
@@ -119,14 +119,14 @@ void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConn
 
 void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState>& callback)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     stateCallbacks_.push_back(callback);
 }
 
 // remove IAccessibleAbilityManagerServiceState
 void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = stateCallbacks_.begin(); itr != stateCallbacks_.end(); itr++) {
         if (*itr == callback) {
             stateCallbacks_.erase(itr);
@@ -138,13 +138,13 @@ void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& ca
 void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if (*itr == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -174,7 +174,7 @@ void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int win
 
 void AccessibilityAccountData::AddConnectingA11yAbility(const AppExecFwk::ElementName& elementName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!connectingA11yAbilities_.count(elementName.GetURI())) {
         connectingA11yAbilities_.insert(make_pair(elementName.GetURI(), elementName));
     }
@@ -184,7 +184,7 @@ void AccessibilityAccountData::AddConnectingA11yAbility(const AppExecFwk::Elemen
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::ElementName& elementName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::map<std::string, AppExecFwk::ElementName>::iterator it = connectingA11yAbilities_.find(elementName.GetURI());
     if (it != connectingA11yAbilities_.end()) {
         connectingA11yAbilities_.erase(it);
@@ -196,7 +196,7 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::Ele
 // For UT
 void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& elementName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!enabledAbilities_.count(elementName.GetURI())) {
         enabledAbilities_.insert(make_pair(elementName.GetURI(), elementName));
     }
@@ -206,7 +206,7 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
 
 void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
     HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
     if (it != enabledAbilities_.end()) {
@@ -245,7 +245,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
 
 void AccessibilityAccountData::RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == abilityInfo.GetPackageName()) {
             installedAbilities_.erase(it);
@@ -259,7 +259,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(AccessibilityAbilityInfo& 
 
 void AccessibilityAccountData::ClearInstalledAbility()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     installedAbilities_.clear();
 }
 
@@ -285,7 +285,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int windowId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (asacConnections_.count(windowId) > 0) {
         return asacConnections_[windowId];
     }
@@ -296,40 +296,40 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 // get map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return connectedA11yAbilities_;
 }
 
 const std::vector<sptr<IAccessibleAbilityManagerServiceState>> AccessibilityAccountData::GetStateCallbacks()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return stateCallbacks_;
 }
 
 // get map<int, sptr<AccessibilityWindowConnection>> asacConnections_
 const std::map<int, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return asacConnections_;
 }
 
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return captionPropertyCallbacks_;
 }
 
 // get connectingA11yAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetConnectingA11yAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return connectingA11yAbilities_;
 }
 
 // get enabledAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto& abilitie : enabledAbilities_) {
         std::string bundleName = abilitie.second.GetBundleName();
         HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
@@ -340,7 +340,7 @@ const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::G
 // get installedAbilities_.
 const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return installedAbilities_;
 }
 
@@ -372,7 +372,7 @@ const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbiliti
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     UpdateFilteringKeyEventsCapability();
     UpdateEventTouchGuideCapability();
     UpdateGesturesSimulationCapability();
@@ -381,7 +381,7 @@ void AccessibilityAccountData::UpdateAccountCapabilities()
 
 void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_TOUCH_GUIDE) {
             isEventTouchGuideState_ = true;
@@ -393,7 +393,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_GESTURE) {
             isGesturesSimulation_ = true;
@@ -405,7 +405,7 @@ void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 
 void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
             isFilteringKeyEvents_ = true;
@@ -417,7 +417,7 @@ void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 
 void AccessibilityAccountData::UpdateMagnificationCapability()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM) {
             isScreenMagnification_ = true;
@@ -429,7 +429,7 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
 
 bool AccessibilityAccountData::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     isCaptionState_ = state;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -453,7 +453,7 @@ bool AccessibilityAccountData::SetCaptionState(const bool state)
 
 bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     captionProperty_ = caption;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -481,7 +481,7 @@ bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption
 
 bool AccessibilityAccountData::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     isEnabled_ = state;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -507,7 +507,7 @@ bool AccessibilityAccountData::SetEnabled(const bool state)
 
 bool AccessibilityAccountData::SetTouchGuideState(const bool state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     isEventTouchGuideState_ = state;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -531,7 +531,7 @@ bool AccessibilityAccountData::SetTouchGuideState(const bool state)
 
 bool AccessibilityAccountData::SetGestureState(const bool state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     isGesturesSimulation_ = state;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -555,7 +555,7 @@ bool AccessibilityAccountData::SetGestureState(const bool state)
 
 bool AccessibilityAccountData::SetKeyEventObserverState(const bool state)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     isFilteringKeyEvents_ = state;
     // temp deal: write json config
     nlohmann::json jsonObj;
@@ -604,7 +604,7 @@ bool AccessibilityAccountData::GetCaptionState()
 
 bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     // add ability to the last of enabledAbilities_
     for (auto& ability : it) {
@@ -635,7 +635,7 @@ bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::E
 
 bool AccessibilityAccountData::ReadConfigurationForAccountData()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     // temp deal: read the user confige data.
     return true;
 }
@@ -643,7 +643,7 @@ bool AccessibilityAccountData::ReadConfigurationForAccountData()
 // get installedAbilities_.
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -752,7 +752,7 @@ void AccessibilityAccountData::init()
 
 bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto &disAbilities : it) {
         enabledAbilities_.erase(disAbilities.first);
     }
@@ -777,7 +777,7 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
 
 void AccessibilityAccountData::AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!uiTestConnectedA11yAbility_) {
         HILOG_DEBUG("Add uiTestConnectedA11yAbility success");
         uiTestConnectedA11yAbility_ = connection;
@@ -786,14 +786,14 @@ void AccessibilityAccountData::AddUITestConnectedAbility(sptr<AccessibleAbilityC
 
 void AccessibilityAccountData::RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     uiTestConnectedA11yAbility_ = nullptr;
 }
 
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConnectedAbilityConnection()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return uiTestConnectedA11yAbility_;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

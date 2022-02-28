@@ -28,7 +28,6 @@
 #include "iremote_broker.h"
 #include "refbase.h"
 
-
 namespace OHOS {
 namespace Accessibility {
 class MockAccessibleAbilityChannel : public IAccessibleAbilityChannel {
@@ -79,7 +78,6 @@ public:
     sptr<IRemoteObject> AsObject() override;
 
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif // MOCK_ACCESSIBLE_ABILITY_CHANNEL_IMPL_H

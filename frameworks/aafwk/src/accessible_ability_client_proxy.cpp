@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include <cstdint>
 #include "accessible_ability_client_proxy.h"
 #include "accessibility_errorcode.h"
 #include "parcel.h"
@@ -28,7 +27,7 @@ AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObj
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!data.WriteInterfaceToken(AccessibleAbilityClientProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -43,7 +42,7 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -53,12 +52,12 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
         return;
     }
     if (!data.WriteRemoteObject(channel->AsObject())) {
-        HILOG_ERROR("%{public}s fail, channel write parcelable error", __func__);
+        HILOG_ERROR("fail, channel write parcelable error");
         return;
     }
 
     if (!data.WriteInt32(channelId)) {
-        HILOG_ERROR("%{public}s fail, channelId write int32 error", __func__);
+        HILOG_ERROR("fail, channelId write int32 error");
         return;
     }
 
@@ -75,14 +74,14 @@ void AccessibleAbilityClientProxy::Disconnect(const int channelId)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
 
     if (!data.WriteInt32(channelId)) {
-        HILOG_ERROR("%{public}s fail, channelId write int32 error", __func__);
+        HILOG_ERROR("fail, channelId write int32 error");
         return;
     }
 
@@ -100,13 +99,13 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
     if (!data.WriteParcelable(&eventInfo)) {
-        HILOG_ERROR("%{public}s fail, eventInfo write parcelable error", __func__);
+        HILOG_ERROR("fail, eventInfo write parcelable error");
         return;
     }
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_ACCESSIBILITY_EVENT),
@@ -123,18 +122,18 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
     if (!data.WriteInt32(sequence)) {
-        HILOG_ERROR("%{public}s fail, sequence write int32 error", __func__);
+        HILOG_ERROR("fail, sequence write int32 error");
         return;
     }
 
     if (!keyEvent.WriteToParcel(data)) {
-        HILOG_ERROR("%{public}s fail, keyEvent WriteToParcel error", __func__);
+        HILOG_ERROR("fail, keyEvent WriteToParcel error");
         return;
     }
 
@@ -153,29 +152,29 @@ void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const R
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
     if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("%{public}s fail, displayId write int32 error", __func__);
+        HILOG_ERROR("fail, displayId write int32 error");
         return;
     }
     if (!data.WriteParcelable(&rect)) {
-        HILOG_ERROR("%{public}s fail, rect write parcelable error", __func__);
+        HILOG_ERROR("fail, rect write parcelable error");
         return;
     }
     if (!data.WriteFloat(scale)) {
-        HILOG_ERROR("%{public}s fail, scale write float error", __func__);
+        HILOG_ERROR("fail, scale write float error");
         return;
     }
     if (!data.WriteFloat(centerX)) {
-        HILOG_ERROR("%{public}s fail, centerX write float error", __func__);
+        HILOG_ERROR("fail, centerX write float error");
         return;
     }
     if (!data.WriteFloat(centerY)) {
-        HILOG_ERROR("%{public}s fail, centerY write float error", __func__);
+        HILOG_ERROR("fail, centerY write float error");
         return;
     }
 
@@ -193,17 +192,17 @@ void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, c
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!WriteInterfaceToken(data)) {
         return;
     }
     if (!data.WriteInt32(sequence)) {
-        HILOG_ERROR("%{public}s fail, sequence write int32 error", __func__);
+        HILOG_ERROR("fail, sequence write int32 error");
         return;
     }
     if (!data.WriteBool(completedSuccessfully)) {
-        HILOG_ERROR("%{public}s fail, completedSuccessfully write bool error", __func__);
+        HILOG_ERROR("fail, completedSuccessfully write bool error");
         return;
     }
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE_SIMULATE_RESULT),

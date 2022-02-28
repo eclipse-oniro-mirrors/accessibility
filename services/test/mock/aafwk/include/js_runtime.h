@@ -21,7 +21,7 @@ namespace AbilityRuntime {
 class JsRuntime {
 public:
 };
-}  // namespace AbilityRuntime
-}  // namespace OHOS
+} // namespace AbilityRuntime
+} // namespace OHOS
 
 #endif  // FOUNDATION_OHOS_ABILITYRUNTIME_JS_RUNTIME_H

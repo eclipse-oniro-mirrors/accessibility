@@ -16,8 +16,8 @@
 #ifndef ACCESSIBLE_ABILITY_CHANNEL_PROXY_H
 #define ACCESSIBLE_ABILITY_CHANNEL_PROXY_H
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include <vector>
 #include "accessible_ability_channel_interface.h"
 #include "hilog_wrapper.h"

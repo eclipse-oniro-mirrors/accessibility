@@ -714,6 +714,7 @@ void ConvertElementInfosToJS(
 {
     size_t index = 0;
     HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}d)", elementInfos.size());
+
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
         napi_status status = napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
@@ -1024,7 +1025,7 @@ static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)
         {"pip", WindowUpdateType::WINDOW_UPDATE_PIP}};
 
     if (windowsUpdateTypesTable.find(type) == windowsUpdateTypesTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return WINDOW_UPDATE_INVALID;
     }
 
@@ -1061,7 +1062,7 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"gesture", EventType::TYPE_GESTURE_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return TYPE_VIEW_INVALID;
     }
 
@@ -1095,7 +1096,7 @@ ActionType ConvertStringToAccessibleOperationType(std::string type)
         {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return ACCESSIBILITY_ACTION_INVALID;
     }
 
@@ -1114,7 +1115,7 @@ AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(std::string t
     };
 
     if (accessibilityAbilityTypesTable.find(type) == accessibilityAbilityTypesTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_INVALID;
     }
 
@@ -1129,7 +1130,7 @@ AbilityStateType ConvertStringToAbilityStateTypes(std::string type)
         {"install", AbilityStateType::ABILITY_STATE_INSTALLED}};
 
     if (abilityStateTypeTable.find(type) == abilityStateTypeTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return ABILITY_STATE_INVALID;
     }
 
@@ -1148,7 +1149,7 @@ GlobalAction ConvertStringToGlobalAction(std::string type)
         {"captureScreen", GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN}};
 
     if (globalActionTable.find(type) == globalActionTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return GLOBAL_ACTION_INVALID;
     }
 
@@ -1164,7 +1165,7 @@ static TextMoveUnit ConvertStringToTextMoveStep(std::string type)
         {"paragraph", TextMoveUnit::STEP_PARAGRAPH}};
 
     if (textMoveStepTable.find(type) == textMoveStepTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return STEP_INVALID;
     }
 
@@ -1188,7 +1189,7 @@ static NotificationCategory ConvertStringToNotificationCategory(std::string type
         {"service", NotificationCategory::CATEGORY_SERVICE}};
 
     if (notificationCategoryTable.find(type) == notificationCategoryTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return CATEGORY_INVALID;
     }
 
@@ -1216,7 +1217,7 @@ static GestureType ConvertStringToGestureType(std::string type)
         {"downThenUp", GestureType::GESTURE_SWIPE_DOWN_THEN_UP}};
 
     if (gestureTypesTable.find(type) == gestureTypesTable.end()) {
-        HILOG_WARN("%{public}s: invalid key[%{public}s]", __func__, type.c_str());
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return GESTURE_INVALID;
     }
     return gestureTypesTable.at(type);
@@ -1601,7 +1602,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, OHOS::MMI::KeyEvent& k
 
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessibility::CaptionProperty captionProperty)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     napi_value value;
 
@@ -1628,13 +1629,13 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessib
         napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 
-    HILOG_DEBUG("%{public}s end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::Accessibility::CaptionProperty* ptrCaptionProperty)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     int32_t num = 0;
@@ -1702,7 +1703,7 @@ void ConvertObjToCaptionProperty(
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         ptrCaptionProperty->SetWindowColor(std::string(outBuffer));
     }
-    HILOG_DEBUG("%{public}s end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
@@ -1792,7 +1793,7 @@ void ConvertJSToEnabledAbilities(
 
 void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     napi_value keyCode;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, value, &keyCode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "enabled", keyCode));
@@ -1802,7 +1803,7 @@ void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
 
 void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     napi_value keyCode;
     NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyCode));
 

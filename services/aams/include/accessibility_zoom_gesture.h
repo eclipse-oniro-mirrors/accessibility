@@ -60,6 +60,6 @@ private:
      */
     int GetSysTimeout() const;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_GESTURE_H

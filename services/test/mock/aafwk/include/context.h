@@ -28,6 +28,6 @@ public:
     Context() = default;
     virtual ~Context() = default;
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // FOUNDATION_APPEXECFWK_OHOS_CONTEXT_H

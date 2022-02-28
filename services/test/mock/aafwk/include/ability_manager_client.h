@@ -47,6 +47,6 @@ private:
     static std::shared_ptr<AbilityManagerClient> instance_;
     static std::mutex mutex_;
 };
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS
 #endif  // OHOS_AAFWK_ABILITY_MANAGER_H

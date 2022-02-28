@@ -132,8 +132,8 @@ void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const cha
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fprintf(fp, "%s", data);
+    (void)fclose(fp);
 }
 
 void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigForTouchGuide()

@@ -78,6 +78,6 @@ private:
     std::string bundleName_;
     std::string abilityName_;
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // FOUNDATION_APPEXECFWK_INTERFACES_INNERKITS_APPEXECFWK_BASE_INCLUDE_ELEMENT_NAME_H

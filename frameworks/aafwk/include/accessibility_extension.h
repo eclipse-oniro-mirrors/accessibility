@@ -16,7 +16,7 @@
 #ifndef ACCESSIBILITY_EXTENSION_H
 #define ACCESSIBILITY_EXTENSION_H
 
-#include <stdint.h>
+#include <cstdint>
 #include "accessibility_event_info.h"
 #include "extension_base.h"
 #include "key_event.h"

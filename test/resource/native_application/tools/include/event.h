@@ -38,5 +38,5 @@ private:
 int WaitCompleted(Event &event, const std::string &eventName, const int code, const int timeout = 60);
 void Completed(Event &event, const std::string &eventName, const int code);
 void CleanMsg(Event &event);
-}  // namespace STtools
-#endif  //AA_TEST_EVENT_H
+} // namespace STtools
+#endif // AA_TEST_EVENT_H

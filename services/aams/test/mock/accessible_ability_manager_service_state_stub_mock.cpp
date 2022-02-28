@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateStub()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 }
 
 int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, MessageParcel &data,

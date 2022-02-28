@@ -59,10 +59,10 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
 {
     auto channel = channels_.find(channelId);
     if (channel != channels_.end()) {
-        HILOG_DEBUG("[%{public}s] Find aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_DEBUG("Find aams [channelId:%{public}d]", channelId);
         return channel->second;
     } else {
-        HILOG_ERROR("[%{public}s] Failed to find aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to find aams [channelId:%{public}d]", channelId);
         return nullptr;
     }
 }
@@ -117,7 +117,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int chann
         }
         return windows;
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return windows_;
     }
 }
@@ -336,71 +336,71 @@ void AccessibilityOperator::SetExecuteActionResult(const bool succeeded, const i
 
 bool AccessibilityOperator::ExecuteCommonAction(const int channelId, const int action)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->ExecuteCommonAction(action);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return false;
     }
 }
 
 void AccessibilityOperator::SetOnKeyPressEventResult(const int channelId, const bool handled, const int sequence)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         channelService->SetOnKeyPressEventResult(handled, sequence);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
     }
 }
 
 float AccessibilityOperator::GetDisplayResizeScale(const int channelId, const int displayId)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->GetDisplayResizeScale(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return 1;
     }
 }
 
 float AccessibilityOperator::GetDisplayResizeCenterX(const int channelId, const int displayId)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->GetDisplayResizeCenterX(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return 1;
     }
 }
 
 float AccessibilityOperator::GetDisplayResizeCenterY(const int channelId, const int displayId)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->GetDisplayResizeCenterY(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return 1;
     }
 }
 
 Rect AccessibilityOperator::GetDisplayResizeRect(const int channelId, const int displayId)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->GetDisplayResizeRect(displayId);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         Rect rect {};
         return rect;
     }
@@ -408,12 +408,12 @@ Rect AccessibilityOperator::GetDisplayResizeRect(const int channelId, const int 
 
 bool AccessibilityOperator::ResetDisplayResize(const int channelId, const int displayId, const bool animate)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->ResetDisplayResize(displayId, animate);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return false;
     }
 }
@@ -422,13 +422,13 @@ bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
     const int displayId, const float scale, const float centerX,
     const float centerY, const bool animate)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         return channelService->SetDisplayResizeScaleAndCenter(displayId, scale, centerX,
             centerY, animate);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
         return false;
     }
 }
@@ -436,12 +436,12 @@ bool AccessibilityOperator::SetDisplayResizeScaleAndCenter(const int channelId,
 void AccessibilityOperator::SendSimulateGesture(const int channelId,
     const int sequenceNum, const std::vector<GesturePathDefine> &gestureSteps)
 {
-    HILOG_INFO("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_INFO("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         channelService->SendSimulateGesture(sequenceNum, gestureSteps);
     } else {
-        HILOG_ERROR("[%{public}s] Failed to connect to aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId);
     }
 }
 } // namespace Accessibility

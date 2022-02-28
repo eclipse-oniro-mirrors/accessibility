@@ -139,6 +139,6 @@ public:
 private:
     KeyEventFilter &keyEventFilter_;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // OHOS_KEYEVENT_FILTER_H_

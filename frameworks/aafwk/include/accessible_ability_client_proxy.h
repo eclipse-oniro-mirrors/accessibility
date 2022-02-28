@@ -16,7 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_CLIENT_PROXY_H
 #define ACCESSIBLE_ABILITY_CLIENT_PROXY_H
 
-#include <stdint.h>
+#include <cstdint>
 #include "accessible_ability_client_interface.h"
 #include "iremote_proxy.h"
 #include "message_parcel.h"
