@@ -154,7 +154,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     if (argumentKey.size() != argumentValue.size()) {
         return ERROR;
     }
-    std::map<std::string, std::string> arguments{ };
+    std::map<std::string, std::string> arguments;
     for (unsigned int i = 0;i < argumentKey.size(); i++) {
         arguments.insert(std::pair<std::string, std::string>(argumentKey[i],argumentValue[i]));
     }

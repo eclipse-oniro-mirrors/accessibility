@@ -136,8 +136,9 @@ void JsAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo
 
     HandleScope handleScope(jsRuntime_);
     NativeEngine* nativeEngine = &jsRuntime_.GetNativeEngine();
-    // wrap eventInfo
-    NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(reinterpret_cast<napi_env>(nativeEngine));
+
+    napi_get_reference_value(reinterpret_cast<napi_env>(&nativeEngine), NAccessibilityEventInfo::consRef_, 
+        &NAccessibilityEventInfo::cons_);
     napi_value napiEventInfo = nullptr;
     napi_new_instance(
         reinterpret_cast<napi_env>(nativeEngine), NAccessibilityEventInfo::cons_, 0, nullptr, &napiEventInfo);

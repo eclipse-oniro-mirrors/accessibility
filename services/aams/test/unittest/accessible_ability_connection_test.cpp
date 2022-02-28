@@ -31,8 +31,6 @@ using namespace std;
 
 extern int g_testChannalId;
 extern int g_testEventType;
-extern int g_testDisplayId;
-extern int g_testGesture;
 extern int g_testGestureSimulateResult;
 extern int g_testKeyPressEvent;
 

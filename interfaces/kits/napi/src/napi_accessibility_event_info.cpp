@@ -26,6 +26,7 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 
 napi_value NAccessibilityEventInfo::cons_ = nullptr;
+napi_ref NAccessibilityEventInfo::consRef_ = nullptr;
 
 void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
 {
@@ -42,6 +43,7 @@ void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
             sizeof(descForAccessibilityEventInfo) / sizeof(descForAccessibilityEventInfo[0]),
             descForAccessibilityEventInfo,
             &NAccessibilityEventInfo::cons_));
+    napi_create_reference(env, NAccessibilityWindowInfo::cons_, 1, &NAccessibilityWindowInfo::consRef_);
 }
 
 napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)
@@ -85,6 +87,8 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
+
+            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
             napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
             argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);

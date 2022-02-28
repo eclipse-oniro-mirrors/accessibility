@@ -112,8 +112,8 @@ private:
                 std::optional<OHOS::Accessibility::AccessibilityElementInfo> elementInfo;
                 bool ret = context->GetFocusElementInfo(focus, elementInfo);
                 if (ret && elementInfo.has_value()) {
-                    // wrap elementInfo
-                    NElementInfo::DefineJSElementInfo(reinterpret_cast<napi_env>(&engine));
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NElementInfo::consRef_,
+                        &NElementInfo::cons_);
                     napi_value napiElementInfo = nullptr;
                     napi_new_instance(reinterpret_cast<napi_env>(&engine),
                         NElementInfo::cons_, 0, nullptr, &napiElementInfo);
@@ -156,9 +156,8 @@ private:
                 std::optional<OHOS::Accessibility::AccessibilityElementInfo> elementInfo;
                 bool ret = context->GetRootElementInfo(elementInfo);
                 if (ret && elementInfo.has_value()) {
-                    // wrap elementInfo
-                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), 
-                    NElementInfo::consRef_, &NElementInfo::cons_);
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NElementInfo::consRef_,
+                        &NElementInfo::cons_);
                     napi_value napiElementInfo = nullptr;
                     napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine),
                         NElementInfo::cons_, 0, nullptr, &napiElementInfo);
@@ -202,10 +201,10 @@ private:
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
                 accessibilityWindows = context->GetWindows();
                 if (!accessibilityWindows.empty()) {
-                    // wrap accessibilityWindows
-                    NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(reinterpret_cast<napi_env>(&engine));
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityWindowInfo::consRef_,
+                        &NAccessibilityWindowInfo::cons_);
                     ConvertAccessibilityWindowInfosToJS(
                         reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);
                     NativeValue* nativeWindowInfos = reinterpret_cast<NativeValue*>(napiWindowInfos);
