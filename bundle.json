@@ -65,7 +65,13 @@
           }
         }
       ],
-      "test": [ ]
+      "test": [
+        "//base/accessibility/services/test:moduletest",
+        "//base/accessibility/services/aams/test:unittest",
+        "//base/accessibility/frameworks/aafwk/test:unittest",
+        "//base/accessibility/frameworks/asacfwk/test:unittest",
+        "//base/accessibility/frameworks/systemtest:systemtest"
+      ]
     }
   }
 }

@@ -360,14 +360,14 @@ void AccessibleAbilityManagerService::UpdateMagnification()
         return;
     }
 
-    std::vector<const sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
+    std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
 
     if (accountData->GetScreenMagnificationFlag()) {
-        for (const sptr<Rosen::Display> display : displays) {
+        for (sptr<Rosen::Display> display : displays) {
             AccessibilityZoomProxy::GetInstance().Register(display->GetId());
         }
     } else {
-        for (const sptr<Rosen::Display> display : displays) {
+        for (sptr<Rosen::Display> display : displays) {
             AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
         }
     }
