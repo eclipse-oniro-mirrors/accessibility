@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::INIT)] =
         &AccessibleAbilityClientStub::HandleInit;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::DISCONNECT)] =
@@ -37,7 +37,7 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_.clear();
 }
 
@@ -65,7 +65,7 @@ int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
 
 ErrCode AccessibleAbilityClientStub::HandleInit(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     sptr<IRemoteObject> object = data.ReadRemoteObject();
     if (!object) {
         HILOG_ERROR("object is nullptr.");
@@ -85,7 +85,7 @@ ErrCode AccessibleAbilityClientStub::HandleInit(MessageParcel &data, MessageParc
 
 ErrCode AccessibleAbilityClientStub::HandleDisconnect(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     int channelId = data.ReadInt32();
     Disconnect(channelId);
     return NO_ERROR;
@@ -93,7 +93,7 @@ ErrCode AccessibleAbilityClientStub::HandleDisconnect(MessageParcel &data, Messa
 
 ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::unique_ptr<AccessibilityEventInfo> eventInfo(data.ReadParcelable<AccessibilityEventInfo>());
     if (!eventInfo) {
         HILOG_ERROR("ReadParcelable<AccessibilityEventInfo> failed");
@@ -106,7 +106,7 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
 
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     int sequence = data.ReadInt32();
 
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
@@ -120,7 +120,7 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
 
 ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     int displayId = data.ReadInt32();
 
     sptr<Rect> rect = data.ReadStrongParcelable<Rect>();
@@ -139,7 +139,7 @@ ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data,
 
 ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     int sequence = data.ReadInt32();
     bool completedSuccessfully = data.ReadBool();
 

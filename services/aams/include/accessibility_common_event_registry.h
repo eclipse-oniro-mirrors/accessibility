@@ -68,7 +68,7 @@ private:
     std::shared_ptr<AccessibilityCommonEventSubscriber> accessibilityCommonEventSubscriber_;
     std::map<std::string, EventHandle> eventHandles_;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 
 #endif  // ACCESSIBILITY_COMMON_EVENT_REGISTRY_H

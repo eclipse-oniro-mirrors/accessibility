@@ -358,6 +358,6 @@ private:
     struct Impl;
     std::unique_ptr<Impl> pimpl;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

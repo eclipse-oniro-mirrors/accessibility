@@ -953,5 +953,5 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_023, TestSize.Level1
 
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_023 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

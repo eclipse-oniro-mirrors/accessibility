@@ -14,8 +14,8 @@
  */
 #include "accessible_ability_manager_service_stub.h"
 
-using namespace OHOS::Accessibility;
-
+namespace OHOS {
+namespace Accessibility {
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub() {}
 AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClientStub() {}
 int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -51,3 +51,5 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibility
 {
     return ErrCode::NO_ERROR;
 }
+} // namespace Accessibility
+} // namespace OHOS

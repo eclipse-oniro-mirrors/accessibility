@@ -30,5 +30,5 @@ AccessibilityWindowConnection::AccessibilityWindowConnection(const int windowId,
 AccessibilityWindowConnection::~AccessibilityWindowConnection()
 {
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

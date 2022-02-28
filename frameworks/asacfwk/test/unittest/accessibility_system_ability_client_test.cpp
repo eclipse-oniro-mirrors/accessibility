@@ -28,7 +28,6 @@
 #include "mock_accessible_ability_manager_service_impl.h"
 #include "system_ability_definition.h"
 
-
 using namespace OHOS::AppExecFwk;
 using namespace testing;
 using namespace testing::ext;

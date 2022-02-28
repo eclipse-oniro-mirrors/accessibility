@@ -32,7 +32,7 @@ extern "C" __attribute__((constructor)) void NAPI_application_AccessibilityExten
 }
 
 extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtensionContext_GetJSCode(
-	const char **buf, int *bufLen)
+    const char **buf, int *bufLen)
 {
     if (buf != nullptr) {
         *buf = _binary_accessibility_extension_context_js_start;
@@ -45,7 +45,7 @@ extern "C" __attribute__((visibility("default"))) void NAPI_application_Accessib
 
 // accessibility extension context JS register
 extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtensionContext_GetABCCode(
-	const char **buf, int *buflen)
+    const char **buf, int *buflen)
 {
     if (buf != nullptr) {
         *buf = _binary_accessibility_extension_context_abc_start;

@@ -462,5 +462,5 @@ bool BundleMgrProxy::QueryExtensionAbilityInfoByUri(const std::string &uri, int3
 {
     return true;
 }
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

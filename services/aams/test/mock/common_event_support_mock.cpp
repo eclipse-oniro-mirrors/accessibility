@@ -1101,5 +1101,5 @@ bool CommonEventSupport::IsSystemEvent(std::string &str)
 {
     return true;
 }
-}  //namespace EventFwk
-}  // namespace OHOS
+} // namespace EventFwk
+} // namespace OHOS

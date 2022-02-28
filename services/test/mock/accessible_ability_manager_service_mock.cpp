@@ -231,7 +231,7 @@ void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri &uri)
 
 void AccessibleAbilityManagerService::UpdateAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -265,7 +265,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
 
 void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -281,7 +281,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -297,7 +297,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
 
 void AccessibleAbilityManagerService::UpdateInputFilter()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -333,7 +333,7 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
 
 void AccessibleAbilityManagerService::UpdateMagnification()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {

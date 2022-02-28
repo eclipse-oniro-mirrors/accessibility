@@ -37,7 +37,7 @@ const std::string g_abilityStateOnForeground = ":OnForeground";
 const std::string g_abilityStateOnNewWant = ":OnNewWant";
 const int eventCode = 0;
 const std::vector<std::string> g_eventList = {"requ_page_ability_terminate"};
-}  // namespace STEventName
+} // namespace STEventName
 
 class STPageAbilityEventSubscriber : public EventFwk::CommonEventSubscriber {
 public:
@@ -84,6 +84,6 @@ private:
     std::string callBackPath_;
     std::string abilityStatus_;
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  //_AMS_ST_PAGE_ABILITY_EVENT_H_

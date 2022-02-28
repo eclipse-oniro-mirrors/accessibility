@@ -22,14 +22,14 @@ namespace Accessibility {
 
 DisplayResizeController::DisplayResizeController(uint32_t channelId, uint32_t displayId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     channelId_ = channelId;
     displayId_ = displayId;
 }
 
 void DisplayResizeController::AddListener(std::shared_ptr<DisplayResizeListener>& listener)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (!listener) {
         return;
@@ -47,7 +47,7 @@ void DisplayResizeController::AddListener(std::shared_ptr<DisplayResizeListener>
 
 bool DisplayResizeController::DeleteListener(std::shared_ptr<DisplayResizeListener>& listener)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     for (auto it = displayResizeListeners_.begin(); it != displayResizeListeners_.end(); ++it) {
         if (*it == listener) {
@@ -61,44 +61,44 @@ bool DisplayResizeController::DeleteListener(std::shared_ptr<DisplayResizeListen
 
 float DisplayResizeController::GetCenterX()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().GetDisplayResizeCenterX(channelId_, displayId_);
 }
 
 float DisplayResizeController::GetCenterY()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().GetDisplayResizeCenterY(channelId_, displayId_);
 }
 
 Rect DisplayResizeController::GetDisplayResizeRect()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().GetDisplayResizeRect(channelId_, displayId_);
 }
 
 float DisplayResizeController::GetScale()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().GetDisplayResizeScale(channelId_, displayId_);
 }
 
 bool DisplayResizeController::Reset(bool isShouldAnimate)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().ResetDisplayResize(channelId_, displayId_, isShouldAnimate);
 }
 
 bool DisplayResizeController::SetCenter(float centerX, float centerY, bool isShouldAnimate)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return AccessibilityOperator::GetInstance().SetDisplayResizeScaleAndCenter(
         channelId_, displayId_, 1.0, centerX, centerY, isShouldAnimate);
 }
 
 bool DisplayResizeController::SetScale(float scale, bool isShouldAnimate)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     float invalidValue = -1;
     return AccessibilityOperator::GetInstance().SetDisplayResizeScaleAndCenter(
@@ -108,7 +108,7 @@ bool DisplayResizeController::SetScale(float scale, bool isShouldAnimate)
 void DisplayResizeController::DispatchOnDisplayResized(const Rect& rect,
     const float scale, const float centerX, const float centerY)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     for (auto listener : displayResizeListeners_) {
         listener->OnDisplayResized(*this, rect, scale, centerX, centerY);
     }

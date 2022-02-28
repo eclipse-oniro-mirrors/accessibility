@@ -63,7 +63,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 
 void AccessibleAbilityManagerService::OnStart()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
 
     if (isRunning_) {
@@ -86,7 +86,7 @@ void AccessibleAbilityManagerService::OnStart()
 
 void AccessibleAbilityManagerService::OnStop()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     HILOG_INFO("stop AccessibleAbilityManagerService");
 
     if (!isRunning_) {
@@ -110,7 +110,7 @@ void AccessibleAbilityManagerService::OnStop()
 
 bool AccessibleAbilityManagerService::Init()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
         if (!runner_) {
@@ -147,7 +147,7 @@ bool AccessibleAbilityManagerService::Init()
 
 void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& uiEvent, const int accountId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     HILOG_INFO("eventType[%{public}d]", (int)uiEvent.GetEventType());
     HILOG_INFO("gestureId[%{public}d]", (int)uiEvent.GetGestureType());
     if (accountId != currentAccountId_) {
@@ -164,7 +164,7 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
 
 void AccessibleAbilityManagerService::SendEventInner(AccessibilityEventInfo& uiEvent)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
     for (auto& ability : abilities) {
@@ -175,7 +175,7 @@ void AccessibleAbilityManagerService::SendEventInner(AccessibilityEventInfo& uiE
 uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     if (accountId != currentAccountId_) {
         HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
         return ERR_INVALID_VALUE;
@@ -201,7 +201,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
 uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
     const sptr<IAccessibleAbilityManagerServiceState>& callback, const int accountId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     if (accountId != currentAccountId_) {
         HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
         return 0;
@@ -256,7 +256,7 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 void AccessibleAbilityManagerService::RegisterElementOperator(
     const int windowId, const sptr<IAccessibilityElementOperator>& operation, int accountId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData->GetAccessibilityWindowConnection(windowId)) {
         HILOG_WARN("This operation already exists, do not register twice!!");
@@ -282,7 +282,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
 
 void AccessibleAbilityManagerService::DeregisterElementOperator(int windowId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
     if (!connection) {
@@ -305,21 +305,21 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int windowId)
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     aams->DeregisterElementOperator(windowId_);
 }
 
 CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     return accountData->GetCaptionProperty();
 }
 
 bool AccessibleAbilityManagerService::SetCaptionProperty(const CaptionProperty& caption)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetCaptionProperty(caption);
     UpdateCaptionProperty();
@@ -328,7 +328,7 @@ bool AccessibleAbilityManagerService::SetCaptionProperty(const CaptionProperty& 
 
 bool AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetCaptionState(state);
     UpdateAccessibilityState();
@@ -337,7 +337,7 @@ bool AccessibleAbilityManagerService::SetCaptionState(const bool state)
 
 bool AccessibleAbilityManagerService::SetEnabled(const bool state)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetEnabled(state);
     UpdateAccessibilityState();
@@ -358,7 +358,7 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 
 bool AccessibleAbilityManagerService::IsWantedKeyEvent(MMI::KeyEvent& event)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int32_t keyCode = event.GetKeyCode();
     if (keyCode == MMI::KeyEvent::KEYCODE_VOLUME_UP || keyCode == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
@@ -379,7 +379,7 @@ void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(
 
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     if (bundleManager_) {
         return bundleManager_;
     }
@@ -420,21 +420,21 @@ sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessib
 
 void AccessibleAbilityManagerService::ClearFocus(int windowId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     connection->GetProxy()->ClearFocus();
 }
 
 void AccessibleAbilityManagerService::OutsideTouch(int windowId)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     connection->GetProxy()->OutsideTouch();
 }
 
 void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri& uri)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         return;
@@ -445,19 +445,19 @@ void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri& uri)
 
 void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     touchEventInjector_ = touchEventInjector;
 }
 
 void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter>& keyEventFilter)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     keyEventFilter_ = keyEventFilter;
 }
 
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
@@ -471,7 +471,7 @@ void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(
 void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
@@ -498,7 +498,7 @@ void AccessibleAbilityManagerService::PresentUser()
 
 void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+    HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
     if (packageAccount->GetInstalledAbilities().empty()) {
@@ -531,7 +531,7 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
 
 void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+    HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
     bool hasNewExtensionAbility = false;
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     GetBundleMgrProxy()->QueryExtensionAbilityInfos(
@@ -558,7 +558,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
 
 void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+    HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
     bool hasChanged = false;
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
@@ -596,7 +596,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
 
 void AccessibleAbilityManagerService::PackageUpdateFinished(std::string& bundleName)
 {
-    HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
+    HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
     if (packageAccount->GetConnectingA11yAbilities().empty()) {
         return;
@@ -633,7 +633,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 
 void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -650,7 +650,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 
 void AccessibleAbilityManagerService::UpdateAbilities()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -694,7 +694,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
 
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -710,7 +710,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
 
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -726,7 +726,7 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
 
 void AccessibleAbilityManagerService::UpdateInputFilter()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -762,7 +762,7 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
 
 void AccessibleAbilityManagerService::UpdateMagnification()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -785,7 +785,7 @@ void AccessibleAbilityManagerService::UpdateMagnification()
 
 void AccessibleAbilityManagerService::UpdateWindowChangeListener()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     bool isWindowRetrieve = true; // this is a temp deal for test
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -813,7 +813,7 @@ void AccessibleAbilityManagerService::UpdateWindowChangeListener()
 
 bool AccessibleAbilityManagerService::GetEnabledState()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->GetEnabledState();
     return result;
@@ -821,7 +821,7 @@ bool AccessibleAbilityManagerService::GetEnabledState()
 
 bool AccessibleAbilityManagerService::GetCaptionState()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->GetCaptionState();
     return result;
@@ -829,7 +829,7 @@ bool AccessibleAbilityManagerService::GetCaptionState()
 
 bool AccessibleAbilityManagerService::GetTouchGuideState()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->GetTouchGuideState();
     return result;
@@ -837,7 +837,7 @@ bool AccessibleAbilityManagerService::GetTouchGuideState()
 
 bool AccessibleAbilityManagerService::GetGestureState()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->GetGestureState();
     return result;
@@ -845,7 +845,7 @@ bool AccessibleAbilityManagerService::GetGestureState()
 
 bool AccessibleAbilityManagerService::GetKeyEventObserverState()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->GetKeyEventObserverState();
     return result;
@@ -853,7 +853,7 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
 
 bool AccessibleAbilityManagerService::SetTouchGuideState(const bool state)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetTouchGuideState(state);
     return result;
@@ -861,7 +861,7 @@ bool AccessibleAbilityManagerService::SetTouchGuideState(const bool state)
 
 bool AccessibleAbilityManagerService::SetGestureState(const bool state)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetGestureState(state);
     UpdateAccessibilityState();
@@ -870,7 +870,7 @@ bool AccessibleAbilityManagerService::SetGestureState(const bool state)
 
 bool AccessibleAbilityManagerService::SetKeyEventObserverState(const bool state)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetKeyEventObserverState(state);
     UpdateAccessibilityState();
@@ -879,7 +879,7 @@ bool AccessibleAbilityManagerService::SetKeyEventObserverState(const bool state)
 
 bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     bool result = accountData->SetEnabledObj(it);
     UpdateAbilities();
@@ -888,7 +888,7 @@ bool AccessibleAbilityManagerService::SetEnabledObj(std::map<std::string, AppExe
 
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::GetEnabledAbilities()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     std::map<std::string, AppExecFwk::ElementName> it {};
     it = accountData->GetEnabledAbilities();
@@ -897,7 +897,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::
 
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstalledAbilities()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     std::vector<AccessibilityAbilityInfo> it {};
     it = accountData->GetInstalledAbilities();
@@ -914,7 +914,7 @@ bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, App
 
 bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
 
     if (connection) {
@@ -930,7 +930,7 @@ bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(cons
 
 void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     auto currentAccountData = GetCurrentAccountData();
 
     // add installed ability
@@ -954,7 +954,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
 
 bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
 
     if (connection == nullptr) {
@@ -969,7 +969,7 @@ bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
 
 void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     auto currentAccountData = GetCurrentAccountData();
 
     // remove installed ability
@@ -1019,5 +1019,5 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
 {
     HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -76,7 +76,7 @@ private:
     void CreateInterceptor();
     void DestroyInterceptor();
 
-    std::shared_ptr<AccessibleAbilityManagerService> ams_ = nullptr;
+    std::shared_ptr<AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
     uint32_t availableFunctions_ = 0;
@@ -86,6 +86,6 @@ private:
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_INPUT_INTERCEPTOR_H

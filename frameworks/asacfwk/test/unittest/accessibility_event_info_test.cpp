@@ -475,6 +475,5 @@ HWTEST_F(AccessibilityEventInfoUnitTest, ReadFromParcel_001, TestSize.Level1)
 
     GTEST_LOG_(INFO) << "ReadFromParcel_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

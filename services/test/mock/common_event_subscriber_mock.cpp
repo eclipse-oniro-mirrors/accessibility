@@ -106,5 +106,5 @@ bool CommonEventSubscriber::CheckSynchronous() const
 {
     return true;
 }
-}  //namespace EventFwk
-}  // namespace OHOS
+} // namespace EventFwk
+} // namespace OHOS

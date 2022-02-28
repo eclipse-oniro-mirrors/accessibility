@@ -30,5 +30,5 @@ std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
     }
     return instance_;
 }
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS

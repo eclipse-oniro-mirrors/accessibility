@@ -94,5 +94,5 @@ bool ElementName::Marshalling(Parcel &parcel) const
 {
     return true;
 }
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

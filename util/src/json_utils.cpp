@@ -27,7 +27,7 @@ namespace Accessibility {
 const int NUM_4 = 4;
 bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &jsonPath)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::ifstream jsonFileStream;
     jsonFileStream.open(jsonPath.c_str(), std::ios::in);
     if (!jsonFileStream.is_open()) {
@@ -52,7 +52,7 @@ bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &j
 
 bool JsonUtils::GetStringFromJson(const nlohmann::json &json, const std::string &key, std::string &value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -66,7 +66,7 @@ bool JsonUtils::GetStringFromJson(const nlohmann::json &json, const std::string 
 
 bool JsonUtils::GetIntFromJson(const nlohmann::json &json, const std::string &key, int &value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -81,7 +81,7 @@ bool JsonUtils::GetIntFromJson(const nlohmann::json &json, const std::string &ke
 bool JsonUtils::GetStringVecFromJson(const nlohmann::json &json, const std::string &key,
                                      std::vector<std::string> &value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -96,7 +96,7 @@ bool JsonUtils::GetStringVecFromJson(const nlohmann::json &json, const std::stri
 bool JsonUtils::ParseObjVecFromJson(const nlohmann::json &json, const std::string &key,
                                     std::vector<nlohmann::json> &value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -111,7 +111,7 @@ bool JsonUtils::ParseObjVecFromJson(const nlohmann::json &json, const std::strin
 bool JsonUtils::SetStrValue(
     nlohmann::json& json, const std::string& key, const std::string& subkey, const std::string& value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -128,7 +128,7 @@ bool JsonUtils::SetStrValue(
 
 bool JsonUtils::SetStrValue( nlohmann::json& json, const std::string& key, const std::string& value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -143,7 +143,7 @@ bool JsonUtils::SetStrValue( nlohmann::json& json, const std::string& key, const
 
 bool JsonUtils::SetIntValue(nlohmann::json& json, const std::string& key, const std::string& subkey, int& value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -160,7 +160,7 @@ bool JsonUtils::SetIntValue(nlohmann::json& json, const std::string& key, const 
 
 bool JsonUtils::SetVecValue(nlohmann::json& json, const std::string& key, std::string& value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -181,7 +181,7 @@ bool JsonUtils::SetVecValue(nlohmann::json& json, const std::string& key, std::s
 
 bool JsonUtils::ClearVecValue(nlohmann::json& json, const std::string& key)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -198,7 +198,7 @@ bool JsonUtils::ClearVecValue(nlohmann::json& json, const std::string& key)
 
 bool JsonUtils::RemoveVecValue(nlohmann::json& json, const std::string& key, const std::string& value)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -220,7 +220,7 @@ bool JsonUtils::RemoveVecValue(nlohmann::json& json, const std::string& key, con
 
 bool JsonUtils::CheckEnabledValue(nlohmann::json& json, const std::string& Enakey, const std::string& Inskey)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
         return false;
@@ -238,7 +238,7 @@ bool JsonUtils::CheckEnabledValue(nlohmann::json& json, const std::string& Enake
 
 void PraseVecUtils::ParseEventTypesFromVec(const vector<string>& events, uint32_t& eventTypes)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     eventTypes = EventType::TYPE_VIEW_INVALID;
     static std::map<std::string, uint32_t> eventTypesTable = {
         {EVENT_TYPES_JSON_VALUE_CLICK, EventType::TYPE_VIEW_CLICKED_EVENT},
@@ -279,7 +279,7 @@ void PraseVecUtils::ParseEventTypesFromVec(const vector<string>& events, uint32_
 
 void PraseVecUtils::ParseAbilityTypesFromVec(const vector<string>& abilities, uint32_t& abilityTypes)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     abilityTypes = 0;
 
     for (auto it = abilities.begin(); it != abilities.end(); it++) {
@@ -311,7 +311,7 @@ void PraseVecUtils::ParseAbilityTypesFromVec(const vector<string>& abilities, ui
 
 void PraseVecUtils::ParseCapabilitiesFromVec(const vector<string>& capabilities, uint32_t& capabilitiesValue)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     capabilitiesValue = 0;
 
     for (auto it = capabilities.begin(); it != capabilities.end(); it++) {
@@ -339,7 +339,7 @@ void PraseVecUtils::ParseCapabilitiesFromVec(const vector<string>& capabilities,
 
 bool JsonUtils::ToJson(const nlohmann::json& jsonObj, const std::string& jsonPath)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::ofstream ofs(jsonPath);
     ofs << jsonObj.dump(NUM_4) << std::endl;
     return true;
@@ -347,7 +347,7 @@ bool JsonUtils::ToJson(const nlohmann::json& jsonObj, const std::string& jsonPat
 
 int JsonUtils::GetIntValue(nlohmann::json& json, const std::string& key, const std::string& subkey)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
     }
@@ -364,7 +364,7 @@ int JsonUtils::GetIntValue(nlohmann::json& json, const std::string& key, const s
 
 string JsonUtils::GetStrValue(nlohmann::json& json, const std::string& key, const std::string& subkey)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
     }
@@ -381,7 +381,7 @@ string JsonUtils::GetStrValue(nlohmann::json& json, const std::string& key, cons
 
 string JsonUtils::GetStrValue(nlohmann::json& json, const std::string& key)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
     }
@@ -396,7 +396,7 @@ string JsonUtils::GetStrValue(nlohmann::json& json, const std::string& key)
 
 vector<std::string> JsonUtils::GetVecValue(nlohmann::json& json, const std::string& key)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!json.is_object()) {
         HILOG_ERROR("json is not object.");
     }

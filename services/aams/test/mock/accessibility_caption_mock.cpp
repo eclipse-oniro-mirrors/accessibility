@@ -87,7 +87,7 @@ std::string CaptionProperty::GetFontFamily() const
 
 bool CaptionProperty::ReadFromParcel(Parcel& parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontFamily_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, fontScale_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontColor_);
@@ -99,7 +99,7 @@ bool CaptionProperty::ReadFromParcel(Parcel& parcel)
 
 bool CaptionProperty::Marshalling(Parcel& parcel) const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontFamily_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, fontScale_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontColor_);
@@ -111,7 +111,7 @@ bool CaptionProperty::Marshalling(Parcel& parcel) const
 
 CaptionProperty* CaptionProperty::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     CaptionProperty* captionProperty = new CaptionProperty();
     if (!captionProperty->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -120,5 +120,5 @@ CaptionProperty* CaptionProperty::Unmarshalling(Parcel& parcel)
     }
     return captionProperty;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

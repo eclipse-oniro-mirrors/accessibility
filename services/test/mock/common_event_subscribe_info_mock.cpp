@@ -98,5 +98,5 @@ CommonEventSubscribeInfo *CommonEventSubscribeInfo::Unmarshalling(Parcel &parcel
     CommonEventSubscribeInfo *commonEventSubscribeInfo = new CommonEventSubscribeInfo();
     return commonEventSubscribeInfo;
 }
-}  //namespace EventFwk
-}  // namespace OHOS
+} // namespace EventFwk
+} // namespace OHOS

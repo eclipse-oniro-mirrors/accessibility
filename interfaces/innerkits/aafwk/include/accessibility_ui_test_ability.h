@@ -61,4 +61,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_UI_TEST_ABILITY_H
+#endif // ACCESSIBILITY_UI_TEST_ABILITY_H

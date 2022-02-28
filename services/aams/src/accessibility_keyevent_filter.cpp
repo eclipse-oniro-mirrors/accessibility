@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 int64_t g_taskTime = 500;
 
 KeyEventFilter::KeyEventFilter()
@@ -234,6 +233,5 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
         keyEventFilter_.SendEventToParent(*processingEvent->event_);
     }
 }
-
-}
-}  // namespace Accessibility
+} // namespace Accessibility
+} // namespace OHOS

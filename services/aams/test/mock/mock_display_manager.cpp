@@ -87,7 +87,7 @@ std::vector<DisplayId> DisplayManager::GetAllDisplayIds()
 
 std::vector<sptr<Display>> DisplayManager::GetAllDisplays()
 {
-    std::vector<sptr<Display>> res = {};
+    std::vector<sptr<Display>> res;
     return res;
 }
 

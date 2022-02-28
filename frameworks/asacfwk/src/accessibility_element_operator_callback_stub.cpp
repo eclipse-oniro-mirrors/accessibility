@@ -43,7 +43,7 @@ AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackSt
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_.clear();
 }
 
@@ -75,7 +75,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
@@ -96,7 +96,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
@@ -117,7 +117,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityElementInfo> info = data.ReadStrongParcelable<AccessibilityElementInfo>();
     if (!info) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
@@ -134,7 +134,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInf
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<AccessibilityElementInfo> info = data.ReadStrongParcelable<AccessibilityElementInfo>();
     if (!info) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
@@ -151,7 +151,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool succeeded = data.ReadBool();
     int requestId = data.ReadInt32();

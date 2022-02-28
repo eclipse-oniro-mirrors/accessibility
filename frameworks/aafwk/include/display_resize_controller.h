@@ -16,8 +16,8 @@
 #ifndef DISPLAY_RESIZE_CONTROLLER_H
 #define DISPLAY_RESIZE_CONTROLLER_H
 
+#include <cstdint>
 #include <vector>
-#include <stdint.h>
 #include "accessible_ability_client_stub_impl.h"
 #include "accessibility_element_info.h"
 

@@ -50,6 +50,6 @@ public:
     Runtime& operator=(const Runtime&) = delete;
     Runtime& operator=(Runtime&&) = delete;
 };
-}  // namespace AbilityRuntime
-}  // namespace OHOS
+} // namespace AbilityRuntime
+} // namespace OHOS
 #endif  // FOUNDATION_OHOS_ABILITYRUNTIME_RUNTIME_H

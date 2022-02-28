@@ -52,7 +52,7 @@ bool AccessibleAbilityListenerTest::OnKeyPressEvent(const MMI::KeyEvent& keyEven
 void AamsStAbilityA1::OnStart(const Want &want)
 {
     GetWantInfo(want);
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
     Ability::OnStart(want);
 
     RegisterListenerToAA();
@@ -120,7 +120,7 @@ void AamsStAbilityA1::GetWantInfo(const Want &want)
 
 void AamsStAbilityA1::RegisterListenerToAA()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
     listener_ = std::make_shared<AccessibleAbilityListenerTest>();
     if (!listener_) {
         HILOG_ERROR("listener_ is nullptr.");
@@ -131,33 +131,33 @@ void AamsStAbilityA1::RegisterListenerToAA()
 
 void AamsStAbilityA1::ConnectToAAMS()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
     Accessibility::AccessibleAbility::GetInstance().ConnectToAAMS();
 }
 
 void AamsStAbilityA1::DisableAbility()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 void AamsStAbilityA1::GetFocusElementInfo()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 void AamsStAbilityA1::GestureSimulate()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 void AamsStAbilityA1::GetDisplayResizeController()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 void AamsStAbilityA1::GetRootElementInfo()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
     std::optional<AccessibilityElementInfo> elementInfo;
     Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo(elementInfo);
 
@@ -170,7 +170,7 @@ void AamsStAbilityA1::GetRootElementInfo()
 
 void AamsStAbilityA1::GetWindows()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 
     std::vector<AccessibilityWindowInfo> accessibilityWindow =
         Accessibility::AccessibleAbility::GetInstance().GetWindows();
@@ -180,13 +180,13 @@ void AamsStAbilityA1::GetWindows()
 
 void AamsStAbilityA1::PerformCommonAction()
 {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 void AamsStAbilityA1::GetFingerprintController() {
-    HILOG_INFO("AamsStAbilityA1::%{public}s start", __func__);
+    HILOG_INFO("AamsStAbilityA1:: start");
 }
 
 REGISTER_AA(AamsStAbilityA1)
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

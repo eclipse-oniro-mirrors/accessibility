@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 bool AccessibilityMemo::ReadFromParcel(Parcel &parcel)
 {
     return true;

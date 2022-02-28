@@ -25,7 +25,7 @@ namespace Accessibility {
 
 AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateStub()
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 }
 
 int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -50,7 +50,7 @@ int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, Mes
 ErrCode AccessibleAbilityManagerServiceStateStub::HandleOnStateChanged(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
     int stateType = data.ReadUint32();
     OnStateChanged(stateType);
 

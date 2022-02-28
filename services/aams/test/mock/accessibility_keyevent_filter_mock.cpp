@@ -217,4 +217,4 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
     }
 }
 }
-}  // namespace Accessibility
+} // namespace Accessibility

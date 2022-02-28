@@ -18,8 +18,9 @@
 #include "display_resize_controller.h"
 
 using namespace std;
-using namespace OHOS::Accessibility;
 
+namespace OHOS {
+namespace Accessibility {
 void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr<AccessibilityExtension> &listener)
 {}
 
@@ -69,3 +70,5 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
 void AccessibleAbilityClientStubImpl::OnGestureSimulateResultInner(const int sequence, const bool completedSuccessfully)
 {}
+} // namespace Accessibility
+} // namespace OHOS

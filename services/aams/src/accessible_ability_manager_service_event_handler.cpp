@@ -31,5 +31,5 @@ void AAMSEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event
 {
     HILOG_DEBUG("the eventId is %{public}d", event->GetInnerEventId());
 }
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

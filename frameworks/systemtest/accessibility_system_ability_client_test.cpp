@@ -61,7 +61,7 @@ public:
 void AccessibilityElementOperatorTest::SearchElementInfoByAccessibilityId(const long elementId, const int requestId,
     Accessibility::AccessibilityElementOperatorCallback& callback, const int mode)
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_100);
     std::list<AccessibilityElementInfo> infos{};
@@ -72,7 +72,7 @@ void AccessibilityElementOperatorTest::SearchElementInfoByAccessibilityId(const 
 void AccessibilityElementOperatorTest::SearchElementInfosByText(const long elementId, const std::string& text,
     const int requestId, Accessibility::AccessibilityElementOperatorCallback& callback)
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_200);
     std::list<AccessibilityElementInfo> infos{};
@@ -83,7 +83,7 @@ void AccessibilityElementOperatorTest::SearchElementInfosByText(const long eleme
 void AccessibilityElementOperatorTest::FindFocusedElementInfo(const long elementId, const int focusType,
     const int requestId, Accessibility::AccessibilityElementOperatorCallback& callback)
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_300);
     callback.SetFindFocusedElementInfoResult(info, requestId);
@@ -92,7 +92,7 @@ void AccessibilityElementOperatorTest::FindFocusedElementInfo(const long element
 void AccessibilityElementOperatorTest::FocusMoveSearch(const long elementId, const int direction, const int requestId,
     Accessibility::AccessibilityElementOperatorCallback& callback)
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_400);
 
@@ -103,7 +103,7 @@ void AccessibilityElementOperatorTest::ExecuteAction(const long elementId, const
     const std::map<std::string, std::string> actionArguments, int requestId,
     Accessibility::AccessibilityElementOperatorCallback& callback)
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_500);
     callback.SetExecuteActionResult(true, requestId);
@@ -111,12 +111,12 @@ void AccessibilityElementOperatorTest::ExecuteAction(const long elementId, const
 
 void AccessibilityElementOperatorTest::ClearFocus()
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
 }
 
 void AccessibilityElementOperatorTest::OutsideTouch()
 {
-    HILOG_INFO("%{public}s start", __func__);
+    HILOG_INFO("start");
 }
 
 class ASACClientSystemTest : public ::testing::Test {
@@ -466,5 +466,5 @@ HWTEST_F(ASACClientSystemTest, SetCaptionState, TestSize.Level1)
     EXPECT_TRUE(result);
     GTEST_LOG_(INFO) << "SetCaptionState end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

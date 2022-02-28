@@ -16,10 +16,10 @@
 #ifndef ACCESSIBILITY_EXTENSION_CONTEXT_H
 #define ACCESSIBILITY_EXTENSION_CONTEXT_H
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <optional>
-#include <stdint.h>
 
 #include "accessibility_element_info.h"
 #include "accessibility_window_info.h"

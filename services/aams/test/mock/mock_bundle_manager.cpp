@@ -168,5 +168,5 @@ bool BundleMgrService::NotifyAbilityLifeStatus(const std::string &bundleName, co
 {
     return true;
 }
-}  //namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

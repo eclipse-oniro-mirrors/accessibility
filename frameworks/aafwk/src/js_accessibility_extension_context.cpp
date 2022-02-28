@@ -75,7 +75,7 @@ private:
 
     NativeValue* OnGetFocusElementInfo(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("%{public}s called.", __func__);
+        HILOG_INFO("called.");
         // only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -136,7 +136,7 @@ private:
 
     NativeValue* OnGetRootElementInfo(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("%{public}s called.", __func__);
+        HILOG_INFO("called.");
         // only support zero or one params
         if (info.argc != ARGS_SIZE_ZERO && info.argc != ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
@@ -157,7 +157,8 @@ private:
                 bool ret = context->GetRootElementInfo(elementInfo);
                 if (ret && elementInfo.has_value()) {
                     // wrap elementInfo
-                    NElementInfo::DefineJSElementInfo(reinterpret_cast<napi_env>(&engine));
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), 
+                    NElementInfo::consRef_, &NElementInfo::cons_);
                     napi_value napiElementInfo = nullptr;
                     napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine),
                         NElementInfo::cons_, 0, nullptr, &napiElementInfo);
@@ -181,7 +182,7 @@ private:
 
     NativeValue* OnGetWindows(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("%{public}s called.", __func__);
+        HILOG_INFO("called.");
         // only support zero or one params
         if (info.argc != ARGS_SIZE_ZERO && info.argc != ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
@@ -224,7 +225,7 @@ private:
 
     NativeValue* OnExecuteCommonAction(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("%{public}s called.", __func__);
+        HILOG_INFO("called.");
         // only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -270,7 +271,7 @@ private:
 
     NativeValue* OnGestureSimulate(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("%{public}s called.", __func__);
+        HILOG_INFO("called.");
         // only support two or three params
         if (info.argc != ARGS_SIZE_TWO && info.argc != ARGS_SIZE_THREE) {
             HILOG_ERROR("Not enough params");
@@ -330,7 +331,7 @@ private:
 NativeValue* CreateJsAccessibilityExtensionContext(
     NativeEngine& engine, std::shared_ptr<AccessibilityExtensionContext> context)
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
     NativeValue* objValue = CreateJsExtensionContext(engine, context);
     NativeObject* object = ConvertNativeValueTo<NativeObject>(objValue);
 
@@ -344,13 +345,13 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     BindNativeFunction(engine, *object, "executeCommonAction", JsAccessibilityExtensionContext::ExecuteCommonAction);
     BindNativeFunction(engine, *object, "gestureInject", JsAccessibilityExtensionContext::GestureSimulate);
 
-    HILOG_INFO("%{public}s called end.", __func__);
+    HILOG_INFO("called end.");
     return objValue;
 }
 
 void JSGestureResultListener::OnGestureInjectResult(uint32_t sequence, bool result)
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
 
     if (jsGestureResultListenerInfos.empty()) {
         HILOG_ERROR("There is no informations of jsGestureResultListenerInfos");

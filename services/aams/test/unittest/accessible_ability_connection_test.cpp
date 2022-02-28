@@ -27,8 +27,6 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
 extern int g_testChannalId;
@@ -38,6 +36,8 @@ extern int g_testGesture;
 extern int g_testGestureSimulateResult;
 extern int g_testKeyPressEvent;
 
+namespace OHOS {
+namespace Accessibility {
 class AccessibleAbilityConnectionUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityConnectionUnitTest() {}
@@ -258,3 +258,5 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Reset_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

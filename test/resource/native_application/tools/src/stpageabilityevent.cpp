@@ -124,5 +124,5 @@ void STPageAbilityEventSubscriber::OnReceiveEvent(const CommonEventData &data)
         }
     }
 }
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

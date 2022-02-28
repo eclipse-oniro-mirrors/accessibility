@@ -29,7 +29,7 @@ AccessibilityElementOperatorCallbackProxy::~AccessibilityElementOperatorCallback
 {}
 bool AccessibilityElementOperatorCallbackProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     if (!data.WriteInterfaceToken(AccessibilityElementOperatorCallbackProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -40,7 +40,7 @@ bool AccessibilityElementOperatorCallbackProxy::WriteInterfaceToken(MessageParce
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -73,7 +73,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult(
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -106,7 +106,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
 void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -138,7 +138,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
 void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const AccessibilityElementInfo &info,
     const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -170,7 +170,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
 
 void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const bool succeeded, const int requestId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;

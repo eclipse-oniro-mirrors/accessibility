@@ -144,8 +144,8 @@ void AamsInjectorTest::WritefileAll(const char* fname, const char* data)
         printf("open file %s fail \n", fname);
     }
 
-    fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fprintf(fp, "%s", data);
+    (void)fclose(fp);
 }
 
 void AamsInjectorTest::CreateAccessibilityConfigForTouchGuide()
@@ -453,5 +453,5 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_009,
 
     GTEST_LOG_(INFO) << "TouchEventInjector_ModuleTest_TouchEventInjector_009 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

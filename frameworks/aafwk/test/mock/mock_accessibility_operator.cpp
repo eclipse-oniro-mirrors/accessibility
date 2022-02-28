@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "accessibility_operator.h"
 #include "accessibility_element_info.h"
-#include <gtest/gtest.h>
 
 namespace OHOS {
 namespace Accessibility {
@@ -193,5 +193,5 @@ void AccessibilityOperator::SendSimulateGesture(const int channelId,
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SendSimulateGesture";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

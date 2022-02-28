@@ -129,6 +129,6 @@ public:
     static void ParseAbilityTypesFromVec(const std::vector<std::string>& abilities, uint32_t& abilityTypes);
     static void ParseCapabilitiesFromVec(const std::vector<std::string>& capabilities, uint32_t& capabilitiesValue);
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // JSON_UTILS_H

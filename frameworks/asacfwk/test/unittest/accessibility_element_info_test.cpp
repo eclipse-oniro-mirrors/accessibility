@@ -325,6 +325,5 @@ HWTEST_F(AccessibilityElementInfoUnitTest, Marshalling_001, TestSize.Level1)
     EXPECT_TRUE(rect.Marshalling(parcel));
     GTEST_LOG_(INFO) << "Marshalling_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

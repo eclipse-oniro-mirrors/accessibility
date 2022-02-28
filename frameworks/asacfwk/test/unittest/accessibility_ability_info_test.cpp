@@ -20,11 +20,11 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 using namespace Json;
 
+namespace OHOS {
+namespace Accessibility {
 const string TEST_BUNDLE_NAME = "TestBundleName";
 const string TEST_MODULE_NAME = "TestModuleName";
 const string TEST_NAME = "TestName";
@@ -55,7 +55,7 @@ void AccessibilityAbilityInfoUnitTest::WritefileAll(const char* fname, const cha
     }
 
     (void)fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fclose(fp);
 }
 
 void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig()
@@ -328,3 +328,5 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, AccessibilityAbilityInfo_Unittest_Set
 
     GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_Unittest_SetCapabilityValues_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

@@ -252,6 +252,6 @@ private:
      */
     void SetDisplayResizeOffset(int displayId, float offsetX, float offsetY) {}
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_PROXY_H

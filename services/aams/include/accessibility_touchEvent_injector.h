@@ -196,6 +196,6 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> injectedEvents_;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_TOUCHEVENT_INJECTOR_H

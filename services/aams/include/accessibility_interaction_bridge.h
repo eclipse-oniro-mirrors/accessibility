@@ -56,6 +56,6 @@ private:
     sptr<AccessibleAbilityConnection> connection_ = nullptr;
     sptr<AccessibleAbilityChannelStubImpl> channel_ = nullptr;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_INTERACTION_BRIDGE_H

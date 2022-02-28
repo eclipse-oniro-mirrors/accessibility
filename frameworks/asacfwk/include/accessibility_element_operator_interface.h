@@ -138,6 +138,6 @@ public:
         OUTSIDE_TOUCH,
     };
 };
-}   // namespace Accessibility
-}   // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

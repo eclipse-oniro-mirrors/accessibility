@@ -25,6 +25,6 @@ public:
 
     void InitAppContext() {}
 };
-}  // namespace AbilityRuntime
-}  // namespace OHOS
+} // namespace AbilityRuntime
+} // namespace OHOS
 #endif  // ABILITY_RUNTIME_CONTEXT_IMPL_H

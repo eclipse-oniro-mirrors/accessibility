@@ -186,5 +186,5 @@ ErrCode AbilityManagerClient::SetAbilityController(const sptr<AppExecFwk::IAbili
 {
     return ERR_OK;
 }
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AAFwk
+} // namespace OHOS

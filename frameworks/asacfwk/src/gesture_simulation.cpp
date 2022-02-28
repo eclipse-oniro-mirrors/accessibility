@@ -21,7 +21,7 @@ namespace OHOS {
 namespace Accessibility {
 GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float positionY)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     positionX_ = positionX;
     positionY_ = positionY;
 }
@@ -40,19 +40,19 @@ float GesturePathPositionDefine::GetPositionY()
 
 void GesturePathPositionDefine::SetPositionX(float positionX)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     positionX_ = positionX;
 }
 
 void GesturePathPositionDefine::SetPositionY(float positionY)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     positionY_ = positionY;
 }
 
 bool GesturePathPositionDefine::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, positionX_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, positionY_);
     return true;
@@ -60,7 +60,7 @@ bool GesturePathPositionDefine::ReadFromParcel(Parcel &parcel)
 
 bool GesturePathPositionDefine::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, positionX_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, positionY_);
     return true;
@@ -68,7 +68,7 @@ bool GesturePathPositionDefine::Marshalling(Parcel &parcel) const
 
 GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     GesturePathPositionDefine *gesturePathPositionDefine = new GesturePathPositionDefine();
 
     if (gesturePathPositionDefine && !gesturePathPositionDefine->ReadFromParcel(parcel)) {
@@ -83,7 +83,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
 	GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     if (startPosition.GetPositionX() < 0 || startPosition.GetPositionY() < 0) {
         HILOG_ERROR("startPosition: (%{public}f , %{public}f) is not allowed.",
@@ -110,7 +110,7 @@ uint32_t GesturePathDefine::GetDurationTime()
 
 GesturePathPositionDefine &GesturePathDefine::GetEndPosition()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return endPosition_;
 }
 
@@ -128,31 +128,31 @@ uint32_t GesturePathDefine::GetMaxStrokes()
 
 GesturePathPositionDefine &GesturePathDefine::GetStartPosition()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return startPosition_;
 }
 
 void GesturePathDefine::SetDurationTime(uint32_t durationTime)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     durationTime_ = durationTime;
 }
 
 void GesturePathDefine::SetEndPosition(GesturePathPositionDefine &endPosition)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     endPosition_ = endPosition;
 }
 
 void GesturePathDefine::SetStartPosition(GesturePathPositionDefine &startPosition)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     startPosition_ = startPosition;
 }
 
 bool GesturePathDefine::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     std::unique_ptr<GesturePathPositionDefine> startPosition(parcel.ReadParcelable<GesturePathPositionDefine>());
     if (!startPosition) {
@@ -175,7 +175,7 @@ bool GesturePathDefine::ReadFromParcel(Parcel &parcel)
 
 bool GesturePathDefine::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &startPosition_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &endPosition_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, durationTime_);
@@ -184,7 +184,7 @@ bool GesturePathDefine::Marshalling(Parcel &parcel) const
 
 GesturePathDefine *GesturePathDefine::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     GesturePathDefine *gesturePathDefine = new GesturePathDefine();
 
     if (gesturePathDefine && !gesturePathDefine->ReadFromParcel(parcel)) {

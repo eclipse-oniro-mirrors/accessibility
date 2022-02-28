@@ -164,6 +164,6 @@ private:
     void OnZoomIn() override;
     void OnZoomOut() override;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_ZOOM_HANDLER_H

@@ -25,10 +25,10 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 class KeyEventFilterUnitTest : public ::testing::Test {
 public:
     KeyEventFilterUnitTest() {}
@@ -312,3 +312,5 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestS
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

@@ -81,5 +81,5 @@ void EventTransmission::DestroyEvents()
         next->DestroyEvents();
     }
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

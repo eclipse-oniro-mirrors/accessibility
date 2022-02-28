@@ -74,8 +74,8 @@ void DeserializationStOperatorFromVector(StOperator &ParentOperator, std::vector
 
 int StOperator::countChild = 0;
 
-StOperator::StOperator() :
-    g_parentOperator(nullptr),
+StOperator::StOperator()
+    : g_parentOperator(nullptr),
     g_abilityType("0"),
     g_bundleName(""),
     g_abilityName(""),
@@ -189,4 +189,4 @@ std::vector<std::shared_ptr<StOperator>> StOperator::PopChildOperator()
     g_childOperator.clear();
     return popChildOperator;
 }
-}  // namespace STtools
+} // namespace STtools
