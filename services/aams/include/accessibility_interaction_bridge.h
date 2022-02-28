@@ -59,4 +59,3 @@ private:
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_INTERACTION_BRIDGE_H
-
