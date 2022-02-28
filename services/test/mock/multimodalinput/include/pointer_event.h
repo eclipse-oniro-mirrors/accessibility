@@ -20,7 +20,6 @@
 #include <list>
 #include <memory>
 #include <set>
-#include <stdint.h>
 #include <vector>
 
 #include "input_event.h"
@@ -85,17 +84,17 @@ public:
         void SetDeviceId(int32_t deviceId);
 
     private:
-        int32_t pointerId_ { 0 };
-        int32_t downTime_ { 0 };
-        bool pressed_ { false };
-        int32_t globalX_ { 0 };
-        int32_t globalY_ { 0 };
-        int32_t localX_ { 0 };
-        int32_t localY_ { 0 };
-        int32_t width_ { 0 };
-        int32_t height_ { 0 };
-        int32_t pressure_ { 0 };
-        int32_t deviceId_ { 0 };
+        int32_t pointerId_ = 0;
+        int32_t downTime_ = 0;
+        bool pressed_ = false;
+        int32_t globalX_ = 0;
+        int32_t globalY_ = 0;
+        int32_t localX_ = 0;
+        int32_t localY_ = 0;
+        int32_t width_ = 0;
+        int32_t height_ = 0;
+        int32_t pressure_ = 0;
+        int32_t deviceId_ = 0;
     };
 
 public:
@@ -144,18 +143,17 @@ protected:
     explicit PointerEvent(int32_t eventType);
 
 private:
-    bool skipInspection_ { false };
-    int32_t pointerId_ { 0 };
+    bool skipInspection_ = false;
+    int32_t pointerId_ = 0;
     std::list<PointerItem> pointers_;
     std::set<int32_t> pressedButtons_;
-    int32_t sourceType_ { 0 };
-    int32_t pointerAction_ { 0 };
-    int32_t buttonId_ { -1 };
-    int32_t axes_ { 0 };
-    std::array<double, AXIS_TYPE_MAX>   axisValues_ { };
+    int32_t sourceType_ = 0;
+    int32_t pointerAction_ = 0;
+    int32_t buttonId_ = -1;
+    int32_t axes_ = 0;
+    std::array<double, AXIS_TYPE_MAX> axisValues_;
     std::vector<int32_t> pressedKeys_;
 };
-
 } // namespace MMI
 } // namespace OHOS
 #endif // POINTER_EVENT_H

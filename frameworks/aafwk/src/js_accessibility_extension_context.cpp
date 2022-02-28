@@ -204,6 +204,7 @@ private:
                     // wrap accessibilityWindows
                     NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(reinterpret_cast<napi_env>(&engine));
                     napi_value napiWindowInfos = nullptr;
+                    napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
                     ConvertAccessibilityWindowInfosToJS(
                         reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);
                     NativeValue* nativeWindowInfos = reinterpret_cast<NativeValue*>(napiWindowInfos);
@@ -277,9 +278,9 @@ private:
         }
 
         // unwrap gesturePaths
+        napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
         std::vector<GesturePathDefine> gesturePaths;
-        ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine),
-            reinterpret_cast<napi_value>(info.argv[PARAM0]), gesturePaths);
+        ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePaths);
 
         // unwrap callback
         if (info.argv[PARAM1]->TypeOf() != NATIVE_FUNCTION) {

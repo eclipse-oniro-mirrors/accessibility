@@ -31,8 +31,7 @@ namespace Accessibility {
 * The class define the interface for UI to implement.
 * It triggered by ABMS when AA to request the accessibility information.
 */
-class AccessibilityElementOperatorCallbackStub : public IRemoteStub<IAccessibilityElementOperatorCallback>
-{
+class AccessibilityElementOperatorCallbackStub : public IRemoteStub<IAccessibilityElementOperatorCallback> {
 public:
     /**
      * @brief construct function
@@ -99,11 +98,10 @@ private:
      */
     ErrCode HandleSetExecuteActionResult(MessageParcel &data, MessageParcel &reply);
 
-    using AccessibilityElementOperatorCallbackFunc = ErrCode (AccessibilityElementOperatorCallbackStub::*)
-    (MessageParcel &data, MessageParcel &reply);
+    using AccessibilityElementOperatorCallbackFunc =
+        ErrCode (AccessibilityElementOperatorCallbackStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityElementOperatorCallbackFunc> memberFuncMap_;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

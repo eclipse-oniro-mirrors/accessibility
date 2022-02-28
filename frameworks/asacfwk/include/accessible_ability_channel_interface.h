@@ -30,8 +30,7 @@
 namespace OHOS {
 namespace Accessibility {
 
-class IAccessibleAbilityChannel : public IRemoteBroker
-{
+class IAccessibleAbilityChannel : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityChannel");
 
@@ -202,9 +201,7 @@ public:
         SET_DISPLAYRESIZE_SCALE_AND_CENTER,
         SEND_SIMULATE_GESTURE,
     };
-
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBLE_ABILITY_CHANNEL_INTERFACE_H

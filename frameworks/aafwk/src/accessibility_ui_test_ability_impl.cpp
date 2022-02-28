@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-#include "accessibility_ui_test_ability.h"
+#include "accessibility_ui_test_ability_impl.h"
+
+#include <mutex>
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -21,73 +23,21 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::instance_ = nullptr;
-AccessibilityUITestAbility& AccessibilityUITestAbility::GetInstance()
+static std::mutex g_Mutex;
+static std::shared_ptr<AccessibilityUITestAbilityImpl> g_Instance = nullptr;
+
+std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::GetInstance()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
-    if (instance_ == nullptr) {
-        std::shared_ptr<AccessibilityUITestAbility> temp(new AccessibilityUITestAbility);
-        instance_ = temp;
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (g_Instance == nullptr) {
+        g_Instance = std::make_shared<AccessibilityUITestAbilityImpl>();
     }
-    return *instance_;
+    return g_Instance;
 }
 
-AccessibilityUITestAbility::AccessibilityUITestAbility()
+AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-    stub_ = new AccessibleAbilityClientStubImpl();
-    stub_->SetUITestEnabled();
-    GetService();
-}
-
-bool AccessibilityUITestAbility::RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    if (!listener) {
-        HILOG_ERROR("listener is nullptr.");
-        return false;
-    }
-
-    if (!stub_) {
-        HILOG_ERROR("AccessibleAbility::stub_ is nullptr");
-        return false;
-    }
-    return stub_->RegisterUITestAbilityListener(listener);
-}
-
-bool AccessibilityUITestAbility::Connect()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-
-    if (!stub_) {
-        HILOG_ERROR("stub_ is nullptr");
-        return false;
-    }
-    return serviceProxy_->RegisterUITestAbilityConnectionClient(stub_);
-}
-
-bool AccessibilityUITestAbility::Disconnect()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-
-    if (serviceProxy_ == nullptr) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->DeregisterUITestAbilityConnectionClient();
-}
-
-void AccessibilityUITestAbility::GetService()
-{
-    HILOG_DEBUG("%{public}s start.", __func__);
-    if (serviceProxy_ != nullptr) {
-        return;
-    }
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!samgr) {
@@ -106,7 +56,57 @@ void AccessibilityUITestAbility::GetService()
     serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceClientProxy>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("Get aams proxy failed");
+        return;
     }
+    
+    stub_ = new AccessibleAbilityClientStubImpl();
+    stub_->SetUITestEnabled();
+}
+
+bool AccessibilityUITestAbilityImpl::RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    if (!listener) {
+        HILOG_ERROR("listener is nullptr.");
+        return false;
+    }
+
+    if (!stub_) {
+        HILOG_ERROR("AccessibleAbility::stub_ is nullptr");
+        return false;
+    }
+    return stub_->RegisterUITestAbilityListener(listener);
+}
+
+bool AccessibilityUITestAbilityImpl::Connect()
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return false;
+    }
+
+    if (!stub_) {
+        HILOG_ERROR("stub_ is nullptr");
+        return false;
+    }
+    return serviceProxy_->RegisterUITestAbilityConnectionClient(stub_);
+}
+
+bool AccessibilityUITestAbilityImpl::Disconnect()
+{
+    HILOG_DEBUG("%{public}s start.", __func__);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    if (serviceProxy_ == nullptr) {
+        HILOG_ERROR("Failed to get aams service");
+        return false;
+    }
+    return serviceProxy_->DeregisterUITestAbilityConnectionClient();
 }
 } // namespace Accessibility
 } // namespace OHOS

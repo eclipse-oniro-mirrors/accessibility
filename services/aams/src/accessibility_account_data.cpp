@@ -15,6 +15,7 @@
 
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
+#include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
 #include "json_utils.h"
@@ -42,11 +43,11 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
         state |= AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED;
-        if(!isEnabled_){
+        if (!isEnabled_) {
             SetEnabled(true);
         }
     } else {
-        if(isEnabled_) {
+        if (isEnabled_) {
             SetEnabled(false);
         }
     }
@@ -229,8 +230,17 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
 // For UT
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("%{public}s start and abilityInfo's bundle name is %{public}s",
+        __func__, abilityInfo.GetPackageName().c_str());
+    for (size_t i = 0; i < installedAbilities_.size(); i++) {
+        if (installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) {
+            HILOG_DEBUG("the ability is already exist.");
+            return;
+        }
+    }
     installedAbilities_.push_back(abilityInfo);
+    HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}d",
+        installedAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
@@ -631,34 +641,25 @@ bool AccessibilityAccountData::ReadConfigurationForAccountData()
 }
 
 // get installedAbilities_.
-#define THREE_SECOND (3)
-void AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
+bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    int retry = 1;
     sptr<AppExecFwk::IBundleMgr> bms = nullptr;
-    do {
-        bms = aams->GetBundleMgrProxy();
-        if (!bms) {
-            HILOG_ERROR("Get bms failed! sleep 3s and retry is %{public}d", retry);
-            sleep(THREE_SECOND);
-            retry ++;
-        } else {
-            HILOG_DEBUG("Get bms successful and retry is %{public}d", retry);
-            break;
-        }
-    } while (1);
-
-    bms->QueryExtensionAbilityInfos(
-        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    bms = aams->GetBundleMgrProxy();
+    if (bms == nullptr) {
+        HILOG_ERROR("GetBundleMgrProxy failed.");
+        return false;
+    }
+    bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
     for (auto& info : extensionInfos) {
         AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(info);
         AddInstalledAbility(*accessibilityInfo);
     }
+    return true;
 }
 
 void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)
@@ -667,11 +668,11 @@ void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)
     int FONTSCALE = JsonUtils::GetIntValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTSCALE);
     std::string FONTCOLOR = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTCOLOR);
     std::string FONTEDGETYPE = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE);
     std::string BACKGROUNDCOLOR = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR);
     std::string WINDOWCOLOR = JsonUtils::GetStrValue(jsonObj,
-                                JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR);
+        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
     captionProperty_.SetFontScale(FONTSCALE);

@@ -37,9 +37,9 @@ bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
-    Rect* boundsInScreen = parcel.ReadParcelable<Rect>();
+    sptr<Rect> boundsInScreen = parcel.ReadStrongParcelable<Rect>();
     if (!boundsInScreen) {
-        HILOG_ERROR("ReadParcelable boundsInScreen failed.");
+        HILOG_ERROR("ReadStrongParcelable boundsInScreen failed.");
         return false;
     }
     boundsInScreen_ = *boundsInScreen;

@@ -72,7 +72,6 @@ public:
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int requestId) = 0;
 };
-
 } // namespace Accessibility
 } //namesapce OHOS
 #endif

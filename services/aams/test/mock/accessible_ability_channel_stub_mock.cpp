@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "accessible_ability_channel_stub.h"
 #include "accessibility_account_data.h"
+#include "accessible_ability_channel_stub.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "parcel.h"
@@ -24,13 +24,15 @@ using namespace std;
 namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
-{}
+{
+}
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
-{}
+{
+}
 
-int32_t AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
-    MessageOption &option)
+int32_t AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code,
+    MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     return 0;
 }
@@ -112,6 +114,5 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
 {
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

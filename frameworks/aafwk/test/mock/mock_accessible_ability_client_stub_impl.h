@@ -24,7 +24,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityClientStubImplMock : public AccessibleAbilityClientStub {
 public:
     AccessibleAbilityClientStubImplMock()
@@ -63,7 +62,6 @@ public:
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityClientStubImplMock OnGestureSimulateResult";
     }
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 

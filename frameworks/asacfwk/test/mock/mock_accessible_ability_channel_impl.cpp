@@ -21,50 +21,42 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-#define  RECT_ONE 1
-#define  RECT_TWO 2
-#define  RECT_THREE 3
-#define  RECT_FOUR 4
+const int RECT_ONE = 1;
+const int RECT_TWO = 2;
+const int RECT_THREE = 3;
+const int RECT_FOUR = 4;
 bool MockAccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
     const long elementId, const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback,
-    const int mode)
+    const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SearchElementInfoByAccessibilityId start";
     return true;
 }
 
 bool MockAccessibleAbilityChannel::SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
-    const std::string &text, const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const std::string &text, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SearchElementInfosByText start";
     return true;
 }
 
 bool MockAccessibleAbilityChannel::FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
-    const int focusType,
-    const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int focusType, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::FindFocusedElementInfo start";
     return true;
 }
 
 bool MockAccessibleAbilityChannel::FocusMoveSearch(const int accessibilityWindowId, const long elementId,
-    const int direction,
-    const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::FocusMoveSearch start";
     return true;
 }
 
 bool MockAccessibleAbilityChannel::ExecuteAction(const int accessibilityWindowId, const long elementId,
-    const int action,
-    std::map<std::string, std::string> &actionArguments,
-    const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int action, std::map<std::string, std::string> &actionArguments,
+    const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::ExecuteAction start";
     return true;
@@ -91,24 +83,24 @@ void MockAccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, 
 float MockAccessibleAbilityChannel::GetDisplayResizeScale(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeScale start";
-    return 1;
+    return 1.0f;
 }
 
 float MockAccessibleAbilityChannel::GetDisplayResizeCenterX(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeCenterX start";
-    return 1;
+    return 1.0f;
 }
 
 float MockAccessibleAbilityChannel::GetDisplayResizeCenterY(const int displayId) {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeCenterY start";
-    return 1;
+    return 1.0f;
 }
 
 Rect MockAccessibleAbilityChannel::GetDisplayResizeRect(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeRect start";
-    Rect rect( RECT_ONE,  RECT_TWO,  RECT_THREE,  RECT_FOUR);
+    Rect rect(RECT_ONE,  RECT_TWO,  RECT_THREE,  RECT_FOUR);
     return rect;
 }
 
@@ -119,8 +111,7 @@ bool MockAccessibleAbilityChannel::ResetDisplayResize(const int displayId, const
 }
 
 bool MockAccessibleAbilityChannel::SetDisplayResizeScaleAndCenter(const int displayId,
-    const float scale, const float centerX,
-    const float centerY, const bool animate)
+    const float scale, const float centerX, const float centerY, const bool animate)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SetDisplayResizeScaleAndCenter start";
     return true;

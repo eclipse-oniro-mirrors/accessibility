@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include <unistd.h>
 #include "accessibility_common_event_registry.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
@@ -22,17 +21,15 @@ using namespace std;
 using namespace OHOS::EventFwk;
 using namespace OHOS::AAFwk;
 
-namespace OHOS{
-namespace Accessibility{
-
+namespace OHOS {
+namespace Accessibility {
 AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
 {
     HILOG_DEBUG("AccessibilityCommonEventRegistry AccessibilityCommonEventRegistry");
-        handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
-    &AccessibilityCommonEventRegistry::HandleRemovedUser;
+    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
+        &AccessibilityCommonEventRegistry::HandleRemovedUser;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
         &AccessibilityCommonEventRegistry::HandlePresentUser;
-
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
         &AccessibilityCommonEventRegistry::HandlePackageAdd;
     handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =

@@ -87,32 +87,6 @@ HWTEST_F(AccessibilityInteractionProxyCallbackUnitTest, SetSearchElementInfoByTe
 }
 
 /**
- * @tc.number: SetFindFocusedElementInfoResult_001
- * @tc.name: SetFindFocusedElementInfoResult
- * @tc.desc: Test function SetFindFocusedElementInfoResult
- */
-// HWTEST_F(AccessibilityInteractionProxyCallbackUnitTest, SetFindFocusedElementInfoResult_001, TestSize.Level1)
-// {
-//     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 start";
-//     AccessibilityElementInfo info {};
-//     mockProxy_->SetFindFocusedElementInfoResult(info, 1);
-//     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 end";
-// }
-
-/**
- * @tc.number: SetFocusMoveSearchResult_001
- * @tc.name: SetFocusMoveSearchResult
- * @tc.desc: Test function SetFocusMoveSearchResult
- */
-// HWTEST_F(AccessibilityInteractionProxyCallbackUnitTest, SetFocusMoveSearchResult_001, TestSize.Level1)
-// {
-//     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 start";
-//     AccessibilityElementInfo info {};
-//     mockProxy_->SetFocusMoveSearchResult(info, 1);
-//     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 end";
-// }
-
-/**
  * @tc.number: SetExecuteActionResult_001
  * @tc.name: SetExecuteActionResult
  * @tc.desc: Test function SetExecuteActionResult
@@ -123,6 +97,5 @@ HWTEST_F(AccessibilityInteractionProxyCallbackUnitTest, SetExecuteActionResult_0
     mockProxy_->SetExecuteActionResult(true, 1);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

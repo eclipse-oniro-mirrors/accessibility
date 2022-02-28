@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vector>
+
 #include "accessibility_element_operator_callback_stub.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {}
 

@@ -16,7 +16,6 @@
 #ifndef ACCESSIBILITY_STATE_EVENT_H
 #define ACCESSIBILITY_STATE_EVENT_H
 
-#include <cstdint>
 #include <string>
 
 namespace OHOS {
@@ -28,9 +27,9 @@ enum AccessibilityStateEventType : int {
     EVENT_KEVEVENT_STATE_CHANGED = 0x00000008,
     EVENT_GESTURE_STATE_CHANGED = 0x00000010,
 };
+
 /*
 * This class is used for ASAC as the listener of AAMS.
-
 */
 class AccessibilityStateEvent {
 public:
@@ -92,24 +91,6 @@ private:
 class AccessibilityStateObserver {
 public:
     /**
-     * @brief Receives notifications on accessibility status changes.
-     * @param stateEvent Indicates the status change event.
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    virtual void OnStateChanged(const AccessibilityStateEvent& stateEvent) = 0;
-
-    /**
-     * @brief Construct
-     * @param
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    AccessibilityStateObserver() {}
-
-    /**
      * @brief Destruct
      * @param
      * @return
@@ -117,8 +98,16 @@ public:
      * @sysCap Accessibility
      */
     virtual ~AccessibilityStateObserver() = default;
-};
 
+    /**
+     * @brief Receives notifications on accessibility status changes.
+     * @param stateEvent Indicates the status change event.
+     * @return
+     * @since 3
+     * @sysCap Accessibility
+     */
+    virtual void OnStateChanged(const AccessibilityStateEvent& stateEvent) = 0;
+};
 } // namespace Accessibility
 } // namespace OHOS
 #endif

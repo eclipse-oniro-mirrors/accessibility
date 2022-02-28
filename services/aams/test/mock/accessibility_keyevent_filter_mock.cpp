@@ -17,6 +17,7 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "power_mgr_client.h"
+
 bool g_testKeyEvent = false;
 namespace OHOS {
 namespace Accessibility {
@@ -215,6 +216,5 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
         keyEventFilter_.SendEventToParent(*processingEvent->event_);
     }
 }
-
 }
 }  // namespace Accessibility

@@ -17,10 +17,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityStateEvent::AccessibilityStateEvent()
 {
-
 }
 
 AccessibilityStateEventType AccessibilityStateEvent::GetEventType() const
@@ -52,6 +50,5 @@ void AccessibilityStateEvent::SetEventMsg(std::string &description)
 {
     describeEvent_ = description;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -23,20 +23,16 @@
 #include <string>
 #include <vector>
 
+#include "accessibility_ability_info.h"
+#include "accessibility_caption.h"
+#include "accessibility_element_operator.h"
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
-#include "accessibility_element_operator.h"
-#include "accessibility_ability_info.h"
 #include "context.h"
 #include "refbase.h"
-#include "accessibility_caption.h"
 
 namespace OHOS {
 namespace Accessibility {
-#define ACCESSIBILITY_DECLARE_IMPL() \
-    struct Impl;                     \
-    std::unique_ptr<Impl> pimpl
-
 enum AccessibilityControlType : int {
     CONTENT_CONTROLS = 0x00000001,
     CONTENT_ICONS = 0x00000002,
@@ -56,7 +52,6 @@ enum AbilityStateType : int {
  * Accessibility Enable. It calls AAMS API to send the event to AA.
  * It supply sington instance for each process.
  */
-
 class AccessibilitySystemAbilityClient {
 public:
     static const int NUM_INT32 = 32;
@@ -336,11 +331,10 @@ private:
 
     void NotifyGestureStateChanged();
 
-
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_ = {};
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_ = {};
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_ = {};
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_ = {};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_;
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_;
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_;
+    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_;
 
     CaptionProperty captionProperty_;
     int accountId_ = 0;
@@ -350,19 +344,20 @@ private:
     std::recursive_mutex asacProxyLock_;
     static std::shared_ptr<AccessibilitySystemAbilityClient> instance_;
     std::shared_ptr<AccessibilityElementOperator> interactionOperator_ = nullptr;
-    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_ = {};
+    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_;
     int connectionWindowId_ = 0;
-    ACCESSIBILITY_DECLARE_IMPL();
 
-    std::vector<AccessibilityAbilityInfo> installedAbilities_ = {};
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_ = {};
+    std::vector<AccessibilityAbilityInfo> installedAbilities_;
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;
 
     bool isFilteringKeyEventsEnabled_ = 0;
     bool isGesturesSimulationEnabled_ = 0;
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_ = {};
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_ = {};
-};
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_;
+    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_;
 
+    struct Impl;
+    std::unique_ptr<Impl> pimpl;
+};
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif

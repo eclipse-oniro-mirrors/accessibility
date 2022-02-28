@@ -14,15 +14,15 @@
  */
 
 #include <gtest/gtest.h>
+#include <string_ex.h>
 #include "ability_manager_client.h"
-#include "string_ex.h"
 #include "ability_manager_interface.h"
+#include "accessible_ability_client_stub_impl.h"
 #include "hilog_wrapper.h"
+#include "if_system_ability_manager.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
-#include "if_system_ability_manager.h"
 #include "system_ability_definition.h"
-#include "accessible_ability_client_stub_impl.h"
 
 namespace OHOS {
 namespace AAFwk {
@@ -55,13 +55,15 @@ ErrCode AbilityManagerClient::DisconnectAbility(const sptr<IAbilityConnection> &
 }
 
 AbilityManagerClient::AbilityManagerClient()
-{}
+{
+}
 
 AbilityManagerClient::~AbilityManagerClient()
-{}
+{
+}
 
-ErrCode AbilityManagerClient::AttachAbilityThread(
-    const sptr<IAbilityScheduler> &scheduler, const sptr<IRemoteObject> &token)
+ErrCode AbilityManagerClient::AttachAbilityThread(const sptr<IAbilityScheduler> &scheduler,
+    const sptr<IRemoteObject> &token)
 {
     return ERR_OK;
 }
@@ -88,15 +90,16 @@ ErrCode AbilityManagerClient::ScheduleCommandAbilityDone(const sptr<IRemoteObjec
 }
 
 void AbilityManagerClient::AddWindowInfo(const sptr<IRemoteObject> &token, int32_t windowToken)
-{}
+{
+}
 
 ErrCode AbilityManagerClient::StartAbility(const Want &want, int requestCode, int32_t userId)
 {
     return ERR_OK;
 }
 
-ErrCode AbilityManagerClient::StartAbility(
-    const Want &want, const sptr<IRemoteObject> &callerToken, int requestCode, int32_t userId)
+ErrCode AbilityManagerClient::StartAbility(const Want &want,
+    const sptr<IRemoteObject> &callerToken, int requestCode, int32_t userId)
 {
     return ERR_OK;
 }

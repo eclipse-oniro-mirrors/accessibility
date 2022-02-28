@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include <vector>
 #include "input_manager.h"
 #include "pointer_event.h"
-#include <vector>
 
 namespace OHOS {
 std::vector<int32_t> g_mtTouchAction;
@@ -36,7 +36,6 @@ InputManager *InputManager::GetInstance()
 
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
 {
-
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent)
@@ -53,18 +52,15 @@ int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interc
 
 void InputManager::RemoveInterceptor(int32_t interceptorId)
 {
-
 }
 
 void InputManager::UpdateDisplayInfo(const std::vector<PhysicalDisplayInfo> &physicalDisplays,
     const std::vector<LogicalDisplayInfo> &logicalDisplays)
 {
-
 }
 
 void InputManager::SetWindowInputEventConsumer(std::shared_ptr<OHOS::MMI::IInputEventConsumer> inputEventConsumer)
 {
-
 }
 
 int32_t InputManager::SubscribeKeyEvent(std::shared_ptr<KeyOption> keyOption,
@@ -75,20 +71,18 @@ int32_t InputManager::SubscribeKeyEvent(std::shared_ptr<KeyOption> keyOption,
 
 void InputManager::UnsubscribeKeyEvent(int32_t subscriberId)
 {
-
 }
 
 void InputManager::RemoveMonitor(int32_t monitorId)
 {
-
 }
 
 void InputManager::MarkConsumed(int32_t monitorId, int32_t eventId)
 {
-
 }
 
-int32_t InputManager::AddInterceptor(int32_t sourceType, std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
+int32_t InputManager::AddInterceptor(int32_t sourceType,
+    std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
 {
     g_pointerCallback = interceptor;
     return 0;

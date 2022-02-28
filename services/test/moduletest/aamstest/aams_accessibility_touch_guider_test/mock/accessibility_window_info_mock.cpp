@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessibility_window_info.h"
 #include "accessibility_operator.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
-
-/* AccessibleAction     Parcel struct                   */
+/* AccessibleAction Parcel struct */
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
     int windowType;
@@ -214,8 +214,6 @@ void AccessibilityWindowInfo::AddChild(const int childId)
 
 AccessibilityWindowInfo::AccessibilityWindowInfo()
 {
-
 }
-
 } // namespace Accessibility
 } // namespace OHOS

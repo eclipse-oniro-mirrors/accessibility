@@ -16,6 +16,7 @@
 #ifndef INPUT_EVENT_H
 #define INPUT_EVENT_H
 
+#include <cstdint>
 #include <functional>
 #include <memory>
 

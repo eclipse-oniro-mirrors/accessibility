@@ -94,7 +94,7 @@ bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
 {
     HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
         __func__, channelId_, windowId_, elementId_);
-    AccessibilityOperator * instance = &AccessibilityOperator::GetInstance();
+    AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
@@ -248,6 +248,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     int eventType = TYPE_VIEW_INVALID;
+    int gestureType = GESTURE_INVALID;
     int triggerAction = ACCESSIBILITY_ACTION_INVALID;
     int textMoveStep = STEP_CHARACTER;
     int windowContentChangeTypes = CONTENT_CHANGE_TYPE_INVALID;
@@ -255,6 +256,8 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
     int category = CATEGORY_INVALID;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, eventType);
     eventType_ = static_cast<EventType>(eventType);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, gestureType);
+    gestureType_ = static_cast<GestureType>(gestureType);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, triggerAction);
     triggerAction_ = static_cast<ActionType>(triggerAction);
@@ -318,7 +321,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
     SetLatestContent(latestConent);
     int32_t elementId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId);
-    //SetSource(elementId);
+
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
     SetItemCounts(itemCounts);
@@ -329,6 +332,7 @@ bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(eventType_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(gestureType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(triggerAction_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, timeStamp_);
@@ -494,8 +498,7 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
     return triggerAction_;
 }
 
-AccessibilityEventInfo::AccessibilityEventInfo(
-            int windowId, WindowUpdateType windowChangeTypes)
+AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
 {
     HILOG_DEBUG("[%{public}s]", __func__);
     eventType_ = TYPE_WINDOW_UPDATE;
@@ -518,7 +521,7 @@ void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory cate
 void AccessibilityEventInfo::SetGestureType(const GestureType gestureType)
 {
     gestureType_ = gestureType;
-    HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
+    HILOG_DEBUG("[%{public}s] gestureType_[%{public}d]", __func__, gestureType_);
 }
 
 GestureType AccessibilityEventInfo::GetGestureType() const
@@ -544,6 +547,5 @@ int AccessibilityEventInfo::GetPageId() const
     HILOG_DEBUG("[%{public}s] pageId_[%{public}d]", __func__, pageId_);
     return pageId_;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

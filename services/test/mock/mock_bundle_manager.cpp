@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
+#include "mock_bundle_manager.h"
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "mock_bundle_manager.h"
 #include "ability_config.h"
 #include "ability_info.h"
 #include "application_info.h"
@@ -107,7 +107,6 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     }
 
     auto find = false;
-    // filter ams onstart
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------2");
     for (const auto &entity : entityVector) {
         if (entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&

@@ -22,7 +22,6 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-
 extern std::vector<int> g_touchAction;
 extern std::vector<EventType> g_eventType;
 extern int g_uTgestureId;
@@ -30,7 +29,6 @@ extern bool g_isClearEvents;
 extern bool g_isDestroyEvents;
 class TouchGuiderTest : public testing::Test {
 public:
-
     TouchGuiderTest() {}
     ~TouchGuiderTest() {}
 
@@ -38,12 +36,11 @@ public:
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
-
 protected:
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action);
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action,
-            std::vector<MMI::PointerEvent::PointerItem> points,
-            int pointerCount, unsigned int occurredTime, unsigned int startTime);
+        std::vector<MMI::PointerEvent::PointerItem> points,
+        int pointerCount, unsigned int occurredTime, unsigned int startTime);
     std::shared_ptr<MMI::PointerEvent> CreateMoveEvent(int pointerCount);
     std::unique_ptr<TouchGuider> touchGuider_ = nullptr;
     int pointId_ = -1;
@@ -94,8 +91,8 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int action)
 }
 
 std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int action,
-        std::vector<MMI::PointerEvent::PointerItem> points, int pointerId,
-        unsigned int occurredTime, unsigned int startTime)
+    std::vector<MMI::PointerEvent::PointerItem> points, int pointerId,
+    unsigned int occurredTime, unsigned int startTime)
 {
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
 
@@ -231,7 +228,6 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_004, TestSize.Level1
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnTouchEvent_004 end";
 }
 
-
 /**
  * @tc.number: OnTouchEvent006
  * @tc.name:OnPointerEvent
@@ -301,8 +297,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_007, TestSize.Level1
     otherPoint1.SetGlobalY(10);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -367,8 +363,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1
     otherPoint1.SetGlobalY(500);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -410,8 +406,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1
     otherPoint.SetGlobalY(10);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -454,8 +450,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1
     otherPoint1.SetGlobalY(500);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -500,8 +496,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1
     otherPoint.SetGlobalY(10);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -576,8 +572,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1
     othermovepoint.SetGlobalY(750);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -626,8 +622,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1
     movepoint3.SetGlobalY(0);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -689,8 +685,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1
     movepoint3.SetGlobalY(0);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -752,8 +748,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1
     movepoint3.SetGlobalY(4000);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -815,8 +811,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1
     movepoint3.SetGlobalY(4000);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -874,8 +870,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1
     movepoint2.SetGlobalY(2500);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 
@@ -923,8 +919,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1
     movepoint1.SetGlobalY(2500);
 
     points.emplace_back(point);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 1, 0, 0);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(g_eventType[0], EventType::TYPE_TOUCH_BEGIN);
 

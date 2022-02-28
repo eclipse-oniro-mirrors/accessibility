@@ -17,7 +17,6 @@
 #define ACCESSIBILITY_TOUCH_GUIDER_H
 
 #include <string>
-
 #include "accessibility_element_info.h"
 #include "accessibility_event_transmission.h"
 #include "accessibility_gesture_recognizer.h"
@@ -25,7 +24,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class TouchGuider;
 
 #define MAX_POINTER_COUNT  32
@@ -35,7 +33,7 @@ class TouchGuider;
 #define DIVIDE_2(num) ((num) / 2)
 #define INDEX_0 0
 #define INDEX_1 1
-#define INIT_POINT_ID -1
+#define INIT_POINT_ID (-1)
 #define INIT_MMIPOINT 0
 
 /**
@@ -85,7 +83,7 @@ enum ChangeAction : int {
 };
 
 class TGEventHandler : public AppExecFwk::EventHandler {
- public:
+public:
   TGEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
                  TouchGuider &tgServer);
   virtual ~TGEventHandler() = default;
@@ -97,7 +95,7 @@ class TGEventHandler : public AppExecFwk::EventHandler {
   virtual void ProcessEvent(
       const AppExecFwk::InnerEvent::Pointer &event) override;
 
- private:
+private:
   /**
    * @brief Send HoverEnter and HoverMove to Multimodal.
    * @param

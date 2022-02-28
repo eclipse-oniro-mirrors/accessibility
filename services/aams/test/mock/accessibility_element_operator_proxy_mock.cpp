@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include  <stdio.h>
 #include "accessibility_element_operator_proxy.h"
 #include "hilog_wrapper.h"
 #include "ipc_types.h"
 #include "iremote_object.h"
-#include  <stdio.h>
 
 int g_testElementId = -1;
 int g_testClearFocus = -1;
@@ -35,7 +36,8 @@ AccessibilityElementOperatorProxy::AccessibilityElementOperatorProxy(
 }
 
 AccessibilityElementOperatorProxy::~AccessibilityElementOperatorProxy()
-{}
+{
+}
 
 bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
 {
@@ -43,56 +45,48 @@ bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const long elementId,
-        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
+    const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     printf("AccessibilityElementOperatorProxymock SearchElementInfoByAccessibilityId");
     g_testElementId = elementId;
     g_testChannelElementId = elementId;
     g_testChannelrequestId  = requestId;
     g_testChannelmode = mode;
-    return;
 }
 
 void AccessibilityElementOperatorProxy::SearchElementInfosByText(const long elementId,
-        const std::string &text,
-        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const std::string &text, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     g_testElementId = elementId;
-    return;
 }
+
 void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const long elementId,
     const int focusType, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     g_testElementId = elementId;
-    return;
 }
 
 void AccessibilityElementOperatorProxy::FocusMoveSearch(const long elementId,
     const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     g_testElementId = elementId;
-    return;
 }
 
 void AccessibilityElementOperatorProxy::ExecuteAction(const long elementId, const int action,
-        const std::map<std::string, std::string> arguments, const int requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const std::map<std::string, std::string> arguments, const int requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     g_testElementId = elementId;
-    return;
 }
 
 void AccessibilityElementOperatorProxy::ClearFocus()
 {
     g_testClearFocus = 1;
-    return;
 }
 
 void AccessibilityElementOperatorProxy::OutsideTouch()
 {
     g_testOutsideTouch = 1;
-    return;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

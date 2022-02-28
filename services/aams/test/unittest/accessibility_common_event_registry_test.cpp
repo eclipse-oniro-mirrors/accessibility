@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "accessibility_common_event_registry.h"
 #include <gtest/gtest.h>
+#include "accessibility_common_event_registry.h"
 #include "common_event_manager.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"

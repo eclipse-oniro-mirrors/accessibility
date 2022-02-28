@@ -14,7 +14,6 @@
  */
 
 #include "accessible_ability_client_stub_impl.h"
-#include <string>
 #include "accessibility_extension_context.h"
 #include "display_resize_controller.h"
 
@@ -58,7 +57,7 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEventInner(const MMI::KeyEvent &
 {}
 
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
-                                                             const float centerX, const float centerY)
+    const float centerX, const float centerY)
 {}
 
 void AccessibleAbilityClientStubImpl::OnDisplayResizedInner(const int displayId, const Rect &rect,

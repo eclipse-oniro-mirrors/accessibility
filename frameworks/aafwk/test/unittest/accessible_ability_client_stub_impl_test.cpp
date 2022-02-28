@@ -127,7 +127,8 @@ void AccessibleAbilityClientStubImplUnitTest::InitToSetChannelId()
  * @tc.desc: Test function RegisterListenerImpl
  *           Register a listener which is already exist.
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_RegisterListenerImpl_001 start";
 
@@ -191,7 +192,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.name: Disconnect
  * @tc.desc: Test function Disconnect
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_Disconnect_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_Disconnect_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Disconnect_001 start";
 
@@ -208,7 +210,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001 start";
 
@@ -226,7 +229,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.name: OnKeyPressEvent
  * @tc.desc: Test function OnKeyPressEvent
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001 start";
 
@@ -245,7 +249,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.name: OnDisplayResized
  * @tc.desc: Test function OnDisplayResized
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001 start";
 
@@ -267,7 +272,8 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
  * @tc.name: OnGestureSimulateResult
  * @tc.desc: Test function OnGestureSimulateResult
  */
-HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
+	AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001 start";
 

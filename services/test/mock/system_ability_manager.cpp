@@ -16,19 +16,14 @@
 #include "system_ability_manager.h"
 
 #include <cinttypes>
-#include <unistd.h>
 
 #include "ability_death_recipient.h"
 #include "datetime_ex.h"
 #include "errors.h"
 #include "hilog_wrapper.h"
-//#include "if_local_ability_manager.h"
-//#include "local_ability_manager_proxy.h"
 #include "sam_log.h"
 #include "string_ex.h"
-//#include "system_ability_connection_callback_proxy.h"
 #include "system_ability_definition.h"
-//#include "tools.h"
 
 using namespace std;
 
@@ -37,13 +32,16 @@ std::mutex SystemAbilityManager::instanceLock;
 sptr<SystemAbilityManager> SystemAbilityManager::instance;
 
 SystemAbilityManager::SystemAbilityManager()
-{}
+{
+}
 
 SystemAbilityManager::~SystemAbilityManager()
-{}
+{
+}
 
 void SystemAbilityManager::Init()
-{}
+{
+}
 
 const sptr<DBinderService> SystemAbilityManager::GetDBinder() const
 {
@@ -129,9 +127,10 @@ int32_t SystemAbilityManager::LoadSystemAbility(int32_t systemAbilityId,
     return ERR_OK;
 }
 
-void SystemAbilityManager::DoInsertSaData(
-    const u16string &strName, const sptr<IRemoteObject> &ability, const SAExtraProp &extraProp)
-{}
+void SystemAbilityManager::DoInsertSaData(const u16string &strName,
+    const sptr<IRemoteObject> &ability, const SAExtraProp &extraProp)
+{
+}
 
 int32_t SystemAbilityManager::RemoveSystemAbility(int32_t systemAbilityId)
 {
@@ -163,7 +162,8 @@ int32_t SystemAbilityManager::UnSubscribeSystemAbility(int32_t systemAbilityId,
 }
 
 void SystemAbilityManager::SetDeviceName(const u16string &name)
-{}
+{
+}
 
 const u16string &SystemAbilityManager::GetDeviceName() const
 {
@@ -171,16 +171,19 @@ const u16string &SystemAbilityManager::GetDeviceName() const
 }
 
 void SystemAbilityManager::NotifyRemoteSaDied(const std::u16string &name)
-{}
+{
+}
 
 void SystemAbilityManager::NotifyRemoteDeviceOffline(const std::string &deviceId)
-{}
+{
+}
 
 void SystemAbilityManager::ParseRemoteSaName(const std::u16string &name, std::string &deviceId, std::u16string &saName)
-{}
+{
+}
 
-int32_t SystemAbilityManager::AddSystemAbility(
-    int32_t systemAbilityId, const sptr<IRemoteObject> &ability, const SAExtraProp &extraProp)
+int32_t SystemAbilityManager::AddSystemAbility(int32_t systemAbilityId,
+    const sptr<IRemoteObject> &ability, const SAExtraProp &extraProp)
 {
     SAInfo saInfo;
     saInfo.remoteObj = ability;

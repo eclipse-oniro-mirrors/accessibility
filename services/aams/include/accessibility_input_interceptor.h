@@ -20,9 +20,8 @@
 #include <memory>
 #include <vector>
 
-#include "event_handler.h"
-
 #include "accessibility_event_transmission.h"
+#include "event_handler.h"
 #include "i_input_event_consumer.h"
 #include "input_manager.h"
 #include "key_event.h"
@@ -65,6 +64,7 @@ public:
     void OnPointerEvent(MMI::PointerEvent &event) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
     void NotifyAccessibilityEvent(AccessibilityEventInfo &event) const;
+    static void InterceptKeyEventCallback(std::shared_ptr<MMI::KeyEvent> keyEvent);
 
 private:
     AccessibilityInputInterceptor();
@@ -81,8 +81,10 @@ private:
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
     uint32_t availableFunctions_ = 0;
     int32_t interceptorId_ = -1;
+    int32_t keyEventInterceptorId_ = -1;
     MMI::InputManager *inputManager_ = nullptr;
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
 }  // namespace Accessibility
 }  // namespace OHOS

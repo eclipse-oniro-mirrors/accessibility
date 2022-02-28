@@ -26,9 +26,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-class AccessibleAbilityChannelProxy : public IRemoteProxy<IAccessibleAbilityChannel>
-{
+class AccessibleAbilityChannelProxy : public IRemoteProxy<IAccessibleAbilityChannel> {
 public:
     /**
      * @brief construct function
@@ -211,10 +209,9 @@ private:
      * @return true: Write the descriptor successfully; otherwise is not.
      */
     bool SendTransactCmd(IAccessibleAbilityChannel::Message code, MessageParcel &data,
-            MessageParcel &reply,  MessageOption &option);
+        MessageParcel &reply,  MessageOption &option);
     static inline BrokerDelegator<AccessibleAbilityChannelProxy> delegator;
 };
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBLE_ABILITY_CHANNEL_PROXY_H

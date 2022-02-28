@@ -34,13 +34,13 @@ namespace Accessibility {
 */
 class MockAccessibleAbilityManagerServiceClientImpl : public IAccessibleAbilityManagerServiceClient {
 public:
-
     void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) {}
 
     uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId)
     {
         return 1;
     }
+
     std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType)
     {
         AccessibilityAbilityInfo info {};
@@ -48,12 +48,16 @@ public:
         infos.push_back(info);
         return infos;
     }
-    void RegisterElementOperator(const int windowId,
-            const sptr<IAccessibilityElementOperator> &operation,
-            const int accountId) {}
-    void DeregisterElementOperator(const int windowId) {}
-};
 
+    void RegisterElementOperator(const int windowId, const sptr<IAccessibilityElementOperator> &operation,
+        const int accountId)
+    {
+    }
+
+    void DeregisterElementOperator(const int windowId)
+    {
+    }
+};
 } // namespace Accessibility
 } // namespace OHOS
 #endif

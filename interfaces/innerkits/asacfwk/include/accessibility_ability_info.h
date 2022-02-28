@@ -17,8 +17,8 @@
 #define ACCESSIBILITY_ABILILTY_INFO_H
 
 #include <vector>
-#include <string>
 #include <stdint.h>
+#include <string>
 
 #include "accessibility_event_info.h"
 #include "extension_ability_info.h"
@@ -27,38 +27,28 @@
 
 namespace OHOS {
 namespace Accessibility {
+// The capability types of the accessible ability.
+enum Capability : uint32_t {
+    CAPABILITY_RETRIEVE = 0x0001,
+    CAPABILITY_TOUCH_GUIDE = 0x0002,
+    CAPABILITY_GESTURE = 0x0004,
+    CAPABILITY_KEY_EVENT_OBSERVER = 0x0008,
+    CAPABILITY_ZOOM = 0x0010,
+};
 
-    // The capability types of the accessible ability.
-    enum Capability : uint32_t {
-        CAPABILITY_RETRIEVE = 0x0001,
-        CAPABILITY_TOUCH_GUIDE = 0x0002,
-        CAPABILITY_KEY_EVENT_OBSERVER = 0x0008,
-        CAPABILITY_ZOOM = 0x0010,
-        CAPABILITY_GESTURE = 0x0020,
-    };
-
-    // The accessibility ability types for feedbacks.
-    enum AccessibilityAbilityTypes : uint32_t {
-        ACCESSIBILITY_ABILITY_TYPE_INVALID = 0x00000000,
-        ACCESSIBILITY_ABILITY_TYPE_SPOKEN = 0x00000001,
-        ACCESSIBILITY_ABILITY_TYPE_HAPTIC = 0x00000002,
-        ACCESSIBILITY_ABILITY_TYPE_AUDIBLE = 0x00000004,
-        ACCESSIBILITY_ABILITY_TYPE_VISUAL = 0x00000008,
-        ACCESSIBILITY_ABILITY_TYPE_GENERIC = 0x00000010,
-        ACCESSIBILITY_ABILITY_TYPE_ALL = 0xFFFFFFFF,
-    };
-
-    // The interception types of key event.
-    // enum KeyEventInterceptionTypes : uint32_t{
-    //     INTERCEPT_KEY_POWER = 0x001,
-    //     INTERCEPT_KEY_VOLUME_UP = 0x002,
-    //     INTERCEPT_KEY_VOLUME_DOWN = 0x004,
-    //     INETRCEPT_KEY_ALL = 0xFFFFFFFF,
-    // };
+// The accessibility ability types for feedbacks.
+enum AccessibilityAbilityTypes : uint32_t {
+    ACCESSIBILITY_ABILITY_TYPE_INVALID = 0x00000000,
+    ACCESSIBILITY_ABILITY_TYPE_SPOKEN = 0x00000001,
+    ACCESSIBILITY_ABILITY_TYPE_HAPTIC = 0x00000002,
+    ACCESSIBILITY_ABILITY_TYPE_AUDIBLE = 0x00000004,
+    ACCESSIBILITY_ABILITY_TYPE_VISUAL = 0x00000008,
+    ACCESSIBILITY_ABILITY_TYPE_GENERIC = 0x00000010,
+    ACCESSIBILITY_ABILITY_TYPE_ALL = 0xFFFFFFFF,
+};
 
 class AccessibilityAbilityInfo : public Parcelable {
 public:
-
     AccessibilityAbilityInfo() = default;
     ~AccessibilityAbilityInfo() = default;
 
@@ -155,24 +145,32 @@ public:
      * @param capabilities the capabilities to set.
      * @return
      */
-    inline void SetCapabilityValues(uint32_t capabilities) {capabilities_ = capabilities;}
+    inline void SetCapabilityValues(uint32_t capabilities)
+    {
+        capabilities_ = capabilities;
+    }
 
     /**
      * @brief Set the types of the ability.
      * @param abilityTypes the ability to set.
      * @return
      */
-    inline void SetAccessibilityAbilityType(uint32_t abilityTypes) {abilityTypes_ = abilityTypes;}
+    inline void SetAccessibilityAbilityType(uint32_t abilityTypes)
+    {
+        abilityTypes_ = abilityTypes;
+    }
 
     /**
      * @brief Set the types of the event.
      * @param eventTypes the event to set.
      * @return
      */
-    inline void SetEventTypes(uint32_t eventTypes) {eventTypes_ = eventTypes;}
+    inline void SetEventTypes(uint32_t eventTypes)
+    {
+        eventTypes_ = eventTypes;
+    }
 
 private:
-
     /**
      * @brief Parse config files of the accessible ability.
      * @param
@@ -193,8 +191,6 @@ private:
     std::string settingsAbility_;
     std::vector<std::string> targetBundleNames_;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBILITY_ABILITY_INFO_H

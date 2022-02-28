@@ -36,7 +36,7 @@ const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int id)
     return Rosen::DisplayManager::GetInstance().GetDisplayById((Rosen::DisplayId)id);
 }
 
-std::vector<const sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
+std::vector<sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
 {
     return Rosen::DisplayManager::GetInstance().GetAllDisplays();
 }
@@ -58,7 +58,7 @@ void AccessibilityDisplayManager::OnCreate(Rosen::DisplayId did)
 void AccessibilityDisplayManager::OnDestroy(Rosen::DisplayId did)
 {
 }
-void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event)
+void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId)
 {
 
 }

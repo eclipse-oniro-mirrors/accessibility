@@ -17,53 +17,47 @@
 #define ACCESSIBILITY_UI_TEST_ABILITY_H
 
 #include <memory>
-#include "accessible_ability_client_stub_impl.h"
-#include "accessible_ability_manager_service_proxy.h"
 #include "accessibility_extension_context.h"
 #include "accessibility_ui_test_ability_listener.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityUITestAbility final : public AccessibilityExtensionContext {
+class AccessibilityUITestAbility : public AccessibilityExtensionContext {
 public:
-    ~AccessibilityUITestAbility() = default;
+    /**
+     * @brief Destruct
+     * @param
+     * @return
+     */
+    virtual ~AccessibilityUITestAbility() = default;
 
     /**
      * @brief Gets an instance of AccessibleAbility.
      * @param
      * @return Return an instance of AccessibleAbility.
      */
-    static AccessibilityUITestAbility& GetInstance();
+    static std::shared_ptr<AccessibilityUITestAbility> GetInstance();
 
     /**
      * @brief RegisterListener
      * @param
      * @return
      */
-    bool RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener);
+    virtual bool RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener) = 0;
 
     /**
      * @brief Connect to AAMS.
      * @param
      * @return
      */
-    bool Connect();
+    virtual bool Connect() = 0;
 
     /**
-     * @brief disconnect to AAMS.
-     * @param
-     * @return
-     */
-    bool Disconnect();
-
-private:
-    AccessibilityUITestAbility();
-
-    void GetService();
-
-    sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
-    sptr<AccessibleAbilityManagerServiceClientProxy> serviceProxy_ = nullptr;
-    static std::shared_ptr<AccessibilityUITestAbility> instance_;
+        * @brief disconnect to AAMS.
+        * @param
+        * @return
+        */
+    virtual bool Disconnect() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#pragma once
-#include <string>
+
+#ifndef AA_TEST_EVENT_H
+#define AA_TEST_EVENT_H
+
 #include <vector>
-#include <condition_variable>
 
 namespace STtools {
-
 class Event {
 public:
     Event();
@@ -38,5 +38,5 @@ private:
 int WaitCompleted(Event &event, const std::string &eventName, const int code, const int timeout = 60);
 void Completed(Event &event, const std::string &eventName, const int code);
 void CleanMsg(Event &event);
-
 }  // namespace STtools
+#endif  //AA_TEST_EVENT_H

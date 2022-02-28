@@ -25,13 +25,14 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityChannelStubImplMock : public AccessibleAbilityChannelStub {
 public:
     AccessibleAbilityChannelStubImplMock()
-    {}
+    {
+    }
     virtual ~AccessibleAbilityChannelStubImplMock()
-    {}
+    {
+    }
 
     virtual bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
         const long elementId, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -133,10 +134,7 @@ public:
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubImplMock SendSimulateGesture";
     }
-
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // MOCK_ACCESSIBLE_ABILITY_CHANNEL_STUB_IMPL_H

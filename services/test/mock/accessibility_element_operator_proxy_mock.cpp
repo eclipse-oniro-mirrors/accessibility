@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
+#include <cstdio>
 #include "accessibility_element_operator_proxy.h"
-#include  <cstdio>
 #include "hilog_wrapper.h"
 #include "ipc_types.h"
 #include "iremote_object.h"

@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include "accessible_ability_manager_service_stub.h"
 #include "accessibility_caption.h"
-
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
 #include "ipc_types.h"
@@ -345,7 +343,6 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
 
     std::map<std::string, AppExecFwk::ElementName> it{};
     int dev_num = data.ReadInt32();
-
     if (dev_num == 0) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;

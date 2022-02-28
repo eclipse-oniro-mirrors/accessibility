@@ -18,21 +18,18 @@
 #define ACCESSIBILITY_TOUCHEVENT_INJECTOR_H
 
 #include <time.h>
-#include "pointer_event.h"
-#include "singleton.h"
+#include "accessibility_event_transmission.h"
+#include "accessible_ability_client_interface.h"
 #include "event_handler.h"
 #include "event_runner.h"
-#include "hilog_wrapper.h"
 #include "gesture_simulation.h"
-#include "accessibility_event_transmission.h"
-#include "accessible_ability_manager_service.h"
-#include "accessible_ability_client_interface.h"
+#include "hilog_wrapper.h"
+#include "pointer_event.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 #define DOUBLE_TAP_MIN_TIME 50
-class AccessibleAbilityManagerService;
 
 struct SendEventArgs {
     std::shared_ptr<MMI::PointerEvent> event_;
@@ -99,7 +96,7 @@ public:
      * @return
      */
     void InjectEvents(const std::vector<GesturePathDefine> &gesturePath,
-        const sptr<IAccessibleAbilityClient> &service, int sequence );
+        const sptr<IAccessibleAbilityClient> &service, int sequence);
 
     /**
      * @brief Send pointer event to next stream node.
@@ -120,7 +117,8 @@ public:
      * @param
      * @return the corresponding AccessiblityAbility
      */
-    sptr<IAccessibleAbilityClient> GetCurrentGestureService() {
+    sptr<IAccessibleAbilityClient> GetCurrentGestureService()
+    {
         return currentGestureService_;
     }
 
@@ -129,16 +127,15 @@ public:
      * @param
      * @return the sequence of gesture
      */
-    int GetSequence() {
+    int GetSequence()
+    {
         return sequence_;
     }
-
 
     static constexpr uint32_t SEND_TOUCH_EVENT_MSG = 1;
     static constexpr uint32_t INJECT_EVENT_MSG = 2;
 
 private:
-
     /**
      * @brief Cancel the gesture.
      * @param
@@ -180,7 +177,8 @@ private:
      * @param point the endpoint of event
      * @return the created touchevent
      */
-    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action, MMI::PointerEvent::PointerItem point);
+    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action,
+        MMI::PointerEvent::PointerItem point, long actionTime);
 
     /**
      * @brief Get the number of milliseconds elapsed since the system was booted.
@@ -188,8 +186,6 @@ private:
      * @return the number of milliseconds elapsed since the system was booted
      */
     long getSystemTime();
-
-
 
     int sequence_ = -1;
     bool isGestureUnderway_ = false;
@@ -202,5 +198,4 @@ private:
 };
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif  // ACCESSIBILITY_TOUCHEVENT_INJECTOR_H

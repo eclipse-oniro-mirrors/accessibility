@@ -66,7 +66,7 @@ int32_t AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParc
     MessageOption &option)
 {
     HILOG_DEBUG("AccessibleAbilityChannelStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
-                    code, option.GetFlags());
+        code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityChannelStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
@@ -175,7 +175,8 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply) {
+ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     int accessibilityWindowId = data.ReadInt32();
@@ -319,7 +320,7 @@ ErrCode AccessibleAbilityChannelStub::HandleResetDisplayResize(MessageParcel &da
 }
 
 ErrCode AccessibleAbilityChannelStub::HandleSetDisplayResizeScaleAndCenter(MessageParcel &data,
-                                                                        MessageParcel &reply)
+    MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
 
@@ -354,6 +355,5 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
     SendSimulateGesture(requestId, gestureSteps);
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

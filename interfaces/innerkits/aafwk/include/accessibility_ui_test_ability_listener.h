@@ -49,5 +49,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif  // ACCESSIBILITY_UI_TEST_ABILITY_LISTENER_H

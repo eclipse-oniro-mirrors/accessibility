@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_element_operator_stub.h"
@@ -36,8 +37,8 @@ AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 }
 
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
- MessageParcel &reply, MessageOption &option)
- {
+    MessageParcel &reply, MessageOption &option)
+{
     return 0;
 }
 
@@ -86,22 +87,19 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
 }
 
 void AccessibilityElementOperatorStub::SearchElementInfosByText(const long elementId,
-    const std::string &text,
-    const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const std::string &text, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return;
 }
 
 void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long elementId,
-    const int focusType, const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int focusType, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return;
 }
 
 void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
-    const int direction, const int requestId,
-    const sptr<IAccessibilityElementOperatorCallback> &callback)
+    const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     return;
 }
@@ -125,11 +123,9 @@ void AccessibilityElementOperatorStub::OutsideTouch()
 
 AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl()
 {
-
 }
 
-AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId,
-    CALL_API_NUM callNum)
+AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId, CALL_API_NUM callNum)
 {
     requestId_ = requestId;
     callNum_ = callNum;
@@ -175,6 +171,5 @@ void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int re
 {
     return;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

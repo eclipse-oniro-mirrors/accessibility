@@ -30,15 +30,15 @@ public:
 
     static AccessibilityDisplayManager &GetInstance();
     const sptr<Rosen::Display> GetDisplay(int id);
-    std::vector<const sptr<Rosen::Display>> GetDisplays();
+    std::vector<sptr<Rosen::Display>> GetDisplays();
     const sptr<Rosen::Display> GetDefaultDisplay();
     void RegisterDisplayChangeListener();
 
     virtual void OnCreate(Rosen::DisplayId dId) override;
     virtual void OnDestroy(Rosen::DisplayId dId) override;
-    virtual void OnChange(Rosen::DisplayId dId, Rosen::DisplayChangeEvent event) override;
+    virtual void OnChange(Rosen::DisplayId dId) override;
 
-   private:
+private:
     AccessibilityDisplayManager();
 };
 }  // namespace Accessibility

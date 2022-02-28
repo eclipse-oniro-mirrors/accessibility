@@ -12,19 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ACCESSIBILITY_INTERACTION_BRIDGE_H
 #define ACCESSIBILITY_INTERACTION_BRIDGE_H
 
 #include <string>
 #include "accessible_ability_manager_service.h"
 #include "accessibility_element_info.h"
-#include "accessibility_operator.h"
 #include "accessibility_element_operator_interface.h"
+#include "accessibility_operator.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 class AccessibilityInteractionBridge {
 public:
+    ~AccessibilityInteractionBridge() = default;
+
     /**
      * @brief Get the instance of Interaction Bridge.
      * @return Returns Static reference the instance of Interaction Bridge.
@@ -44,7 +47,7 @@ public:
      */
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
     bool GetPointerItermOfAccessibilityFocusClick(MMI::PointerEvent::PointerItem &point);
-    ~AccessibilityInteractionBridge() = default;
+
 private:
     AccessibilityInteractionBridge();
     AccessibilityElementInfo FindFocusedElementInfo(const int &windowId);

@@ -58,6 +58,5 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(M
 {
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

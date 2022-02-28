@@ -53,7 +53,7 @@ enum ActionType :int {
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
-//text move step
+// text move step
 enum TextMoveUnit : int {
     STEP_INVALID = 0,
     STEP_CHARACTER = 0x00000001,
@@ -62,14 +62,14 @@ enum TextMoveUnit : int {
     STEP_PAGE = 0x00000008,
     STEP_PARAGRAPH = 0x00000010,
 };
-//text move step
+// text move step
 static const std::string MOVE_UNIT_CHARACTER = "char";
 static const std::string MOVE_UNIT_WORD = "word";
 static const std::string MOVE_UNIT_LINE = "line";
 static const std::string MOVE_UNIT_PAGE = "page";
 static const std::string MOVE_UNIT_PARAGRAPH = "paragraph";
 
-//Operation Arguments Type
+// Operation Arguments Type
 static const std::string ACTION_ARGU_INVALID = "invalid";
 static const std::string ACTION_ARGU_SELECT_TEXT_START = "selectTextBegin";
 static const std::string ACTION_ARGU_SELECT_TEXT_END = "selectTextEnd";
@@ -77,7 +77,7 @@ static const std::string ACTION_ARGU_HTML_ELEMENT = "htmlItem";
 static const std::string ACTION_ARGU_SET_TEXT = "setText";
 static const std::string ACTION_ARGU_MOVE_UNIT = "textMoveUnit";
 
-//HtmlItemType
+// HtmlItemType
 static const std::string HTML_ITEM_INVALID = "invalid";
 static const std::string HTML_ITEM_LINK = "link";
 static const std::string HTML_ITEM_CONTROL = "control";
@@ -130,7 +130,7 @@ static const int FOCUS_TYPE_INVALID = -1;
 static const int FOCUS_TYPE_INPUT = 1 << 0;
 static const int FOCUS_TYPE_ACCESSIBILITY = 1 << 1;
 
-//grid mode
+// grid mode
 static const int SELECTION_MODE_NONE = 0;
 static const int SELECTION_MODE_SINGLE = 1;
 static const int SELECTION_MODE_MULTIPLE = 2;
@@ -1443,7 +1443,7 @@ public:
 
     /**
      * @brief Set whether this node has live region
-     * @param liveRegion live region: 0: not live region; 1: interrupt current talkback; 2: talk back by order
+     * @param liveRegion live region: 0: not live region; 1: interrupt current talk back; 2: talk back by order
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1779,11 +1779,11 @@ private:
     std::string accessibilityDescription_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
-    std::vector<int>childNodeIds_{};
+    std::vector<int> childNodeIds_;
     int childCount_ = 0;
-    std::vector<AccessibleAction> operations_{};
+    std::vector<AccessibleAction> operations_;
     int textLengthLimit_ = -1;
-    int channelId_ = UNDEFINED_CHANNEL_ID; //rename
+    int channelId_ = UNDEFINED_CHANNEL_ID; // rename
     Rect bounds_ {};
     bool accessibilityGroup_ = false;
     bool checkable_ = false;
@@ -1807,19 +1807,18 @@ private:
     int currentIndex_ = 0;
     int beginIndex_ = 0;
     int endIndex_ = 0;
-    RangeInfo rangeInfo_{};
-    GridInfo grid_{};
-    GridItemInfo gridItem_{};
+    RangeInfo rangeInfo_ {};
+    GridInfo grid_ {};
+    GridItemInfo gridItem_ {};
     int liveRegion_ = 0;
     bool contentInvalid_ = true;
     std::string error_ = "";
     int labeled_ = 0;
     int beginSelected_ = 0;
     int endSelected_ = 0;
-    int inputType_ = 0; //text input type added
+    int inputType_ = 0; // text input type added
     bool validElement_ = true;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

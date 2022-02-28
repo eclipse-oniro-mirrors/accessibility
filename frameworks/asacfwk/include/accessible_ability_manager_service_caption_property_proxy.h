@@ -45,7 +45,7 @@ public:
      * @return
      */
     virtual void OnCaptionPropertyChanged(const CaptionProperty &caption) override;
-   private:
+private:
     /**
      * @brief Write the descriptor of IPC.
      * @param data It is include the descriptor of IPC.

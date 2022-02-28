@@ -21,7 +21,6 @@
 #include <string>
 
 #include "accessibility_element_operator_callback_interface.h"
-
 #include "iremote_proxy.h"
 
 namespace OHOS {
@@ -30,9 +29,7 @@ namespace Accessibility {
 * The class supply the callback to feedback the result from UI to AA.
 
 */
-class AccessibilityElementOperatorCallbackProxy :
-    public IRemoteProxy<IAccessibilityElementOperatorCallback>
-{
+class AccessibilityElementOperatorCallbackProxy : public IRemoteProxy<IAccessibilityElementOperatorCallback> {
 public:
     /**
      * @brief construct function
@@ -108,7 +105,6 @@ private:
     bool WriteParcelableVector(const std::vector<T> &parcelableVector, Parcel &reply);
     static inline BrokerDelegator<AccessibilityElementOperatorCallbackProxy> delegator;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

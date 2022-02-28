@@ -26,7 +26,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {
 public:
     virtual void OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type) override;
@@ -64,5 +63,4 @@ private:
 };
 }  // namespace Accessibility
 }  // namespace OHOS
-
 #endif  // ACCESSIBILITY_WINDOW_MANGER_H

@@ -15,17 +15,16 @@
 #ifndef _AMS_ST_PAGE_ABILITY_EVENT_H_
 #define _AMS_ST_PAGE_ABILITY_EVENT_H_
 
-#include <vector>
-#include <string>
 #include <memory>
-#include "common_event.h"
-#include "common_event_manager.h"
+#include <string>
+#include <vector>
 #include "ability_loader.h"
 #include "app_log_wrapper.h"
+#include "common_event.h"
+#include "common_event_manager.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-
 namespace STEventName {
 const std::string g_eventName = "resp_st_page_ability_callback";
 const std::string g_pidEventName = "resp_st_page_ability_pid_callback";
@@ -43,10 +42,8 @@ const std::vector<std::string> g_eventList = {"requ_page_ability_terminate"};
 class STPageAbilityEventSubscriber : public EventFwk::CommonEventSubscriber {
 public:
     STPageAbilityEventSubscriber(const EventFwk::CommonEventSubscribeInfo &sp, const std::shared_ptr<Ability> &ability)
-        : CommonEventSubscriber(sp), ability_(std::move(ability))
-    {}
-    ~STPageAbilityEventSubscriber()
-    {}
+        : CommonEventSubscriber(sp), ability_(std::move(ability)) {}
+    ~STPageAbilityEventSubscriber() {}
     virtual void OnReceiveEvent(const EventFwk::CommonEventData &data) override;
 
 private:
@@ -87,8 +84,6 @@ private:
     std::string callBackPath_;
     std::string abilityStatus_;
 };
-
 }  // namespace AppExecFwk
 }  // namespace OHOS
-
 #endif  //_AMS_ST_PAGE_ABILITY_EVENT_H_

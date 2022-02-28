@@ -32,7 +32,6 @@ constexpr uint32_t REFRESH_ACTIVITY_NEED_CHANGE_LIGHTS = 0;
 /*
  * Indicate whether device enter suspend immediately
  */
-constexpr uint32_t SUSPEND_DEVICE_NEED_DOZE = 0;
 constexpr uint32_t SUSPEND_DEVICE_IMMEDIATELY = 1 << 0;
 
 // This is use for judge whether the time is valid.

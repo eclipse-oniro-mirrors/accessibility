@@ -17,19 +17,18 @@
 
 using namespace std;
 
-namespace OHOS{
-namespace Accessibility{
-
+namespace OHOS {
+namespace Accessibility {
 AccessibilityWindowConnection::AccessibilityWindowConnection(const int windowId,
-    const sptr<IAccessibilityElementOperator> &connection, const int accountId) {
+    const sptr<IAccessibilityElementOperator> &connection, const int accountId)
+{
     windowId_ = windowId;
     proxy_ = connection;
     accountId_ = accountId;
 }
 
-AccessibilityWindowConnection::~AccessibilityWindowConnection() {
-
+AccessibilityWindowConnection::~AccessibilityWindowConnection()
+{
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

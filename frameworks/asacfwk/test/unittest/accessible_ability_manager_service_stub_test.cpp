@@ -30,21 +30,26 @@ public:
     ASACStubUnitTest() {}
     ~ASACStubUnitTest() {}
 
-    static void SetUpTestCase() {
+    static void SetUpTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACStubUnitTest Start";
     }
-    static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         GTEST_LOG_(INFO) << "ASACStubUnitTest End";
     }
-    void SetUp() {
+    void SetUp()
+    {
         GTEST_LOG_(INFO) << "ASACStubUnitTest SetUp()";
         mockStub_ = new MockAccessibleAbilityManagerServiceStub();
     };
-    void TearDown() {
+    void TearDown()
+    {
         GTEST_LOG_(INFO) << "ASACStubUnitTest TearDown()";
         mockStub_ = nullptr;
     }
-    void WriteInterfaceToken(MessageParcel &data) {
+    void WriteInterfaceToken(MessageParcel &data)
+    {
         GTEST_LOG_(INFO) << "ASACStateStubUnitTest WriteInterfaceToken";
         data.WriteInterfaceToken(MockAccessibleAbilityManagerServiceStub::GetDescriptor());
     }

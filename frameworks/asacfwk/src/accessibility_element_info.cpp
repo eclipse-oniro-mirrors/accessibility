@@ -39,15 +39,15 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
     for (int i = 0; i < operationsSize; i++) {
-        AccessibleAction* accessibleOperation = parcel.ReadParcelable<AccessibleAction>();
+        sptr<AccessibleAction> accessibleOperation = parcel.ReadStrongParcelable<AccessibleAction>();
         if (!accessibleOperation) {
-            HILOG_ERROR("ReadParcelable<accessibleOperation> failed");
+            HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
         }
         operations_.emplace_back(*accessibleOperation);
     }
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
-    Rect* rect = parcel.ReadParcelable<Rect>();
+    sptr<Rect> rect = parcel.ReadStrongParcelable<Rect>();
     if (!rect) {
         return false;
     }
@@ -74,17 +74,17 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex_);
-    RangeInfo* rangeInfo = parcel.ReadParcelable<RangeInfo>();
+    sptr<RangeInfo> rangeInfo = parcel.ReadStrongParcelable<RangeInfo>();
     if (!rangeInfo) {
         return false;
     }
     rangeInfo_ = *rangeInfo;
-    GridInfo* grid = parcel.ReadParcelable<GridInfo>();
+    sptr<GridInfo> grid = parcel.ReadStrongParcelable<GridInfo>();
     if (!grid) {
         return false;
     }
     grid_ = *grid;
-    GridItemInfo* gridItem = parcel.ReadParcelable<GridItemInfo>();
+    sptr<GridItemInfo> gridItem = parcel.ReadStrongParcelable<GridItemInfo>();
     if (!gridItem) {
         return false;
     }
@@ -161,11 +161,10 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
-    AccessibilityElementInfo *accessibilityInfo = new AccessibilityElementInfo();
+    sptr<AccessibilityElementInfo> accessibilityInfo = new AccessibilityElementInfo();
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete accessibilityInfo;
-        accessibilityInfo = nullptr;
+        return nullptr;
     }
     return accessibilityInfo;
 }
@@ -345,9 +344,8 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
         __func__, channelId_, windowId_, elementId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
-        return instance->ExecuteAction(channelId_,
-                windowId_, elementId_, action,
-                const_cast<std::map<std::string, std::string> &>(actionArguments));
+        return instance->ExecuteAction(channelId_, windowId_, elementId_, action,
+            const_cast<std::map<std::string, std::string> &>(actionArguments));
     } else {
         HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
         return false;
@@ -378,7 +376,7 @@ bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, elementId, mode, elementInfos);
+            windowId_, elementId, mode, elementInfos);
     } else {
         HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
     }
@@ -901,7 +899,7 @@ bool AccessibilityElementInfo::GetLabeled(AccessibilityElementInfo &elementInfo)
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_,
-                windowId_, labeled_, 0, elementInfos);
+            windowId_, labeled_, 0, elementInfos);
         if (elementInfos.empty()) {
             result = false;
         } else {
@@ -1360,8 +1358,7 @@ sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
     sptr<Rect> rect = new Rect();
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
-        delete rect;
-        rect = nullptr;
+        return nullptr;
     }
     return rect;
 }
