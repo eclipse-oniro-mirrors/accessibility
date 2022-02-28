@@ -80,5 +80,5 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
 
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnDestroy_001 end";
 }
-}   // namespace Accessibility
-}   // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -41,6 +41,6 @@ public:
 private:
     AccessibilityDisplayManager();
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_DISPLAY_MANAGER_H

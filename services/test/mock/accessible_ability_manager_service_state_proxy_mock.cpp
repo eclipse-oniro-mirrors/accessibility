@@ -35,7 +35,7 @@ bool AccessibleAbilityManagerServiceStateProxy::WriteInterfaceToken(MessageParce
 
 void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t stateType)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     printf("OnStateChanged\n");
     g_testStateType = stateType;

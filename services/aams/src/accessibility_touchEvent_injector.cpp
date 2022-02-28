@@ -267,5 +267,5 @@ long TouchEventInjector::getSystemTime()
 
     return millisecond;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

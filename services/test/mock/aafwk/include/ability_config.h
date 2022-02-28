@@ -63,8 +63,8 @@ const std::string MMS_BUNDLE_NAME = "com.ohos.mms";
 
 const std::string SCREEN_LOCK_ABILITY_NAME = "com.ohos.screenlock.ServiceExtAbility";
 const std::string SCREEN_LOCK_BUNDLE_NAME = "com.ohos.screenlock";
-}  // namespace AbilityConfig
-}  // namespace AAFwk
-}  // namespace OHOS
+} // namespace AbilityConfig
+} // namespace AAFwk
+} // namespace OHOS
 
 #endif  // OHOS_AAFWK_ABILITY_CONFIG_H

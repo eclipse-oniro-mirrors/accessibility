@@ -37,7 +37,7 @@ std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::GetInsta
 
 AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!samgr) {
@@ -65,7 +65,7 @@ AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
 
 bool AccessibilityUITestAbilityImpl::RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::lock_guard<std::mutex> lock(g_Mutex);
 
     if (!listener) {
@@ -82,7 +82,7 @@ bool AccessibilityUITestAbilityImpl::RegisterListener(const std::shared_ptr<IAcc
 
 bool AccessibilityUITestAbilityImpl::Connect()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::lock_guard<std::mutex> lock(g_Mutex);
 
     if (serviceProxy_ == nullptr) {
@@ -99,7 +99,7 @@ bool AccessibilityUITestAbilityImpl::Connect()
 
 bool AccessibilityUITestAbilityImpl::Disconnect()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     std::lock_guard<std::mutex> lock(g_Mutex);
 
     if (serviceProxy_ == nullptr) {

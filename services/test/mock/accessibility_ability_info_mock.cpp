@@ -19,10 +19,11 @@
 #include "dummy.h"
 #include "parcel_util.h"
 
-using namespace OHOS::Accessibility;
 using namespace OHOS::AppExecFwk;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 bool AccessibilityAbilityInfo::Marshalling(Parcel &parcel) const
 {
     return true;
@@ -79,3 +80,5 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 {
     return true;
 }
+} // namespace Accessibility
+} // namespace OHOS

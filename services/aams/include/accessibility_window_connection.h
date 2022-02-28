@@ -37,6 +37,6 @@ private:
     sptr<IAccessibilityElementOperator> proxy_;
 };
 
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_WINDOW_CONNECTION_H

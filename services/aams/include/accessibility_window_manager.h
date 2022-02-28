@@ -61,6 +61,6 @@ private:
     AccessibilityWindowInfoManager() : windowListener_(new AccessibilityWindowListener()) {}
     DISALLOW_COPY_AND_MOVE(AccessibilityWindowInfoManager);
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif  // ACCESSIBILITY_WINDOW_MANGER_H

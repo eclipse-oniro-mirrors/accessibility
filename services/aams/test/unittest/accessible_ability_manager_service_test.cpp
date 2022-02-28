@@ -26,8 +26,6 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
 extern int g_testChannalId;
@@ -36,6 +34,8 @@ extern int g_testDisplayId;
 extern int g_testStateType;
 extern int g_testGesture;
 
+namespace OHOS {
+namespace Accessibility {
 class AccessibleAbilityManagerServiceUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityManagerServiceUnitTest() {}
@@ -308,3 +308,5 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS

@@ -28,7 +28,7 @@ AccessibleAbilityManagerServiceCaptionPropertyProxy::~AccessibleAbilityManagerSe
 
 bool AccessibleAbilityManagerServiceCaptionPropertyProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
     if (!data.WriteInterfaceToken(AccessibleAbilityManagerServiceCaptionPropertyProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -38,7 +38,7 @@ bool AccessibleAbilityManagerServiceCaptionPropertyProxy::WriteInterfaceToken(Me
 
 void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChanged(const CaptionProperty &caption)
 {
-    HILOG_DEBUG("%{public}s" , __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -65,5 +65,5 @@ void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChang
     }
 }
 
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

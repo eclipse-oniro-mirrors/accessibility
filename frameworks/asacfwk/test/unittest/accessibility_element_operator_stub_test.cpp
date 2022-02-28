@@ -345,6 +345,5 @@ HWTEST_F(AccessibilityInteractionStubUnitTest, SetExecuteActionResult_001, TestS
     callback_.SetExecuteActionResult(true, 1);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

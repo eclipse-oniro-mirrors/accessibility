@@ -245,7 +245,7 @@ void AccessibilityWindowInfoManager::SetInputFocusedWindow(int windowId)
 
 std::vector<AccessibilityWindowInfo> AccessibilityWindowInfoManager::GetAccessibilityWindows()
 {
-    HILOG_INFO("%{public}s", __func__);
+    HILOG_INFO("start");
     HILOG_DEBUG("a11yWindows_ size[%{public}d]", a11yWindows_.size());
     std::vector<AccessibilityWindowInfo> windows;
     for (auto window : a11yWindows_) {
@@ -260,7 +260,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowInfoManager::GetAccessib
 
 bool AccessibilityWindowInfoManager::GetAccessibilityWindow(int windowId, AccessibilityWindowInfo &window)
 {
-    HILOG_INFO("%{public}s", __func__);
+    HILOG_INFO("start");
     if (a11yWindows_.count(windowId)) {
         window = a11yWindows_[windowId];
         return true;
@@ -270,7 +270,7 @@ bool AccessibilityWindowInfoManager::GetAccessibilityWindow(int windowId, Access
 
 bool AccessibilityWindowInfoManager::IsValidWindow(int windowId)
 {
-    HILOG_INFO("%{public}s", __func__);
+    HILOG_INFO("start");
     if (a11yWindows_.count(windowId)) {
         return true;
     }
@@ -279,7 +279,7 @@ bool AccessibilityWindowInfoManager::IsValidWindow(int windowId)
 
 void AccessibilityWindowInfoManager::SetWindowSize(int windowId, Rect rect)
 {
-    HILOG_INFO("%{public}s", __func__);
+    HILOG_INFO("start");
     for (auto &window : a11yWindows_) {
         if (window.first == windowId) {
             window.second.SetRectInScreen(rect);
@@ -287,5 +287,5 @@ void AccessibilityWindowInfoManager::SetWindowSize(int windowId, Rect rect)
         }
     }
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

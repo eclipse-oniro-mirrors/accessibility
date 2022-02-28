@@ -18,10 +18,11 @@
 #include "parcel_util.h"
 #include "dummy.h"
 
-using namespace OHOS::Accessibility;
 using namespace OHOS::AppExecFwk;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 bool AccessibilityAbilityInfo::Marshalling(Parcel &parcel) const
 {
     return true;
@@ -75,3 +76,5 @@ vector<string> AccessibilityAbilityInfo::GetFilterBundleNames()
 {
     return targetBundleNames_;
 }
+} // namespace Accessibility
+} // namespace OHOS

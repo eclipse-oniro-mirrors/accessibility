@@ -70,7 +70,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerServiceCaptionPropertyStub);
 };
-
-} //namespace Accessibility
-} //namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

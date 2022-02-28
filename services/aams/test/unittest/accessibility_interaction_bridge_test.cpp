@@ -25,8 +25,6 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
 namespace OHOS {
@@ -288,5 +286,5 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
         winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_005 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

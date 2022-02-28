@@ -136,7 +136,7 @@ void AamsKeyEventFilterTest::WritefileAll(const char* fname, const char* data) c
     }
 
     (void)fprintf(fp, "%s", data);
-    fclose(fp);
+    (void)fclose(fp);
 }
 
 void AamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent()
@@ -292,5 +292,5 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     EXPECT_EQ(g_mTkeyCode, MMI::KeyEvent::KEYCODE_VOLUME_UP);
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest_Moduletest_OnKeyEvent003 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

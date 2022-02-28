@@ -119,6 +119,5 @@ HWTEST_F(ASACStateStubUnitTest, OnStateChanged_001, TestSize.Level1)
     mockStub_->OnStateChanged(stateType);
     GTEST_LOG_(INFO) << "OnStateChanged_001 end";
 }
-
 } // namespace Accessibility
 } // namespace OHOS

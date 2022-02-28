@@ -26,7 +26,7 @@ namespace Accessibility {
 
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SEND_EVENT)] =
         &AccessibleAbilityManagerServiceClientStub::HandleSendEvent;
@@ -91,7 +91,7 @@ AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClient
 
 AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClientStub()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     memberFuncMap_.clear();
 }
 
@@ -121,7 +121,7 @@ int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::shared_ptr<AccessibilityEventInfo> uiEvent(data.ReadParcelable<AccessibilityEventInfo>());
     if (!uiEvent) {
@@ -137,7 +137,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSendEvent(MessageParcel
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerServiceState> client = iface_cast<IAccessibleAbilityManagerServiceState>(obj);
@@ -150,7 +150,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterStateCallback(
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int abilityTypes = data.ReadInt32();
     int stateType = data.ReadInt32();
@@ -171,7 +171,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityElementOperator(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int windowId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
@@ -185,7 +185,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterAccessibilityEl
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibilityElementOperator(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int windowId = data.ReadInt32();
     DeregisterElementOperator(windowId);
@@ -195,7 +195,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterAccessibility
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionProperty(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     CaptionProperty caption = GetCaptionProperty();
 
@@ -206,7 +206,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionProperty(Mess
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionProperty(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::shared_ptr<CaptionProperty> caption(data.ReadParcelable<CaptionProperty>());
     if (!caption) {
@@ -220,7 +220,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionProperty(Mess
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
 
@@ -231,7 +231,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetCaptionState(Message
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabled(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
 
@@ -243,7 +243,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabled(MessageParce
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionPropertyCallback(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerServiceCaptionProperty> client =
@@ -257,7 +257,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterCaptionProperty
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabled(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool result = GetEnabledState();
     reply.WriteBool(result);
@@ -267,7 +267,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabled(MessageParce
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool result = GetCaptionState();
     reply.WriteBool(result);
@@ -276,7 +276,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetCaptionState(Message
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetTouchGuideState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool result = GetTouchGuideState();
     reply.WriteBool(result);
@@ -285,7 +285,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetTouchGuideState(Mess
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetGestureState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool result = GetGestureState();
     reply.WriteBool(result);
@@ -295,7 +295,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetGestureState(Message
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetKeyEventObserverState(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool result = GetKeyEventObserverState();
     reply.WriteBool(result);
@@ -305,7 +305,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetKeyEventObserverStat
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetTouchGuideState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
 
@@ -316,7 +316,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetTouchGuideState(Mess
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetGestureState(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
 
@@ -328,7 +328,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetGestureState(Message
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverState(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
 
@@ -339,7 +339,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverStat
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::map<std::string, AppExecFwk::ElementName> it{};
     int dev_num = data.ReadInt32();
@@ -363,7 +363,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::map<std::string, AppExecFwk::ElementName> it = GetEnabledAbilities();
     std::map<std::string, AppExecFwk::ElementName>::iterator iter;
@@ -382,7 +382,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetEnabledAbilities(Mes
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
     int num = it.size();
@@ -399,7 +399,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     std::map<std::string, AppExecFwk::ElementName> it{};
     int dev_num = data.ReadInt32();
@@ -424,7 +424,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterUITestAbilityConnectionClient(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     bool result = RegisterUITestAbilityConnectionClient(obj);
     if (!reply.WriteBool(result)) {
@@ -436,7 +436,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleRegisterUITestAbilityCo
 
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow(MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int activeWindow = GetActiveWindow();
     reply.WriteInt32(activeWindow);
@@ -447,7 +447,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetActiveWindow(Message
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterUITestAbilityConnectionClient(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     bool result = DeregisterUITestAbilityConnectionClient();
     if (!reply.WriteBool(result)) {
         HILOG_ERROR("WriteBool failed");
@@ -455,5 +455,5 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDeregisterUITestAbility
     }
     return ErrCode::NO_ERROR;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -27,7 +27,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityAbilityInfo::AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityInfo abilityInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     bundleName_ = abilityInfo.bundleName;
     moduleName_ = abilityInfo.moduleName;
     name_ = abilityInfo.name;
@@ -51,7 +51,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityI
 
 bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     //accessibilityCapabilities
     vector<string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(
@@ -83,68 +83,68 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
 {
-    HILOG_DEBUG("%{public}s types(%{public}d)start.", __func__, abilityTypes_);
+    HILOG_DEBUG("types(%{public}d)start.", abilityTypes_);
     return abilityTypes_;
 }
 
 uint32_t AccessibilityAbilityInfo::GetCapabilityValues()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return capabilities_;
 }
 
 string AccessibilityAbilityInfo::GetDescription()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return description_;
 }
 
 uint32_t AccessibilityAbilityInfo::GetEventTypes()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return eventTypes_;
 }
 
 string AccessibilityAbilityInfo::GetId()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return bundleName_ + "/" + name_;
 }
 
 string AccessibilityAbilityInfo::GetName()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return name_;
 }
 
 string AccessibilityAbilityInfo::GetPackageName()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return bundleName_;
 }
 
 void AccessibilityAbilityInfo::SetPackageName(string bundleName)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     bundleName_ = bundleName;
 }
 
 vector<string> AccessibilityAbilityInfo::GetFilterBundleNames()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return targetBundleNames_;
 }
 
 std::string AccessibilityAbilityInfo::GetSettingsAbility()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     return settingsAbility_;
 }
 
 
 bool AccessibilityAbilityInfo::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
@@ -162,7 +162,7 @@ bool AccessibilityAbilityInfo::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityAbilityInfo::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
@@ -180,7 +180,7 @@ bool AccessibilityAbilityInfo::Marshalling(Parcel &parcel) const
 
 AccessibilityAbilityInfo *AccessibilityAbilityInfo::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     AccessibilityAbilityInfo *accessibilityAbilityInfo = new AccessibilityAbilityInfo();
 
     if (accessibilityAbilityInfo && !accessibilityAbilityInfo->ReadFromParcel(parcel)) {

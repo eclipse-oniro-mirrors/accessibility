@@ -41,7 +41,7 @@ std::vector<EventType> g_mTeventType;
 int g_mTgestureId = -1;
 
 AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
-	: IRemoteProxy<IAccessibleAbilityClient>(object)
+    : IRemoteProxy<IAccessibleAbilityClient>(object)
 {
 }
 

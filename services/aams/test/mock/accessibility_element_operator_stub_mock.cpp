@@ -25,8 +25,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>
-    AccessibilityElementOperatorStub::aaCallbacks_ = {};
+using AccessibilityElementOperatorCallbacks = std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>;
+AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::aaCallbacks_ = {};
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
 }
@@ -134,7 +134,7 @@ AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
-   return;
+    return;
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextResult(
@@ -146,13 +146,13 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
 void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
-   return;
+    return;
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
-   return;
+    return;
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
@@ -161,8 +161,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     return;
 }
 
-std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>
-    AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
+AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
 {
     return aaCallbacks_;
 }

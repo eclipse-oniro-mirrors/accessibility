@@ -24,6 +24,6 @@ enum ErrCode {
     ERR_INVALID_VALUE,
     ERROR,
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif // ACCESSIBILITY_ERRORCODE_H

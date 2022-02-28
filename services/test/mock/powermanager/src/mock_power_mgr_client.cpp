@@ -26,4 +26,4 @@ void PowerMgrClient::RefreshActivity(UserActivityType type)
 {
 }
 } // namespace PowerMgr
-}  // namespace OHOS
+} // namespace OHOS

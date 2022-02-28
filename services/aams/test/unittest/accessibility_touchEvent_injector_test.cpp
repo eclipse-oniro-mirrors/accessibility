@@ -218,5 +218,5 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_006 end";
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

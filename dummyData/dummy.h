@@ -16,11 +16,6 @@
 #ifndef DUMMY_H
 #define DUMMY_H
 
-#include <stdint.h>
-#include <string>
-#include <vector>
-#include "refbase.h"
-
 namespace OHOS {
 namespace Accessibility {
 class IASACStub {};

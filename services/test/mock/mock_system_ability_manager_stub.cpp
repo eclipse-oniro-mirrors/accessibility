@@ -105,4 +105,4 @@ bool SystemAbilityManagerStub::CanRequest()
 {
     return true;
 }
-}  // namespace OHOS
+} // namespace OHOS

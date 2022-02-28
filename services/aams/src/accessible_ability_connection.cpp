@@ -289,7 +289,7 @@ AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<Accessibilit
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
     if (proxy_ && proxy_->AsObject()) {
         proxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
         proxy_ = nullptr;
@@ -299,7 +299,7 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
@@ -345,7 +345,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!proxy_) {
         HILOG_ERROR("proxy_ is nullptr");
         return;
@@ -379,10 +379,8 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
         HILOG_DEBUG("Get event type is white list!");
         send = true;
     } else {
-        int windowId = eventInfo.GetWindowId();
-        bool validWindow = AccessibilityWindowInfoManager::GetInstance().IsValidWindow(windowId);
         vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
-        if (validWindow && IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() ||
+        if (IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() ||
             find(filterBundleNames.begin(), filterBundleNames.end(),
                 eventInfo.GetBundleName()) != filterBundleNames.end())) {
             send = true;
@@ -528,7 +526,7 @@ int AccessibleAbilityConnection::GetChannelId()
 void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG(" %{public}s", __func__);
+    HILOG_DEBUG("start");
 
     if (!recipientAccountData_.promote()) {
         HILOG_ERROR("recipientAccountData_ is null.");

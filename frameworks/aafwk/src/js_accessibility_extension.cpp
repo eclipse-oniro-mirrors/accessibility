@@ -105,7 +105,7 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
 
 sptr<IRemoteObject> JsAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
     Extension::OnConnect(want);
 
     sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl();
@@ -123,15 +123,15 @@ sptr<IRemoteObject> JsAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 
 void JsAccessibilityExtension::OnAbilityConnected()
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
     AccessibilityExtension::OnAbilityConnected();
     CallObjectMethod("onAbilityConnected");
-    HILOG_INFO("%{public}s end.", __func__);
+    HILOG_INFO("end.");
 }
 
 void JsAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
     AccessibilityExtension::OnAccessibilityEvent(eventInfo);
 
     HandleScope handleScope(jsRuntime_);
@@ -145,12 +145,12 @@ void JsAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo
     NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
     NativeValue* argv[] = {nativeEventInfo};
     CallObjectMethod("onAccessibilityEvent", argv, 1);
-    HILOG_INFO("%{public}s end.", __func__);
+    HILOG_INFO("end.");
 }
 
 bool JsAccessibilityExtension::OnKeyPressEvent(const MMI::KeyEvent& keyEvent)
 {
-    HILOG_INFO("%{public}s called.", __func__);
+    HILOG_INFO("called.");
     AccessibilityExtension::OnKeyPressEvent(keyEvent);
 
     HandleScope handleScope(jsRuntime_);

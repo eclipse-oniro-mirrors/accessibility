@@ -31,7 +31,7 @@ AccessibleAbilityManagerServiceClientProxy::~AccessibleAbilityManagerServiceClie
 
 bool AccessibleAbilityManagerServiceClientProxy::WriteInterfaceToken(MessageParcel& data)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     if (!data.WriteInterfaceToken(IAccessibleAbilityManagerServiceClient::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -41,7 +41,7 @@ bool AccessibleAbilityManagerServiceClientProxy::WriteInterfaceToken(MessageParc
 
 void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEventInfo& uiEvent, const int userId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -73,7 +73,7 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
 
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const CaptionProperty& caption)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -106,7 +106,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const Captio
 
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -136,7 +136,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool stat
 
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -167,7 +167,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     const sptr<IAccessibleAbilityManagerServiceState>& client, const int userId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -210,7 +210,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetAbilityList(
     const int abilityTypes, const int stateType)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -256,7 +256,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
 void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
     int windowId, const sptr<IAccessibilityElementOperator>& operation, const int userId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -301,7 +301,7 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
 
 void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -331,7 +331,7 @@ void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const
 
 CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -357,7 +357,7 @@ CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& client, const int userId)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -404,7 +404,7 @@ sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
 
 bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -426,7 +426,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
 
 bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -448,7 +448,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
 
 bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -473,7 +473,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
 
 bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -495,7 +495,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
 
 bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -520,7 +520,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
 
 bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool state)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -553,7 +553,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool s
 
 bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool state)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -583,7 +583,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool stat
 
 bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const bool state)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -616,7 +616,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const 
 
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -652,7 +652,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
 
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceClientProxy::GetEnabledAbilities()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -689,7 +689,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
 
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetInstalledAbilities()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -717,7 +717,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
 
 bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -749,7 +749,7 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
 
 int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -774,7 +774,7 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 
 bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -803,7 +803,7 @@ bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnection
 
 bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnectionClient()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
 
     int error = NO_ERROR;
     MessageParcel data;
@@ -824,5 +824,5 @@ bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnecti
     }
     return reply.ReadBool();
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -95,4 +95,4 @@ void Event::Clean()
     waiting_message_ = "";
     complete_message_.clear();
 }
-}  // namespace STtools
+} // namespace STtools

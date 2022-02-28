@@ -51,5 +51,5 @@ void from_json(const nlohmann::json &jsonObject, ModuleInfo &moduleInfo)
     moduleInfo.moduleName = jsonObject.at("moduleName").get<std::string>();
     moduleInfo.moduleSourceDir = jsonObject.at("moduleSourceDir").get<std::string>();
 }
-}  //namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS

@@ -92,7 +92,7 @@ AccessibilitySystemAbilityClient::AccessibilitySystemAbilityClient(const Context
     pimpl->stateCallback_ = new AccessibleAbilityManagerServiceStateStub();
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return;
     }
     uint32_t stateType = proxyService->RegisterStateCallback(pimpl->stateCallback_, accountId_);
@@ -132,7 +132,7 @@ AccessibilitySystemAbilityClient::AccessibilitySystemAbilityClient(const Context
 
 void AccessibilitySystemAbilityClient::ResetService(const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (pimpl->serviceProxy_ != nullptr) {
         sptr<IRemoteObject> object = pimpl->serviceProxy_->GetObject();
@@ -167,7 +167,7 @@ int AccessibilitySystemAbilityClient::RegisterElementOperator(
         aamsInteractionOperator->SetWindowId(windowId);
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
-            HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+            HILOG_ERROR("Failed to get aams service");
             return -1;
         }
         proxyService->RegisterElementOperator(windowId, aamsInteractionOperator, user);
@@ -180,10 +180,10 @@ int AccessibilitySystemAbilityClient::RegisterElementOperator(
 
 void AccessibilitySystemAbilityClient::DeregisterElementOperator(const int windowId)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return;
     }
     proxyService->DeregisterElementOperator(windowId);
@@ -233,7 +233,7 @@ bool AccessibilitySystemAbilityClient::IsCaptionEnabled()
 std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetAbilityList(
     const int accessibilityAbilityTypes, const AbilityStateType stateType)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     bool check = false;
     if ((accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) ||
         (accessibilityAbilityTypes & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) ||
@@ -247,7 +247,7 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetAbili
     }
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr || !check) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         std::vector<AccessibilityAbilityInfo> infos;
         return infos;
     }
@@ -257,7 +257,7 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetAbili
 shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetInstance(
     const Context& abilityContext)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (instance_ == nullptr) {
         int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
@@ -270,7 +270,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
 
 shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetInstance()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     AbilityContext abilityContext = {};
     if (instance_ == nullptr) {
         int accountId = 100;    // temp deal
@@ -284,11 +284,11 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
 
 CaptionProperty AccessibilitySystemAbilityClient::GetCaptionProperty() const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     CaptionProperty cp;
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return cp;
     }
     return proxyService->GetCaptionProperty();
@@ -296,7 +296,7 @@ CaptionProperty AccessibilitySystemAbilityClient::GetCaptionProperty() const
 
 bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty& caption)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
         (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
         (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
@@ -312,7 +312,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty&
 
 bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionProperty& caption)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
         (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
         (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
@@ -322,7 +322,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
         (strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str()) != 0)) {
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
-            HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+            HILOG_ERROR("Failed to get aams service");
             return false;
         }
         proxyService->SetCaptionProperty(caption);
@@ -332,7 +332,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
 
 bool AccessibilitySystemAbilityClient::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (isCaptionEnabled_ != state) {
         isCaptionEnabled_ = state;
         NotifyCaptionStateChanged();
@@ -342,12 +342,12 @@ bool AccessibilitySystemAbilityClient::SetCaptionState(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     bool ret = false;
     if (isCaptionEnabled_ != state) {
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
-            HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+            HILOG_ERROR("Failed to get aams service");
             return false;
         }
         ret = proxyService->SetCaptionState(state);
@@ -358,7 +358,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (isEnabled_ != state) {
         isEnabled_ = state;
         NotifyAccessibilityStateChanged();
@@ -368,7 +368,7 @@ bool AccessibilitySystemAbilityClient::SetEnabled(const bool state)
 
 bool AccessibilitySystemAbilityClient::IsAccessibilityCaptionEnabled() const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     return true;
 }
 
@@ -406,7 +406,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const EventType eventType, cons
     event.SetSource(componentId);
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     proxyService->SendEvent(event, accountId_);
@@ -421,7 +421,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& e
     }
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     proxyService->SendEvent(event, accountId_);
@@ -431,7 +431,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& e
 bool AccessibilitySystemAbilityClient::SubscribeStateObserver(
     const shared_ptr<AccessibilityStateObserver>& observer, const int eventType)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (eventType != AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
@@ -463,14 +463,14 @@ bool AccessibilitySystemAbilityClient::SubscribeStateObserver(
             HILOG_ERROR("the EventType observed is not supported");
             return false;
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
     return true;
 }
 
 bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(
     const shared_ptr<AccessibilityStateObserver>& observer, const int eventType)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (eventType != AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
@@ -514,7 +514,7 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(
 
 bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(const shared_ptr<AccessibilityStateObserver>& observer)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (!observer) {
         HILOG_ERROR("[%{public}s] Input observer is null", __func__);
         return false;
@@ -557,37 +557,37 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(const shared_ptr
 
 void AccessibilitySystemAbilityClient::UpdateEnabled(const bool enabled)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     if (isEnabled_ != enabled) {
         isEnabled_ = enabled;
         NotifyAccessibilityStateChanged();
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::UpdateTouchExplorationEnabled(const bool enabled)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     if (isTouchExplorationEnabled_ != enabled) {
         isTouchExplorationEnabled_ = enabled;
         NotifyTouchExplorationStateChanged();
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::SetCaptionEnabled(const bool enabled)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     if (isCaptionEnabled_ != enabled) {
         isCaptionEnabled_ = enabled;
         NotifyCaptionStateChanged();
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersAccessibilityState_.size() == 0) {
         HILOG_DEBUG("%{public}s observersAccessibilityState_ is null", __func__);
@@ -603,12 +603,12 @@ void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
             HILOG_ERROR("%{public}s end observersAccessibilityState_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::NotifyTouchExplorationStateChanged()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersTouchState_.size() == 0) {
         HILOG_DEBUG("%{public}s observersTouchState_ is null", __func__);
@@ -624,12 +624,12 @@ void AccessibilitySystemAbilityClient::NotifyTouchExplorationStateChanged()
             HILOG_ERROR("%{public}s end observersTouchState_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::NotifyCaptionStateChanged()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersCaptionEnable_.size() == 0) {
         HILOG_DEBUG("%{public}s observersCaptionEnable_ is null", __func__);
@@ -642,12 +642,12 @@ void AccessibilitySystemAbilityClient::NotifyCaptionStateChanged()
             HILOG_ERROR("%{public}s end observersCaptionEnable_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     bool result = true;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
         if (observersCaptionEnable_.size() == 0) {
@@ -668,7 +668,7 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
 bool AccessibilitySystemAbilityClient::DeleteCaptionListener(
     const std::shared_ptr<CaptionObserver>& ob, const int type)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     bool result = false;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
         for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); ++it) {
@@ -695,15 +695,15 @@ bool AccessibilitySystemAbilityClient::DeleteCaptionListener(
 
 void AccessibilitySystemAbilityClient::UpdatecaptionProperty(const CaptionProperty& property)
 {
-    HILOG_DEBUG("%{public}s", __func__);
+    HILOG_DEBUG("start");
     captionProperty_ = property;
     NotifyCaptionChanged();
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::NotifyCaptionChanged()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersCaptionProperty_.size() == 0) {
         HILOG_DEBUG("%{public}s observersCaptionProperty_ is null", __func__);
@@ -716,15 +716,15 @@ void AccessibilitySystemAbilityClient::NotifyCaptionChanged()
             HILOG_ERROR("%{public}s end observersCaptionProperty_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 bool AccessibilitySystemAbilityClient::GetEnabledState()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     return proxyService->GetEnabledState();
@@ -732,10 +732,10 @@ bool AccessibilitySystemAbilityClient::GetEnabledState()
 
 bool AccessibilitySystemAbilityClient::GetCaptionState()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
 
@@ -745,10 +745,10 @@ bool AccessibilitySystemAbilityClient::GetCaptionState()
 
 bool AccessibilitySystemAbilityClient::GetTouchGuideState()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     return proxyService->GetTouchGuideState();
@@ -756,10 +756,10 @@ bool AccessibilitySystemAbilityClient::GetTouchGuideState()
 
 bool AccessibilitySystemAbilityClient::GetGestureState()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     return proxyService->GetGestureState();
@@ -767,10 +767,10 @@ bool AccessibilitySystemAbilityClient::GetGestureState()
 
 bool AccessibilitySystemAbilityClient::GetKeyEventObserverState()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     return proxyService->GetKeyEventObserverState();
@@ -778,7 +778,7 @@ bool AccessibilitySystemAbilityClient::GetKeyEventObserverState()
 
 bool AccessibilitySystemAbilityClient::SetTouchGuideState(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (isTouchExplorationEnabled_ != state) {
         isTouchExplorationEnabled_ = state;
         NotifyTouchExplorationStateChanged();
@@ -788,7 +788,7 @@ bool AccessibilitySystemAbilityClient::SetTouchGuideState(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetGestureState(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (isGesturesSimulationEnabled_ != state) {
         isGesturesSimulationEnabled_ = state;
         NotifyGestureStateChanged();
@@ -798,7 +798,7 @@ bool AccessibilitySystemAbilityClient::SetGestureState(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetKeyEventObserverState(const bool state)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (isFilteringKeyEventsEnabled_ != state) {
         isFilteringKeyEventsEnabled_ = state;
         NotifyKeyEventStateChanged();
@@ -808,10 +808,10 @@ bool AccessibilitySystemAbilityClient::SetKeyEventObserverState(const bool state
 
 bool AccessibilitySystemAbilityClient::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     proxyService->SetEnabledObj(it);
@@ -820,11 +820,11 @@ bool AccessibilitySystemAbilityClient::SetEnabledObj(std::map<std::string, AppEx
 
 std::map<std::string, AppExecFwk::ElementName> AccessibilitySystemAbilityClient::GetEnabledAbilities()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
 
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         std::map<std::string, AppExecFwk::ElementName> it;
         return it;
     }
@@ -833,10 +833,10 @@ std::map<std::string, AppExecFwk::ElementName> AccessibilitySystemAbilityClient:
 
 std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetInstalledAbilities()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         std::vector<AccessibilityAbilityInfo> it;
         return it;
     }
@@ -845,7 +845,7 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetInsta
 
 void AccessibilitySystemAbilityClient::NotifyGestureStateChanged()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersGestureState_.size() == 0) {
         HILOG_DEBUG("%{public}s observersGestureState_ is null", __func__);
@@ -861,12 +861,12 @@ void AccessibilitySystemAbilityClient::NotifyGestureStateChanged()
             HILOG_ERROR("%{public}s end observersGestureState_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 void AccessibilitySystemAbilityClient::NotifyKeyEventStateChanged()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersKeyEventState_.size() == 0) {
         HILOG_DEBUG("%{public}s observersKeyEventState_ is null", __func__);
@@ -882,15 +882,15 @@ void AccessibilitySystemAbilityClient::NotifyKeyEventStateChanged()
             HILOG_ERROR("%{public}s end observersKeyEventState_ is null", __func__);
         }
     }
-    HILOG_DEBUG("[%{public}s] end", __func__);
+    HILOG_DEBUG("end");
 }
 
 bool AccessibilitySystemAbilityClient::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return false;
     }
     proxyService->DisableAbilities(it);
@@ -900,14 +900,14 @@ bool AccessibilitySystemAbilityClient::DisableAbilities(std::map<std::string, Ap
 
 int AccessibilitySystemAbilityClient::GetActiveWindow()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
     if (proxyService == nullptr) {
-        HILOG_ERROR("[%{public}s] Failed to get aams service", __func__);
+        HILOG_ERROR("Failed to get aams service");
         return INVALID_WINDOW_ID;
     }
 
     return proxyService->GetActiveWindow();
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

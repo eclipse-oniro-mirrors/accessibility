@@ -137,6 +137,6 @@ public:
         GET_ACTIVE_WINDOW,
     };
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

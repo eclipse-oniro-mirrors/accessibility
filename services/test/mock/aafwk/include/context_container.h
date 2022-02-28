@@ -25,6 +25,6 @@ public:
     ContextContainer() = default;
     virtual ~ContextContainer() = default;
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // FOUNDATION_APPEXECFWK_OHOS_CONTEXT_CONTAINER_H

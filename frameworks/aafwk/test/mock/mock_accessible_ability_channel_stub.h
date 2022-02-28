@@ -25,7 +25,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityChannelStubMock : public IRemoteStub<IAccessibleAbilityChannel> {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"IAccessibleAbilityChannelMock");

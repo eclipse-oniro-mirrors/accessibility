@@ -16,8 +16,8 @@
 #ifndef NAPI_ACCESSIBILITY_UTILS_H
 #define NAPI_ACCESSIBILITY_UTILS_H
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "accessibility_ability_info.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"

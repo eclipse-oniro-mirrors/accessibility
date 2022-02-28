@@ -29,7 +29,7 @@ const int NONE_ID = -1;
 
 AccessibilityInteractionBridge& AccessibilityInteractionBridge::GetInstance()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     static AccessibilityInteractionBridge instance_;
 
     return instance_;
@@ -37,7 +37,7 @@ AccessibilityInteractionBridge& AccessibilityInteractionBridge::GetInstance()
 
 AccessibilityInteractionBridge::AccessibilityInteractionBridge()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
@@ -63,7 +63,7 @@ AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(
 
 bool AccessibilityInteractionBridge::ExecuteActionOnAccessibilityFocused(const ActionType& action)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto focus = FindFocusedElementInfo();
     std::map<std::string, std::string> actionArguments {};
     HILOG_DEBUG("[%{public}s ExecuteAction]", __func__);
@@ -72,7 +72,7 @@ bool AccessibilityInteractionBridge::ExecuteActionOnAccessibilityFocused(const A
 
 bool Intersect(Rect& focus, Rect source)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     int minx = std::max(focus.GetLeftTopXScreenPostion(), source.GetLeftTopXScreenPostion());
     int miny = std::max(focus.GetLeftTopYScreenPostion(), source.GetLeftTopYScreenPostion());
     int maxx = std::min(focus.GetRightBottomXScreenPostion(), source.GetRightBottomXScreenPostion());
@@ -88,7 +88,7 @@ bool Intersect(Rect& focus, Rect source)
 
 bool Intersect(Rect& rect, AccessibilityWindowInfo window)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (!Intersect(rect, window.GetRectInScreen())) {
         return false;
     }
@@ -97,7 +97,7 @@ bool Intersect(Rect& rect, AccessibilityWindowInfo window)
 
 bool Intersect(Rect& rect, Rosen::Display& display)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     Rect source(0, 0, display.GetWidth(), display.GetHeight());
     if (!Intersect(rect, source)) {
         return false;
@@ -107,7 +107,7 @@ bool Intersect(Rect& rect, Rosen::Display& display)
 
 bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MMI::PointerEvent::PointerItem &point)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     auto focus = FindFocusedElementInfo();
     auto focusRect = focus.GetRectInScreen();
     float denominator = 2.0;

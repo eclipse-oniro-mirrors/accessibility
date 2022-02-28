@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
 }
@@ -60,8 +59,6 @@ void AccessibilityDisplayManager::OnDestroy(Rosen::DisplayId did)
 }
 void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId)
 {
-
 }
-
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

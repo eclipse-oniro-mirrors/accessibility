@@ -37,7 +37,7 @@ int g_mTgestureId = -1;
 sptr<OHOS::Accessibility::IAccessibleAbilityChannel> g_testStub = nullptr;
 
 AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
-	: IRemoteProxy<IAccessibleAbilityClient>(object)
+    : IRemoteProxy<IAccessibleAbilityClient>(object)
 {
 }
 

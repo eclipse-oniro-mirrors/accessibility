@@ -16,8 +16,8 @@
 #ifndef ACCESSIBLE_ABILITY_CLIENT_STUB_H
 #define ACCESSIBLE_ABILITY_CLIENT_STUB_H
 
+#include <cstdint>
 #include <map>
-#include <stdint.h>
 #include "accessible_ability_client_interface.h"
 #include "accessibility_errorcode.h"
 #include "iremote_stub.h"
@@ -27,7 +27,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityClientStub : public IRemoteStub<IAccessibleAbilityClient> {
 public:
     AccessibleAbilityClientStub();

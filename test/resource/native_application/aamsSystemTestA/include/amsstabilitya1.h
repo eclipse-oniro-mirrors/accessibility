@@ -78,6 +78,6 @@ public:
 private:
     std::shared_ptr<AamsStAbilityA1> aamsStAbilityA1_ = std::make_shared<AamsStAbilityA1>();
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // AAMS_ST_ABILITY_A1

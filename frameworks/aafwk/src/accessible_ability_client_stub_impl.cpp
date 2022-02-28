@@ -35,14 +35,14 @@ void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr
 
 void AccessibleAbilityClientStubImpl::SetUITestEnabled()
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     uiTestEnabled_ = true;
 }
 
 bool AccessibleAbilityClientStubImpl::RegisterUITestAbilityListener(
     const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (uiTestListener_) {
         HILOG_DEBUG("listener already exists.");
         return false;
@@ -54,7 +54,7 @@ bool AccessibleAbilityClientStubImpl::RegisterUITestAbilityListener(
 
 void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (!uiTestEnabled_) {
         if (!channel) {
             HILOG_DEBUG("channel is nullptr.");
@@ -114,7 +114,7 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
 
 void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     // Delete death recipient
     if (channel_ && channel_->AsObject()) {
@@ -140,7 +140,7 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
 
 void AccessibleAbilityClientStubImpl::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (channelId_ != INVALID_CHANNEL_ID) {
         if (listener_) {
             listener_->OnAccessibilityEvent(eventInfo);
@@ -154,7 +154,7 @@ void AccessibleAbilityClientStubImpl::OnAccessibilityEvent(const AccessibilityEv
 
 void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (listener_) {
         bool handled = listener_->OnKeyPressEvent(keyEvent);
         AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
@@ -169,7 +169,7 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
 	const float centerX, const float centerY)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (channelId_ != INVALID_CHANNEL_ID) {
         if (listener_ && listener_->GetContext()) {
             HILOG_DEBUG("Get displayResize controller.");
@@ -187,7 +187,7 @@ void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, cons
 
 void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence, const bool completedSuccessfully)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
     if (channelId_ != INVALID_CHANNEL_ID) {
         if (listener_ && listener_->GetContext()) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
@@ -204,7 +204,7 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
 void AccessibleAbilityClientStubImpl::AccessibleAbilityDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG("%{public}s start.", __func__);
+    HILOG_DEBUG("start.");
 
     // Delete death recipient
     if (remote.GetRefPtr()) {

@@ -23,6 +23,6 @@ namespace AppExecFwk {
 class AbilityLocalRecord {
 public:
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // FOUNDATION_APPEXECFWK_ABILITY_ITEM_H

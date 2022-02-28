@@ -105,5 +105,5 @@ void AccessibilityZoomGesture::Clear()
     upCount_ = 0;
     downCount_ = 0;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

@@ -21,7 +21,7 @@ namespace OHOS {
 namespace Accessibility {
 bool AccessibilityMemo::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
@@ -41,7 +41,7 @@ bool AccessibilityMemo::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityMemo::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
@@ -61,7 +61,7 @@ bool AccessibilityMemo::Marshalling(Parcel &parcel) const
 
 AccessibilityMemo* AccessibilityMemo::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     AccessibilityMemo* accessibilityRecord = new AccessibilityMemo();
     if (!accessibilityRecord->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -139,38 +139,38 @@ int AccessibilityMemo::GetWindowId() const
 
 int AccessibilityMemo::GetCurrentIndex() const
 {
-    HILOG_DEBUG("[%{public}s] currentIndex_[%{public}d]", __func__, currentIndex_);
+    HILOG_DEBUG("currentIndex_[%{public}d]", currentIndex_);
     return currentIndex_;
 }
 
 void AccessibilityMemo::SetCurrentIndex(const int index)
 {
     currentIndex_ = index;
-    HILOG_DEBUG("[%{public}s] currentIndex_[%{public}d]", __func__, currentIndex_);
+    HILOG_DEBUG("currentIndex_[%{public}d]", currentIndex_);
 }
 
 int AccessibilityMemo::GetBeginIndex() const
 {
-    HILOG_DEBUG("[%{public}s] beginIndex_[%{public}d]", __func__, beginIndex_);
+    HILOG_DEBUG("beginIndex_[%{public}d]", beginIndex_);
     return beginIndex_;
 }
 
 void AccessibilityMemo::SetBeginIndex(const int index)
 {
     beginIndex_ = index;
-    HILOG_DEBUG("[%{public}s] beginIndex_[%{public}d]", __func__, beginIndex_);
+    HILOG_DEBUG("beginIndex_[%{public}d]", beginIndex_);
 }
 
 int AccessibilityMemo::GetEndIndex() const
 {
-    HILOG_DEBUG("[%{public}s] endIndex_[%{public}d]", __func__, endIndex_);
+    HILOG_DEBUG("endIndex_[%{public}d]", endIndex_);
     return endIndex_;
 }
 
 void AccessibilityMemo::SetEndIndex(const int index)
 {
     endIndex_ = index;
-    HILOG_DEBUG("[%{public}s] endIndex_[%{public}d]", __func__, endIndex_);
+    HILOG_DEBUG("endIndex_[%{public}d]", endIndex_);
 }
 
 std::string AccessibilityMemo::GetComponentType() const
@@ -246,7 +246,7 @@ int AccessibilityMemo::GetItemCounts() const
 
 bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     int eventType = TYPE_VIEW_INVALID;
     int gestureType = GESTURE_INVALID;
     int triggerAction = ACCESSIBILITY_ACTION_INVALID;
@@ -330,7 +330,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(eventType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int>(gestureType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
@@ -369,7 +369,7 @@ bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 
 AccessibilityEventInfo *AccessibilityEventInfo::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     AccessibilityEventInfo *accessibilityEventInfo = new AccessibilityEventInfo();
     if (!accessibilityEventInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -393,13 +393,13 @@ void AccessibilityEventInfo::SetRecordCount(const int recordCount)
 
 void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     records_.push_back(record);
 }
 
 AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int index)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     if (index >= recordsCount_ || index < 0) {
         AccessibilityEventInfo record {};
         HILOG_ERROR("[%{public}s] called] index[%{public}d] is invalid", __func__, index);
@@ -410,7 +410,7 @@ AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int index)
 
 std::vector<AccessibilityEventInfo> AccessibilityEventInfo::GetRecords()
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     return records_;
 }
 
@@ -452,13 +452,13 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
 
 long long AccessibilityEventInfo::GetTimeStamp() const
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     return timeStamp_;
 }
 
 void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     timeStamp_ = eventTime;
 }
 
@@ -500,7 +500,7 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
 
 AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
 {
-    HILOG_DEBUG("[%{public}s]", __func__);
+    HILOG_DEBUG("start");
     eventType_ = TYPE_WINDOW_UPDATE;
     windowChangeTypes_ = windowChangeTypes;
     SetWindowId(windowId);

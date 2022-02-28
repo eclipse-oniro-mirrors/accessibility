@@ -22,7 +22,7 @@ using namespace std;
 namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(const sptr<IRemoteObject> &object)
-	: IRemoteProxy<IAccessibleAbilityChannel>(object)
+    : IRemoteProxy<IAccessibleAbilityChannel>(object)
 {
 }
 

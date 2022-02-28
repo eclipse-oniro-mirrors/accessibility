@@ -14,8 +14,8 @@
  */
 
 #include "hilog_wrapper.h"
-#include "napi_accessibility_gesture_pos.h"
 #include "napi_accessibility_utils.h"
+#include "napi_accessibility_gesture_pos.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -41,7 +41,7 @@ napi_value NGesturePos::JSPosConstructor(napi_env env, napi_callback_info info)
     napi_value argv[ARGS_SIZE_TWO] = {0};
     napi_value jsthis = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &jsthis, nullptr));
-    uint32_t x=0, y=0;
+    uint32_t x = 0, y = 0;
     ParseUint32(env, x, argv[PARAM0]);
     ParseUint32(env, y, argv[PARAM1]);
     HILOG_INFO("JSPosConstructor, x:%{public}d, y:%{public}d", x, y);

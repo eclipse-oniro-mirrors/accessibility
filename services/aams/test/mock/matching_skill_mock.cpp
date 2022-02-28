@@ -139,5 +139,5 @@ bool MatchingSkills::Match(const Want &want) const
 {
     return true;
 }
-}  //namespace EventFwk
-}  // namespace OHOS
+} // namespace EventFwk
+} // namespace OHOS

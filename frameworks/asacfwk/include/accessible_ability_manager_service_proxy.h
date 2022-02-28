@@ -133,6 +133,6 @@ private:
     bool WriteInterfaceToken(MessageParcel& data);
     static inline BrokerDelegator<AccessibleAbilityManagerServiceClientProxy> delegator;
 };
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS
 #endif

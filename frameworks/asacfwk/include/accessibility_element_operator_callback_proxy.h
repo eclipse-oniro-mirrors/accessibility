@@ -27,7 +27,6 @@ namespace OHOS {
 namespace Accessibility {
 /*
 * The class supply the callback to feedback the result from UI to AA.
-
 */
 class AccessibilityElementOperatorCallbackProxy : public IRemoteProxy<IAccessibilityElementOperatorCallback> {
 public:

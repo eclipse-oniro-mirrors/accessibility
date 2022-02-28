@@ -27,6 +27,6 @@ public:
     AbilityContext() = default;
     virtual ~AbilityContext() = default;
 };
-}  // namespace AppExecFwk
-}  // namespace OHOS
+} // namespace AppExecFwk
+} // namespace OHOS
 #endif  // FOUNDATION_APPEXECFWK_OHOS_ABILITY_CONTEXT_H

@@ -22,10 +22,10 @@
 
 using namespace testing;
 using namespace testing::ext;
-using namespace OHOS;
-using namespace OHOS::Accessibility;
 using namespace std;
 
+namespace OHOS {
+namespace Accessibility {
 const uint32_t MAX_STROKE_DURATION = 60 * 1000;
 const uint32_t MAX_STROKES = 10;
 
@@ -454,3 +454,5 @@ HWTEST_F(GestureSimulationUnitTest,
 
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_Unmarshalling_001 end";
 }
+} // namespace Accessibility
+} // namespace OHOS
