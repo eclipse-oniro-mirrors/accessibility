@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "input_event.h"
 #include <chrono>
+#include "input_event.h"
 
 namespace OHOS {
 namespace MMI {

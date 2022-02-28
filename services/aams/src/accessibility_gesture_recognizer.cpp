@@ -15,13 +15,14 @@
 
 #include "accessibility_gesture_recognizer.h"
 
-namespace OHOS{
-namespace Accessibility{
+namespace OHOS {
+namespace Accessibility {
+const int LIMIT_SIZE_TWO = 2;
+const int LIMIT_SIZE_THREE = 3;
 
-GestureHandler::GestureHandler(
-    const std::shared_ptr<AppExecFwk::EventRunner> &runner, AccessibilityGestureRecognizer &server)
-    : AppExecFwk::EventHandler(runner),server_(server) {
-
+GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
+    AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
+{
 }
 
 void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
@@ -149,7 +150,7 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     pointerRoute_.push_back(mp);
     prePointer_ = pointerIterm;
     startPointer_ = pointerIterm;
-    startTime_ = event.GetActionTime();
+    startTime_ = event.GetActionTime() / US_TO_MS;
 }
 
 bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
@@ -161,7 +162,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    unsigned int eventTime = event.GetActionTime();
+    unsigned int eventTime = event.GetActionTime() / US_TO_MS;
     float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
     float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
     double duration = hypot(offsetX, offsetY);
@@ -312,7 +313,7 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
 {
     HILOG_DEBUG();
 
-    if (pointerRoute_.size() < 2) {
+    if (pointerRoute_.size() < LIMIT_SIZE_TWO) {
         return listener_->OnCancelled(event);
     }
 
@@ -321,10 +322,10 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
      */
     std::vector<Pointer> pointerPath = GetPointerPath(pointerRoute_);
 
-    if (pointerPath.size() == 2) {
+    if (pointerPath.size() == LIMIT_SIZE_TWO) {
         int swipeDirection = GetSwipeDirection(pointerPath[0], pointerPath[1]);
         return listener_->OnCompleted(GESTURE_DIRECTION[swipeDirection]);
-    } else if (pointerPath.size() == 3) {
+    } else if (pointerPath.size() == LIMIT_SIZE_THREE) {
         int swipeDirectionH = GetSwipeDirection(pointerPath[0], pointerPath[1]);
         int swipeDirectionHV = GetSwipeDirection(pointerPath[1], pointerPath[2]);
         return listener_->OnCompleted(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV]);
@@ -339,7 +340,7 @@ int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer se
     if (abs(offsetX) > abs(offsetY)) {
         return offsetX > 0.0 ? SWIPE_RIGHT : SWIPE_LEFT;
     } else {
-        return offsetY > 0.0 ? SWIPE_UP : SWIPE_DOWN;
+        return offsetY < 0.0 ? SWIPE_UP : SWIPE_DOWN;
     }
 }
 
@@ -370,8 +371,10 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
             float xNextUnitVector = nextPoint.px_ - newSeparation.px_;
             float yNextUnitVector = nextPoint.py_ - newSeparation.py_;
             float nextVectorLength = hypot(xNextUnitVector, yNextUnitVector);
-            xNextUnitVector /= nextVectorLength;
-            yNextUnitVector /= nextVectorLength;
+            if (nextVectorLength > 0.0f) {
+                xNextUnitVector /= nextVectorLength;
+                yNextUnitVector /= nextVectorLength;
+            }
 
             if ((xVector * xNextUnitVector + yVector * yNextUnitVector) < DEGREES_THRESHOLD) {
                 pointerPath.push_back(newSeparation);
@@ -385,8 +388,10 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
         yVector = nextPoint.py_ - firstSeparation.py_;
         vectorLength = hypot(xVector, yVector);
         numSinceFirstSep += 1;
-        xUnitVector += xVector / vectorLength;
-        yUnitVector += yVector / vectorLength;
+        if (vectorLength > 0.0f) {
+            xUnitVector += xVector / vectorLength;
+            yUnitVector += yVector / vectorLength;
+        }
     }
     pointerPath.push_back(nextPoint);
     return pointerPath;
@@ -395,7 +400,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
 bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    int durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
+    int durationTime = (event.GetActionTime() - pPreUp_->GetActionTime()) / US_TO_MS;
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
         return false;
     }
@@ -412,6 +417,5 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
     return true;
@@ -159,6 +158,5 @@ void AccessibilityWindowInfo::AddChild(const int childId)
 
 AccessibilityWindowInfo::AccessibilityWindowInfo()
 {}
-
 } // namespace Accessibility
 } // namespace OHOS

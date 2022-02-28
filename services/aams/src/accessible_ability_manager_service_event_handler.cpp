@@ -18,20 +18,18 @@
 
 namespace OHOS {
 namespace Accessibility {
-AAMSEventHandler::AAMSEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner) : AppExecFwk::EventHandler(runner) {
-
+AAMSEventHandler::AAMSEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner)
+    : AppExecFwk::EventHandler(runner)
+{
 }
 
-AAMSEventHandler::~AAMSEventHandler() {}
+AAMSEventHandler::~AAMSEventHandler()
+{
+}
 
 void AAMSEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    switch (event->GetInnerEventId()) {
-        // case ACCESSIBILITY_XXX_XXX:
-        default:
-            HILOG_ERROR("the eventId is not supported");
-            break;
-    }
+    HILOG_DEBUG("the eventId is %{public}d", event->GetInnerEventId());
 }
 } //namespace Accessibility
 } //namespace OHOS

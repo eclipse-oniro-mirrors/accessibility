@@ -38,7 +38,7 @@ public:
     virtual void OnDestroy(Rosen::DisplayId dId) override;
     virtual void OnChange(Rosen::DisplayId dId) override;
 
-   private:
+private:
     AccessibilityDisplayManager();
 };
 }  // namespace Accessibility

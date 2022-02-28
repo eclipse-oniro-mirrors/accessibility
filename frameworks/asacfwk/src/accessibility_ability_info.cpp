@@ -55,8 +55,8 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
     //accessibilityCapabilities
     vector<string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(
-            sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES,
-            capabilities)) {
+        sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES,
+        capabilities)) {
         HILOG_ERROR("Get stringVec from json failed.");
         return false;
     }
@@ -64,19 +64,19 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 
     //accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(
-            sourceJson,
-            AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE,
-            rationale_)) {
-      HILOG_ERROR("Get stringVec from json failed.");
-      return false;
+        sourceJson,
+        AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE,
+        rationale_)) {
+        HILOG_ERROR("Get stringVec from json failed.");
+        return false;
     }
 
     // settingsAbility
     if (!JsonUtils::GetStringFromJson(
-            sourceJson, AccessibleAbility_JSON_KEY_SETTINGS_ABILITY,
-            settingsAbility_)) {
-      HILOG_ERROR("Get stringVec from json failed.");
-      return false;
+        sourceJson, AccessibleAbility_JSON_KEY_SETTINGS_ABILITY,
+        settingsAbility_)) {
+        HILOG_ERROR("Get stringVec from json failed.");
+        return false;
     }
     return true;
 }

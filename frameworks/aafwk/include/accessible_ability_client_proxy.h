@@ -24,9 +24,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-
-class AccessibleAbilityClientProxy : public IRemoteProxy<IAccessibleAbilityClient>
-{
+class AccessibleAbilityClientProxy : public IRemoteProxy<IAccessibleAbilityClient> {
 public:
     explicit AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object);
     virtual ~AccessibleAbilityClientProxy() = default;
@@ -87,8 +85,6 @@ private:
 
     static inline BrokerDelegator<AccessibleAbilityClientProxy> delegator;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBLE_ABILITY_CLIENT_PROXY_H

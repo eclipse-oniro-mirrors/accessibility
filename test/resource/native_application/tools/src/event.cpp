@@ -12,12 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "event.h"
-#include <cstdio>
-#include <iostream>
 
 namespace STtools {
-
 int WaitCompleted(Event &event, const std::string &eventName, const int code, const int timeout)
 {
     return event.WaitingMessage(std::to_string(code) + eventName, timeout, false);
@@ -90,7 +88,6 @@ void Event::CompleteMessage(const std::string &message)
         return;
     }
     complete_message_.push_back(message);
-    return;
 }
 
 void Event::Clean()
@@ -98,5 +95,4 @@ void Event::Clean()
     waiting_message_ = "";
     complete_message_.clear();
 }
-
 }  // namespace STtools

@@ -31,7 +31,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 #define GESTURE_STARTED_TIME_THRESHOLD 300
 #define GESTURE_NOT_STARTED_TIME_THRESHOLD 150
 #define DOUBLE_TAP_SLOP 100
@@ -44,6 +43,7 @@ namespace Accessibility {
 #define MIN_PIXELS(xyDpi) ((xyDpi) * 0.1f)
 #define POINTER_COUNT_1 1
 #define POINTER_COUNT_2 2
+#define US_TO_MS 1000
 
 struct Pointer {
     float px_;

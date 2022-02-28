@@ -14,7 +14,6 @@
  */
 
 #include "accessible_ability_client_stub_impl.h"
-#include <string>
 #include "accessibility_extension_context.h"
 #include "accessibility_ui_test_ability.h"
 #include "display_resize_controller.h"
@@ -23,7 +22,6 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 void AccessibleAbilityClientStubImpl::RegisterListenerImpl(const std::shared_ptr<AccessibilityExtension> &listener)
 {
     HILOG_DEBUG("Register AccessibleAbilityClientStubImpl listener.");
@@ -94,7 +92,7 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
             return;
         }
 
-        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId);
+        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId);
         AccessibilityOperator::AddChannel(channelId, channel);
         channelId_ = channelId;
         channel_ = channel;
@@ -135,7 +133,7 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
             listener_ = nullptr;
         }
     } else {
-        AccessibilityUITestAbility::GetInstance().SetChannelId(channelId_);
+        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
         uiTestListener_ = nullptr;
     }
 }
@@ -169,7 +167,7 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
 }
 
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
-                                                             const float centerX, const float centerY)
+	const float centerX, const float centerY)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
     if (channelId_ != INVALID_CHANNEL_ID) {
@@ -198,7 +196,7 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
         if (uiTestEnabled_) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
-            AccessibilityUITestAbility::GetInstance().DispatchOnSimulationGestureResult(
+            AccessibilityUITestAbility::GetInstance()->DispatchOnSimulationGestureResult(
                 sequence, completedSuccessfully);
         }
     }
@@ -219,6 +217,5 @@ void AccessibleAbilityClientStubImpl::AccessibleAbilityDeathRecipient::OnRemoteD
     recipientChannelId_ = INVALID_CHANNEL_ID;
     recipientchannel_ = nullptr;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

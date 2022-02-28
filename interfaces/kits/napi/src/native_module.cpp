@@ -12,9 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cstdio>
+#include <cstring>
 #include <pthread.h>
-#include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
 #include "hilog_wrapper.h"
@@ -22,6 +23,8 @@
 #include "napi/native_node_api.h"
 #include "napi_accessibility_system_ability_client.h"
 #include "napi_accessibility_event_info.h"
+#include "napi_accessibility_gesture_path.h"
+#include "napi_accessibility_gesture_pos.h"
 #include "napi_accessibility_window_info.h"
 #include "napi_accessibility_info.h"
 
@@ -63,6 +66,10 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
     NAPI_CALL(env, napi_set_named_property(env, exports, "EventInfo", NAccessibilityEventInfo::cons_));
+    NGesturePos::DefineJSGesturePos(env);
+    NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePos", NGesturePos::posCons_));
+    NGesturePath::DefineJSGesturePath(env);
+    NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePath", NGesturePath::pathCons_));
 
     HILOG_INFO("-----Init end------");
     return exports;

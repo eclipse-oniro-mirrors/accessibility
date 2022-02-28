@@ -14,7 +14,6 @@
  */
 
 #include "accessible_ability_client_stub_impl.h"
-#include <string>
 #include "accessibility_extension_context.h"
 #include "display_resize_controller.h"
 

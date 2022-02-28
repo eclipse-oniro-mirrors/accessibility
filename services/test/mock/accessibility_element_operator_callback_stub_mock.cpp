@@ -12,22 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <vector>
+#include "accessibility_errorcode.h"
 #include "accessibility_element_operator_callback_stub.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
 #include "ipc_types.h"
 #include "iremote_object.h"
-#include "accessibility_errorcode.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
-{}
+{
+}
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
-{}
+{
+}
 
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
@@ -36,15 +38,13 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     return NO_ERROR;
 }
@@ -66,6 +66,5 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(M
 {
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

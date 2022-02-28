@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 enum CaptionMode : int {
     CAPTION_BLACK_WHITE = 0,  // CAPTION_background_foreground
     CAPTION_WHITE_BLACK,
@@ -96,11 +95,10 @@ private:
 
     std::string fontFamily_ = "default";
     int fontScale_ = 75;    // font size
-    std::string fontColor_ = "";     //#0055AA
+    std::string fontColor_ = "";     // #0055AA
     std::string fontEdgeType_ = "none";
     std::string backgroundColor_ = "";
     std::string windowColor_ = "";
-
 };
 
 enum CaptionObserverType : int {
@@ -110,29 +108,20 @@ enum CaptionObserverType : int {
 class CaptionObserver {
 public:
     /**
+     * @brief Destruct
+     * @param
+     * @return
+     */
+    virtual ~CaptionObserver() = default;
+
+    /**
      * @brief Called when the caption property changed.
      * @param caption current caption property.
      * @return
      */
     virtual void OnCaptionStateChanged(const bool& enable) = 0;
     virtual void OnCaptionPropertyChanged(const CaptionProperty& caption) = 0;
-
-    /**
-     * @brief
-     * @param
-     * @return
-     */
-
-    CaptionObserver() {}
-
-    /**
-     * @brief
-     * @param
-     * @return
-     */
-    virtual ~CaptionObserver() = default;
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBILITY_CAPTION_H

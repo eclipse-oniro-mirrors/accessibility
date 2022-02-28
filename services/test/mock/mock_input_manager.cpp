@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-#include "input_manager.h"
-#include "pointer_event.h"
 #include <gtest/gtest.h>
 #include <vector>
+#include "input_manager.h"
+#include "pointer_event.h"
 
 namespace OHOS {
 std::vector<int32_t> g_mtTouchAction;

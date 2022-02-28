@@ -23,6 +23,7 @@
 #include "accessibility_window_connection.h"
 #include "accessibility_window_manager.h"
 #include "accessibility_extension_context.h"
+#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "singleton.h"
@@ -35,11 +36,6 @@ namespace Accessibility {
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     AccessibleAbilityConnection& connection): connection_(connection)
 {
-    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams_) {
-        HILOG_ERROR("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl failed: no aams");
-    }
-    HILOG_DEBUG("AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl successfully");
 }
 
 bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const int accessibilityWindowId,
@@ -63,8 +59,7 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const 
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId failed: no proxy");
         return false;
     }
-    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, requestId, callback,
-        mode);
+    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
     HILOG_ERROR("AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId successfully");
     return true;
 }
@@ -216,7 +211,8 @@ bool AccessibleAbilityChannelStubImpl::ExecuteCommonAction(int action)
 
 void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handled, const int sequence)
 {
-    sptr<KeyEventFilter> keyEventFilter = aams_->GetKeyEventFilter();
+    sptr<KeyEventFilter> keyEventFilter =
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetKeyEventFilter();
     if (!keyEventFilter) {
         return;
     }
@@ -274,7 +270,8 @@ void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
         proxy->OnGestureSimulateResult(requestId, false);
         return;
     }
-    sptr<TouchEventInjector> touchEventInjector = aams_->GetTouchEventInjector();
+    sptr<TouchEventInjector> touchEventInjector =
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetTouchEventInjector();
     if (!touchEventInjector) {
         proxy->OnGestureSimulateResult(requestId, false);
         return;
@@ -395,8 +392,9 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     if (send) {
         eventInfo.SetChannelId(connectionId_);
         proxy_->OnAccessibilityEvent(eventInfo);
-        HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d]",
-            eventInfo.GetWindowId(), (int)eventInfo.GetEventType(), (int)eventInfo.GetWindowChangeTypes());
+        HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
+            eventInfo.GetWindowId(), (int)eventInfo.GetEventType(), (int)eventInfo.GetWindowChangeTypes(),
+            eventInfo.GetGestureType());
     }
 
     return;

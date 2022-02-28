@@ -14,15 +14,16 @@
  */
 
 #include <gtest/gtest.h>
+#include <stdio.h>
 #include "accessible_ability_connection.h"
 #include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service.h"
+#include "accessibility_display_manager.h"
 #include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_proxy.h"
-#include "accessibility_display_manager.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
-#include <stdio.h>
 
 using namespace testing;
 using namespace testing::ext;
@@ -49,7 +50,7 @@ public:
 
     sptr<AccessibleAbilityConnection> connection_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
-    sptr<AccessibleAbilityClientStubImpl> obj_= nullptr;
+    sptr<AccessibleAbilityClientStubImpl> obj_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
@@ -77,7 +78,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
 
-    //new Interaction proxy
+    // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy =
         new AccessibilityElementOperatorProxy(stub);
@@ -85,13 +86,13 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     // aams RegisterElementOperator
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->
         RegisterElementOperator(0, proxy, 0);
-    //new AAconnection
+    // new AAconnection
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = new AccessibilityAccountData(0);
-    accountData_->AddAccessibilityWindowConnection(0,connection);
+    accountData_->AddAccessibilityWindowConnection(0, connection);
     connection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
-    elementName_ = new AppExecFwk::ElementName("1","2","3");
+    elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new AccessibleAbilityClientStubImpl();
     connection_->OnAbilityConnectDone(*elementName_, obj_, 0);
 }
@@ -177,7 +178,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 start";
     AccessibilityEventInfo eventInfo;
@@ -194,7 +196,8 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 start";
     AccessibilityEventInfo eventInfo;
@@ -213,12 +216,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
  * @tc.name: OnGestureSimulateResult
  * @tc.desc: Test function OnGestureSimulateResult
  */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityConnectionUnitTest,
+    AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 start";
 
-    OHOS::Accessibility::Rect rect(0,0,0,0);
-    connection_->OnGestureSimulateResult(1,false);
+    OHOS::Accessibility::Rect rect(0, 0, 0, 0);
+    connection_->OnGestureSimulateResult(1, false);
     EXPECT_EQ(g_testGestureSimulateResult, 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 end";
@@ -236,7 +240,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     AppExecFwk::ElementName element;
     connection_->Connect(element);
     auto accountData = connection_->GetAccountData();
-    EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()),1);
+    EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";
 }
@@ -250,7 +254,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Disconnect_001 start";
 
     connection_->Disconnect();
-    EXPECT_EQ(g_testChannalId,0);
+    EXPECT_EQ(g_testChannalId, 0);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Reset_001 end";
 }

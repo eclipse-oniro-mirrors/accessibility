@@ -16,21 +16,17 @@
 #ifndef ACCESSIBILITY_EXTENSION_CONTEXT_H
 #define ACCESSIBILITY_EXTENSION_CONTEXT_H
 
+#include <map>
 #include <memory>
 #include <optional>
 #include <stdint.h>
-#include <vector>
-#include <map>
 
-#include "key_event.h"
 #include "accessibility_element_info.h"
 #include "accessibility_window_info.h"
-#include "accessibility_event_info.h"
-#include "extension_context.h"
-#include "accessible_ability_manager_service_interface.h"
 #include "display_resize_controller.h"
+#include "extension_context.h"
 #include "gesture_simulation.h"
-#include "hilog_wrapper.h"
+#include "key_event.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -126,10 +122,10 @@ private:
      */
     bool CheckCommonAction(uint32_t action);
 
-    std::vector<AccessibilityWindowInfo> accessibilityWindow_ {};
-    std::map<uint32_t, std::shared_ptr<GestureResultListener>> gestureResultListenerInfos_ {};
-    std::map<uint32_t, std::shared_ptr<DisplayResizeController>> displayResizeControllers_ {};
     uint32_t channelId_ = 0xFFFFFFFF;
+    std::vector<AccessibilityWindowInfo> accessibilityWindow_ {};
+    std::map<uint32_t, std::shared_ptr<GestureResultListener>> gestureResultListenerInfos_;
+    std::map<uint32_t, std::shared_ptr<DisplayResizeController>> displayResizeControllers_;
 };
 } // namespace Accessibility
 } // namespace OHOS

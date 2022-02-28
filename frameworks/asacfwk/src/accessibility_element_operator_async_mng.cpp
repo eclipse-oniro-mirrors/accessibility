@@ -76,6 +76,5 @@ int AccessibilityElementAsyncOperatorMng::RecordSearchSequence()
     HILOG_INFO("[%{public}s] [sequence_:%{public}d] end", __func__, sequence_);
     return sequence_;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -16,22 +16,19 @@
 #ifndef MOCK_GESTURE_SIMULATION_H
 #define MOCK_GESTURE_SIMULATION_H
 
+#include <cstdint>
 #include <vector>
-#include <stdint.h>
 #include "parcel_util.h"
 #include "gesture_simulation.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 class MockGestureResultListener : public GestureResultListener {
 public:
     MockGestureResultListener() {}
     virtual ~MockGestureResultListener() {}
     void OnGestureInjectResult(uint32_t sequence, bool result) override;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // MOCK_GESTURE_SIMULATION_H

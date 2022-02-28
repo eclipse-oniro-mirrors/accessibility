@@ -15,8 +15,6 @@
 
 #include "accessibility_operator.h"
 #include "accessibility_element_info.h"
-#include <sys/time.h>
-#include <unistd.h>
 #include <gtest/gtest.h>
 
 namespace OHOS {
@@ -195,6 +193,5 @@ void AccessibilityOperator::SendSimulateGesture(const int channelId,
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator SendSimulateGesture";
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

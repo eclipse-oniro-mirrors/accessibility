@@ -17,13 +17,66 @@
 #include "windowmanager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
-class MockDisplay : public Display {
+class Display::Impl : public RefBase {
 public:
-    MockDisplay(const std::string &name, sptr<DisplayInfo> info);
-    ~MockDisplay() = default;
+    Impl(const std::string& name, sptr<DisplayInfo> info)
+    {
+        name_= name;
+        displayInfo_ = info;
+    }
+    ~Impl() = default;
+    DEFINE_VAR_FUNC_GET_SET(std::string, Name, name);
+    DEFINE_VAR_FUNC_GET_SET(sptr<DisplayInfo>, DisplayInfo, displayInfo);
 };
 
-MockDisplay::MockDisplay(const std::string& name, sptr<DisplayInfo> info) : Display(name, info)
+Display::Display(const std::string& name, sptr<DisplayInfo> info)
+    : pImpl_(new Impl(name, info))
 {
+}
+
+Display::~Display()
+{
+}
+
+DisplayId Display::GetId() const
+{
+    return pImpl_->GetDisplayInfo()->GetDisplayId();
+}
+
+int32_t Display::GetWidth() const
+{
+    return pImpl_->GetDisplayInfo()->GetWidth();
+}
+
+int32_t Display::GetHeight() const
+{
+    return pImpl_->GetDisplayInfo()->GetHeight();
+}
+
+uint32_t Display::GetFreshRate() const
+{
+    return pImpl_->GetDisplayInfo()->GetFreshRate();
+}
+
+ScreenId Display::GetScreenId() const
+{
+    return pImpl_->GetDisplayInfo()->GetScreenId();
+}
+
+void Display::UpdateDisplayInfo(sptr<DisplayInfo> displayInfo) const
+{
+    if (displayInfo == nullptr) {
+        return;
+    }
+    pImpl_->SetDisplayInfo(displayInfo);
+}
+
+float Display::GetVirtualPixelRatio() const
+{
+#ifdef PRODUCT_RK
+    return 1.0f;
+#else
+    return 2.0f;
+#endif
 }
 } // namespace OHOS::Rosen

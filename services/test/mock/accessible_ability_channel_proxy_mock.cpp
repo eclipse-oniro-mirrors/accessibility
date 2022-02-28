@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "accessible_ability_channel_proxy.h"
 
 #include "accessibility_errorcode.h"
+#include "accessible_ability_channel_proxy.h"
 #include "parcel.h"
 
 using namespace std;
@@ -23,7 +23,8 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
     const sptr<IRemoteObject> &object): IRemoteProxy<IAccessibleAbilityChannel>(object)
-{}
+{
+}
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
 {
@@ -123,6 +124,5 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
 {
     return;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

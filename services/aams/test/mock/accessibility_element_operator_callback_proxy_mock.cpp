@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "accessibility_element_operator_callback_proxy.h"
 #include "hilog_wrapper.h"
 #include "ipc_types.h"
@@ -34,22 +35,27 @@ bool AccessibilityElementOperatorCallbackProxy::WriteInterfaceToken(MessageParce
 
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
-{}
+{
+}
 
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult(
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
-{}
+{
+}
 
 void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
-{}
+{
+}
 
 void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const AccessibilityElementInfo &info,
     const int requestId)
-{}
+{
+}
 
 void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const bool succeeded, const int requestId)
-{}
+{
+}
 
 template<typename T>
 bool AccessibilityElementOperatorCallbackProxy::WriteParcelableVector(const std::vector<T> &parcelableVector,
@@ -57,6 +63,5 @@ bool AccessibilityElementOperatorCallbackProxy::WriteParcelableVector(const std:
 {
     return true;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -14,7 +14,6 @@
  */
 
 #include "accessibility_element_operator_callback_stub.h"
-#include <vector>
 
 #include "accessibility_errorcode.h"
 #include "hilog_wrapper.h"
@@ -52,7 +51,7 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
     MessageParcel &reply, MessageOption &option)
  {
     HILOG_DEBUG("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, cmd = %d, flags= %d",
-            code, option.GetFlags());
+        code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
 
@@ -81,10 +80,9 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
     for (int i = 0; i < accessibilityInfosize; i++) {
-        // std::shared_ptr<AccessibilityElementInfo> accessibilityInfo(data.ReadParcelable<AccessibilityElementInfo>());
-        AccessibilityElementInfo* accessibilityInfo = data.ReadParcelable<AccessibilityElementInfo>();
+        sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
-            HILOG_ERROR("ReadParcelable<accessibilityInfo> failed");
+            HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
         }
         infos.emplace_back(*accessibilityInfo);
     }
@@ -103,10 +101,9 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
     for (int i = 0; i < accessibilityInfosize; i++) {
-        // std::shared_ptr<AccessibilityElementInfo> accessibilityInfo(data.ReadParcelable<AccessibilityElementInfo>());
-        AccessibilityElementInfo* accessibilityInfo = data.ReadParcelable<AccessibilityElementInfo>();
+        sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
-            HILOG_ERROR("ReadParcelable<accessibilityInfo> failed");
+            HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
         }
         infos.emplace_back(*accessibilityInfo);
     }
@@ -121,10 +118,9 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInf
     MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s", __func__);
-    // std::shared_ptr<AccessibilityElementInfo> info(data.ReadParcelable<AccessibilityElementInfo>());
-    AccessibilityElementInfo* info = data.ReadParcelable<AccessibilityElementInfo>();
+    sptr<AccessibilityElementInfo> info = data.ReadStrongParcelable<AccessibilityElementInfo>();
     if (!info) {
-        HILOG_ERROR("ReadParcelable<AccessibilityElementInfo> failed");
+        HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return ERROR;
     }
 
@@ -139,10 +135,9 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult
     MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s", __func__);
-    // std::shared_ptr<AccessibilityElementInfo> info(data.ReadParcelable<AccessibilityElementInfo>());
-    AccessibilityElementInfo* info = data.ReadParcelable<AccessibilityElementInfo>();
+    sptr<AccessibilityElementInfo> info = data.ReadStrongParcelable<AccessibilityElementInfo>();
     if (!info) {
-        HILOG_ERROR("ReadParcelable<AccessibilityElementInfo> failed");
+        HILOG_ERROR("ReadStrongParcelable<AccessibilityElementInfo> failed");
         return ERROR;
     }
 

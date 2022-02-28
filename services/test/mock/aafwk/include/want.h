@@ -15,6 +15,7 @@
 
 #ifndef OHOS_AAFWK_WANT_H
 #define OHOS_AAFWK_WANT_H
+
 #include <string>
 #include <unistd.h>
 #include "uri.h"

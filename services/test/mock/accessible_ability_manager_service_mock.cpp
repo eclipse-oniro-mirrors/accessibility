@@ -13,24 +13,23 @@
  * limitations under the License.
  */
 
-#include <time.h>
 #include <functional>
+#include <ctime>
 #include <unistd.h>
-#include "accessible_ability_manager_service.h"
-#include "accessibility_event_info.h"
-#include "accessibility_window_manager.h"
-#include "hilog_wrapper.h"
-#include "system_ability_definition.h"
-#include "iservice_registry.h"
 #include "ability_info.h"
-#include "accessibility_interaction_bridge.h"
 #include "accessibility_display_manager.h"
+#include "accessibility_event_info.h"
+#include "accessibility_interaction_bridge.h"
+#include "accessibility_window_manager.h"
+#include "accessible_ability_manager_service.h"
+#include "hilog_wrapper.h"
+#include "iservice_registry.h"
+#include "system_ability_definition.h"
 
 using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 EventType UTeventType;
 int UTgestureId;
 std::vector<EventType> eventType;
@@ -42,15 +41,17 @@ const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
 
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
-    : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true),
-      bundleManager_(nullptr) {
+    : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true), bundleManager_(nullptr)
+{
     HILOG_INFO("AccessibleAbilityManagerService is constructed");
 }
 
-AccessibleAbilityManagerService::~AccessibleAbilityManagerService() {
+AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
+{
 }
 
-void AccessibleAbilityManagerService::OnStart() {
+void AccessibleAbilityManagerService::OnStart()
+{
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
 
     if (!Init()) {
@@ -59,11 +60,13 @@ void AccessibleAbilityManagerService::OnStart() {
     }
 }
 
-void AccessibleAbilityManagerService::OnStop() {
+void AccessibleAbilityManagerService::OnStop()
+{
     HILOG_INFO("stop AccessibleAbilityManagerService");
 }
 
-bool AccessibleAbilityManagerService::Init() {
+bool AccessibleAbilityManagerService::Init()
+{
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
         if (!runner_) {
@@ -84,16 +87,20 @@ bool AccessibleAbilityManagerService::Init() {
     return true;
 }
 
-void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) {
+void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId)
+{
     UTeventType = uiEvent.GetEventType();
     eventType.push_back(UTeventType);
     HILOG_INFO("AccessibleAbilityManagerService::SendEvent successfully");
 }
 
-void AccessibleAbilityManagerService::SendEventInner(AccessibilityEventInfo &uiEvent) {}
+void AccessibleAbilityManagerService::SendEventInner(AccessibilityEventInfo &uiEvent)
+{
+}
 
 uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
-    const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId) {
+    const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId)
+{
     if (accountId != currentAccountId_) {
         return 0;
     }
@@ -116,7 +123,8 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 }
 
 vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(const int abilityTypes,
-    const int stateType) {
+    const int stateType)
+{
     vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("stateType is out of range!!");
@@ -144,22 +152,23 @@ void AccessibleAbilityManagerService::RegisterElementOperator(const int windowId
     const sptr<IAccessibilityElementOperator> &operation, int accountId)
 {
     sptr<AppExecFwk::IBundleMgr> bundleMgrProxy = GetBundleMgrProxy();
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation,
-                                                                                                 accountId);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     accountData->AddAccessibilityWindowConnection(windowId, connection);
 
     HILOG_INFO("AccessibleAbilityManagerService::RegisterElementOperator successfully");
 }
 
-void AccessibleAbilityManagerService::DeregisterElementOperator(int windowId) {
+void AccessibleAbilityManagerService::DeregisterElementOperator(int windowId)
+{
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     accountData->RemoveAccessibilityWindowConnection(windowId);
 
     HILOG_INFO("AccessibleAbilityManagerService::DeregisterElementOperator successfully");
 }
 
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData() {
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
+{
     auto iter = a11yAccountsData_.find(currentAccountId_);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
@@ -169,12 +178,14 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     return accountData;
 }
 
-bool AccessibleAbilityManagerService::IsWantedKeyEvent(MMI::KeyEvent &event) {
+bool AccessibleAbilityManagerService::IsWantedKeyEvent(MMI::KeyEvent &event)
+{
     return true;
 }
 
-void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(int displayId, Rect &rect, float scale,
-    float centerX, float centerY) {
+void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(int displayId,
+    Rect &rect, float scale, float centerX, float centerY)
+{
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     map<string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
     for (auto &ability : abilities) {
@@ -182,14 +193,13 @@ void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(int displa
     }
 }
 
-sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy() {
-
+sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
+{
     return bundleManager_;
 }
 
-
-sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessibilityWindowConnection(
-    int windowId) {
+sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessibilityWindowConnection(int windowId)
+{
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Get account data failed");
@@ -198,17 +208,20 @@ sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessib
     return accountData->GetAccessibilityWindowConnection(windowId);
 }
 
-void AccessibleAbilityManagerService::ClearFocus(int windowId) {
+void AccessibleAbilityManagerService::ClearFocus(int windowId)
+{
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     connection->GetProxy()->ClearFocus();
 }
 
-void AccessibleAbilityManagerService::OutsideTouch(int windowId) {
+void AccessibleAbilityManagerService::OutsideTouch(int windowId)
+{
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
     connection->GetProxy()->OutsideTouch();
 }
 
-void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri &uri) {
+void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri &uri)
+{
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         return;
@@ -216,7 +229,8 @@ void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri &uri) {
     UpdateAbilities();
 }
 
-void AccessibleAbilityManagerService::UpdateAbilities() {
+void AccessibleAbilityManagerService::UpdateAbilities()
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -228,8 +242,7 @@ void AccessibleAbilityManagerService::UpdateAbilities() {
     vector<AccessibilityAbilityInfo> installedAbilities = accountData->GetInstalledAbilities();
     for (auto &installAbility : installedAbilities) {
         AppExecFwk::ElementName element(installAbility.GetAbilityInfo().deviceId,
-                                        installAbility.GetPackageName(),
-                                        installAbility.GetName());
+                                        installAbility.GetPackageName(), installAbility.GetName());
         std::string elementName =  element.GetURI();
         // wait for the connecting ability.
         if (accountData->GetConnectingA11yAbilities().count(elementName)) {
@@ -250,7 +263,8 @@ void AccessibleAbilityManagerService::UpdateAbilities() {
     }
 }
 
-void AccessibleAbilityManagerService::UpdateAccessibilityManagerService() {
+void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -265,7 +279,8 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService() {
     UpdateAccessibilityState();
 }
 
-void AccessibleAbilityManagerService::UpdateAccessibilityState() {
+void AccessibleAbilityManagerService::UpdateAccessibilityState()
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -280,7 +295,8 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState() {
     }
 }
 
-void AccessibleAbilityManagerService::UpdateInputFilter() {
+void AccessibleAbilityManagerService::UpdateInputFilter()
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -315,7 +331,8 @@ void AccessibleAbilityManagerService::UpdateInputFilter() {
     }
 }
 
-void AccessibleAbilityManagerService::UpdateMagnification() {
+void AccessibleAbilityManagerService::UpdateMagnification()
+{
     HILOG_DEBUG("%{public}s start.", __func__);
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -335,18 +352,20 @@ void AccessibleAbilityManagerService::UpdateMagnification() {
             AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
         }
     }
-
 }
 
-void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector) {
+void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
+{
     touchEventInjector_ = touchEventInjector;
 }
 
-void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter) {
+void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
+{
     keyEventFilter_ = keyEventFilter;
 }
 
-void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote) {
+void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
+{
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
     if (!accountData) {
@@ -356,11 +375,24 @@ void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(
     accountData->RemoveStateCallback(remote);
 }
 
-void AccessibleAbilityManagerService::RemovedUser(int32_t accountId) {}
-void AccessibleAbilityManagerService::PresentUser() {}
-void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName) {}
-void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName) {}
-void AccessibleAbilityManagerService::PackageUpdateFinished(std::string &bundleName) {}
+void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
+{
+}
 
-}   // namespace OHOS
-}   //Accessibility
+void AccessibleAbilityManagerService::PresentUser()
+{
+}
+
+void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
+{
+}
+
+void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName)
+{
+}
+
+void AccessibleAbilityManagerService::PackageUpdateFinished(std::string &bundleName)
+{
+}
+} // namespace OHOS
+} // namespace Accessibility

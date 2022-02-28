@@ -25,40 +25,39 @@ namespace Accessibility {
 */
 class MockAccessibleAbilityManagerServiceStub : public AccessibleAbilityManagerServiceClientStub {
 public:
-    MockAccessibleAbilityManagerServiceStub()
-    {}
-    ~MockAccessibleAbilityManagerServiceStub()
-    {}
+    MockAccessibleAbilityManagerServiceStub() {}
+    ~MockAccessibleAbilityManagerServiceStub() {}
 
-    void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId)
-    {}
+    void SendEvent(const AccessibilityEventInfo &uiEvent, const int accountId) {}
 
     uint32_t RegisterStateCallback(const sptr<IAccessibleAbilityManagerServiceState> &callback, const int accountId)
     {
         return 1;
     }
+
     std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType)
     {
         std::vector<AccessibilityAbilityInfo> infos;
         return infos;
     }
-    void RegisterElementOperator(const int windowId,
-            const sptr<IAccessibilityElementOperator> &operation,
-            const int accountId)
-    {}
-    void DeregisterElementOperator(const int windowId)
-    {}
 
-    uint32_t RegisterCaptionPropertyCallback(
-        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
+    void RegisterElementOperator(const int windowId,
+        const sptr<IAccessibilityElementOperator> &operation, const int accountId) {}
+
+    void DeregisterElementOperator(const int windowId) {}
+
+    uint32_t RegisterCaptionPropertyCallback(const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback,
+        const int accountId)
     {
             return 0;
     }
+
     CaptionProperty GetCaptionProperty()
     {
         CaptionProperty cap;
         return cap;
     }
+
     bool GetEnabledState()
     {
         return true;
@@ -79,7 +78,6 @@ public:
     {
         return true;
     }
-
     bool SetCaptionProperty(const CaptionProperty& caption)
     {
         return true;
@@ -104,7 +102,6 @@ public:
     {
         return true;
     }
-
     bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
     {
         return true;
@@ -119,12 +116,10 @@ public:
         std::vector<AccessibilityAbilityInfo> test;
         return test;
     }
-
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
     {
         return true;
     }
-
     bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
     {
         return true;
@@ -133,14 +128,13 @@ public:
     {
         return true;
     }
-
-    int GetActiveWindow() {
+    int GetActiveWindow()
+    {
         return 0;
     }
 private:
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityManagerServiceStub);
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif

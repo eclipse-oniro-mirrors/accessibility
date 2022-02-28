@@ -18,11 +18,10 @@
 
 #include <cstdint>
 #include <list>
-#include <string>
 #include <map>
+#include <string>
 
 #include "accessibility_element_operator_callback_interface.h"
-
 #include "iremote_broker.h"
 #include "iremote_object.h"
 #include "refbase.h"
@@ -33,8 +32,7 @@ namespace Accessibility {
 * The class define the interface for UI to implement.
 * It triggered by ABMS when AA to request the accessibility information.
 */
-class IAccessibilityElementOperator : public IRemoteBroker
-{
+class IAccessibilityElementOperator : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibilityElementOperator");
 
@@ -140,7 +138,6 @@ public:
         OUTSIDE_TOUCH,
     };
 };
-
 }   // namespace Accessibility
 }   // namespace OHOS
 #endif

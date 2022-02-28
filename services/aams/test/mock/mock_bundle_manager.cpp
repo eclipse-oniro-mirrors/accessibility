@@ -13,22 +13,24 @@
  * limitations under the License.
  */
 
-#include "hilog_wrapper.h"
+
 #include "mock_bundle_manager.h"
+#include "ability_config.h"
 #include "ability_info.h"
 #include "application_info.h"
-#include "ability_config.h"
+#include "hilog_wrapper.h"
+
 using namespace OHOS::AAFwk;
 
 namespace OHOS {
 namespace AppExecFwk {
-
 int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     return 0;
 }
 
-bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo, int32_t userId)
+bool BundleMgrService::GetBundleInfo(const std::string &bundleName,
+    const BundleFlag flag, BundleInfo &bundleInfo, int32_t userId)
 {
     return true;
 }
@@ -37,10 +39,8 @@ bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want &want, AbilityInfo &ab
 {
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo ------------ start");
     if (CheckWantEntity(want, abilityInfo)) {
-
         HILOG_DEBUG(" mock BundleMgrService CheckWantEntity true ------------ start");
         return true;
-
     }
 
     ElementName elementTemp = want.GetElement();
@@ -85,8 +85,8 @@ bool BundleMgrService::QueryAbilityInfoByUri(const std::string &uri, AbilityInfo
     return false;
 }
 
-bool BundleMgrService::GetApplicationInfo(
-    const std::string &appName, const ApplicationFlag flag, const int userId, ApplicationInfo &appInfo)
+bool BundleMgrService::GetApplicationInfo(const std::string &appName,
+    const ApplicationFlag flag, const int userId, ApplicationInfo &appInfo)
 {
     if (appName.empty()) {
         return false;
@@ -117,10 +117,10 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     auto bundleName = element.GetBundleName();
     auto abilityName = element.GetAbilityName();
     if (find || (bundleName == AbilityConfig::SYSTEM_UI_BUNDLE_NAME &&
-                    (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
-                        abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
+                (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
+                 abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
         GTEST_LOG_(INFO) << "QueryAbilityInfo ++> system luncher, find :" << find;
-    HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------4");
+        HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start-----4");
         return true;
     }
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------5");
@@ -136,6 +136,7 @@ bool BundleMgrService::QueryAbilityInfosForClone(const Want &want, std::vector<A
 {
     return true;
 }
+
 bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo> &formInfos)
 {
     return true;
@@ -145,15 +146,18 @@ bool BundleMgrService::GetFormsInfoByApp(const std::string &bundleName, std::vec
 {
     return true;
 }
+
 bool BundleMgrService::GetFormsInfoByModule(const std::string &bundleName, const std::string &moduleName,
-                            std::vector<FormInfo> &formInfos)
+    std::vector<FormInfo> &formInfos)
 {
     return true;
 }
+
 bool BundleMgrService::GetShortcutInfos(const std::string &bundleName, std::vector<ShortcutInfo> &shortcutInfos)
 {
     return true;
 }
+
 bool BundleMgrService::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords)
 {
     return true;
@@ -164,6 +168,5 @@ bool BundleMgrService::NotifyAbilityLifeStatus(const std::string &bundleName, co
 {
     return true;
 }
-
 }  //namespace AppExecFwk
 }  // namespace OHOS

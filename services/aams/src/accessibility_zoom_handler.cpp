@@ -14,15 +14,10 @@
  */
 
 #include "accessibility_zoom_handler.h"
-#include <iostream>
-#include <vector>
 #include "hilog_wrapper.h"
-
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityZoomHandler::AccessibilityZoomHandler(int displayId)
 {
     displayId_ = displayId;
@@ -65,7 +60,7 @@ void AccessibilityZoomHandler::OnTransitionTo(const int state)
                 currentState_ = slidingState_;
                 break;
             default:
-                std::cout << "State input error" << std::endl;
+                HILOG_ERROR("State input error");
                 break;
         }
     }
@@ -205,6 +200,5 @@ bool AccessibilityZoomHandler::SlidingState::OnScale()
 {
     return true;
 }
-
 }  // namespace Accessibility
 }  // namespace OHOS

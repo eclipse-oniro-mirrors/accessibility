@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_service.h"
+
 #include <ctime>
 #include <functional>
 #include <unistd.h>
@@ -22,8 +23,8 @@
 #include "accessibility_event_info.h"
 #include "accessibility_interaction_bridge.h"
 #include "accessibility_window_manager.h"
-#include "hilog_wrapper.h"
 #include "iservice_registry.h"
+#include "hilog_wrapper.h"
 #include "system_ability_definition.h"
 
 using namespace std;
@@ -63,6 +64,16 @@ void AccessibleAbilityManagerService::OnStart()
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+}
+
+void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_INFO("OnAddSystemAbility AccessibleAbilityManagerService");
+}
+
+void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_INFO("OnRemoveSystemAbility AccessibleAbilityManagerService");
 }
 
 bool AccessibleAbilityManagerService::Init()
@@ -349,14 +360,14 @@ void AccessibleAbilityManagerService::UpdateMagnification()
         return;
     }
 
-    std::vector<const sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
+    std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
 
     if (accountData->GetScreenMagnificationFlag()) {
-        for (const sptr<Rosen::Display> display : displays) {
+        for (sptr<Rosen::Display> display : displays) {
             AccessibilityZoomProxy::GetInstance().Register(display->GetId());
         }
     } else {
-        for (const sptr<Rosen::Display> display : displays) {
+        for (sptr<Rosen::Display> display : displays) {
             AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
         }
     }
@@ -514,8 +525,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerService::
 {
     HILOG_DEBUG(" %{public}s", __func__);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    std::map<std::string, AppExecFwk::ElementName> it{};
-    it = accountData->GetEnabledAbilities();
+    std::map<std::string, AppExecFwk::ElementName> it = accountData->GetEnabledAbilities();
     return it;
 }
 
@@ -592,6 +602,7 @@ int AccessibleAbilityManagerService::GetActiveWindow()
 }
 
 void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
-{}
+{
+}
 }   // namespace OHOS
 }   // Accessibility

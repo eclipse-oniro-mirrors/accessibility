@@ -18,8 +18,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+AccessibilityWindowInfo::AccessibilityWindowInfo()
+{
+}
 
-/* AccessibleAction     Parcel struct                   */
+/* AccessibleAction Parcel struct */
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
     int windowType;
@@ -160,9 +163,9 @@ Rect AccessibilityWindowInfo::GetRectInScreen() const
 void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
 {
     boundsInScreen_.SetLeftTopScreenPostion(const_cast<Rect &>(bounds).GetLeftTopXScreenPostion(),
-    const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
+        const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
     boundsInScreen_.SetRightBottomScreenPostion(const_cast<Rect &>(bounds).GetRightBottomXScreenPostion(),
-    const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
+        const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
 }
 
 bool AccessibilityWindowInfo::IsActive() const
@@ -211,11 +214,5 @@ void AccessibilityWindowInfo::AddChild(const int childId)
     childIds_.push_back(childId);
     childNum_++;
 }
-
-AccessibilityWindowInfo::AccessibilityWindowInfo()
-{
-
-}
-
 } // namespace Accessibility
 } // namespace OHOS

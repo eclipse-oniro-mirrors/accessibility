@@ -15,8 +15,6 @@
 
 #include "js_accessibility_extension.h"
 
-#include <string>
-
 #include "accessible_ability_client_stub_impl.h"
 #include "ability_info.h"
 #include "hilog_wrapper.h"
@@ -166,7 +164,7 @@ bool JsAccessibilityExtension::OnKeyPressEvent(const MMI::KeyEvent& keyEvent)
     ConvertKeyEventToJS(reinterpret_cast<napi_env>(nativeEngine), napiEventInfo, const_cast<MMI::KeyEvent&>(keyEvent));
     NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
     NativeValue* argv[] = {nativeEventInfo};
-    NativeValue* nativeResult = CallObjectMethod("onAccessibilityEvent", argv, 1);
+    NativeValue* nativeResult = CallObjectMethod("onKeyPressEvent", argv, 1);
 
     // unwrap result
     bool result = false;

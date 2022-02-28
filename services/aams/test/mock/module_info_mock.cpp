@@ -15,15 +15,13 @@
 
 #include "module_info.h"
 
-#include "nlohmann/json.hpp"
-#include "string_ex.h"
-
 #include "app_log_wrapper.h"
+#include "nlohmann/json.hpp"
 #include "parcel_macro.h"
+#include "string_ex.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-
 bool ModuleInfo::ReadFromParcel(Parcel &parcel)
 {
     return true;
@@ -42,7 +40,7 @@ bool ModuleInfo::Marshalling(Parcel &parcel) const
 
 void to_json(nlohmann::json &jsonObject, const ModuleInfo &moduleInfo)
 {
-    jsonObject = nlohmann::json{
+    jsonObject = nlohmann::json {
         {"moduleName", moduleInfo.moduleName},
         {"moduleSourceDir", moduleInfo.moduleSourceDir}
     };
@@ -53,6 +51,5 @@ void from_json(const nlohmann::json &jsonObject, ModuleInfo &moduleInfo)
     moduleInfo.moduleName = jsonObject.at("moduleName").get<std::string>();
     moduleInfo.moduleSourceDir = jsonObject.at("moduleSourceDir").get<std::string>();
 }
-
 }  //namespace AppExecFwk
 }  // namespace OHOS

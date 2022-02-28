@@ -40,9 +40,10 @@ int g_testGestureSimulate = -1;
 std::vector<EventType> g_mTeventType;
 int g_mTgestureId = -1;
 
-AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object):
-    IRemoteProxy<IAccessibleAbilityClient>(object)
-{}
+AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject> &object)
+	: IRemoteProxy<IAccessibleAbilityClient>(object)
+{
+}
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 {
@@ -56,7 +57,8 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
 }
 
 void AccessibleAbilityClientProxy::Disconnect(const int channelId)
-{}
+{
+}
 
 void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo)
 {
@@ -66,8 +68,7 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
     g_testEventType = int(eventInfo.GetEventType());
     g_mTgestureId = int(eventInfo.GetGestureType());
 
-    switch (eventInfo.GetEventType())
-    {
+    switch (eventInfo.GetEventType()) {
         case TYPE_TOUCH_GUIDE_GESTURE_BEGIN:
         case TYPE_TOUCH_GUIDE_GESTURE_END:
         case TYPE_TOUCH_GUIDE_BEGIN:
@@ -86,11 +87,11 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     MessageParcel data;
     MessageParcel reply;
     HILOG_DEBUG();
-    HILOG_DEBUG("%{public}s start.-----------------------------zjx mock Proxy Start ", __func__);
-    HILOG_DEBUG("%{public}s start.----------sequence--%{public}d ----------zjx mock Proxy Start ", __func__, sequence);
+    HILOG_DEBUG("%{public}s start.-----------------------------mock Proxy Start ", __func__);
+    HILOG_DEBUG("%{public}s start.----------sequence--%{public}d ----------mock Proxy Start ", __func__, sequence);
     g_testKeyPressEvent = sequence;
-    HILOG_DEBUG("%{public}s mock AccessibleAbilityClientProxy -------mock -----mock------------- end.", __func__);
-    HILOG_DEBUG("%{public}s start.-----------------------------zjx mock Proxy end ", __func__);
+    HILOG_DEBUG("%{public}s mock AccessibleAbilityClientProxy-----mock------------- end.", __func__);
+    HILOG_DEBUG("%{public}s start.-----------------------------mock Proxy end ", __func__);
 }
 
 void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
@@ -104,6 +105,5 @@ void AccessibleAbilityClientProxy::OnGestureSimulateResult(const int sequence, c
     g_testGestureSimulateResult = 1;
     g_testGestureSimulate = sequence;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

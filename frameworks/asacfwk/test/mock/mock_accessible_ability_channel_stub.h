@@ -20,20 +20,22 @@
 #include <gmock/gmock.h>
 #include <iremote_object.h>
 #include <iremote_stub.h>
-#include "accessible_ability_channel_interface.h"
 #include "accessibility_errorcode.h"
+#include "accessible_ability_channel_interface.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibleAbilityChannelStubMock : public IRemoteStub<IAccessibleAbilityChannel> {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"IAccessibleAbilityChannelMock");
 
     AccessibleAbilityChannelStubMock() : code_(0)
-    {}
+    {
+    }
+
     virtual ~AccessibleAbilityChannelStubMock()
-    {}
+    {
+    }
 
     MOCK_METHOD4(SendRequest, int(uint32_t, MessageParcel &, MessageParcel &, MessageOption &));
 
@@ -151,8 +153,6 @@ public:
 
     int code_ = 0;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // MOCK_ACCESSIBLE_ABILITY_CHANNEL_STUB_H

@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {
     HILOG_DEBUG("%{public}s start.", __func__);
@@ -42,8 +41,8 @@ AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
     memberFuncMap_.clear();
 }
 
-int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
-                                                        MessageOption &option)
+int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
+    MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     HILOG_DEBUG("AccessibleAbilityClientStub::OnRemoteRequest, cmd = %d, flags= %d", code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityClientStub::GetDescriptor();
@@ -108,17 +107,14 @@ ErrCode AccessibleAbilityClientStub::HandleOnAccessibilityEvent(MessageParcel &d
 ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("%{public}s start.", __func__);
-#if 0 // TODO: Use AccessibilityKeyEvent to instead MMI::KeyEvent
-    std::unique_ptr<MMI::KeyEvent> keyEvent(data.ReadParcelable<MMI::KeyEvent>());
-    if (!keyEvent) {
-        HILOG_ERROR("ReadParcelable<MMI::KeyEvent> failed");
-        return ERR_INVALID_VALUE;
-    }
-
     int sequence = data.ReadInt32();
 
+    std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
+    if (!keyEvent->ReadFromParcel(data)) {
+        HILOG_ERROR("keyEvent ReadFromParcel failed");
+        return ERR_INVALID_VALUE;
+    }
     OnKeyPressEvent(*keyEvent, sequence);
-#endif
     return NO_ERROR;
 }
 
@@ -150,6 +146,5 @@ ErrCode AccessibleAbilityClientStub::HandleOnGestureSimulateResult(MessageParcel
     OnGestureSimulateResult(sequence, completedSuccessfully);
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

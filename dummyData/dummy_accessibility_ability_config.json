@@ -7,5 +7,5 @@
     "uiInteractiveTimeout": 10000,
     "accessibilityCapabilities":["keyEventObserver", "touchGuide", "zoom", "retrieve"],
     "description": "$string:accessibility_service_description",
-    "settingsAbility": "com.example.android.accessibility.ServiceSettingsAbility"
+    "settingsAbility": "com.example.ohos.accessibility.ServiceSettingsAbility"
 }

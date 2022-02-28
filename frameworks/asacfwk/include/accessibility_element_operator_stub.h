@@ -18,8 +18,8 @@
 
 #include <cstdint>
 #include <list>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "accessibility_element_operator_interface.h"
 #include "accessibility_element_operator_callback.h"
@@ -34,8 +34,7 @@ namespace Accessibility {
 * The class define the interface for UI to implement.
 * It is triggered by ABMS when AA to request the accessibility information.
 */
-class AccessibilityElementOperatorStub : public IRemoteStub<IAccessibilityElementOperator>
-{
+class AccessibilityElementOperatorStub : public IRemoteStub<IAccessibilityElementOperator> {
 public:
     /**
      * @brief construct function
@@ -313,14 +312,13 @@ private:
      */
     ErrCode HandleOutsideTouch(MessageParcel &data, MessageParcel &reply);
 
-    using AccessibilityElementOperatorFunc = ErrCode (AccessibilityElementOperatorStub::*)
-    (MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AccessibilityElementOperatorFunc> memberFuncMap_ {};
+    using AccessibilityElementOperatorFunc =
+        ErrCode (AccessibilityElementOperatorStub::*)(MessageParcel &data, MessageParcel &reply);
+    std::map<uint32_t, AccessibilityElementOperatorFunc> memberFuncMap_;
     static std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>  aaCallbacks_;
     int windowId_ = 0;
     DISALLOW_COPY_AND_MOVE(AccessibilityElementOperatorStub);
 };
-
 }   // namespace Accessibility
 }   // namespace OHOS
 #endif

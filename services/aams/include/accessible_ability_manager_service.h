@@ -40,7 +40,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityAccountData;
 class TouchEventInjector;
 
@@ -71,9 +70,6 @@ public:
     bool SetCaptionProperty(const CaptionProperty& caption) override;
     bool SetCaptionState(const bool state) override;
     bool SetEnabled(const bool state) override;
-
-    void PersistElementNamesToSetting(
-        const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId);
 
     /* For InputFilter */
     void SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector);
@@ -147,6 +143,9 @@ public:
     bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
     bool DeregisterUITestAbilityConnectionClient() override;
     int GetActiveWindow() override;
+protected:
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
+    void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
 private:
     void AddUITestClient(const sptr<IRemoteObject>& obj);
@@ -215,7 +214,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerService);
 };
-
 }  // namespace Accessibility
 }  // namespace OHOS
 #endif  // ACCESSIBLE_ABILITY_MANAGER_SERVICE_H

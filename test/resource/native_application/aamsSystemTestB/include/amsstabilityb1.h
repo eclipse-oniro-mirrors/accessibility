@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-#ifndef _AAMS_ST_ABILITY_B1_
-#define _AAMS_ST_ABILITY_B1_
+#ifndef AAMS_ST_ABILITY_B1
+#define AAMS_ST_ABILITY_B1
+
 #include <string>
 #include "ability_loader.h"
 #include "accessibility_element_operator.h"
@@ -24,20 +25,11 @@
 
 namespace OHOS {
 namespace AppExecFwk {
-
 class AccessibleAbilityListenerTest;
 
 class AamsStAbilityB1 : public Ability {
-protected:
-    virtual void OnStart(const Want &want) override;
-    virtual void OnStop() override;
-    virtual void OnActive() override;
-    virtual void OnInactive() override;
-    virtual void OnBackground() override;
-    virtual void OnForeground(const Want &want) override;
-    virtual void OnNewWant(const Want &want) override;
 public:
-    //aams
+    // aams
     void Interrupt();
     void RegisterInteractionOperation();
     void DeregisterInteractionOperation();
@@ -46,16 +38,24 @@ public:
     void GetAccessibilityCaptionProperties();
     void SendEventWithType();
     void SendEvent();
-    //state callback
+    // state callback
     void SubscribeStateObserver();
     void UnsubscribeStateObserver();
     void UnsubscribeStateObserverEventType();
 
-    //AA->AAMS
+    // AA->AAMS
     void RegisterListenerToAA();
     void ConnectToAAMS();
     void GetRootElementInfo();
     std::string shouldReturn;
+protected:
+    virtual void OnStart(const Want &want) override;
+    virtual void OnStop() override;
+    virtual void OnActive() override;
+    virtual void OnInactive() override;
+    virtual void OnBackground() override;
+    virtual void OnForeground(const Want &want) override;
+    virtual void OnNewWant(const Want &want) override;
 private:
     void Clear();
     void GetWantInfo(const Want &want);
@@ -66,7 +66,7 @@ private:
     std::shared_ptr<AccessibleAbilityListenerTest> listener_ = nullptr;
 };
 
-class AccessibilityInteractionOperationTest : public Accessibility::AccessibilityInteractionOperation{
+class AccessibilityInteractionOperationTest : public Accessibility::AccessibilityInteractionOperation {
 public:
     AccessibilityInteractionOperationTest() {}
     virtual ~AccessibilityInteractionOperationTest() = default;
@@ -84,7 +84,7 @@ public:
     void OutsideTouch()override;
 };
 
-class AccessibilityStateObserverTest : public Accessibility::AccessibilityStateObserver{
+class AccessibilityStateObserverTest : public Accessibility::AccessibilityStateObserver {
 public:
     AccessibilityStateObserverTest() {}
     virtual ~AccessibilityStateObserverTest() = default;
@@ -105,7 +105,6 @@ public:
 private:
     std::shared_ptr<AamsStAbilityB1> aamsStAbilityB1_ = std::make_shared<AamsStAbilityB1>();
 };
-
 }  // namespace AppExecFwk
 }  // namespace OHOS
-#endif  // _AMS_ST_ABILITY_E1_
+#endif  // AAMS_ST_ABILITY_B1

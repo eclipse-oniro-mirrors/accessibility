@@ -134,7 +134,8 @@ void PointerEvent::PointerItem::SetDeviceId(int32_t deviceId)
 
 PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType) {}
 
-PointerEvent::~PointerEvent() {
+PointerEvent::~PointerEvent()
+{
     pointers_.clear();
     pressedButtons_.clear();
     pressedKeys_.clear();
@@ -142,7 +143,9 @@ PointerEvent::~PointerEvent() {
 
 std::shared_ptr<PointerEvent> PointerEvent::Create()
 {
-    return std::shared_ptr<PointerEvent>(new PointerEvent(InputEvent::EVENT_TYPE_POINTER));
+    PointerEvent *tmp = new PointerEvent(InputEvent::EVENT_TYPE_POINTER);
+    std::shared_ptr<PointerEvent> pointEvent(tmp);
+    return pointEvent;
 }
 
 int32_t PointerEvent::GetSourceType() const
@@ -211,6 +214,5 @@ std::vector<int32_t> PointerEvent::GetPointersIdList() const
 
     return pointerIdList;
 }
-
 }
 }

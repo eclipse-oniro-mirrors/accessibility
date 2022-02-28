@@ -38,7 +38,6 @@ public:
 void AccessibilityDisplayManagerUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityDisplayManagerUnitTest Start ######################";
-
 }
 
 void AccessibilityDisplayManagerUnitTest::TearDownTestCase()
@@ -47,10 +46,12 @@ void AccessibilityDisplayManagerUnitTest::TearDownTestCase()
 }
 
 void AccessibilityDisplayManagerUnitTest::SetUp()
-{}
+{
+}
 
 void AccessibilityDisplayManagerUnitTest::TearDown()
-{}
+{
+}
 
 /**
  * @tc.number: AccessibilityDisplayManager_Unittest_OnCreate_001
@@ -71,8 +72,7 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
  * @tc.name: OnDestroy
  * @tc.desc: Test function OnDestroy
  */
-HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_OnDestroy_001,
-    TestSize.Level1)
+HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_OnDestroy_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnDestroy_001 start";
 

@@ -12,13 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "napi_accessibility_event_info.h"
-
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "accessibility_event_info.h"
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
@@ -29,6 +24,8 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+
+napi_value NAccessibilityEventInfo::cons_ = nullptr;
 
 void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
 {

@@ -53,12 +53,10 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
 
 AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
 {
-    AccessibilityAbilityInfoDummy accessibilityAbilityInfoDummydata;
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM | CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
     uint32_t capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001 | 0x0020;
     capabilities_ = capabilities;
-    targetBundleNames_ = accessibilityAbilityInfoDummydata.filterBundleNames;
-    eventTypes_ = accessibilityAbilityInfoDummydata.accessibilityEventTypes;
+    eventTypes_ = 0xFFFFFFFF;   // TYPES_ALL_MASK
     name_ = abilityInfo.name;
     bundleName_ = abilityInfo.bundleName;
 }

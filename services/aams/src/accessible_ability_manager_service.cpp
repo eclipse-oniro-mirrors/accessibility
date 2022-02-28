@@ -80,14 +80,8 @@ void AccessibleAbilityManagerService::OnStart()
         HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
         return;
     }
-    HILOG_INFO("AccessibleAbilityManagerService::OnStart OK.");
+    HILOG_INFO("AccessibleAbilityManagerService::Publish OK.");
     isRunning_ = true;
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    HILOG_INFO("AccessibleAbilityManagerService::call accountData->init().");
-    accountData->init();
-    UpdateAbilities();
-    UpdateAccessibilityManagerService();
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -133,23 +127,20 @@ bool AccessibleAbilityManagerService::Init()
         }
     }
 
-    if (!accessibilityCommonEventRegistry_.StartRegister()) {
-        HILOG_ERROR("AccessibleAbilityManagerService::Init failed:Failed to subscribe common event");
-        return false;
-    }
-
     // temp deal: set current account Id to 100.
     // This is a temporary countermeasure, after which a formal countermeasure is required.
     currentAccountId_ = 100;
     HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
-
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    accountData->init();
 
-    // Get ExtensionInfo from BMS
-    accountData->GetInstalledAbilitiesFromBMS();
-
+    HILOG_INFO("AddAbilityListener begin!");
+    AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
+    AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
+    HILOG_INFO("AddAbilityListener end!");
+    
     // temp deal: [setting] Add listener of setting's URI.
-
     HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
 }
@@ -158,6 +149,7 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
 {
     HILOG_DEBUG(" %{public}s", __func__);
     HILOG_INFO("eventType[%{public}d]", (int)uiEvent.GetEventType());
+    HILOG_INFO("gestureId[%{public}d]", (int)uiEvent.GetGestureType());
     if (accountId != currentAccountId_) {
         HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
         return;
@@ -352,12 +344,6 @@ bool AccessibleAbilityManagerService::SetEnabled(const bool state)
     return result;
 }
 
-void AccessibleAbilityManagerService::PersistElementNamesToSetting(
-    const std::string& bundleName, std::map<std::string, AppExecFwk::ElementName>& componentNames, int accountId)
-{
-    // temp deal: Update specified item to setting.
-}
-
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
     HILOG_DEBUG(" %{public}s: currentAccoutId is %{public}d ", __func__, currentAccountId_);
@@ -515,17 +501,25 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
     HILOG_DEBUG("%{public}s start bundleName(%{public}s)", __func__, bundleName.c_str());
 
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
-    if (packageAccount->GetEnabledAbilities().empty()) {
+    if (packageAccount->GetInstalledAbilities().empty()) {
+        HILOG_DEBUG("There is no installed abilities.");
         return;
     }
 
+    sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo();
+    accessibilityInfo->SetPackageName(bundleName);
+    packageAccount->RemoveInstalledAbility(*accessibilityInfo);
+
     bool needUpdateAbility = false;
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities = packageAccount->GetEnabledAbilities();
+    if (enabledAbilities.empty()) {
+        HILOG_DEBUG("There is no enabled abilities.");
+        return;
+    }
     for (auto& enableAbility : enabledAbilities) {
         if (enableAbility.second.GetBundleName() == bundleName) {
             packageAccount->RemoveEnabledAbility(enableAbility.second);
             packageAccount->RemoveConnectingA11yAbility(enableAbility.second);
-            PersistElementNamesToSetting(bundleName, enabledAbilities, currentAccountId_);
             needUpdateAbility = true;
         }
     }
@@ -546,7 +540,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
     for (auto newAbility : extensionInfos) {
         if (newAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package added is an extension ability and\
-            extension ability's name is %{public}s", newAbility.name.c_str());
+                extension ability's name is %{public}s", newAbility.name.c_str());
             sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo(newAbility);
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}d",
@@ -648,7 +642,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
     }
 
     accountData->UpdateAccountCapabilities();
-    UpdateWindowChangeListener();
+    // This is temp dell UpdateWindowChangeListener();
     UpdateMagnification();
     UpdateInputFilter();
     UpdateAccessibilityState();
@@ -682,7 +676,10 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(elementName);
         if (accountData->GetEnabledAbilities().count(elementName)) {
             if (!connection) {
-                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);// this is a temp deal for ace test
+                // this is a temp deal for ace test
+                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
+                                                   Capability::CAPABILITY_KEY_EVENT_OBSERVER |
+                                                   Capability::CAPABILITY_GESTURE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
@@ -939,8 +936,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
     // add installed ability
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     abilityInfo->SetPackageName("com.example.uitest");
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE |
-        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
@@ -989,6 +985,39 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
 int AccessibleAbilityManagerService::GetActiveWindow()
 {
     return AccessibilityWindowInfoManager::GetInstance().activeWindowId_;
+}
+
+void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    switch (systemAbilityId) {
+        case COMMON_EVENT_SERVICE_ID:
+            // Register common event
+            if (!accessibilityCommonEventRegistry_.StartRegister()) {
+                HILOG_ERROR("AccessibleAbilityManagerService::Init failed:Failed to subscribe common event");
+            }
+            break;
+        case BUNDLE_MGR_SERVICE_SYS_ABILITY_ID:
+            // Get installed accessibility extension ability from BMS
+            if (accountData->GetInstalledAbilitiesFromBMS()) {
+                UpdateAbilities();
+                UpdateAccessibilityManagerService();
+            } else {
+                HILOG_ERROR("Get installed ExtentionAbility failed");
+            }
+            break;
+        case WINDOW_MANAGER_SERVICE_ID:
+            AccessibilityWindowInfoManager::GetInstance().RegisterWindowChangeListener();
+            break;
+        default:
+            break;
+    }
+}
+
+void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
 }  // namespace Accessibility
 }  // namespace OHOS
