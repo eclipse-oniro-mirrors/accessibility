@@ -42,7 +42,6 @@
           "name": "//base/accessibility/frameworks/aafwk:accessibleability",
           "header": {
             "header_files": [
-              "accessibility_extension_context.h",
               "accessibility_ui_test_ability_listener.h",
               "accessibility_ui_test_ability.h"
             ],

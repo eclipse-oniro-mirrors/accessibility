@@ -178,8 +178,7 @@ void AccessibilityElementInfo::SetComponentId(const int componentId)
 bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], focus[%{public}d]",
-        channelId_, windowId_, elementId_, focus);
+        elementId_[%{public}d], focus[%{public}d]", channelId_, windowId_, elementId_, focus);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
@@ -193,8 +192,7 @@ bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInf
 bool AccessibilityElementInfo::GetNext(const FocusMoveDirection direction, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], direction[%{public}d]",
-        channelId_, windowId_, elementId_, direction);
+        elementId_[%{public}d], direction[%{public}d]", channelId_, windowId_, elementId_, direction);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
@@ -223,8 +221,7 @@ int AccessibilityElementInfo::GetChildCount() const
 bool AccessibilityElementInfo::GetChild(const int index, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], index[%{public}d]",
-        channelId_, windowId_, elementId_, index);
+        elementId_[%{public}d], index[%{public}d]", channelId_, windowId_, elementId_, index);
     if (index >= childCount_ || index < 0) {
         HILOG_ERROR("index[%{public}d] is invalid", index);
         return false;
@@ -356,8 +353,7 @@ bool AccessibilityElementInfo::GetByContent(const std::string &text,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_INFO("called] channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], text[%{public}s]",
-        channelId_, windowId_, elementId_, text.c_str());
+        elementId_[%{public}d], text[%{public}s]", channelId_, windowId_, elementId_, text.c_str());
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {

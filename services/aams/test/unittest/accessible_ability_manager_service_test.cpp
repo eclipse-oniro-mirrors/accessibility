@@ -30,9 +30,6 @@ using namespace std;
 
 extern int g_testChannalId;
 extern int g_testEventType;
-extern int g_testDisplayId;
-extern int g_testStateType;
-extern int g_testGesture;
 
 namespace OHOS {
 namespace Accessibility {

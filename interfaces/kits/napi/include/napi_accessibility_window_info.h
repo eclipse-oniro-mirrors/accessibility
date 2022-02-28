@@ -46,6 +46,7 @@ public:
     static napi_value GetChild(napi_env env, napi_callback_info info);
 
     static napi_value cons_;
+    static napi_ref consRef_;
 private:
     NAccessibilityWindowInfo() = default;
     ~NAccessibilityWindowInfo() = default;
