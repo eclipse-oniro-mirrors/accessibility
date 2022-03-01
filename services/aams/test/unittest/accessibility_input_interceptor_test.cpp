@@ -14,7 +14,6 @@
  */
 
 #include <gtest/gtest.h>
-
 #include "accessibility_display_manager.h"
 #include "accessibility_input_interceptor.h"
 #include "accessible_ability_client_stub_impl.h"

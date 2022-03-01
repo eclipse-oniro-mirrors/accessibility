@@ -34,7 +34,6 @@ AccessibilityExtension* AccessibilityExtension::Create(const std::unique_ptr<Abi
         default:
             return new AccessibilityExtension();
     }
-
 }
 
 void AccessibilityExtension::Init(const std::shared_ptr<AbilityRuntime::AbilityLocalRecord> &record,

@@ -1358,6 +1358,5 @@ sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
     }
     return rect;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

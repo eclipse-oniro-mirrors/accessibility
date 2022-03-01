@@ -655,12 +655,10 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
     float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
     float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
-
     float firstOffsetX = xPointF - xPointDownF;
     float firstOffsetY = yPointF - yPointDownF;
     float secondOffsetX = xPointS - xPointDownS;
     float secondOffsetY = yPointS - yPointDownS;
-
     if ((firstOffsetX == 0 && firstOffsetY == 0) ||
         (secondOffsetX == 0 && secondOffsetY == 0)) {
         return true;
@@ -670,7 +668,6 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float firstYCos = GetAngleCos(firstOffsetX, firstOffsetY, false);
     float secondXCos = GetAngleCos(secondOffsetX, secondOffsetY, true);
     float secondYCos = GetAngleCos(secondOffsetX, secondOffsetY, false);
-
     if ((firstXCos * secondXCos + firstYCos * secondYCos) < MAX_DRAG_GESTURE_COSINE) {
         return false;
     }

@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace MMI {
-
 const int32_t KeyEvent::KEYCODE_VOLUME_UP = 16;
 const int32_t KeyEvent::KEYCODE_VOLUME_DOWN = 17;
 

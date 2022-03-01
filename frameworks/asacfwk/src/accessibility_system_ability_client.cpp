@@ -358,7 +358,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("set state is %{public}d", state);
     if (isEnabled_ != state) {
         isEnabled_ = state;
         NotifyAccessibilityStateChanged();
@@ -587,7 +587,7 @@ void AccessibilitySystemAbilityClient::SetCaptionEnabled(const bool enabled)
 
 void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("isEnabled_ is %{public}d", isEnabled_);
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersAccessibilityState_.size() == 0) {
         HILOG_DEBUG("%{public}s observersAccessibilityState_ is null", __func__);

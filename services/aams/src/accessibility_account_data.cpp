@@ -329,7 +329,7 @@ const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::G
 // get enabledAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("enabledAbilities_ size is (%{public}d).", enabledAbilities_.size());
     for (auto& abilitie : enabledAbilities_) {
         std::string bundleName = abilitie.second.GetBundleName();
         HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());

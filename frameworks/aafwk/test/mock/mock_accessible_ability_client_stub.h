@@ -82,8 +82,6 @@ public:
 
     int code_ = 0;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // MOCK_ACCESSIBLE_ABILITY_CLIENT_STUB_H

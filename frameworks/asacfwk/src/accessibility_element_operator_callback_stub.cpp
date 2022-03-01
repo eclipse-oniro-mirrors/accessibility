@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
     memberFuncMap_[static_cast<uint32_t>(
@@ -54,7 +53,6 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
         code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -160,6 +158,5 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(M
 
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

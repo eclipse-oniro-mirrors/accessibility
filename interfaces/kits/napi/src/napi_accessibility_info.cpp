@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "hilog_wrapper.h"
 #include "napi_accessibility_info.h"
+#include "hilog_wrapper.h"
 #include "napi_accessibility_utils.h"
 
 using namespace OHOS;

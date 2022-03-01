@@ -188,7 +188,6 @@ void AccessibilityZoomHandler::SlidingState::OnPointerEvent(MMI::PointerEvent &e
             observer_[0].OnBack(event);
             break;
     }
-
 }
 
 bool AccessibilityZoomHandler::SlidingState::OnScroll()

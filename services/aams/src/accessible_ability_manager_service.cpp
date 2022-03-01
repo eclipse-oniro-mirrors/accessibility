@@ -42,6 +42,8 @@ const string TASK_SEND_PUBLIC_NOTICE_EVENT = "SendPublicNoticeEvent";
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
 
+static const int32_t TEMP_ACCOUNT_ID = 100;
+
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true),
       bundleManager_(nullptr)
@@ -127,9 +129,9 @@ bool AccessibleAbilityManagerService::Init()
         }
     }
 
-    // temp deal: set current account Id to 100.
+    // temp deal: set current account Id to TEMP_ACCOUNT_ID.
     // This is a temporary countermeasure, after which a formal countermeasure is required.
-    currentAccountId_ = 100;
+    currentAccountId_ = TEMP_ACCOUNT_ID;
     HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     accountData->init();
@@ -667,7 +669,6 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         HILOG_DEBUG("installAbility's packageName is %{public}s", installAbility.GetPackageName().c_str());
         HILOG_DEBUG("installAbility's abilityName is %{public}s", installAbility.GetName().c_str());
         std::string elementName = "/" + installAbility.GetPackageName() + "/"; // temp deal
-
         // wait for the connecting ability.
         if (accountData->GetConnectingA11yAbilities().count(elementName)) {
             continue;
@@ -701,7 +702,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
         HILOG_ERROR("Account data is null");
         return;
     }
-
     uint32_t state = accountData->GetAccessibilityState();
     for (auto& callback : accountData->GetStateCallbacks()) {
         callback->OnStateChanged(state);

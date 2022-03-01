@@ -17,16 +17,13 @@
 #define OHOS_EVENT_TRANSMISSION_H_
 
 #include <cstdint>
-
+#include "accessibility_event_info.h"
 #include "key_event.h"
 #include "pointer_event.h"
 #include "refbase.h"
 
-#include "accessibility_event_info.h"
-
 namespace OHOS {
 namespace Accessibility {
-
 class EventTransmission : public RefBase {
 public:
     EventTransmission() {};
