@@ -429,6 +429,13 @@ bool BundleMgrProxy::QueryExtensionAbilityInfos(const ExtensionAbilityType &exte
 {
     return true;
 }
+
+std::shared_ptr<Media::PixelMap> BundleMgrProxy::GetAbilityPixelMapIcon(const std::string &bundleName,
+    const std::string &abilityName)
+{
+    return nullptr;
+}
+
 template<typename T>
 bool BundleMgrProxy::GetParcelableInfo(IBundleMgr::Message code, MessageParcel &data, T &parcelableInfo)
 {
