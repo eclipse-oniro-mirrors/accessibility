@@ -92,7 +92,8 @@ float MockAccessibleAbilityChannel::GetDisplayResizeCenterX(const int displayId)
     return 1.0f;
 }
 
-float MockAccessibleAbilityChannel::GetDisplayResizeCenterY(const int displayId) {
+float MockAccessibleAbilityChannel::GetDisplayResizeCenterY(const int displayId)
+{
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeCenterY start";
     return 1.0f;
 }

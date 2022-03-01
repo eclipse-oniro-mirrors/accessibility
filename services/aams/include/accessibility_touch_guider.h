@@ -84,32 +84,31 @@ enum ChangeAction : int {
 
 class TGEventHandler : public AppExecFwk::EventHandler {
 public:
-  TGEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
+    TGEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
                  TouchGuider &tgServer);
-  virtual ~TGEventHandler() = default;
-  /**
-   * @brief Process the event of install system bundles.
-   * @param event Indicates the event to be processed.
-   * @return
-   */
-  virtual void ProcessEvent(
-      const AppExecFwk::InnerEvent::Pointer &event) override;
+    virtual ~TGEventHandler() = default;
+    /**
+     * @brief Process the event of install system bundles.
+     * @param event Indicates the event to be processed.
+     * @return
+     */
+    virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 
 private:
-  /**
-   * @brief Send HoverEnter and HoverMove to Multimodal.
-   * @param
-   * @return
-   */
-  void HoverEnterAndMoveRunner();
+    /**
+     * @brief Send HoverEnter and HoverMove to Multimodal.
+     * @param
+     * @return
+     */
+    void HoverEnterAndMoveRunner();
 
-  /**
-   * @brief Send HoverExit to Multimodal.
-   * @param
-   * @return
-   */
-  void HoverExitRunner();
-  TouchGuider &tgServer_;
+    /**
+     * @brief Send HoverExit to Multimodal.
+     * @param
+     * @return
+     */
+    void HoverExitRunner();
+    TouchGuider &tgServer_;
 };
 
 class TouchGuider : public EventTransmission {

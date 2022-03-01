@@ -111,7 +111,7 @@ void AAMSServerTest::TearDown()
 void AAMSServerTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if((fp = fopen(fname, "w")) == nullptr) {
+    if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
     }
 
@@ -257,7 +257,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
     installAbilityInfo->SetPackageName("123");
     auto accountData = aams_->GetCurrentAccountData();
 
-    /* add install ability dummy*/
+    /* add install ability dummy */
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
     accountData->AddInstalledAbility(*installAbilityInfo);
     EXPECT_EQ(2, (int)accountData->GetInstalledAbilities().size());

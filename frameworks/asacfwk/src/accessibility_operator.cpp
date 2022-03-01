@@ -200,8 +200,7 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
             return result;
         }
 
-        HILOG_DEBUG(
-            "FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
+        HILOG_DEBUG("FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
             focusType[%{public}d] sequenceNum[%{public}d]",
             channelId, accessibilityWindowId, elementId, focusType);
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {

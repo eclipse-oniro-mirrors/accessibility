@@ -100,7 +100,7 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
-    elementName_ = new AppExecFwk::ElementName("name","bundleName","id");
+    elementName_ = new AppExecFwk::ElementName("name", "bundleName", "id");
     aastub_ = new AccessibleAbilityClientStubImpl();
     AAConnection_->OnAbilityConnectDone(*elementName_, aastub_, 0);
     accountData_->AddInstalledAbility(*abilityInfo);

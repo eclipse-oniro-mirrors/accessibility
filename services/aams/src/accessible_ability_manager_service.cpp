@@ -580,7 +580,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
     for (auto changedAbility : extensionInfos) {
         if (changedAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package changed is an extension ability and\
-            extension ability's name is %{public}s", changedAbility.name.c_str());
+                extension ability's name is %{public}s", changedAbility.name.c_str());
             AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(changedAbility);
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}d",

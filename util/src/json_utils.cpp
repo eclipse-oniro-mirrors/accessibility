@@ -126,7 +126,7 @@ bool JsonUtils::SetStrValue(
     return true;
 }
 
-bool JsonUtils::SetStrValue( nlohmann::json& json, const std::string& key, const std::string& value)
+bool JsonUtils::SetStrValue(nlohmann::json& json, const std::string& key, const std::string& value)
 {
     HILOG_DEBUG("start.");
     if (!json.is_object()) {

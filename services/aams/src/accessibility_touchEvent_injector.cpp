@@ -53,7 +53,7 @@ TouchEventInjector::TouchEventInjector()
         return;
     }
     handler_ = std::make_shared<TouchInjectHandler>(runner_, *this);
-    if (!handler_){
+    if (!handler_) {
         HILOG_ERROR("create event handler failed");
         return;
     }

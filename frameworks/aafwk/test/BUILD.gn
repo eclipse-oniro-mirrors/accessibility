@@ -27,6 +27,7 @@ config("module_private_config") {
     "//third_party/json/include",
     "//utils/system/safwk/native/include",
     "//base/accessibility/frameworks/aafwk/include",
+    "//base/accessibility/interfaces/innerkits/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
@@ -34,8 +35,8 @@ config("module_private_config") {
     "//base/accessibility/services/test/mock/aafwk/include",
     "//base/accessibility/services/test/mock/multimodalinput/include",
     "//base/accessibility/dummyData",
+    "//foundation/ace/napi/native_engine",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
-    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
@@ -82,6 +83,7 @@ ohos_unittest("accessible_ability_test") {
 
   deps = [
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//foundation/ace/napi:ace_napi",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",

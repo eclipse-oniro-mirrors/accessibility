@@ -25,7 +25,7 @@ AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
 {}
 
 int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
-                                                        MessageOption &option)
+    MessageOption &option)
 {
     return 0;
 }

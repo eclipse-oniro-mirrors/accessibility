@@ -113,7 +113,8 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     // auto AccessibilityWindowInfoManager::GetInstance() = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     int windowId = 0;
-    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    AccessibilityWindowInfo info =
+        AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
     info.SetWindowType(WindowType::TYPE_APPLICATION);
     AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
 
@@ -124,7 +125,8 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     winInfo->windowRect_.posX_ = 1;
     winInfo->windowRect_.posY_ = 1;
     winInfo->focused_ = true;
-    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo,
+        Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
     GTEST_LOG_(INFO) << "2 start";
     Rect rect(0, 100, 800, 900);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
@@ -155,7 +157,8 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     int windowId = 0;
-    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    AccessibilityWindowInfo info =
+        AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
     info.SetWindowType(WindowType::TYPE_APPLICATION);
     AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
     winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
@@ -165,7 +168,8 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     winInfo->windowRect_.posX_ = 1;
     winInfo->windowRect_.posY_ = 1;
     winInfo->focused_ = true;
-    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    AccessibilityWindowInfoManager::GetInstance().windowListener_->OnWindowUpdate(winInfo,
+        Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
     Rect rect(0, 100, 800, 400);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
 
@@ -194,7 +198,8 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     int windowId = 0;
-    AccessibilityWindowInfo info = AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
+    AccessibilityWindowInfo info =
+        AccessibilityWindowInfoManager::GetInstance().CreateAccessibilityWindowInfo(*winInfo);
     info.SetWindowType(WindowType::TYPE_APPLICATION);
     AccessibilityWindowInfoManager::GetInstance().a11yWindows_.insert(std::make_pair(windowId, info));
     winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;

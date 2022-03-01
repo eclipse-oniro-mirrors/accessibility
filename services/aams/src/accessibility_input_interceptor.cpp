@@ -159,20 +159,20 @@ void AccessibilityInputInterceptor::CreateInterceptor()
         return;
     }
 
-    if (interceptorId_ != -1) {
-        HILOG_DEBUG("Interceptor is already added, id is %{public}d.", interceptorId_);
-        return;
+    if (interceptorId_ == -1) {
+        inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
+        if ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
+            (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
+            interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
+            HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
+        }
     }
-    inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
-    if ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
-        (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
-        interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
-    }
-    HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
-    
-    if (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) {
-        keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
-        HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+
+    if (keyEventInterceptorId_ == -1) {
+        if (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) {
+            keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
+            HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+        }
     }
 }
 
@@ -200,12 +200,9 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
         inputManager_->RemoveInterceptor(keyEventInterceptorId_);
     }
 
-    if (interceptorId_ == -1) {
-        HILOG_DEBUG("Interceptor is not added.");
-        return;
+    if (interceptorId_ != -1) {
+        inputManager_->RemoveInterceptor(interceptorId_);
     }
-
-    inputManager_->RemoveInterceptor(interceptorId_);
 }
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
@@ -244,7 +241,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
         return;
     }
-    PowerMgr::PowerMgrClient::GetInstance().RefreshActivity();
+
     pointerEventTransmitters_->OnPointerEvent(*event);
 }
 

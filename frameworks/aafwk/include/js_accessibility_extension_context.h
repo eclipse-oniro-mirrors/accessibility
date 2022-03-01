@@ -20,10 +20,9 @@
 #include "gesture_simulation.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-
-class NativeEngine;
-class NativeValue;
-class NativeReference;
+#include "native_engine.h"
+#include "native_reference.h"
+#include "native_value.h"
 
 namespace OHOS {
 namespace Accessibility {

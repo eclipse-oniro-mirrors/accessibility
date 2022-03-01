@@ -17,7 +17,7 @@
 #include "hilog_wrapper.h"
 
 namespace OHOS {
-namespace Accessibility{
+namespace Accessibility {
 void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
@@ -35,7 +35,7 @@ void EventTransmission::OnPointerEvent(MMI::PointerEvent &event)
     auto next = GetNext();
     if (next != nullptr) {
         next->OnPointerEvent(event);
-  }
+    }
 }
 
 void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo &event)

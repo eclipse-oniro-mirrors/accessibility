@@ -99,7 +99,7 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
                 isGestureStarted_ = false;
                 pointerRoute_.clear();
             }
-          break;
+            break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
             return HandleTouchMoveEvent(event);
         case MMI::PointerEvent::POINTER_ACTION_UP:
@@ -248,7 +248,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
                 isLongpress_ = false;
                 handler_->RemoveEvent(LONG_PRESS_MSG);
                 handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT);
-            }else{
+            } else {
                 StandardGestureCancled();
             }
             break;
@@ -268,7 +268,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
             break;
         default:
             break;
-          }
+    }
     return false;
 }
 

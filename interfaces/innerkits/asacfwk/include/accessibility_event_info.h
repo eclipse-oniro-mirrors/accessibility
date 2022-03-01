@@ -413,7 +413,7 @@ private:
     int currentIndex_ = 0;
     int beginIndex_ = 0;
     int endIndex_ = 0;
-    std::vector<std::string> contents_{};
+    std::vector<std::string> contents_ {};
     std::string componentType_ = "";
     std::string description_ = "";
     std::string beforeText_ = "";

@@ -87,7 +87,10 @@ public:
      * @return Returns true if the event has been consumed; returns false otherwise.
      *         The event that has been consumed will not be sent to the application.
      */
-    virtual bool OnKeyPressEvent(const MMI::KeyEvent& keyEvent) {return false;}
+    virtual bool OnKeyPressEvent(const MMI::KeyEvent& keyEvent)
+    {
+        return false;
+    }
 };
 } // namespace Accessibility
 } // namespace OHOS

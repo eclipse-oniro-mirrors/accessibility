@@ -103,7 +103,7 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
     instance.SetDisplayResizeScaleAndCenter(1, 1, 1, 1, 1, true);
 
     GTEST_LOG_(INFO) << "SendSimulateGesture start";
-    std::vector<GesturePathDefine> gestureSteps{};
+    std::vector<GesturePathDefine> gestureSteps {};
     instance.SendSimulateGesture(1, 1, gestureSteps);
 }
 
@@ -170,7 +170,7 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
 
     EXPECT_TRUE(instance->ExecuteCommonAction(1, 1));
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetSource_001 start";
     AccessibilityMemo record {};
     record.SetChannelId(1);
@@ -180,46 +180,46 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     AccessibilityElementInfo element {};
     element.SetChannelId(1);
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetFocus start";
     element.GetFocus(1, info);
     GTEST_LOG_(INFO) << "GetFocus end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetNext start";
     FocusMoveDirection direction = FocusMoveDirection::UP;
     element.GetNext(direction, info);
     GTEST_LOG_(INFO) << "GetNext end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetByContent start";
     string str = "text";
     element.GetByContent(str, infos);
     GTEST_LOG_(INFO) << "GetByContent end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetParent start";
     element.GetParent(element);
     GTEST_LOG_(INFO) << "GetParent end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetLabeled start";
     element.GetLabeled(element);
     GTEST_LOG_(INFO) << "GetLabeled end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     AccessibilityWindowInfo window {};
     window.SetChannelId(1);
     GTEST_LOG_(INFO) << "GetRootAccessibilityInfo start";
     window.GetRootAccessibilityInfo(element);
     GTEST_LOG_(INFO) << "GetRootAccessibilityInfo end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetAnchor start";
     window.GetAnchor(element);
     GTEST_LOG_(INFO) << "GetAnchor end";
 
-    //Dont' remove the instance
+    // Dont' remove the instance
     GTEST_LOG_(INFO) << "GetParent start";
     window.GetParent();
     GTEST_LOG_(INFO) << "GetParent end";

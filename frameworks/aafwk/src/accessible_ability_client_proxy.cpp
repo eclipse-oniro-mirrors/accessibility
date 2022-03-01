@@ -85,7 +85,7 @@ void AccessibleAbilityClientProxy::Disconnect(const int channelId)
     }
 
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::DISCONNECT),
-                data, reply, option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("Disconnect fail, error: %d", error);
     }
@@ -108,7 +108,7 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
         return;
     }
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_ACCESSIBILITY_EVENT),
-                data, reply, option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnAccessibilityEvent fail, error: %d", error);
     }
@@ -137,7 +137,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     }
 
     error = Remote()->SendRequest(static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT),
-                data, reply, option);
+        data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnKeyPressEvent fail, error: %d", error);
     }

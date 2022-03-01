@@ -51,9 +51,8 @@ void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChang
     }
 
     if (!data.WriteParcelable(&caption)) {
-      HILOG_ERROR("%{public}s fail, connection write caption property error",
-                  __func__);
-      return;
+        HILOG_ERROR("%{public}s fail, connection write caption property error", __func__);
+        return;
     }
 
     error = Remote()->SendRequest(

@@ -31,8 +31,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
 
     auto& winMgr = AccessibilityWindowInfoManager::GetInstance();
     switch (type) {
-        case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED:
-        {
+        case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED: {
             auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
             winMgr.a11yWindows_.emplace(windowInfo->wid_, a11yWindowInfo);
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_ADDED);
@@ -40,10 +39,9 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
             if (a11yWindowInfo.IsFocused()) {
                 winMgr.SetActiveWindow(windowInfo->wid_);
             }
+            break;
         }
-        break;
-        case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED:
-        {
+        case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED: {
             if (!winMgr.a11yWindows_.count(windowInfo->wid_)) {
                 return;
             }
@@ -59,23 +57,21 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
             winMgr.a11yWindows_.erase(windowInfo->wid_);
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_REMOVED);
             aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            break;
         }
-        break;
-        case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS:
-        {
+        case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: {
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_BOUNDS);
             aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            break;
         }
-        break;
         case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE:
             if (!winMgr.a11yWindows_.count(windowInfo->wid_)) {
                 auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
                 winMgr.a11yWindows_.emplace(windowInfo->wid_, a11yWindowInfo);
             }
             winMgr.SetActiveWindow(windowInfo->wid_);
-        break;
-        case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED:
-        {
+            break;
+        case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: {
             if (!winMgr.a11yWindows_.count(windowInfo->wid_)) {
                 auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
                 winMgr.a11yWindows_.emplace(windowInfo->wid_, a11yWindowInfo);
@@ -83,10 +79,10 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
             winMgr.SetActiveWindow(windowInfo->wid_);
             AccessibilityEventInfo evtInf(windowInfo->wid_, WINDOW_UPDATE_FOCUSED);
             aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            break;
         }
-        break;
         default:
-        break;
+            break;
     }
     HILOG_DEBUG("%{public}s: winMgr.a11yWindows[%{public}d]", __func__, winMgr.a11yWindows_.size());
 }

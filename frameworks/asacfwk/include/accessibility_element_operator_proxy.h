@@ -31,8 +31,7 @@ namespace Accessibility {
 * The class define the interface for UI to implement.
 * It triggered by ABMS when AA to request the accessibility information.
 */
-class AccessibilityElementOperatorProxy : public IRemoteProxy<IAccessibilityElementOperator>
-{
+class AccessibilityElementOperatorProxy : public IRemoteProxy<IAccessibilityElementOperator> {
 public:
     /**
      * @brief construct function

@@ -81,7 +81,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-	GesturePathPositionDefine &endPosition, uint32_t durationTime)
+    GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {
     HILOG_DEBUG("start.");
 

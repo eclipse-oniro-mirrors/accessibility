@@ -132,7 +132,8 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Con
  * @tc.name: CreateAccessibilityWindowInfo
  * @tc.desc: Test function CreateAccessibilityWindowInfo
  */
-HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo001, TestSize.Level1)
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo001 start";
     Rosen::WindowInfo winInfo;
@@ -186,7 +187,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo003 start";
     Rosen::WindowInfo winInfo;
-    winInfo.type_ = (OHOS::Rosen::WindowType)0xFFFFFFFF;//Rosen::WindowType::WINDOW_TYPE_MEDIA;
+    winInfo.type_ = (OHOS::Rosen::WindowType)0xFFFFFFFF; // Rosen::WindowType::WINDOW_TYPE_MEDIA;
     winInfo.wid_ = 1;
     winInfo.windowRect_.width_ = 1;
     winInfo.windowRect_.height_ = 1;

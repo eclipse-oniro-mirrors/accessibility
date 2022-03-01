@@ -167,7 +167,7 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
 }
 
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
-	const float centerX, const float centerY)
+    const float centerX, const float centerY)
 {
     HILOG_DEBUG("start.");
     if (channelId_ != INVALID_CHANNEL_ID) {

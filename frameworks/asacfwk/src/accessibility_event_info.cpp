@@ -99,7 +99,7 @@ bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
     if (instance != nullptr) {
-        result = instance->SearchElementInfosByAccessibilityId(channelId_, windowId_, elementId_, 0,elementInfos);
+        result = instance->SearchElementInfosByAccessibilityId(channelId_, windowId_, elementId_, 0, elementInfos);
         for (auto& info : elementInfos) {
             HILOG_INFO("[%{public}s] called] GetSource OK", __func__);
             result = true;
@@ -121,7 +121,7 @@ int AccessibilityMemo::GetViewId() const
 
 int AccessibilityMemo::GetAccessibilityId() const
 {
-    HILOG_INFO("[%{public}s] called] elementId_[%{public}d]",__func__, elementId_);
+    HILOG_INFO("[%{public}s] called] elementId_[%{public}d]", __func__, elementId_);
     return elementId_;
 }
 

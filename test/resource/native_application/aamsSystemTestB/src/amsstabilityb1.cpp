@@ -274,7 +274,7 @@ void AccessibilityInteractionOperationTest::SearchElementInfoByAccessibilityId(c
     info.AddChild(childId);
     std::list<AccessibilityElementInfo> infos;
     infos.push_back(info);
-    callback.SetSearchElementInfoByAccessibilityIdResult(infos,requestId);
+    callback.SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
 }
 
 void AccessibilityInteractionOperationTest::SearchElementInfosByText(const long elementId, const std::string &text,

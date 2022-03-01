@@ -162,7 +162,7 @@ private:
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId){};
+        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 

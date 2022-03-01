@@ -313,7 +313,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
     /* add */
     accountData->AddEnabledAbility(elementName);
@@ -705,7 +705,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     // new AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    //new aastub
+    // new aastub
     sptr<AccessibleAbilityClientStubImpl> aastub = new AccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");

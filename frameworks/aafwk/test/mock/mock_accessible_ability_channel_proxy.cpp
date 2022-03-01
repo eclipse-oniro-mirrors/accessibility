@@ -111,7 +111,7 @@ bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int displayId, cons
 }
 
 bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-	const float centerX, const float centerY, const bool animate)
+    const float centerX, const float centerY, const bool animate)
 {
     return true;
 }

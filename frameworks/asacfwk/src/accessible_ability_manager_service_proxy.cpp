@@ -216,8 +216,8 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<AccessibilityAbilityInfo> errorList{};
-    std::vector<AccessibilityAbilityInfo> abilityInfos{};
+    std::vector<AccessibilityAbilityInfo> errorList {};
+    std::vector<AccessibilityAbilityInfo> abilityInfos {};
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
         return errorList;
@@ -658,7 +658,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::map<std::string, AppExecFwk::ElementName> it{};
+    std::map<std::string, AppExecFwk::ElementName> it {};
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
@@ -675,7 +675,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
     }
 
     int dev_num = reply.ReadInt32();
-    std::vector<AppExecFwk::ElementName> temp{};
+    std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(reply.ReadParcelable<AppExecFwk::ElementName>());
         temp.push_back(*iter);
@@ -695,7 +695,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<AccessibilityAbilityInfo> it{};
+    std::vector<AccessibilityAbilityInfo> it {};
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("%{public}s fail, connection write Token error", __func__);

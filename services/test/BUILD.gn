@@ -45,6 +45,7 @@ config("module_private_config") {
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/notification/ces_standard/interfaces/innerkits/native/include",
     "//base/accessibility/dummyData",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",

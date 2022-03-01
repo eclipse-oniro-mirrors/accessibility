@@ -38,8 +38,7 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
     eventType_ = eventType;
 }
 
-AccessibilityEventInfo::AccessibilityEventInfo(
-            int windowId, WindowUpdateType windowChangeTypes)
+AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
 {
     eventType_ = TYPE_WINDOW_UPDATE;
 }

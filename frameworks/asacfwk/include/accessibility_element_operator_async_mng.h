@@ -72,7 +72,7 @@ private:
     int feedbackSequence_ = 0;
     bool completed_ = false;
     static std::recursive_mutex mutex_;
-    static int sequence_;    //matched request with callback result
+    static int sequence_;    // matched request with callback result
 };
 } // namespace Accessibility
 } // namespace OHOS

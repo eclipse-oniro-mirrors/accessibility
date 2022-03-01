@@ -109,7 +109,7 @@ MMI::PointerEvent TouchEventInjectorTest::CreateTouchEvent(int action)
 /**
  * @tc.number: TouchEventInjector001
  * @tc.name:TouchEventInjector
- * @tc.desc: Check injected single tap event .
+ * @tc.desc: Check injected single tap event.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_001, TestSize.Level1)
 {
@@ -134,7 +134,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 /**
  * @tc.number: TouchEventInjector004
  * @tc.name:TouchEventInjector
- * @tc.desc: Check Some functional interface .
+ * @tc.desc: Check Some functional interface.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_004, TestSize.Level1)
 {

@@ -246,8 +246,8 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int accessibilityWindowI
         return false;
     }
 
-    vector<string> actionArgumentsKey{};
-    vector<string> actionArgumentsValue{};
+    vector<string> actionArgumentsKey {};
+    vector<string> actionArgumentsValue {};
     for (auto iter = actionArguments.begin(); iter != actionArguments.end(); iter++) {
         actionArgumentsKey.push_back(iter->first);
         actionArgumentsValue.push_back(iter->second);
@@ -484,7 +484,7 @@ bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int displayId, cons
 }
 
 bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int displayId, const float scale,
-	const float centerX, const float centerY, const bool animate)
+    const float centerX, const float centerY, const bool animate)
 {
     HILOG_DEBUG("start.");
 
