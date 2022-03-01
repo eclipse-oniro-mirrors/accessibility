@@ -28,6 +28,7 @@ namespace Accessibility {
 using AccessibilityElementOperatorCallbacks = std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>;
 std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>
     AccessibilityElementOperatorStub::aaCallbacks_ = {};
+std::mutex AccessibilityElementOperatorStub::mutex_;
 
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
@@ -189,6 +190,7 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_ACCESSIBILITY_ID);
@@ -208,6 +210,7 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_TEXT);
@@ -227,6 +230,7 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_FIND_FOCUS);
@@ -246,6 +250,7 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_FOCUS_MOVE);
@@ -265,6 +270,7 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_PERFORM_ACTION);
@@ -318,6 +324,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAcces
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
@@ -333,6 +340,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
@@ -348,6 +356,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoRe
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -362,6 +371,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -376,6 +386,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
