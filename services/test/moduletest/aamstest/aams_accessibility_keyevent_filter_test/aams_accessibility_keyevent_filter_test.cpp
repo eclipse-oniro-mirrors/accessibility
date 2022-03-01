@@ -208,9 +208,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-	if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+    if (g_inputEventConsumer != nullptr) {
+        g_inputEventConsumer->OnInputEvent(keyEvent);
+    }
 
     bool handled = true;
     int sequence = 1;
@@ -245,8 +245,8 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
     if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+        g_inputEventConsumer->OnInputEvent(keyEvent);
+    }
 
     bool handled = false;
     int sequence = TEST_NUM_2;
@@ -283,8 +283,8 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
     if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+        g_inputEventConsumer->OnInputEvent(keyEvent);
+    }
     sleep(1);
     WaitUntilTaskFinished();
 

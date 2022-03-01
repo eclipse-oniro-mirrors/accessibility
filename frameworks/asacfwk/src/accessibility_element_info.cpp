@@ -335,7 +335,7 @@ int AccessibilityElementInfo::GetTextLengthLimit() const
 }
 
 bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
-        const std::map<std::string, std::string> &actionArguments)
+    const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_INFO("called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
         channelId_, windowId_, elementId_);
@@ -352,7 +352,7 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
 bool AccessibilityElementInfo::GetByContent(const std::string &text,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
-    HILOG_INFO("called] channelId_[%{public}d], windowId_[%{public}d],\
+    HILOG_INFO("called channelId_[%{public}d], windowId_[%{public}d],\
         elementId_[%{public}d], text[%{public}s]", channelId_, windowId_, elementId_, text.c_str());
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
@@ -1141,8 +1141,7 @@ sptr<GridInfo> GridInfo::Unmarshalling(Parcel& parcel)
     return grid;
 }
 
-GridInfo::GridInfo(int rowCount, int columnCount,
-                int mode)
+GridInfo::GridInfo(int rowCount, int columnCount, int mode)
 {
     HILOG_DEBUG("start");
     rowCount_ = rowCount;
@@ -1154,8 +1153,7 @@ GridInfo::GridInfo(int rowCount, int columnCount,
     HILOG_DEBUG("selectionMode_[%{public}d]", selectionMode_);
 }
 
-void GridInfo::SetGrid(int rowCount, int columnCount,
-            int mode)
+void GridInfo::SetGrid(int rowCount, int columnCount, int mode)
 {
     HILOG_DEBUG("start");
     rowCount_ = rowCount;
@@ -1236,8 +1234,7 @@ sptr<GridItemInfo> GridItemInfo::Unmarshalling(Parcel& parcel)
     return gridItem;
 }
 
-GridItemInfo::GridItemInfo(int rowIndex, int rowSpan, int columnIndex, int columnSpan,
-            bool heading, bool selected)
+GridItemInfo::GridItemInfo(int rowIndex, int rowSpan, int columnIndex, int columnSpan, bool heading, bool selected)
 {
     HILOG_DEBUG("start");
     rowIndex_ = rowIndex;
@@ -1273,8 +1270,8 @@ void GridItemInfo::SetGridItemInfo(GridItemInfo other)
     HILOG_DEBUG("selected_[%{public}d]", selected_);
 }
 
-void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
-                                int columnIndex, int columnSpan, bool heading, bool selected)
+void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan, int columnIndex,
+    int columnSpan, bool heading, bool selected)
 {
     HILOG_DEBUG("start");
     rowIndex_ = rowIndex;

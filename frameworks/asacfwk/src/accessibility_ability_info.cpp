@@ -45,14 +45,17 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityI
     }
     nlohmann::json sourceJson = nlohmann::json::parse(profileInfos[0]);
     if (!ParseAAConfig(sourceJson)) {
-      HILOG_ERROR("Parse AccessibilityAbility config file failed.");
+        HILOG_ERROR("Parse AccessibilityAbility config file failed.");
     }
+    HILOG_DEBUG("capabilities is [%{public}d].", capabilities_);
+    HILOG_DEBUG("rationale is [%{public}s].", rationale_.c_str());
+    HILOG_DEBUG("settingsAbility is [%{public}s]].", settingsAbility_.c_str());
 }
 
 bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
 {
     HILOG_DEBUG("start.");
-    //accessibilityCapabilities
+    // accessibilityCapabilities
     vector<string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(
         sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES,
@@ -62,7 +65,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
     }
     PraseVecUtils::ParseCapabilitiesFromVec(capabilities, capabilities_);
 
-    //accessibilityCapabilityRationale
+    // accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(
         sourceJson,
         AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE,

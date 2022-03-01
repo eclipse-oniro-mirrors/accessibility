@@ -128,7 +128,7 @@ void AamsAccessibleAbilityChannelTest::TearDown()
 void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if((fp = fopen(fname, "w")) == nullptr) {
+    if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
     }
 
@@ -290,7 +290,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 /**
  * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002
  * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check SearchElementInfoByAccessibilityId.
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId,
+ *           check SearchElementInfoByAccessibilityId.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002, TestSize.Level1)

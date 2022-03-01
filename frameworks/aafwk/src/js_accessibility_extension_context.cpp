@@ -167,7 +167,7 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed.\
-                        ret: %{public}d, elementInfo.has_value(): %{public}d", ret, elementInfo.has_value());
+                        ret : %{public}d, elementInfo.has_value() : %{public}d", ret, elementInfo.has_value());
                     task.Reject(engine, CreateJsError(engine, false, "Get root elementInfo failed."));
                 }
             };

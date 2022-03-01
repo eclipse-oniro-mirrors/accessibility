@@ -126,7 +126,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
     // Intersect with display dummy
     auto display = AccessibilityDisplayManager::GetInstance().GetDefaultDisplay();
     if (!Intersect(focusRect, *display)) {
-      return false;
+        return false;
     }
 
     float px = (focusRect.GetLeftTopXScreenPostion() + focusRect.GetRightBottomXScreenPostion()) / denominator;

@@ -183,7 +183,8 @@ void AamsStAbilityA1::PerformCommonAction()
     HILOG_INFO("AamsStAbilityA1:: start");
 }
 
-void AamsStAbilityA1::GetFingerprintController() {
+void AamsStAbilityA1::GetFingerprintController()
+{
     HILOG_INFO("AamsStAbilityA1:: start");
 }
 

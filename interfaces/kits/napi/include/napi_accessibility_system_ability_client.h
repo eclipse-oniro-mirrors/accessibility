@@ -88,18 +88,18 @@ private:
 };
 
 struct NAccessibilitySystemAbilityClient {
-    napi_async_work work_{};
-    napi_deferred deferred_{};
-    napi_ref thisRefer_{};
-    napi_ref callback_{};
-    napi_env env_{};
+    napi_async_work work_ {};
+    napi_deferred deferred_ {};
+    napi_ref thisRefer_ {};
+    napi_ref callback_ {};
+    napi_env env_ {};
     bool enabled_ = false;
     bool touchEnabled_ = false;
     OHOS::Accessibility::AbilityStateType stateTypes_;
     int32_t abilityTypes_ = 0;
-    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_{};
-    std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_{};
-    OHOS::Accessibility::CaptionProperty captionProperty_{};
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
+    std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_ {};
+    OHOS::Accessibility::CaptionProperty captionProperty_ {};
     bool setCaptionPropertyReturn_ = false;
     bool captionState_ = false;
     bool setCaptionStateReturn_ = false;
@@ -112,10 +112,10 @@ struct NAccessibilitySystemAbilityClient {
     bool keyEventObserverState_ = false;
     bool setKeyEvenReturn_ = false;
     bool setExtentionReturn_ = false;
-    OHOS::Accessibility::AccessibilityEventInfo eventInfo_{};
+    OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     bool result_ = false;
-    std::vector<std::shared_ptr<StateListener>> stateListener_{};
-    std::vector<std::shared_ptr<CaptionListener>> captionListener_{};
+    std::vector<std::shared_ptr<StateListener>> stateListener_ {};
+    std::vector<std::shared_ptr<CaptionListener>> captionListener_ {};
     std::string eventType_ = "";
 };
 

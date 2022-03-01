@@ -148,7 +148,7 @@ private:
     bool IsWantedEvent(int eventType);
     bool IsWhiteListEvent(EventType eventType);
 
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_{};
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ {};
     sptr<IAccessibleAbilityClient> proxy_ = nullptr;
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
     AccessibilityAbilityInfo abilityInfo_;

@@ -1231,7 +1231,6 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
     return promise;
 }
 
-
 napi_value NAccessibilityClient::GetExtentionEnabled(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
@@ -1517,7 +1516,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
         ConvertObjToCaptionProperty(env, parameters[PARAM0], &captionProperty);
         bool returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
         HILOG_INFO("%{public}s SetCaptionPropertyTojson() return = %{public}s",
-			__func__, returnVal ? "True" : "False");
+            __func__, returnVal ? "True" : "False");
     } else {
         HILOG_INFO("%{public}s argc size Error", __func__);
     }
@@ -1619,7 +1618,6 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         napi_get_boolean(env, callbackInfo->result_, &result[PARAM1]);
         if (callbackInfo->callback_) {
             napi_get_boolean(env, callbackInfo->result_, &result[PARAM0]); // maby rework
-
             napi_get_reference_value(env, callbackInfo->callback_, &callback);
             napi_value returnVal;
             napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);

@@ -110,7 +110,7 @@ public:
         const nlohmann::json& json, const std::string& key, std::vector<nlohmann::json>& value);
     static bool SetStrValue(
         nlohmann::json& json, const std::string& key, const std::string& subkey, const std::string& value);
-    static bool SetStrValue( nlohmann::json& json, const std::string& key, const std::string& value);
+    static bool SetStrValue(nlohmann::json& json, const std::string& key, const std::string& value);
     static bool SetIntValue(nlohmann::json& json, const std::string& key, const std::string& subkey, int& value);
     static bool SetVecValue(nlohmann::json& json, const std::string& key, std::string& value);
     static bool ClearVecValue(nlohmann::json& json, const std::string& key);

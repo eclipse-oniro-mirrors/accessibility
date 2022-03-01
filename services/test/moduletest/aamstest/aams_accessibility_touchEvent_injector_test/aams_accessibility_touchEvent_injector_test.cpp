@@ -151,7 +151,8 @@ void AamsInjectorTest::WritefileAll(const char* fname, const char* data)
 void AamsInjectorTest::CreateAccessibilityConfigForTouchGuide()
 {
     std::ostringstream os;
-    Json::Value object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames, accessibilityAbilityTypes;
+    Json::Value accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
     if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {

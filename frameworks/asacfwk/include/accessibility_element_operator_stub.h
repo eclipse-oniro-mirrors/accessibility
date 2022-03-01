@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <list>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -316,6 +317,7 @@ private:
         ErrCode (AccessibilityElementOperatorStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityElementOperatorFunc> memberFuncMap_;
     static std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>  aaCallbacks_;
+    static std::mutex mutex_;
     int windowId_ = 0;
     DISALLOW_COPY_AND_MOVE(AccessibilityElementOperatorStub);
 };

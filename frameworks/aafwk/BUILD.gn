@@ -33,6 +33,7 @@ config("accessibleability_private_config") {
     "//base/accessibility/interfaces/kits/napi/include",
     "//foundation/aafwk/standard/frameworks/kits/ability/native/src",
     "//foundation/aafwk/standard/frameworks/kits/ability/native/include",
+    "//foundation/ace/napi/native_engine",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
     "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]

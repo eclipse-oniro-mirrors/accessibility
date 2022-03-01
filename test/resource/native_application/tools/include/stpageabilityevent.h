@@ -86,4 +86,4 @@ private:
 };
 } // namespace AppExecFwk
 } // namespace OHOS
-#endif  //_AMS_ST_PAGE_ABILITY_EVENT_H_
+#endif  // _AMS_ST_PAGE_ABILITY_EVENT_H_

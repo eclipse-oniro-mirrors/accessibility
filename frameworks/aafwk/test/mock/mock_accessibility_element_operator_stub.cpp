@@ -33,7 +33,7 @@ AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 {}
 
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
-	MessageParcel &reply, MessageOption &option)
+    MessageParcel &reply, MessageOption &option)
 {
     return 0;
 }

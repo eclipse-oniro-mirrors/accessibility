@@ -56,7 +56,8 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
 
 AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
 {
-    // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM | CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
+    // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE |
+    // CAPABILITY_ZOOM | CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
     uint32_t capabilities = 0x0008 | 0x0002 | 0x0001 | 0x0020;
     capabilities_ = capabilities;
 }

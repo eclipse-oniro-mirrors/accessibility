@@ -48,7 +48,7 @@ AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackS
 
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
- {
+{
     HILOG_DEBUG("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, cmd = %d, flags= %d",
         code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();

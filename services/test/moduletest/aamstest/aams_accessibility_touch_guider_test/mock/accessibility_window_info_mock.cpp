@@ -160,9 +160,9 @@ Rect AccessibilityWindowInfo::GetRectInScreen() const
 void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
 {
     boundsInScreen_.SetLeftTopScreenPostion(const_cast<Rect &>(bounds).GetLeftTopXScreenPostion(),
-    const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
+        const_cast<Rect &>(bounds).GetLeftTopYScreenPostion());
     boundsInScreen_.SetRightBottomScreenPostion(const_cast<Rect &>(bounds).GetRightBottomXScreenPostion(),
-    const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
+        const_cast<Rect &>(bounds).GetRightBottomYScreenPostion());
 }
 
 bool AccessibilityWindowInfo::IsActive() const
