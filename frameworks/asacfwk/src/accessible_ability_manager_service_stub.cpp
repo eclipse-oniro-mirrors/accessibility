@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub()
 {
     HILOG_DEBUG("start");

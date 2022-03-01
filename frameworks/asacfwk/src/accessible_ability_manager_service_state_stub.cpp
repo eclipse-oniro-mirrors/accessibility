@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateStub()
 {
     HILOG_DEBUG("start");
@@ -35,7 +34,6 @@ int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, Mes
         code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceStateStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -94,8 +92,6 @@ void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t sta
     } else {
         instance->SetGestureState(false);
     }
-
 }
-
 } // namespace Accessibility
 } // namespace OHOS

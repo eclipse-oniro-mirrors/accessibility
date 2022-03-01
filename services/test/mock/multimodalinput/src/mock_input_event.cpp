@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace MMI {
-
 InputEvent::InputEvent(int32_t eventType) : eventType_(eventType)
 {
     Reset();
@@ -88,6 +87,5 @@ void InputEvent::ClearFlag()
 {
     flag_ = 0X00000000;
 }
-
 }
 }

@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceCaptionPropertyStub::AccessibleAbilityManagerServiceCaptionPropertyStub()
 {
     HILOG_DEBUG("start");
@@ -34,7 +33,6 @@ int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t
         code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceCaptionPropertyStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -66,6 +64,5 @@ void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChange
     }
     instance->UpdatecaptionProperty(caption);
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -27,7 +27,6 @@
 
 namespace OHOS {
 namespace AppExecFwk {
-namespace {
 const std::string COM_IX_HIWORLD = "com.ix.hiworld";
 const std::string COM_IX_HIMUSIC = "com.ix.hiMusic";
 const std::string COM_IX_HIRADIO = "com.ix.hiRadio";
@@ -119,7 +118,6 @@ auto HiDataInfo = [](std::string bundleName, AbilityInfo &abilityInfo, ElementNa
     abilityInfo.process = "p6";
     return true;
 };
-} // namespace
 
 class BundleMgrStub : public IRemoteStub<IBundleMgr> {
 public:

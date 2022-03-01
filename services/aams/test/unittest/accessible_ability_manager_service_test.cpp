@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-#include "accessible_ability_manager_service.h"
 #include <gtest/gtest.h>
 #include <optional>
 #include "accessibility_display_manager.h"
 #include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_manager_service.h"
 #include "accessible_ability_manager_service_state_proxy.h"
 #include "accessible_ability_manager_service_state_stub.h"
 #include "iservice_registry.h"

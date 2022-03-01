@@ -68,8 +68,8 @@ bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
                 HILOG_ERROR("get last GetPointerItem(%d) failed", pLastDown_->GetPointerId());
             }
         }
-        int dist = sqrt(pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
-            + pow(currentPointerItem.GetGlobalY() - lastPointerItem.GetLocalY(), 2));
+        int dist = std::sqrt(std::pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
+            + std::pow(currentPointerItem.GetGlobalY() - lastPointerItem.GetLocalY(), 2));
         if (dist > distance_) {
             Reset(event);
             return false;

@@ -71,7 +71,6 @@ int32_t InputManager::AddInterceptor(std::function<void(std::shared_ptr<KeyEvent
 
 void InputManager::RemoveInterceptor(int32_t interceptorId)
 {
-
 }
 }
 }

@@ -192,7 +192,6 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
     HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
     bool result = false;
     auto channelService = GetChannel(channelId);
-
     if (channelService != nullptr) {
         int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
         result = channelService->FindFocusedElementInfo(accessibilityWindowId, elementId,

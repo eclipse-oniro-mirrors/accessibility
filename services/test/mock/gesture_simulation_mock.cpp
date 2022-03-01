@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-#include <memory>
 #include "gesture_simulation.h"
 #include "parcel_util.h"
 

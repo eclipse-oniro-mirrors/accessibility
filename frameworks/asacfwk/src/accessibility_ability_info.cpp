@@ -191,6 +191,5 @@ AccessibilityAbilityInfo *AccessibilityAbilityInfo::Unmarshalling(Parcel &parcel
 
     return accessibilityAbilityInfo;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -340,6 +340,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     proxy_->Init(stub_, connectionId_);
 
     accountData_->AddConnectedAbility(pointer);
+    accountData_->RemoveConnectingA11yAbility(elementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
 }
 
@@ -359,6 +360,7 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->RemoveConnectedAbility(pointer);
+    accountData_->RemoveEnabledAbility(element);
 
     int32_t currentAccountId = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountId();
     if (accountData_->GetAccountId() == currentAccountId) {

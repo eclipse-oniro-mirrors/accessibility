@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
+#include <cstdio>
 #include <gtest/gtest.h>
-#include <stdio.h>
 #include "accessible_ability_connection.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service.h"

@@ -217,6 +217,5 @@ bool AccessibilityElementOperatorCallbackProxy::WriteParcelableVector(const std:
     }
     return true;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

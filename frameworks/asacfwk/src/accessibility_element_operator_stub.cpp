@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_element_operator_callback_stub.h"
-#include "accessibility_element_operator_stub.h"
 #include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -28,6 +28,7 @@ namespace Accessibility {
 using AccessibilityElementOperatorCallbacks = std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>;
 std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>
     AccessibilityElementOperatorStub::aaCallbacks_ = {};
+
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
     memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::SEARCH_BY_ACCESSIBILITY_ID)] =
@@ -58,7 +59,6 @@ int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParc
     HILOG_DEBUG("AccessibilityElementOperatorStub::OnRemoteRequest,cmd = %d,flags= %d", code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -305,7 +305,6 @@ void AccessibilityElementOperatorStub::OutsideTouch()
 
 AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl()
 {
-
 }
 
 AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId,
@@ -319,6 +318,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAcces
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -333,6 +333,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
@@ -347,6 +348,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoRe
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFindFocusedElementInfoResult(info, requestId);
@@ -360,6 +362,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFocusMoveSearchResult(info, requestId);
@@ -373,6 +376,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int requestId)
 {
     HILOG_DEBUG("start");
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetExecuteActionResult(succeeded, requestId);
@@ -384,12 +388,13 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
 
 AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
 {
-    HILOG_DEBUG("start");
     return aaCallbacks_;
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int requestId)
 {
+    HILOG_DEBUG("start");
+
     for (auto iter = aaCallbacks_.begin(); iter != aaCallbacks_.end();) {
         if (iter->first == requestId) {
             aaCallbacks_.erase(iter++);

@@ -19,7 +19,6 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-
 DisplayResizeController::DisplayResizeController(uint32_t channelId, uint32_t displayId)
 {
     HILOG_DEBUG("start.");
@@ -113,6 +112,5 @@ void DisplayResizeController::DispatchOnDisplayResized(const Rect& rect,
         listener->OnDisplayResized(*this, rect, scale, centerX, centerY);
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

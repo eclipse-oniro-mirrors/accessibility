@@ -25,7 +25,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class IAccessibleAbilityClient : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityClient");
@@ -89,7 +88,6 @@ public:
         ON_GESTURE_SIMULATE_RESULT,
     };
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBLE_ABILITY_CLIENT_INTERFACE_H

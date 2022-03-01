@@ -129,10 +129,7 @@ public:
     {
         GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelStubMock SendSimulateGesture";
     }
-
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // MOCK_ACCESSIBLE_ABILITY_CHANNEL_STUB_H

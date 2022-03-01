@@ -319,6 +319,5 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -16,18 +16,18 @@
 #define ACCESSIBILITY_ACCOUNT_DATA_H
 
 #include <map>
-#include <vector>
 #include <set>
 #include <string>
+#include <vector>
+#include "accessibility_caption.h"
+#include "accessibility_state_event.h"
+#include "accessibility_system_ability_client.h"
 #include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
+#include "accessible_ability_manager_service_caption_property_interface.h"
 #include "accessible_ability_manager_service_state_interface.h"
 #include "element_name.h"
 #include "refbase.h"
-#include "accessibility_state_event.h"
-#include "accessibility_system_ability_client.h"
-#include "accessible_ability_manager_service_caption_property_interface.h"
-#include "accessibility_caption.h"
 
 namespace OHOS {
 namespace Accessibility {

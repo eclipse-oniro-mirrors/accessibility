@@ -64,6 +64,5 @@ void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChang
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

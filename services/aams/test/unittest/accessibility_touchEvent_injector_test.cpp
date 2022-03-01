@@ -14,7 +14,6 @@
  */
 
 #include <gtest/gtest.h>
-
 #include "accessibility_input_interceptor.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessible_ability_client_proxy.h"

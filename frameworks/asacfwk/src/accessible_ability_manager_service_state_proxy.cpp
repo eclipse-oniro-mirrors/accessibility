@@ -64,6 +64,5 @@ void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t st
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

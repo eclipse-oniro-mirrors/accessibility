@@ -13,13 +13,8 @@
  * limitations under the License.
  */
 
-#include <vector>
 #include "accessibility_errorcode.h"
 #include "accessibility_element_operator_callback_stub.h"
-#include "hilog_wrapper.h"
-#include "ipc_skeleton.h"
-#include "ipc_types.h"
-#include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {

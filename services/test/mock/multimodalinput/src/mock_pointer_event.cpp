@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace MMI {
-
 PointerEvent::PointerItem::PointerItem() {}
 
 PointerEvent::PointerItem::~PointerItem() {}

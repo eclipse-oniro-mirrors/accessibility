@@ -27,7 +27,6 @@ class NativeReference;
 
 namespace OHOS {
 namespace Accessibility {
-
 class JSGestureResultListener : public GestureResultListener {
 public:
     JSGestureResultListener() = default;
@@ -49,5 +48,4 @@ static uint32_t gestureInjectSequence = 0;
 static std::map<uint32_t, std::shared_ptr<jsGestureResultListenerInfo>> jsGestureResultListenerInfos {};
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif  // JS_ACCESSIBILITY_EXTENSION_CONTEXT_H

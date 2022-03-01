@@ -76,7 +76,6 @@ public:
     void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) override;
 
     sptr<IRemoteObject> AsObject() override;
-
 };
 } // namespace Accessibility
 } // namespace OHOS
