@@ -27,9 +27,9 @@ const uint32_t START_WORK_ARGS_SIZE = 2;
 class StateListener : public OHOS::Accessibility::AccessibilityStateObserver {
 public:
     StateListener();
-    static void NotifyJS(napi_env env, bool enabled, std::string stateType, std::string desc, napi_ref handlerRef);
+    static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
-    void OnStateChanged(const OHOS::Accessibility::AccessibilityStateEvent& stateEvent) override;
+    void OnStateChanged(const bool state) override;
     OHOS::Accessibility::AccessibilityStateEventType GetStateType();
 
     std::string GetEventType() const
