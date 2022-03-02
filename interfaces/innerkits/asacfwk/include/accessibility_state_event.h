@@ -106,7 +106,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    virtual void OnStateChanged(const AccessibilityStateEvent& stateEvent) = 0;
+    virtual void OnStateChanged(const bool state) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

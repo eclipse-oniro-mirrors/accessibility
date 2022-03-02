@@ -395,23 +395,11 @@ napi_value StateListener::StartWork(napi_env env, size_t functionIndex, napi_val
     return result;
 }
 
-void StateListener::NotifyJS(napi_env env, bool enabled, std::string stateType, std::string desc, napi_ref handlerRef)
+void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 {
     HILOG_INFO("start");
     napi_value jsEvent;
-    napi_create_object(env, &jsEvent);
-
-    napi_value eventType;
-    napi_create_string_utf8(env, stateType.c_str(), NAPI_AUTO_LENGTH, &eventType);
-    napi_set_named_property(env, jsEvent, "eventType", eventType);
-
-    napi_value state;
-    napi_get_boolean(env, enabled, &state);
-    napi_set_named_property(env, jsEvent, "state", state);
-
-    napi_value description;
-    napi_create_string_utf8(env, desc.c_str(), NAPI_AUTO_LENGTH, &description);
-    napi_set_named_property(env, jsEvent, "description", description);
+    napi_get_boolean(env, state, &jsEvent);
 
     napi_value handler = nullptr;
     napi_value callResult;
@@ -424,25 +412,11 @@ void StateListener::NotifyJS(napi_env env, bool enabled, std::string stateType, 
     HILOG_INFO("NotifyJS napi_call_function result[%{public}d]", result);
 }
 
-void StateListener::OnStateChanged(const OHOS::Accessibility::AccessibilityStateEvent& stateEvent)
+void StateListener::OnStateChanged(const bool state)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::listeners_) {
-        if (observer->GetStateType() == stateEvent.GetEventType()) {
-            if (stateEvent.GetEventResult()) {
-                observer->NotifyJS(observer->GetEnv(),
-                    true,
-                    observer->GetEventType(),
-                    stateEvent.GetEventMsg(),
-                    observer->GetHandler());
-            } else {
-                observer->NotifyJS(observer->GetEnv(),
-                    false,
-                    observer->GetEventType(),
-                    stateEvent.GetEventMsg(),
-                    observer->GetHandler());
-            }
-        }
+        observer->NotifyJS(observer->GetEnv(), state, observer->GetHandler());
     }
 }
 

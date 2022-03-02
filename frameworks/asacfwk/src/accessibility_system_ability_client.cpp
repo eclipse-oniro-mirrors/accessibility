@@ -594,11 +594,8 @@ void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
         return;
     }
     for (auto it = observersAccessibilityState_.begin(); it != observersAccessibilityState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_ACCESSIBILITY_STATE_CHANGED);
-        stateEvent.SetEventResult(isEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isEnabled_);
         } else {
             HILOG_ERROR("%{public}s end observersAccessibilityState_ is null", __func__);
         }
@@ -615,11 +612,8 @@ void AccessibilitySystemAbilityClient::NotifyTouchExplorationStateChanged()
         return;
     }
     for (auto it = observersTouchState_.begin(); it != observersTouchState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_TOUCH_GUIDE_STATE_CHANGED);
-        stateEvent.SetEventResult(isTouchExplorationEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isTouchExplorationEnabled_);
         } else {
             HILOG_ERROR("%{public}s end observersTouchState_ is null", __func__);
         }
@@ -852,11 +846,8 @@ void AccessibilitySystemAbilityClient::NotifyGestureStateChanged()
         return;
     }
     for (auto it = observersGestureState_.begin(); it != observersGestureState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_GESTURE_STATE_CHANGED);
-        stateEvent.SetEventResult(isGesturesSimulationEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isGesturesSimulationEnabled_);
         } else {
             HILOG_ERROR("%{public}s end observersGestureState_ is null", __func__);
         }
@@ -873,11 +864,8 @@ void AccessibilitySystemAbilityClient::NotifyKeyEventStateChanged()
         return;
     }
     for (auto it = observersKeyEventState_.begin(); it != observersKeyEventState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_KEVEVENT_STATE_CHANGED);
-        stateEvent.SetEventResult(isFilteringKeyEventsEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isFilteringKeyEventsEnabled_);
         } else {
             HILOG_ERROR("%{public}s end observersKeyEventState_ is null", __func__);
         }
