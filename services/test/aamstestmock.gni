@@ -13,6 +13,5 @@
 
 AAMS_MOCK_PATH = "//base/accessibility/services/test/mock"
 
-aams_mock_distributeddatamgr_src = [
-  "$AAMS_MOCK_PATH/distributeddatamgr/src/mock_preferences_helper.cpp",
-]
+aams_mock_distributeddatamgr_src =
+    [ "$AAMS_MOCK_PATH/distributeddatamgr/src/mock_preferences_helper.cpp" ]
