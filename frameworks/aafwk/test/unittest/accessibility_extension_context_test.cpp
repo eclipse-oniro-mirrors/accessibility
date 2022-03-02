@@ -66,7 +66,7 @@ void AccessibilityExtensionContextUnitTest::TearDown()
  * @tc.desc: Test function GetFocusElementInfo
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GetFocusElementInfo_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GetFocusElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GetFocusElementInfo_001 start";
 
@@ -85,7 +85,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Get focus elementInfo when focusType is not allowed.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GetFocusElementInfo_002, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GetFocusElementInfo_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GetFocusElementInfo_002 start";
 
@@ -104,7 +104,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Send a gesture without any path.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GestureSimulate_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GestureSimulate_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GestureSimulate_001 start";
 
@@ -122,7 +122,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Send a gesture whose total duration time is not allowed.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GestureSimulate_002, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GestureSimulate_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GestureSimulate_002 start";
 
@@ -144,7 +144,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Send a gesture with one path.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GestureSimulate_003, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GestureSimulate_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GestureSimulate_003 start";
 
@@ -165,7 +165,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Get a default displayResize controller.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GetDisplayResizeController_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GetDisplayResizeController_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GetDisplayResizeController_001 start";
 
@@ -181,7 +181,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Get an informal displayResize controller.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GetDisplayResizeController_002, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GetDisplayResizeController_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GetDisplayResizeController_002 start";
 
@@ -198,7 +198,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  * @tc.desc: Test function GetRootElementInfo
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_GetRootElementInfo_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_GetRootElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_GetRootElementInfo_001 start";
 
@@ -229,7 +229,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest, AccessibilityExtensionContext_Un
  * @tc.desc: Test function ExecuteCommonAction
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_PerformCommonAction_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_PerformCommonAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_PerformCommonAction_001 start";
 
@@ -245,7 +245,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Perform common action which is not allowed.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_PerformCommonAction_002, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_PerformCommonAction_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_PerformCommonAction_002 start";
 
@@ -261,7 +261,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Dispatch simulation gesture's result without listener.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_001 start";
 
@@ -277,7 +277,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  *           Dispatch simulation gesture's result with listener and the result is completed.
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_002, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_DispatchOnSimulationGestureResult_002 start";
 
@@ -299,7 +299,7 @@ HWTEST_F(AccessibilityExtensionContextUnitTest,
  * @tc.desc: Test function SetChannelId
  */
 HWTEST_F(AccessibilityExtensionContextUnitTest,
-	AccessibilityExtensionContext_Unittest_SetChannelId_001, TestSize.Level1)
+    AccessibilityExtensionContext_Unittest_SetChannelId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityExtensionContext_Unittest_SetChannelId_001 start";
 

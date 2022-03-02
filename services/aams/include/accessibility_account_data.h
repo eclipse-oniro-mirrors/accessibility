@@ -19,6 +19,7 @@
 #include <set>
 #include <string>
 #include <vector>
+
 #include "accessibility_caption.h"
 #include "accessibility_state_event.h"
 #include "accessibility_system_ability_client.h"
@@ -27,6 +28,7 @@
 #include "accessible_ability_manager_service_caption_property_interface.h"
 #include "accessible_ability_manager_service_state_interface.h"
 #include "element_name.h"
+#include "preferences_helper.h"
 #include "refbase.h"
 
 namespace OHOS {
@@ -362,9 +364,12 @@ private:
      * @return
      */
     void UpdateMagnificationCapability();
-    void CaptionInit(nlohmann::json jsonObj);
-    void CapbilityInit(nlohmann::json jsonObj);
-    void EnabledListInit(nlohmann::json jsonObj);
+
+    void CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
+    void VectorToString(std::vector<std::string> &vectorVal,std::string &stringOut);
 
     int id_;
     bool isEnabled_ = false;

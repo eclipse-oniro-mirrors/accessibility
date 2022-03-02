@@ -42,6 +42,7 @@ config("aams_service_config") {
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
     "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
@@ -91,6 +92,7 @@ ohos_shared_library("accessibleabilityms") {
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/windowmanager/dm:libdm",
     "//foundation/windowmanager/wm:libwm",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences:native_preferences",
     "//utils/native/base:utils",
   ]
 

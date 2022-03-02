@@ -172,7 +172,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_SYNC);
 
     if (client == nullptr) {
         HILOG_ERROR("%{public}s fail, Input client is null", __func__);

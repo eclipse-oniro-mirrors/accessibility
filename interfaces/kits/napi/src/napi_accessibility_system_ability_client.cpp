@@ -112,7 +112,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
         // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->enabled_ = AccessibilitySystemAbilityClient::GetInstance()->IsEnabled();
+            callbackInfo->touchEnabled_ = AccessibilitySystemAbilityClient::GetInstance()->IsTouchExplorationEnabled();
             HILOG_INFO("IsOpenTouchExploration Executing touchEnabled[%{public}d]", callbackInfo->touchEnabled_);
         },
         // execute the complete function
@@ -123,7 +123,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->enabled_, &result[PARAM1]));
+            NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->touchEnabled_, &result[PARAM1]));
             HILOG_INFO("IsOpenTouchExploration completed touchEnabled_[%{public}d]", callbackInfo->touchEnabled_);
 
             if (callbackInfo->callback_) {
@@ -1539,10 +1539,9 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
     }
-    bool result = AccessibilitySystemAbilityClient::GetInstance()->AddCaptionListener(captionListener, type);
-    napi_value ret = {0};
-    napi_get_boolean(env, result, &ret);
-    return ret;
+    AccessibilitySystemAbilityClient::GetInstance()->AddCaptionListener(captionListener, type);
+
+    return nullptr;
 }
 
 napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, napi_callback_info info)
@@ -1591,7 +1590,15 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         napi_get_undefined(env, &undefined);
         napi_get_boolean(env, callbackInfo->result_, &result[PARAM1]);
         if (callbackInfo->callback_) {
-            napi_get_boolean(env, callbackInfo->result_, &result[PARAM0]); // maby rework
+            if (type == CaptionObserverType::CAPTION_ENABLE) {
+                napi_get_boolean(env, callbackInfo->result_, &result[PARAM0]); // maby rework
+            } else {
+                napi_create_object(env, &result[PARAM0]);                     // maby rework
+                OHOS::Accessibility::CaptionProperty captionProperty {};
+                captionProperty = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
+                ConvertCaptionPropertyToJS(env, result[PARAM0], captionProperty);
+            }
+
             napi_get_reference_value(env, callbackInfo->callback_, &callback);
             napi_value returnVal;
             napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
@@ -1622,9 +1629,8 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
             i++;
         }
     }
-    napi_value ret = 0;
-    napi_get_boolean(env, retValue, &ret);
-    return ret;
+
+    return nullptr;
 }
 
 CaptionListener::CaptionListener()

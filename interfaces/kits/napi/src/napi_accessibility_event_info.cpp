@@ -43,7 +43,7 @@ void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
             sizeof(descForAccessibilityEventInfo) / sizeof(descForAccessibilityEventInfo[0]),
             descForAccessibilityEventInfo,
             &NAccessibilityEventInfo::cons_));
-    napi_create_reference(env, NAccessibilityWindowInfo::cons_, 1, &NAccessibilityWindowInfo::consRef_);
+    napi_create_reference(env, NAccessibilityEventInfo::cons_, 1, &NAccessibilityEventInfo::consRef_);
 }
 
 napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)

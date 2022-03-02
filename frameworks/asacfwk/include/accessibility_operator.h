@@ -53,7 +53,7 @@ public:
      */
     AccessibilityOperator();
 
-	/**
+    /**
      * @brief destruct function
      * @param object The object of IPC
      * @return
