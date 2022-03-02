@@ -207,6 +207,5 @@ void PraseVecUtils::ParseCapabilitiesFromVec(const vector<string>& capabilities,
         }
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

@@ -230,17 +230,17 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
         if (std::strcmp(val->c_str(), BundleName.c_str()) == 0) {
             val = vecvalue.erase(val);
             HILOG_DEBUG("remove val = %{public}s", val->c_str());
-        }else{
-            val++;
+        } else {
+            ++val;
         }
     }
     std::string stringOut = "";
-    VectorToString(vecvalue,stringOut);
-    int err = pref->PutString("BundleName",stringOut);
-    HILOG_DEBUG("pref->PutString() = %{public}d.",err);
+    VectorToString(vecvalue, stringOut);
+    int err = pref->PutString("BundleName", stringOut);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
 
     err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.",err);
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
 
     HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
 
@@ -694,8 +694,6 @@ bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::E
     std::shared_ptr<NativePreferences::Preferences> pref =
         NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
     HILOG_DEBUG("errCode = %{public}d.", errCode);
-
-
     int err = pref->PutString("BundleName", stringOut);
     HILOG_DEBUG("pref->PutString() = %{public}d.", err);
 
@@ -871,7 +869,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
     }
     HILOG_DEBUG("strLength = %{public}d, wrodCount = %{public}d, stringIn : %{public}s",
         strLength, wrodCount, stringIn.c_str());
-    for(auto& var : vectorResult) {
+    for (auto& var : vectorResult) {
         HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
     }
     HILOG_DEBUG("end.");
@@ -901,7 +899,7 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
         NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
     HILOG_DEBUG("errCode = %{public}d.", errCode);
 
-    std::string strValue = pref->GetString("BundleName","");
+    std::string strValue = pref->GetString("BundleName", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
 
     std::vector<std::string> vecvalue;
@@ -915,7 +913,7 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
                 val = vecvalue.erase(val);
                 HILOG_DEBUG("remove val = %{public}s", val->c_str());
             } else {
-                val++;
+                ++val;
             }
         }
     }
@@ -953,7 +951,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConne
     return uiTestConnectedA11yAbility_;
 }
 
-void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal,std::string &stringOut)
+void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)
 {
     HILOG_DEBUG("start.");
     int i = 0;
