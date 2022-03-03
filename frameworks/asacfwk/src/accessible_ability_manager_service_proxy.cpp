@@ -49,17 +49,17 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteParcelable(&uiEvent)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable AccessibilityEventInfo error", __func__);
+        HILOG_ERROR("fail, connection write parcelable AccessibilityEventInfo error");
         return;
     }
 
     if (!data.WriteInt32(userId)) {
-        HILOG_ERROR("%{public}s fail, connection write userId error", __func__);
+        HILOG_ERROR("fail, connection write userId error");
         return;
     }
 
@@ -81,14 +81,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const Captio
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteParcelable(&caption)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Caption Property "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Caption Property ");
         return false;
     }
 
@@ -114,14 +112,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool stat
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Caption State "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Caption State ");
         return false;
     }
 
@@ -144,14 +140,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Enabled "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Enabled ");
         return false;
     }
 
@@ -175,22 +169,22 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     MessageOption option(MessageOption::TF_SYNC);
 
     if (client == nullptr) {
-        HILOG_ERROR("%{public}s fail, Input client is null", __func__);
+        HILOG_ERROR("fail, Input client is null");
         return ErrCode::ERROR;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return ErrCode::ERROR;
     }
 
     if (!data.WriteRemoteObject(client->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write client error", __func__);
+        HILOG_ERROR("fail, connection write client error");
         return ErrCode::ERROR;
     }
 
     if (!data.WriteInt32(userId)) {
-        HILOG_ERROR("%{public}s fail, connection write userId error", __func__);
+        HILOG_ERROR("fail, connection write userId error");
         return ErrCode::ERROR;
     }
 
@@ -219,17 +213,17 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     std::vector<AccessibilityAbilityInfo> errorList {};
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return errorList;
     }
 
     if (!data.WriteInt32(abilityTypes)) {
-        HILOG_ERROR("%{public}s fail, connection write abilityTypes error", __func__);
+        HILOG_ERROR("fail, connection write abilityTypes error");
         return errorList;
     }
 
     if (!data.WriteInt32(stateType)) {
-        HILOG_ERROR("%{public}s fail, connection write stateType error", __func__);
+        HILOG_ERROR("fail, connection write stateType error");
         return errorList;
     }
 
@@ -264,27 +258,27 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
     MessageOption option;
 
     if (operation == nullptr) {
-        HILOG_ERROR("%{public}s fail, Input operation is null", __func__);
+        HILOG_ERROR("fail, Input operation is null");
         return;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(windowId)) {
-        HILOG_ERROR("%{public}s fail, connection write windowId error", __func__);
+        HILOG_ERROR("fail, connection write windowId error");
         return;
     }
 
     if (!data.WriteRemoteObject(operation->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable operation error", __func__);
+        HILOG_ERROR("fail, connection write parcelable operation error");
         return;
     }
 
     if (!data.WriteInt32(userId)) {
-        HILOG_ERROR("%{public}s fail, connection write userId error", __func__);
+        HILOG_ERROR("fail, connection write userId error");
         return;
     }
 
@@ -309,12 +303,12 @@ void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(windowId)) {
-        HILOG_ERROR("%{public}s fail, connection write userId error", __func__);
+        HILOG_ERROR("fail, connection write userId error");
         return;
     }
 
@@ -339,7 +333,7 @@ CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
     MessageOption option;
     CaptionProperty property = {};
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return property;
     }
     error = Remote()->SendRequest(
@@ -365,22 +359,22 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCall
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (client == nullptr) {
-        HILOG_ERROR("%{public}s fail, Input client is null", __func__);
+        HILOG_ERROR("fail, Input client is null");
         return ErrCode::ERROR;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return ErrCode::ERROR;
     }
 
     if (!data.WriteRemoteObject(client->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write client error", __func__);
+        HILOG_ERROR("fail, connection write client error");
         return ErrCode::ERROR;
     }
 
     if (!data.WriteInt32(userId)) {
-        HILOG_ERROR("%{public}s fail, connection write userId error", __func__);
+        HILOG_ERROR("fail, connection write userId error");
         return ErrCode::ERROR;
     }
 
@@ -412,7 +406,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     error = Remote()->SendRequest(
@@ -434,7 +428,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     error = Remote()->SendRequest(
@@ -456,7 +450,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     error = Remote()->SendRequest(
@@ -481,7 +475,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     error = Remote()->SendRequest(
@@ -503,7 +497,7 @@ bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     error = Remote()->SendRequest(
@@ -528,14 +522,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool s
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Caption Property "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Caption Property ");
         return false;
     }
 
@@ -561,14 +553,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool stat
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Caption Property "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Caption Property ");
         return false;
     }
 
@@ -591,14 +581,12 @@ bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const 
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable Caption Property "
-                    "error",
-            __func__);
+        HILOG_ERROR("fail, connection write parcelable Caption Property ");
         return false;
     }
 
@@ -624,7 +612,7 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
@@ -661,7 +649,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
     std::map<std::string, AppExecFwk::ElementName> it {};
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return it;
     }
     error = Remote()->SendRequest(
@@ -698,7 +686,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     std::vector<AccessibilityAbilityInfo> it {};
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token error", __func__);
+        HILOG_ERROR("fail, connection write Token error");
         return it;
     }
     error = Remote()->SendRequest(
@@ -725,7 +713,7 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
     data.WriteInt32(it.size());
@@ -757,7 +745,7 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
@@ -782,12 +770,12 @@ bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnection
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 
     if (!data.WriteRemoteObject(obj)) {
-        HILOG_ERROR("%{public}s fail, connection write obj", __func__);
+        HILOG_ERROR("fail, connection write obj");
         return false;
     }
 
@@ -811,7 +799,7 @@ bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnecti
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return false;
     }
 

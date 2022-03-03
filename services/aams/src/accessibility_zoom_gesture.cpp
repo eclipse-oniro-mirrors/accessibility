@@ -14,7 +14,7 @@
  */
 
 #include "accessibility_zoom_gesture.h"
-#include <cmath>
+#include <complex>
 
 namespace OHOS {
 namespace Accessibility {

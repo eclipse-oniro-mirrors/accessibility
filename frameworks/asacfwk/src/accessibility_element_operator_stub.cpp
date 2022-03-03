@@ -331,7 +331,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAcces
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -347,7 +347,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetSearchElementInfoByTextResult(myInfos, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -362,7 +362,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoRe
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFindFocusedElementInfoResult(info, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -377,7 +377,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFocusMoveSearchResult(info, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -392,7 +392,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetExecuteActionResult(succeeded, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -414,7 +414,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int re
             iter++;
         }
     }
-    HILOG_DEBUG("%{public}s Not find requestID[%{public}d]", __func__, requestId);
+    HILOG_DEBUG("Not find requestID[%{public}d]", requestId);
 }
 
 void AccessibilityElementOperatorStub::SetWindowId(int windowId)
