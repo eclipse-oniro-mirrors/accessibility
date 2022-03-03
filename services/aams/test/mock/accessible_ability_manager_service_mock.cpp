@@ -543,7 +543,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
 {
     HILOG_DEBUG("start");
     if (accountId != currentAccountId_) {
-        HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
+        HILOG_ERROR("accountId[%{public}d] is not matched", accountId);
         return ERR_INVALID_VALUE;
     }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();

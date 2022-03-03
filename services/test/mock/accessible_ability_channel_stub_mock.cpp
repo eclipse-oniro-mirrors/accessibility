@@ -74,8 +74,8 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteCommonAction(MessageParcel &d
 
 ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("%{public}s mock AccessibleAbilityChannelStub mock ------------------ start.", __func__);
-    HILOG_DEBUG("%{public}s mock AccessibleAbilityChannelStub -------mock -----mock------------- end.", __func__);
+    HILOG_DEBUG("mock AccessibleAbilityChannelStub mock ------------------ start.");
+    HILOG_DEBUG("mock AccessibleAbilityChannelStub mock ------------------ end.");
     return NO_ERROR;
 }
 

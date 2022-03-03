@@ -61,8 +61,8 @@ void AccessibilityAbilityInfoUnitTest::WritefileAll(const char* fname, const cha
 void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig()
 {
     std::ostringstream os;
-    Json::Value	object1, targetBundleNames;
-    Json::Value	accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames;
+    Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
     if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
