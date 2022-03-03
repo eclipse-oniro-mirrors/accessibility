@@ -14,8 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_element_info.h"
 #include "accessibility_operator.h"
+#include "accessibility_element_info.h"
 
 namespace OHOS {
 namespace Accessibility {

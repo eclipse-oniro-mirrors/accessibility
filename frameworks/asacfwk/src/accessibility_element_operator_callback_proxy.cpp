@@ -48,7 +48,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
@@ -58,7 +58,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId", __func__);
+        HILOG_ERROR("fail, connection write requestId");
         return;
     }
 
@@ -81,7 +81,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
@@ -91,7 +91,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId", __func__);
+        HILOG_ERROR("fail, connection write requestId");
         return;
     }
 
@@ -114,16 +114,16 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteParcelable(&info)) {
-        HILOG_ERROR("%{public}s fail, connection write info", __func__);
+        HILOG_ERROR("fail, connection write info");
         return;
     }
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId", __func__);
+        HILOG_ERROR("fail, connection write requestId");
         return;
     }
 
@@ -146,17 +146,17 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteParcelable(&info)) {
-        HILOG_ERROR("%{public}s fail, connection write info", __func__);
+        HILOG_ERROR("fail, connection write info");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId", __func__);
+        HILOG_ERROR("fail, connection write requestId");
         return;
     }
 
@@ -178,17 +178,17 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteBool(succeeded)) {
-        HILOG_ERROR("%{public}s fail, connection write succeeded", __func__);
+        HILOG_ERROR("fail, connection write succeeded");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId", __func__);
+        HILOG_ERROR("fail, connection write requestId");
         return;
     }
 

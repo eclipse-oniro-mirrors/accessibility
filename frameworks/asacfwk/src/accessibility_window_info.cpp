@@ -77,44 +77,43 @@ AccessibilityWindowInfo* AccessibilityWindowInfo::Unmarshalling(Parcel& parcel)
 
 std::string AccessibilityWindowInfo::GetWindowTitle() const
 {
-    HILOG_DEBUG("[%{public}s] windowTitle_[%{public}s]", __func__, windowTitle_.c_str());
+    HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
     return windowTitle_;
 }
 
 void AccessibilityWindowInfo::SetWindowTitle(std::string &title)
 {
     windowTitle_ = title;
-    HILOG_DEBUG("[%{public}s] windowTitle_[%{public}s]", __func__, windowTitle_.c_str());
+    HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
 }
 
 WindowType AccessibilityWindowInfo::GetWindowType() const
 {
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowType_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
     return windowType_;
 }
 
 void AccessibilityWindowInfo::SetWindowType(const WindowType type)
 {
     windowType_ = type;
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowType_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
 }
 
 int AccessibilityWindowInfo::GetWindowLayer() const
 {
-    HILOG_DEBUG("[%{public}s] windowLayer_[%{public}d]", __func__, windowLayer_);
+    HILOG_DEBUG("windowLayer_[%{public}d]", windowLayer_);
     return windowLayer_;
 }
 
 void AccessibilityWindowInfo::SetWindowLayer(const int layer)
 {
     windowLayer_ = layer;
-    HILOG_DEBUG("[%{public}s] windowLayer_[%{public}d]", __func__, windowLayer_);
+    HILOG_DEBUG("windowLayer_[%{public}d]", windowLayer_);
 }
 
 bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo &elementInfo)
 {
-    HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d]",
-        __func__, channelId_, windowId_);
+    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d]", channelId_, windowId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
     std::vector<AccessibilityElementInfo> elementInfos {};
@@ -127,7 +126,7 @@ bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo 
             elementInfo = elementInfos.front();
         }
     } else {
-        HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
+        HILOG_INFO("Can't get AccessibilityOperator instance");
     }
     return result;
 }
@@ -135,14 +134,14 @@ bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo 
 void AccessibilityWindowInfo::SetAnchorId(const int anchorId)
 {
     anchorId_ = anchorId;
-    HILOG_DEBUG("[%{public}s] anchorId_[%{public}d]", __func__, anchorId_);
+    HILOG_DEBUG("anchorId_[%{public}d]", anchorId_);
 }
 
 bool AccessibilityWindowInfo::GetAnchor(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("GetAnchor of windowInfo is not support!");
-    HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], anchorId_[%{public}d]",
-        __func__, channelId_, windowId_, anchorId_);
+    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d], anchorId_[%{public}d]",
+        channelId_, windowId_, anchorId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
     std::vector<AccessibilityElementInfo> elementInfos {};
@@ -155,7 +154,7 @@ bool AccessibilityWindowInfo::GetAnchor(AccessibilityElementInfo &elementInfo)
             elementInfo = elementInfos.front();
         }
     } else {
-        HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
+        HILOG_INFO("Can't get AccessibilityOperator instance");
     }
     return result;
 }
@@ -164,8 +163,8 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetParent()
 {
     HILOG_DEBUG("GetParent of windowInfo is not support!");
     AccessibilityWindowInfo win {};
-    HILOG_INFO("[%{public}s] called] channelId_[%{public}d], parentId_[%{public}d]",
-        __func__, channelId_, parentId_);
+    HILOG_INFO("channelId_[%{public}d], parentId_[%{public}d]",
+        channelId_, parentId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     if (instance != nullptr) {
         for (auto window : instance->GetWindows(channelId_)) {
@@ -174,7 +173,7 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetParent()
             }
         }
     } else {
-        HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
+        HILOG_INFO("Can't get AccessibilityOperator instance");
     }
     return win;
 }
@@ -182,12 +181,12 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetParent()
 void AccessibilityWindowInfo::SetParentId(const int parentId)
 {
     parentId_ = parentId;
-    HILOG_DEBUG("[%{public}s] parentId_[%{public}d]", __func__, parentId_);
+    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
 }
 
 int AccessibilityWindowInfo::GetParentId() const
 {
-    HILOG_DEBUG("[%{public}s] parentId_[%{public}d]", __func__, parentId_);
+    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
     return parentId_;
 }
 
@@ -198,30 +197,30 @@ std::vector<int>  AccessibilityWindowInfo::GetChildIds() const
 
 int AccessibilityWindowInfo::GetAnchorId() const
 {
-    HILOG_DEBUG("[%{public}s] anchorId_[%{public}d]", __func__, anchorId_);
+    HILOG_DEBUG("anchorId_[%{public}d]", anchorId_);
     return anchorId_;
 }
 int AccessibilityWindowInfo::GetWindowId() const
 {
-    HILOG_DEBUG("[%{public}s] windowId_[%{public}d]", __func__, windowId_);
+    HILOG_DEBUG("windowId_[%{public}d]", windowId_);
     return windowId_;
 }
 
 void AccessibilityWindowInfo::SetWindowId(const int id)
 {
     windowId_ = id;
-    HILOG_DEBUG("[%{public}s] windowId_[%{public}d]", __func__, windowId_);
+    HILOG_DEBUG("windowId_[%{public}d]", windowId_);
 }
 
 void AccessibilityWindowInfo::SetChannelId(const int channelId)
 {
     channelId_ = channelId;
-    HILOG_DEBUG("[%{public}s] channelId_[%{public}d]", __func__, channelId_);
+    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
 }
 
 int AccessibilityWindowInfo::GetChannelId() const
 {
-    HILOG_DEBUG("[%{public}s] channelId_[%{public}d]", __func__, channelId_);
+    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
     return channelId_;
 }
 
@@ -240,14 +239,14 @@ void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
 
 bool AccessibilityWindowInfo::IsActive() const
 {
-    HILOG_DEBUG("[%{public}s] active_[%{public}d]", __func__, active_);
+    HILOG_DEBUG("active_[%{public}d]", active_);
     return active_;
 }
 
 void AccessibilityWindowInfo::SetActive(bool active)
 {
     active_ = active;
-    HILOG_DEBUG("[%{public}s] active_[%{public}d]", __func__, active_);
+    HILOG_DEBUG("active_[%{public}d]", active_);
 }
 
 bool AccessibilityWindowInfo::IsFocused() const
@@ -276,7 +275,7 @@ void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityfo
 
 int AccessibilityWindowInfo::GetChildNum() const
 {
-    HILOG_DEBUG("[%{public}s] childNum_[%{public}d]", __func__, childNum_);
+    HILOG_DEBUG("childNum_[%{public}d]", childNum_);
     return childNum_;
 }
 
@@ -284,10 +283,10 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetChild(const int index)
 {
     HILOG_DEBUG("GetChild of windowInfo is not support!");
     AccessibilityWindowInfo win {};
-    HILOG_INFO("[%{public}s] called] channelId_[%{public}d], childNum_[%{public}d], index[%{public}d]",
-        __func__, channelId_, childNum_, index);
+    HILOG_INFO("channelId_[%{public}d], childNum_[%{public}d], index[%{public}d]",
+        channelId_, childNum_, index);
     if (index >= childNum_ || index < 0) {
-        HILOG_ERROR("[%{public}s] called] index[%{public}d] is invalid", __func__, index);
+        HILOG_ERROR("index[%{public}d] is invalid", index);
         return win;
     }
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
@@ -298,7 +297,7 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetChild(const int index)
         }
     }
     } else {
-        HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
+        HILOG_INFO("Can't get AccessibilityOperator instance");
     }
     return win;
 }

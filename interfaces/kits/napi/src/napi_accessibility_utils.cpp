@@ -550,7 +550,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     std::string strType = ConvertAccessibilityEventTypeToString(type);
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "type", nType));
-    HILOG_DEBUG("%{public}s: type[%{public}s]", __func__, strType.c_str());
+    HILOG_DEBUG("type[%{public}s]", strType.c_str());
 
     napi_value nWindowUpdateType;
     WindowUpdateType windowUpdateType = eventInfo.GetWindowChangeTypes();
@@ -558,7 +558,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     NAPI_CALL_RETURN_VOID(
         env, napi_create_string_utf8(env, strWindowUpdateType.c_str(), NAPI_AUTO_LENGTH, &nWindowUpdateType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "windowUpdateType", nWindowUpdateType));
-    HILOG_DEBUG("%{public}s: windowUpdateType[%{public}s]", __func__, strWindowUpdateType.c_str());
+    HILOG_DEBUG("windowUpdateType[%{public}s]", strWindowUpdateType.c_str());
 
     napi_value nBundleName;
     std::string bundleName = eventInfo.GetBundleName();
@@ -569,7 +569,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     std::string componentType = eventInfo.GetComponentType();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, componentType.c_str(), NAPI_AUTO_LENGTH, &nComponentType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "componentType", nComponentType));
-    HILOG_DEBUG("%{public}s: componentType[%{public}s]", __func__, componentType.c_str());
+    HILOG_DEBUG("componentType[%{public}s]", componentType.c_str());
 
     napi_value nTimeStamp;
     int64_t timeStamp = eventInfo.GetTimeStamp();
@@ -580,19 +580,19 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     int windowId = eventInfo.GetWindowId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, windowId, &nWindowId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "windowId", nWindowId));
-    HILOG_DEBUG("%{public}s: windowId[%{public}d]", __func__, windowId);
+    HILOG_DEBUG("windowId[%{public}d]", windowId);
 
     napi_value nPageId;
     int pageId = eventInfo.GetPageId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, pageId, &nPageId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "pageId", nPageId));
-    HILOG_DEBUG("%{public}s: pageId[%{public}d]", __func__, pageId);
+    HILOG_DEBUG("pageId[%{public}d]", pageId);
 
     napi_value nComponentId;
     int componentId = eventInfo.GetViewId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "componentId", nComponentId));
-    HILOG_DEBUG("%{public}s: componentId[%{public}d]", __func__, componentId);
+    HILOG_DEBUG("componentId[%{public}d]", componentId);
 
     napi_value nDescription;
     std::string description = eventInfo.GetDescription();
@@ -686,7 +686,7 @@ static void ConvertOperationToJS(napi_env env, napi_value result, const Accessib
     std::string strType = ConvertOperationTypeToString(type);
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", nType));
-    HILOG_DEBUG("%{public}s: operationType[%{public}s]", __func__, strType.c_str());
+    HILOG_DEBUG("operationType[%{public}s]", strType.c_str());
 
     napi_value nDescription;
     std::string strDescription = operation.GetDescriptionInfo();
@@ -772,56 +772,56 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     napi_value nWindowsId;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetWindowId(), &nWindowsId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowId", nWindowsId));
-    HILOG_DEBUG("%{public}s: windowId[%{public}d]", __func__, elementInfo.GetWindowId());
+    HILOG_DEBUG("windowId[%{public}d]", elementInfo.GetWindowId());
 
     napi_value nAccessibilityId;
     int accessibilityId = elementInfo.GetAccessibilityId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityId, &nAccessibilityId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "accessibilityId", nAccessibilityId));
-    HILOG_DEBUG("%{public}s: accessibilityId[%{public}d]", __func__, accessibilityId);
+    HILOG_DEBUG("accessibilityId[%{public}d]", accessibilityId);
 
     napi_value nComponentId;
     int componentId = elementInfo.GetAccessibilityId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentId", nComponentId));
-    HILOG_DEBUG("%{public}s: componentId[%{public}d]", __func__, componentId);
+    HILOG_DEBUG("componentId[%{public}d]", componentId);
 
     napi_value nBundleName;
     std::string strBundleName = elementInfo.GetBundleName();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strBundleName.c_str(), NAPI_AUTO_LENGTH, &nBundleName));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", nBundleName));
-    HILOG_DEBUG("%{public}s: strBundleName[%{public}s]", __func__, strBundleName.c_str());
+    HILOG_DEBUG("strBundleName[%{public}s]", strBundleName.c_str());
 
     napi_value nComponentType;
     std::string strComponentType = elementInfo.GetComponentType();
     NAPI_CALL_RETURN_VOID(
         env, napi_create_string_utf8(env, strComponentType.c_str(), NAPI_AUTO_LENGTH, &nComponentType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentType", nComponentType));
-    HILOG_DEBUG("%{public}s: componentType[%{public}s]", __func__, strComponentType.c_str());
+    HILOG_DEBUG("componentType[%{public}s]", strComponentType.c_str());
 
     napi_value nInputType;
     int inputType = elementInfo.GetInputType();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, inputType, &nInputType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "inputType", nInputType));
-    HILOG_DEBUG("%{public}s: inputType[%{public}d]", __func__, inputType);
+    HILOG_DEBUG("inputType[%{public}d]", inputType);
 
     napi_value nText;
     std::string strText = elementInfo.GetContent();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strText.c_str(), NAPI_AUTO_LENGTH, &nText));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "text", nText));
-    HILOG_DEBUG("%{public}s: text[%{public}s]", __func__, strText.c_str());
+    HILOG_DEBUG("text[%{public}s]", strText.c_str());
 
     napi_value nHintText;
     std::string strHintText = elementInfo.GetHint();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strHintText.c_str(), NAPI_AUTO_LENGTH, &nHintText));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "hintText", nHintText));
-    HILOG_DEBUG("%{public}s: strHintText[%{public}s]", __func__, strHintText.c_str());
+    HILOG_DEBUG("strHintText[%{public}s]", strHintText.c_str());
 
     napi_value nDescription;
     std::string strDescription = elementInfo.GetDescriptionInfo();
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strDescription.c_str(), NAPI_AUTO_LENGTH, &nDescription));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
-    HILOG_DEBUG("%{public}s: strHintText[%{public}s]", __func__, strHintText.c_str());
+    HILOG_DEBUG("strHintText[%{public}s]", strHintText.c_str());
 
     napi_value nResourceName;
     std::string strResourceName = elementInfo.GetComponentResourceId();
@@ -874,22 +874,22 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     napi_value nFocusable;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsFocusable(), &nFocusable));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "focusable", nFocusable));
-    HILOG_DEBUG("%{public}s: focusable[%{public}d]", __func__, elementInfo.IsFocusable());
+    HILOG_DEBUG("focusable[%{public}d]", elementInfo.IsFocusable());
 
     napi_value nFocused;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsFocused(), &nFocused));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "focused", nFocused));
-    HILOG_DEBUG("%{public}s: focused[%{public}d]", __func__, elementInfo.IsFocused());
+    HILOG_DEBUG("focused[%{public}d]", elementInfo.IsFocused());
 
     napi_value nVisable;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsVisible(), &nVisable));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isVisible", nVisable));
-    HILOG_DEBUG("%{public}s: isVisible[%{public}d]", __func__, elementInfo.IsVisible());
+    HILOG_DEBUG("isVisible[%{public}d]", elementInfo.IsVisible());
 
     napi_value nAccessibilityFocused;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.HasAccessibilityFocus(), &nAccessibilityFocused));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "accessibilityFocused", nAccessibilityFocused));
-    HILOG_DEBUG("%{public}s: accessibilityFocused[%{public}d]", __func__, elementInfo.HasAccessibilityFocus());
+    HILOG_DEBUG("accessibilityFocused[%{public}d]", elementInfo.HasAccessibilityFocus());
 
     napi_value nSelected;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsSelected(), &nSelected));
@@ -938,7 +938,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     napi_value nIsEssential;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsEssential(), &nIsEssential));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isEssential", nIsEssential));
-    HILOG_DEBUG("%{public}s: isEssential[%{public}d]", __func__, elementInfo.IsEssential());
+    HILOG_DEBUG("isEssential[%{public}d]", elementInfo.IsEssential());
 
     napi_value nCurrentIndex;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetCurrentIndex(), &nCurrentIndex));
@@ -1723,7 +1723,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
             AccessibilityAbilityInfo info = {};
             ConvertJSToAccessibleAbilityInfo(env, value, info);
             accessibleAbilityInfos.push_back(info);
-            HILOG_DEBUG("%{public}s size = %{public}d ", __func__, accessibleAbilityInfos.size());
+            HILOG_DEBUG("size = %{public}d ", accessibleAbilityInfos.size());
         }
     }
 }
@@ -1744,7 +1744,7 @@ void ConvertJSToAccessibleAbilityInfo(
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         abilityInfo.SetPackageName(std::string(outBuffer));
         HILOG_INFO(
-            "%{public}s abilityInfo.GetPackageName = %{public}s", __func__, abilityInfo.GetPackageName().c_str());
+            "abilityInfo.GetPackageName = %{public}s", abilityInfo.GetPackageName().c_str());
     }
 }
 
@@ -1798,7 +1798,7 @@ void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, value, &keyCode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "enabled", keyCode));
 
-    HILOG_DEBUG("%{public}s END.", __func__);
+    HILOG_DEBUG("END.");
 }
 
 void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_)
@@ -1811,5 +1811,5 @@ void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibi
 
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "style", keyCode));
 
-    HILOG_DEBUG("%{public}s END.", __func__);
+    HILOG_DEBUG("END.");
 }

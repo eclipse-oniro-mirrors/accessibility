@@ -38,7 +38,8 @@ int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t
         return ERR_INVALID_STATE;
     }
 
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerServiceCaptionProperty::Message::ON_CAPTION_PROPERTY_CHANGED)) {
+    if (code ==
+        static_cast<uint32_t>(IAccessibleAbilityManagerServiceCaptionProperty::Message::ON_CAPTION_PROPERTY_CHANGED)) {
         HandleOnCaptionPropertyChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -59,7 +60,7 @@ void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChange
     HILOG_DEBUG("start");
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
     if (instance == nullptr) {
-        HILOG_DEBUG("%{public}s Can't get asac instance", __func__);
+        HILOG_DEBUG("Can't get asac instance");
         return;
     }
     instance->UpdatecaptionProperty(caption);

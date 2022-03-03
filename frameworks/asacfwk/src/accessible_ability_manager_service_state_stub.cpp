@@ -57,10 +57,10 @@ ErrCode AccessibleAbilityManagerServiceStateStub::HandleOnStateChanged(MessagePa
 
 void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t stateType)
 {
-    HILOG_DEBUG("%{public}s stateType[%{public}d}", __func__, stateType);
+    HILOG_DEBUG("stateType[%{public}d}", stateType);
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
     if (instance == nullptr) {
-        HILOG_DEBUG("%{public}s Can't get asac instance", __func__);
+        HILOG_DEBUG("Can't get asac instance");
         return;
     }
     if (stateType & AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED) {
