@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/test.gni")
 import("//base/accessibility/services/test/aamstestmock.gni")
+import("//build/test.gni")
 
 module_output_path = "accessibility/framework_test"
 
