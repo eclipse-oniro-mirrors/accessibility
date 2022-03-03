@@ -128,17 +128,6 @@ bool DisplayManager::SuspendEnd()
     return true;
 }
 
-bool DisplayManager::SetScreenPowerForAll(DisplayPowerState state, PowerStateChangeReason reason)
-{
-    return true;
-}
-
-DisplayPowerState DisplayManager::GetScreenPower(uint64_t screenId)
-{
-    DisplayPowerState res = DisplayPowerState::INVALID_STATE;
-    return res;
-}
-
 bool DisplayManager::SetDisplayState(DisplayState state, DisplayStateCallback callback)
 {
     return true;
