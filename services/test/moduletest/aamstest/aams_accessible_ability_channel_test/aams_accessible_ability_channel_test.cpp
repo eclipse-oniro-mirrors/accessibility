@@ -259,9 +259,9 @@ void AamsAccessibleAbilityChannelTest::CreateGesturePath(
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001
- * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId,
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001
+ * @tc.name: SearchElementInfoByAccessibilityId
+ * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId,
  *           check SearchElementInfoByAccessibilityId.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
@@ -288,9 +288,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002
- * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId,
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002
+ * @tc.name: SearchElementInfoByAccessibilityId
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId,
  *           check SearchElementInfoByAccessibilityId.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
@@ -317,9 +317,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001
- * @tc.name: SearchElementInfosByText
- * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check SearchElementInfosByText.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001
+ * @tc.name: SearchElementInfosByText
+ * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check SearchElementInfosByText.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001, TestSize.Level1)
@@ -346,9 +346,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002
- * @tc.name: SearchElementInfosByText
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check SearchElementInfosByText.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002
+ * @tc.name: SearchElementInfosByText
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check SearchElementInfosByText.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002, TestSize.Level1)
@@ -375,9 +375,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001
- * @tc.name: FindFocusedElementInfo
- * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check FindFocusedElementInfo.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001
+ * @tc.name: FindFocusedElementInfo
+ * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check FindFocusedElementInfo.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001, TestSize.Level1)
@@ -404,9 +404,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002
- * @tc.name: FindFocusedElementInfo
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check FindFocusedElementInfo.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002
+ * @tc.name: FindFocusedElementInfo
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check FindFocusedElementInfo.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002, TestSize.Level1)
@@ -433,9 +433,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003
- * @tc.name: FindFocusedElementInfo
- * @tc.desc: FocusType is FOCUS_TYPE_ACCESSIBILITY, check FindFocusedElementInfo.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003
+ * @tc.name: FindFocusedElementInfo
+ * @tc.desc: FocusType is FOCUS_TYPE_ACCESSIBILITY, check FindFocusedElementInfo.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003, TestSize.Level1)
@@ -462,9 +462,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001
- * @tc.name: FocusMoveSearch
- * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check FocusMoveSearch.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001
+ * @tc.name: FocusMoveSearch
+ * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check FocusMoveSearch.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001, TestSize.Level1)
 {
@@ -490,9 +490,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002
- * @tc.name: FocusMoveSearch
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check FocusMoveSearch.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002
+ * @tc.name: FocusMoveSearch
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check FocusMoveSearch.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002, TestSize.Level1)
 {
@@ -518,9 +518,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_001
- * @tc.name: ExecuteAction
- * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check ExecuteAction.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_001
+ * @tc.name: ExecuteAction
+ * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check ExecuteAction.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_ExecuteAction_001, TestSize.Level1)
 {
@@ -549,9 +549,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_002
- * @tc.name: ExecuteAction
- * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check ExecuteAction.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_002
+ * @tc.name: ExecuteAction
+ * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check ExecuteAction.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_ExecuteAction_002, TestSize.Level1)
 {
@@ -579,9 +579,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_GetWindows_002
- * @tc.name: GetWindows
- * @tc.desc: Not add interaction connection check get windows.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_GetWindows_002
+ * @tc.name: GetWindows
+ * @tc.desc: Not add interaction connection check get windows.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_GetWindows_002, TestSize.Level1)
 {
@@ -602,9 +602,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001
- * @tc.name: SendSimulateGesture
- * @tc.desc: Add connection check send simulate gesture.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001
+ * @tc.name: SendSimulateGesture
+ * @tc.desc: Add connection check send simulate gesture.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001, TestSize.Level1)
 {
@@ -633,9 +633,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
 /***********************************************************************************************************/
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001
- * @tc.name: SearchElementInfoByAccessibilityId
- * @tc.desc: No retrieve capability, check SearchElementInfoByAccessibilityId.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001
+ * @tc.name: SearchElementInfoByAccessibilityId
+ * @tc.desc: No retrieve capability, check SearchElementInfoByAccessibilityId.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001, TestSize.Level1)
@@ -661,9 +661,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001
- * @tc.name: SearchElementInfosByText
- * @tc.desc: No retrieve capability, check SearchElementInfosByText.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001
+ * @tc.name: SearchElementInfosByText
+ * @tc.desc: No retrieve capability, check SearchElementInfosByText.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001, TestSize.Level1)
@@ -690,9 +690,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001
- * @tc.name: FindFocusedElementInfo
- * @tc.desc: No retrieve capability, check FindFocusedElementInfo.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001
+ * @tc.name: FindFocusedElementInfo
+ * @tc.desc: No retrieve capability, check FindFocusedElementInfo.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001, TestSize.Level1)
@@ -719,9 +719,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001
- * @tc.name: FocusMoveSearch
- * @tc.desc: No retrieve capability, check FocusMoveSearch.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001
+ * @tc.name: FocusMoveSearch
+ * @tc.desc: No retrieve capability, check FocusMoveSearch.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001, TestSize.Level1)
@@ -748,9 +748,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001
- * @tc.name: ExecuteAction
- * @tc.desc: No retrieve capability, check ExecuteAction.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001
+ * @tc.name: ExecuteAction
+ * @tc.desc: No retrieve capability, check ExecuteAction.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001, TestSize.Level1)
@@ -780,9 +780,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001
- * @tc.name: GetWindows
- * @tc.desc: No retrieve capability, check get windows.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001
+ * @tc.name: GetWindows
+ * @tc.desc: No retrieve capability, check get windows.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001, TestSize.Level1)
@@ -805,9 +805,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001
- * @tc.name: SendSimulateGesture
- * @tc.desc: No gesture capability, check send simulate gesture.
+ * @tc.number: AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001
+ * @tc.name: SendSimulateGesture
+ * @tc.desc: No gesture capability, check send simulate gesture.
  */
 HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001, TestSize.Level1)

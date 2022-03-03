@@ -113,6 +113,5 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
 {
     return NO_ERROR;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

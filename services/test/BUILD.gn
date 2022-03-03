@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
+import("//base/accessibility/services/test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -26,12 +26,11 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
     cflags_cc = [ "-fexceptions" ]
   }
-  include_dirs = [
-    #"mock/distributedschedule/include",
-    "mock/multimodalinput/include",
-    "mock/powermanager/include",
+
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock/aafwk/include",
-    "mock/distributeddatamgr/include",
+    "mock/powermanager/include",
     "../aams/test/mock/",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -44,7 +43,6 @@ config("module_private_config") {
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/notification/ces_standard/interfaces/innerkits/native/include",
     "//base/accessibility/dummyData",
@@ -82,13 +80,6 @@ config("module_private_config") {
     "AAMS_LOG_DOMAIN = 0xD005205",
   ]
 }
-
-MockMultiModalInputSrc = [
-  "mock/multimodalinput/src/mock_input_event.cpp",
-  "mock/multimodalinput/src/mock_input_manager.cpp",
-  "mock/multimodalinput/src/mock_key_event.cpp",
-  "mock/multimodalinput/src/mock_pointer_event.cpp",
-]
 
 MockPowerManagerSrc = [ "mock/powermanager/src/mock_power_mgr_client.cpp" ]
 
@@ -148,7 +139,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -234,7 +225,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -332,7 +323,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -432,7 +423,7 @@ ohos_moduletest("aams_server_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -520,7 +511,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -617,7 +608,7 @@ ohos_moduletest("aams_common_event_registry_test") {
   ]
 
   sources += aams_mock_distributeddatamgr_src
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc

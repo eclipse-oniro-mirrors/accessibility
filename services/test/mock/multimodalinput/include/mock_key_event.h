@@ -13,14 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef AXIS_EVENT_H
-#define AXIS_EVENT_H
+#ifndef MOCK_KEY_EVENT_H
+#define MOCK_KEY_EVENT_H
+
+#include "key_event.h"
 
 namespace OHOS {
 namespace MMI {
-class AxisEvent {
+class MockKeyEvent : public KeyEvent {
 public:
 };
-} // namespace MMI
-} // namespace OHOS
-#endif // AXIS_EVENT_H
+} // MMI
+} // OHOS
+#endif // MOCK_KEY_EVENT_H

@@ -1285,7 +1285,7 @@ void ConvertActionArgsJSToNAPI(
     }
 }
 
-void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEventInfo& eventInfo)
+bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEventInfo& eventInfo)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
@@ -1298,6 +1298,11 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
         eventInfo.SetEventType(ConvertStringToEventInfoTypes(str));
+        if (eventInfo.GetEventType() == TYPE_VIEW_INVALID) {
+            return false;
+        }
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "windowUpdateType", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1315,7 +1320,12 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
+        if(str == "") {
+            return false;
+        }
         eventInfo.SetBundleName(str);
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "componentType", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1370,7 +1380,7 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
-        eventInfo.SetComponentType(str);
+        eventInfo.SetDescription(str);
     }
 
     napi_create_string_utf8(env, "triggerAction", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1380,6 +1390,11 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
         eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(str));
+        if (eventInfo.GetTriggerAction() == ACCESSIBILITY_ACTION_INVALID) {
+            return false;
+        }
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1467,6 +1482,7 @@ void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         str = GetStringFromNAPI(env, value);
         eventInfo.SetGestureType(ConvertStringToGestureType(str));
     }
+    return true;
 }
 
 static void ConvertGesturePathPositionJSToNAPI(

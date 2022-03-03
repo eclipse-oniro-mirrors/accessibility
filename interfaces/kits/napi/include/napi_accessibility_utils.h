@@ -59,7 +59,7 @@ void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
 
 void ConvertElementInfoToJS(
     napi_env env, napi_value result, const OHOS::Accessibility::AccessibilityElementInfo& elementInfo);
-void ConvertEventInfoJSToNAPI(napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 void ConvertElementInfosToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(std::string type);

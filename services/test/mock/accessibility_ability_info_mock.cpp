@@ -54,7 +54,7 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
     bundleName_ = bundleName;
 }
 
-AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
+AccessibilityAbilityInfo::AccessibilityAbilityInfo(const ExtensionAbilityInfo &abilityInfo)
 {
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE |
     // CAPABILITY_ZOOM | CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
@@ -77,7 +77,7 @@ vector<string> AccessibilityAbilityInfo::GetFilterBundleNames()
     return targetBundleNames_;
 }
 
-bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
+bool AccessibilityAbilityInfo::ParseAAConfig(std::string &config)
 {
     return true;
 }

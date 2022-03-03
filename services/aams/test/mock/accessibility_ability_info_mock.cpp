@@ -52,7 +52,7 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
     bundleName_ = bundleName;
 }
 
-AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
+AccessibilityAbilityInfo::AccessibilityAbilityInfo(const ExtensionAbilityInfo &abilityInfo)
 {
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM |
     // CAPABILITY_RETRIEVE | CAPABILITY_GESTURE

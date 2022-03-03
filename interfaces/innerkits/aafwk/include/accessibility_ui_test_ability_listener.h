@@ -16,10 +16,12 @@
 #ifndef ACCESSIBILITY_UI_TEST_ABILITY_LISTENER_H
 #define ACCESSIBILITY_UI_TEST_ABILITY_LISTENER_H
 
-#include "key_event.h"
 #include "accessibility_event_info.h"
 
 namespace OHOS {
+namespace MMI {
+class KeyEvent;
+}
 namespace Accessibility {
 class IAccessibleUITestAbilityListener {
 public:
@@ -37,7 +39,7 @@ public:
    * @param sequence The sequence of the key event.
    * @return
    */
-  virtual bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence) = 0;
+  virtual bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent, const int sequence) = 0;
 
   /**
    * @brief Called when need to notify the result of simulation gesture.

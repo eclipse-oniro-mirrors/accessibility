@@ -139,6 +139,10 @@ AccessibilityWindowInfo AccessibilityWindowInfoManager::CreateAccessibilityWindo
     bound.SetRightBottomScreenPostion(windowInfo.windowRect_.posX_ + windowInfo.windowRect_.width_,
                                       windowInfo.windowRect_.posY_ + windowInfo.windowRect_.height_);
     info.SetRectInScreen(bound);
+    HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
+        "witdth(%{public}d) height(%{public}d)",
+        windowInfo.wid_, windowInfo.type_, windowInfo.windowRect_.posX_, windowInfo.windowRect_.posY_,
+        windowInfo.windowRect_.width_, windowInfo.windowRect_.height_);
     return info;
 }
 
