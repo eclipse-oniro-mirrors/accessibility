@@ -635,6 +635,18 @@ void AccessibilityElementInfo::SetValidElement(const bool valid)
     validElement_ = valid;
 }
 
+void AccessibilityElementInfo::SetInspectorKey(const std::string key)
+{
+    HILOG_DEBUG("inspector key [%{public}s]", key.c_str());
+    inspectorKey_ = key;
+}
+
+std::string AccessibilityElementInfo::GetInspectorKey() const
+{
+    HILOG_DEBUG("inspector key [%{public}s]", inspectorKey_.c_str());
+    return inspectorKey_;
+}
+
 bool AccessibilityElementInfo::IsValidElement() const
 {
     HILOG_DEBUG("validElement_[%{public}d]", validElement_);

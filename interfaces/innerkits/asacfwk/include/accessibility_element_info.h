@@ -1741,6 +1741,22 @@ public:
     void SetValidElement(const bool valid);
 
     /**
+     * @brief Set InspectorKey
+     * @param inspector key.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetInspectorKey(const std::string key);
+
+    /**
+     * @brief Get InspectorKey
+     * @return inspector key
+     * @since 3
+     * @sysCap Accessibility
+     */
+    std::string GetInspectorKey() const;
+
+    /**
      * @brief Used for IPC communication
      * @param parcel
      * @return true: Read parcel data successfully; ohterwise is not.
@@ -1779,6 +1795,7 @@ private:
     std::string accessibilityDescription_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
+    std::string inspectorKey_ = "";
     std::vector<int> childNodeIds_;
     int childCount_ = 0;
     std::vector<AccessibleAction> operations_;
