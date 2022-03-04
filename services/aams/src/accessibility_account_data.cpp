@@ -845,7 +845,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
     if (strLength == 0) {
         return;
     }
-    
+
     for (int i = 0; i < strLength; i++) {
         if (stringIn[i] == ',') {
             position.push_back(i);

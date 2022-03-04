@@ -141,7 +141,7 @@ bool AccessibleAbilityManagerService::Init()
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     HILOG_INFO("AddAbilityListener end!");
-    
+
     // temp deal: [setting] Add listener of setting's URI.
     HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
