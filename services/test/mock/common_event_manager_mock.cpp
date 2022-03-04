@@ -26,6 +26,7 @@ bool CommonEventManager::PublishCommonEvent(const CommonEventData &data)
     GTEST_LOG_(INFO) << "MOCK CommonEventManager PublishCommonEvent";
     if (!g_subscriberMOCK) {
         GTEST_LOG_(INFO) << "g_subscriberMOCK is nullptr";
+        return false;
     }
     g_subscriberMOCK->OnReceiveEvent(data);
     return true;

@@ -342,7 +342,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
 
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
-    if (dev_num == 0) {
+    if (!dev_num) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }
@@ -402,7 +402,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
 
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
-    if (dev_num == 0) {
+    if (!dev_num) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }

@@ -250,8 +250,8 @@ public:
 
     /**
      * @brief Inner function.
-     *        Get the callback object registed by ACE.
-     * @param windowId The window id related the operation object registed.
+     *        Get the callback object registered by ACE.
+     * @param windowId The window id related the operation object registered.
      * @return The callback object of ACE.
      */
     std::shared_ptr<AccessibilityElementOperator> GetOperatorObject(int windowId);

@@ -75,7 +75,7 @@ void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &con
     }
 
     if (!isHandled) {
-        if (processingEvent->usedCount_ == 0) {
+        if (!processingEvent->usedCount_) {
             timeouthandler_->RemoveEvent(processingEvent->seqNum_);
             EventTransmission::OnKeyEvent(*processingEvent->event_);
         }
@@ -98,7 +98,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 
         for (auto val : iter->second) {
             val->usedCount_--;
-            if (val->usedCount_ == 0) {
+            if (!val->usedCount_) {
                 EventTransmission::OnKeyEvent(*val->event_);
             }
         }

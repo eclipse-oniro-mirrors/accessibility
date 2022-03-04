@@ -42,6 +42,7 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
         sptr<AccessibleAction> accessibleOperation = parcel.ReadStrongParcelable<AccessibleAction>();
         if (!accessibleOperation) {
             HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
+            return false;
         }
         operations_.emplace_back(*accessibleOperation);
     }

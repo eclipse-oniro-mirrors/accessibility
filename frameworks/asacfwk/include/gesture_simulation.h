@@ -182,7 +182,7 @@ public:
     /**
      * @brief Called when the gesture is finished.
      * @param sequence
-     * @param result Reture true if the gesture which is listened is injected successfully, else return false.
+     * @param result Return true if the gesture which is listened is injected successfully, else return false.
      * @return
      */
     virtual void OnGestureInjectResult(uint32_t sequence, bool result) = 0;

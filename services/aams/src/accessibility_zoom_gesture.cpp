@@ -53,20 +53,24 @@ bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
 {
     MMI::PointerEvent::PointerItem currentPointerItem;
     MMI::PointerEvent::PointerItem lastPointerItem;
-    if (downCount_ == 0) {
+    if (!downCount_) {
         pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
     } else {
+        if (pLastDown_ == nullptr) {
+            HILOG_ERROR("pLastDown_ is null");
+            return false;
+        }
         if ((event.GetActionTime() - pLastDown_->GetActionTime()) > timeout_) {
             Reset(event);
             return false;
         }
         if (!event.GetPointerItem(event.GetPointerId(), currentPointerItem)) {
             HILOG_ERROR("get current GetPointerItem(%d) failed", event.GetPointerId());
+            return false;
         }
-        if (pLastDown_ != nullptr) {
-            if (!pLastDown_->GetPointerItem(pLastDown_->GetPointerId(), lastPointerItem)) {
-                HILOG_ERROR("get last GetPointerItem(%d) failed", pLastDown_->GetPointerId());
-            }
+        if (!pLastDown_->GetPointerItem(pLastDown_->GetPointerId(), lastPointerItem)) {
+            HILOG_ERROR("get last GetPointerItem(%d) failed", pLastDown_->GetPointerId());
+            return false;
         }
         int dist = std::sqrt(std::pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
             + std::pow(currentPointerItem.GetGlobalY() - lastPointerItem.GetLocalY(), 2));
@@ -76,7 +80,7 @@ bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
         }
         pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
     }
-    downCount_ ++;
+    downCount_++;
     return true;
 }
 

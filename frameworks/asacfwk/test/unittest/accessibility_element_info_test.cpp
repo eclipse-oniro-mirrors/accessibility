@@ -79,7 +79,7 @@ HWTEST_F(AccessibilityElementInfoUnitTest, GetElementProperty_001, TestSize.Leve
     AccessibleAction action(ActionType::ACCESSIBILITY_ACTION_CLICK, "test");
     element.AddAction(action);
     EXPECT_TRUE(element.GetActionList()[0].GetActionType() == ActionType::ACCESSIBILITY_ACTION_CLICK);
-    EXPECT_TRUE(strcmp(element.GetActionList()[0].GetDescriptionInfo().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetActionList()[0].GetDescriptionInfo().c_str(), "test"));
 
     GTEST_LOG_(INFO) << "GetElementProperty_001 Delete Action start";
     element.DeleteAction(action);
@@ -208,13 +208,13 @@ HWTEST_F(AccessibilityElementInfoUnitTest, GetElementProperty_001, TestSize.Leve
     element.SetGrid(grid);
     EXPECT_TRUE(element.GetGrid().GetRowCount() == 2);
     EXPECT_TRUE(element.GetGrid().GetColumnCount() == 2);
-    EXPECT_TRUE(element.GetGrid().GetSelectionMode() == 0);
+    EXPECT_TRUE(!element.GetGrid().GetSelectionMode());
 
     GridItemInfo gridItem(0, 2, 0, 2, true, true);
     element.SetGridItem(gridItem);
-    EXPECT_TRUE(element.GetGridItem().GetRowIndex() == 0);
+    EXPECT_TRUE(!element.GetGridItem().GetRowIndex());
     EXPECT_TRUE(element.GetGridItem().GetRowSpan() == 2);
-    EXPECT_TRUE(element.GetGridItem().GetColumnIndex() == 0);
+    EXPECT_TRUE(!element.GetGridItem().GetColumnIndex());
     EXPECT_TRUE(element.GetGridItem().GetColumnSpan() == 2);
     EXPECT_TRUE(element.GetGridItem().IsHeading());
     EXPECT_TRUE(element.GetGridItem().IsSelected());
@@ -232,31 +232,31 @@ HWTEST_F(AccessibilityElementInfoUnitTest, GetElementStr_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetElementStr_001 start";
     AccessibilityElementInfo element {};
     element.SetBundleName("test");
-    EXPECT_TRUE(strcmp(element.GetBundleName().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetBundleName().c_str(), "test"));
 
     element.SetComponentType("test");
-    EXPECT_TRUE(strcmp(element.GetComponentType().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetComponentType().c_str(), "test"));
 
     element.SetContent("test");
-    EXPECT_TRUE(strcmp(element.GetContent().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetContent().c_str(), "test"));
 
     element.SetAccessibilityContent("test");
-    EXPECT_TRUE(strcmp(element.GetAccessibilityContent().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetAccessibilityContent().c_str(), "test"));
 
     element.SetAccessibilityDescription("test");
-    EXPECT_TRUE(strcmp(element.GetAccessibilityDescription().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetAccessibilityDescription().c_str(), "test"));
 
     element.SetHint("test");
-    EXPECT_TRUE(strcmp(element.GetHint().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetHint().c_str(), "test"));
 
     element.SetDescriptionInfo("test");
-    EXPECT_TRUE(strcmp(element.GetDescriptionInfo().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetDescriptionInfo().c_str(), "test"));
 
     element.SetComponentResourceId("test");
-    EXPECT_TRUE(strcmp(element.GetComponentResourceId().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetComponentResourceId().c_str(), "test"));
 
     element.SetError("test");
-    EXPECT_TRUE(strcmp(element.GetError().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(element.GetError().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetElementStr_001 end";
 }
 

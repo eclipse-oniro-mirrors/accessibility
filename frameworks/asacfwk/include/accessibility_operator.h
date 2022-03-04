@@ -37,7 +37,7 @@ namespace OHOS {
 namespace Accessibility {
 /*
 * The class supply the api called by AA to get the accessibility info of UI.
-* It call the API of AAMS and the request will be proccessed by
+* It call the API of AAMS and the request will be processed by
 * UI and then set the result by callback(AA-->this class(with Callback)--> AAMS
 * --> UI process and set Callback).
 * It supply one instance for each thread to use this class.

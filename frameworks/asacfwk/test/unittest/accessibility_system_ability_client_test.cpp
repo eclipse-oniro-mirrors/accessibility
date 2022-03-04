@@ -75,7 +75,7 @@ HWTEST_F(ASACClientUnitTest, AccessibilityStateEvent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetEventMsg start";
     string str = "test";
     stateEvent.SetEventMsg(str);
-    EXPECT_TRUE(strcmp(stateEvent.GetEventMsg().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(stateEvent.GetEventMsg().c_str(), "test"));
     GTEST_LOG_(INFO) << "SetEventMsg start";
 
     GTEST_LOG_(INFO) << "SetEventResult start";

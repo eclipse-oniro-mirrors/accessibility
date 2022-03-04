@@ -40,7 +40,7 @@ public:
     virtual ~AccessibleAbilityManagerServiceStateProxy() override;
 
     /**
-     * @brief Receive the state notify from AAMS and send it to the observer registed..
+     * @brief Receive the state notify from AAMS and send it to the observer registered.
      * @param stateType The state type and value.
      *                  state type: Refer to AccessibilityStateEventType.
      *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/

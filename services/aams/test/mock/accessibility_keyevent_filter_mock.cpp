@@ -81,7 +81,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 
         for (auto val : iter->second) {
             val->usedCount_--;
-            if (val->usedCount_ == 0) {
+            if (!val->usedCount_) {
                 EventTransmission::OnKeyEvent(*val->event_);
             }
         }

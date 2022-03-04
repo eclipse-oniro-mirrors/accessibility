@@ -42,7 +42,7 @@ class TouchGuider;
 enum class TouchGuideState : int {
     TOUCH_GUIDING,
     DRAGGING,
-    TRANSMITING,
+    TRANSMITTING,
     GESTURE_RECOGNIZING
 };
 
@@ -308,7 +308,7 @@ private:
     void HandleDraggingState(MMI::PointerEvent &event);
 
     /**
-     * @brief Handle touch events on transmiting state.
+     * @brief Handle touch events on transmitting state.
      * @param event the touch event from Multimodal
      * @return
      */

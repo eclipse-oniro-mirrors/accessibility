@@ -123,10 +123,8 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateMoveEvent(int pointerC
 
 /**
  * @tc.number: OnTouchEvent001
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the first down event.
- * @tc.require:
- * @tc.author:
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_001, TestSize.Level1)
 {
@@ -141,7 +139,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_001, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent002
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the first up event.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_002, TestSize.Level1)
@@ -168,7 +166,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_002, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent003
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that down-up slowly.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_003, TestSize.Level1)
@@ -198,7 +196,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_003, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent004
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that move slowly with one finger.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_004, TestSize.Level1)
@@ -230,7 +228,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_004, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent006
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that two fingers moving in same directions in touchGuiding state.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_006, TestSize.Level1)
@@ -277,7 +275,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_006, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent007
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that multi-finger gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_007, TestSize.Level1)
@@ -320,7 +318,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_007, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent008
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the CANCEL event.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_008, TestSize.Level1)
@@ -343,7 +341,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_008, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent009
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the OTHER_POINT_DOWN event in draging state.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1)
@@ -390,7 +388,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent010
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that two fingers moving in sanme directions in draging state.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1)
@@ -430,7 +428,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent011
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the event that multi-finger moving in draging state.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1)
@@ -478,7 +476,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent012
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the drag event .
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1)
@@ -515,7 +513,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent013
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the accessibility event.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_013, TestSize.Level1)
@@ -550,7 +548,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_013, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent014
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check cancel the second move event after onstart.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1)
@@ -596,7 +594,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent015
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the RIGHT_THEN_DOWN gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1)
@@ -659,7 +657,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent016
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the LEFT_THEN_DOWN gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1)
@@ -722,7 +720,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent017
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the UP_THEN_LEFT gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1)
@@ -785,7 +783,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent018
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the UP_THEN_RIGHT gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1)
@@ -848,7 +846,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent019
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check the LEFT gesture.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1)
@@ -901,7 +899,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent020
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check cancel the first move event without onstart.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1)
@@ -938,7 +936,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1
 
 /**
  * @tc.number: OnTouchEvent023
- * @tc.name:OnPointerEvent
+ * @tc.name: OnPointerEvent
  * @tc.desc: Check ClearEvents and DestroyEvents.
  */
 HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_023, TestSize.Level1)

@@ -95,7 +95,7 @@ void TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
                 case TouchGuideState::DRAGGING:
                     HandleDraggingState(event);
                     break;
-                case TouchGuideState::TRANSMITING:
+                case TouchGuideState::TRANSMITTING:
                     HandleTransmitingState(event);
                     break;
                 case TouchGuideState::GESTURE_RECOGNIZING:
@@ -221,8 +221,7 @@ void TouchGuider::TouchGuideListener::OnDoubleTapLongPress(MMI::PointerEvent &ev
     if (server_.currentState_ != static_cast<int>(TouchGuideState::TOUCH_GUIDING)) {
         return;
     }
-    if (server_.getLastReceivedEvent() &&
-        server_.getLastReceivedEvent()->GetPointersIdList().size() == 0) {
+    if (server_.getLastReceivedEvent() && (!server_.getLastReceivedEvent()->GetPointersIdList().size())) {
         return;
     }
     int ret = GetClickPosition(clickPoint);
@@ -236,7 +235,7 @@ void TouchGuider::TouchGuideListener::OnDoubleTapLongPress(MMI::PointerEvent &ev
     server_.longPressOffsetY_ = eventPoint.GetGlobalY() - clickPoint.GetGlobalY();
 
     server_.SendExitEvents();
-    server_.currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+    server_.currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
     server_.SendAllDownEvents(event);
 }
 
@@ -269,7 +268,7 @@ bool TouchGuider::TouchGuideListener::OnStarted()
 {
     HILOG_DEBUG();
 
-    server_.currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+    server_.currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
     server_.CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
     server_.CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
     server_.PostGestureRecognizeExit();
@@ -281,7 +280,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 {
     HILOG_DEBUG("OnCompleted, gestureId is %{public}d", gestureId);
 
-    if (server_.currentState_ != static_cast<int>(TouchGuideState::TRANSMITING)) {
+    if (server_.currentState_ != static_cast<int>(TouchGuideState::TRANSMITTING)) {
         HILOG_DEBUG("OnCompleted, state is not transmitting.");
         return false;
     }
@@ -305,7 +304,7 @@ bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     switch (static_cast<TouchGuideState>(server_.currentState_)) {
-        case TouchGuideState::TRANSMITING:
+        case TouchGuideState::TRANSMITTING:
             server_.OnTouchInteractionEnd();
             server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
@@ -410,7 +409,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
             if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
                 Clear(event);
             } else {
-                currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+                currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
                 SendEventToMultimodal(event, POINTER_UP);
                 SendAllDownEvents(event);
             }
@@ -476,7 +475,7 @@ void TouchGuider::Clear(MMI::PointerEvent &event)
     if (currentState_ == static_cast<int>(TouchGuideState::TOUCH_GUIDING)) {
         SendExitEvents();
     } else if (currentState_ == static_cast<int>(TouchGuideState::DRAGGING) ||
-        currentState_ == static_cast<int>(TouchGuideState::TRANSMITING)) {
+        currentState_ == static_cast<int>(TouchGuideState::TRANSMITTING)) {
         SendUpForAllInjectedEvent(event);
     }
 
@@ -562,7 +561,7 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
                 currentState_ =  static_cast<int>(TouchGuideState::DRAGGING);
                 SendEventToMultimodal(event, POINTER_DOWN);
             } else {
-                currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+                currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
                 SendAllDownEvents(event);
             }
             break;
@@ -573,7 +572,7 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
             } else {
                 SendExitEvents();
             }
-            currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+            currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
             SendAllDownEvents(event);
             break;
     }
@@ -586,7 +585,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     std::vector<int32_t> pIds = event.GetPointersIdList();
     int pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
-        HILOG_INFO("Only two pointers can be received in the draging state");
+        HILOG_INFO("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
         /* get densityPixels from WMS */
         AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
@@ -615,7 +614,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
         }
         SendEventToMultimodal(event, NO_CHANGE);
     } else {
-        currentState_ = static_cast<int>(TouchGuideState::TRANSMITING);
+        currentState_ = static_cast<int>(TouchGuideState::TRANSMITTING);
         SendEventToMultimodal(event, POINTER_UP);
         SendAllDownEvents(event);
     }
@@ -627,7 +626,7 @@ float TouchGuider::GetAngleCos(float offsetX, float offsetY, bool isGetX)
 
     float ret = isGetX ? offsetX : offsetY;
     double duration = hypot(offsetX, offsetY);
-    if (duration != 0) {
+    if (duration) {
         ret = ret / duration;
     }
     return ret;
@@ -659,8 +658,8 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float firstOffsetY = yPointF - yPointDownF;
     float secondOffsetX = xPointS - xPointDownS;
     float secondOffsetY = yPointS - yPointDownS;
-    if ((firstOffsetX == 0 && firstOffsetY == 0) ||
-        (secondOffsetX == 0 && secondOffsetY == 0)) {
+    if ((!firstOffsetX && !firstOffsetY) ||
+        (!secondOffsetX && !secondOffsetY)) {
         return true;
     }
 
@@ -690,7 +689,7 @@ void TouchGuider::RecordInjectedEvent(MMI::PointerEvent &event)
             if (injectedRecorder_.downPointerNum > 0) {
                 injectedRecorder_.downPointerNum--;
             }
-            if (injectedRecorder_.downPointers == 0) {
+            if (!injectedRecorder_.downPointers) {
                 injectedRecorder_.lastDownTime = 0;
             }
             break;

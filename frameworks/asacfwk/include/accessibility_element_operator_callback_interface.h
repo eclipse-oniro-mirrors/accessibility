@@ -42,8 +42,8 @@ public:
         const int requestId) = 0;
 
     /**
-     * @brief Set the element informations matched with text to AA.
-     * @param infos The element informations searched matched with text.
+     * @brief Set the element information matched with text to AA.
+     * @param infos The element information searched matched with text.
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
@@ -51,16 +51,16 @@ public:
         const int requestId) = 0;
 
     /**
-     * @brief Set the element informations matched with focus type to AA.
-     * @param info The element informations searched matched with focus type.
+     * @brief Set the element information matched with focus type to AA.
+     * @param info The element information searched matched with focus type.
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
     virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int requestId) = 0;
 
     /**
-     * @brief Set the element informations by focus direction to AA.
-     * @param info The element informations searched by focus direction.
+     * @brief Set the element information by focus direction to AA.
+     * @param info The element information searched by focus direction.
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */

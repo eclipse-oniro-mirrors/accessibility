@@ -870,7 +870,7 @@ public:
     /**
      * @brief Searches for node information based on the specified content.
      * @param text specified content
-     * @return The child node infomations matched the text filterred.
+     * @return The child node information matched the text filterred.
      * @since 3
      * @sysCap Accessibility
      */

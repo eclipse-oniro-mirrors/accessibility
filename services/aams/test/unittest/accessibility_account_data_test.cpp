@@ -365,7 +365,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveI
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
     /* remove */
-    accountData->RemoveInstalledAbility(*abilityInfo);
+    accountData->RemoveInstalledAbility(abilityInfo->GetPackageName());
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveInstalledAbility001 end";
