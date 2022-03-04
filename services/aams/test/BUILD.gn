@@ -24,13 +24,14 @@ config("module_private_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-  include_dirs = [
+
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock",
     "//third_party/json/include",
     "//utils/native/base/include",
     "//utils/system/safwk/native/include",
     "//base/accessibility/services/aams/include",
-    "//base/accessibility/services/test/mock/distributeddatamgr/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
@@ -48,13 +49,10 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
     "//utils/native/base/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
@@ -465,10 +463,10 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/mock_bundle_mgr_proxy.cpp",
     "mock/mock_display.cpp",
     "mock/mock_display_manager.cpp",
-    "mock/mock_input_manager.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
 
   configs = [ ":module_private_config" ]
 

@@ -221,7 +221,8 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
     NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-    ConvertEventInfoJSToNAPI(env, parameters[0], callbackInfo->eventInfo_);
+    callbackInfo->result_ = ConvertEventInfoJSToNAPI(env, parameters[0], callbackInfo->eventInfo_);
+
     napi_value promise = nullptr;
 
     if (argc > ARGS_SIZE_ONE) {
@@ -240,8 +241,10 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
         resource,
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->result_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SendEvent(callbackInfo->eventInfo_);
+            if (callbackInfo->result_) {
+                callbackInfo->result_ =
+                    AccessibilitySystemAbilityClient::GetInstance()->SendEvent(callbackInfo->eventInfo_);
+            }
             HILOG_INFO("SendEvent result[%{public}d]", callbackInfo->result_);
         },
         [](napi_env env, napi_status status, void* data) {
@@ -283,9 +286,9 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     NAccessibilityClient::listeners_.push_back(stateListener);
     std::string eventType = GetStringFromNAPI(env, args[0]);
     AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    if (std::strcmp(eventType.c_str(), "accessibility") == 0) {
+    if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    } else if (std::strcmp(eventType.c_str(), "touchExplorer") == 0) {
+    } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
         type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
@@ -313,9 +316,9 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         // async to sync start
         AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
         std::string eventType = callbackInfo->eventType_;
-        if (std::strcmp(eventType.c_str(), "accessibility") == 0) {
+        if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
             type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-        } else if (std::strcmp(eventType.c_str(), "touchExplorer") == 0) {
+        } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
             type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
         } else {
             HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());

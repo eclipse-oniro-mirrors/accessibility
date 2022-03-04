@@ -13,27 +13,21 @@
  * limitations under the License.
  */
 
-#ifndef I_INPUT_EVENT_CONSUMER_H
-#define I_INPUT_EVENT_CONSUMER_H
+#ifndef MOCK_INPUT_MANAGER_H
+#define MOCK_INPUT_MANAGER_H
 
-#include <memory>
-
-#include "axis_event.h"
-#include "key_event.h"
-#include "pointer_event.h"
+#include "input_manager.h"
 
 namespace OHOS {
 namespace MMI {
-struct IInputEventConsumer {
+class MockInputManager {
 public:
-    IInputEventConsumer() = default;
-    virtual ~IInputEventConsumer() = default;
-
-    virtual void OnInputEvent(std::shared_ptr<KeyEvent> keyEvent) const;
-    virtual void OnInputEvent(std::shared_ptr<PointerEvent> pointerEvent) const;
-    virtual void OnInputEvent(std::shared_ptr<AxisEvent> axisEvent) const;
+    static int GetKeyCode();
+    static void ClearTouchActions();
+    static std::vector<int32_t> GetTouchActions();
+    static void ClearInputEventConsumer();
+    static std::shared_ptr<IInputEventConsumer> GetInputEventConsumer();
 };
 } // namespace MMI
 } // namespace OHOS
-
-#endif // I_INPUT_EVENT_CONSUMER_H
+#endif // MOCK_INPUT_MANAGER_H

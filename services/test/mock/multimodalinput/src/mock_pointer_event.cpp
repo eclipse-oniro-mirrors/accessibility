@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "pointer_event.h"
+#include "mock_pointer_event.h"
 
 namespace OHOS {
 namespace MMI {
@@ -31,12 +31,12 @@ void PointerEvent::PointerItem::SetPointerId(int32_t pointerId)
     pointerId_ = pointerId;
 }
 
-int32_t PointerEvent::PointerItem::GetDownTime() const
+int64_t PointerEvent::PointerItem::GetDownTime() const
 {
     return downTime_;
 }
 
-void PointerEvent::PointerItem::SetDownTime(int32_t downTime)
+void PointerEvent::PointerItem::SetDownTime(int64_t downTime)
 {
     downTime_ = downTime;
 }
@@ -133,6 +133,13 @@ void PointerEvent::PointerItem::SetDeviceId(int32_t deviceId)
 
 PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType) {}
 
+PointerEvent::PointerEvent(const PointerEvent& other)
+    : InputEvent(other), pointerId_(other.pointerId_), pointers_(other.pointers_),
+    pressedButtons_(other.pressedButtons_), sourceType_(other.sourceType_),
+    pointerAction_(other.pointerAction_), buttonId_(other.buttonId_),
+    axes_(other.axes_), axisValues_(other.axisValues_),
+    pressedKeys_(other.pressedKeys_) {}
+
 PointerEvent::~PointerEvent()
 {
     pointers_.clear();
@@ -142,9 +149,7 @@ PointerEvent::~PointerEvent()
 
 std::shared_ptr<PointerEvent> PointerEvent::Create()
 {
-    PointerEvent *tmp = new PointerEvent(InputEvent::EVENT_TYPE_POINTER);
-    std::shared_ptr<PointerEvent> pointEvent(tmp);
-    return pointEvent;
+    return std::shared_ptr<PointerEvent>(new PointerEvent(InputEvent::EVENT_TYPE_POINTER));
 }
 
 int32_t PointerEvent::GetSourceType() const

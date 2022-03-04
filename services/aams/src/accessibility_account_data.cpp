@@ -206,28 +206,23 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
     HILOG_DEBUG("Add EnabledAbility: %{public}d", enabledAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
 {
-    HILOG_DEBUG("start.");
-    std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
-    if (it != enabledAbilities_.end()) {
-        enabledAbilities_.erase(it);
-    }
-
     int errCode = 0;
     std::shared_ptr<NativePreferences::Preferences> pref =
         NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode) {
+        HILOG_ERROR("errCode = %{public}d.", errCode);
+        return;
+    }
 
     std::string strValue = pref->GetString("BundleName", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
 
     std::vector<std::string> vecvalue;
     StringToVector(strValue, vecvalue);
-    std::string BundleName = elementName.GetBundleName();
     for (std::vector<std::string>::iterator val = vecvalue.begin();val != vecvalue.end();) {
-        if (std::strcmp(val->c_str(), BundleName.c_str()) == 0) {
+        if (std::strcmp(val->c_str(), bundleName.c_str()) == 0) {
             val = vecvalue.erase(val);
             HILOG_DEBUG("remove val = %{public}s", val->c_str());
         } else {
@@ -237,13 +232,25 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
     std::string stringOut = "";
     VectorToString(vecvalue, stringOut);
     int err = pref->PutString("BundleName", stringOut);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+    if (err) {
+        HILOG_ERROR("pref->PutString() = %{public}d.", err);
+    }
 
     err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    if (err) {
+        HILOG_ERROR("pref->FlushSync() = %{public}d.", err);
+    }
+}
 
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
-
+void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
+{
+    std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
+    HILOG_DEBUG("EnabledAbility size(%{public}d)", enabledAbilities_.size());
+    if (it != enabledAbilities_.end()) {
+        HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", elementName.GetBundleName().c_str());
+        enabledAbilities_.erase(it);
+    }
+    RemoveEnabledFromPref(elementName.GetBundleName());
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 

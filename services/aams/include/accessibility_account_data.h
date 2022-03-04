@@ -370,6 +370,7 @@ private:
     void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
     void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
     void VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut);
+    void RemoveEnabledFromPref(const std::string bundleName);
 
     int id_;
     bool isEnabled_ = false;

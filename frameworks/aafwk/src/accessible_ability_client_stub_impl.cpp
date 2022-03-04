@@ -161,7 +161,8 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
     }
 
     if (uiTestListener_) {
-        bool handled = uiTestListener_->OnKeyPressEvent(keyEvent, sequence);
+        std::shared_ptr<MMI::KeyEvent> tmp = std::make_shared<MMI::KeyEvent>(keyEvent);
+        bool handled = uiTestListener_->OnKeyPressEvent(tmp, sequence);
         AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
     }
 }

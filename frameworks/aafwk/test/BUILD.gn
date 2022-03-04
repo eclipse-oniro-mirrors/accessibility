@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//base/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
 
 module_output_path = "accessibility/framework_test"
@@ -22,7 +23,8 @@ config("module_private_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-  include_dirs = [
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock",
     "//third_party/json/include",
     "//utils/system/safwk/native/include",
@@ -43,13 +45,6 @@ config("module_private_config") {
     "AAMS_LOG_DOMAIN = 0xD005205",
   ]
 }
-
-MockMultiModalInputSrc = [
-  "//base/accessibility/services/test/mock/multimodalinput/src/mock_input_event.cpp",
-  "//base/accessibility/services/test/mock/multimodalinput/src/mock_input_manager.cpp",
-  "//base/accessibility/services/test/mock/multimodalinput/src/mock_key_event.cpp",
-  "//base/accessibility/services/test/mock/multimodalinput/src/mock_pointer_event.cpp",
-]
 
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
@@ -76,8 +71,7 @@ ohos_unittest("accessible_ability_test") {
     "unittest/accessible_ability_client_stub_test.cpp",
     "unittest/display_resize_controller_test.cpp",
   ]
-
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_multimodalinput_src
 
   configs = [ ":module_private_config" ]
 
