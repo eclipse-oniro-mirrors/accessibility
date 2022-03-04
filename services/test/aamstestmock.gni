@@ -22,9 +22,8 @@ aams_mock_include_dirs = [
   "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
 ]
 
-aams_mock_distributeddatamgr_src = [
-  "$AAMS_MOCK_PATH/distributeddatamgr/src/mock_preferences_helper.cpp",
-]
+aams_mock_distributeddatamgr_src =
+    [ "$AAMS_MOCK_PATH/distributeddatamgr/src/mock_preferences_helper.cpp" ]
 
 aams_mock_multimodalinput_src = [
   "$AAMS_MOCK_PATH/multimodalinput/src/mock_input_event.cpp",

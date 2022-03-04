@@ -1320,7 +1320,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
-        if(str == "") {
+        if (str == "") {
             return false;
         }
         eventInfo.SetBundleName(str);
@@ -1411,12 +1411,13 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     if (hasProperty) {
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
-        void* datas = nullptr;
+        napi_value data = nullptr;
         size_t dataLen = 0;
-        napi_get_arraybuffer_info(env, value, &datas, &dataLen);
-        auto rawData = (std::string*)datas;
+        napi_get_array_length(env, value, &dataLen);
         for (int i = 0; i < int(dataLen); i++) {
-            eventInfo.AddContent(*(rawData + i));
+            napi_get_element(env, value, i, &data);
+            str = GetStringFromNAPI(env, data);
+            eventInfo.AddContent(str);
         }
     }
 
