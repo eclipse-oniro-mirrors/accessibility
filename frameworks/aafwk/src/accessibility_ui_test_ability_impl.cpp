@@ -60,7 +60,7 @@ AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
         HILOG_ERROR("Get aams proxy failed");
         return;
     }
-    
+
     stub_ = new AccessibleAbilityClientStubImpl();
     stub_->SetUITestEnabled();
 }
