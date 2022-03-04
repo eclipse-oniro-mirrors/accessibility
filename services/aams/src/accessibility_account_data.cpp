@@ -211,8 +211,7 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleNam
     int errCode = 0;
     std::shared_ptr<NativePreferences::Preferences> pref =
         NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    if (errCode)
-    {
+    if (errCode) {
         HILOG_ERROR("errCode = %{public}d.", errCode);
         return;
     }
@@ -239,7 +238,7 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleNam
 
     err = pref->FlushSync();
     if (err) {
-        HILOG_ERR("pref->FlushSync() = %{public}d.", err);
+        HILOG_ERROR("pref->FlushSync() = %{public}d.", err);
     }
 }
 
