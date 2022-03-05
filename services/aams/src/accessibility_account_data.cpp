@@ -495,59 +495,48 @@ bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption
     return true;
 }
 
-bool AccessibilityAccountData::SetStatePref(int type) {
-    HILOG_DEBUG();
+std::string AccessibilityAccountData::StateChange(bool state)
+{
+    std::string STATE_TRUE = "on";
+    std::string STATE_FALSE = "off";
+    if (state) {
+        return STATE_TRUE;
+    } else {
+        return STATE_FALSE;
+    }
+}
+
+bool AccessibilityAccountData::SetStatePref(int type)
+{
     if (pref_ == nullptr) {
         HILOG_ERROR("pref_ is null!");
         return false;
     }
 
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
     std::string strValue = "";
     switch (type) {
         case STATE::ACCESSIBILITY:
-            if (isEnabled_) {
-                strValue = STATE_TRUE;
-            } else {
-                strValue = STATE_FALSE;
-            }
+            strValue = StateChange(isEnabled_);
             pref_->PutString("accessible", strValue);
-        break;
+            break;
         case STATE::TOUCHGUIDE:
-            if (isEventTouchGuideState_) {
-                strValue = STATE_TRUE;
-            } else {
-                strValue = STATE_FALSE;
-            }
+            strValue = StateChange(isEventTouchGuideState_);
             pref_->PutString("touchGuide", strValue);
-        break;
+            break;
         case STATE::GESTURE:
-            if (isGesturesSimulation_) {
-                strValue = STATE_TRUE;
-            } else {
-                strValue = STATE_FALSE;
-            }
+            strValue = StateChange(isGesturesSimulation_);
             pref_->PutString("gesture", strValue);
-        break;
+            break;
         case STATE::KEYEVENT:
-            if (isFilteringKeyEvents_) {
-                strValue = STATE_TRUE;
-            } else {
-                strValue = STATE_FALSE;
-            }
+            strValue = StateChange(isFilteringKeyEvents_);
             pref_->PutString("keyEventObserver", strValue);
-        break;
+            break;
         case STATE::CAPTION:
-            if (isCaptionState_) {
-                strValue = STATE_TRUE;
-            } else {
-                strValue = STATE_FALSE;
-            }
+            strValue = StateChange(isCaptionState_);
             pref_->PutString("CaptionState", strValue);
-        break;
+            break;
         default:
-        break;
+            break;
     }
 
     pref_->FlushSync();

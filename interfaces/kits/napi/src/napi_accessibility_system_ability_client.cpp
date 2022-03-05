@@ -1573,7 +1573,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         } else {
             HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
         }
-        for (auto it = NAccessibilityClient::captionListeners_.begin(); 
+        for (auto it = NAccessibilityClient::captionListeners_.begin();
             it != NAccessibilityClient::captionListeners_.end();) {
             std::shared_ptr<CaptionListener> observer= *it;
             if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {

@@ -42,11 +42,11 @@ class AccessibilityWindowConnection;
 class IAccessibleAbilityManagerServiceCaptionProperty;
 
 enum STATE : int {
-  ACCESSIBILITY,
-  TOUCHGUIDE,
-  GESTURE,
-  KEYEVENT,
-  CAPTION
+    ACCESSIBILITY,
+    TOUCHGUIDE,
+    GESTURE,
+    KEYEVENT,
+    CAPTION
 };
 
 class AccessibilityAccountData final : public RefBase {
@@ -382,6 +382,7 @@ private:
     void UpdateEnabledFromPref();
     bool SetStatePref(int type);
     bool SetCaptionPropertyPref();
+    std::string StateChange(bool state);
 
     int id_;
     bool isEnabled_ = false;
