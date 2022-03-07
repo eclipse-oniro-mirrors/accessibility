@@ -112,7 +112,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
 {
     HILOG_DEBUG("function[%{public}d].", availableFunctions_);
 
-    if (availableFunctions_ == 0) {
+    if (!availableFunctions_) {
         DestroyInterceptor();
         return;
     }

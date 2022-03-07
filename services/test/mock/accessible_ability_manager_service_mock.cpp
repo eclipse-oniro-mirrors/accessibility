@@ -320,14 +320,14 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     HILOG_DEBUG("InputFilter flag is %{public}d", flag);
 
-    if (flag != 0) {
+    if (flag) {
         inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
         inputInterceptor_->SetAvailableFunctions(flag);
-        return;
-    }
-    if (inputInterceptor_) {
+    } else if (inputInterceptor_ != nullptr) {
         HILOG_DEBUG("Has InputInterceptor before.");
         inputInterceptor_->SetAvailableFunctions(0);
+    } else {
+        HILOG_DEBUG("InputInterceptor is null.");
     }
 }
 

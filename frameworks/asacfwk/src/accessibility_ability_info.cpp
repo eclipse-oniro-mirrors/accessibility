@@ -34,7 +34,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AppExecFwk::ExtensionAb
     name_ = abilityInfo.name;
     eventTypes_ = EventType::TYPES_ALL_MASK;
     HILOG_DEBUG("bundle name is [%{public}s].", bundleName_.c_str());
-    HILOG_DEBUG("moudle name is [%{public}s].", moduleName_.c_str());
+    HILOG_DEBUG("module name is [%{public}s].", moduleName_.c_str());
     HILOG_DEBUG("ability name is [%{public}s]].", name_.c_str());
     description_ = abilityInfo.description;
     std::vector<std::string> profileInfos;

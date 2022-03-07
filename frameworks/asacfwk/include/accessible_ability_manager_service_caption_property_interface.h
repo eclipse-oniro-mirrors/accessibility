@@ -29,7 +29,7 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityManagerServiceCaptionProperty");
 
     /**
-     * @brief Receive the state notify from AAMS and send it to the observer registed..
+     * @brief Receive the state notify from AAMS and send it to the observer registered.
      * @param caption The caption properties.
      * @return
      */

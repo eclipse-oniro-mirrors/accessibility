@@ -74,7 +74,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, GetWindowTitle_001, TestSize.Level1)
     AccessibilityWindowInfo window {};
     string title = "test";
     window.SetWindowTitle(title);
-    EXPECT_TRUE(strcmp(window.GetWindowTitle().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(window.GetWindowTitle().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetWindowTitle_001 end";
 }
 

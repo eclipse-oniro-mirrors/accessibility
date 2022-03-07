@@ -91,9 +91,9 @@ private:
         HILOG_INFO("GetFocusElementInfo focusType = %{public}s", focusType.c_str());
 
         uint32_t focus = FOCUS_TYPE_INVALID;
-        if (std::strcmp(focusType.c_str(), "accessibility") == 0) {
+        if (!std::strcmp(focusType.c_str(), "accessibility")) {
             focus = FOCUS_TYPE_ACCESSIBILITY;
-        } else if (std::strcmp(focusType.c_str(), "normal") == 0) {
+        } else if (!std::strcmp(focusType.c_str(), "normal")) {
             focus = FOCUS_TYPE_INPUT;
         } else {
             focus = FOCUS_TYPE_INVALID;
@@ -353,7 +353,7 @@ void JSGestureResultListener::OnGestureInjectResult(uint32_t sequence, bool resu
     HILOG_INFO("called.");
 
     if (jsGestureResultListenerInfos.empty()) {
-        HILOG_ERROR("There is no informations of jsGestureResultListenerInfos");
+        HILOG_ERROR("There is no information of jsGestureResultListenerInfos");
         return;
     }
 

@@ -506,11 +506,9 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
         HILOG_DEBUG("There is no installed abilities.");
         return;
     }
+    packageAccount->RemoveInstalledAbility(bundleName);
 
-    sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo();
-    accessibilityInfo->SetPackageName(bundleName);
-    packageAccount->RemoveInstalledAbility(*accessibilityInfo);
-
+    // remove enabled ability, remove connecting ability if it is connecting.
     bool needUpdateAbility = false;
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities = packageAccount->GetEnabledAbilities();
     if (enabledAbilities.empty()) {
@@ -521,6 +519,24 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
         if (enableAbility.second.GetBundleName() == bundleName) {
             packageAccount->RemoveEnabledAbility(enableAbility.second);
             packageAccount->RemoveConnectingA11yAbility(enableAbility.second);
+            needUpdateAbility = true;
+        }
+    }
+
+    // remove connected ability
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedAbilities =
+        packageAccount->GetConnectedA11yAbilities();
+    if (connectedAbilities.empty()) {
+        HILOG_DEBUG("There is no connected abilities.");
+        return;
+    }
+    for (auto& connectedAbility : connectedAbilities) {
+        std::size_t firstPos = connectedAbility.first.find_first_of('/') + 1;
+        std::size_t endPos = connectedAbility.first.find_last_of('/');
+        std::string connectedBundleName = connectedAbility.first.substr(firstPos, endPos - firstPos);
+        if (connectedBundleName == bundleName) {
+            HILOG_DEBUG("Remove connected ability and it's bundle name is %{public}s", connectedBundleName.c_str());
+            packageAccount->RemoveConnectedAbility(connectedAbility.second);
             needUpdateAbility = true;
         }
     }
@@ -567,9 +583,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
         HILOG_DEBUG("There is no installed abilities.");
         return;
     }
-    sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo();
-    accessibilityInfo->SetPackageName(bundleName);
-    packageAccount->RemoveInstalledAbility(*accessibilityInfo);
+    packageAccount->RemoveInstalledAbility(bundleName);
 
     // add installed ability
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
@@ -744,14 +758,14 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
 
-    if (flag != 0) {
+    if (flag) {
         inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
         inputInterceptor_->SetAvailableFunctions(flag);
-        return;
-    }
-    if (inputInterceptor_ != nullptr) {
+    } else if (inputInterceptor_ != nullptr) {
         HILOG_DEBUG("Has InputInterceptor before.");
         inputInterceptor_->SetAvailableFunctions(0);
+    } else {
+        HILOG_DEBUG("InputInterceptor is null.");
     }
 }
 
@@ -968,9 +982,7 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
     auto currentAccountData = GetCurrentAccountData();
 
     // remove installed ability
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
-    abilityInfo->SetPackageName("com.example.uitest");
-    currentAccountData->RemoveInstalledAbility(*abilityInfo);
+    currentAccountData->RemoveInstalledAbility("com.example.uitest");
 
     // remove connected ability
     currentAccountData->RemoveUITestConnectedAbility(connection);
@@ -999,7 +1011,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
                 UpdateAbilities();
                 UpdateAccessibilityManagerService();
             } else {
-                HILOG_ERROR("Get installed ExtentionAbility failed");
+                HILOG_ERROR("Get installed ExtensionAbility failed");
             }
             break;
         case WINDOW_MANAGER_SERVICE_ID:

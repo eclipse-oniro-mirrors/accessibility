@@ -50,9 +50,9 @@ public:
     /**
      * @brief Receive the event from proxy by IPC mechanism.
      * @param code The code is matched with the process function.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
-     * @param option The option paramter of IPC,such as: async,sync
+     * @param option The option parameter of IPC,such as: async,sync
      * @return
      */
     virtual int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
@@ -60,7 +60,7 @@ public:
 private:
     /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByAccessibilityIdResult.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -68,7 +68,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByTextResult.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -76,7 +76,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:SetFindFocusedElementInfoResult.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -84,7 +84,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:SetFocusMoveSearchResult.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -92,7 +92,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:SetExecuteActionResult.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */

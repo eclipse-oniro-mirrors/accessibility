@@ -70,6 +70,7 @@ void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
     FILE *fp;
     if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
+        return;
     }
 
     (void)fprintf(fp, "%s", data);
@@ -83,7 +84,7 @@ void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
     Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
-    if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
+    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
         GTEST_LOG_(INFO) << "remove successful";
     } else {
         GTEST_LOG_(INFO) << "remove failed";
@@ -230,7 +231,7 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 /**
  * @tc.number: OnTouchEvent001
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the event that two fingers moving in sanme directions in draging state.
+ * @tc.desc: Check the event that two fingers moving in sanme directions in dragging state.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent001, TestSize.Level1)
 {
