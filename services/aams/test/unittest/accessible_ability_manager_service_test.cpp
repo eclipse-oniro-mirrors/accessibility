@@ -63,7 +63,7 @@ void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
-    // 注册bundleservice
+    // register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();

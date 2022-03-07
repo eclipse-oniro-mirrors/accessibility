@@ -80,7 +80,7 @@ void AamsInjectorTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp";
     CreateAccessibilityConfigForTouchGuide();
-    // 注册bundleservice
+    // register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
