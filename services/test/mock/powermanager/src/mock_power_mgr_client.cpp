@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace PowerMgr {
 PowerMgrClient::PowerMgrClient() {}
-PowerMgrClient::~PowerMgrClient(){}
+PowerMgrClient::~PowerMgrClient() {}
 
 ErrCode PowerMgrClient::Connect()
 {

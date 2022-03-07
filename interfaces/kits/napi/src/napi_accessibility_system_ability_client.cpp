@@ -323,14 +323,14 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         i++;
     }
 
-   if (argc == ARGS_SIZE_TWO) {
+    if (argc == ARGS_SIZE_TWO) {
         napi_value jsEvent;
         napi_get_boolean(env, result, &jsEvent);
         napi_value callResult;
         napi_value undefined = 0;
         napi_get_undefined(env, &undefined);
         napi_call_function(env, undefined, args[PARAM1], ARGS_SIZE_ONE, &jsEvent, &callResult);
-   }
+    }
 
     return nullptr;
 }
