@@ -247,7 +247,6 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
         enabledAbilities_.erase(it);
     }
     RemoveEnabledFromPref(elementName.GetBundleName());
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 // For UT
@@ -270,13 +269,12 @@ void AccessibilityAccountData::RemoveInstalledAbility(std::string bundleName)
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == bundleName) {
+            HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
             installedAbilities_.erase(it);
         } else {
             ++it;
         }
     }
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 void AccessibilityAccountData::ClearInstalledAbility()
@@ -822,10 +820,10 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
 {
     HILOG_DEBUG("start.");
     for (auto &disableAbility : it) {
+        HILOG_DEBUG("DisableAbilities URI(%{public}s)", disableAbility.first.c_str());
         enabledAbilities_.erase(disableAbility.first);
         RemoveEnabledFromPref(disableAbility.second.GetBundleName());
     }
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
 }
 

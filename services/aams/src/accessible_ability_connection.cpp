@@ -306,7 +306,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         HILOG_DEBUG("Connect failed!");
         accountData_->RemoveEnabledAbility(elementName_);
         accountData_->RemoveConnectingA11yAbility(elementName_);
-
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
         // temp deal: Notify setting
         return;
     }
@@ -361,6 +361,7 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->RemoveConnectedAbility(pointer);
     accountData_->RemoveEnabledAbility(element);
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 
     int32_t currentAccountId = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountId();
     if (accountData_->GetAccountId() == currentAccountId) {
@@ -540,6 +541,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         accountData->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
     accountData->RemoveConnectedAbility(connection);
     accountData->RemoveEnabledAbility(recipientElementName_);
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
     // temp deal: notify setting
 }

@@ -16,6 +16,7 @@ AAMS_MOCK_PATH = "//base/accessibility/services/test/mock"
 aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",
   "$AAMS_MOCK_PATH/multimodalinput/include",
+  "$AAMS_MOCK_PATH/powermanager/include",
   "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
   "//foundation/multimodalinput/input/common/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",

@@ -17,14 +17,11 @@
 
 namespace OHOS {
 namespace PowerMgr {
-
 PowerMgrClient::PowerMgrClient() {}
-PowerMgrClient::~PowerMgrClient()
-{}
+PowerMgrClient::~PowerMgrClient(){}
 
 ErrCode PowerMgrClient::Connect()
 {
-
     return ERR_OK;
 }
 
@@ -123,6 +120,5 @@ std::string PowerMgrClient::Dump(const std::vector<std::string>& args)
 {
     return "ERR_OK";
 }
-
 } // namespace PowerMgr
 } // namespace OHOS

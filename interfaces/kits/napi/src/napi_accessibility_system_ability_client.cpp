@@ -316,9 +316,8 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     bool result = false;
     for (auto observer : NAccessibilityClient::listeners_) {
         if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-            AccessibilitySystemAbilityClient::GetInstance()->UnsubscribeStateObserver(observer, type);
+            result = AccessibilitySystemAbilityClient::GetInstance()->UnsubscribeStateObserver(observer, type);
             NAccessibilityClient::listeners_.erase(NAccessibilityClient::listeners_.begin() + i);
-            result = true;
             break;
         }
         i++;
@@ -1563,7 +1562,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
             if (type == CaptionObserverType::CAPTION_ENABLE) {
                 napi_get_boolean(env, callbackInfo->result_, &result[PARAM0]); // maby rework
             } else {
-                napi_create_object(env, &result[PARAM0]);                     // maby rework
+                napi_create_object(env, &result[PARAM0]); // maby rework
                 OHOS::Accessibility::CaptionProperty captionProperty {};
                 captionProperty = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
                 ConvertCaptionPropertyToJS(env, result[PARAM0], captionProperty);

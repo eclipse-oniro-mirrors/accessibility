@@ -30,7 +30,6 @@ config("module_private_config") {
   include_dirs = aams_mock_include_dirs
   include_dirs += [
     "mock/aafwk/include",
-    "mock/powermanager/include",
     "../aams/test/mock/",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -55,7 +54,6 @@ config("module_private_config") {
     "//utils/native/base/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
-
     #"//foundation/distributedschedule/samgr/services/samgr/native/include",
     #"//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",

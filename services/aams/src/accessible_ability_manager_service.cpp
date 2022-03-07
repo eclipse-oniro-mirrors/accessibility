@@ -542,6 +542,7 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
     }
 
     if (needUpdateAbility) {
+        UpdateAbilities();
         UpdateAccessibilityManagerService();
     }
 }
@@ -983,7 +984,7 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
 
     // remove installed ability
     currentAccountData->RemoveInstalledAbility("com.example.uitest");
-
+    UpdateAbilities();
     // remove connected ability
     currentAccountData->RemoveUITestConnectedAbility(connection);
     connection->OnAbilityDisconnectDone(connection->GetElementName(), 0);
