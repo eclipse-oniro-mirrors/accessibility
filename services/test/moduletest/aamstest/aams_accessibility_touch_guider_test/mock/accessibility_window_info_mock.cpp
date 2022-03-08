@@ -67,6 +67,7 @@ bool AccessibilityWindowInfo::Marshalling(Parcel &parcel) const
 
 AccessibilityWindowInfo* AccessibilityWindowInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     AccessibilityWindowInfo *accessibilityWindow = new AccessibilityWindowInfo();
     return accessibilityWindow;
 }
@@ -202,6 +203,7 @@ int AccessibilityWindowInfo::GetChildNum() const
 
 AccessibilityWindowInfo AccessibilityWindowInfo::GetChild(const int index)
 {
+    (void)index;
     AccessibilityWindowInfo win {};
     return win;
 }

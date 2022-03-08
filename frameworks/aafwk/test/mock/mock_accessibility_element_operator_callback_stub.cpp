@@ -26,36 +26,50 @@ AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackS
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
+    (void)code;
+    (void)data;
+    (void)reply;
+    (void)option;
     return 0;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
     MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
     MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 } // namespace Accessibility

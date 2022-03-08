@@ -378,8 +378,8 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     }
 
     bool send = false;
-    if (IsWhiteListEvent(eventInfo.GetEventType())) {
-        HILOG_DEBUG("Get event type is white list!");
+    if (IsAllowedListEvent(eventInfo.GetEventType())) {
+        HILOG_DEBUG("EventType is in the allowed list!");
         send = true;
     } else {
         vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
@@ -401,7 +401,7 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     return;
 }
 
-bool AccessibleAbilityConnection::IsWhiteListEvent(EventType eventType)
+bool AccessibleAbilityConnection::IsAllowedListEvent(EventType eventType)
 {
     bool ret = false;
     switch (eventType) {

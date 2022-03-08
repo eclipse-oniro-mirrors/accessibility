@@ -183,7 +183,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
 /**
  * @tc.number: AAMS_moduletest_SendEvent_001
  * @tc.name: SendEvent
- * @tc.desc: Test function SendEvent aams send a event to accessibility,and check the parm of event.
+ * @tc.desc: Test function SendEvent aams send event to accessibility,and check the parm of event.
  *
  */
 HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
@@ -191,7 +191,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest SendEvent_001 start";
     // register AA
     AddAccessibleAbilityConnection();
-    // make a event
+    // make an event
     AccessibilityEventInfo eventInfo;
     eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     // aams send event

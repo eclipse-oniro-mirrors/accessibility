@@ -23,29 +23,38 @@ namespace OHOS {
 namespace Accessibility {
 bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<AccessibilityElementInfo> AccessibilityElementInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
 void AccessibilityElementInfo::SetComponentId(const int componentId)
-{}
+{
+    (void)componentId;
+}
 
 bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInfo &elementInfo)
 {
+    (void)focus;
+    (void)elementInfo;
     return true;
 }
 
 bool AccessibilityElementInfo::GetNext(const FocusMoveDirection direction, AccessibilityElementInfo &elementInfo)
 {
+    (void)direction;
+    (void)elementInfo;
     return true;
 }
 
@@ -60,6 +69,8 @@ int AccessibilityElementInfo::GetChildCount() const
 
 bool AccessibilityElementInfo::GetChild(const int index, AccessibilityElementInfo &elementInfo)
 {
+    (void)index;
+    (void)elementInfo;
     return true;
 }
 
@@ -69,10 +80,13 @@ std::vector<int> AccessibilityElementInfo::GetChildIds() const
 }
 
 void AccessibilityElementInfo::AddChild(const int childId)
-{}
+{
+    (void)childId;
+}
 
 bool AccessibilityElementInfo::RemoveChild(const int childId)
 {
+    (void)childId;
     return true;
 }
 
@@ -82,13 +96,18 @@ std::vector<AccessibleAction> AccessibilityElementInfo::GetActionList() const
 }
 
 void AccessibilityElementInfo::AddAction(AccessibleAction &operation)
-{}
+{
+    (void)operation;
+}
 
 void AccessibilityElementInfo::DeleteAction(AccessibleAction &operation)
-{}
+{
+    (void)operation;
+}
 
 bool AccessibilityElementInfo::DeleteAction(ActionType &operationType)
 {
+    (void)operationType;
     return true;
 }
 
@@ -96,7 +115,9 @@ void AccessibilityElementInfo::DeleteAllActions()
 {}
 
 void AccessibilityElementInfo::SetTextLengthLimit(const int max)
-{}
+{
+    (void)max;
+}
 
 int AccessibilityElementInfo::GetTextLengthLimit() const
 {
@@ -106,18 +127,25 @@ int AccessibilityElementInfo::GetTextLengthLimit() const
 bool AccessibilityElementInfo::ExecuteAction(const ActionType &operation,
     const std::map<std::string, std::string> &actionArguments)
 {
+    (void)operation;
+    (void)actionArguments;
     return true;
 }
 
 bool AccessibilityElementInfo::GetByContent(const std::string &text,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
+    (void)text;
+    (void)elementInfos;
     return true;
 }
 
 bool AccessibilityElementInfo::GetElementInfosById(const int elementId, int mode,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
+    (void)elementId;
+    (void)mode;
+    (void)elementInfos;
     return true;
 }
 
@@ -127,10 +155,13 @@ int AccessibilityElementInfo::GetWindowId() const
 }
 
 void AccessibilityElementInfo::SetWindowId(const int windowId)
-{}
+{
+    (void)windowId;
+}
 
 bool AccessibilityElementInfo::GetParent(AccessibilityElementInfo &elementInfo)
 {
+    (void)elementInfo;
     return true;
 }
 
@@ -140,7 +171,9 @@ int AccessibilityElementInfo::GetParentNodeId() const
 }
 
 void AccessibilityElementInfo::SetParent(const int parentId)
-{}
+{
+    (void)parentId;
+}
 
 Rect AccessibilityElementInfo::GetRectInScreen() const
 {
@@ -148,7 +181,9 @@ Rect AccessibilityElementInfo::GetRectInScreen() const
 }
 
 void AccessibilityElementInfo::SetRectInScreen(Rect &bounds)
-{}
+{
+    (void)bounds;
+}
 
 bool AccessibilityElementInfo::IsCheckable() const
 {
@@ -156,7 +191,9 @@ bool AccessibilityElementInfo::IsCheckable() const
 }
 
 void AccessibilityElementInfo::SetCheckable(const bool checkable)
-{}
+{
+    (void)checkable;
+}
 
 bool AccessibilityElementInfo::IsChecked() const
 {
@@ -164,7 +201,9 @@ bool AccessibilityElementInfo::IsChecked() const
 }
 
 void AccessibilityElementInfo::SetChecked(const bool checked)
-{}
+{
+    (void)checked;
+}
 
 bool AccessibilityElementInfo::IsFocusable() const
 {
@@ -172,7 +211,9 @@ bool AccessibilityElementInfo::IsFocusable() const
 }
 
 void AccessibilityElementInfo::SetFocusable(const bool focusable)
-{}
+{
+    (void)focusable;
+}
 
 bool AccessibilityElementInfo::IsFocused() const
 {
@@ -180,7 +221,9 @@ bool AccessibilityElementInfo::IsFocused() const
 }
 
 void AccessibilityElementInfo::SetFocused(const bool focused)
-{}
+{
+    (void)focused;
+}
 
 bool AccessibilityElementInfo::IsVisible() const
 {
@@ -188,7 +231,9 @@ bool AccessibilityElementInfo::IsVisible() const
 }
 
 void AccessibilityElementInfo::SetVisible(const bool visible)
-{}
+{
+    (void)visible;
+}
 
 bool AccessibilityElementInfo::HasAccessibilityFocus() const
 {
@@ -196,7 +241,9 @@ bool AccessibilityElementInfo::HasAccessibilityFocus() const
 }
 
 void AccessibilityElementInfo::SetAccessibilityFocus(const bool focused)
-{}
+{
+    (void)focused;
+}
 
 bool AccessibilityElementInfo::IsSelected() const
 {
@@ -204,7 +251,9 @@ bool AccessibilityElementInfo::IsSelected() const
 }
 
 void AccessibilityElementInfo::SetSelected(const bool selected)
-{}
+{
+    (void)selected;
+}
 
 bool AccessibilityElementInfo::IsClickable() const
 {
@@ -212,7 +261,9 @@ bool AccessibilityElementInfo::IsClickable() const
 }
 
 void AccessibilityElementInfo::SetClickable(const bool clickable)
-{}
+{
+    (void)clickable;
+}
 
 bool AccessibilityElementInfo::IsLongClickable() const
 {
@@ -220,7 +271,9 @@ bool AccessibilityElementInfo::IsLongClickable() const
 }
 
 void AccessibilityElementInfo::SetLongClickable(const bool longClickable)
-{}
+{
+    (void)longClickable;
+}
 
 bool AccessibilityElementInfo::IsEnabled() const
 {
@@ -228,7 +281,9 @@ bool AccessibilityElementInfo::IsEnabled() const
 }
 
 void AccessibilityElementInfo::SetEnabled(const bool enabled)
-{}
+{
+    (void)enabled;
+}
 
 bool AccessibilityElementInfo::IsPassword() const
 {
@@ -236,7 +291,9 @@ bool AccessibilityElementInfo::IsPassword() const
 }
 
 void AccessibilityElementInfo::SetPassword(const bool password)
-{}
+{
+    (void)password;
+}
 
 bool AccessibilityElementInfo::IsScrollable() const
 {
@@ -244,7 +301,9 @@ bool AccessibilityElementInfo::IsScrollable() const
 }
 
 void AccessibilityElementInfo::SetScrollable(const bool scrollable)
-{}
+{
+    (void)scrollable;
+}
 
 int AccessibilityElementInfo::GetCurrentIndex() const
 {
@@ -252,7 +311,9 @@ int AccessibilityElementInfo::GetCurrentIndex() const
 }
 
 void AccessibilityElementInfo::SetCurrentIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 int AccessibilityElementInfo::GetBeginIndex() const
 {
@@ -260,7 +321,9 @@ int AccessibilityElementInfo::GetBeginIndex() const
 }
 
 void AccessibilityElementInfo::SetBeginIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 int AccessibilityElementInfo::GetEndIndex() const
 {
@@ -268,7 +331,9 @@ int AccessibilityElementInfo::GetEndIndex() const
 }
 
 void AccessibilityElementInfo::SetEndIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 int AccessibilityElementInfo::GetInputType() const
 {
@@ -276,7 +341,9 @@ int AccessibilityElementInfo::GetInputType() const
 }
 
 void AccessibilityElementInfo::SetInputType(const int inputType)
-{}
+{
+    (void)inputType;
+}
 
 bool AccessibilityElementInfo::IsEditable() const
 {
@@ -284,7 +351,9 @@ bool AccessibilityElementInfo::IsEditable() const
 }
 
 void AccessibilityElementInfo::SetEditable(const bool editable)
-{}
+{
+    (void)editable;
+}
 
 bool AccessibilityElementInfo::IsPluraLineSupported() const
 {
@@ -292,7 +361,9 @@ bool AccessibilityElementInfo::IsPluraLineSupported() const
 }
 
 void AccessibilityElementInfo::SetPluraLineSupported(const bool multiLine)
-{}
+{
+    (void)multiLine;
+}
 
 bool AccessibilityElementInfo::IsPopupSupported() const
 {
@@ -300,7 +371,9 @@ bool AccessibilityElementInfo::IsPopupSupported() const
 }
 
 void AccessibilityElementInfo::SetPopupSupported(const bool supportPopup)
-{}
+{
+    (void)supportPopup;
+}
 
 bool AccessibilityElementInfo::IsDeletable() const
 {
@@ -308,7 +381,9 @@ bool AccessibilityElementInfo::IsDeletable() const
 }
 
 void AccessibilityElementInfo::SetDeletable(const bool deletable)
-{}
+{
+    (void)deletable;
+}
 
 bool AccessibilityElementInfo::IsEssential() const
 {
@@ -316,7 +391,9 @@ bool AccessibilityElementInfo::IsEssential() const
 }
 
 void AccessibilityElementInfo::SetEssential(const bool important)
-{}
+{
+    (void)important;
+}
 
 bool AccessibilityElementInfo::IsGivingHint() const
 {
@@ -324,7 +401,9 @@ bool AccessibilityElementInfo::IsGivingHint() const
 }
 
 void AccessibilityElementInfo::SetHinting(const bool hinting)
-{}
+{
+    (void)hinting;
+}
 
 std::string AccessibilityElementInfo::GetBundleName() const
 {
@@ -344,7 +423,9 @@ std::string AccessibilityElementInfo::GetComponentType() const
 }
 
 void AccessibilityElementInfo::SetComponentType(const std::string &className)
-{}
+{
+    (void)className;
+}
 
 std::string AccessibilityElementInfo::GetContent() const
 {
@@ -352,7 +433,9 @@ std::string AccessibilityElementInfo::GetContent() const
 }
 
 void AccessibilityElementInfo::SetContent(const std::string &text)
-{}
+{
+    (void)text;
+}
 
 std::string AccessibilityElementInfo::GetAccessibilityContent() const
 {
@@ -360,10 +443,14 @@ std::string AccessibilityElementInfo::GetAccessibilityContent() const
 }
 
 void AccessibilityElementInfo::SetAccessibilityContent(const std::string &text)
-{}
+{
+    (void)text;
+}
 
 void AccessibilityElementInfo::SetSelectedBegin(const int start)
-{}
+{
+    (void)start;
+}
 
 int AccessibilityElementInfo::GetSelectedBegin() const
 {
@@ -371,7 +458,9 @@ int AccessibilityElementInfo::GetSelectedBegin() const
 }
 
 void AccessibilityElementInfo::SetSelectedEnd(const int end)
-{}
+{
+    (void)end;
+}
 
 int AccessibilityElementInfo::GetSelectedEnd() const
 {
@@ -384,7 +473,9 @@ std::string AccessibilityElementInfo::GetAccessibilityDescription() const
 }
 
 void AccessibilityElementInfo::SetAccessibilityDescription(const std::string &text)
-{}
+{
+    (void)text;
+}
 
 bool AccessibilityElementInfo::GetAccessibilityGroup() const
 {
@@ -392,7 +483,9 @@ bool AccessibilityElementInfo::GetAccessibilityGroup() const
 }
 
 void AccessibilityElementInfo::SetAccessibilityGroup(const bool group)
-{}
+{
+    (void)group;
+}
 
 std::string AccessibilityElementInfo::GetHint() const
 {
@@ -400,7 +493,9 @@ std::string AccessibilityElementInfo::GetHint() const
 }
 
 void AccessibilityElementInfo::SetHint(const std::string &hintText)
-{}
+{
+    (void)hintText;
+}
 
 std::string AccessibilityElementInfo::GetDescriptionInfo() const
 {
@@ -408,10 +503,14 @@ std::string AccessibilityElementInfo::GetDescriptionInfo() const
 }
 
 void AccessibilityElementInfo::SetDescriptionInfo(const std::string contentDescription)
-{}
+{
+    (void)contentDescription;
+}
 
 void AccessibilityElementInfo::SetComponentResourceId(const std::string &viewIdResName)
-{}
+{
+    (void)viewIdResName;
+}
 
 std::string AccessibilityElementInfo::GetComponentResourceId() const
 {
@@ -419,7 +518,9 @@ std::string AccessibilityElementInfo::GetComponentResourceId() const
 }
 
 void AccessibilityElementInfo::SetLiveRegion(const int liveRegion)
-{}
+{
+    (void)liveRegion;
+}
 
 int AccessibilityElementInfo::GetLiveRegion() const
 {
@@ -427,7 +528,9 @@ int AccessibilityElementInfo::GetLiveRegion() const
 }
 
 void AccessibilityElementInfo::SetContentInvalid(const bool contentInvalid)
-{}
+{
+    (void)contentInvalid;
+}
 
 bool AccessibilityElementInfo::GetContentInvalid() const
 {
@@ -435,7 +538,9 @@ bool AccessibilityElementInfo::GetContentInvalid() const
 }
 
 void AccessibilityElementInfo::SetError(const std::string &error)
-{}
+{
+    (void)error;
+}
 
 std::string AccessibilityElementInfo::GetError() const
 {
@@ -443,10 +548,13 @@ std::string AccessibilityElementInfo::GetError() const
 }
 
 void AccessibilityElementInfo::SetLabeled(const int componentId)
-{}
+{
+    (void)componentId;
+}
 
 bool AccessibilityElementInfo::GetLabeled(AccessibilityElementInfo &elementInfo) const
 {
+    (void)elementInfo;
     return true;
 }
 
@@ -461,10 +569,14 @@ int AccessibilityElementInfo::GetChannelId() const
 }
 
 void AccessibilityElementInfo::SetChannelId(const int channelId)
-{}
+{
+    (void)channelId;
+}
 
 void AccessibilityElementInfo::SetAccessibilityId(const int componentId)
-{}
+{
+    (void)componentId;
+}
 
 int AccessibilityElementInfo::GetAccessibilityId() const
 {
@@ -477,7 +589,9 @@ RangeInfo AccessibilityElementInfo::GetRange() const
 }
 
 void AccessibilityElementInfo::SetRange(RangeInfo &rangeInfo)
-{}
+{
+    (void)rangeInfo;
+}
 
 GridInfo AccessibilityElementInfo::GetGrid() const
 {
@@ -485,7 +599,9 @@ GridInfo AccessibilityElementInfo::GetGrid() const
 }
 
 void AccessibilityElementInfo::SetGrid(const GridInfo &grid)
-{}
+{
+    (void)grid;
+}
 
 GridItemInfo AccessibilityElementInfo::GetGridItem() const
 {
@@ -493,28 +609,36 @@ GridItemInfo AccessibilityElementInfo::GetGridItem() const
 }
 
 void AccessibilityElementInfo::SetGridItem(const GridItemInfo &gridItem)
-{}
+{
+    (void)gridItem;
+}
 
 AccessibilityElementInfo::AccessibilityElementInfo()
 {}
 
 bool AccessibleAction::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool AccessibleAction::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<AccessibleAction> AccessibleAction::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
 AccessibleAction::AccessibleAction(ActionType operationType, std::string description)
-{}
+{
+    (void)operationType;
+    (void)description;
+}
 
 ActionType AccessibleAction::GetActionType() const
 {
@@ -528,21 +652,28 @@ std::string AccessibleAction::GetDescriptionInfo() const
 
 bool RangeInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool RangeInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<RangeInfo> RangeInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
 RangeInfo::RangeInfo(int min, int max, int current)
-{}
+{
+    (void)min;
+    (void)max;
+    (void)current;
+}
 
 int RangeInfo::GetMin() const
 {
@@ -560,37 +691,56 @@ int RangeInfo::GetCurrent() const
 }
 
 void RangeInfo::SetMin(int min)
-{}
+{
+    (void)min;
+}
 
 void RangeInfo::SetMax(int max)
-{}
+{
+    (void)max;
+}
 
 void RangeInfo::SetCurrent(int current)
-{}
+{
+    (void)current;
+}
 
 bool GridInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool GridInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<GridInfo> GridInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
 GridInfo::GridInfo(int rowCount, int columnCount, int mode)
-{}
+{
+    (void)rowCount;
+    (void)columnCount;
+    (void)mode;
+}
 
 void GridInfo::SetGrid(int rowCount, int columnCount, int mode)
-{}
+{
+    (void)rowCount;
+    (void)columnCount;
+    (void)mode;
+}
 
 void GridInfo::SetGrid(GridInfo other)
-{}
+{
+    (void)other;
+}
 
 int GridInfo::GetRowCount() const
 {
@@ -609,28 +759,47 @@ int GridInfo::GetSelectionMode() const
 
 bool GridItemInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool GridItemInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<GridItemInfo> GridItemInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
 GridItemInfo::GridItemInfo(int rowIndex, int rowSpan, int columnIndex, int columnSpan, bool heading, bool selected)
-{}
+{
+    (void)rowIndex;
+    (void)rowSpan;
+    (void)columnIndex;
+    (void)columnSpan;
+    (void)heading;
+    (void)selected;
+}
 
 void GridItemInfo::SetGridItemInfo(GridItemInfo other)
-{}
+{
+    (void)other;
+}
 
 void GridItemInfo::SetGridItemInfo(int rowIndex, int rowSpan,
     int columnIndex, int columnSpan, bool heading, bool selected)
-{}
+{
+    (void)rowIndex;
+    (void)rowSpan;
+    (void)columnIndex;
+    (void)columnSpan;
+    (void)heading;
+    (void)selected;
+}
 
 int GridItemInfo::GetColumnIndex() const
 {
@@ -664,16 +833,19 @@ bool GridItemInfo::IsSelected() const
 
 bool Rect::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool Rect::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 sptr<Rect> Rect::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     sptr<Rect> rect = new Rect();
     return rect;
 }

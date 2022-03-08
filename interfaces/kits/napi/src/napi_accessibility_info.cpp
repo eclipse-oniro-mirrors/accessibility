@@ -336,7 +336,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
 
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
     std::string direction;
-    if(!ParseString(env, direction, argv[PARAM0]) || direction == "") {
+    if (!ParseString(env, direction, argv[PARAM0]) || direction == "") {
         ret = false;
     }
     HILOG_DEBUG("argc = %{public}d", (int)argc);
