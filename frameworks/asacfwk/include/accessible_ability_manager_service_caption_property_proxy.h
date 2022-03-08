@@ -41,7 +41,7 @@ public:
     virtual ~AccessibleAbilityManagerServiceCaptionPropertyProxy() override;
 
     /**
-     * @brief Receive the caption property notify from AAMS and send it to the observer registed..
+     * @brief Receive the caption property notify from AAMS and send it to the observer registered.
      * @param caption the caption property
      * @return
      */

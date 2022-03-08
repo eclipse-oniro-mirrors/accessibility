@@ -218,17 +218,17 @@ public:
     int GetWindowId() const;
 
     /**
-     * @brief Gets the current index of listed items or text postion associated with the current event.
+     * @brief Gets the current index of listed items or text position associated with the current event.
      * @param -
-     * @return The current index of listed items or text postion associated with the current event.
+     * @return The current index of listed items or text position associated with the current event.
      * @since 3
      * @sysCap Accessibility
      */
     int GetCurrentIndex() const;
 
     /**
-     * @brief Sets the current index of listed items or text postion associated with the current event.
-     * @param index The current index of listed items or text postion associated with the current event.
+     * @brief Sets the current index of listed items or text position associated with the current event.
+     * @param index The current index of listed items or text position associated with the current event.
      * @return
      * @since 3
      * @sysCap Accessibility

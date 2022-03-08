@@ -111,7 +111,7 @@ struct NAccessibilitySystemAbilityClient {
     bool setGestureStateReturn_ = false;
     bool keyEventObserverState_ = false;
     bool setKeyEvenReturn_ = false;
-    bool setExtentionReturn_ = false;
+    bool setExtensionReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     bool result_ = false;
     std::vector<std::shared_ptr<StateListener>> stateListener_ {};
@@ -140,9 +140,9 @@ public:
     static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value SetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value GetInstalled(napi_env env, napi_callback_info info);
-    static napi_value GetExtentionEnabled(napi_env env, napi_callback_info info);
-    static napi_value ExtentionEnabled(napi_env env, napi_callback_info info);
-    static napi_value ExtentionDisabled(napi_env env, napi_callback_info info);
+    static napi_value GetExtensionEnabled(napi_env env, napi_callback_info info);
+    static napi_value ExtensionEnabled(napi_env env, napi_callback_info info);
+    static napi_value ExtensionDisabled(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);

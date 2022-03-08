@@ -530,16 +530,16 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
-
-    if (!recipientAccountData_.promote()) {
+    sptr<AccessibilityAccountData> accountData = recipientAccountData_.promote();
+    if (!accountData) {
         HILOG_ERROR("recipientAccountData_ is null.");
         return;
     }
 
-    sptr<AccessibleAbilityConnection> connection = recipientAccountData_->
-        GetAccessibleAbilityConnection(recipientElementName_.GetURI());
-    recipientAccountData_->RemoveConnectedAbility(connection);
-    recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
+    sptr<AccessibleAbilityConnection> connection =
+        accountData->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
+    accountData->RemoveConnectedAbility(connection);
+    accountData->RemoveEnabledAbility(recipientElementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
     // temp deal: notify setting
 }

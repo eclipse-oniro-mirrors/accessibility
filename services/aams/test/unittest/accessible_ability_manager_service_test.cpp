@@ -156,8 +156,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, T
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
     if (accountData == nullptr) {
         GTEST_LOG_(INFO) << "accountData is null";
-    } else {
-        GTEST_LOG_(INFO) << "accountData is not null";
+        return;
     }
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);

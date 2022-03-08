@@ -117,9 +117,9 @@ void STPageAbilityEventSubscriber::OnReceiveEvent(const CommonEventData &data)
     APP_LOGI("DataTestPageAEventSubscriber::OnReceiveEvent:data=%{public}s", data.GetData().c_str());
     APP_LOGI("DataTestPageAEventSubscriber::OnReceiveEvent:code=%{public}d", data.GetCode());
     auto eventName = data.GetWant().GetAction();
-    if (eventName.compare("requ_page_ability_terminate") == 0) {
+    if (!eventName.compare("requ_page_ability_terminate")) {
         std::string target = data.GetData();
-        if (target.compare(this->ability_->GetAbilityName()) == 0) {
+        if (!target.compare(this->ability_->GetAbilityName())) {
             this->ability_->TerminateAbility();
         }
     }

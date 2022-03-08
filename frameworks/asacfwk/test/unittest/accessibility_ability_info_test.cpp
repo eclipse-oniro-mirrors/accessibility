@@ -52,6 +52,7 @@ void AccessibilityAbilityInfoUnitTest::WritefileAll(const char* fname, const cha
     FILE *fp;
     if ((fp = fopen(fname, "w")) == NULL) {
         printf("open file %s fail \n", fname);
+        return;
     }
 
     (void)fprintf(fp, "%s", data);
@@ -65,7 +66,7 @@ void AccessibilityAbilityInfoUnitTest::CreateAccessibilityConfig()
     Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
-    if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
+    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
         GTEST_LOG_(INFO) << "remove successful";
     } else {
         GTEST_LOG_(INFO) << "remove failed";

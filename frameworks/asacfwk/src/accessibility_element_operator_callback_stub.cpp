@@ -81,6 +81,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
+            return ERROR;
         }
         infos.emplace_back(*accessibilityInfo);
     }
@@ -102,6 +103,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
+            return ERROR;
         }
         infos.emplace_back(*accessibilityInfo);
     }

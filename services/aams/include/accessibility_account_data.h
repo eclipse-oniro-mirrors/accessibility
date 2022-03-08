@@ -41,6 +41,14 @@ class IAccessibleAbilityManagerServiceState;
 class AccessibilityWindowConnection;
 class IAccessibleAbilityManagerServiceCaptionProperty;
 
+enum STATE : int {
+    ACCESSIBILITY,
+    TOUCHGUIDE,
+    GESTURE,
+    KEYEVENT,
+    CAPTION
+};
+
 class AccessibilityAccountData final : public RefBase {
 public:
     AccessibilityAccountData(int accountId);
@@ -145,7 +153,7 @@ public:
      * @param abilityInfo Accessibility ability info.
      * @return
      */
-    void RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo);
+    void RemoveInstalledAbility(std::string bundleName);
 
     /**
      * @brief The real procedure for add connecting ability.
@@ -371,6 +379,10 @@ private:
     void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
     void VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut);
     void RemoveEnabledFromPref(const std::string bundleName);
+    void UpdateEnabledFromPref();
+    bool SetStatePref(int type);
+    bool SetCaptionPropertyPref();
+    std::string StateChange(bool state);
 
     int id_;
     bool isEnabled_ = false;
@@ -387,6 +399,7 @@ private:
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;   // key: The URI of the ElementName.
     std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_;    // key: The URI of the ElementName.
+    std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
 
     sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr;    // key: UI test ability id.
 };

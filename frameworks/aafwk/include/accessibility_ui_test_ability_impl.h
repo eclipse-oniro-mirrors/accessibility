@@ -78,7 +78,7 @@ public:
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param
-     * @return The infomation of windows.
+     * @return The information of windows.
      */
     virtual std::vector<AccessibilityWindowInfo> GetWindows() override;
 

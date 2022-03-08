@@ -127,7 +127,7 @@ void AccessibilityExtensionContext::DispatchOnSimulationGestureResult(uint32_t s
     HILOG_DEBUG("start.");
 
     if (gestureResultListenerInfos_.empty()) {
-        HILOG_ERROR("There is no informations of gestureResultListener");
+        HILOG_ERROR("There is no information of gestureResultListener");
         return;
     }
 

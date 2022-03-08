@@ -52,9 +52,9 @@ public:
     /**
      * @brief Receive the event from proxy by IPC mechanism.
      * @param code The code is matched with the process function.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
-     * @param option The option paramter of IPC,such as: async,sync
+     * @param option The option parameter of IPC,such as: async,sync
      * @return
      */
     virtual int OnRemoteRequest(
@@ -62,7 +62,7 @@ public:
 private:
     /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -70,7 +70,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:HandleRegisterStateCallback.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -78,7 +78,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:HandleGetAbilityList.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -86,7 +86,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:HandleRegisterAccessibilityElementOperator.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
@@ -94,7 +94,7 @@ private:
 
     /**
      * @brief Handle the IPC request for the function:HandleDeregisterAccessibilityElementOperator.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */

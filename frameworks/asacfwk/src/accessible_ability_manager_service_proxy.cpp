@@ -295,7 +295,7 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
 
 void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("windowId(%{public}d)", windowId);
 
     int error = NO_ERROR;
     MessageParcel data;

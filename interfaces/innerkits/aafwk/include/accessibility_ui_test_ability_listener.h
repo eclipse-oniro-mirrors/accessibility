@@ -28,7 +28,7 @@ public:
   virtual void OnAbilityConnected() = 0;
   /**
    * @brief Called when an accessibility event occurs.
-   * @param eventInfo The infomation of accessible event.
+   * @param eventInfo The information of accessible event.
    * @return
    */
   virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) = 0;

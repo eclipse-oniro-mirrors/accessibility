@@ -142,6 +142,7 @@ void AamsInjectorTest::WritefileAll(const char* fname, const char* data)
     FILE *fp;
     if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
+        return;
     }
 
     (void)fprintf(fp, "%s", data);
@@ -155,7 +156,7 @@ void AamsInjectorTest::CreateAccessibilityConfigForTouchGuide()
     Json::Value accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
-    if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
+    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
         GTEST_LOG_(INFO) << "remove successful";
     }
     accessibilityEventTypes[0] = "all";

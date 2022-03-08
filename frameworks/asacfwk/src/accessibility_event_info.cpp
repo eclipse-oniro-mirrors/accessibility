@@ -275,6 +275,7 @@ bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
         std::shared_ptr<AccessibilityEventInfo> accessibilityRecord(parcel.ReadParcelable<AccessibilityEventInfo>());
         if (!accessibilityRecord) {
             HILOG_ERROR("ReadParcelable<accessibilityInfo> failed");
+            return false;
         }
         records_.emplace_back(*accessibilityRecord);
     }

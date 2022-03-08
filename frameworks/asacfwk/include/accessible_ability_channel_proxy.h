@@ -43,7 +43,7 @@ public:
     virtual ~AccessibleAbilityChannelProxy() = default;
 
     /**
-     * @brief Searchs elementInfo by accessibility id and set the result by callback through the proxy object.
+     * @brief Searches elementInfo by accessibility id and set the result by callback through the proxy object.
      * @param accessibilityWindowId The id of accessibility window.
      * @param elementId The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
@@ -118,7 +118,7 @@ public:
      * @brief Obtains the list of interactive windows on the device,
      *        in the layers they are visible to users through the proxy object.
      * @param
-     * @return The infomation of windows.
+     * @return The information of windows.
      */
     virtual std::vector<AccessibilityWindowInfo> GetWindows() override;
 
@@ -205,7 +205,7 @@ private:
      * @param code The code matched the function called.
      * @param data Serializable data
      * @param reply The response of IPC
-     * @param option The option paramter of IPC,such as: async,sync
+     * @param option The option parameter of IPC,such as: async,sync
      * @return true: Write the descriptor successfully; otherwise is not.
      */
     bool SendTransactCmd(IAccessibleAbilityChannel::Message code, MessageParcel &data,

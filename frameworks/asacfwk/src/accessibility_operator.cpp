@@ -211,8 +211,7 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
     accessibilityInfoResult_.SetChannelId(channelId);
     asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[channelId:%{public}d] end", channelId);
-    if (accessibilityInfoResult_.GetWindowId() == 0 &&
-        accessibilityInfoResult_.GetAccessibilityId() == 0) {
+    if ((!accessibilityInfoResult_.GetWindowId()) && (!accessibilityInfoResult_.GetAccessibilityId())) {
         HILOG_DEBUG("Can't find the component info");
         result = false;
     } else {
@@ -246,8 +245,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
     asyncElementOperatorMng_.SetOperationStatus(true);
     HILOG_DEBUG("[channelId:%{public}d] end", channelId);
     elementInfo = accessibilityInfoResult_;
-    if (accessibilityInfoResult_.GetWindowId() == 0 &&
-        accessibilityInfoResult_.GetAccessibilityId() == 0) {
+    if ((!accessibilityInfoResult_.GetWindowId()) && (!accessibilityInfoResult_.GetAccessibilityId())) {
         HILOG_DEBUG("Can't find the component info");
         result = false;
     } else {

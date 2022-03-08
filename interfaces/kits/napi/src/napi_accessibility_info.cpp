@@ -257,9 +257,9 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info)
         [](napi_env env, void* data) {
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             int focus = 0;
-            if (std::strcmp(callbackInfo->content_.c_str(), "accessibility") == 0) {
+            if (!std::strcmp(callbackInfo->content_.c_str(), "accessibility")) {
                 focus = FOCUS_TYPE_ACCESSIBILITY;
-            } else if (std::strcmp(callbackInfo->content_.c_str(), "normal") == 0) {
+            } else if (!std::strcmp(callbackInfo->content_.c_str(), "normal")) {
                 focus = FOCUS_TYPE_INPUT;
             } else {
                 focus = FOCUS_TYPE_INVALID;
