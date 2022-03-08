@@ -202,7 +202,7 @@ AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::Callback
 
 void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int requestId)
 {
-    (void)requestId;  
+    (void)requestId;
 }
 } // namespace Accessibility
 } // namespace OHOS
