@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include "accessibility_element_operator_stub.h"
 #include "accessibility_element_operator_callback_proxy.h"
 #include "accessibility_element_operator_callback_stub.h"
-#include "accessibility_element_operator_stub.h"
 #include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -28,6 +28,8 @@ namespace Accessibility {
 using AccessibilityElementOperatorCallbacks = std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>;
 std::map<const int, const sptr<IAccessibilityElementOperatorCallback>>
     AccessibilityElementOperatorStub::aaCallbacks_ = {};
+std::mutex AccessibilityElementOperatorStub::mutex_;
+
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
     memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::SEARCH_BY_ACCESSIBILITY_ID)] =
@@ -58,7 +60,6 @@ int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParc
     HILOG_DEBUG("AccessibilityElementOperatorStub::OnRemoteRequest,cmd = %d,flags= %d", code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -156,7 +157,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     }
     std::map<std::string, std::string> arguments;
     for (unsigned int i = 0;i < argumentKey.size(); i++) {
-        arguments.insert(std::pair<std::string, std::string>(argumentKey[i],argumentValue[i]));
+        arguments.insert(std::pair<std::string, std::string>(argumentKey[i], argumentValue[i]));
     }
     int requestId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
@@ -189,6 +190,7 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_ACCESSIBILITY_ID);
@@ -208,6 +210,7 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_TEXT);
@@ -227,6 +230,7 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_FIND_FOCUS);
@@ -246,6 +250,7 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_FOCUS_MOVE);
@@ -265,6 +270,7 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
 
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_PERFORM_ACTION);
@@ -305,7 +311,6 @@ void AccessibilityElementOperatorStub::OutsideTouch()
 
 AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl()
 {
-
 }
 
 AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId,
@@ -319,12 +324,14 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAcces
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -333,12 +340,14 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextR
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetSearchElementInfoByTextResult(myInfos, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -347,11 +356,13 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoRe
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFindFocusedElementInfoResult(info, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -360,11 +371,13 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetFocusMoveSearchResult(info, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
@@ -373,23 +386,26 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int requestId)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetExecuteActionResult(succeeded, requestId);
     } else {
-        HILOG_DEBUG("%s Can't find the callback [requestId:%d]", __func__, requestId);
+        HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
     RemoveAACallbackList(requestId);
 }
 
 AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
 {
-    HILOG_DEBUG("start");
     return aaCallbacks_;
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int requestId)
 {
+    HILOG_DEBUG("start");
+
     for (auto iter = aaCallbacks_.begin(); iter != aaCallbacks_.end();) {
         if (iter->first == requestId) {
             aaCallbacks_.erase(iter++);
@@ -398,7 +414,7 @@ void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int re
             iter++;
         }
     }
-    HILOG_DEBUG("%{public}s Not find requestID[%{public}d]", __func__, requestId);
+    HILOG_DEBUG("Not find requestID[%{public}d]", requestId);
 }
 
 void AccessibilityElementOperatorStub::SetWindowId(int windowId)

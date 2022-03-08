@@ -53,7 +53,7 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
 
 void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel)
 {
-    HILOG_DEBUG("[%{public}s] Add connection to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("Add connection to aams [channelId:%{public}d]", channelId);
     int tempId = *(const_cast<int *>(&channelId));
     for (auto iter = channels_.begin(); iter != channels_.end(); iter++) {
         if (iter->first == tempId) {
@@ -67,7 +67,7 @@ void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessib
 
 void AccessibilityOperator::RemoveChannel(int channelId)
 {
-    HILOG_DEBUG("[%{public}s] Remove connection to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("Remove connection to aams [channelId:%{public}d]", channelId);
     auto iter = channels_.find(channelId);
     if (iter != channels_.end()) {
         channels_.erase(iter);

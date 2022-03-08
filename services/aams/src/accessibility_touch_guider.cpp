@@ -41,7 +41,7 @@ void TouchGuider::StartUp()
     runner_ = pAams_->GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
-		return;
+        return;
     }
 
     handler_ = std::make_shared<TGEventHandler>(runner_, *this);
@@ -292,7 +292,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     server_.currentState_ = static_cast<int>(TouchGuideState::TOUCH_GUIDING);
 
     // send customize gesture type to aa
-    AccessibilityEventInfo eventInfo{};
+    AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
     eventInfo.SetGestureType(gestureId);
     server_.pAams_->SendEvent(eventInfo, server_.pAams_->GetCurrentAccountId());
@@ -552,7 +552,7 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                 pointerEvents_.push_back(event);
             } else if (isTouchGuiding_) {
-              SendEventToMultimodal(event, HOVER_MOVE);
+                SendEventToMultimodal(event, HOVER_MOVE);
             }
             break;
         case POINTER_COUNT_2:
@@ -603,7 +603,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
         float yPointS = pointerS.GetGlobalY();
         float offsetX = abs(xPointF - xPointS);
         float offsetY = abs(yPointF - yPointS);
-        double duration = hypot(offsetX , offsetY);
+        double duration = hypot(offsetX, offsetY);
         if (duration > miniZoomPointerDistance) {
             // Adjust this event's location.
             MMI::PointerEvent::PointerItem pointer = {};
@@ -655,12 +655,10 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
     float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
     float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
-
     float firstOffsetX = xPointF - xPointDownF;
     float firstOffsetY = yPointF - yPointDownF;
     float secondOffsetX = xPointS - xPointDownS;
     float secondOffsetY = yPointS - yPointDownS;
-
     if ((firstOffsetX == 0 && firstOffsetY == 0) ||
         (secondOffsetX == 0 && secondOffsetY == 0)) {
         return true;
@@ -670,7 +668,6 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float firstYCos = GetAngleCos(firstOffsetX, firstOffsetY, false);
     float secondXCos = GetAngleCos(secondOffsetX, secondOffsetY, true);
     float secondYCos = GetAngleCos(secondOffsetX, secondOffsetY, false);
-
     if ((firstXCos * secondXCos + firstYCos * secondYCos) < MAX_DRAG_GESTURE_COSINE) {
         return false;
     }
@@ -836,29 +833,32 @@ void TouchGuider::ForceSendAndRemoveEvent(uint32_t innerEventID, MMI::PointerEve
 {
     HILOG_DEBUG();
 
-    if (HasEventPending(innerEventID)) {
-        switch (innerEventID) {
-            case SEND_HOVER_ENTER_MOVE_MSG:
-                SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_BEGIN);
-                if (pointerEvents_.empty()) {
-                    break;
-                }
-                for (auto iter = pointerEvents_.begin(); iter != pointerEvents_.end(); ++iter) {
-                    SendEventToMultimodal(*iter, HOVER_MOVE);
-                }
-                pointerEvents_.clear();
-                break;
-            case SEND_TOUCH_INTERACTION_END_MSG:
-                SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
-                break;
-            case SEND_TOUCH_GUIDE_END_MSG:
-                SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_END);
-                break;
-            default:
-                break;
-        }
-        CancelPostEvent(innerEventID);
+    if (!HasEventPending(innerEventID)) {
+        HILOG_DEBUG("No pending event.");
+        return;
     }
+
+    switch (innerEventID) {
+        case SEND_HOVER_ENTER_MOVE_MSG:
+            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_BEGIN);
+            if (pointerEvents_.empty()) {
+                break;
+            }
+            for (auto iter = pointerEvents_.begin(); iter != pointerEvents_.end(); ++iter) {
+                SendEventToMultimodal(*iter, HOVER_MOVE);
+            }
+            pointerEvents_.clear();
+            break;
+        case SEND_TOUCH_INTERACTION_END_MSG:
+            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+            break;
+        case SEND_TOUCH_GUIDE_END_MSG:
+            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_END);
+            break;
+        default:
+            break;
+    }
+    CancelPostEvent(innerEventID);
 }
 
 void TGEventHandler::HoverEnterAndMoveRunner()
@@ -869,7 +869,7 @@ void TGEventHandler::HoverEnterAndMoveRunner()
     tgServer_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_BEGIN);
     if (!motionEvent.empty()) {
         for (auto iter = motionEvent.begin(); iter != motionEvent.end(); ++iter) {
-            tgServer_. SendEventToMultimodal(*iter, HOVER_MOVE);
+            tgServer_.SendEventToMultimodal(*iter, HOVER_MOVE);
         }
     }
     tgServer_.ClearHoverEnterAndMoveEvent();
@@ -883,11 +883,11 @@ void TGEventHandler::HoverExitRunner()
     tgServer_.SendEventToMultimodal(*pEvent, HOVER_MOVE);
     if (!HasInnerEvent(TouchGuider::SEND_TOUCH_GUIDE_END_MSG)) {
         RemoveEvent(TouchGuider::SEND_TOUCH_GUIDE_END_MSG);
-        SendEvent(TouchGuider::SEND_TOUCH_GUIDE_END_MSG, 0, EXIT_GESTURE_REC_TIMEOUT );
+        SendEvent(TouchGuider::SEND_TOUCH_GUIDE_END_MSG, 0, EXIT_GESTURE_REC_TIMEOUT);
     }
     if (HasInnerEvent(TouchGuider::SEND_TOUCH_INTERACTION_END_MSG)) {
         RemoveEvent(TouchGuider::SEND_TOUCH_INTERACTION_END_MSG);
-        SendEvent(TouchGuider::SEND_TOUCH_INTERACTION_END_MSG, 0, EXIT_GESTURE_REC_TIMEOUT );
+        SendEvent(TouchGuider::SEND_TOUCH_INTERACTION_END_MSG, 0, EXIT_GESTURE_REC_TIMEOUT);
     }
 }
 } // namespace Accessibility

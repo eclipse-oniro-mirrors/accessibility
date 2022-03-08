@@ -27,13 +27,13 @@ using namespace OHOS::AAFwk;
 namespace OHOS {
 const static std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
 namespace AppExecFwk {
-
 int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     return 0;
 }
 
-bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo, int32_t userId)
+bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag,
+    BundleInfo &bundleInfo, int32_t userId)
 {
     return true;
 }

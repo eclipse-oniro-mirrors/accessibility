@@ -49,27 +49,27 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable elementId error", __func__);
+        HILOG_ERROR("fail, connection write parcelable elementId error");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable requestId error", __func__);
+        HILOG_ERROR("fail, connection write parcelable requestId error");
         return;
     }
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable callback error", __func__);
+        HILOG_ERROR("fail, connection write parcelable callback error");
         return;
     }
 
     if (!data.WriteInt32(mode)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable mode error", __func__);
+        HILOG_ERROR("fail, connection write parcelable mode error");
         return;
     }
 
@@ -94,26 +94,26 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const long elem
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("%{public}s fail, connection write parcelable elementId error", __func__);
+        HILOG_ERROR("fail, connection write parcelable elementId error");
         return;
     }
     if (!data.WriteString(text)) {
-        HILOG_ERROR("%{public}s fail, connection write text error", __func__);
+        HILOG_ERROR("fail, connection write text error");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId error", __func__);
+        HILOG_ERROR("fail, connection write requestId error");
         return;
     }
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write callback error", __func__);
+        HILOG_ERROR("fail, connection write callback error");
         return;
     }
 
@@ -137,27 +137,27 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const long elemen
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("%{public}s fail, connection write elementId error", __func__);
+        HILOG_ERROR("fail, connection write elementId error");
         return;
     }
 
     if (!data.WriteInt32(focusType)) {
-        HILOG_ERROR("%{public}s fail, connection write focusType error", __func__);
+        HILOG_ERROR("fail, connection write focusType error");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId error", __func__);
+        HILOG_ERROR("fail, connection write requestId error");
         return;
     }
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write callback error", __func__);
+        HILOG_ERROR("fail, connection write callback error");
         return;
     }
 
@@ -181,27 +181,27 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const long elementId,
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("%{public}s fail, connection write elementId error", __func__);
+        HILOG_ERROR("fail, connection write elementId error");
         return;
     }
 
     if (!data.WriteInt32(direction)) {
-        HILOG_ERROR("%{public}s fail, connection write focusType error", __func__);
+        HILOG_ERROR("fail, connection write focusType error");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId error", __func__);
+        HILOG_ERROR("fail, connection write requestId error");
         return;
     }
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write callback error", __func__);
+        HILOG_ERROR("fail, connection write callback error");
         return;
     }
 
@@ -225,17 +225,17 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const long elementId, cons
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("%{public}s fail, connection write elementId error", __func__);
+        HILOG_ERROR("fail, connection write elementId error");
         return;
     }
 
     if (!data.WriteInt32(action)) {
-        HILOG_ERROR("%{public}s fail, connection write focusType error", __func__);
+        HILOG_ERROR("fail, connection write focusType error");
         return;
     }
 
@@ -249,22 +249,22 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const long elementId, cons
     }
 
     if (!data.WriteStringVector(argumentKey)) {
-        HILOG_ERROR("%{public}s fail, connection write argumentKey error", __func__);
+        HILOG_ERROR("fail, connection write argumentKey error");
         return;
     }
 
     if (!data.WriteStringVector(argumentValue)) {
-        HILOG_ERROR("%{public}s fail, connection write argumentValue error", __func__);
+        HILOG_ERROR("fail, connection write argumentValue error");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("%{public}s fail, connection write requestId error", __func__);
+        HILOG_ERROR("fail, connection write requestId error");
         return;
     }
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("%{public}s fail, connection write callback error", __func__);
+        HILOG_ERROR("fail, connection write callback error");
         return;
     }
 
@@ -286,7 +286,7 @@ void AccessibilityElementOperatorProxy::ClearFocus()
     MessageParcel reply;
     MessageOption option;
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
@@ -307,7 +307,7 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
     MessageParcel reply;
     MessageOption option;
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
@@ -319,6 +319,5 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

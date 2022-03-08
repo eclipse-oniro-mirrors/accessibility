@@ -20,14 +20,12 @@
 #include "gesture_simulation.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-
-class NativeEngine;
-class NativeValue;
-class NativeReference;
+#include "native_engine.h"
+#include "native_reference.h"
+#include "native_value.h"
 
 namespace OHOS {
 namespace Accessibility {
-
 class JSGestureResultListener : public GestureResultListener {
 public:
     JSGestureResultListener() = default;
@@ -49,5 +47,4 @@ static uint32_t gestureInjectSequence = 0;
 static std::map<uint32_t, std::shared_ptr<jsGestureResultListenerInfo>> jsGestureResultListenerInfos {};
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif  // JS_ACCESSIBILITY_EXTENSION_CONTEXT_H

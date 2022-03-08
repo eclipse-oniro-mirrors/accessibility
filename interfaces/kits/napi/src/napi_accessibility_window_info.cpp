@@ -152,7 +152,7 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
     if (!windowInfo) {
         HILOG_DEBUG("windowInfo is null!!");
     }
-    //todo
+    // temp deal
     NAccessibilityWindowInfoData *callbackInfo = new NAccessibilityWindowInfoData();
     callbackInfo->nativeWindowInfo_ = *windowInfo;
 

@@ -17,20 +17,22 @@
 
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
-#include "parcel_util.h"
 #include "json_utils.h"
+#include "nlohmann/json.hpp"
+#include "parcel_util.h"
 
 using namespace std;
 using namespace OHOS::AppExecFwk;
 
 namespace OHOS {
 namespace Accessibility {
-AccessibilityAbilityInfo::AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityInfo abilityInfo)
+AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AppExecFwk::ExtensionAbilityInfo &abilityInfo)
 {
     HILOG_DEBUG("start.");
     bundleName_ = abilityInfo.bundleName;
     moduleName_ = abilityInfo.moduleName;
     name_ = abilityInfo.name;
+    eventTypes_ = EventType::TYPES_ALL_MASK;
     HILOG_DEBUG("bundle name is [%{public}s].", bundleName_.c_str());
     HILOG_DEBUG("moudle name is [%{public}s].", moduleName_.c_str());
     HILOG_DEBUG("ability name is [%{public}s]].", name_.c_str());
@@ -43,16 +45,21 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityI
         HILOG_ERROR("profileInfos is empty.");
         return;
     }
-    nlohmann::json sourceJson = nlohmann::json::parse(profileInfos[0]);
-    if (!ParseAAConfig(sourceJson)) {
-      HILOG_ERROR("Parse AccessibilityAbility config file failed.");
+
+    if (!ParseAAConfig(profileInfos[0])) {
+        HILOG_ERROR("Parse AccessibilityAbility config file failed.");
     }
+    HILOG_DEBUG("capabilities is [%{public}d].", capabilities_);
+    HILOG_DEBUG("rationale is [%{public}s].", rationale_.c_str());
+    HILOG_DEBUG("settingsAbility is [%{public}s]].", settingsAbility_.c_str());
 }
 
-bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
+bool AccessibilityAbilityInfo::ParseAAConfig(std::string &config)
 {
     HILOG_DEBUG("start.");
-    //accessibilityCapabilities
+    nlohmann::json sourceJson = nlohmann::json::parse(config);
+
+    // accessibilityCapabilities
     vector<string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(
         sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES,
@@ -62,7 +69,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(nlohmann::json sourceJson)
     }
     PraseVecUtils::ParseCapabilitiesFromVec(capabilities, capabilities_);
 
-    //accessibilityCapabilityRationale
+    // accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(
         sourceJson,
         AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE,
@@ -141,7 +148,6 @@ std::string AccessibilityAbilityInfo::GetSettingsAbility()
     return settingsAbility_;
 }
 
-
 bool AccessibilityAbilityInfo::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG("start.");
@@ -191,6 +197,5 @@ AccessibilityAbilityInfo *AccessibilityAbilityInfo::Unmarshalling(Parcel &parcel
 
     return accessibilityAbilityInfo;
 }
-
 } // namespace Accessibility
 } // namespace OHOS

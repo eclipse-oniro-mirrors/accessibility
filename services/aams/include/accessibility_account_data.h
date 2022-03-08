@@ -16,18 +16,20 @@
 #define ACCESSIBILITY_ACCOUNT_DATA_H
 
 #include <map>
-#include <vector>
 #include <set>
 #include <string>
-#include "accessibility_window_connection.h"
-#include "accessible_ability_connection.h"
-#include "accessible_ability_manager_service_state_interface.h"
-#include "element_name.h"
-#include "refbase.h"
+#include <vector>
+
+#include "accessibility_caption.h"
 #include "accessibility_state_event.h"
 #include "accessibility_system_ability_client.h"
+#include "accessibility_window_connection.h"
+#include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service_caption_property_interface.h"
-#include "accessibility_caption.h"
+#include "accessible_ability_manager_service_state_interface.h"
+#include "element_name.h"
+#include "preferences_helper.h"
+#include "refbase.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -362,9 +364,13 @@ private:
      * @return
      */
     void UpdateMagnificationCapability();
-    void CaptionInit(nlohmann::json jsonObj);
-    void CapbilityInit(nlohmann::json jsonObj);
-    void EnabledListInit(nlohmann::json jsonObj);
+
+    void CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
+    void VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut);
+    void RemoveEnabledFromPref(const std::string bundleName);
 
     int id_;
     bool isEnabled_ = false;

@@ -64,7 +64,7 @@ void AccessibilityElementOperatorTest::SearchElementInfoByAccessibilityId(const 
     HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_100);
-    std::list<AccessibilityElementInfo> infos{};
+    std::list<AccessibilityElementInfo> infos {};
     infos.push_back(info);
     callback.SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
 }
@@ -75,7 +75,7 @@ void AccessibilityElementOperatorTest::SearchElementInfosByText(const long eleme
     HILOG_INFO("start");
     AccessibilityElementInfo info;
     info.SetWindowId(windowID_200);
-    std::list<AccessibilityElementInfo> infos{};
+    std::list<AccessibilityElementInfo> infos {};
     infos.push_back(info);
     callback.SetSearchElementInfoByTextResult(infos, requestId);
 }
@@ -304,7 +304,7 @@ HWTEST_F(ASACClientSystemTest, GetInstalledAbilities, TestSize.Level1)
     shared_ptr<AccessibilitySystemAbilityClient> instance = AccessibilitySystemAbilityClient::GetInstance();
 
     GTEST_LOG_(INFO) << "GetInstalledAbilities start";
-    std::vector<AccessibilityAbilityInfo> it{};
+    std::vector<AccessibilityAbilityInfo> it {};
     it = instance->GetInstalledAbilities();
 
     std::string BundleName = "";
@@ -321,7 +321,7 @@ HWTEST_F(ASACClientSystemTest, GetEnabledAbilities, TestSize.Level1)
     shared_ptr<AccessibilitySystemAbilityClient> instance = AccessibilitySystemAbilityClient::GetInstance();
 
     GTEST_LOG_(INFO) << "GetEnabledAbilities start";
-    std::map<std::string, AppExecFwk::ElementName> it{};
+    std::map<std::string, AppExecFwk::ElementName> it {};
     it = instance->GetEnabledAbilities();
     std::string BundleName = "";
     for (auto& enableAbility : it) {

@@ -119,7 +119,7 @@ public:
 
 private:
 
-    class ReadyState: public ZoomState {
+    class ReadyState : public ZoomState {
     public:
         virtual void Enter() override;
         virtual void Exit() override;
@@ -131,7 +131,7 @@ private:
     /**
      * Triple down.
      */
-    class ZoomInState: public ZoomState {
+    class ZoomInState : public ZoomState {
     public:
         virtual void Enter() override;
         virtual void Exit() override;
@@ -143,7 +143,7 @@ private:
     /**
      * the two fingers are pressed down.
      */
-    class SlidingState: public ZoomState {
+    class SlidingState : public ZoomState {
     public:
         virtual void Enter() override;
         virtual void Exit() override;

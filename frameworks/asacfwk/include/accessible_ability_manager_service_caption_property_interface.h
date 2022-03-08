@@ -24,7 +24,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-class IAccessibleAbilityManagerServiceCaptionProperty: public IRemoteBroker {
+class IAccessibleAbilityManagerServiceCaptionProperty : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityManagerServiceCaptionProperty");
 

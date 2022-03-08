@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "accessible_ability_client_proxy.h"
 #include <cstdint>
 #include <gtest/gtest.h>
+#include "accessible_ability_client_proxy.h"
 #include "accessibility_account_data.h"
 #include "accessibility_errorcode.h"
 #include "accessibility_event_info.h"
@@ -87,11 +87,9 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     MessageParcel data;
     MessageParcel reply;
     HILOG_DEBUG();
-    HILOG_DEBUG("%{public}s start.-----------------------------mock Proxy Start ", __func__);
-    HILOG_DEBUG("%{public}s start.----------sequence--%{public}d ----------mock Proxy Start ", __func__, sequence);
+    HILOG_DEBUG("start.----------sequence--%{public}d ----------mock Proxy Start ", sequence);
     g_testKeyPressEvent = sequence;
-    HILOG_DEBUG("%{public}s mock AccessibleAbilityClientProxy-----mock------------- end.", __func__);
-    HILOG_DEBUG("%{public}s start.-----------------------------mock Proxy end ", __func__);
+    HILOG_DEBUG("start.-----------------------------mock Proxy end ");
 }
 
 void AccessibleAbilityClientProxy::OnDisplayResized(const int displayId, const Rect &rect, const float scale,

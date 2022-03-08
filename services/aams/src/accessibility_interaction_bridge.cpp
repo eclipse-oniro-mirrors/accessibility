@@ -56,7 +56,7 @@ AccessibilityInteractionBridge::AccessibilityInteractionBridge()
 
 AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo()
 {
-    HILOG_DEBUG("[%{public}s without window]", __func__);
+    HILOG_DEBUG("[without window]");
 
     return FindFocusedElementInfo(ANY_WINDOW_ID);
 }
@@ -66,7 +66,7 @@ bool AccessibilityInteractionBridge::ExecuteActionOnAccessibilityFocused(const A
     HILOG_DEBUG("start");
     auto focus = FindFocusedElementInfo();
     std::map<std::string, std::string> actionArguments {};
-    HILOG_DEBUG("[%{public}s ExecuteAction]", __func__);
+    HILOG_DEBUG("[ExecuteAction]");
     return focus.ExecuteAction(action, actionArguments);
 }
 
@@ -126,7 +126,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
     // Intersect with display dummy
     auto display = AccessibilityDisplayManager::GetInstance().GetDefaultDisplay();
     if (!Intersect(focusRect, *display)) {
-      return false;
+        return false;
     }
 
     float px = (focusRect.GetLeftTopXScreenPostion() + focusRect.GetRightBottomXScreenPostion()) / denominator;
@@ -138,7 +138,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
 
 AccessibilityElementInfo AccessibilityInteractionBridge::FindFocusedElementInfo(const int &windowId)
 {
-    HILOG_DEBUG("[%{public}s with window]", __func__);
+    HILOG_DEBUG("[windowId %{public}d]", windowId);
     AccessibilityElementInfo info {};
     AccessibilityOperator::GetInstance().FindFocusedElementInfo(INTERACTION_BRIDGE_CHANNEL_ID,
         windowId, NONE_ID, FOCUS_TYPE_ACCESSIBILITY, info);

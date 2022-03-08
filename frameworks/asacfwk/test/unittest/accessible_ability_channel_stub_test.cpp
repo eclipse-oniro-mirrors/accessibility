@@ -258,8 +258,8 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest,
     data.WriteInt32(elementId);
     data.WriteInt32(action);
 
-    vector<string> actionArgumentsKey{};
-    vector<string> actionArgumentsValue{};
+    vector<string> actionArgumentsKey {};
+    vector<string> actionArgumentsValue {};
     for (auto iter = actionArguments.begin(); iter != actionArguments.end(); iter++) {
         actionArgumentsKey.push_back(iter->first);
         actionArgumentsValue.push_back(iter->second);

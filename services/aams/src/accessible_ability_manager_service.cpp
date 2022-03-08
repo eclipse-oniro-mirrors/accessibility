@@ -42,6 +42,8 @@ const string TASK_SEND_PUBLIC_NOTICE_EVENT = "SendPublicNoticeEvent";
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
 
+static const int32_t TEMP_ACCOUNT_ID = 100;
+
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true),
       bundleManager_(nullptr)
@@ -127,9 +129,9 @@ bool AccessibleAbilityManagerService::Init()
         }
     }
 
-    // temp deal: set current account Id to 100.
+    // temp deal: set current account Id to TEMP_ACCOUNT_ID.
     // This is a temporary countermeasure, after which a formal countermeasure is required.
-    currentAccountId_ = 100;
+    currentAccountId_ = TEMP_ACCOUNT_ID;
     HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     accountData->init();
@@ -139,7 +141,7 @@ bool AccessibleAbilityManagerService::Init()
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     HILOG_INFO("AddAbilityListener end!");
-    
+
     // temp deal: [setting] Add listener of setting's URI.
     HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
@@ -151,7 +153,7 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
     HILOG_INFO("eventType[%{public}d]", (int)uiEvent.GetEventType());
     HILOG_INFO("gestureId[%{public}d]", (int)uiEvent.GetGestureType());
     if (accountId != currentAccountId_) {
-        HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
+        HILOG_ERROR("accountId[%{public}d] is not matched", accountId);
         return;
     }
     AccessibilityEventInfo& event = const_cast<AccessibilityEventInfo&>(uiEvent);
@@ -177,7 +179,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
 {
     HILOG_DEBUG("start");
     if (accountId != currentAccountId_) {
-        HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
+        HILOG_ERROR("accountId[%{public}d] is not matched", accountId);
         return ERR_INVALID_VALUE;
     }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -203,7 +205,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 {
     HILOG_DEBUG("start");
     if (accountId != currentAccountId_) {
-        HILOG_ERROR(" %{public}s accountId[%{public}d] is not matched", __func__, accountId);
+        HILOG_ERROR("accountId[%{public}d] is not matched", accountId);
         return 0;
     }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -226,8 +228,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
     const int abilityTypes, const int stateType)
 {
-    HILOG_DEBUG(" %{public}s  abilityTypes(%{public}d) stateType(%{public}d)",
-                __func__, abilityTypes, stateType);
+    HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
     vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("stateType is out of range!!");
@@ -242,14 +243,14 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
-    HILOG_DEBUG(" %{public}s:abilityes count is %{public}d", __func__, abilities.size());
+    HILOG_DEBUG("abilityes count is %{public}d", abilities.size());
     for (auto& ability : abilities) {
         if (static_cast<uint32_t>(abilityTypes) == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
            (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes))) {
             infoList.push_back(ability);
         }
     }
-    HILOG_DEBUG(" %{public}s:infoList count is %{public}d", __func__, infoList.size());
+    HILOG_DEBUG("infoList count is %{public}d", infoList.size());
     return infoList;
 }
 
@@ -346,7 +347,7 @@ bool AccessibleAbilityManagerService::SetEnabled(const bool state)
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
-    HILOG_DEBUG(" %{public}s: currentAccoutId is %{public}d ", __func__, currentAccountId_);
+    HILOG_DEBUG("currentAccoutId is %{public}d ", currentAccountId_);
     auto iter = a11yAccountsData_.find(currentAccountId_);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
@@ -409,7 +410,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy(
 sptr<AccessibilityWindowConnection> AccessibleAbilityManagerService::GetAccessibilityWindowConnection(
     int windowId)
 {
-    HILOG_DEBUG(" %{public}s windowId(%{public}d)", __func__, windowId);
+    HILOG_DEBUG("windowId(%{public}d)", windowId);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Get account data failed");
@@ -484,13 +485,13 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
 {
-    HILOG_DEBUG("%{public}s start", __func__);
+    HILOG_DEBUG("accountId(%{public}d)", accountId);
     a11yAccountsData_.erase(accountId);
 }
 
 void AccessibleAbilityManagerService::PresentUser()
 {
-    HILOG_DEBUG("%{public}s start", __func__);
+    HILOG_DEBUG();
 
     GetCurrentAccountData()->ReadConfigurationForAccountData();
     UpdateAbilities();
@@ -578,7 +579,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
     for (auto changedAbility : extensionInfos) {
         if (changedAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package changed is an extension ability and\
-            extension ability's name is %{public}s", changedAbility.name.c_str());
+                extension ability's name is %{public}s", changedAbility.name.c_str());
             AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(changedAbility);
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}d",
@@ -619,7 +620,7 @@ void AccessibleAbilityManagerService::PackageUpdateFinished(std::string& bundleN
 void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo& event)
 {
     EventType evtType = event.GetEventType();
-    HILOG_DEBUG("%{public}s start %{public}d", __func__, event.GetWindowId());
+    HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
         case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
@@ -667,7 +668,6 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         HILOG_DEBUG("installAbility's packageName is %{public}s", installAbility.GetPackageName().c_str());
         HILOG_DEBUG("installAbility's abilityName is %{public}s", installAbility.GetName().c_str());
         std::string elementName = "/" + installAbility.GetPackageName() + "/"; // temp deal
-
         // wait for the connecting ability.
         if (accountData->GetConnectingA11yAbilities().count(elementName)) {
             continue;
@@ -676,10 +676,6 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(elementName);
         if (accountData->GetEnabledAbilities().count(elementName)) {
             if (!connection) {
-                // this is a temp deal for ace test
-                installAbility.SetCapabilityValues(Capability::CAPABILITY_RETRIEVE |
-                                                   Capability::CAPABILITY_KEY_EVENT_OBSERVER |
-                                                   Capability::CAPABILITY_GESTURE);
                 connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
@@ -701,7 +697,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
         HILOG_ERROR("Account data is null");
         return;
     }
-
     uint32_t state = accountData->GetAccessibilityState();
     for (auto& callback : accountData->GetStateCallbacks()) {
         callback->OnStateChanged(state);
@@ -802,10 +797,10 @@ void AccessibleAbilityManagerService::UpdateWindowChangeListener()
         }
     }
     if (isWindowRetrieve) {
-        HILOG_INFO("%{public}s RegisterWindowChangeListener.", __func__);
+        HILOG_INFO("RegisterWindowChangeListener.");
         AccessibilityWindowInfoManager::GetInstance().RegisterWindowChangeListener();
     } else {
-        HILOG_INFO("%{public}s DeregisterWindowChangeListener.", __func__);
+        HILOG_INFO("DeregisterWindowChangeListener.");
         AccessibilityWindowInfoManager::GetInstance().DeregisterWindowChangeListener();
         AccessibilityWindowInfoManager::GetInstance().GetAccessibilityWindows().clear();
     }
@@ -918,7 +913,7 @@ bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(cons
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
 
     if (connection) {
-        HILOG_ERROR(" %{public}s connection is existed!!", __func__);
+        HILOG_ERROR("connection is existed!!");
         return false;
     }
 
@@ -958,7 +953,7 @@ bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
 
     if (connection == nullptr) {
-        HILOG_ERROR(" %{public}s connection is not existed!!", __func__);
+        HILOG_ERROR("connection is not existed!!");
         return false;
     }
     std::function<void()> removeUITestClientFunc =

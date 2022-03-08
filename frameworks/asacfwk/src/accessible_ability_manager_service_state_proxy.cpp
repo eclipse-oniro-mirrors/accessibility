@@ -47,12 +47,12 @@ void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t st
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteUint32(stateType)) {
-        HILOG_ERROR("%{public}s fail, connection write stateType error", __func__);
+        HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
@@ -64,6 +64,5 @@ void AccessibleAbilityManagerServiceStateProxy::OnStateChanged(const uint32_t st
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

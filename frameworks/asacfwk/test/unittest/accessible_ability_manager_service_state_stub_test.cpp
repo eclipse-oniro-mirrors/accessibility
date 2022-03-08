@@ -66,13 +66,13 @@ public:
 HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnRemoteRequest_001 start";
-    //Not set descriptor
+    // Not set descriptor
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-
-    int res = mockStub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED), data, reply, option);
+    int res = mockStub_->OnRemoteRequest(
+        static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED), data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
     GTEST_LOG_(INFO) << "OnRemoteRequest_001 end";
 }
@@ -85,13 +85,14 @@ HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_001, TestSize.Level1)
 HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnRemoteRequest_002 start";
-    //set descriptor
+    // set descriptor
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
     WriteInterfaceToken(data);
-    mockStub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED), data, reply, option);
+    mockStub_->OnRemoteRequest(static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED),
+        data, reply, option);
     GTEST_LOG_(INFO) << "OnRemoteRequest_002 end";
 }
 

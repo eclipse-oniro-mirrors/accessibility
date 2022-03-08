@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub()
 {
     HILOG_DEBUG("start");
@@ -154,7 +153,7 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
 
     int abilityTypes = data.ReadInt32();
     int stateType = data.ReadInt32();
-    std::vector<AccessibilityAbilityInfo> abilityInfos{};
+    std::vector<AccessibilityAbilityInfo> abilityInfos {};
     abilityInfos = GetAbilityList(abilityTypes, stateType);
 
     int32_t abilityInfoSize = abilityInfos.size();
@@ -341,14 +340,14 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
 {
     HILOG_DEBUG("start");
 
-    std::map<std::string, AppExecFwk::ElementName> it{};
+    std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (dev_num == 0) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }
 
-    std::vector<AppExecFwk::ElementName> temp{};
+    std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
         temp.push_back(*iter);
@@ -401,14 +400,14 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
 {
     HILOG_DEBUG("start");
 
-    std::map<std::string, AppExecFwk::ElementName> it{};
+    std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (dev_num == 0) {
         HILOG_DEBUG("ReadParcelable failed");
         return ERROR;
     }
 
-    std::vector<AppExecFwk::ElementName> temp{};
+    std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
         temp.push_back(*iter);

@@ -161,13 +161,14 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
     }
 
     if (uiTestListener_) {
-        bool handled = uiTestListener_->OnKeyPressEvent(keyEvent, sequence);
+        std::shared_ptr<MMI::KeyEvent> tmp = std::make_shared<MMI::KeyEvent>(keyEvent);
+        bool handled = uiTestListener_->OnKeyPressEvent(tmp, sequence);
         AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
     }
 }
 
 void AccessibleAbilityClientStubImpl::OnDisplayResized(const int displayId, const Rect &rect, const float scale,
-	const float centerX, const float centerY)
+    const float centerX, const float centerY)
 {
     HILOG_DEBUG("start.");
     if (channelId_ != INVALID_CHANNEL_ID) {

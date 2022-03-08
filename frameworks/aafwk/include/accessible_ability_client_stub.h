@@ -49,8 +49,6 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityClientStub);
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // ACCESSIBLE_ABILITY_CLIENT_STUB_H

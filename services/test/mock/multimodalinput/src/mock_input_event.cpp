@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 
-#include <chrono>
-#include "input_event.h"
+#include "mock_input_event.h"
 
 namespace OHOS {
 namespace MMI {
-
 InputEvent::InputEvent(int32_t eventType) : eventType_(eventType)
 {
     Reset();
@@ -29,42 +27,40 @@ InputEvent::InputEvent(const InputEvent& other)
     action_(other.action_), actionStartTime_(other.actionStartTime_),
     deviceId_(other.deviceId_), targetDisplayId_(other.targetDisplayId_),
     targetWindowId_(other.targetWindowId_), agentWindowId_(other.agentWindowId_),
-    flag_(other.flag_), processedCallback_(other.processedCallback_)
+    bitwise_(other.bitwise_), processedCallback_(other.processedCallback_)
 {}
 
 InputEvent::~InputEvent() {}
 
 void InputEvent::Reset()
 {
-    int32_t conversionStep = 1000000;
-    timespec ts = { 0, 0 };
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) {
-        actionTime_ = 0;
-    }
-    id_ = DEFALUTID;
-    uint64_t nowTime = (ts.tv_sec * static_cast<uint64_t>(1e3)) + (ts.tv_nsec / conversionStep);
-    int32_t actionTime = static_cast<int32_t>(nowTime);
-    actionTime_ = actionTime;
-    action_ = ACTION_UNKNOWN;
-    actionStartTime_ = actionTime_;
-    deviceId_ = DEFALUTID;
-    targetDisplayId_ = DEFALUTID;
-    targetWindowId_ = DEFALUTID;
-    agentWindowId_ = DEFALUTID;
-    flag_ = 0;
 }
 
-void InputEvent::SetActionStartTime(int32_t actionStartTime)
+std::shared_ptr<InputEvent> InputEvent::Create()
 {
-    actionStartTime_ = actionStartTime;
+    return std::shared_ptr<InputEvent>(new InputEvent(InputEvent::EVENT_TYPE_BASE));
 }
 
-int32_t InputEvent::GetActionTime() const
+int32_t InputEvent::GetId() const
+{
+    return id_;
+}
+
+void InputEvent::SetId(int32_t id)
+{
+    id_ = id;
+}
+
+void InputEvent::UpdateId()
+{
+}
+
+int64_t InputEvent::GetActionTime() const
 {
     return actionTime_;
 }
 
-void InputEvent::SetActionTime(int32_t actionTime)
+void InputEvent::SetActionTime(int64_t actionTime)
 {
     actionTime_ = actionTime;
 }
@@ -79,15 +75,34 @@ void InputEvent::SetAction(int32_t action)
     action_ = action;
 }
 
-void InputEvent::AddFlag(int32_t flag)
+int64_t InputEvent::GetActionStartTime() const
 {
-    flag_ |= flag;
+    return actionStartTime_;
+}
+
+void InputEvent::SetActionStartTime(int64_t actionStartTime)
+{
+    actionStartTime_ = actionStartTime;
+}
+
+uint32_t InputEvent::GetFlag() const
+{
+    return bitwise_;
+}
+
+bool InputEvent::HasFlag(uint32_t flag)
+{
+    return (bitwise_ & flag) != 0;
+}
+
+void InputEvent::AddFlag(uint32_t flag)
+{
+    bitwise_ |= flag;
 }
 
 void InputEvent::ClearFlag()
 {
-    flag_ = 0X00000000;
+    bitwise_ = EVENT_FLAG_NONE;
 }
-
 }
 }

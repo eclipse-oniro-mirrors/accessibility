@@ -57,7 +57,7 @@ void KeyEventFilterUnitTest::TearDownTestCase()
 void KeyEventFilterUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    //注册bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();

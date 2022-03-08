@@ -102,7 +102,7 @@ void AccessibilityZoomHandler::ReadyState::OnPointerEvent(MMI::PointerEvent &eve
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-          if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
                 if (gesture_.Triple(event)) {
                     observer_[0].OnTransitionTo(ZOOMIN_STATE);
                 } else {
@@ -113,7 +113,7 @@ void AccessibilityZoomHandler::ReadyState::OnPointerEvent(MMI::PointerEvent &eve
         default:
             observer_[0].OnBack(event);
             break;
-          }
+    }
 }
 
 void AccessibilityZoomHandler::ZoomInState::Enter()
@@ -156,7 +156,7 @@ void AccessibilityZoomHandler::ZoomInState::OnPointerEvent(MMI::PointerEvent &ev
         default:
             observer_[0].OnBack(event);
             break;
-          }
+    }
 }
 
 void AccessibilityZoomHandler::SlidingState::Enter()
@@ -188,7 +188,6 @@ void AccessibilityZoomHandler::SlidingState::OnPointerEvent(MMI::PointerEvent &e
             observer_[0].OnBack(event);
             break;
     }
-
 }
 
 bool AccessibilityZoomHandler::SlidingState::OnScroll()

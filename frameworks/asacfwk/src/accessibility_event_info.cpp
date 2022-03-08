@@ -74,66 +74,66 @@ AccessibilityMemo* AccessibilityMemo::Unmarshalling(Parcel& parcel)
 void AccessibilityMemo::SetChannelId(const int channelId)
 {
     channelId_ = channelId;
-    HILOG_DEBUG("[%{public}s] channelId_[%{public}d]", __func__, channelId_);
+    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
 }
 
 int AccessibilityMemo::GetChannelId() const
 {
-    HILOG_DEBUG("[%{public}s] channelId_[%{public}d]", __func__, channelId_);
+    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
     return channelId_;
 }
 
 void AccessibilityMemo::SetSource(const int componentId)
 {
-    HILOG_DEBUG("[%{public}s] componentId[%{public}d]", __func__, componentId);
+    HILOG_DEBUG("componentId[%{public}d]", componentId);
     componentId_ = componentId;
     elementId_ = componentId;
 }
 
 bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
 {
-    HILOG_INFO("[%{public}s] called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
-        __func__, channelId_, windowId_, elementId_);
+    HILOG_INFO("called] channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d]",
+        channelId_, windowId_, elementId_);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     bool result = false;
     if (instance != nullptr) {
-        result = instance->SearchElementInfosByAccessibilityId(channelId_, windowId_, elementId_, 0,elementInfos);
+        result = instance->SearchElementInfosByAccessibilityId(channelId_, windowId_, elementId_, 0, elementInfos);
         for (auto& info : elementInfos) {
-            HILOG_INFO("[%{public}s] called] GetSource OK", __func__);
+            HILOG_INFO("called] GetSource OK");
             result = true;
             elementInfo = info;
             break;
         }
-        HILOG_INFO("[%{public}s] called] GetSource is null", __func__);
+        HILOG_INFO("called] GetSource is null");
     } else {
-        HILOG_INFO("[%{public}s] called] Can't get AccessibilityOperator instance", __func__);
+        HILOG_INFO("called] Can't get AccessibilityOperator instance");
     }
     return result;
 }
 
 int AccessibilityMemo::GetViewId() const
 {
-    HILOG_DEBUG("[%{public}s] componentId_[%{public}d]", __func__, componentId_);
+    HILOG_DEBUG("componentId_[%{public}d]", componentId_);
     return componentId_;
 }
 
 int AccessibilityMemo::GetAccessibilityId() const
 {
-    HILOG_INFO("[%{public}s] called] elementId_[%{public}d]",__func__, elementId_);
+    HILOG_INFO("called] elementId_[%{public}d]", elementId_);
     return elementId_;
 }
 
 void AccessibilityMemo::SetWindowId(const int windowId)
 {
-    HILOG_DEBUG("[%{public}s] windowId[%{public}d]", __func__, windowId);
+    HILOG_DEBUG("windowId[%{public}d]", windowId);
     windowId_ = windowId;
 }
 
 int AccessibilityMemo::GetWindowId() const
 {
-    HILOG_DEBUG("[%{public}s] windowId_[%{public}d]", __func__, windowId_);
+    HILOG_DEBUG("windowId_[%{public}d]", windowId_);
     return windowId_;
 }
 
@@ -175,32 +175,32 @@ void AccessibilityMemo::SetEndIndex(const int index)
 
 std::string AccessibilityMemo::GetComponentType() const
 {
-    HILOG_DEBUG("[%{public}s] componentType_[%{public}s]", __func__, componentType_.c_str());
+    HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
     return componentType_;
 }
 
 void AccessibilityMemo::SetComponentType(const std::string &className)
 {
     componentType_ = className;
-    HILOG_DEBUG("[%{public}s] componentType_[%{public}s]", __func__, componentType_.c_str());
+    HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
 }
 
 std::string AccessibilityMemo::GetBeforeText() const
 {
-    HILOG_DEBUG("[%{public}s] beforeText_[%{public}s]", __func__, beforeText_.c_str());
+    HILOG_DEBUG("beforeText_[%{public}s]", beforeText_.c_str());
     return beforeText_;
 }
 
 void AccessibilityMemo::SetBeforeText(const std::string &beforeText)
 {
     beforeText_ = beforeText;
-    HILOG_DEBUG("[%{public}s] beforeText_[%{public}s]", __func__, beforeText_.c_str());
+    HILOG_DEBUG("beforeText_[%{public}s]", beforeText_.c_str());
 }
 
 void AccessibilityMemo::AddContent(const std::string &content)
 {
     contents_.push_back(content);
-    HILOG_DEBUG("[%{public}s] content[%{public}s]", __func__, content.c_str());
+    HILOG_DEBUG("content[%{public}s]", content.c_str());
 }
 
 std::vector<std::string> AccessibilityMemo::GetContentList() const
@@ -210,37 +210,37 @@ std::vector<std::string> AccessibilityMemo::GetContentList() const
 
 std::string AccessibilityMemo::GetLatestContent() const
 {
-    HILOG_DEBUG("[%{public}s] latestConent_[%{public}s]", __func__, latestConent_.c_str());
+    HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
     return latestConent_;
 }
 
 void AccessibilityMemo::SetLatestContent(const std::string &content)
 {
     latestConent_ = content;
-    HILOG_DEBUG("[%{public}s] latestConent_[%{public}s]", __func__, latestConent_.c_str());
+    HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
 }
 
 std::string AccessibilityMemo::GetDescription() const
 {
-    HILOG_DEBUG("[%{public}s] description_[%{public}s]", __func__, description_.c_str());
+    HILOG_DEBUG("description_[%{public}s]", description_.c_str());
     return description_;
 }
 
 void AccessibilityMemo::SetDescription(const std::string &contentDescription)
 {
     description_ = contentDescription;
-    HILOG_DEBUG("[%{public}s] description_[%{public}s]", __func__, description_.c_str());
+    HILOG_DEBUG("description_[%{public}s]", description_.c_str());
 }
 
 void AccessibilityMemo::SetItemCounts(const int itemCounts)
 {
     itemCounts_ = itemCounts;
-    HILOG_DEBUG("[%{public}s] itemCounts_[%{public}d]", __func__, itemCounts_);
+    HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
 }
 
 int AccessibilityMemo::GetItemCounts() const
 {
-    HILOG_DEBUG("[%{public}s] itemCounts_[%{public}d]", __func__, itemCounts_);
+    HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
     return itemCounts_;
 }
 
@@ -381,14 +381,14 @@ AccessibilityEventInfo *AccessibilityEventInfo::Unmarshalling(Parcel& parcel)
 
 int AccessibilityEventInfo::GetRecordCount() const
 {
-    HILOG_DEBUG("[%{public}s] recordsCount_[%{public}d]", __func__, recordsCount_);
+    HILOG_DEBUG("recordsCount_[%{public}d]", recordsCount_);
     return recordsCount_;
 }
 
 void AccessibilityEventInfo::SetRecordCount(const int recordCount)
 {
     recordsCount_ = recordCount;
-    HILOG_DEBUG("[%{public}s] recordsCount_[%{public}d]", __func__, recordsCount_);
+    HILOG_DEBUG("recordsCount_[%{public}d]", recordsCount_);
 }
 
 void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
@@ -402,7 +402,7 @@ AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int index)
     HILOG_DEBUG("start");
     if (index >= recordsCount_ || index < 0) {
         AccessibilityEventInfo record {};
-        HILOG_ERROR("[%{public}s] called] index[%{public}d] is invalid", __func__, index);
+        HILOG_ERROR("[called] index[%{public}d] is invalid", index);
         return record;
     }
     return records_[index];
@@ -416,38 +416,38 @@ std::vector<AccessibilityEventInfo> AccessibilityEventInfo::GetRecords()
 
 EventType AccessibilityEventInfo::GetEventType() const
 {
-    HILOG_DEBUG("[%{public}s] eventType_[%{public}d]", __func__, eventType_);
+    HILOG_DEBUG("eventType_[%{public}d]", eventType_);
     return eventType_;
 }
 
 WindowsContentChangeTypes AccessibilityEventInfo::GetWindowContentChangeTypes() const
 {
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowContentChangeTypes_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowContentChangeTypes_);
     return windowContentChangeTypes_;
 }
 
 void AccessibilityEventInfo::SetWindowContentChangeTypes(const WindowsContentChangeTypes changeTypes)
 {
     windowContentChangeTypes_ = changeTypes;
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowContentChangeTypes_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowContentChangeTypes_);
 }
 
 WindowUpdateType AccessibilityEventInfo::GetWindowChangeTypes() const
 {
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowChangeTypes_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowChangeTypes_);
     return windowChangeTypes_;
 }
 
 void AccessibilityEventInfo::SetWindowChangeTypes(const WindowUpdateType changeTypes)
 {
     windowChangeTypes_ = changeTypes;
-    HILOG_DEBUG("[%{public}s] windowType_[%{public}d]", __func__, windowChangeTypes_);
+    HILOG_DEBUG("windowType_[%{public}d]", windowChangeTypes_);
 }
 
 void AccessibilityEventInfo::SetEventType(const EventType eventType)
 {
     eventType_ = EventType(eventType);
-    HILOG_DEBUG("[%{public}s] eventType_[%{public}d]", __func__, eventType_);
+    HILOG_DEBUG("eventType_[%{public}d]", eventType_);
 }
 
 long long AccessibilityEventInfo::GetTimeStamp() const
@@ -464,37 +464,37 @@ void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
 
 std::string AccessibilityEventInfo::GetBundleName() const
 {
-    HILOG_DEBUG("[%{public}s] bundleName_[%{public}s]", __func__, bundleName_.c_str());
+    HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
     return bundleName_;
 }
 
 void AccessibilityEventInfo::SetBundleName(const std::string &bundleName)
 {
     bundleName_ = bundleName;
-    HILOG_DEBUG("[%{public}s] bundleName_[%{public}s]", __func__, bundleName_.c_str());
+    HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
 }
 
 void AccessibilityEventInfo::SetTextMovementStep(const TextMoveUnit granularity)
 {
     textMoveStep_ = granularity;
-    HILOG_DEBUG("[%{public}s] textMoveStep_[%{public}d]", __func__, textMoveStep_);
+    HILOG_DEBUG("textMoveStep_[%{public}d]", textMoveStep_);
 }
 
 TextMoveUnit AccessibilityEventInfo::GetTextMovementStep() const
 {
-    HILOG_DEBUG("[%{public}s] textMoveStep_[%{public}d]", __func__, textMoveStep_);
+    HILOG_DEBUG("textMoveStep_[%{public}d]", textMoveStep_);
     return textMoveStep_;
 }
 
 void AccessibilityEventInfo::SetTriggerAction(const ActionType action)
 {
     triggerAction_ = action;
-    HILOG_DEBUG("[%{public}s] triggerAction_[%{public}d]", __func__, triggerAction_);
+    HILOG_DEBUG("triggerAction_[%{public}d]", triggerAction_);
 }
 
 ActionType AccessibilityEventInfo::GetTriggerAction() const
 {
-    HILOG_DEBUG("[%{public}s] triggerAction_[%{public}d]", __func__, triggerAction_);
+    HILOG_DEBUG("triggerAction_[%{public}d]", triggerAction_);
     return triggerAction_;
 }
 
@@ -509,42 +509,42 @@ AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType wi
 AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
 {
     eventType_ = eventType;
-    HILOG_DEBUG("[%{public}s] eventType_[%{public}d]", __func__, eventType_);
+    HILOG_DEBUG("eventType_[%{public}d]", eventType_);
 }
 
 void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory category)
 {
     category_ = category;
-    HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
+    HILOG_DEBUG("category_[%{public}d]", category_);
 }
 
 void AccessibilityEventInfo::SetGestureType(const GestureType gestureType)
 {
     gestureType_ = gestureType;
-    HILOG_DEBUG("[%{public}s] gestureType_[%{public}d]", __func__, gestureType_);
+    HILOG_DEBUG("gestureType_[%{public}d]", gestureType_);
 }
 
 GestureType AccessibilityEventInfo::GetGestureType() const
 {
-    HILOG_DEBUG("[%{public}s] gestureType_[%{public}d]", __func__, gestureType_);
+    HILOG_DEBUG("gestureType_[%{public}d]", gestureType_);
     return gestureType_;
 }
 
 NotificationCategory AccessibilityEventInfo::GetNotificationInfo() const
 {
-    HILOG_DEBUG("[%{public}s] category_[%{public}d]", __func__, category_);
+    HILOG_DEBUG("category_[%{public}d]", category_);
     return category_;
 }
 
 void AccessibilityEventInfo::SetPageId(const int pageId)
 {
-    HILOG_DEBUG("[%{public}s] pageId[%{public}d]", __func__, pageId);
+    HILOG_DEBUG("pageId[%{public}d]", pageId);
     pageId_ = pageId;
 }
 
 int AccessibilityEventInfo::GetPageId() const
 {
-    HILOG_DEBUG("[%{public}s] pageId_[%{public}d]", __func__, pageId_);
+    HILOG_DEBUG("pageId_[%{public}d]", pageId_);
     return pageId_;
 }
 } // namespace Accessibility

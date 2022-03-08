@@ -34,24 +34,24 @@ AccessibilityOperator::~AccessibilityOperator()
 AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     std::thread::id tid = std::this_thread::get_id();
-    HILOG_DEBUG("[%{public}s] threadId[%{public}u]", __func__, (*(uint32_t*)&tid));
+    HILOG_DEBUG("threadId[%{public}u]", (*(uint32_t*)&tid));
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     if (instances_.size() >= MAX_INSTANCE) {
         for (auto iter = instances_.begin(); iter != instances_.end(); iter++) {
             if (iter->GetRefPtr() != nullptr &&
                 iter->GetRefPtr()->asyncElementOperatorMng_.GetOperationStatus()) {
-                HILOG_DEBUG("[%{public}s] complete instance is removed", __func__);
+                HILOG_DEBUG("complete instance is removed");
                 instances_.erase(iter);
                 break;
             }
         }
     }
 
-    HILOG_DEBUG("[%{public}s] new instance instanceSize[%{public}u]", __func__, instances_.size());
+    HILOG_DEBUG("new instance instanceSize[%{public}u]", instances_.size());
     sptr<AccessibilityOperator> inst(new AccessibilityOperator());
     instances_.push_back(inst);
 
-    HILOG_DEBUG("[%{public}s] End instanceSize[%{public}u]", __func__, instances_.size());
+    HILOG_DEBUG("End instanceSize[%{public}u]", instances_.size());
     return *(inst.GetRefPtr());
 }
 
@@ -69,11 +69,11 @@ sptr<IAccessibleAbilityChannel> AccessibilityOperator::GetChannel(int channelId)
 
 void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessibleAbilityChannel> &channel)
 {
-    HILOG_DEBUG("[%{public}s] Add channel to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("Add channel to aams [channelId:%{public}d]", channelId);
     int tempId = *(const_cast<int *>(&channelId));
     for (auto iter = channels_.begin(); iter != channels_.end(); iter++) {
         if (iter->first == tempId) {
-            HILOG_ERROR("[%{public}s] channel to aams [channelId:%{public}d] is exited", __func__, channelId);
+            HILOG_ERROR("channel to aams [channelId:%{public}d] is exited", channelId);
             return;
         }
     }
@@ -83,12 +83,12 @@ void AccessibilityOperator::AddChannel(const int channelId, const sptr<IAccessib
 
 void AccessibilityOperator::RemoveChannel(int channelId)
 {
-    HILOG_DEBUG("[%{public}s] Remove channel to aams [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("Remove channel to aams [channelId:%{public}d]", channelId);
     auto iter = channels_.find(channelId);
     if (iter != channels_.end()) {
         channels_.erase(iter);
     } else {
-        HILOG_DEBUG("[%{public}s] Failed to remove channel with aams [channelId:%{public}d]", __func__, channelId);
+        HILOG_DEBUG("Failed to remove channel with aams [channelId:%{public}d]", channelId);
     }
 }
 
@@ -97,10 +97,10 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
     int activeWindow = AccessibilitySystemAbilityClient::GetInstance()->GetActiveWindow();
-    HILOG_DEBUG("[%{public}s] activeWindow is %{public}d", __func__, activeWindow);
+    HILOG_DEBUG("activeWindow is %{public}d", activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
     for (auto& info : elementInfos) {
-        HILOG_DEBUG("[%{public}s] element [elementSize:%{public}d]", __func__, elementInfosResult_.size());
+        HILOG_DEBUG("element [elementSize:%{public}d]", elementInfosResult_.size());
         elementInfo = info;
         break;
     }
@@ -125,33 +125,32 @@ std::vector<AccessibilityWindowInfo> AccessibilityOperator::GetWindows(int chann
 bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
     int accessibilityWindowId, int elementId, int mode, std::vector<AccessibilityElementInfo>& elementInfos)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d] [windowId:%{public}d]",
-                __func__, channelId, accessibilityWindowId);
+    HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId, accessibilityWindowId);
     bool result = false;
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
-        HILOG_DEBUG("[%{public}s] search element info [channelId:%{public}d] [sequenceNum:%{public}d]", __func__,
+        HILOG_DEBUG("search element info [channelId:%{public}d] [sequenceNum:%{public}d]",
             channelId, sequenceNum);
         result = channelService->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, sequenceNum,
             this, mode);
         if (!result) {
             return result;
         }
-        HILOG_DEBUG("[%{public}s] search element info End[channelId:%{public}d] [sequenceNum:%{public}d]", __func__,
+        HILOG_DEBUG("search element info End[channelId:%{public}d] [sequenceNum:%{public}d]",
             channelId, sequenceNum);
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
-            HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
+            HILOG_ERROR("Failed to wait result");
             result = false;
             return result;
         }
     }
-    HILOG_DEBUG("[%{public}s] search element info OK [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("search element info OK [channelId:%{public}d]", channelId);
     for (auto& info : elementInfosResult_) {
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] search element info End[size:%{public}d]", __func__, elementInfosResult_.size());
+    HILOG_DEBUG("search element info End[size:%{public}d]", elementInfosResult_.size());
     elementInfos = elementInfosResult_;
     return result;
 }
@@ -159,7 +158,7 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
 bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessibilityWindowId,
     int elementId, const std::string &text, std::vector<AccessibilityElementInfo>& elementInfos)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d]", channelId);
     bool result = false;
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
@@ -170,7 +169,7 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
             return result;
         }
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
-            HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
+            HILOG_ERROR("Failed to wait result");
             result = false;
             return result;
         }
@@ -180,7 +179,7 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] [size:%{public}d] end", __func__, elementInfosResult_.size());
+    HILOG_DEBUG("[size:%{public}d] end", elementInfosResult_.size());
     elementInfos = elementInfosResult_;
 
     return result;
@@ -189,10 +188,9 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
 bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibilityWindowId,
     int elementId, int focusType, AccessibilityElementInfo& elementInfo)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d]", channelId);
     bool result = false;
     auto channelService = GetChannel(channelId);
-
     if (channelService != nullptr) {
         int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
         result = channelService->FindFocusedElementInfo(accessibilityWindowId, elementId,
@@ -201,22 +199,21 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
             return result;
         }
 
-        HILOG_DEBUG(
-            "FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
+        HILOG_DEBUG("FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
             focusType[%{public}d] sequenceNum[%{public}d]",
             channelId, accessibilityWindowId, elementId, focusType);
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
-            HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
+            HILOG_ERROR("Failed to wait result");
             result = false;
             return result;
         }
     }
     accessibilityInfoResult_.SetChannelId(channelId);
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d] end", channelId);
     if (accessibilityInfoResult_.GetWindowId() == 0 &&
         accessibilityInfoResult_.GetAccessibilityId() == 0) {
-        HILOG_DEBUG("[%{public}s] Can't find the component info", __func__);
+        HILOG_DEBUG("Can't find the component info");
         result = false;
     } else {
         elementInfo = accessibilityInfoResult_;
@@ -229,7 +226,7 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
 bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWindowId,
     int elementId, int direction, AccessibilityElementInfo& elementInfo)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d]", channelId);
     bool result = false;
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
@@ -239,7 +236,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
             return result;
         }
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
-            HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
+            HILOG_ERROR("Failed to wait result");
             result = false;
             return result;
         }
@@ -247,11 +244,11 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
 
     accessibilityInfoResult_.SetChannelId(channelId);
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d] end", channelId);
     elementInfo = accessibilityInfoResult_;
     if (accessibilityInfoResult_.GetWindowId() == 0 &&
         accessibilityInfoResult_.GetAccessibilityId() == 0) {
-        HILOG_DEBUG("[%{public}s] Can't find the component info", __func__);
+        HILOG_DEBUG("Can't find the component info");
         result = false;
     } else {
         result = true;
@@ -262,7 +259,7 @@ bool AccessibilityOperator::FocusMoveSearch(int channelId, int accessibilityWind
 bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindowId,
     int elementId, int action,  std::map<std::string, std::string> &actionArguments)
 {
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d]", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d]", channelId);
     auto channelService = GetChannel(channelId);
     if (channelService != nullptr) {
         int sequenceNum = asyncElementOperatorMng_.RecordSearchSequence();
@@ -274,64 +271,63 @@ bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindow
         }
 
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
-            HILOG_ERROR("[%{public}s] Failed to wait result", __func__);
+            HILOG_ERROR("Failed to wait result");
             return false;
         }
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[%{public}s] [channelId:%{public}d] end", __func__, channelId);
+    HILOG_DEBUG("[channelId:%{public}d] end", channelId);
     return executeActionResult_;
 }
 
 void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
-        __func__, infos.size(), sequenceNum);
+    HILOG_DEBUG("Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+        infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
-        HILOG_DEBUG("[%{public}s] Response", __func__);
+        HILOG_DEBUG("Response");
         elementInfosResult_.push_back(*iter);
     }
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
     const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
-        __func__, infos.size(), sequenceNum);
+    HILOG_DEBUG("Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+        infos.size(), sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         elementInfosResult_.push_back(*iter);
     }
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 void AccessibilityOperator::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
     const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d]", sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d]", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d]", sequenceNum);
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 void AccessibilityOperator::SetExecuteActionResult(const bool succeeded, const int sequenceNum)
 {
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] result[%{public}d]",
-        __func__, sequenceNum, succeeded);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] result[%{public}d]", sequenceNum, succeeded);
     executeActionResult_ = succeeded;
     asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
-    HILOG_DEBUG("[%{public}s] Response [sequenceNum:%{public}d] end", __func__, sequenceNum);
+    HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 bool AccessibilityOperator::ExecuteCommonAction(const int channelId, const int action)

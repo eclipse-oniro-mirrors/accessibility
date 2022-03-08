@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityWindowConnection : public RefBase {
 public:
     AccessibilityWindowConnection(const int windowId, const sptr<IAccessibilityElementOperator> &connection,
@@ -36,7 +35,6 @@ private:
     int accountId_;
     sptr<IAccessibilityElementOperator> proxy_;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
 #endif  // ACCESSIBILITY_WINDOW_CONNECTION_H

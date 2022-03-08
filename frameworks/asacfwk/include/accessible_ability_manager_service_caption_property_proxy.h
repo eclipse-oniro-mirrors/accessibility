@@ -23,7 +23,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityManagerServiceCaptionPropertyProxy : public IRemoteProxy<IAccessibleAbilityManagerServiceCaptionProperty> {
+class AccessibleAbilityManagerServiceCaptionPropertyProxy
+    : public IRemoteProxy<IAccessibleAbilityManagerServiceCaptionProperty> {
 public:
     /**
      * @brief construct function

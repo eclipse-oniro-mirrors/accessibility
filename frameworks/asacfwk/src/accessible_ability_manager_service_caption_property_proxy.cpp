@@ -46,14 +46,13 @@ void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChang
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("%{public}s fail, connection write Token", __func__);
+        HILOG_ERROR("fail, connection write Token");
         return;
     }
 
     if (!data.WriteParcelable(&caption)) {
-      HILOG_ERROR("%{public}s fail, connection write caption property error",
-                  __func__);
-      return;
+        HILOG_ERROR("fail, connection write caption property error");
+        return;
     }
 
     error = Remote()->SendRequest(
@@ -64,6 +63,5 @@ void AccessibleAbilityManagerServiceCaptionPropertyProxy::OnCaptionPropertyChang
         return;
     }
 }
-
 } // namespace Accessibility
 } // namespace OHOS

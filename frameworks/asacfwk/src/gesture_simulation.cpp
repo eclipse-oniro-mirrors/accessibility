@@ -28,13 +28,13 @@ GesturePathPositionDefine::GesturePathPositionDefine(float positionX, float posi
 
 float GesturePathPositionDefine::GetPositionX()
 {
-    HILOG_DEBUG("%{public}s start and positionX_ is %{public}f", __func__, positionX_);
+    HILOG_DEBUG("start and positionX_ is %{public}f", positionX_);
     return positionX_;
 }
 
 float GesturePathPositionDefine::GetPositionY()
 {
-    HILOG_DEBUG("%{public}s start and positionY_ is %{public}f", __func__, positionY_);
+    HILOG_DEBUG("start and positionY_ is %{public}f", positionY_);
     return positionY_;
 }
 
@@ -81,7 +81,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-	GesturePathPositionDefine &endPosition, uint32_t durationTime)
+    GesturePathPositionDefine &endPosition, uint32_t durationTime)
 {
     HILOG_DEBUG("start.");
 
@@ -104,7 +104,7 @@ GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
 
 uint32_t GesturePathDefine::GetDurationTime()
 {
-    HILOG_DEBUG("%{public}s start and max stroke duration is %{public}d", __func__, durationTime_);
+    HILOG_DEBUG("start and max stroke duration is %{public}d", durationTime_);
     return durationTime_;
 }
 
@@ -116,13 +116,13 @@ GesturePathPositionDefine &GesturePathDefine::GetEndPosition()
 
 uint32_t GesturePathDefine::GetMaxStrokeDuration()
 {
-    HILOG_DEBUG("%{public}s start and max stroke duration is %{public}d", __func__, MAX_STROKE_DURATION);
+    HILOG_DEBUG("start and max stroke duration is %{public}d", MAX_STROKE_DURATION);
     return MAX_STROKE_DURATION;
 }
 
 uint32_t GesturePathDefine::GetMaxStrokes()
 {
-    HILOG_DEBUG("%{public}s start and max strokes is %{public}d", __func__, MAX_STROKES);
+    HILOG_DEBUG("start and max strokes is %{public}d", MAX_STROKES);
     return MAX_STROKES;
 }
 

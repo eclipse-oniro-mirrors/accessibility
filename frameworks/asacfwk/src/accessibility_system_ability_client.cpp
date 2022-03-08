@@ -57,13 +57,13 @@ struct AccessibilitySystemAbilityClient::Impl {
 
         sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
         if (samgr == nullptr) {
-            HILOG_ERROR("[%s] Failed to get ISystemAbilityManager", __func__);
+            HILOG_ERROR("Failed to get ISystemAbilityManager");
             return nullptr;
         }
 
         sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
         if (object == nullptr) {
-            HILOG_ERROR("[%s]Get IAccessibleAbilityManagerServiceClient object from samgr failed", __func__);
+            HILOG_ERROR("Get IAccessibleAbilityManagerServiceClient object from samgr failed");
             return nullptr;
         }
 
@@ -139,7 +139,7 @@ void AccessibilitySystemAbilityClient::ResetService(const wptr<IRemoteObject>& r
         if ((object != nullptr) && (remote == object)) {
             object->RemoveDeathRecipient(pimpl->deathRecipient_);
             pimpl->serviceProxy_ = nullptr;
-            HILOG_DEBUG("[%{public}s] Reset OK", __func__);
+            HILOG_DEBUG("Reset OK");
         }
     }
 }
@@ -147,16 +147,16 @@ void AccessibilitySystemAbilityClient::ResetService(const wptr<IRemoteObject>& r
 int AccessibilitySystemAbilityClient::RegisterElementOperator(
     const int windowId, const shared_ptr<AccessibilityElementOperator>& operation, int user)
 {
-    HILOG_INFO("[%{public}s]", __func__);
+    HILOG_INFO();
     if (!operation) {
-        HILOG_ERROR("[%{public}s] Input operation is null", __func__);
+        HILOG_ERROR("Input operation is null");
         return -1;
     }
     int result = 0;
     connectionWindowId_ = windowId;
     for (auto iter = interactionOperators_.begin(); iter != interactionOperators_.end(); iter++) {
         if (iter->first == windowId) {
-            HILOG_ERROR("[%{public}s] windowID[%{public}d] is exited", __func__, windowId);
+            HILOG_ERROR("windowID[%{public}d] is exited", windowId);
             return result;
         }
     }
@@ -189,44 +189,44 @@ void AccessibilitySystemAbilityClient::DeregisterElementOperator(const int windo
     proxyService->DeregisterElementOperator(windowId);
     for (auto iter = interactionOperators_.begin(); iter != interactionOperators_.end(); iter++) {
         if (iter->first == windowId) {
-            HILOG_DEBUG("[%{public}s] windowID[%{public}d] is erase", __func__, windowId);
+            HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
             interactionOperator_ = nullptr;
             connectionWindowId_ = -1;
             interactionOperators_.erase(iter);
             return;
         }
     }
-    HILOG_DEBUG("[%{public}s] Not find windowID[%{public}d]", __func__, windowId);
+    HILOG_DEBUG("Not find windowID[%{public}d]", windowId);
 }
 
 shared_ptr<AccessibilityElementOperator> AccessibilitySystemAbilityClient::GetOperatorObject(int windowId)
 {
-    HILOG_DEBUG("[%{public}s] windowId[%{public}d]", __func__, windowId);
+    HILOG_DEBUG("windowId[%{public}d]", windowId);
     for (auto it = interactionOperators_.begin(); it != interactionOperators_.end(); it++) {
         if (it->second != nullptr && it->first == windowId) {
-            HILOG_DEBUG("[%{public}s] find interaction object windowId[%{public}d]", __func__, windowId);
+            HILOG_DEBUG("find interaction object windowId[%{public}d]", windowId);
             return it->second;
         }
     }
-    HILOG_DEBUG("[%{public}s] Failed to get interaction", __func__);
+    HILOG_DEBUG("Failed to get interaction");
     return nullptr;
 }
 
 bool AccessibilitySystemAbilityClient::IsEnabled()
 {
-    HILOG_DEBUG("[%{public}s] isEnabled_[%{public}d]", __func__, isEnabled_);
+    HILOG_DEBUG("isEnabled_[%{public}d]", isEnabled_);
     return isEnabled_;
 }
 
 bool AccessibilitySystemAbilityClient::IsTouchExplorationEnabled()
 {
-    HILOG_DEBUG("[%{public}s] isEnabled_[%{public}d]", __func__, isTouchExplorationEnabled_);
+    HILOG_DEBUG("isEnabled_[%{public}d]", isTouchExplorationEnabled_);
     return isTouchExplorationEnabled_;
 }
 
 bool AccessibilitySystemAbilityClient::IsCaptionEnabled()
 {
-    HILOG_DEBUG("[%{public}s] isEnabled_[%{public}d]", __func__, isCaptionEnabled_);
+    HILOG_DEBUG("isEnabled_[%{public}d]", isCaptionEnabled_);
     return isCaptionEnabled_;
 }
 
@@ -358,7 +358,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
 
 bool AccessibilitySystemAbilityClient::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("set state is %{public}d", state);
     if (isEnabled_ != state) {
         isEnabled_ = state;
         NotifyAccessibilityStateChanged();
@@ -376,7 +376,7 @@ bool AccessibilitySystemAbilityClient::CheckEventType(EventType eventType)
 {
     if ((eventType < EventType::TYPE_VIEW_CLICKED_EVENT) ||
         ((eventType >= EventType::TYPE_MAX_NUM) && (eventType != EventType::TYPES_ALL_MASK))) {
-        HILOG_ERROR("[%{public}s] event type is invalid", __func__);
+        HILOG_ERROR("event type is invalid");
         return false;
     } else {
         return true;
@@ -388,7 +388,7 @@ bool AccessibilitySystemAbilityClient::CheckActionType(ActionType actionType)
     if ((actionType < ActionType::ACCESSIBILITY_ACTION_FOCUS) ||
         ((actionType > ActionType::ACCESSIBILITY_ACTION_DELETED) &&
          (actionType != ActionType::ACCESSIBILITY_ACTION_TYPE_MASK))) {
-        HILOG_ERROR("[%{public}s] action type is invalid", __func__);
+        HILOG_ERROR("action type is invalid");
         return false;
     } else {
         return true;
@@ -397,7 +397,7 @@ bool AccessibilitySystemAbilityClient::CheckActionType(ActionType actionType)
 
 bool AccessibilitySystemAbilityClient::SendEvent(const EventType eventType, const int componentId)
 {
-    HILOG_DEBUG("[%{public}s] componentId[%{public}d], eventType[%{public}d]", __func__, componentId, eventType);
+    HILOG_DEBUG("componentId[%{public}d], eventType[%{public}d]", componentId, eventType);
     if (!CheckEventType(eventType)) {
         return false;
     }
@@ -415,7 +415,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const EventType eventType, cons
 
 bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& event)
 {
-    HILOG_DEBUG("[%{public}s] EventType[%{public}d]", __func__, event.GetEventType());
+    HILOG_DEBUG("EventType[%{public}d]", event.GetEventType());
     if (!CheckEventType(event.GetEventType())) {
         return false;
     }
@@ -437,11 +437,11 @@ bool AccessibilitySystemAbilityClient::SubscribeStateObserver(
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED) {
-        HILOG_ERROR("[%{public}s] Input eventType is out of scope", __func__);
+        HILOG_ERROR("Input eventType is out of scope");
         return false;
     }
     if (!observer) {
-        HILOG_ERROR("[%{public}s] Input observer is null", __func__);
+        HILOG_ERROR("Input observer is null");
         return false;
     }
     AccessibilityStateEventType et = AccessibilityStateEventType(*(const_cast<int*>(&eventType)));
@@ -476,11 +476,11 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(
         eventType != AccessibilityStateEventType::EVENT_CAPTION_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED &&
         eventType != AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED) {
-        HILOG_ERROR("[%{public}s] Input eventType is out of scope", __func__);
+        HILOG_ERROR("Input eventType is out of scope");
         return false;
     }
     if (!observer) {
-        HILOG_ERROR("[%{public}s] Input observer is null", __func__);
+        HILOG_ERROR("Input observer is null");
         return false;
     }
     std::vector<std::shared_ptr<AccessibilityStateObserver>> observerTable;
@@ -508,7 +508,7 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(
             return true;
         }
     }
-    HILOG_DEBUG("%{public}s Not find eventType[%{public}d]", __func__, eventType);
+    HILOG_DEBUG("Not find eventType[%{public}d]", eventType);
     return false;
 }
 
@@ -516,7 +516,7 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(const shared_ptr
 {
     HILOG_DEBUG("start");
     if (!observer) {
-        HILOG_ERROR("[%{public}s] Input observer is null", __func__);
+        HILOG_ERROR("Input observer is null");
         return false;
     }
     bool result = false;
@@ -587,20 +587,17 @@ void AccessibilitySystemAbilityClient::SetCaptionEnabled(const bool enabled)
 
 void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("isEnabled_ is %{public}d", isEnabled_);
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersAccessibilityState_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersAccessibilityState_ is null", __func__);
+        HILOG_DEBUG("observersAccessibilityState_ is null");
         return;
     }
     for (auto it = observersAccessibilityState_.begin(); it != observersAccessibilityState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_ACCESSIBILITY_STATE_CHANGED);
-        stateEvent.SetEventResult(isEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isEnabled_);
         } else {
-            HILOG_ERROR("%{public}s end observersAccessibilityState_ is null", __func__);
+            HILOG_ERROR("end observersAccessibilityState_ is null");
         }
     }
     HILOG_DEBUG("end");
@@ -611,17 +608,14 @@ void AccessibilitySystemAbilityClient::NotifyTouchExplorationStateChanged()
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersTouchState_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersTouchState_ is null", __func__);
+        HILOG_DEBUG("observersTouchState_ is null");
         return;
     }
     for (auto it = observersTouchState_.begin(); it != observersTouchState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_TOUCH_GUIDE_STATE_CHANGED);
-        stateEvent.SetEventResult(isTouchExplorationEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isTouchExplorationEnabled_);
         } else {
-            HILOG_ERROR("%{public}s end observersTouchState_ is null", __func__);
+            HILOG_ERROR("end observersTouchState_ is null");
         }
     }
     HILOG_DEBUG("end");
@@ -632,14 +626,14 @@ void AccessibilitySystemAbilityClient::NotifyCaptionStateChanged()
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersCaptionEnable_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersCaptionEnable_ is null", __func__);
+        HILOG_DEBUG("observersCaptionEnable_ is null");
         return;
     }
     for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); it++) {
         if (*it != nullptr && it->get() != nullptr) {
             it->get()->OnCaptionStateChanged(isCaptionEnabled_);
         } else {
-            HILOG_ERROR("%{public}s end observersCaptionEnable_ is null", __func__);
+            HILOG_ERROR("end observersCaptionEnable_ is null");
         }
     }
     HILOG_DEBUG("end");
@@ -659,7 +653,7 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
         }
     } else {
         result = false;
-        HILOG_ERROR("%{public}s Type Error ", __func__);
+        HILOG_ERROR("Type Error ");
     }
 
     return result;
@@ -687,7 +681,7 @@ bool AccessibilitySystemAbilityClient::DeleteCaptionListener(
             }
         }
     } else {
-        HILOG_ERROR("%{public}s Type Error ", __func__);
+        HILOG_ERROR("Type Error ");
     }
 
     return result;
@@ -706,14 +700,14 @@ void AccessibilitySystemAbilityClient::NotifyCaptionChanged()
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersCaptionProperty_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersCaptionProperty_ is null", __func__);
+        HILOG_DEBUG("observersCaptionProperty_ is null");
         return;
     }
     for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); ++it) {
         if (*it != nullptr && it->get() != nullptr) {
             it->get()->OnCaptionPropertyChanged(captionProperty_);
         } else {
-            HILOG_ERROR("%{public}s end observersCaptionProperty_ is null", __func__);
+            HILOG_ERROR("end observersCaptionProperty_ is null");
         }
     }
     HILOG_DEBUG("end");
@@ -848,17 +842,14 @@ void AccessibilitySystemAbilityClient::NotifyGestureStateChanged()
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersGestureState_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersGestureState_ is null", __func__);
+        HILOG_DEBUG("observersGestureState_ is null");
         return;
     }
     for (auto it = observersGestureState_.begin(); it != observersGestureState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_GESTURE_STATE_CHANGED);
-        stateEvent.SetEventResult(isGesturesSimulationEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isGesturesSimulationEnabled_);
         } else {
-            HILOG_ERROR("%{public}s end observersGestureState_ is null", __func__);
+            HILOG_ERROR("end observersGestureState_ is null");
         }
     }
     HILOG_DEBUG("end");
@@ -869,17 +860,14 @@ void AccessibilitySystemAbilityClient::NotifyKeyEventStateChanged()
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
     if (observersKeyEventState_.size() == 0) {
-        HILOG_DEBUG("%{public}s observersKeyEventState_ is null", __func__);
+        HILOG_DEBUG("observersKeyEventState_ is null");
         return;
     }
     for (auto it = observersKeyEventState_.begin(); it != observersKeyEventState_.end(); it++) {
-        AccessibilityStateEvent stateEvent;
-        stateEvent.SetEventType(EVENT_KEVEVENT_STATE_CHANGED);
-        stateEvent.SetEventResult(isFilteringKeyEventsEnabled_);
         if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnStateChanged(stateEvent);
+            it->get()->OnStateChanged(isFilteringKeyEventsEnabled_);
         } else {
-            HILOG_ERROR("%{public}s end observersKeyEventState_ is null", __func__);
+            HILOG_ERROR("end observersKeyEventState_ is null");
         }
     }
     HILOG_DEBUG("end");

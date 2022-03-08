@@ -26,6 +26,7 @@
 #include "iservice_registry.h"
 #include "json.h"
 #include "mock_bundle_manager.h"
+#include "mock_input_manager.h"
 #include "system_ability_definition.h"
 
 using namespace std;
@@ -33,8 +34,6 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
-extern int g_mTkeyCode;
-extern std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer;
 namespace Accessibility {
 extern int g_testKeyPressEvent;
 static constexpr uint8_t TEST_NUM_2         = 2;
@@ -208,9 +207,10 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-	if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
+    }
 
     bool handled = true;
     int sequence = 1;
@@ -244,9 +244,10 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-    if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
+    }
 
     bool handled = false;
     int sequence = TEST_NUM_2;
@@ -260,7 +261,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     WaitUntilTaskFinished();
 
     EXPECT_EQ(g_testKeyPressEvent, TEST_NUM_2);
-    EXPECT_EQ(g_mTkeyCode, MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetKeyCode(), MMI::KeyEvent::KEYCODE_VOLUME_UP);
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest_Moduletest_OnKeyEvent002 end";
 }
 
@@ -282,14 +283,15 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-    if (g_inputEventConsumer != nullptr) {
-		g_inputEventConsumer->OnInputEvent(keyEvent);
-	}
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
+    }
     sleep(1);
     WaitUntilTaskFinished();
 
     EXPECT_EQ(g_testKeyPressEvent, TEST_NUM_3);
-    EXPECT_EQ(g_mTkeyCode, MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetKeyCode(), MMI::KeyEvent::KEYCODE_VOLUME_UP);
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest_Moduletest_OnKeyEvent003 end";
 }
 } // namespace Accessibility

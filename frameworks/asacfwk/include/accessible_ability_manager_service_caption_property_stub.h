@@ -26,7 +26,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibleAbilityManagerServiceCaptionPropertyStub : public IRemoteStub<IAccessibleAbilityManagerServiceCaptionProperty> {
+class AccessibleAbilityManagerServiceCaptionPropertyStub
+    : public IRemoteStub<IAccessibleAbilityManagerServiceCaptionProperty> {
 public:
     /**
      * @brief construct function

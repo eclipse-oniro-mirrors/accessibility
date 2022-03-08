@@ -70,7 +70,8 @@ void AccessibleAbilityChannelProxyUnitTest::TearDown()
  * @tc.name: SearchElementInfoByAccessibilityId
  * @tc.desc: Test function SearchElementInfoByAccessibilityId
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_001 start";
 
@@ -100,7 +101,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SearchElementInfoByAccessibilityId
  * @tc.desc: Test function SearchElementInfoByAccessibilityId
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfoByAccessibilityId_002 start";
 
@@ -130,7 +132,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_001 start";
 
@@ -160,7 +163,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SearchElementInfosByText_002 start";
 
@@ -190,7 +194,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: Test function FindFocusedElementInfo
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_001 start";
 
@@ -220,7 +225,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: Test function FindFocusedElementInfo
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FindFocusedElementInfo_002 start";
 
@@ -250,7 +256,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: FocusMoveSearch
  * @tc.desc: Test function FocusMoveSearch
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_001 start";
 
@@ -280,7 +287,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: FocusMoveSearch
  * @tc.desc: Test function FocusMoveSearch
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_FocusMoveSearch_002 start";
 
@@ -310,7 +318,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ExecuteAction
  * @tc.desc: Test function ExecuteAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_001 start";
 
@@ -341,7 +350,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ExecuteAction
  * @tc.desc: Test function ExecuteAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteAction_002 start";
 
@@ -372,7 +382,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetWindows
  * @tc.desc: Test function GetWindows
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_001 start";
 
@@ -391,7 +402,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetWindows
  * @tc.desc: Test function GetWindows
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetWindows_002 start";
 
@@ -410,7 +422,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ExecuteCommonAction
  * @tc.desc: Test function ExecuteCommonAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_001 start";
 
@@ -431,7 +444,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ExecuteCommonAction
  * @tc.desc: Test function ExecuteCommonAction
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ExecuteCommonAction_002 start";
 
@@ -452,7 +466,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SetOnKeyPressEventResult
  * @tc.desc: Test function SetOnKeyPressEventResult
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_001 start";
 
@@ -474,7 +489,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SetOnKeyPressEventResult
  * @tc.desc: Test function SetOnKeyPressEventResult
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SetOnKeyPressEventResult_002 start";
 
@@ -496,7 +512,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeScale
  * @tc.desc: Test function GetDisplayResizeScale
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_001 start";
 
@@ -517,7 +534,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeScale
  * @tc.desc: Test function GetDisplayResizeScale
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeScale_002 start";
 
@@ -538,7 +556,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeCenterX
  * @tc.desc: Test function GetDisplayResizeCenterX
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_001 start";
 
@@ -559,7 +578,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeCenterX
  * @tc.desc: Test function GetDisplayResizeCenterX
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterX_002 start";
 
@@ -580,7 +600,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeCenterY
  * @tc.desc: Test function GetDisplayResizeCenterY
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_001 start";
 
@@ -601,7 +622,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeCenterY
  * @tc.desc: Test function GetDisplayResizeCenterY
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeCenterY_002 start";
 
@@ -622,7 +644,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeRect
  * @tc.desc: Test function GetDisplayResizeRect
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_001 start";
 
@@ -643,7 +666,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: GetDisplayResizeRect
  * @tc.desc: Test function GetDisplayResizeRect
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_GetDisplayResizeRect_002 start";
 
@@ -664,7 +688,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ResetDisplayResize
  * @tc.desc: Test function ResetDisplayResize
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_001 start";
 
@@ -686,7 +711,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: ResetDisplayResize
  * @tc.desc: Test function ResetDisplayResize
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_ResetDisplayResize_002 start";
 
@@ -708,7 +734,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SetDisplayResizeScaleAndCenter
  * @tc.desc: Test function SetDisplayResizeScaleAndCenter
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_001 start";
 
@@ -733,7 +760,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SetDisplayResizeScaleAndCenter
  * @tc.desc: Test function SetDisplayResizeScaleAndCenter
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SetDisplayResizeScaleAndCenter_002 start";
 
@@ -758,7 +786,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SendSimulateGesture
  * @tc.desc: Test function SendSimulateGesture
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_001 start";
 
@@ -780,7 +809,8 @@ HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUni
  * @tc.name: SendSimulateGesture
  * @tc.desc: Test function SendSimulateGesture
  */
-HWTEST_F(AccessibleAbilityChannelProxyUnitTest, AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_002, TestSize.Level1)
+HWTEST_F(AccessibleAbilityChannelProxyUnitTest,
+    AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannelProxyUnitTest_Unittest_SendSimulateGesture_002 start";
 

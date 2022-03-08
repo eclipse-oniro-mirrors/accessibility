@@ -63,7 +63,7 @@ void AccessibilityAccountDataTest::TearDown()
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibilityState001
  * @tc.name: GetAccessibilityState
- * @tc.desc: Check the get accessibility state.
+ * @tc.desc: Check the get accessibility state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState001, TestSize.Level1)
 {
@@ -81,7 +81,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibilityState002
  * @tc.name: GetAccessibilityState
- * @tc.desc: Check the get accessibility state.
+ * @tc.desc: Check the get accessibility state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState002, TestSize.Level1)
 {
@@ -111,7 +111,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibilityState003
  * @tc.name: GetAccessibilityState
- * @tc.desc: Check the get accessibility state.
+ * @tc.desc: Check the get accessibility state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState003, TestSize.Level1)
 {
@@ -144,7 +144,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibilityState004
  * @tc.name: GetAccessibilityState
- * @tc.desc: Check the get accessibility state.
+ * @tc.desc: Check the get accessibility state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState004, TestSize.Level1)
 {
@@ -174,7 +174,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AddConnectedAbility001
  * @tc.name: AddConnectedAbility
- * @tc.desc: Check the add connected ability.
+ * @tc.desc: Check the add connected ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConnectedAbility001, TestSize.Level1)
 {
@@ -198,7 +198,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
 /**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveConnectedAbility001
  * @tc.name: RemoveConnectedAbility
- * @tc.desc: Check the remove connected ability.
+ * @tc.desc: Check the remove connected ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveConnectedAbility001, TestSize.Level1)
 {
@@ -225,7 +225,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AbilityDisconnected001
  * @tc.name: AbilityDisconnected
- * @tc.desc: Check the ability disconnected.
+ * @tc.desc: Check the ability disconnected.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AbilityDisconnected001, TestSize.Level1)
 {
@@ -258,7 +258,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
 /**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001
  * @tc.name: RemoveConnectingA11yAbility
- * @tc.desc: Check the remove connecting A11y ability.GetAccessibilityWindows
+ * @tc.desc: Check the remove connecting A11y ability.GetAccessibilityWindows
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001, TestSize.Level1)
@@ -284,7 +284,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AddEnabledAbility001
  * @tc.name: AddEnabledAbility
- * @tc.desc: Check the add enable ability.
+ * @tc.desc: Check the add enable ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnabledAbility001, TestSize.Level1)
 {
@@ -306,14 +306,14 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
 /**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveEnabledAbility001
  * @tc.name: RemoveEnabledAbility
- * @tc.desc: Check the remove enable ability.
+ * @tc.desc: Check the remove enable ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveEnabledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb" , "ccc");
+    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
     /* add */
     accountData->AddEnabledAbility(elementName);
@@ -331,7 +331,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AddInstalledAbility001
  * @tc.name: AddInstalledAbility
- * @tc.desc: Check the add install ability.
+ * @tc.desc: Check the add install ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInstalledAbility001, TestSize.Level1)
 {
@@ -352,7 +352,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInst
 /**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveInstalledAbility001
  * @tc.name: RemoveInstalledAbility
- * @tc.desc: Check the remove install ability.
+ * @tc.desc: Check the remove install ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveInstalledAbility001, TestSize.Level1)
 {
@@ -374,7 +374,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveI
 /**
  * @tc.number: AccessibilityAccountData_Unittest_ClearInstalledAbility001
  * @tc.name: ClearInstalledAbility
- * @tc.desc: Check the clear install ability.
+ * @tc.desc: Check the clear install ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearInstalledAbility001, TestSize.Level1)
 {
@@ -396,7 +396,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001
  * @tc.name: GetAccessibleAbilityConnection
- * @tc.desc: Check the get accessibility connection.
+ * @tc.desc: Check the get accessibility connection.
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001, TestSize.Level1)
@@ -420,7 +420,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002
  * @tc.name: GetAccessibleAbilityConnection
- * @tc.desc: Check the get accessibility connection.
+ * @tc.desc: Check the get accessibility connection.
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002, TestSize.Level1)
@@ -442,7 +442,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001
  * @tc.name: GetConnectedA11yAbilities
- * @tc.desc: Check the get connected abilities.
+ * @tc.desc: Check the get connected abilities.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001, TestSize.Level1)
 {
@@ -467,7 +467,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConn
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetStateCallbacks001
  * @tc.name: GetStateCallbacks
- * @tc.desc: Check the get state callbacks.
+ * @tc.desc: Check the get state callbacks.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStateCallbacks001, TestSize.Level1)
 {
@@ -490,7 +490,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStat
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAsacConnections001
  * @tc.name: GetAsacConnections
- * @tc.desc: Check the get asac connections.
+ * @tc.desc: Check the get asac connections.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAsacConnections001, TestSize.Level1)
 {
@@ -530,7 +530,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAbilitiesByState001
  * @tc.name: GetAbilitiesByState
- * @tc.desc: Check the get ability state.
+ * @tc.desc: Check the get ability state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState001, TestSize.Level1)
 {
@@ -559,7 +559,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAbilitiesByState003
  * @tc.name: GetAbilitiesByState
- * @tc.desc: Check the get ability state.
+ * @tc.desc: Check the get ability state.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState003, TestSize.Level1)
 {
@@ -596,7 +596,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001
  * @tc.name: AddAccessibilityWindowConnection
- * @tc.desc: Check the add accessibility interaction connection.
+ * @tc.desc: Check the add accessibility interaction connection.
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001, TestSize.Level1)
@@ -622,7 +622,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 /**
  * @tc.number: AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001
  * @tc.name: GetAccessibilityWindowConnection
- * @tc.desc: Check the get accessibility interaction connection.
+ * @tc.desc: Check the get accessibility interaction connection.
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001, TestSize.Level1)
@@ -649,7 +649,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 /**
  * @tc.number: AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001
  * @tc.name: RemoveAccessibilityWindowConnection
- * @tc.desc: Check the remove accessibility interaction connection.
+ * @tc.desc: Check the remove accessibility interaction connection.
  */
 HWTEST_F(AccessibilityAccountDataTest,
     AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001, TestSize.Level1)
@@ -692,7 +692,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
 /**
  * @tc.number: AccessibilityAccountData_Unittest_OnAccountSwitched001
  * @tc.name: OnAccountSwitched
- * @tc.desc: Check the account switched.
+ * @tc.desc: Check the account switched.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccountSwitched001, TestSize.Level1)
 {
@@ -705,7 +705,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     // new AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    //new aastub
+    // new aastub
     sptr<AccessibleAbilityClientStubImpl> aastub = new AccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
@@ -741,7 +741,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
 /**
  * @tc.number: AccessibilityAccountData_Unittest_AddConnectingA11yAbility001
  * @tc.name: AddConnectingA11yAbility
- * @tc.desc: Check the add connecting A11y ability.
+ * @tc.desc: Check the add connecting A11y ability.
  */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConnectingA11yAbility001, TestSize.Level1)
 {

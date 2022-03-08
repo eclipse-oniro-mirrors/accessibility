@@ -30,8 +30,8 @@
 #include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_touchEvent_injector.h"
-#include "accessibility_zoom_proxy.h"
 #include "accessibility_window_info.h"
+#include "accessibility_zoom_proxy.h"
 #include "bundlemgr/bundle_mgr_interface.h"
 #include "input_manager.h"
 #include "singleton.h"
@@ -162,7 +162,7 @@ private:
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId){};
+        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 

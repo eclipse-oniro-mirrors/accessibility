@@ -23,7 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class DisplayResizeListener;
 
 class DisplayResizeController {
@@ -131,8 +130,6 @@ public:
     virtual void OnDisplayResized(const DisplayResizeController& controller, const Rect& rect, const float scale,
                                             const float centerX, const float centerY) = 0;
 };
-
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif // DISPLAY_RESIZE_CONTROLLER_H

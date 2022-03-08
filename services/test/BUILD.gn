@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//base/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
 
 module_output_path = "accessibility/framework_test"
@@ -25,11 +26,11 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
     cflags_cc = [ "-fexceptions" ]
   }
-  include_dirs = [
-    #"mock/distributedschedule/include",
-    "mock/multimodalinput/include",
-    "mock/powermanager/include",
+
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock/aafwk/include",
+    "mock/powermanager/include",
     "../aams/test/mock/",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -45,6 +46,7 @@ config("module_private_config") {
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/notification/ces_standard/interfaces/innerkits/native/include",
     "//base/accessibility/dummyData",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
@@ -78,13 +80,6 @@ config("module_private_config") {
     "AAMS_LOG_DOMAIN = 0xD005205",
   ]
 }
-
-MockMultiModalInputSrc = [
-  "mock/multimodalinput/src/mock_input_event.cpp",
-  "mock/multimodalinput/src/mock_input_manager.cpp",
-  "mock/multimodalinput/src/mock_key_event.cpp",
-  "mock/multimodalinput/src/mock_pointer_event.cpp",
-]
 
 MockPowerManagerSrc = [ "mock/powermanager/src/mock_power_mgr_client.cpp" ]
 
@@ -143,7 +138,8 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "moduletest/aamstest/aams_accessibility_touch_guider_test/mock/accessibility_window_info_mock.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -228,7 +224,8 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "moduletest/aamstest/aams_accessibility_touchEvent_injector_test/mock/accessibility_window_info_mock.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -325,7 +322,8 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "moduletest/aamstest/aams_accessible_ability_channel_test/aams_accessible_ability_channel_test.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -424,7 +422,8 @@ ohos_moduletest("aams_server_test") {
     "moduletest/aamstest/aams_server_test/aams_server_test.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -511,7 +510,8 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "moduletest/aamstest/aams_accessibility_keyevent_filter_test/aams_accessibility_keyevent_filter_test.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
@@ -607,7 +607,8 @@ ohos_moduletest("aams_common_event_registry_test") {
     "moduletest/aamstest/aams_common_event_registry_test/aams_common_event_registry_test.cpp",
   ]
 
-  sources += MockMultiModalInputSrc
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
   sources += MockPowerManagerSrc
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc

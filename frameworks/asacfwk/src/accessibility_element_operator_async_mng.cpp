@@ -30,7 +30,7 @@ bool AccessibilityElementAsyncOperatorMng::SearchElementResultTimer(const int se
     struct timeval getTime {};
     gettimeofday(&getTime, NULL);
     uint64_t startTime = getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec;
-    HILOG_DEBUG("[%{public}s] element sequence[%{public}d]", __func__, sequence);
+    HILOG_DEBUG("element sequence[%{public}d]", sequence);
 
     do {
         if (feedbackSequence_ == sequence) {
@@ -41,13 +41,13 @@ bool AccessibilityElementAsyncOperatorMng::SearchElementResultTimer(const int se
         uint64_t waitTime = endTime - startTime;
         if (TIMEOUT_OPERATOR_MILLIS < waitTime) {
             completed_ = true;
-            HILOG_ERROR("[%{public}s] Failed to wait sequence[%{public}d], feedbackSequence_[%{public}d]", __func__,
+            HILOG_ERROR("Failed to wait sequence[%{public}d], feedbackSequence_[%{public}d]",
                 sequence, feedbackSequence_);
             return false;
         }
         usleep(SLEEP_MILLIS);
     } while (true);
-    HILOG_DEBUG("[%{public}s] Response [sequence:%{public}d] end", __func__, sequence);
+    HILOG_DEBUG("Response [sequence:%{public}d] end", sequence);
     return true;
 }
 
@@ -63,17 +63,17 @@ void AccessibilityElementAsyncOperatorMng::SetOperationStatus(bool status)
 
 bool AccessibilityElementAsyncOperatorMng::GetOperationStatus()
 {
-    HILOG_DEBUG("[%{public}s] [completed_:%{public}d]", __func__, completed_);
+    HILOG_DEBUG("[completed_:%{public}d]", completed_);
     return completed_;
 }
 
 int AccessibilityElementAsyncOperatorMng::RecordSearchSequence()
 {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
-    HILOG_INFO("[%{public}s] [sequence_:%{public}d]", __func__, sequence_);
+    HILOG_INFO("[sequence_:%{public}d]", sequence_);
     sequence_++;
     sequence_ = sequence_ % MAX_REQUEST;
-    HILOG_INFO("[%{public}s] [sequence_:%{public}d] end", __func__, sequence_);
+    HILOG_INFO("[sequence_:%{public}d] end", sequence_);
     return sequence_;
 }
 } // namespace Accessibility

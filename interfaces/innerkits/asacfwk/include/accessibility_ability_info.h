@@ -22,7 +22,6 @@
 
 #include "accessibility_event_info.h"
 #include "extension_ability_info.h"
-#include "nlohmann/json.hpp"
 #include "parcel.h"
 
 namespace OHOS {
@@ -52,7 +51,7 @@ public:
     AccessibilityAbilityInfo() = default;
     ~AccessibilityAbilityInfo() = default;
 
-    AccessibilityAbilityInfo(AppExecFwk::ExtensionAbilityInfo abilityInfo);
+    AccessibilityAbilityInfo(const AppExecFwk::ExtensionAbilityInfo &abilityInfo);
 
     /**
      * @brief Obtains the types of the accessible ability.
@@ -176,7 +175,7 @@ private:
      * @param
      * @return Return true if parses config files successfully, else return false.
      */
-    bool ParseAAConfig(nlohmann::json sourceJson);
+    bool ParseAAConfig(std::string &config);
 
     std::string bundleName_;
     std::string moduleName_;

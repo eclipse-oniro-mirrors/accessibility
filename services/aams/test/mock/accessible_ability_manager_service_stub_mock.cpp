@@ -19,7 +19,7 @@ namespace Accessibility {
 AccessibleAbilityManagerServiceClientStub::AccessibleAbilityManagerServiceClientStub() {}
 AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClientStub() {}
 int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
- MessageParcel &reply, MessageOption &option)
+    MessageParcel &reply, MessageOption &option)
 {
     return true;
 }

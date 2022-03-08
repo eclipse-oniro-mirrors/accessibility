@@ -18,10 +18,12 @@
 #include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
-#include "json_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
+const static std::string PREF_TEST_PATH =
+    "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+
 AccessibilityAccountData::AccessibilityAccountData(int accountId)
 {
     id_ = accountId;
@@ -96,7 +98,7 @@ void AccessibilityAccountData::OnAccountSwitched()
 // add connect ability.
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, connection->GetElementName().GetURI().c_str());
+    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
     if (!connectedA11yAbilities_.count(connection->GetElementName().GetURI())) {
         connectedA11yAbilities_.insert(make_pair(connection->GetElementName().GetURI(), connection));
     }
@@ -107,7 +109,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 // remove connect ability.
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, connection->GetElementName().GetURI().c_str());
+    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
     std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it =
         connectedA11yAbilities_.find(connection->GetElementName().GetURI());
     if (it != connectedA11yAbilities_.end()) {
@@ -128,7 +130,7 @@ void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& ca
 {
     HILOG_DEBUG("start.");
     for (auto itr = stateCallbacks_.begin(); itr != stateCallbacks_.end(); itr++) {
-        if (*itr == callback) {
+        if ((*itr)->AsObject() == callback) {
             stateCallbacks_.erase(itr);
             break;
         }
@@ -146,7 +148,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 {
     HILOG_DEBUG("start.");
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
-        if (*itr == callback) {
+        if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
             break;
         }
@@ -156,7 +158,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
-    HILOG_DEBUG("%{public}s start.windowId(%{public}d)", __func__, windowId);
+    HILOG_DEBUG("windowId(%{public}d)", windowId);
     if (!asacConnections_.count(windowId)) {
         asacConnections_.insert(std::make_pair(windowId, interactionConnection));
     }
@@ -165,7 +167,7 @@ void AccessibilityAccountData::AddAccessibilityWindowConnection(
 // remove AccessibilityWindowConnection
 void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int windowId)
 {
-    HILOG_DEBUG("%{public}s start.windowId(%{public}d)", __func__, windowId);
+    HILOG_DEBUG("windowId(%{public}d)", windowId);
     std::map<int, sptr<AccessibilityWindowConnection>>::iterator it = asacConnections_.find(windowId);
     if (it != asacConnections_.end()) {
         asacConnections_.erase(it);
@@ -204,34 +206,58 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
     HILOG_DEBUG("Add EnabledAbility: %{public}d", enabledAbilities_.size());
 }
 
+void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
+{
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    if (errCode) {
+        HILOG_ERROR("errCode = %{public}d.", errCode);
+        return;
+    }
+
+    std::string strValue = pref->GetString("BundleName", "");
+    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+
+    std::vector<std::string> vecvalue;
+    StringToVector(strValue, vecvalue);
+    for (std::vector<std::string>::iterator val = vecvalue.begin();val != vecvalue.end();) {
+        if (std::strcmp(val->c_str(), bundleName.c_str()) == 0) {
+            val = vecvalue.erase(val);
+            HILOG_DEBUG("remove val = %{public}s", val->c_str());
+        } else {
+            ++val;
+        }
+    }
+    std::string stringOut = "";
+    VectorToString(vecvalue, stringOut);
+    int err = pref->PutString("BundleName", stringOut);
+    if (err) {
+        HILOG_ERROR("pref->PutString() = %{public}d.", err);
+    }
+
+    err = pref->FlushSync();
+    if (err) {
+        HILOG_ERROR("pref->FlushSync() = %{public}d.", err);
+    }
+}
+
 void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
 {
-    HILOG_DEBUG("start.");
     std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
+    HILOG_DEBUG("EnabledAbility size(%{public}d)", enabledAbilities_.size());
     if (it != enabledAbilities_.end()) {
+        HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", elementName.GetBundleName().c_str());
         enabledAbilities_.erase(it);
     }
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
-    }
-
-    std::string BundleName = elementName.GetBundleName();
-    JsonUtils::RemoveVecValue(jsonObj, JSON_OBJECT_ENABLED, BundleName);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
-
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
-
+    RemoveEnabledFromPref(elementName.GetBundleName());
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 // For UT
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    HILOG_DEBUG("%{public}s start and abilityInfo's bundle name is %{public}s",
-        __func__, abilityInfo.GetPackageName().c_str());
+    HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
     for (size_t i = 0; i < installedAbilities_.size(); i++) {
         if (installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) {
             HILOG_DEBUG("the ability is already exist.");
@@ -267,7 +293,7 @@ void AccessibilityAccountData::ClearInstalledAbility()
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string elementName)
 {
-    HILOG_DEBUG("%{public}s start. URI is %{public}s", __func__, elementName.c_str());
+    HILOG_DEBUG("URI is %{public}s", elementName.c_str());
     for (auto& connected : connectedA11yAbilities_) {
         std::string::size_type  idx = connected.first.find(elementName);
         if (idx == std::string::npos) {
@@ -329,7 +355,7 @@ const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::G
 // get enabledAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("enabledAbilities_ size is (%{public}d).", enabledAbilities_.size());
     for (auto& abilitie : enabledAbilities_) {
         std::string bundleName = abilitie.second.GetBundleName();
         HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
@@ -346,12 +372,14 @@ const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstall
 
 const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state)
 {
-    HILOG_DEBUG("%{public}s by state(%{public}d) start.", __func__, state);
+    HILOG_DEBUG("state(%{public}d) start.", state);
     if (state == ABILITY_STATE_ENABLE) {
         std::vector<AccessibilityAbilityInfo> enabledAbilities;
         for (auto ability : connectedA11yAbilities_) {
             enabledAbilities.push_back(ability.second->GetAbilityInfo());
         }
+        HILOG_DEBUG("connectedA11yAbilities_ is (%{public}d) enabledAbilities is (%{public}d).",
+            connectedA11yAbilities_.size(), enabledAbilities.size());
         return enabledAbilities;
     } else if (state == ABILITY_STATE_DISABLE) {
         std::vector<AccessibilityAbilityInfo> disabledAbilities = installedAbilities_;
@@ -377,6 +405,10 @@ void AccessibilityAccountData::UpdateAccountCapabilities()
     UpdateEventTouchGuideCapability();
     UpdateGesturesSimulationCapability();
     UpdateMagnificationCapability();
+
+    SetTouchGuideState(isEventTouchGuideState_);
+    SetGestureState(isGesturesSimulation_);
+    SetKeyEventObserverState(isFilteringKeyEvents_);
 }
 
 void AccessibilityAccountData::UpdateEventTouchGuideCapability()
@@ -431,10 +463,12 @@ bool AccessibilityAccountData::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start.");
     isCaptionState_ = state;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode != 0) {
         return false;
     }
 
@@ -446,8 +480,13 @@ bool AccessibilityAccountData::SetCaptionState(const bool state)
     } else {
         strValue = STATE_FALSE;
     }
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STATE, strValue);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    int err = pref->PutString("CaptionState", strValue);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+
     return true;
 }
 
@@ -455,12 +494,7 @@ bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption
 {
     HILOG_DEBUG("start.");
     captionProperty_ = caption;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
-        return false;
-    }
+
     std::string FONTFAMILY = captionProperty_.GetFontFamily();
     int FONTSCALE = captionProperty_.GetFontScale();
     std::string FONTCOLOR = captionProperty_.GetFontColor();
@@ -468,13 +502,31 @@ bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption
     std::string BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
     std::string WINDOWCOLOR = captionProperty_.GetWindowColor();
 
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTFAMILY, FONTFAMILY);
-    JsonUtils::SetIntValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTSCALE, FONTSCALE);
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTCOLOR, FONTCOLOR);
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE, FONTEDGETYPE);
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR, BACKGROUNDCOLOR);
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR, WINDOWCOLOR);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+
+    int err = pref->PutString("fontFamily", FONTFAMILY);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->PutString("fontColor", FONTCOLOR);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->PutString("fontEdgeType", FONTEDGETYPE);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->PutString("backgroundColor", BACKGROUNDCOLOR);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->PutString("windowColor", WINDOWCOLOR);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->PutInt("fontScale", FONTSCALE);
+    HILOG_DEBUG("pref->PutInt() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
 
     return true;
 }
@@ -483,10 +535,12 @@ bool AccessibilityAccountData::SetEnabled(const bool state)
 {
     HILOG_DEBUG("start.");
     isEnabled_ = state;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode != 0) {
         return false;
     }
 
@@ -499,9 +553,11 @@ bool AccessibilityAccountData::SetEnabled(const bool state)
     } else {
         strValue = STATE_FALSE;
     }
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_ACCESSIBLE, strValue);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+    int err = pref->PutString("accessible", strValue);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
     return true;
 }
 
@@ -509,10 +565,12 @@ bool AccessibilityAccountData::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("start.");
     isEventTouchGuideState_ = state;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode != 0) {
         return false;
     }
 
@@ -524,8 +582,12 @@ bool AccessibilityAccountData::SetTouchGuideState(const bool state)
     } else {
         strValue = STATE_FALSE;
     }
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_TOUCH_GUIDE, strValue);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    int err = pref->PutString("touchGuide", strValue);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
     return true;
 }
 
@@ -533,10 +595,12 @@ bool AccessibilityAccountData::SetGestureState(const bool state)
 {
     HILOG_DEBUG("start.");
     isGesturesSimulation_ = state;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode != 0) {
         return false;
     }
 
@@ -548,8 +612,12 @@ bool AccessibilityAccountData::SetGestureState(const bool state)
     } else {
         strValue = STATE_FALSE;
     }
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_GESTURE, strValue);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    int err = pref->PutString("gesture", strValue);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
     return true;
 }
 
@@ -557,10 +625,12 @@ bool AccessibilityAccountData::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("start.");
     isFilteringKeyEvents_ = state;
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    if (errCode != 0) {
         return false;
     }
 
@@ -572,8 +642,12 @@ bool AccessibilityAccountData::SetKeyEventObserverState(const bool state)
     } else {
         strValue = STATE_FALSE;
     }
-    JsonUtils::SetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_KEY_EVENT_BOSERVER, strValue);
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    int err = pref->PutString("keyEventObserver", strValue);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
     return true;
 }
 
@@ -584,6 +658,7 @@ bool AccessibilityAccountData::GetEnabledState()
 
 bool AccessibilityAccountData::GetTouchGuideState()
 {
+    HILOG_DEBUG("start. isEventTouchGuideState_ = %{public}s", isEventTouchGuideState_ ? "true" : "false");
     return isEventTouchGuideState_;
 }
 
@@ -611,25 +686,27 @@ bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::E
         enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(ability.first, ability.second));
     }
 
-    for (auto& abilitie : enabledAbilities_) {
-        std::string bundleName = abilitie.second.GetBundleName();
-        HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
-    }
-
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
-        return false;
-    }
-
     std::string BundleName = "";
-    for (auto& enableAbility : it) {
-        BundleName = enableAbility.second.GetBundleName();
-        JsonUtils::SetVecValue(jsonObj, JSON_OBJECT_ENABLED, BundleName);
+    std::vector<std::string> vecvalue;
+    for (auto& abilitie : enabledAbilities_) {
+        BundleName = abilitie.second.GetBundleName();
+        vecvalue.push_back(BundleName);
+        HILOG_DEBUG("bundleName = %{public}s ", BundleName.c_str());
     }
 
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+    std::string stringOut = "";
+    VectorToString(vecvalue, stringOut);
+
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    int err = pref->PutString("BundleName", stringOut);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+
     return true;
 }
 
@@ -662,17 +739,35 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     return true;
 }
 
-void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)
+void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
-    std::string FONTFAMILY = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTFAMILY);
-    int FONTSCALE = JsonUtils::GetIntValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTSCALE);
-    std::string FONTCOLOR = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTCOLOR);
-    std::string FONTEDGETYPE = JsonUtils::GetStrValue(jsonObj,
-        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_FONTEDGETYPE);
-    std::string BACKGROUNDCOLOR = JsonUtils::GetStrValue(jsonObj,
-        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_BACKGROUNDCOLOR);
-    std::string WINDOWCOLOR = JsonUtils::GetStrValue(jsonObj,
-        JSON_OBJECT_CAPTION_STYLE, CAPTION_JSON_VALUE_WINDOWCOLOR);
+    HILOG_DEBUG("start.");
+
+    std::string strValue = pref->GetString("CaptionState", "");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", strValue.c_str());
+    if (std::strcmp(strValue.c_str(), "on") == 0) {
+        isCaptionState_ = true;
+    } else {
+        isCaptionState_ = false;
+    }
+
+    std::string FONTFAMILY = pref->GetString("fontFamily", "default");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTFAMILY.c_str());
+
+    int FONTSCALE = pref->GetInt("fontScale", 0);
+    HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
+
+    std::string FONTCOLOR = pref->GetString("fontColor", "");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTCOLOR.c_str());
+
+    std::string FONTEDGETYPE = pref->GetString("fontEdgeType", "none");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTEDGETYPE.c_str());
+
+    std::string BACKGROUNDCOLOR = pref->GetString("backgroundColor", "");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", BACKGROUNDCOLOR.c_str());
+
+    std::string WINDOWCOLOR = pref->GetString("windowColor", "");
+    HILOG_DEBUG(" pref->GetString() = %{public}s.", WINDOWCOLOR.c_str());
 
     captionProperty_.SetFontFamily(FONTFAMILY);
     captionProperty_.SetFontScale(FONTSCALE);
@@ -680,19 +775,13 @@ void AccessibilityAccountData::CaptionInit(nlohmann::json jsonObj)
     captionProperty_.SetFontEdgeType(FONTEDGETYPE);
     captionProperty_.SetBackgroundColor(BACKGROUNDCOLOR);
     captionProperty_.SetWindowColor(WINDOWCOLOR);
-
-    std::string strValue = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPTION_STATE);
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
-        isCaptionState_ = true;
-    } else {
-        isCaptionState_ = false;
-    }
 }
 
-void AccessibilityAccountData::CapbilityInit(nlohmann::json jsonObj)
+void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
-    std::string strValue = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_ACCESSIBLE);
+    HILOG_DEBUG("start.");
+
+    std::string strValue = pref->GetString("accessible", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
     if (std::strcmp(strValue.c_str(), "on") == 0) {
         isEnabled_ = true;
@@ -700,15 +789,17 @@ void AccessibilityAccountData::CapbilityInit(nlohmann::json jsonObj)
         isEnabled_ = false;
     }
 
-    strValue = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_TOUCH_GUIDE);
+    strValue = pref->GetString("touchGuide", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
     if (std::strcmp(strValue.c_str(), "on") == 0) {
+        HILOG_DEBUG("isEventTouchGuideState_ = true");
         isEventTouchGuideState_ = true;
     } else {
+        HILOG_DEBUG("isEventTouchGuideState_ = false");
         isEventTouchGuideState_ = false;
     }
 
-    strValue = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_KEY_EVENT_BOSERVER);
+    strValue = pref->GetString("gesture", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
     if (std::strcmp(strValue.c_str(), "on") == 0) {
         isFilteringKeyEvents_ = true;
@@ -716,7 +807,7 @@ void AccessibilityAccountData::CapbilityInit(nlohmann::json jsonObj)
         isFilteringKeyEvents_ = false;
     }
 
-    strValue = JsonUtils::GetStrValue(jsonObj, JSON_OBJECT_CAPABILITY, CAPABILITY_JSON_VALUE_GESTURE);
+    strValue = pref->GetString("keyEventObserver", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
     if (std::strcmp(strValue.c_str(), "on") == 0) {
         isGesturesSimulation_ = true;
@@ -725,12 +816,17 @@ void AccessibilityAccountData::CapbilityInit(nlohmann::json jsonObj)
     }
 }
 
-void AccessibilityAccountData::EnabledListInit(nlohmann::json jsonObj)
+void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
+    HILOG_DEBUG("start.");
     std::string BundleName = "";
     AccessibilityAbilityInfo abilityInfo;
 
-    std::vector<std::string> vecvalue = JsonUtils::GetVecValue(jsonObj, JSON_OBJECT_ENABLED);
+    std::string strValue = pref->GetString("BundleName", "");
+    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+
+    std::vector<std::string> vecvalue;
+    StringToVector(strValue, vecvalue);
     for (auto i = vecvalue.begin(); i != vecvalue.end(); i++) {
         BundleName = *i;
         HILOG_DEBUG("BundleName = %{public}s", BundleName.c_str());
@@ -739,15 +835,63 @@ void AccessibilityAccountData::EnabledListInit(nlohmann::json jsonObj)
     }
 }
 
+void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult)
+{
+    HILOG_DEBUG("start.");
+    int strLength = stringIn.size();
+    std::vector<int> position;
+    int wrodCount = 0;
+
+    if (strLength == 0) {
+        return;
+    }
+
+    for (int i = 0; i < strLength; i++) {
+        if (stringIn[i] == ',') {
+            position.push_back(i);
+        }
+    }
+
+    wrodCount = position.size();
+    if ((wrodCount == 0) && (strLength > 0)) {
+        vectorResult.push_back(stringIn);
+    } else {
+        int startWrod = 0;
+        int length = 0;
+        for (int i = 0; i <= wrodCount; i++) {
+            if (i == 0) {
+                startWrod = 0;
+                length = position[i];
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // first string
+            } else if (i < wrodCount) {
+                startWrod = position[i - 1] + 1;
+                length = position[i] - position[i - 1] - 1;
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // second string to last-1 string
+            } else {
+                startWrod = position[i - 1] + 1;
+                length = strLength - position[i - 1] - 1;
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // last string
+            }
+        }
+    }
+    HILOG_DEBUG("strLength = %{public}d, wrodCount = %{public}d, stringIn : %{public}s",
+        strLength, wrodCount, stringIn.c_str());
+    for (auto& var : vectorResult) {
+        HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
+    }
+    HILOG_DEBUG("end.");
+}
+
 void AccessibilityAccountData::init()
 {
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
-    }
-    CaptionInit(jsonObj);
-    CapbilityInit(jsonObj);
-    EnabledListInit(jsonObj);
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+
+    CaptionInit(pref);
+    CapbilityInit(pref);
+    EnabledListInit(pref);
 }
 
 bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
@@ -757,19 +901,37 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
         enabledAbilities_.erase(disAbilities.first);
     }
 
-    // temp deal: write json config
-    nlohmann::json jsonObj;
-    if (!JsonUtils::GetJsonObjFromJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH)) {
-        HILOG_ERROR("Get JsonObj from json failed.");
-        return false;
-    }
+    int errCode = 0;
+    std::shared_ptr<NativePreferences::Preferences> pref =
+        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    HILOG_DEBUG("errCode = %{public}d.", errCode);
+
+    std::string strValue = pref->GetString("BundleName", "");
+    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+
+    std::vector<std::string> vecvalue;
+    StringToVector(strValue, vecvalue);
     std::string BundleName = "";
     for (auto& disableAbility : it) {
         BundleName = disableAbility.second.GetBundleName();
         HILOG_DEBUG("BundleName = %{public}s", BundleName.c_str());
-        JsonUtils::RemoveVecValue(jsonObj, JSON_OBJECT_ENABLED, BundleName);
+        for (std::vector<std::string>::iterator val = vecvalue.begin(); val != vecvalue.end();) {
+            if (std::strcmp(val->c_str(), BundleName.c_str()) == 0) {
+                val = vecvalue.erase(val);
+                HILOG_DEBUG("remove val = %{public}s", val->c_str());
+            } else {
+                ++val;
+            }
+        }
     }
-    JsonUtils::ToJson(jsonObj, AccessibleAbility_Config_JSON_FILE_PATH);
+
+    std::string stringOut = "";
+    VectorToString(vecvalue, stringOut);
+    int err = pref->PutString("BundleName", stringOut);
+    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+
+    err = pref->FlushSync();
+    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
@@ -795,5 +957,19 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConne
     HILOG_DEBUG("start.");
     return uiTestConnectedA11yAbility_;
 }
-} // namespace Accessibility
-} // namespace OHOS
+
+void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)
+{
+    HILOG_DEBUG("start.");
+    int i = 0;
+    for (auto& var : vectorVal) {
+        if (i > 0) {
+            stringOut = stringOut + ',';
+        }
+        stringOut = stringOut + var.c_str();
+        i++;
+    }
+    HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
+}
+}  // namespace Accessibility
+}  // namespace OHOS

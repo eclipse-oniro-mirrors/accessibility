@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//base/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
 
 module_output_path = "accessibility/framework_test"
@@ -23,7 +24,9 @@ config("module_private_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-  include_dirs = [
+
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -46,8 +49,6 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
     "//utils/native/base/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
@@ -120,6 +121,7 @@ ohos_unittest("accessibility_account_data_test") {
     "mock/mock_display_manager.cpp",
     "unittest/accessibility_account_data_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [ ":module_private_config" ]
 
@@ -211,6 +213,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessible_ability_manager_service_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -294,6 +297,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_touch_guider_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -379,6 +383,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_common_event_registry_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -458,9 +463,10 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/mock_bundle_mgr_proxy.cpp",
     "mock/mock_display.cpp",
     "mock/mock_display_manager.cpp",
-    "mock/mock_input_manager.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
 
   configs = [ ":module_private_config" ]
 
@@ -538,6 +544,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "mock/mock_display_manager.cpp",
     "unittest/accessibility_window_manager_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [ ":module_private_config" ]
 
@@ -625,6 +632,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_keyevent_filter_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -720,6 +728,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessible_ability_connection_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -806,6 +815,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_display_manager_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -889,6 +899,7 @@ ohos_unittest("accessibility_touchEvent_injector_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_touchEvent_injector_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",
@@ -978,6 +989,7 @@ ohos_unittest("accessibility_interaction_bridge_test") {
     "mock/system_ability_mock.cpp",
     "unittest/accessibility_interaction_bridge_test.cpp",
   ]
+  sources += aams_mock_distributeddatamgr_src
 
   configs = [
     ":module_private_config",

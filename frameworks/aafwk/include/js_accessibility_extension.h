@@ -18,14 +18,11 @@
 
 #include "accessibility_extension.h"
 #include "js_runtime.h"
-
-class NativeReference;
-class NativeValue;
+#include "native_reference.h"
+#include "native_value.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityExtension;
-
 class JsAccessibilityExtension : public AccessibilityExtension {
 public:
     JsAccessibilityExtension(AbilityRuntime::JsRuntime& jsRuntime);

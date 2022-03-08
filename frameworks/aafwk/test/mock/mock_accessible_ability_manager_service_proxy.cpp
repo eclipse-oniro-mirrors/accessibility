@@ -24,14 +24,18 @@ namespace Accessibility {
 AccessibleAbilityManagerServiceClientProxy::AccessibleAbilityManagerServiceClientProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibleAbilityManagerServiceClient>(impl)
 {}
+
 AccessibleAbilityManagerServiceClientProxy::~AccessibleAbilityManagerServiceClientProxy()
 {}
+
 bool AccessibleAbilityManagerServiceClientProxy::WriteInterfaceToken(MessageParcel &data)
 {
     return true;
 }
+
 void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEventInfo &uiEvent, const int userId)
 {}
+
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     const sptr<IAccessibleAbilityManagerServiceState> &client, const int userId)
 {
@@ -43,95 +47,118 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
     return abilityInfos;
 }
+
 void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(int windowId,
-	const sptr <IAccessibilityElementOperator> &operation, const int userId)
+    const sptr <IAccessibilityElementOperator> &operation, const int userId)
 {}
+
 void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {}
+
 sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
 {
     return this->AsObject();
 }
+
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCallback(
-	const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
+    const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId)
 {
     return 0;
 }
+
 CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
 {
     CaptionProperty cap;
     return cap;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const CaptionProperty& caption)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool state)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool state)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool state)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const bool state)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
     return true;
 }
+
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceClientProxy::GetEnabledAbilities()
 {
     std::map<std::string, AppExecFwk::ElementName> test;
     return test;
 }
+
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetInstalledAbilities()
 {
     std::vector<AccessibilityAbilityInfo> test;
     return test;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
     return true;
 }
+
 bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnectionClient()
 {
     return true;
 }
+
 int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 {
     return 0;

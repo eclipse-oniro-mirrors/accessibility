@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "accessibility_element_info.h"
 #include <gtest/gtest.h>
+#include "accessibility_element_info.h"
 #include "accessibility_operator.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
@@ -104,7 +104,7 @@ int AccessibilityElementInfo::GetTextLengthLimit() const
 }
 
 bool AccessibilityElementInfo::ExecuteAction(const ActionType &operation,
-	const std::map<std::string, std::string> &actionArguments)
+    const std::map<std::string, std::string> &actionArguments)
 {
     return true;
 }

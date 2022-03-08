@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateStub()
 {
     HILOG_DEBUG("start");
@@ -35,7 +34,6 @@ int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, Mes
         code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceStateStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
@@ -59,10 +57,10 @@ ErrCode AccessibleAbilityManagerServiceStateStub::HandleOnStateChanged(MessagePa
 
 void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t stateType)
 {
-    HILOG_DEBUG("%{public}s stateType[%{public}d} " , __func__, stateType);
+    HILOG_DEBUG("stateType[%{public}d}", stateType);
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
     if (instance == nullptr) {
-        HILOG_DEBUG("%{public}s Can't get asac instance" , __func__);
+        HILOG_DEBUG("Can't get asac instance");
         return;
     }
     if (stateType & AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED) {
@@ -94,8 +92,6 @@ void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t sta
     } else {
         instance->SetGestureState(false);
     }
-
 }
-
 } // namespace Accessibility
 } // namespace OHOS

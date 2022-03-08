@@ -14,13 +14,13 @@
  */
 
 #include <gtest/gtest.h>
-
 #include "accessibility_display_manager.h"
 #include "accessibility_input_interceptor.h"
 #include "accessible_ability_client_stub_impl.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
+#include "mock_input_manager.h"
 #include "system_ability_definition.h"
 
 using namespace std;
@@ -28,7 +28,6 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
-extern std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer;
 namespace Accessibility {
 class AccessibilityInputInterceptorTest : public testing::Test {
 public:
@@ -59,7 +58,7 @@ void AccessibilityInputInterceptorTest::TearDownTestCase()
 
 void AccessibilityInputInterceptorTest::SetUp()
 {
-    g_inputEventConsumer = nullptr;
+    MMI::MockInputManager::ClearInputEventConsumer();
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -81,9 +80,10 @@ void AccessibilityInputInterceptorTest::TearDown()
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001
  * @tc.name: SetAvailableFunctions
- * @tc.desc: Check the set available Functions.
+ * @tc.desc: Check the set available Functions.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001 start";
 
@@ -96,9 +96,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002
  * @tc.name: SetAvailableFunctions
- * @tc.desc: Check the set available Functions.
+ * @tc.desc: Check the set available Functions.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002 start";
 
@@ -111,9 +112,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions003
  * @tc.name: SetAvailableFunctions
- * @tc.desc: Check the set available Functions.
+ * @tc.desc: Check the set available Functions.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions003, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions003,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions003 start";
 
@@ -127,9 +129,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004
  * @tc.name: SetAvailableFunctions
- * @tc.desc: Check the set available Functions.
+ * @tc.desc: Check the set available Functions.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
@@ -141,9 +144,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001
  * @tc.name: OnTouchEvent
- * @tc.desc: Check the on touch event.
+ * @tc.desc: Check the on touch event.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001 start";
 
@@ -156,9 +160,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002
  * @tc.name: InterceptPointerEventCallBack
- * @tc.desc: Check the on touch event.
+ * @tc.desc: Check the on touch event.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
@@ -172,8 +177,9 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(event);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessTouchEvent */
     sleep(3);
@@ -184,9 +190,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003
  * @tc.name: InterceptPointerEventCallBack
- * @tc.desc: Check the on touch event.
+ * @tc.desc: Check the on touch event.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
@@ -202,8 +209,9 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(event);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessTouchEvent */
     sleep(3);
@@ -214,7 +222,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1
  * @tc.name: OnMouseEvent
- * @tc.desc: Check the on mouse event.
+ * @tc.desc: Check the on mouse event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1, TestSize.Level1)
 {
@@ -235,9 +243,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002
  * @tc.name: InterceptPointerEventCallBack
- * @tc.desc: Check the on mouse event.
+ * @tc.desc: Check the on mouse event.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
@@ -251,8 +260,9 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(event);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessMouseEvent */
     sleep(3);
@@ -263,9 +273,10 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003
  * @tc.name: InterceptKeyEventCallBack
- * @tc.desc: Check the on mouse event.
+ * @tc.desc: Check the on mouse event.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003 start";
     uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
@@ -279,8 +290,9 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(event);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
     }
     /* wait ProcessMouseEvent */
     sleep(3);
@@ -291,7 +303,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001
  * @tc.name: OnKeyEvent
- * @tc.desc: Check the on key event.
+ * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001, TestSize.Level1)
 {
@@ -306,7 +318,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002
  * @tc.name: InterceptKeyEventCallBack
- * @tc.desc: Check the on key event.
+ * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002, TestSize.Level1)
 {
@@ -328,7 +340,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003
  * @tc.name: InterceptKeyEventCallBack
- * @tc.desc: Check the on key event.
+ * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003, TestSize.Level1)
 {
@@ -352,7 +364,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001
  * @tc.name: NotifyAccessibilityEvent
- * @tc.desc: Check the NotifyAccessibilityEvent.
+ * @tc.desc: Check the NotifyAccessibilityEvent.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001,
     TestSize.Level1)

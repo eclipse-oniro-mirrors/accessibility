@@ -111,12 +111,13 @@ int AccessibilityElementInfo::GetTextLengthLimit() const
 }
 
 bool AccessibilityElementInfo::ExecuteAction(const ActionType &operation,
-        const std::map<std::string, std::string> &actionArguments)
+    const std::map<std::string, std::string> &actionArguments)
 {
     return true;
 }
 
-bool AccessibilityElementInfo::GetByContent(const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityElementInfo::GetByContent(const std::string &text,
+    std::vector<AccessibilityElementInfo> &elementInfos)
 {
     return true;
 }
@@ -626,7 +627,8 @@ void RangeInfo::SetCurrent(int current)
 {
 }
 
-bool GridInfo::ReadFromParcel(Parcel &parcel) {
+bool GridInfo::ReadFromParcel(Parcel &parcel)
+{
     return true;
 }
 
@@ -657,7 +659,7 @@ int GridInfo::GetRowCount() const
     return rowCount_;
 }
 
-int GridInfo:: GetColumnCount() const
+int GridInfo::GetColumnCount() const
 {
     return columnCount_;
 }

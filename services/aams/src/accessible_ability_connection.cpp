@@ -324,7 +324,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy failed");
         return;
     }
-    HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
+    HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
         wptr<AccessibilityAccountData> data(accountData_);
@@ -336,11 +336,12 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     }
 
     sptr<AccessibleAbilityConnection> pointer = this;
+    accountData_->AddConnectedAbility(pointer);
+    accountData_->RemoveConnectingA11yAbility(elementName_);
+    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
+
     stub_ = new AccessibleAbilityChannelStubImpl(*pointer);
     proxy_->Init(stub_, connectionId_);
-
-    accountData_->AddConnectedAbility(pointer);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
 }
 
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode)
@@ -359,6 +360,7 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->RemoveConnectedAbility(pointer);
+    accountData_->RemoveEnabledAbility(element);
 
     int32_t currentAccountId = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountId();
     if (accountData_->GetAccountId() == currentAccountId) {
@@ -468,6 +470,7 @@ bool AccessibleAbilityConnection::IsWantedEvent(int eventType)
 {
     uint32_t type = static_cast<uint32_t>(eventType);
     if ((type & abilityInfo_.GetEventTypes()) != type) {
+        HILOG_DEBUG("EventType(%{public}d) is not wanted", type);
         return false;
     }
     return true;
@@ -483,7 +486,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 
 void AccessibleAbilityConnection::Disconnect()
 {
-    HILOG_DEBUG(" %{public}s start", __func__);
+    HILOG_DEBUG("start");
     // temp deal:
 #if 1
     if (AAFwk::AbilityManagerClient::GetInstance()->DisconnectAbility(this) != ERR_OK) {
@@ -497,7 +500,7 @@ void AccessibleAbilityConnection::Disconnect()
 
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
 {
-    HILOG_DEBUG(" %{public}s start", __func__);
+    HILOG_DEBUG("start");
     elementName_ = element;
     AAFwk::Want want = CreateWant(elementName_);
     HILOG_DEBUG("GetBundleName is %{public}s ", elementName_.GetBundleName().c_str());
@@ -519,7 +522,7 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
 
 int AccessibleAbilityConnection::GetChannelId()
 {
-    HILOG_DEBUG(" %{public}s connectionId_ is %{public}d", __func__, connectionId_);
+    HILOG_DEBUG("connectionId_ is %{public}d", connectionId_);
     return connectionId_;
 }
 
@@ -530,6 +533,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
 
     if (!recipientAccountData_.promote()) {
         HILOG_ERROR("recipientAccountData_ is null.");
+        return;
     }
 
     sptr<AccessibleAbilityConnection> connection = recipientAccountData_->

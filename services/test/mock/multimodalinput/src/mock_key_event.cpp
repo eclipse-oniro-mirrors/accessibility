@@ -13,11 +13,10 @@
  * limitations under the License.
  */
 
-#include "key_event.h"
+#include "mock_key_event.h"
 
 namespace OHOS {
 namespace MMI {
-
 const int32_t KeyEvent::KEYCODE_VOLUME_UP = 16;
 const int32_t KeyEvent::KEYCODE_VOLUME_DOWN = 17;
 
@@ -35,12 +34,12 @@ void KeyEvent::KeyItem::SetKeyCode(int32_t keyCode)
     keyCode_ = keyCode;
 }
 
-int32_t KeyEvent::KeyItem::GetDownTime() const
+int64_t KeyEvent::KeyItem::GetDownTime() const
 {
     return downTime_;
 }
 
-void KeyEvent::KeyItem::SetDownTime(int32_t downTime)
+void KeyEvent::KeyItem::SetDownTime(int64_t downTime)
 {
     downTime_ = downTime;
 }
@@ -67,16 +66,17 @@ void KeyEvent::KeyItem::SetPressed(bool pressed)
 
 KeyEvent::KeyEvent(int32_t eventType) : InputEvent(eventType) {}
 
-KeyEvent::~KeyEvent()
-{
-    keys_.clear();
-}
+KeyEvent::KeyEvent(const KeyEvent& other)
+    : InputEvent(other),
+    keyCode_(other.keyCode_),
+    keys_(other.keys_),
+    keyAction_(other.keyAction_) {}
+
+KeyEvent::~KeyEvent() {}
 
 std::shared_ptr<KeyEvent> KeyEvent::Create()
 {
-    KeyEvent *tmp = new KeyEvent(InputEvent::EVENT_TYPE_KEY);
-    std::shared_ptr<KeyEvent> keyEvent(tmp);
-    return keyEvent;
+    return std::shared_ptr<KeyEvent>(new KeyEvent(InputEvent::EVENT_TYPE_KEY));
 }
 
 void KeyEvent::AddKeyItem(const KeyItem& keyItem)

@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 AccessibleAbilityManagerServiceCaptionPropertyStub::AccessibleAbilityManagerServiceCaptionPropertyStub()
 {
     HILOG_DEBUG("start");
@@ -30,17 +29,17 @@ AccessibleAbilityManagerServiceCaptionPropertyStub::AccessibleAbilityManagerServ
 int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
-        code, option.GetFlags());
+    HILOG_DEBUG("AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest,\
+        cmd = %{public}d, flags = %{public}d", code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceCaptionPropertyStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
-
     if (descriptor != remoteDescriptor) {
         HILOG_INFO("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerServiceCaptionProperty::Message::ON_CAPTION_PROPERTY_CHANGED)) {
+    if (code ==
+        static_cast<uint32_t>(IAccessibleAbilityManagerServiceCaptionProperty::Message::ON_CAPTION_PROPERTY_CHANGED)) {
         HandleOnCaptionPropertyChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
@@ -61,11 +60,10 @@ void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChange
     HILOG_DEBUG("start");
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
     if (instance == nullptr) {
-        HILOG_DEBUG("%{public}s Can't get asac instance" , __func__);
+        HILOG_DEBUG("Can't get asac instance");
         return;
     }
     instance->UpdatecaptionProperty(caption);
 }
-
 } // namespace Accessibility
 } // namespace OHOS
