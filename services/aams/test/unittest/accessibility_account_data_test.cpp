@@ -703,6 +703,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     // new abilityInfo
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    abilityInfo->SetCapabilityValues(
+        CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE | CAPABILITY_GESTURE |
+        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM);
     // new AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     // new aastub

@@ -60,7 +60,8 @@ DisplayId DisplayManager::GetDefaultDisplayId()
 
 sptr<Display> DisplayManager::GetDisplayById(DisplayId displayId)
 {
-    return nullptr;
+    sptr<Display> display = new Display("display_mock", nullptr);
+    return display;
 }
 
 std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId)

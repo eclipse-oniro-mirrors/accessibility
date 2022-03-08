@@ -662,6 +662,10 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("CaptionState", "");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", strValue.c_str());
@@ -700,6 +704,10 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
 void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("accessible", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
@@ -739,6 +747,11 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
+
     std::string BundleName = "";
     AccessibilityAbilityInfo abilityInfo;
 
