@@ -35,5 +35,4 @@ aams_mock_multimodalinput_src = [
 ]
 
 aams_mock_powermanager_src =
-    [ "$AAMS_MOCK_PATH/powermanager/src/mock_power_mgr_client.cpp", ]
-
+    [ "$AAMS_MOCK_PATH/powermanager/src/mock_power_mgr_client.cpp" ]
