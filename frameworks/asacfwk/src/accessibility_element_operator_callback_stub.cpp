@@ -70,13 +70,25 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
 
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+
+    if (!accessibilityInfosize) {
+        HILOG_ERROR("accessibilityInfosize is 0");
+        return ERROR;
+    }
+
+    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
+        data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
+    if (data.GetDataSize() - data.GetOffsetsSize() < accessibilityInfosize * sizeof(AccessibilityElementInfo)) {
+        HILOG_ERROR("ReadParcelable invalid size");
+        return ERROR;
+    }
+
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
@@ -92,13 +104,24 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
 
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+    if (!accessibilityInfosize) {
+        HILOG_ERROR("accessibilityInfosize is 0");
+        return ERROR;
+    }
+
+    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
+        data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
+    if (data.GetDataSize() - data.GetOffsetsSize() < accessibilityInfosize * sizeof(AccessibilityElementInfo)) {
+        HILOG_ERROR("ReadParcelable invalid size");
+        return ERROR;
+    }
+
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {

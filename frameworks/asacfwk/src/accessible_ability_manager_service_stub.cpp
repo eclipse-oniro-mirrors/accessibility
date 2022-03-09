@@ -339,11 +339,16 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverStat
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
-
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
+        return ERROR;
+    }
+    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
+        data.GetDataSize(), data.GetOffsetsSize(), dev_num * sizeof(AppExecFwk::ElementName));
+    if (data.GetDataSize() - data.GetOffsetsSize() < dev_num * sizeof(AppExecFwk::ElementName)) {
+        HILOG_ERROR("ReadParcelable invalid size");
         return ERROR;
     }
 
@@ -403,7 +408,13 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
+        return ERROR;
+    }
+    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
+        data.GetDataSize(), data.GetOffsetsSize(), dev_num * sizeof(AppExecFwk::ElementName));
+    if (data.GetDataSize() - data.GetOffsetsSize() < dev_num * sizeof(AppExecFwk::ElementName)) {
+        HILOG_ERROR("ReadParcelable invalid size");
         return ERROR;
     }
 
