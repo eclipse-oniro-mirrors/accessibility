@@ -16,7 +16,6 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "power_mgr_client.h"
 
 bool g_testKeyEvent = false;
 namespace OHOS {

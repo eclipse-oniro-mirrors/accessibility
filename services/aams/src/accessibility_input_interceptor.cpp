@@ -20,7 +20,6 @@
 #include "accessibility_zoom_handler.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "power_mgr_client.h"
 #include "key_event.h"
 #include "input_event.h"
 

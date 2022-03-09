@@ -16,7 +16,6 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "power_mgr_client.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -81,8 +80,6 @@ void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &con
         }
     } else {
         timeouthandler_->RemoveEvent(processingEvent->seqNum_);
-        PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
-            PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_ACCESSIBILITY);
         RemoveProcessingEvent(processingEvent);
     }
 }
