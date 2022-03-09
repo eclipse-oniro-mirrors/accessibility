@@ -345,8 +345,6 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
         HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
-        data.GetDataSize(), data.GetOffsetsSize(), dev_num * sizeof(AppExecFwk::ElementName));
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
@@ -410,8 +408,6 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
         HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
-        data.GetDataSize(), data.GetOffsetsSize(), dev_num * sizeof(AppExecFwk::ElementName));
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());

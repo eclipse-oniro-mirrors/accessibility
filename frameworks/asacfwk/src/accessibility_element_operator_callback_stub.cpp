@@ -73,18 +73,12 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
-
     if (!accessibilityInfosize) {
         HILOG_ERROR("accessibilityInfosize is 0");
         return ERROR;
     }
-
-    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
-        data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
-
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
@@ -103,17 +97,12 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
     if (!accessibilityInfosize) {
         HILOG_ERROR("accessibilityInfosize is 0");
         return ERROR;
     }
-
-    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
-        data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
-
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {

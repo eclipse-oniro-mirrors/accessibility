@@ -348,9 +348,6 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
         HILOG_ERROR("stepSize is 0");
         return ERROR;
     }
-
-    HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
-        data.GetDataSize(), data.GetOffsetsSize(), stepSize * sizeof(GesturePathDefine));
     for (int32_t i = 0; i < stepSize; i++) {
         std::shared_ptr<GesturePathDefine> gestureStep(data.ReadParcelable<GesturePathDefine>());
         if (!gestureStep) {
