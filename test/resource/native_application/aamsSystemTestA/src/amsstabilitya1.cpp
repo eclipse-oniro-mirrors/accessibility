@@ -35,7 +35,7 @@ void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEven
 
 void AccessibleAbilityListenerTest::OnGesture(uint32_t gestureId)
 {
-    HILOG_INFO("AamsStAbilityA1: A gesture is received and gestureId is %{public}d.", gestureId);
+    HILOG_INFO("AamsStAbilityA1: A gesture is received and gestureId is %{public}u.", gestureId);
 }
 
 void AccessibleAbilityListenerTest::OnInterrupt()

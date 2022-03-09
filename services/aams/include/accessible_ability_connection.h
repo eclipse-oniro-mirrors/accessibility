@@ -146,7 +146,7 @@ private:
     };
 
     bool IsWantedEvent(int eventType);
-    bool IsWhiteListEvent(EventType eventType);
+    bool IsAllowedListEvent(EventType eventType);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ {};
     sptr<IAccessibleAbilityClient> proxy_ = nullptr;

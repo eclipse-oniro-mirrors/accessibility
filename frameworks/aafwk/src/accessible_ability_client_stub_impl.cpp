@@ -134,6 +134,7 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
         }
     } else {
         AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
+        uiTestListener_->OnAbilityDisconnected();
         uiTestListener_ = nullptr;
     }
 }

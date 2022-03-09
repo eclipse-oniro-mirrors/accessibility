@@ -30,6 +30,11 @@ bool MockAccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int 
     const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SearchElementInfoByAccessibilityId start";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)requestId;
+    (void)callback;
+    (void)mode;
     return true;
 }
 
@@ -37,6 +42,11 @@ bool MockAccessibleAbilityChannel::SearchElementInfosByText(const int accessibil
     const std::string &text, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SearchElementInfosByText start";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)text;
+    (void)requestId;
+    (void)callback;
     return true;
 }
 
@@ -44,6 +54,11 @@ bool MockAccessibleAbilityChannel::FindFocusedElementInfo(const int accessibilit
     const int focusType, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::FindFocusedElementInfo start";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)focusType;
+    (void)requestId;
+    (void)callback;
     return true;
 }
 
@@ -51,6 +66,11 @@ bool MockAccessibleAbilityChannel::FocusMoveSearch(const int accessibilityWindow
     const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::FocusMoveSearch start";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)direction;
+    (void)requestId;
+    (void)callback;
     return true;
 }
 
@@ -59,6 +79,12 @@ bool MockAccessibleAbilityChannel::ExecuteAction(const int accessibilityWindowId
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::ExecuteAction start";
+    (void)accessibilityWindowId;
+    (void)elementId;
+    (void)action;
+    (void)actionArguments;
+    (void)requestId;
+    (void)callback;
     return true;
 }
 
@@ -72,35 +98,42 @@ std::vector<AccessibilityWindowInfo> MockAccessibleAbilityChannel::GetWindows()
 bool MockAccessibleAbilityChannel::ExecuteCommonAction(const int action)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::ExecuteCommonAction start";
+    (void)action;
     return true;
 }
 
 void MockAccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int sequence)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SetOnKeyPressEventResult start";
+    (void)handled;
+    (void)sequence;
 }
 
 float MockAccessibleAbilityChannel::GetDisplayResizeScale(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeScale start";
+    (void)displayId;
     return 1.0f;
 }
 
 float MockAccessibleAbilityChannel::GetDisplayResizeCenterX(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeCenterX start";
+    (void)displayId;
     return 1.0f;
 }
 
 float MockAccessibleAbilityChannel::GetDisplayResizeCenterY(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeCenterY start";
+    (void)displayId;
     return 1.0f;
 }
 
 Rect MockAccessibleAbilityChannel::GetDisplayResizeRect(const int displayId)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::GetDisplayResizeRect start";
+    (void)displayId;
     Rect rect(RECT_ONE,  RECT_TWO,  RECT_THREE,  RECT_FOUR);
     return rect;
 }
@@ -108,6 +141,8 @@ Rect MockAccessibleAbilityChannel::GetDisplayResizeRect(const int displayId)
 bool MockAccessibleAbilityChannel::ResetDisplayResize(const int displayId, const bool animate)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::ResetDisplayResize start";
+    (void)displayId;
+    (void)animate;
     return true;
 }
 
@@ -115,6 +150,11 @@ bool MockAccessibleAbilityChannel::SetDisplayResizeScaleAndCenter(const int disp
     const float scale, const float centerX, const float centerY, const bool animate)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SetDisplayResizeScaleAndCenter start";
+    (void)displayId;
+    (void)scale;
+    (void)centerX;
+    (void)centerY;
+    (void)animate;
     return true;
 }
 
@@ -122,6 +162,8 @@ void MockAccessibleAbilityChannel::SendSimulateGesture(const int requestId,
     const std::vector<GesturePathDefine> &gestureSteps)
 {
     GTEST_LOG_(INFO) << "MockAccessibleAbilityChannel::SendSimulateGesture start";
+    (void)requestId;
+    (void)gestureSteps;
 }
 
 sptr<IRemoteObject> MockAccessibleAbilityChannel::AsObject()

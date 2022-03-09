@@ -35,70 +35,114 @@ AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
+    (void)code;
+    (void)data;
+    (void)reply;
+    (void)option;
     return 0;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const long elementId,
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
-{}
+{
+    (void)elementId;
+    (void)requestId;
+    (void)callback;
+    (void)mode;
+}
 
 void AccessibilityElementOperatorStub::SearchElementInfosByText(const long elementId,
     const std::string &text,
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{}
+{
+    (void)elementId;
+    (void)text;
+    (void)requestId;
+    (void)callback;
+}
 
 void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long elementId,
     const int focusType, const int requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
-{}
+{
+    (void)elementId;
+    (void)focusType;
+    (void)requestId;
+    (void)callback;
+}
 
 void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const int direction, const int requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
-{}
+{
+    (void)elementId;
+    (void)direction;
+    (void)requestId;
+    (void)callback;
+}
 
 void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     const int action, const std::map<std::string, std::string> actionArguments,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
-{}
+{
+    (void)elementId;
+    (void)action;
+    (void)actionArguments;
+    (void)requestId;
+    (void)callback;
+}
 
 void AccessibilityElementOperatorStub::ClearFocus()
 {}
@@ -118,23 +162,38 @@ AccessibilityElementOperatorStub::CallbackImpl::CallbackImpl(const int requestId
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
-{}
+{
+    (void)infos;
+    (void)requestId;
+}
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int requestId)
-{}
+{
+    (void)infos;
+    (void)requestId;
+}
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
-{}
+{
+    (void)infos;
+    (void)requestId;
+}
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int requestId)
-{}
+{
+    (void)infos;
+    (void)requestId;
+}
 
 void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int requestId)
-{}
+{
+    (void)succeeded;
+    (void)requestId;
+}
 
 AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::CallbackImpl::GetAACallbackList()
 {
@@ -142,6 +201,8 @@ AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::Callback
 }
 
 void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int requestId)
-{}
+{
+    (void)requestId;
+}
 } // namespace Accessibility
 } // namespace OHOS
