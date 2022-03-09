@@ -20,6 +20,44 @@
 
 namespace OHOS {
 namespace Accessibility {
+// text move step
+const std::string MOVE_UNIT_CHARACTER = "char";
+const std::string MOVE_UNIT_WORD = "word";
+const std::string MOVE_UNIT_LINE = "line";
+const std::string MOVE_UNIT_PAGE = "page";
+const std::string MOVE_UNIT_PARAGRAPH = "paragraph";
+
+// Operation Arguments Type
+const std::string ACTION_ARGU_INVALID = "invalid";
+const std::string ACTION_ARGU_SELECT_TEXT_START = "selectTextBegin";
+const std::string ACTION_ARGU_SELECT_TEXT_END = "selectTextEnd";
+const std::string ACTION_ARGU_HTML_ELEMENT = "htmlItem";
+const std::string ACTION_ARGU_SET_TEXT = "setText";
+const std::string ACTION_ARGU_MOVE_UNIT = "textMoveUnit";
+
+// HtmlItemType
+const std::string HTML_ITEM_INVALID = "invalid";
+const std::string HTML_ITEM_LINK = "link";
+const std::string HTML_ITEM_CONTROL = "control";
+const std::string HTML_ITEM_GRAPHIC = "graphic";
+const std::string HTML_ITEM_LIST_ITEM = "listItem";
+const std::string HTML_ITEM_LIST = "list";
+const std::string HTML_ITEM_TABLE = "table";
+const std::string HTML_ITEM_COMBOX = "combox";
+const std::string HTML_ITEM_HEADING = "heading";
+const std::string HTML_ITEM_BUTTON = "button";
+const std::string HTML_ITEM_CHECKBOX = "checkBox";
+const std::string HTML_ITEM_LANDMARK = "landmark";
+const std::string HTML_ITEM_TEXT_FIELD = "textField";
+const std::string HTML_ITEM_FOCUSABLE = "focusable";
+const std::string HTML_ITEM_H1 = "h1";
+const std::string HTML_ITEM_H2 = "h2";
+const std::string HTML_ITEM_H3 = "h3";
+const std::string HTML_ITEM_H4 = "h4";
+const std::string HTML_ITEM_H5 = "h5";
+const std::string HTML_ITEM_H6 = "h6";
+const std::string HTML_ITEM_UNKOWN = "unknown";
+
 /* AccessibilityElementInfo       Parcel struct                 */
 bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
 {

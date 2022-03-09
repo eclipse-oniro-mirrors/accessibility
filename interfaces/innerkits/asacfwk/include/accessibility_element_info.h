@@ -62,43 +62,44 @@ enum TextMoveUnit : int {
     STEP_PAGE = 0x00000008,
     STEP_PARAGRAPH = 0x00000010,
 };
+
 // text move step
-static const std::string MOVE_UNIT_CHARACTER = "char";
-static const std::string MOVE_UNIT_WORD = "word";
-static const std::string MOVE_UNIT_LINE = "line";
-static const std::string MOVE_UNIT_PAGE = "page";
-static const std::string MOVE_UNIT_PARAGRAPH = "paragraph";
+extern const std::string MOVE_UNIT_CHARACTER;
+extern const std::string MOVE_UNIT_WORD;
+extern const std::string MOVE_UNIT_LINE;
+extern const std::string MOVE_UNIT_PAGE;
+extern const std::string MOVE_UNIT_PARAGRAPH;
 
 // Operation Arguments Type
-static const std::string ACTION_ARGU_INVALID = "invalid";
-static const std::string ACTION_ARGU_SELECT_TEXT_START = "selectTextBegin";
-static const std::string ACTION_ARGU_SELECT_TEXT_END = "selectTextEnd";
-static const std::string ACTION_ARGU_HTML_ELEMENT = "htmlItem";
-static const std::string ACTION_ARGU_SET_TEXT = "setText";
-static const std::string ACTION_ARGU_MOVE_UNIT = "textMoveUnit";
+extern const std::string ACTION_ARGU_INVALID;
+extern const std::string ACTION_ARGU_SELECT_TEXT_START;
+extern const std::string ACTION_ARGU_SELECT_TEXT_END;
+extern const std::string ACTION_ARGU_HTML_ELEMENT;
+extern const std::string ACTION_ARGU_SET_TEXT;
+extern const std::string ACTION_ARGU_MOVE_UNIT;
 
 // HtmlItemType
-static const std::string HTML_ITEM_INVALID = "invalid";
-static const std::string HTML_ITEM_LINK = "link";
-static const std::string HTML_ITEM_CONTROL = "control";
-static const std::string HTML_ITEM_GRAPHIC = "graphic";
-static const std::string HTML_ITEM_LIST_ITEM = "listItem";
-static const std::string HTML_ITEM_LIST = "list";
-static const std::string HTML_ITEM_TABLE = "table";
-static const std::string HTML_ITEM_COMBOX = "combox";
-static const std::string HTML_ITEM_HEADING = "heading";
-static const std::string HTML_ITEM_BUTTON = "button";
-static const std::string HTML_ITEM_CHECKBOX = "checkBox";
-static const std::string HTML_ITEM_LANDMARK = "landmark";
-static const std::string HTML_ITEM_TEXT_FIELD = "textField";
-static const std::string HTML_ITEM_FOCUSABLE = "focusable";
-static const std::string HTML_ITEM_H1 = "h1";
-static const std::string HTML_ITEM_H2 = "h2";
-static const std::string HTML_ITEM_H3 = "h3";
-static const std::string HTML_ITEM_H4 = "h4";
-static const std::string HTML_ITEM_H5 = "h5";
-static const std::string HTML_ITEM_H6 = "h6";
-static const std::string HTML_ITEM_UNKOWN = "unknown";
+extern const std::string HTML_ITEM_INVALID;
+extern const std::string HTML_ITEM_LINK;
+extern const std::string HTML_ITEM_CONTROL;
+extern const std::string HTML_ITEM_GRAPHIC;
+extern const std::string HTML_ITEM_LIST_ITEM;
+extern const std::string HTML_ITEM_LIST;
+extern const std::string HTML_ITEM_TABLE;
+extern const std::string HTML_ITEM_COMBOX;
+extern const std::string HTML_ITEM_HEADING;
+extern const std::string HTML_ITEM_BUTTON;
+extern const std::string HTML_ITEM_CHECKBOX;
+extern const std::string HTML_ITEM_LANDMARK;
+extern const std::string HTML_ITEM_TEXT_FIELD;
+extern const std::string HTML_ITEM_FOCUSABLE;
+extern const std::string HTML_ITEM_H1;
+extern const std::string HTML_ITEM_H2;
+extern const std::string HTML_ITEM_H3;
+extern const std::string HTML_ITEM_H4;
+extern const std::string HTML_ITEM_H5;
+extern const std::string HTML_ITEM_H6;
+extern const std::string HTML_ITEM_UNKOWN;
 
 enum FocusMoveDirection :int {
     DIRECTION_INVALID = 0,
