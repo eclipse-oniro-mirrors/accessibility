@@ -351,10 +351,6 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
 
     HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
         data.GetDataSize(), data.GetOffsetsSize(), stepSize * sizeof(GesturePathDefine));
-    if (data.GetDataSize() - data.GetOffsetsSize() < stepSize * sizeof(GesturePathDefine)) {
-        HILOG_ERROR("ReadParcelable invalid size");
-        return ERROR;
-    }
     for (int32_t i = 0; i < stepSize; i++) {
         std::shared_ptr<GesturePathDefine> gestureStep(data.ReadParcelable<GesturePathDefine>());
         if (!gestureStep) {

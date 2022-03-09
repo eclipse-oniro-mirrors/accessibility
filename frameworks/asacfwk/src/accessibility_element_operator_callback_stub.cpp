@@ -84,10 +84,6 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
 
     HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
         data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
-    if (data.GetDataSize() - data.GetOffsetsSize() < accessibilityInfosize * sizeof(AccessibilityElementInfo)) {
-        HILOG_ERROR("ReadParcelable invalid size");
-        return ERROR;
-    }
 
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
@@ -117,10 +113,6 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
 
     HILOG_DEBUG("dataSize: %{public}d, offsetSize: %{public}d, elementSize: %{public}d",
         data.GetDataSize(), data.GetOffsetsSize(), accessibilityInfosize * sizeof(AccessibilityElementInfo));
-    if (data.GetDataSize() - data.GetOffsetsSize() < accessibilityInfosize * sizeof(AccessibilityElementInfo)) {
-        HILOG_ERROR("ReadParcelable invalid size");
-        return ERROR;
-    }
 
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();

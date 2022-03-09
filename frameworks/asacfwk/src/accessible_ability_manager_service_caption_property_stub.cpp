@@ -50,6 +50,10 @@ ErrCode AccessibleAbilityManagerServiceCaptionPropertyStub::HandleOnCaptionPrope
 {
     HILOG_DEBUG("start");
     CaptionProperty* caption = data.ReadParcelable<CaptionProperty>();
+    if (!caption) {
+            HILOG_ERROR("ReadParcelable<CaptionProperty> failed");
+            return ERROR;
+    }
     OnCaptionPropertyChanged(*caption);
 
     return NO_ERROR;

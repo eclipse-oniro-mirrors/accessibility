@@ -666,6 +666,10 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(reply.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return it;
+        }
         temp.push_back(*iter);
     }
 
@@ -698,6 +702,10 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     int dev_num = reply.ReadInt32();
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AccessibilityAbilityInfo> dev(reply.ReadParcelable<AccessibilityAbilityInfo>());
+        if (!dev) {
+            HILOG_ERROR("ReadParcelable<accessibilityAbilityInfo> failed");
+            return it;
+        }
         it.push_back(*dev);
     }
     return it;
