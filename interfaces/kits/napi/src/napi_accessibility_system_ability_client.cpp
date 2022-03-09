@@ -253,15 +253,22 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-            NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, callbackInfo->result_, &result[PARAM1]));
             if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+                if (callbackInfo->result_) {
+                    result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+                } else {
+                    result[PARAM0] = GetErrorValue(env, CODE_FAILED);
+                }
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
-                napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+                if (callbackInfo->result_) {
+                    napi_resolve_deferred(env, callbackInfo->deferred_, undefined);
+                } else {
+                    napi_reject_deferred(env, callbackInfo->deferred_, undefined);
+                }
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
