@@ -22,22 +22,20 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data) \
-    do                                                           \
-    {                                                            \
-        if (!(parcel).Read##type(data))                          \
-        {                                                        \
-            return false;                                        \
-        }                                                        \
+#define READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data)            \
+    do {                                                                    \
+        if (!(parcel).Read##type(data)) {                                   \
+            HILOG_ERROR("Fail to read %{public}s type from parcel", #type); \
+            return false;                                                   \
+        }                                                                   \
     } while (0)
 
-#define WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data) \
-    do                                                            \
-    {                                                             \
-        if (!(parcel).Write##type(data))                          \
-        {                                                         \
-            return false;                                         \
-        }                                                         \
+#define WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data)               \
+    do {                                                                        \
+        if (!(parcel).Write##type(data)) {                                      \
+            HILOG_ERROR("Fail to write %{public}s type from parcel", #type);    \
+            return false;                                                       \
+        }                                                                       \
     } while (0)
 
 template<class T>
