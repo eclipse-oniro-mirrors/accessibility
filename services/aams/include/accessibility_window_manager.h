@@ -28,14 +28,15 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {
 public:
-    virtual void OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type) override;
+    virtual void OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
+        Rosen::WindowUpdateType type) override;
 };
 
 class AccessibilityWindowInfoManager {
 public:
     ~AccessibilityWindowInfoManager() = default;
     static AccessibilityWindowInfoManager &GetInstance();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(Rosen::WindowInfo &windowInfo);
+    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(Rosen::AccessibilityWindowInfo &windowInfo);
     int ConvertToRealWindowId(int windowId, int focusType);
     void RegisterWindowChangeListener();
     void DeregisterWindowChangeListener();

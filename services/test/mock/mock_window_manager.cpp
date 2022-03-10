@@ -40,7 +40,7 @@ public:
     void NotifyUnfocused(uint32_t windowId, const sptr<IRemoteObject>& abilityToken,
         WindowType windowType, DisplayId displayId) const;
     void NotifySystemBarChanged(DisplayId displayId, const SystemBarRegionTints& tints) const;
-    void NotifyWindowUpdate(const sptr<WindowInfo>& windowInfo, WindowUpdateType type) const;
+    void NotifyWindowUpdate(const sptr<AccessibilityWindowInfo>& windowInfo, WindowUpdateType type) const;
     static inline SingletonDelegator<WindowManager> delegator_;
 
     std::vector<sptr<IWindowUpdateListener>> windowUpdateListeners_;
@@ -60,7 +60,8 @@ void WindowManager::Impl::NotifySystemBarChanged(DisplayId displayId, const Syst
 {
 }
 
-void WindowManager::Impl::NotifyWindowUpdate(const sptr<WindowInfo>& windowInfo, WindowUpdateType type) const
+void WindowManager::Impl::NotifyWindowUpdate(const sptr<AccessibilityWindowInfo>& windowInfo,
+    WindowUpdateType type) const
 {
 }
 
@@ -109,7 +110,7 @@ void WindowManager::UpdateSystemBarRegionTints(DisplayId displayId,
 {
 }
 
-void WindowManager::UpdateWindowStatus(const sptr<WindowInfo>& windowInfo, WindowUpdateType type)
+void WindowManager::UpdateWindowStatus(const sptr<AccessibilityWindowInfo>& windowInfo, WindowUpdateType type)
 {
 }
 } // namespace Rosen
