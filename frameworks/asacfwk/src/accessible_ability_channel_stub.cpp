@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -344,6 +344,10 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesture(MessageParcel &d
 
     vector<GesturePathDefine> gestureSteps;
     int32_t stepSize = data.ReadInt32();
+    if (!stepSize) {
+        HILOG_ERROR("stepSize is 0");
+        return ERROR;
+    }
     for (int32_t i = 0; i < stepSize; i++) {
         std::shared_ptr<GesturePathDefine> gestureStep(data.ReadParcelable<GesturePathDefine>());
         if (!gestureStep) {

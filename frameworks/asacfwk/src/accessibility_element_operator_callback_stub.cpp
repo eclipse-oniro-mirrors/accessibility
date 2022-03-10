@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -70,13 +70,15 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+    if (!accessibilityInfosize) {
+        HILOG_ERROR("accessibilityInfosize is 0");
+        return ERROR;
+    }
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
@@ -92,13 +94,15 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
-    MessageParcel &data,
-    MessageParcel &reply)
+    MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+    if (!accessibilityInfosize) {
+        HILOG_ERROR("accessibilityInfosize is 0");
+        return ERROR;
+    }
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {

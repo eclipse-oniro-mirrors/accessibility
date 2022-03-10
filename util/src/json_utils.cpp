@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,63 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+const std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
+const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_EVENT_TYPES = "accessibilityEventTypes";
+const std::string AccessibleAbility_JSON_KEY_TARGET_BUNDLE_NAMES = "targetBundleNames";
+const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_ABILITY_TYPES = "accessibilityAbilityTypes";
+const std::string AccessibleAbility_JSON_KEY_NOTIFICATION_TIMEOUT = "notificationTimeout";
+const std::string AccessibleAbility_JSON_KEY_UI_NONINTERACTIVE_TIMEOUT = "uiNoninteractiveTimeout";
+const std::string AccessibleAbility_JSON_KEY_UI_INTERACTIVE_TIMEOUT = "uiInteractiveTimeout";
+const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES = "accessibilityCapabilities";
+const std::string AccessibleAbility_JSON_KEY_DESCRIPTION = "description";
+const std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY = "settingsAbility";
+const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE =
+    "accessibilityCapabilityRationale";
+const std::string AccessibleAbility_Config_JSON_FILE_PATH = "/system/app/accessibility_config.json";
+
+// The json value of event types
+const std::string EVENT_TYPES_JSON_VALUE_CLICK = "click";
+const std::string EVENT_TYPES_JSON_VALUE_LONG_CLICK = "longClick";
+const std::string EVENT_TYPES_JSON_VALUE_SELECT = "select";
+const std::string EVENT_TYPES_JSON_VALUE_FOCUS = "focus";
+const std::string EVENT_TYPES_JSON_VALUE_TEXT_UPDATE = "textUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_PAGE_STATE_UPDATE = "pageStateUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_NOTIFICATION_UPDATE = "notificationUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_HOVER_ENTER = "hoverEnter";
+const std::string EVENT_TYPES_JSON_VALUE_HOVER_EXIT = "hoverExit";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_BEGIN = "touchGuideBegin";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_END = "touchGuideEnd";
+const std::string EVENT_TYPES_JSON_VALUE_PAGE_CONTENT_UPDATE = "pageContentUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_SCROLL = "scroll";
+const std::string EVENT_TYPES_JSON_VALUE_TEXT_SELECTION_UPDATE = "textSelectionUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_PUBLIC_NOTICE = "publicNotice";
+const std::string EVENT_TYPES_JSON_VALUE_ACCESSIBILITY_FOCUS = "accessibilityFocus";
+const std::string EVENT_TYPES_JSON_VALUE_ACCESSIBILITY_FOCUS_CLEAR = "accessibilityFocusClear";
+const std::string EVENT_TYPES_JSON_VALUE_TEXT_MOVE_UNIT = "textMoveUnit";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_GESTURE_BEGIN = "touchGuideGestureBegin";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_GESTURE_END = "touchGuideGestureEnd";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_BEGIN = "touchBegin";
+const std::string EVENT_TYPES_JSON_VALUE_TOUCH_END = "touchEnd";
+const std::string EVENT_TYPES_JSON_VALUE_WINDOW_UPDATE = "windowUpdate";
+const std::string EVENT_TYPES_JSON_VALUE_INTERRUPT = "interrupt";
+const std::string EVENT_TYPES_JSON_VALUE_GESTURE_EVENT = "gesture";
+const std::string EVENT_TYPES_JSON_VALUE_ALL = "all";
+
+// The json value of accessibilityAbility type
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN = "spoken";
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_HAPIC = "haptic";
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_AUDIBLE = "audible";
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_VISUAL = "visual";
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_GENERIC = "generic";
+const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_ALL = "all";
+
+// The json value of capabilities
+const std::string CAPABILITIES_JSON_VALUE_RETRIEVE = "retrieve";
+const std::string CAPABILITIES_JSON_VALUE_TOUCH_GUIDE = "touchGuide";
+const std::string CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER = "keyEventObserver";
+const std::string CAPABILITIES_JSON_VALUE_ZOOM = "zoom";
+const std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
+
 bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &jsonPath)
 {
     HILOG_DEBUG("start.");

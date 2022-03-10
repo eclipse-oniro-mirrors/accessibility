@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -339,17 +339,19 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverStat
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
-
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return ERROR;
+        }
         temp.push_back(*iter);
     }
     for (int i = 0; i < dev_num; i++) {
@@ -403,13 +405,16 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return ERROR;
+        }
         temp.push_back(*iter);
     }
     for (int i = 0; i < dev_num; i++) {
