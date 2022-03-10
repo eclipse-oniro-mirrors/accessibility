@@ -24,10 +24,6 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::WindowInfo>& 
     HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", windowInfo->wid_, type);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams->GetCurrentAccountData();
-    if (accountData->GetAccessibilityWindowConnection(windowInfo->wid_) == nullptr) {
-        HILOG_ERROR("GetAccessibilityWindowConnection failed by window id(%{public}d)!!", windowInfo->wid_);
-        return;
-    }
 
     auto& winMgr = AccessibilityWindowInfoManager::GetInstance();
     switch (type) {

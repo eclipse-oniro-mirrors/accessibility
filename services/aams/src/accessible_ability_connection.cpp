@@ -327,8 +327,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
-        wptr<AccessibilityAccountData> data(accountData_);
-        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(data, elementName_);
+        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
     }
 
     if (!proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
@@ -531,16 +530,21 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
-    sptr<AccessibilityAccountData> accountData = recipientAccountData_.promote();
-    if (!accountData) {
+    if (!recipientAccountData_) {
         HILOG_ERROR("recipientAccountData_ is null.");
         return;
     }
 
     sptr<AccessibleAbilityConnection> connection =
-        accountData->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
-    accountData->RemoveConnectedAbility(connection);
-    accountData->RemoveEnabledAbility(recipientElementName_);
+        recipientAccountData_->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
+    recipientAccountData_->RemoveConnectedAbility(connection);
+    recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
+
+    // clear ui test data
+    sptr<AccessibleAbilityConnection> uiTestConnection =
+        recipientAccountData_->GetUITestConnectedAbilityConnection();
+    recipientAccountData_->RemoveUITestConnectedAbility(uiTestConnection);
+
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
     // temp deal: notify setting

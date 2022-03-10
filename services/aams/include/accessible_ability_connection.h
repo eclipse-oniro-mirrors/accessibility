@@ -133,7 +133,7 @@ public:
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        AccessibleAbilityConnectionDeathRecipient(wptr<AccessibilityAccountData>& accountData,
+        AccessibleAbilityConnectionDeathRecipient(sptr<AccessibilityAccountData> accountData,
             AppExecFwk::ElementName& elementName)
             : recipientAccountData_(accountData), recipientElementName_(elementName) {};
         ~AccessibleAbilityConnectionDeathRecipient() = default;
@@ -141,7 +141,7 @@ private:
 
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
-        wptr<AccessibilityAccountData>& recipientAccountData_;
+        sptr<AccessibilityAccountData> recipientAccountData_;
         AppExecFwk::ElementName& recipientElementName_;
     };
 
