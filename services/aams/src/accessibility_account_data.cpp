@@ -840,27 +840,6 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
     return true;
 }
 
-void AccessibilityAccountData::AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
-{
-    HILOG_DEBUG("start.");
-    if (!uiTestConnectedA11yAbility_) {
-        HILOG_DEBUG("Add uiTestConnectedA11yAbility success");
-        uiTestConnectedA11yAbility_ = connection;
-    }
-}
-
-void AccessibilityAccountData::RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
-{
-    HILOG_DEBUG("start.");
-    uiTestConnectedA11yAbility_ = nullptr;
-}
-
-const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConnectedAbilityConnection()
-{
-    HILOG_DEBUG("start.");
-    return uiTestConnectedA11yAbility_;
-}
-
 void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)
 {
     HILOG_DEBUG("start.");

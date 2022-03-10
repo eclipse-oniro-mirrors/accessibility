@@ -39,6 +39,9 @@ const string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
 const string TASK_PUBLIC_NOTICE_EVENT = "PublicNoticeEvent";
 const string TASK_SEND_PUBLIC_NOTICE_EVENT = "SendPublicNoticeEvent";
 
+const string UI_TEST_BUNDLE_NAME = "com.example.uitest";
+const string UI_TEST_ABILITY_NAME = "uitestability";
+
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
 
@@ -925,8 +928,8 @@ bool AccessibleAbilityManagerService::DisableAbilities(std::map<std::string, App
 bool AccessibleAbilityManagerService::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
     HILOG_DEBUG("start");
-    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
-
+    std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetAccessibleAbilityConnection(uiTestUri);
     if (connection) {
         HILOG_ERROR("connection is existed!!");
         return false;
@@ -945,7 +948,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
 
     // add installed ability
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
-    abilityInfo->SetPackageName("com.example.uitest");
+    abilityInfo->SetPackageName(UI_TEST_BUNDLE_NAME);
     uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
@@ -954,19 +957,18 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
 
     // add connected ability
     sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName();
-    elementName->SetBundleName("com.example.uitest");
-    elementName->SetAbilityName("uitestability");
+    elementName->SetBundleName(UI_TEST_BUNDLE_NAME);
+    elementName->SetAbilityName(UI_TEST_ABILITY_NAME);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
         currentAccountData, connectCounter_++, *abilityInfo);
-    currentAccountData->AddUITestConnectedAbility(connection);
     connection->OnAbilityConnectDone(*elementName, obj, 0);
 }
 
 bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
 {
     HILOG_DEBUG("start");
-    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetUITestConnectedAbilityConnection();
-
+    std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
+    sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetAccessibleAbilityConnection(uiTestUri);
     if (connection == nullptr) {
         HILOG_ERROR("connection is not existed!!");
         return false;
@@ -980,13 +982,7 @@ bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
 void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_DEBUG("start");
-    auto currentAccountData = GetCurrentAccountData();
-
-    // remove installed ability
-    currentAccountData->RemoveInstalledAbility("com.example.uitest");
-    UpdateAbilities();
-    // remove connected ability
-    currentAccountData->RemoveUITestConnectedAbility(connection);
+    GetCurrentAccountData()->RemoveInstalledAbility(UI_TEST_BUNDLE_NAME);
     connection->OnAbilityDisconnectDone(connection->GetElementName(), 0);
 }
 

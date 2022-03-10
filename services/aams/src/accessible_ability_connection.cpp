@@ -537,13 +537,17 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
 
     sptr<AccessibleAbilityConnection> connection =
         recipientAccountData_->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
+    if (!connection) {
+        HILOG_ERROR("There is no connection for %{public}s.", recipientElementName_.GetURI().c_str());
+        return;
+    }
     recipientAccountData_->RemoveConnectedAbility(connection);
     recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
 
-    // clear ui test data
-    sptr<AccessibleAbilityConnection> uiTestConnection =
-        recipientAccountData_->GetUITestConnectedAbilityConnection();
-    recipientAccountData_->RemoveUITestConnectedAbility(uiTestConnection);
+    std::string uiTestUri = "/com.example.uitest/uitestability";
+    if (recipientElementName_.GetURI() == uiTestUri) {
+        recipientAccountData_->RemoveInstalledAbility("com.example.uitest");
+    }
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
