@@ -61,7 +61,7 @@ enum ClickLocation : int {
 struct InjectedEventRecorder {
     int downPointers;
     int downPointerNum;
-    long lastDownTime;
+    int64_t lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
 };
 

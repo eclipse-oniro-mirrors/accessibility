@@ -148,14 +148,13 @@ private:
     bool IsWantedEvent(int eventType);
     bool IsAllowedListEvent(EventType eventType);
 
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_ {};
+    int connectionId_ = -1;
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityClient> proxy_ = nullptr;
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
-    AccessibilityAbilityInfo abilityInfo_;
-    AppExecFwk::ElementName elementName_;
-    sptr<AccessibilityAccountData> accountData_;
-
-    int connectionId_;
+    AccessibilityAbilityInfo abilityInfo_ {};
+    AppExecFwk::ElementName elementName_ {};
+    sptr<AccessibilityAccountData> accountData_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

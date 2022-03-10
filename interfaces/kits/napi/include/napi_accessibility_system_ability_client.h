@@ -95,8 +95,8 @@ struct NAccessibilitySystemAbilityClient {
     napi_env env_ {};
     bool enabled_ = false;
     bool touchEnabled_ = false;
-    OHOS::Accessibility::AbilityStateType stateTypes_;
-    int32_t abilityTypes_ = 0;
+    OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
+    uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
     std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_ {};
     OHOS::Accessibility::CaptionProperty captionProperty_ {};

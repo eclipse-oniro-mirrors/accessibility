@@ -43,7 +43,8 @@ public:
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
 protected:
-    void CreateGesturePath(GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+    void CreateGesturePath(GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint,
+        int64_t durationTime);
     sptr<IAccessibleAbilityClient> service = nullptr;
     MMI::PointerEvent CreateTouchEvent(int action);
     int pointId_ = -1;
@@ -85,7 +86,7 @@ void TouchEventInjectorTest::TearDown()
 }
 
 void TouchEventInjectorTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);

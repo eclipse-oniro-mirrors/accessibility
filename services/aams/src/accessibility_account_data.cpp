@@ -653,7 +653,8 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
     for (auto& info : extensionInfos) {
-        AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(info);
+        std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
+            std::make_shared<AccessibilityAbilityInfo>(info);
         AddInstalledAbility(*accessibilityInfo);
     }
     return true;
@@ -771,7 +772,7 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
 void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult)
 {
     HILOG_DEBUG("start.");
-    int strLength = stringIn.size();
+    int strLength = (int)stringIn.size();
     std::vector<int> position;
     int wrodCount = 0;
 
@@ -785,7 +786,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
         }
     }
 
-    wrodCount = position.size();
+    wrodCount = (int)position.size();
     if ((wrodCount == 0) && (strLength > 0)) {
         vectorResult.push_back(stringIn);
     } else {

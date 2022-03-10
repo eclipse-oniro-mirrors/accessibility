@@ -155,21 +155,21 @@ private:
      * @param
      * @return
      */
-    void GetTapsEvents(long startTime);
+    void GetTapsEvents(int64_t startTime);
 
     /**
      * @brief Get move events.
      * @param
      * @return
      */
-    void GetMovesEvents(long startTime);
+    void GetMovesEvents(int64_t startTime);
 
     /**
      * @brief Get touchevents from gesturepath.
      * @param
      * @return
      */
-    void GetTouchEventsFromGesturePath(long startTime);
+    void GetTouchEventsFromGesturePath(int64_t startTime);
 
     /**
      * @brief create touchevent.
@@ -178,14 +178,14 @@ private:
      * @return the created touchevent
      */
     std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action,
-        MMI::PointerEvent::PointerItem point, long actionTime);
+        MMI::PointerEvent::PointerItem point, int64_t actionTime);
 
     /**
      * @brief Get the number of milliseconds elapsed since the system was booted.
      * @param
      * @return the number of milliseconds elapsed since the system was booted
      */
-    long getSystemTime();
+    int64_t getSystemTime();
 
     int sequence_ = -1;
     bool isGestureUnderway_ = false;

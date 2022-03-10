@@ -235,10 +235,10 @@ void AccessibilityElementInfo::SetEnabled(const bool enabled)
 
 bool AccessibilityElementInfo::IsPassword() const
 {
-    return password_;
+    return isPassword_;
 }
 
-void AccessibilityElementInfo::SetPassword(const bool password)
+void AccessibilityElementInfo::SetPassword(const bool type)
 {}
 
 bool AccessibilityElementInfo::IsScrollable() const

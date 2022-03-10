@@ -55,7 +55,7 @@ public:
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
     void CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime);
     std::vector<GesturePathDefine> getGesturePath {};
     sptr<AccessibleAbilityChannelStubImpl> aacs_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
@@ -128,7 +128,7 @@ void AamsInjectorTest::TearDown()
 }
 
 void AamsInjectorTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);

@@ -59,7 +59,8 @@ public:
     uint32_t RegisterCaptionPropertyCallback(
         const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) override;
 
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) override;
+    std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes,
+        const int32_t stateType) override;
 
     void RegisterElementOperator(
         const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) override;

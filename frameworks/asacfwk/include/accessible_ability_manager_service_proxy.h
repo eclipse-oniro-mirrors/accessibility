@@ -74,7 +74,8 @@ public:
      *                  2 indicates that the ability is disabled; 4 indicates that the ability has been installed.
      * @return
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) override;
+    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
+        const uint32_t abilityTypes, const int32_t stateType) override;
 
     /**
      * @brief Register the interaction operation, so the AA can get node info from ACE.

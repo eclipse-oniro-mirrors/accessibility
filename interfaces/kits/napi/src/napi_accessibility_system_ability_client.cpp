@@ -182,7 +182,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             callbackInfo->abilityList_ = AccessibilitySystemAbilityClient::GetInstance()->GetAbilityList(
-                int(callbackInfo->abilityTypes_), callbackInfo->stateTypes_);
+                callbackInfo->abilityTypes_, callbackInfo->stateTypes_);
             HILOG_INFO("GetAbilityList Executing GetAbilityList[%{public}d]", callbackInfo->abilityList_.size());
         },
         // execute the complete function
@@ -1555,7 +1555,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
                 it = NAccessibilityClient::captionListeners_.erase(it);
                 HILOG_DEBUG("captionListeners_ size = %{public}d", captionListeners_.size());
                 HILOG_INFO("unregister result%{public}d", callbackInfo->result_);
-                retValue = retValue & callbackInfo->result_;
+                retValue = retValue && callbackInfo->result_;
             } else {
                 it++;
             }
@@ -1597,7 +1597,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
             it != NAccessibilityClient::captionListeners_.end();) {
             std::shared_ptr<CaptionListener> observer= *it;
             if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-                retValue = retValue &
+                retValue = retValue &&
                     AccessibilitySystemAbilityClient::GetInstance()->DeleteCaptionListener(observer, type);
                 it = NAccessibilityClient::captionListeners_.erase(it);
                 HILOG_INFO("unregister result%{public}d", retValue);

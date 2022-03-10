@@ -44,7 +44,7 @@ int AccessibilityZoomGesture::GetSysDistance() const
     return 0;
 }
 
-int AccessibilityZoomGesture::GetSysTimeout() const
+int64_t AccessibilityZoomGesture::GetSysTimeout() const
 {
     return 0;
 }

@@ -243,12 +243,12 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
     eventType_ = eventType;
 }
 
-long long AccessibilityEventInfo::GetTimeStamp() const
+int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
     return timeStamp_;
 }
 
-void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
+void AccessibilityEventInfo::SetTimeStamp(const int64_t eventTime)
 {
     (void)eventTime;
 }

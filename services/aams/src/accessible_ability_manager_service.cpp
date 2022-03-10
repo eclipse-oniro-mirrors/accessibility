@@ -229,7 +229,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
 }
 
 vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
-    const int abilityTypes, const int stateType)
+    const uint32_t abilityTypes, const int32_t stateType)
 {
     HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
     vector<AccessibilityAbilityInfo> infoList;
@@ -248,8 +248,8 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
     HILOG_DEBUG("abilityes count is %{public}d", abilities.size());
     for (auto& ability : abilities) {
-        if (static_cast<uint32_t>(abilityTypes) == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
-           (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes))) {
+        if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
+           (ability.GetAccessibilityAbilityType() & abilityTypes)) {
             infoList.push_back(ability);
         }
     }
@@ -598,7 +598,8 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
         if (changedAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package changed is an extension ability and\
                 extension ability's name is %{public}s", changedAbility.name.c_str());
-            AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(changedAbility);
+            std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
+                std::make_shared<AccessibilityAbilityInfo>(changedAbility);
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}d",
                 GetCurrentAccountData()->GetInstalledAbilities().size());
@@ -747,7 +748,7 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
         return;
     }
 
-    int flag = 0;
+    uint32_t flag = 0;
     if (accountData->GetScreenMagnificationFlag()) {
         flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
     }

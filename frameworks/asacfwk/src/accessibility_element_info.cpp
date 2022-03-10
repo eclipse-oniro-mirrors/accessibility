@@ -102,7 +102,7 @@ bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clickable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, longClickable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, enable_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, password_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isPassword_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, scrollable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, editable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, popupSupported_);
@@ -173,7 +173,7 @@ bool AccessibilityElementInfo::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, clickable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, longClickable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, enable_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, password_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isPassword_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, scrollable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, editable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, popupSupported_);
@@ -598,14 +598,14 @@ void AccessibilityElementInfo::SetEnabled(const bool enabled)
 
 bool AccessibilityElementInfo::IsPassword() const
 {
-    HILOG_DEBUG("password_[%{public}d]", password_);
-    return password_;
+    HILOG_DEBUG();
+    return isPassword_;
 }
 
-void AccessibilityElementInfo::SetPassword(const bool password)
+void AccessibilityElementInfo::SetPassword(const bool type)
 {
-    password_ = password;
-    HILOG_DEBUG("password_[%{public}d]", password_);
+    HILOG_DEBUG("type[%{public}d]", type);
+    isPassword_ = type;
 }
 
 bool AccessibilityElementInfo::IsScrollable() const

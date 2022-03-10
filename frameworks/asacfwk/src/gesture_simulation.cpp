@@ -81,7 +81,7 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+    GesturePathPositionDefine &endPosition, int64_t durationTime)
 {
     HILOG_DEBUG("start.");
 
@@ -102,9 +102,9 @@ GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
     durationTime_ = durationTime;
 }
 
-uint32_t GesturePathDefine::GetDurationTime()
+int64_t GesturePathDefine::GetDurationTime()
 {
-    HILOG_DEBUG("start and max stroke duration is %{public}d", durationTime_);
+    HILOG_DEBUG("start and max stroke duration is %{public}lld", durationTime_);
     return durationTime_;
 }
 
@@ -114,9 +114,9 @@ GesturePathPositionDefine &GesturePathDefine::GetEndPosition()
     return endPosition_;
 }
 
-uint32_t GesturePathDefine::GetMaxStrokeDuration()
+int64_t GesturePathDefine::GetMaxStrokeDuration()
 {
-    HILOG_DEBUG("start and max stroke duration is %{public}d", MAX_STROKE_DURATION);
+    HILOG_DEBUG("start and max stroke duration is %{public}lld", MAX_STROKE_DURATION);
     return MAX_STROKE_DURATION;
 }
 
@@ -132,7 +132,7 @@ GesturePathPositionDefine &GesturePathDefine::GetStartPosition()
     return startPosition_;
 }
 
-void GesturePathDefine::SetDurationTime(uint32_t durationTime)
+void GesturePathDefine::SetDurationTime(int64_t durationTime)
 {
     HILOG_DEBUG("start.");
     durationTime_ = durationTime;
@@ -168,7 +168,7 @@ bool GesturePathDefine::ReadFromParcel(Parcel &parcel)
     }
     endPosition_ = *endPosition;
 
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, durationTime_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
 
     return true;
 }
@@ -178,7 +178,7 @@ bool GesturePathDefine::Marshalling(Parcel &parcel) const
     HILOG_DEBUG("start.");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &startPosition_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &endPosition_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, durationTime_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     return true;
 }
 

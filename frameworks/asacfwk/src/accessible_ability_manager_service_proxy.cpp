@@ -202,7 +202,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
 }
 
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetAbilityList(
-    const int abilityTypes, const int stateType)
+    const uint32_t abilityTypes, const int32_t stateType)
 {
     HILOG_DEBUG("start");
 
@@ -217,7 +217,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         return errorList;
     }
 
-    if (!data.WriteInt32(abilityTypes)) {
+    if (!data.WriteUint32(abilityTypes)) {
         HILOG_ERROR("fail, connection write abilityTypes error");
         return errorList;
     }

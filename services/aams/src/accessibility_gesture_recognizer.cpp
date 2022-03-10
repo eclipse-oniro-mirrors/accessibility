@@ -145,8 +145,8 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    mp.px_ = pointerIterm.GetGlobalX();
-    mp.py_ = pointerIterm.GetGlobalY();
+    mp.px_ = static_cast<float>(pointerIterm.GetGlobalX());
+    mp.py_ = static_cast<float>(pointerIterm.GetGlobalY());
     isDoubleTap_ = false;
     isRecognizingGesture_ = true;
     isGestureStarted_ = false;
@@ -166,7 +166,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    unsigned int eventTime = event.GetActionTime() / US_TO_MS;
+    int64_t eventTime = event.GetActionTime() / US_TO_MS;
     float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
     float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
     double duration = hypot(offsetX, offsetY);
@@ -181,8 +181,8 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
                 return listener_->OnStarted();
             }
         } else if (!isFirstTapUp_) {
-            unsigned int durationTime = eventTime - startTime_;
-            unsigned int thresholdTime = isGestureStarted_ ?
+            int64_t durationTime = eventTime - startTime_;
+            int64_t thresholdTime = isGestureStarted_ ?
                 GESTURE_STARTED_TIME_THRESHOLD : GESTURE_NOT_STARTED_TIME_THRESHOLD;
             if (durationTime > thresholdTime) {
                 isRecognizingGesture_ = false;
@@ -404,7 +404,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
 bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    int durationTime = (event.GetActionTime() - pPreUp_->GetActionTime()) / US_TO_MS;
+    int64_t durationTime = (event.GetActionTime() - pPreUp_->GetActionTime()) / US_TO_MS;
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
         return false;
     }

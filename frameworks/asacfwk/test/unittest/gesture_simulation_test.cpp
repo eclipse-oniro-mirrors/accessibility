@@ -26,7 +26,7 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-const uint32_t MAX_STROKE_DURATION = 60 * 1000;
+const int64_t MAX_STROKE_DURATION = 60 * 1000;
 const uint32_t MAX_STROKES = 10;
 
 class UnitTestGestureResultListener : public GestureResultListener {
@@ -210,7 +210,7 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
 
     GesturePathPositionDefine startPosition {};
     GesturePathPositionDefine endPosition {};
-    uint32_t durationTime = 1;
+    int64_t durationTime = 1;
     startPosition.SetPositionX(-1);
     shared_ptr<GesturePathDefine> path = make_shared<GesturePathDefine>(startPosition, endPosition, durationTime);
     EXPECT_NE(path->GetStartPosition().GetPositionX(), -1);
@@ -229,7 +229,7 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
 
     GesturePathPositionDefine startPosition {};
     GesturePathPositionDefine endPosition {};
-    uint32_t durationTime = 1;
+    int64_t durationTime = 1;
     endPosition.SetPositionX(-1);
     shared_ptr<GesturePathDefine> path = make_shared<GesturePathDefine>(startPosition, endPosition, durationTime);
     EXPECT_NE(path->GetEndPosition().GetPositionX(), -1);
@@ -278,7 +278,7 @@ HWTEST_F(GestureSimulationUnitTest, GestureSimulation_Unittest_GesturePathDefine
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_GetDurationTime_001 start";
 
     GesturePathDefine path {};
-    uint32_t durationTime = 1;
+    int64_t durationTime = 1;
 
     path.SetDurationTime(durationTime);
     EXPECT_EQ(path.GetDurationTime(), durationTime);
@@ -342,7 +342,7 @@ HWTEST_F(GestureSimulationUnitTest,
     GTEST_LOG_(INFO) << "GestureSimulation_Unittest_GesturePathDefine_SetDurationTime_001 start";
 
     GesturePathDefine path {};
-    uint32_t durationTime = 1;
+    int64_t durationTime = 1;
 
     path.SetDurationTime(durationTime);
 
@@ -435,7 +435,7 @@ HWTEST_F(GestureSimulationUnitTest,
     startposition.SetPositionY(1.0);
     endposition.SetPositionX(2.0);
     endposition.SetPositionY(2.0);
-    uint32_t durationTime = 1;
+    int64_t durationTime = 1;
 
     GesturePathDefine path {};
     path.SetDurationTime(durationTime);

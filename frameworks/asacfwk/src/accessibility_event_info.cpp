@@ -451,13 +451,13 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
     HILOG_DEBUG("eventType_[%{public}d]", eventType_);
 }
 
-long long AccessibilityEventInfo::GetTimeStamp() const
+int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
     HILOG_DEBUG("start");
     return timeStamp_;
 }
 
-void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
+void AccessibilityEventInfo::SetTimeStamp(const int64_t eventTime)
 {
     HILOG_DEBUG("start");
     timeStamp_ = eventTime;
@@ -500,16 +500,14 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
 }
 
 AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
+    : eventType_(TYPE_WINDOW_UPDATE), windowChangeTypes_(windowChangeTypes)
 {
     HILOG_DEBUG("start");
-    eventType_ = TYPE_WINDOW_UPDATE;
-    windowChangeTypes_ = windowChangeTypes;
     SetWindowId(windowId);
 }
 
-AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
+AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType) : eventType_(eventType)
 {
-    eventType_ = eventType;
     HILOG_DEBUG("eventType_[%{public}d]", eventType_);
 }
 

@@ -63,7 +63,7 @@ public:
     void AddAccessibleAbilityConnection();
     void AddAccessibilityWindowConnection();
     void CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime);
     std::vector<GesturePathDefine> gestureSteps_ {};
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
     shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
@@ -248,7 +248,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
 }
 
 void AamsAccessibleAbilityChannelTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest CreateGesturePath";
     // create gesture

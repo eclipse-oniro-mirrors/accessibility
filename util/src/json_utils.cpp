@@ -84,8 +84,15 @@ const std::string CAPABILITIES_JSON_VALUE_GESTURE = "gesture";
 bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &jsonPath)
 {
     HILOG_DEBUG("start.");
+
+    char realPath[PATH_MAX + 1] = { 0 };
+    if (realpath(jsonPath.c_str(), realPath) == nullptr) {
+        HILOG_ERROR("Fail to get realpath of %{public}s", jsonPath.c_str());
+        return false;
+    }
+
     std::ifstream jsonFileStream;
-    jsonFileStream.open(jsonPath.c_str(), std::ios::in);
+    jsonFileStream.open(realPath, std::ios::in);
     if (!jsonFileStream.is_open()) {
         HILOG_ERROR("Open json file failed.");
         return false;

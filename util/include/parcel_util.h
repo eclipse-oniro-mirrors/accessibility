@@ -41,7 +41,7 @@ namespace Accessibility {
 template<class T>
 std::vector<T> TranslateListToVector(const std::list<T> &originList)
 {
-    int len = originList.size();
+    std::size_t len = originList.size();
     std::vector<T> destVector(len);
     std::copy(originList.begin(), originList.end(), destVector.begin());
     return destVector;

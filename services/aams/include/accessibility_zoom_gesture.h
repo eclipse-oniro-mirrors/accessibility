@@ -35,7 +35,7 @@ public:
 
 private:
     int distance_ = 0;
-    unsigned long timeout_ = 0;
+    int64_t timeout_ = 0;
     int upCount_ = 0;
     int downCount_ = 0;
     std::shared_ptr<MMI::PointerEvent> pLastDown_ = nullptr;
@@ -58,7 +58,7 @@ private:
      * @brief Gets the effective time interval between two pointer events
      *        set by the system.
      */
-    int GetSysTimeout() const;
+    int64_t GetSysTimeout() const;
 };
 } // namespace Accessibility
 } // namespace OHOS

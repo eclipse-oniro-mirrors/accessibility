@@ -281,10 +281,8 @@ void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData,
     int connectionId, AccessibilityAbilityInfo &abilityInfo)
+    : connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
 {
-    connectionId_ = connectionId;
-    abilityInfo_ = abilityInfo;
-    accountData_ = accountData;
 }
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
