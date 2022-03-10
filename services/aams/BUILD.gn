@@ -36,7 +36,6 @@ config("aams_service_config") {
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/notification/ces_standard/interfaces/innerkits/native/include",
     "//base/accessibility/dummyData",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
