@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -46,16 +46,16 @@ public:
     /**
      * @brief Receive the event from proxy by IPC mechanism.
      * @param code The code is matched with the process function.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
-     * @param option The option paramter of IPC,such as: async,sync
+     * @param option The option parameter of IPC,such as: async,sync
      * @return
      */
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option) override;
 
     /**
-     * @brief Receive the caption property notify from AAMS and send it to the observer registed..
+     * @brief Receive the caption property notify from AAMS and send it to the observer registered.
      * @param caption The caption property.
      * @return
      */
@@ -63,7 +63,7 @@ public:
 private:
     /**
      * @brief Handle the IPC request for the function:HandleOnStateChanged.
-     * @param data The data of prcess communication
+     * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */

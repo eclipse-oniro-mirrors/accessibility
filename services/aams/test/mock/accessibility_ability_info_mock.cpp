@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,7 +52,7 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
     bundleName_ = bundleName;
 }
 
-AccessibilityAbilityInfo::AccessibilityAbilityInfo(ExtensionAbilityInfo abilityInfo)
+AccessibilityAbilityInfo::AccessibilityAbilityInfo(const ExtensionAbilityInfo &abilityInfo)
 {
     // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM |
     // CAPABILITY_RETRIEVE | CAPABILITY_GESTURE

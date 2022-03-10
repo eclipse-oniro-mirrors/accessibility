@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -113,6 +113,7 @@ void AAMSServerTest::WritefileAll(const char* fname, const char* data)
     FILE *fp;
     if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
+        return;
     }
 
     (void)fprintf(fp, "%s", data);
@@ -126,7 +127,7 @@ void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()
     Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
-    if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
+    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
         GTEST_LOG_(INFO) << "remove successful";
     }
 
@@ -182,7 +183,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
 /**
  * @tc.number: AAMS_moduletest_SendEvent_001
  * @tc.name: SendEvent
- * @tc.desc: Test function SendEvent aams send a event to accessibility,and check the parm of event.
+ * @tc.desc: Test function SendEvent aams send event to accessibility,and check the parm of event.
  *
  */
 HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
@@ -190,7 +191,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest SendEvent_001 start";
     // register AA
     AddAccessibleAbilityConnection();
-    // make a event
+    // make an event
     AccessibilityEventInfo eventInfo;
     eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     // aams send event

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "power_mgr_client.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -75,14 +74,12 @@ void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &con
     }
 
     if (!isHandled) {
-        if (processingEvent->usedCount_ == 0) {
+        if (!processingEvent->usedCount_) {
             timeouthandler_->RemoveEvent(processingEvent->seqNum_);
             EventTransmission::OnKeyEvent(*processingEvent->event_);
         }
     } else {
         timeouthandler_->RemoveEvent(processingEvent->seqNum_);
-        PowerMgr::PowerMgrClient::GetInstance().RefreshActivity(
-            PowerMgr::UserActivityType::USER_ACTIVITY_TYPE_ACCESSIBILITY);
         RemoveProcessingEvent(processingEvent);
     }
 }
@@ -98,7 +95,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 
         for (auto val : iter->second) {
             val->usedCount_--;
-            if (val->usedCount_ == 0) {
+            if (!val->usedCount_) {
                 EventTransmission::OnKeyEvent(*val->event_);
             }
         }

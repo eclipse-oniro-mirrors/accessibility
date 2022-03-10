@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,7 +40,7 @@ public:
     virtual ~AccessibleAbilityManagerServiceStateProxy() override;
 
     /**
-     * @brief Receive the state notify from AAMS and send it to the observer registed..
+     * @brief Receive the state notify from AAMS and send it to the observer registered.
      * @param stateType The state type and value.
      *                  state type: Refer to AccessibilityStateEventType.
      *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/

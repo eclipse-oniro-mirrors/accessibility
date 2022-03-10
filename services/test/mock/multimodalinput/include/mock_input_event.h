@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,27 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef I_INPUT_EVENT_CONSUMER_H
-#define I_INPUT_EVENT_CONSUMER_H
+#ifndef MOCK_INPUT_EVENT_H
+#define MOCK_INPUT_EVENT_H
 
-#include <memory>
-
-#include "axis_event.h"
-#include "key_event.h"
-#include "pointer_event.h"
+#include "input_event.h"
 
 namespace OHOS {
 namespace MMI {
-struct IInputEventConsumer {
+class MockInputEvent : public InputEvent {
 public:
-    IInputEventConsumer() = default;
-    virtual ~IInputEventConsumer() = default;
-
-    virtual void OnInputEvent(std::shared_ptr<KeyEvent> keyEvent) const;
-    virtual void OnInputEvent(std::shared_ptr<PointerEvent> pointerEvent) const;
-    virtual void OnInputEvent(std::shared_ptr<AxisEvent> axisEvent) const;
 };
 } // namespace MMI
 } // namespace OHOS
-
-#endif // I_INPUT_EVENT_CONSUMER_H
+#endif // MOCK_INPUT_EVENT_H

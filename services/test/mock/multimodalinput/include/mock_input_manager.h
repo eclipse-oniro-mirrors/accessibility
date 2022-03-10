@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,21 +13,21 @@
  * limitations under the License.
  */
 
-#ifndef POWERMGR_POWER_MGR_CLIENT_H
-#define POWERMGR_POWER_MGR_CLIENT_H
+#ifndef MOCK_INPUT_MANAGER_H
+#define MOCK_INPUT_MANAGER_H
 
-#include <string>
-#include <singleton.h>
-#include "power_state_machine_info.h"
+#include "input_manager.h"
 
 namespace OHOS {
-namespace PowerMgr {
-class PowerMgrClient final : public DelayedRefSingleton<PowerMgrClient> {
-    DECLARE_DELAYED_REF_SINGLETON(PowerMgrClient)
-
+namespace MMI {
+class MockInputManager {
 public:
-    void RefreshActivity(UserActivityType type = UserActivityType::USER_ACTIVITY_TYPE_OTHER);
+    static int GetKeyCode();
+    static void ClearTouchActions();
+    static std::vector<int32_t> GetTouchActions();
+    static void ClearInputEventConsumer();
+    static std::shared_ptr<IInputEventConsumer> GetInputEventConsumer();
 };
-} // namespace PowerMgr
+} // namespace MMI
 } // namespace OHOS
-#endif // POWERMGR_POWER_MGR_CLIENT_H
+#endif // MOCK_INPUT_MANAGER_H

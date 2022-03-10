@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -218,17 +218,17 @@ public:
     int GetWindowId() const;
 
     /**
-     * @brief Gets the current index of listed items or text postion associated with the current event.
+     * @brief Gets the current index of listed items or text position associated with the current event.
      * @param -
-     * @return The current index of listed items or text postion associated with the current event.
+     * @return The current index of listed items or text position associated with the current event.
      * @since 3
      * @sysCap Accessibility
      */
     int GetCurrentIndex() const;
 
     /**
-     * @brief Sets the current index of listed items or text postion associated with the current event.
-     * @param index The current index of listed items or text postion associated with the current event.
+     * @brief Sets the current index of listed items or text position associated with the current event.
+     * @param index The current index of listed items or text position associated with the current event.
      * @return
      * @since 3
      * @sysCap Accessibility

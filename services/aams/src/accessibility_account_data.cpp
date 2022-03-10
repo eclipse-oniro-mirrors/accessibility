@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -206,28 +206,19 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
     HILOG_DEBUG("Add EnabledAbility: %{public}d", enabledAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
 {
-    HILOG_DEBUG("start.");
-    std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
-    if (it != enabledAbilities_.end()) {
-        enabledAbilities_.erase(it);
+    if (pref_ == nullptr) {
+        HILOG_ERROR("pref_ is null!");
+        return;
     }
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-
-    std::string strValue = pref->GetString("BundleName", "");
+    std::string strValue = pref_->GetString("BundleName", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
 
     std::vector<std::string> vecvalue;
     StringToVector(strValue, vecvalue);
-    std::string BundleName = elementName.GetBundleName();
     for (std::vector<std::string>::iterator val = vecvalue.begin();val != vecvalue.end();) {
-        if (std::strcmp(val->c_str(), BundleName.c_str()) == 0) {
+        if (!std::strcmp(val->c_str(), bundleName.c_str())) {
             val = vecvalue.erase(val);
             HILOG_DEBUG("remove val = %{public}s", val->c_str());
         } else {
@@ -236,15 +227,26 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
     }
     std::string stringOut = "";
     VectorToString(vecvalue, stringOut);
-    int err = pref->PutString("BundleName", stringOut);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+    int errCode = pref_->PutString("BundleName", stringOut);
+    if (errCode) {
+        HILOG_ERROR("pref_->PutString() error(%{public}d).", errCode);
+    }
 
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    errCode = pref_->FlushSync();
+    if (errCode) {
+        HILOG_ERROR("pref_->FlushSync() error(%{public}d).", errCode);
+    }
+}
 
-    HILOG_DEBUG("Remove EnabledAbility: %{public}d", enabledAbilities_.size());
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
+void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
+{
+    std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
+    HILOG_DEBUG("EnabledAbility size(%{public}d)", enabledAbilities_.size());
+    if (it != enabledAbilities_.end()) {
+        HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", elementName.GetBundleName().c_str());
+        enabledAbilities_.erase(it);
+    }
+    RemoveEnabledFromPref(elementName.GetBundleName());
 }
 
 // For UT
@@ -262,18 +264,17 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
         installedAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
+void AccessibilityAccountData::RemoveInstalledAbility(std::string bundleName)
 {
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
-        if (it->GetPackageName() == abilityInfo.GetPackageName()) {
+        if (it->GetPackageName() == bundleName) {
+            HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
             installedAbilities_.erase(it);
         } else {
             ++it;
         }
     }
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 void AccessibilityAccountData::ClearInstalledAbility()
@@ -304,7 +305,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int windowId)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("windowId(%{public}d).", windowId);
     if (asacConnections_.count(windowId) > 0) {
         return asacConnections_[windowId];
     }
@@ -456,38 +457,17 @@ bool AccessibilityAccountData::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start.");
     isCaptionState_ = state;
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    if (errCode != 0) {
-        return false;
-    }
-
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    std::string strValue = "";
-    if (isCaptionState_) {
-        strValue = STATE_TRUE;
-    } else {
-        strValue = STATE_FALSE;
-    }
-
-    int err = pref->PutString("CaptionState", strValue);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    SetStatePref(STATE::CAPTION);
 
     return true;
 }
 
-bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption)
+bool AccessibilityAccountData::SetCaptionPropertyPref()
 {
-    HILOG_DEBUG("start.");
-    captionProperty_ = caption;
-
+    if (pref_ == nullptr) {
+        HILOG_ERROR("pref_ is null!");
+        return false;
+    }
     std::string FONTFAMILY = captionProperty_.GetFontFamily();
     int FONTSCALE = captionProperty_.GetFontScale();
     std::string FONTCOLOR = captionProperty_.GetFontColor();
@@ -495,32 +475,69 @@ bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption
     std::string BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
     std::string WINDOWCOLOR = captionProperty_.GetWindowColor();
 
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    pref_->PutString("fontFamily", FONTFAMILY);
+    pref_->PutString("fontColor", FONTCOLOR);
+    pref_->PutString("fontEdgeType", FONTEDGETYPE);
+    pref_->PutString("backgroundColor", BACKGROUNDCOLOR);
+    pref_->PutString("windowColor", WINDOWCOLOR);
+    pref_->PutInt("fontScale", FONTSCALE);
+    pref_->FlushSync();
+    return true;
+}
 
-    int err = pref->PutString("fontFamily", FONTFAMILY);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption)
+{
+    HILOG_DEBUG("start.");
+    captionProperty_ = caption;
+    SetCaptionPropertyPref();
+    return true;
+}
 
-    err = pref->PutString("fontColor", FONTCOLOR);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+std::string AccessibilityAccountData::StateChange(bool state)
+{
+    std::string STATE_TRUE = "on";
+    std::string STATE_FALSE = "off";
+    if (state) {
+        return STATE_TRUE;
+    } else {
+        return STATE_FALSE;
+    }
+}
 
-    err = pref->PutString("fontEdgeType", FONTEDGETYPE);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+bool AccessibilityAccountData::SetStatePref(int type)
+{
+    if (pref_ == nullptr) {
+        HILOG_ERROR("pref_ is null!");
+        return false;
+    }
 
-    err = pref->PutString("backgroundColor", BACKGROUNDCOLOR);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
+    std::string strValue = "";
+    switch (type) {
+        case STATE::ACCESSIBILITY:
+            strValue = StateChange(isEnabled_);
+            pref_->PutString("accessible", strValue);
+            break;
+        case STATE::TOUCHGUIDE:
+            strValue = StateChange(isEventTouchGuideState_);
+            pref_->PutString("touchGuide", strValue);
+            break;
+        case STATE::GESTURE:
+            strValue = StateChange(isGesturesSimulation_);
+            pref_->PutString("gesture", strValue);
+            break;
+        case STATE::KEYEVENT:
+            strValue = StateChange(isFilteringKeyEvents_);
+            pref_->PutString("keyEventObserver", strValue);
+            break;
+        case STATE::CAPTION:
+            strValue = StateChange(isCaptionState_);
+            pref_->PutString("CaptionState", strValue);
+            break;
+        default:
+            break;
+    }
 
-    err = pref->PutString("windowColor", WINDOWCOLOR);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->PutInt("fontScale", FONTSCALE);
-    HILOG_DEBUG("pref->PutInt() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
-
+    pref_->FlushSync();
     return true;
 }
 
@@ -528,29 +545,7 @@ bool AccessibilityAccountData::SetEnabled(const bool state)
 {
     HILOG_DEBUG("start.");
     isEnabled_ = state;
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    if (errCode != 0) {
-        return false;
-    }
-
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    std::string strValue = "";
-    HILOG_DEBUG("isEnabled_ = %{public}s", isEnabled_ ? "true" : "false");
-    if (isEnabled_) {
-        strValue = STATE_TRUE;
-    } else {
-        strValue = STATE_FALSE;
-    }
-    int err = pref->PutString("accessible", strValue);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    SetStatePref(STATE::ACCESSIBILITY);
     return true;
 }
 
@@ -558,29 +553,7 @@ bool AccessibilityAccountData::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("start.");
     isEventTouchGuideState_ = state;
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    if (errCode != 0) {
-        return false;
-    }
-
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    std::string strValue = "";
-    if (isEventTouchGuideState_) {
-        strValue = STATE_TRUE;
-    } else {
-        strValue = STATE_FALSE;
-    }
-
-    int err = pref->PutString("touchGuide", strValue);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    SetStatePref(STATE::TOUCHGUIDE);
     return true;
 }
 
@@ -588,29 +561,7 @@ bool AccessibilityAccountData::SetGestureState(const bool state)
 {
     HILOG_DEBUG("start.");
     isGesturesSimulation_ = state;
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    if (errCode != 0) {
-        return false;
-    }
-
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    std::string strValue = "";
-    if (isGesturesSimulation_) {
-        strValue = STATE_TRUE;
-    } else {
-        strValue = STATE_FALSE;
-    }
-
-    int err = pref->PutString("gesture", strValue);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    SetStatePref(STATE::GESTURE);
     return true;
 }
 
@@ -618,29 +569,7 @@ bool AccessibilityAccountData::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("start.");
     isFilteringKeyEvents_ = state;
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    if (errCode != 0) {
-        return false;
-    }
-
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    std::string strValue = "";
-    if (isFilteringKeyEvents_) {
-        strValue = STATE_TRUE;
-    } else {
-        strValue = STATE_FALSE;
-    }
-
-    int err = pref->PutString("keyEventObserver", strValue);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
+    SetStatePref(STATE::KEYEVENT);
     return true;
 }
 
@@ -670,6 +599,25 @@ bool AccessibilityAccountData::GetCaptionState()
     return isCaptionState_;
 }
 
+void AccessibilityAccountData::UpdateEnabledFromPref()
+{
+    if (pref_ == nullptr) {
+        HILOG_ERROR("pref_ is null!");
+        return;
+    }
+    std::string bundleName = "";
+    std::vector<std::string> vecvalue;
+    for (auto& abilitie : enabledAbilities_) {
+        bundleName = abilitie.second.GetBundleName();
+        vecvalue.push_back(bundleName);
+        HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
+    }
+    std::string stringOut = "";
+    VectorToString(vecvalue, stringOut);
+    pref_->PutString("BundleName", stringOut);
+    pref_->FlushSync();
+}
+
 bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
     HILOG_DEBUG("start.");
@@ -678,28 +626,7 @@ bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::E
     for (auto& ability : it) {
         enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(ability.first, ability.second));
     }
-
-    std::string BundleName = "";
-    std::vector<std::string> vecvalue;
-    for (auto& abilitie : enabledAbilities_) {
-        BundleName = abilitie.second.GetBundleName();
-        vecvalue.push_back(BundleName);
-        HILOG_DEBUG("bundleName = %{public}s ", BundleName.c_str());
-    }
-
-    std::string stringOut = "";
-    VectorToString(vecvalue, stringOut);
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-    int err = pref->PutString("BundleName", stringOut);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
-
+    UpdateEnabledFromPref();
     return true;
 }
 
@@ -735,10 +662,14 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("CaptionState", "");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
+    if (!std::strcmp(strValue.c_str(), "on")) {
         isCaptionState_ = true;
     } else {
         isCaptionState_ = false;
@@ -773,10 +704,14 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
 void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("accessible", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
+    if (!std::strcmp(strValue.c_str(), "on")) {
         isEnabled_ = true;
     } else {
         isEnabled_ = false;
@@ -784,7 +719,7 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 
     strValue = pref->GetString("touchGuide", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
+    if (!std::strcmp(strValue.c_str(), "on")) {
         HILOG_DEBUG("isEventTouchGuideState_ = true");
         isEventTouchGuideState_ = true;
     } else {
@@ -794,7 +729,7 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 
     strValue = pref->GetString("gesture", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
+    if (!std::strcmp(strValue.c_str(), "on")) {
         isFilteringKeyEvents_ = true;
     } else {
         isFilteringKeyEvents_ = false;
@@ -802,7 +737,7 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 
     strValue = pref->GetString("keyEventObserver", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-    if (std::strcmp(strValue.c_str(), "on") == 0) {
+    if (!std::strcmp(strValue.c_str(), "on")) {
         isGesturesSimulation_ = true;
     } else {
         isGesturesSimulation_ = false;
@@ -812,6 +747,11 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
+
     std::string BundleName = "";
     AccessibilityAbilityInfo abilityInfo;
 
@@ -838,7 +778,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
     if (strLength == 0) {
         return;
     }
-    
+
     for (int i = 0; i < strLength; i++) {
         if (stringIn[i] == ',') {
             position.push_back(i);
@@ -878,55 +818,25 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
 void AccessibilityAccountData::init()
 {
     int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
+    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    if (errCode) {
+        HILOG_ERROR("GetPreferences failed! errCode(%{public}d).", errCode);
+        return;
+    }
 
-    CaptionInit(pref);
-    CapbilityInit(pref);
-    EnabledListInit(pref);
+    CaptionInit(pref_);
+    CapbilityInit(pref_);
+    EnabledListInit(pref_);
 }
 
 bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
     HILOG_DEBUG("start.");
-    for (auto &disAbilities : it) {
-        enabledAbilities_.erase(disAbilities.first);
+    for (auto &disableAbility : it) {
+        HILOG_DEBUG("DisableAbilities URI(%{public}s)", disableAbility.first.c_str());
+        enabledAbilities_.erase(disableAbility.first);
+        RemoveEnabledFromPref(disableAbility.second.GetBundleName());
     }
-
-    int errCode = 0;
-    std::shared_ptr<NativePreferences::Preferences> pref =
-        NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
-    HILOG_DEBUG("errCode = %{public}d.", errCode);
-
-    std::string strValue = pref->GetString("BundleName", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
-
-    std::vector<std::string> vecvalue;
-    StringToVector(strValue, vecvalue);
-    std::string BundleName = "";
-    for (auto& disableAbility : it) {
-        BundleName = disableAbility.second.GetBundleName();
-        HILOG_DEBUG("BundleName = %{public}s", BundleName.c_str());
-        for (std::vector<std::string>::iterator val = vecvalue.begin(); val != vecvalue.end();) {
-            if (std::strcmp(val->c_str(), BundleName.c_str()) == 0) {
-                val = vecvalue.erase(val);
-                HILOG_DEBUG("remove val = %{public}s", val->c_str());
-            } else {
-                ++val;
-            }
-        }
-    }
-
-    std::string stringOut = "";
-    VectorToString(vecvalue, stringOut);
-    int err = pref->PutString("BundleName", stringOut);
-    HILOG_DEBUG("pref->PutString() = %{public}d.", err);
-
-    err = pref->FlushSync();
-    HILOG_DEBUG("pref->FlushSync() = %{public}d.", err);
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
 }
 

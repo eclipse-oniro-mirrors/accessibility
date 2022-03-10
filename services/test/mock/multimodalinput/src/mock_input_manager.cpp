@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,54 +13,70 @@
  * limitations under the License.
  */
 
-#include <vector>
-#include "input_manager.h"
+#include "mock_input_manager.h"
 
 namespace OHOS {
-int g_mTkeyCode = -1;
-std::vector<int32_t> g_mtTouchAction;
-std::function<void(std::shared_ptr<MMI::PointerEvent>)> g_pointerCallback = nullptr;
-std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer = nullptr;
 namespace MMI {
-int MTtouchAction = -1;
+static int mockKeyCode = -1;
+static std::vector<int32_t> mockTouchActions;
+static std::function<void(std::shared_ptr<MMI::PointerEvent>)> mockPointerCallback = nullptr;
+static std::shared_ptr<MMI::IInputEventConsumer> mockInputEventConsumer = nullptr;
 
-InputManager *InputManager::mInstance_ = nullptr;
-
-InputManager::~InputManager()
+int MockInputManager::GetKeyCode()
 {
-    g_mtTouchAction.clear();
-    g_pointerCallback = nullptr;
-    g_inputEventConsumer = nullptr;
+    return mockKeyCode;
 }
+
+void MockInputManager::ClearTouchActions()
+{
+    mockTouchActions.clear();
+}
+
+std::vector<int32_t> MockInputManager::GetTouchActions()
+{
+    return mockTouchActions;
+}
+
+void MockInputManager::ClearInputEventConsumer()
+{
+    mockInputEventConsumer = nullptr;
+}
+
+std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
+{
+    return mockInputEventConsumer;
+}
+
+InputManager *InputManager::instance_ = nullptr;
 
 InputManager *InputManager::GetInstance()
 {
-    if (mInstance_ == nullptr) {
-        mInstance_ = new InputManager();
+    if (instance_ == nullptr) {
+        instance_ = new InputManager();
     }
-    return mInstance_;
+    return instance_;
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
 {
-    g_mTkeyCode = keyEvent->GetKeyCode();
+    mockKeyCode = keyEvent->GetKeyCode();
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent)
 {
-    MTtouchAction = pointerEvent->GetPointerAction();
-    g_mtTouchAction.push_back(MTtouchAction);
+    int32_t touchAction = pointerEvent->GetPointerAction();
+    mockTouchActions.push_back(touchAction);
 }
 
 int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interceptorId)
 {
-    g_inputEventConsumer = interceptorId;
+    mockInputEventConsumer = interceptorId;
     return 0;
 }
 
 int32_t InputManager::AddInterceptor(int32_t sourceType, std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
 {
-    g_pointerCallback = interceptor;
+    mockPointerCallback = interceptor;
     return 0;
 }
 

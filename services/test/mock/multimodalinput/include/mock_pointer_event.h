@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,14 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef AXIS_EVENT_H
-#define AXIS_EVENT_H
+#ifndef MOCK_POINTER_EVENT_H
+#define MOCK_POINTER_EVENT_H
+
+#include "pointer_event.h"
 
 namespace OHOS {
 namespace MMI {
-class AxisEvent {
+class MockPointerEvent : public PointerEvent {
 public:
 };
 } // namespace MMI
 } // namespace OHOS
-#endif // AXIS_EVENT_H
+#endif // MOCK_POINTER_EVENT_H

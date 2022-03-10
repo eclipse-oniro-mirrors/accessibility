@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityChannel");
 
     /**
-     * @brief Searchs elementInfo by accessibility id and set the result by callback.
+     * @brief Searches elementInfo by accessibility id and set the result by callback.
      * @param accessibilityWindowId The id of accessibility window.
      * @param elementId The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
@@ -107,7 +107,7 @@ public:
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param
-     * @return The infomation of windows.
+     * @return The information of windows.
      */
     virtual std::vector<AccessibilityWindowInfo> GetWindows() = 0;
 

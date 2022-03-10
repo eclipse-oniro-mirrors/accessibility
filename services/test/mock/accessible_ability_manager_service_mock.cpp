@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -320,14 +320,14 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     HILOG_DEBUG("InputFilter flag is %{public}d", flag);
 
-    if (flag != 0) {
+    if (flag) {
         inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
         inputInterceptor_->SetAvailableFunctions(flag);
-        return;
-    }
-    if (inputInterceptor_) {
+    } else if (inputInterceptor_ != nullptr) {
         HILOG_DEBUG("Has InputInterceptor before.");
         inputInterceptor_->SetAvailableFunctions(0);
+    } else {
+        HILOG_DEBUG("InputInterceptor is null.");
     }
 }
 

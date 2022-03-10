@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,9 +107,9 @@ MMI::PointerEvent TouchEventInjectorTest::CreateTouchEvent(int action)
     return *pointerEvent;
 }
 /**
- * @tc.number: TouchEventInjector001
- * @tc.name:TouchEventInjector
- * @tc.desc: Check injected single tap event.
+ * @tc.number: TouchEventInjector001
+ * @tc.name:TouchEventInjector
+ * @tc.desc: Check injected single tap event.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_001, TestSize.Level1)
 {
@@ -132,9 +132,9 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 }
 
 /**
- * @tc.number: TouchEventInjector004
- * @tc.name:TouchEventInjector
- * @tc.desc: Check Some functional interface.
+ * @tc.number: TouchEventInjector004
+ * @tc.name:TouchEventInjector
+ * @tc.desc: Check Some functional interface.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_004, TestSize.Level1)
 {
@@ -161,9 +161,9 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 }
 
 /**
- * @tc.number: TouchEventInjector005
- * @tc.name:TouchEventInjector
- * @tc.desc: Check destroy event before sendtouchevent.
+ * @tc.number: TouchEventInjector005
+ * @tc.name:TouchEventInjector
+ * @tc.desc: Check destroy event before sendtouchevent.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_005, TestSize.Level1)
 {
@@ -187,9 +187,9 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 }
 
 /**
- * @tc.number: TouchEventInjector006
- * @tc.name:TouchEventInjector
- * @tc.desc: Check injected UP_THEN_RIGHT move event.
+ * @tc.number: TouchEventInjector006
+ * @tc.name:TouchEventInjector
+ * @tc.desc: Check injected UP_THEN_RIGHT move event.
  */
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_006, TestSize.Level1)
 {

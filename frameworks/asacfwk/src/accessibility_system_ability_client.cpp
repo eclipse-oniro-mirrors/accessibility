@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -298,12 +298,11 @@ bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty&
 {
     HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str()) != 0)) {
+        strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) ||
+        strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
+        strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
+        strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) ||
+        strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str())) {
         captionProperty_ = caption;
         NotifyCaptionChanged();
     }
@@ -314,12 +313,11 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
 {
     HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) != 0) ||
-        (strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str()) != 0)) {
+        strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) ||
+        strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
+        strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
+        strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) ||
+        strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str())) {
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
             HILOG_ERROR("Failed to get aams service");
@@ -589,7 +587,7 @@ void AccessibilitySystemAbilityClient::NotifyAccessibilityStateChanged()
 {
     HILOG_DEBUG("isEnabled_ is %{public}d", isEnabled_);
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersAccessibilityState_.size() == 0) {
+    if (!observersAccessibilityState_.size()) {
         HILOG_DEBUG("observersAccessibilityState_ is null");
         return;
     }
@@ -607,7 +605,7 @@ void AccessibilitySystemAbilityClient::NotifyTouchExplorationStateChanged()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersTouchState_.size() == 0) {
+    if (!observersTouchState_.size()) {
         HILOG_DEBUG("observersTouchState_ is null");
         return;
     }
@@ -625,7 +623,7 @@ void AccessibilitySystemAbilityClient::NotifyCaptionStateChanged()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersCaptionEnable_.size() == 0) {
+    if (!observersCaptionEnable_.size()) {
         HILOG_DEBUG("observersCaptionEnable_ is null");
         return;
     }
@@ -644,11 +642,11 @@ bool AccessibilitySystemAbilityClient::AddCaptionListener(const std::shared_ptr<
     HILOG_DEBUG("start");
     bool result = true;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
-        if (observersCaptionEnable_.size() == 0) {
+        if (!observersCaptionEnable_.size()) {
             observersCaptionEnable_.push_back(ob);
         }
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
-        if (observersCaptionProperty_.size() == 0) {
+        if (!observersCaptionProperty_.size()) {
             observersCaptionProperty_.push_back(ob);
         }
     } else {
@@ -699,7 +697,7 @@ void AccessibilitySystemAbilityClient::NotifyCaptionChanged()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersCaptionProperty_.size() == 0) {
+    if (!observersCaptionProperty_.size()) {
         HILOG_DEBUG("observersCaptionProperty_ is null");
         return;
     }
@@ -841,7 +839,7 @@ void AccessibilitySystemAbilityClient::NotifyGestureStateChanged()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersGestureState_.size() == 0) {
+    if (!observersGestureState_.size()) {
         HILOG_DEBUG("observersGestureState_ is null");
         return;
     }
@@ -859,7 +857,7 @@ void AccessibilitySystemAbilityClient::NotifyKeyEventStateChanged()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(asacProxyLock_);
-    if (observersKeyEventState_.size() == 0) {
+    if (!observersKeyEventState_.size()) {
         HILOG_DEBUG("observersKeyEventState_ is null");
         return;
     }

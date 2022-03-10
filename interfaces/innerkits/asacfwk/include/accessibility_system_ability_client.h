@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -250,8 +250,8 @@ public:
 
     /**
      * @brief Inner function.
-     *        Get the callback object registed by ACE.
-     * @param windowId The window id related the operation object registed.
+     *        Get the callback object registered by ACE.
+     * @param windowId The window id related the operation object registered.
      * @return The callback object of ACE.
      */
     std::shared_ptr<AccessibilityElementOperator> GetOperatorObject(int windowId);

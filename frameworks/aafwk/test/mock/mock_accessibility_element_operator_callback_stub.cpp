@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,36 +26,50 @@ AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackS
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
+    (void)code;
+    (void)data;
+    (void)reply;
+    (void)option;
     return 0;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult(
     MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult(
     MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 
 ErrCode AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult(MessageParcel &data,
     MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
     return NO_ERROR;
 }
 } // namespace Accessibility

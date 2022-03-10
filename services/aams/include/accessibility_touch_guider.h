@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,7 @@ class TouchGuider;
 enum class TouchGuideState : int {
     TOUCH_GUIDING,
     DRAGGING,
-    TRANSMITING,
+    TRANSMITTING,
     GESTURE_RECOGNIZING
 };
 
@@ -308,7 +308,7 @@ private:
     void HandleDraggingState(MMI::PointerEvent &event);
 
     /**
-     * @brief Handle touch events on transmiting state.
+     * @brief Handle touch events on transmitting state.
      * @param event the touch event from Multimodal
      * @return
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@
 #include "iservice_registry.h"
 #include "json.h"
 #include "mock_bundle_manager.h"
+#include "mock_input_manager.h"
 #include "system_ability_definition.h"
 
 using namespace std;
@@ -33,8 +34,6 @@ using namespace testing;
 using namespace testing::ext;
 
 namespace OHOS {
-extern int g_mTkeyCode;
-extern std::shared_ptr<MMI::IInputEventConsumer> g_inputEventConsumer;
 namespace Accessibility {
 extern int g_testKeyPressEvent;
 static constexpr uint8_t TEST_NUM_2         = 2;
@@ -133,6 +132,7 @@ void AamsKeyEventFilterTest::WritefileAll(const char* fname, const char* data) c
     FILE *fp;
     if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
+        return;
     }
 
     (void)fprintf(fp, "%s", data);
@@ -146,7 +146,7 @@ void AamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent()
     accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
     string jsonStr;
 
-    if (remove("/system/app/dummy_accessibility_ability_config.json") == 0) {
+    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
         GTEST_LOG_(INFO) << "remove successful";
     } else {
         GTEST_LOG_(INFO) << "remove failed";
@@ -208,8 +208,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(keyEvent);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
     }
 
     bool handled = true;
@@ -244,8 +245,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(keyEvent);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
     }
 
     bool handled = false;
@@ -260,7 +262,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     WaitUntilTaskFinished();
 
     EXPECT_EQ(g_testKeyPressEvent, TEST_NUM_2);
-    EXPECT_EQ(g_mTkeyCode, MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetKeyCode(), MMI::KeyEvent::KEYCODE_VOLUME_UP);
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest_Moduletest_OnKeyEvent002 end";
 }
 
@@ -282,14 +284,15 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     EXPECT_EQ((int)connectionMaps.size(), 1);
     GTEST_LOG_(INFO) << "AddConnection result end ----------";
 
-    if (g_inputEventConsumer != nullptr) {
-        g_inputEventConsumer->OnInputEvent(keyEvent);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
     }
     sleep(1);
     WaitUntilTaskFinished();
 
     EXPECT_EQ(g_testKeyPressEvent, TEST_NUM_3);
-    EXPECT_EQ(g_mTkeyCode, MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    EXPECT_EQ(MMI::MockInputManager::GetKeyCode(), MMI::KeyEvent::KEYCODE_VOLUME_UP);
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest_Moduletest_OnKeyEvent003 end";
 }
 } // namespace Accessibility

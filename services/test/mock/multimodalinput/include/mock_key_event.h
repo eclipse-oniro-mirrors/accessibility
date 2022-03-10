@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef NAPI_ACCESSIBILITY_GESTURE_POS_H
-#define NAPI_ACCESSIBILITY_GESTURE_POS_H
+#ifndef MOCK_KEY_EVENT_H
+#define MOCK_KEY_EVENT_H
 
-#include "napi/native_api.h"
-#include "napi/native_node_api.h"
+#include "key_event.h"
 
-class NGesturePos {
+namespace OHOS {
+namespace MMI {
+class MockKeyEvent : public KeyEvent {
 public:
-    static napi_value posCons_;
-    static void DefineJSGesturePos(napi_env env);
-    static napi_value JSPosConstructor(napi_env env, napi_callback_info info);
 };
-
-#endif // NAPI_ACCESSIBILITY_GESTURE_POS_H
+} // MMI
+} // OHOS
+#endif // MOCK_KEY_EVENT_H

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,7 +49,7 @@ bool Event::Compare()
 {
     if (!waiting_message_.empty()) {
         for (size_t i = 0; i < complete_message_.size(); i++) {
-            if (waiting_message_.compare(complete_message_.at(i)) == 0) {
+            if (!waiting_message_.compare(complete_message_.at(i))) {
                 complete_message_.erase(std::begin(complete_message_) + i, std::begin(complete_message_) + i + 1);
                 waiting_message_ = "";
                 return true;
@@ -82,7 +82,7 @@ int Event::WaitingMessage(const std::string &message, int timeout_ms, bool locke
 void Event::CompleteMessage(const std::string &message)
 {
     std::unique_lock<std::mutex> lock(mutex_);
-    if (waiting_message_.compare(message) == 0) {
+    if (!waiting_message_.compare(message)) {
         waiting_message_ = "";
         cv_.notify_all();
         return;

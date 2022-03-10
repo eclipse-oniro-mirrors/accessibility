@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -131,7 +131,7 @@ HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocus
     Rect rect(0, 100, 800, 900);
     AccessibilityWindowInfoManager::GetInstance().SetWindowSize(0, rect);
     GTEST_LOG_(INFO) << "3 start";
-    auto interactionBridge = AccessibilityInteractionBridge::GetInstance();
+    auto &interactionBridge = AccessibilityInteractionBridge::GetInstance();
     MMI::PointerEvent::PointerItem point;
     auto ret = interactionBridge.GetPointerItermOfAccessibilityFocusClick(point);
     EXPECT_EQ(ret, true);

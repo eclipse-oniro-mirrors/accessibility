@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (C) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,5 +13,26 @@
 
 AAMS_MOCK_PATH = "//base/accessibility/services/test/mock"
 
+aams_mock_include_dirs = [
+  "$AAMS_MOCK_PATH/distributeddatamgr/include",
+  "$AAMS_MOCK_PATH/multimodalinput/include",
+  "$AAMS_MOCK_PATH/powermanager/include",
+  "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
+  "//foundation/multimodalinput/input/common/include",
+  "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
+  "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
+  "//base/powermgr/power_manager/interfaces/innerkits/native/include",
+]
+
 aams_mock_distributeddatamgr_src =
     [ "$AAMS_MOCK_PATH/distributeddatamgr/src/mock_preferences_helper.cpp" ]
+
+aams_mock_multimodalinput_src = [
+  "$AAMS_MOCK_PATH/multimodalinput/src/mock_input_event.cpp",
+  "$AAMS_MOCK_PATH/multimodalinput/src/mock_input_manager.cpp",
+  "$AAMS_MOCK_PATH/multimodalinput/src/mock_key_event.cpp",
+  "$AAMS_MOCK_PATH/multimodalinput/src/mock_pointer_event.cpp",
+]
+
+aams_mock_powermanager_src =
+    [ "$AAMS_MOCK_PATH/powermanager/src/mock_power_mgr_client.cpp" ]

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,8 +53,8 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("setGestureState", NAccessibilityClient::SetGestureState),
         DECLARE_NAPI_FUNCTION("getKeyEventObserverState", NAccessibilityClient::GetKeyEventObserverState),
         DECLARE_NAPI_FUNCTION("setKeyEventObserverState", NAccessibilityClient::SetKeyEventObserverState),
-        DECLARE_NAPI_FUNCTION("extentionEnabled", NAccessibilityClient::ExtentionEnabled),
-        DECLARE_NAPI_FUNCTION("extentionDisabled", NAccessibilityClient::ExtentionDisabled),
+        DECLARE_NAPI_FUNCTION("extensionEnabled", NAccessibilityClient::ExtensionEnabled),
+        DECLARE_NAPI_FUNCTION("extensionDisabled", NAccessibilityClient::ExtensionDisabled),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 

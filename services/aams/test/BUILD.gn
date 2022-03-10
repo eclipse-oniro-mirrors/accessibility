@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (C) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -24,13 +24,14 @@ config("module_private_config") {
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
-  include_dirs = [
+
+  include_dirs = aams_mock_include_dirs
+  include_dirs += [
     "mock",
     "//third_party/json/include",
     "//utils/native/base/include",
     "//utils/system/safwk/native/include",
     "//base/accessibility/services/aams/include",
-    "//base/accessibility/services/test/mock/distributeddatamgr/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
@@ -47,13 +48,10 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//utils/system/safwk/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
     "//utils/native/base/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
@@ -225,6 +223,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -309,6 +308,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -395,6 +395,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -464,10 +465,10 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/mock_bundle_mgr_proxy.cpp",
     "mock/mock_display.cpp",
     "mock/mock_display_manager.cpp",
-    "mock/mock_input_manager.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
+  sources += aams_mock_multimodalinput_src
 
   configs = [ ":module_private_config" ]
 
@@ -644,6 +645,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -740,6 +742,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
@@ -827,6 +830,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -911,6 +915,7 @@ ohos_unittest("accessibility_touchEvent_injector_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -1001,6 +1006,7 @@ ohos_unittest("accessibility_interaction_bridge_test") {
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/appexecfwk/standard/common:libappexecfwk_common",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
@@ -1030,16 +1036,8 @@ group("unittest") {
   deps = []
 
   deps += [
-    ":accessibility_account_data_test",
     ":accessibility_common_event_registry_test",
     ":accessibility_display_manager_test",
-    ":accessibility_input_interceptor_test",
-    ":accessibility_interaction_bridge_test",
-    ":accessibility_keyevent_filter_test",
     ":accessibility_touchEvent_injector_test",
-    ":accessibility_touch_guider_test",
-    ":accessibility_window_manager_test",
-    ":accessible_ability_connection_test",
-    ":accessible_ability_manager_service_test",
   ]
 }

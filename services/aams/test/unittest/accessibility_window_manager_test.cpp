@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -268,7 +268,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
         windowInfoManager.a11yWindows_.clear();
     }
     /* OnWindowChange */
-    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 0);
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
 
     AccessibilityWindowInfo info = windowInfoManager.CreateAccessibilityWindowInfo(*winInfo);
     windowInfoManager.a11yWindows_.insert(std::make_pair(winInfo->wid_, info));
@@ -302,7 +302,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     mgr.activeWindowId_ = INVALID_WINDOW_ID;
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(*winInfo);
     int id = 2;
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 0);
+    EXPECT_TRUE(!mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(id, info));
     EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
 
@@ -341,7 +341,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     AccessibilityWindowInfoManager& mgr = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(*winInfo);
     int id = 2;
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 0);
+    EXPECT_TRUE(!mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(id, info));
     EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
 
@@ -382,7 +382,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     mgr.activeWindowId_ = INVALID_WINDOW_ID;
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(*winInfo);
     int id = -1;
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 0);
+    EXPECT_TRUE(!mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(id, info));
     EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
 

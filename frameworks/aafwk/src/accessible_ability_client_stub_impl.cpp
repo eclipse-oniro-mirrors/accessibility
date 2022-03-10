@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -134,6 +134,7 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
         }
     } else {
         AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
+        uiTestListener_->OnAbilityDisconnected();
         uiTestListener_ = nullptr;
     }
 }
@@ -161,7 +162,8 @@ void AccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEv
     }
 
     if (uiTestListener_) {
-        bool handled = uiTestListener_->OnKeyPressEvent(keyEvent, sequence);
+        std::shared_ptr<MMI::KeyEvent> tmp = std::make_shared<MMI::KeyEvent>(keyEvent);
+        bool handled = uiTestListener_->OnKeyPressEvent(tmp, sequence);
         AccessibilityOperator::GetInstance().SetOnKeyPressEventResult(channelId_, handled, sequence);
     }
 }

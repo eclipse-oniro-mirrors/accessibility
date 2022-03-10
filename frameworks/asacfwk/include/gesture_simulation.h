@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -182,7 +182,7 @@ public:
     /**
      * @brief Called when the gesture is finished.
      * @param sequence
-     * @param result Reture true if the gesture which is listened is injected successfully, else return false.
+     * @param result Return true if the gesture which is listened is injected successfully, else return false.
      * @return
      */
     virtual void OnGestureInjectResult(uint32_t sequence, bool result) = 0;

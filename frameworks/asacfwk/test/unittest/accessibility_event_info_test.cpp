@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -156,7 +156,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetClassName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetClassName_001 start";
     AccessibilityMemo record {};
     record.SetComponentType("test");
-    EXPECT_TRUE(strcmp(record.GetComponentType().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(record.GetComponentType().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetClassName_001 end";
 }
 
@@ -170,7 +170,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetBeforeText_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetBeforeText_001 start";
     AccessibilityMemo record {};
     record.SetBeforeText("test");
-    EXPECT_TRUE(strcmp(record.GetBeforeText().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(record.GetBeforeText().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetBeforeText_001 end";
 }
 
@@ -184,7 +184,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetContentList_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetContentList_001 start";
     AccessibilityMemo record {};
     record.AddContent("test");
-    EXPECT_TRUE(strcmp(record.GetContentList()[0].c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(record.GetContentList()[0].c_str(), "test"));
     GTEST_LOG_(INFO) << "GetContentList_001 end";
 }
 
@@ -198,7 +198,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetLatestContent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetLatestContent_001 start";
     AccessibilityMemo record {};
     record.SetLatestContent("test");
-    EXPECT_TRUE(strcmp(record.GetLatestContent().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(record.GetLatestContent().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetLatestContent_001 end";
 }
 
@@ -212,7 +212,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetDescription_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetDescription_001 start";
     AccessibilityMemo record {};
     record.SetDescription("test");
-    EXPECT_TRUE(strcmp(record.GetDescription().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(record.GetDescription().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 
@@ -325,7 +325,7 @@ HWTEST_F(AccessibilityEventInfoUnitTest, GetBundleName_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "GetDescription_001 start";
     AccessibilityEventInfo event {};
     event.SetBundleName("test");
-    EXPECT_TRUE(strcmp(event.GetBundleName().c_str(), "test") == 0);
+    EXPECT_TRUE(!strcmp(event.GetBundleName().c_str(), "test"));
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 

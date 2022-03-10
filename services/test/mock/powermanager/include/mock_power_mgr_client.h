@@ -13,38 +13,13 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_AAFWK_WANT_H
-#define OHOS_AAFWK_WANT_H
+#ifndef MOCK_POWERMGR_POWER_MGR_CLIENT_H
+#define MOCK_POWERMGR_POWER_MGR_CLIENT_H
 
-#include <string>
-#include <unistd.h>
-#include "uri.h"
-#include "element_name.h"
+#include "power_mgr_client.h"
 
 namespace OHOS {
-namespace AAFwk {
-class Want {
-public:
-    std::string GetBundle() const
-    {
-        return "1";
-    }
-
-    int GetIntParam(const std::string &key, int defaultValue) const
-    {
-        return 0;
-    }
-
-    std::string GetAction() const
-    {
-        return "1";
-    }
-
-    void SetElement(const AppExecFwk::ElementName &element) {}
-    Want() {}
-    ~Want() {}
-};
-} // namespace AAFwk
+namespace PowerMgr {
+} // namespace PowerMgr
 } // namespace OHOS
-
-#endif  // OHOS_AAFWK_WANT_H
+#endif // POWERMGR_POWER_MGR_CLIENT_H

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,6 +51,10 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 
     AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
+    if (display == nullptr) {
+        HILOG_ERROR("get display is nullptr");
+        return;
+    }
 
     threshold_ = CALCULATION_DIMENSION(display->GetWidth());
     xMinPixels_ = MIN_PIXELS(display->GetWidth());
@@ -63,12 +67,12 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     runner_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
-        return ;
+        return;
     }
     handler_ = std::make_shared<GestureHandler>(runner_, *this);
     if (!handler_) {
         HILOG_ERROR("create event handler failed");
-        return ;
+        return;
     }
 }
 
