@@ -102,7 +102,7 @@ ohos_shared_library("accessibleabilityms") {
     "ces_standard:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "multimodalinput_base:libmmi-client",
+    "input:libmmi-client",
     "os_account_standard:os_account_innerkits",
   ]
 
