@@ -281,10 +281,8 @@ void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData,
     int connectionId, AccessibilityAbilityInfo &abilityInfo)
+    : connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
 {
-    connectionId_ = connectionId;
-    abilityInfo_ = abilityInfo;
-    accountData_ = accountData;
 }
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
@@ -327,8 +325,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
-        wptr<AccessibilityAccountData> data(accountData_);
-        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(data, elementName_);
+        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
     }
 
     if (!proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
@@ -531,16 +528,25 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
-    sptr<AccessibilityAccountData> accountData = recipientAccountData_.promote();
-    if (!accountData) {
+    if (!recipientAccountData_) {
         HILOG_ERROR("recipientAccountData_ is null.");
         return;
     }
 
     sptr<AccessibleAbilityConnection> connection =
-        accountData->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
-    accountData->RemoveConnectedAbility(connection);
-    accountData->RemoveEnabledAbility(recipientElementName_);
+        recipientAccountData_->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
+    if (!connection) {
+        HILOG_ERROR("There is no connection for %{public}s.", recipientElementName_.GetURI().c_str());
+        return;
+    }
+    recipientAccountData_->RemoveConnectedAbility(connection);
+    recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
+
+    std::string uiTestUri = "/com.example.uitest/uitestability";
+    if (recipientElementName_.GetURI() == uiTestUri) {
+        recipientAccountData_->RemoveInstalledAbility("com.example.uitest");
+    }
+
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
     // temp deal: notify setting

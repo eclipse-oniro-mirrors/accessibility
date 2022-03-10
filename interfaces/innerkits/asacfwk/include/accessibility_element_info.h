@@ -1147,12 +1147,12 @@ public:
 
     /**
      * @brief Set whether the content in this node is a password
-     * @param password true: password, otherwise is not.
+     * @param type true: password, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
      */
-    void SetPassword(const bool password);
+    void SetPassword(const bool type);
 
     /**
      * @brief Checks whether this node is scrollable.
@@ -1814,7 +1814,7 @@ private:
     bool clickable_ = false;
     bool longClickable_ = false;
     bool enable_ = false;
-    bool password_ = false;
+    bool isPassword_ = false;
     bool scrollable_ = false;
     bool editable_ = false;
     bool popupSupported_ = false;

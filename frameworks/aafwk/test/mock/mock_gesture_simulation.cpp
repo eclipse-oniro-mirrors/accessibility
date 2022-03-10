@@ -69,12 +69,12 @@ GesturePathPositionDefine *GesturePathPositionDefine::Unmarshalling(Parcel &parc
 }
 
 GesturePathDefine::GesturePathDefine(GesturePathPositionDefine &startPosition,
-    GesturePathPositionDefine &endPosition, uint32_t durationTime)
+    GesturePathPositionDefine &endPosition, int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathDefine";
 }
 
-uint32_t GesturePathDefine::GetDurationTime()
+int64_t GesturePathDefine::GetDurationTime()
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathDefine GetDurationTime";
     return durationTime_;
@@ -86,7 +86,7 @@ GesturePathPositionDefine &GesturePathDefine::GetEndPosition()
     return endPosition_;
 }
 
-uint32_t GesturePathDefine::GetMaxStrokeDuration()
+int64_t GesturePathDefine::GetMaxStrokeDuration()
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathDefine GetMaxStrokeDuration";
     return MAX_STROKE_DURATION;
@@ -104,7 +104,7 @@ GesturePathPositionDefine &GesturePathDefine::GetStartPosition()
     return startPosition_;
 }
 
-void GesturePathDefine::SetDurationTime(uint32_t durationTime)
+void GesturePathDefine::SetDurationTime(int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "MOCK GesturePathDefine SetDurationTime";
     durationTime_ = durationTime;

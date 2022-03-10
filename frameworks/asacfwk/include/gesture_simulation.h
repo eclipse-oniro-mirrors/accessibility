@@ -89,14 +89,14 @@ public:
     ~GesturePathDefine() {}
 
     GesturePathDefine(GesturePathPositionDefine &startPosition,
-        GesturePathPositionDefine &endPosition, uint32_t durationTime);
+        GesturePathPositionDefine &endPosition, int64_t durationTime);
 
     /**
      * @brief Obtains the duration for completing the maximum number of gesture strokes.
      * @param
      * @return Return the duration for completing the maximum number of gesture strokes.
      */
-    static uint32_t GetMaxStrokeDuration();
+    static int64_t GetMaxStrokeDuration();
 
     /**
      * @brief Obtains the maximum number of strokes in this gesture path.
@@ -110,7 +110,7 @@ public:
      * @param
      * @return Return the duration in which this gesture path continues.
      */
-    uint32_t GetDurationTime();
+    int64_t GetDurationTime();
 
     /**
      * @brief Obtains the end position of this gesture path.
@@ -131,7 +131,7 @@ public:
      * @param durationTime The duration for this gesture path to continue.
      * @return
      */
-    void SetDurationTime(uint32_t durationTime);
+    void SetDurationTime(int64_t durationTime);
 
     /**
      * @brief Sets the end position of this gesture path.
@@ -169,12 +169,12 @@ public:
     static GesturePathDefine *Unmarshalling(Parcel &parcel);
 
 private:
-    const static uint32_t MAX_STROKE_DURATION = 60 * 1000;
+    const static int64_t MAX_STROKE_DURATION = 60 * 1000;
     const static uint32_t MAX_STROKES = 10;
 
     GesturePathPositionDefine startPosition_;
     GesturePathPositionDefine endPosition_;
-    uint32_t durationTime_ = 0;
+    int64_t durationTime_ = 0;
 };
 
 class GestureResultListener {

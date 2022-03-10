@@ -133,7 +133,7 @@ public:
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        AccessibleAbilityConnectionDeathRecipient(wptr<AccessibilityAccountData>& accountData,
+        AccessibleAbilityConnectionDeathRecipient(sptr<AccessibilityAccountData> accountData,
             AppExecFwk::ElementName& elementName)
             : recipientAccountData_(accountData), recipientElementName_(elementName) {};
         ~AccessibleAbilityConnectionDeathRecipient() = default;
@@ -141,21 +141,20 @@ private:
 
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
-        wptr<AccessibilityAccountData>& recipientAccountData_;
+        sptr<AccessibilityAccountData> recipientAccountData_;
         AppExecFwk::ElementName& recipientElementName_;
     };
 
     bool IsWantedEvent(int eventType);
     bool IsAllowedListEvent(EventType eventType);
 
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_ {};
+    int connectionId_ = -1;
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityClient> proxy_ = nullptr;
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
-    AccessibilityAbilityInfo abilityInfo_;
-    AppExecFwk::ElementName elementName_;
-    sptr<AccessibilityAccountData> accountData_;
-
-    int connectionId_;
+    AccessibilityAbilityInfo abilityInfo_ {};
+    AppExecFwk::ElementName elementName_ {};
+    sptr<AccessibilityAccountData> accountData_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

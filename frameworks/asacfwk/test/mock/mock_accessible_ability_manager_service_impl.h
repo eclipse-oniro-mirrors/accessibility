@@ -41,7 +41,7 @@ public:
         return 1;
     }
 
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType)
+    std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes, const int32_t stateType)
     {
         AccessibilityAbilityInfo info {};
         std::vector<AccessibilityAbilityInfo> infos;

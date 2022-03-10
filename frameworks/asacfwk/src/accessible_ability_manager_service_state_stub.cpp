@@ -49,7 +49,7 @@ ErrCode AccessibleAbilityManagerServiceStateStub::HandleOnStateChanged(MessagePa
     MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-    int stateType = data.ReadUint32();
+    uint32_t stateType = data.ReadUint32();
     OnStateChanged(stateType);
 
     return NO_ERROR;

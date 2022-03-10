@@ -335,7 +335,7 @@ private:
     bool isDoubleTap_ = false;
     bool isRecognizingGesture_ = false;
     bool isGestureStarted_ = false;
-    unsigned int startTime_ = 0;
+    int64_t startTime_ = 0;
     float xMinPixels_ = 0;
     float yMinPixels_ = 0;
     float threshold_ = 0;
@@ -343,7 +343,7 @@ private:
     MMI::PointerEvent::PointerItem prePointer_ = {};
     MMI::PointerEvent::PointerItem startPointer_ = {};
     std::vector<Pointer> pointerRoute_ {};
-    AccessibilityGestureRecognizeListener *listener_;
+    AccessibilityGestureRecognizeListener *listener_ = nullptr;
     std::unique_ptr<MMI::PointerEvent> pPreUp_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> pCurDown_ = nullptr;
     std::shared_ptr<GestureHandler> handler_ = nullptr;

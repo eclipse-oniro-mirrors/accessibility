@@ -197,10 +197,12 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
     }
     if (keyEventInterceptorId_ != -1) {
         inputManager_->RemoveInterceptor(keyEventInterceptorId_);
+        keyEventInterceptorId_ = -1;
     }
 
     if (interceptorId_ != -1) {
         inputManager_->RemoveInterceptor(interceptorId_);
+        interceptorId_ = -1;
     }
 }
 

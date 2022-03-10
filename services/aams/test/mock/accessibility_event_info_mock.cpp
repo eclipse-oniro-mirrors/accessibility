@@ -48,7 +48,7 @@ AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
     eventType_ = eventType;
 }
 
-void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
+void AccessibilityEventInfo::SetTimeStamp(const int64_t eventTime)
 {
     timeStamp_ = eventTime;
 }

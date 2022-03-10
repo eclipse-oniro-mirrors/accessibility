@@ -48,7 +48,7 @@ enum WindowsContentChangeTypes : int {
     CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION = 0x00000004,
 };
 
-enum EventType : int {
+enum EventType : uint32_t {
     TYPE_VIEW_INVALID = 0,
     TYPE_VIEW_CLICKED_EVENT = 0x00000001,
     TYPE_VIEW_LONG_CLICKED_EVENT = 0x00000002,
@@ -571,7 +571,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    long long GetTimeStamp() const;
+    int64_t GetTimeStamp() const;
 
     /**
      * @brief ASAC set the time of accessibility is sent to AA
@@ -580,7 +580,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetTimeStamp(const long long eventTime);  // remained:for send event timestamp
+    void SetTimeStamp(const int64_t eventTime);  // remained:for send event timestamp
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
@@ -722,11 +722,11 @@ private:
     EventType eventType_ = TYPE_VIEW_INVALID;
     std::string bundleName_ = "";
     ActionType triggerAction_ = ACCESSIBILITY_ACTION_INVALID;
-    long long timeStamp_ = 0;
+    int64_t timeStamp_ = 0;
     TextMoveUnit textMoveStep_ = STEP_CHARACTER;
     WindowsContentChangeTypes windowContentChangeTypes_ = CONTENT_CHANGE_TYPE_INVALID;
     WindowUpdateType windowChangeTypes_ = WINDOW_UPDATE_INVALID;
-    GestureType gestureType_;
+    GestureType gestureType_ = GESTURE_INVALID;
     int recordsCount_ = 0;
     std::vector<AccessibilityEventInfo> records_;
     NotificationCategory category_ = CATEGORY_INVALID;

@@ -283,11 +283,11 @@ void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
 {
     HILOG_DEBUG("Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
         infos.size(), sequenceNum);
-    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         HILOG_DEBUG("Response");
         elementInfosResult_.push_back(*iter);
     }
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
@@ -296,10 +296,10 @@ void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<A
 {
     HILOG_DEBUG("Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
         infos.size(), sequenceNum);
-    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         elementInfosResult_.push_back(*iter);
     }
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
@@ -307,16 +307,16 @@ void AccessibilityOperator::SetFindFocusedElementInfoResult(const AccessibilityE
     const int sequenceNum)
 {
     HILOG_DEBUG("Response [sequenceNum:%{public}d]", sequenceNum);
-    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 
 void AccessibilityOperator::SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int sequenceNum)
 {
     HILOG_DEBUG("Response [sequenceNum:%{public}d]", sequenceNum);
-    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     accessibilityInfoResult_ = info;
+    asyncElementOperatorMng_.UpdateSearchFeedback(sequenceNum);
     HILOG_DEBUG("Response [sequenceNum:%{public}d] end", sequenceNum);
 }
 

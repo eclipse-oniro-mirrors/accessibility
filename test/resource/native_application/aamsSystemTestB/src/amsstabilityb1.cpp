@@ -167,7 +167,7 @@ void AamsStAbilityB1::GetAbilityList()
 {
     HILOG_INFO("AamsStAbilityB1::GetAbilityList");
     AbilityContext context;
-    int accessibilityAbilityTypes = Accessibility::AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
+    uint32_t accessibilityAbilityTypes = Accessibility::AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
     auto stateType = Accessibility::AbilityStateType::ABILITY_STATE_ENABLE;
     AccessibilitySystemAbilityClient::GetInstance(context)->GetAbilityList(accessibilityAbilityTypes, stateType);
 }

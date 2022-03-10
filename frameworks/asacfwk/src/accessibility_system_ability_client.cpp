@@ -231,7 +231,7 @@ bool AccessibilitySystemAbilityClient::IsCaptionEnabled()
 }
 
 std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetAbilityList(
-    const int accessibilityAbilityTypes, const AbilityStateType stateType)
+    const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType)
 {
     HILOG_DEBUG("start");
     bool check = false;

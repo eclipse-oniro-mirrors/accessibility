@@ -264,7 +264,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
     EXPECT_EQ(2, (int)accountData->GetInstalledAbilities().size());
 
     /* ABILITY_STATE_DISABLE */
-    int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
+    int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 1);
 
@@ -284,7 +284,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_004 start";
 
     AddAccessibleAbilityConnection();
-    int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
+    int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 0);
 

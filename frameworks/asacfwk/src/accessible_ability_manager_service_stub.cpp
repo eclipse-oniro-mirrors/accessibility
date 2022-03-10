@@ -151,12 +151,12 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
 {
     HILOG_DEBUG("start");
 
-    int abilityTypes = data.ReadInt32();
-    int stateType = data.ReadInt32();
+    uint32_t abilityTypes = data.ReadUint32();
+    int32_t stateType = data.ReadInt32();
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
     abilityInfos = GetAbilityList(abilityTypes, stateType);
 
-    int32_t abilityInfoSize = abilityInfos.size();
+    int32_t abilityInfoSize = (int32_t)abilityInfos.size();
     reply.WriteInt32(abilityInfoSize);
     for (auto& abilityInfo : abilityInfos) {
         if (!reply.WriteParcelable(&abilityInfo)) {
@@ -386,10 +386,10 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
     HILOG_DEBUG("start");
 
     std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
-    int num = it.size();
+    int32_t num = (int32_t)it.size();
 
-    reply.WriteInt32(it.size());
-    for (int i = 0; i < num; i++) {
+    reply.WriteInt32(num);
+    for (int32_t i = 0; i < num; i++) {
         bool ret = reply.WriteParcelable(&it[i]);
         if (!ret) {
             return ErrCode::ERROR;
