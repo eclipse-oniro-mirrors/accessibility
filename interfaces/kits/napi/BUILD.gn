@@ -63,8 +63,8 @@ ohos_shared_library("accessibility") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
     "input:libmmi-client",
+    "ipc:ipc_core",
   ]
 
   relative_install_dir = "module"
