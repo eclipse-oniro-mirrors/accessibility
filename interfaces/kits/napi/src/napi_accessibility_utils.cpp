@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1536,13 +1536,13 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object, GestureP
         gesturePath.SetEndPosition(gesturePathPosition);
     }
 
-    uint32_t durationTime = 0;
+    int64_t durationTime = 0;
     napi_create_string_utf8(env, "durationTime", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_uint32(env, value, &durationTime);
+        napi_get_value_int64(env, value, &durationTime);
         gesturePath.SetDurationTime(durationTime);
     }
 }

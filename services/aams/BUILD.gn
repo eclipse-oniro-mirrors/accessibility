@@ -1,4 +1,4 @@
-# Copyright (C) 2021 Huawei Device Co., Ltd.
+# Copyright (C) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -36,7 +36,6 @@ config("aams_service_config") {
     "//foundation/aafwk/standard/interfaces/innerkits/base/include",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/notification/ces_standard/interfaces/innerkits/native/include",
     "//base/accessibility/dummyData",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,28 +22,26 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data) \
-    do                                                           \
-    {                                                            \
-        if (!(parcel).Read##type(data))                          \
-        {                                                        \
-            return false;                                        \
-        }                                                        \
+#define READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data)            \
+    do {                                                                    \
+        if (!(parcel).Read##type(data)) {                                   \
+            HILOG_ERROR("Fail to read %{public}s type from parcel", #type); \
+            return false;                                                   \
+        }                                                                   \
     } while (0)
 
-#define WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data) \
-    do                                                            \
-    {                                                             \
-        if (!(parcel).Write##type(data))                          \
-        {                                                         \
-            return false;                                         \
-        }                                                         \
+#define WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(type, parcel, data)               \
+    do {                                                                        \
+        if (!(parcel).Write##type(data)) {                                      \
+            HILOG_ERROR("Fail to write %{public}s type from parcel", #type);    \
+            return false;                                                       \
+        }                                                                       \
     } while (0)
 
 template<class T>
 std::vector<T> TranslateListToVector(const std::list<T> &originList)
 {
-    int len = originList.size();
+    std::size_t len = originList.size();
     std::vector<T> destVector(len);
     std::copy(originList.begin(), originList.end(), destVector.begin());
     return destVector;

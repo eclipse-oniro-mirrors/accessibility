@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -703,6 +703,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     // new abilityInfo
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    abilityInfo->SetCapabilityValues(
+        CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE | CAPABILITY_GESTURE |
+        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM);
     // new AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     // new aastub

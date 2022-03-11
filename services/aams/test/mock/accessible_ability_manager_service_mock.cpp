@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -133,8 +133,8 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
     return accountData->GetAccessibilityState();
 }
 
-vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(const int abilityTypes,
-    const int stateType)
+vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes,
+    const int32_t stateType)
 {
     vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
@@ -152,7 +152,7 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
     for (auto &ability : abilities) {
-        if (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes)) {
+        if (ability.GetAccessibilityAbilityType() & abilityTypes) {
             infoList.push_back(ability);
         }
     }

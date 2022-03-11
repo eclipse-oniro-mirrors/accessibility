@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,6 @@
 #include "accessibility_zoom_handler.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "power_mgr_client.h"
 #include "key_event.h"
 #include "input_event.h"
 
@@ -198,10 +197,12 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
     }
     if (keyEventInterceptorId_ != -1) {
         inputManager_->RemoveInterceptor(keyEventInterceptorId_);
+        keyEventInterceptorId_ = -1;
     }
 
     if (interceptorId_ != -1) {
         inputManager_->RemoveInterceptor(interceptorId_);
+        interceptorId_ = -1;
     }
 }
 

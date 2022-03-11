@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,7 +29,7 @@ bool AccessibilityElementAsyncOperatorMng::SearchElementResultTimer(const int se
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     struct timeval getTime {};
     gettimeofday(&getTime, NULL);
-    uint64_t startTime = getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec;
+    uint64_t startTime = (uint64_t)(getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec);
     HILOG_DEBUG("element sequence[%{public}d]", sequence);
 
     do {
@@ -37,8 +37,8 @@ bool AccessibilityElementAsyncOperatorMng::SearchElementResultTimer(const int se
             return true;
         }
         gettimeofday(&getTime, NULL);
-        uint64_t endTime =  getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec;
-        uint64_t waitTime = endTime - startTime;
+        uint64_t endTime = (uint64_t)(getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec);
+        uint64_t waitTime = (uint64_t)(endTime - startTime);
         if (TIMEOUT_OPERATOR_MILLIS < waitTime) {
             completed_ = true;
             HILOG_ERROR("Failed to wait sequence[%{public}d], feedbackSequence_[%{public}d]",

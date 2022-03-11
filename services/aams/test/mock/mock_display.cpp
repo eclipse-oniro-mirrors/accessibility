@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,17 +40,18 @@ Display::~Display()
 
 DisplayId Display::GetId() const
 {
-    return pImpl_->GetDisplayInfo()->GetDisplayId();
+    DisplayId id {0};
+    return id;
 }
 
 int32_t Display::GetWidth() const
 {
-    return pImpl_->GetDisplayInfo()->GetWidth();
+    return 0;
 }
 
 int32_t Display::GetHeight() const
 {
-    return pImpl_->GetDisplayInfo()->GetHeight();
+    return 0;
 }
 
 uint32_t Display::GetFreshRate() const
@@ -60,7 +61,8 @@ uint32_t Display::GetFreshRate() const
 
 ScreenId Display::GetScreenId() const
 {
-    return pImpl_->GetDisplayInfo()->GetScreenId();
+    ScreenId id {0};
+    return id;
 }
 
 void Display::UpdateDisplayInfo(sptr<DisplayInfo> displayInfo) const

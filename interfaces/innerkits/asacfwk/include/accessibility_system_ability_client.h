@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,7 +39,7 @@ enum AccessibilityControlType : int {
     CONTENT_TEXT = 0x00000004,
 };
 
-enum AbilityStateType : int {
+enum AbilityStateType : int32_t {
     ABILITY_STATE_INVALID = 0,
     ABILITY_STATE_ENABLE,
     ABILITY_STATE_DISABLE,
@@ -54,7 +54,7 @@ enum AbilityStateType : int {
  */
 class AccessibilitySystemAbilityClient {
 public:
-    static const int NUM_INT32 = 32;
+    static const int32_t NUM_INT32 = 32;
     static const uint32_t STATE_ACCESSIBILITY_ENABLED = 0x00000001;
     static const uint32_t STATE_EXPLORATION_ENABLED = 0x00000002;
     static const uint32_t STATE_CAPTION_ENABLED = 0x00000004;
@@ -112,7 +112,7 @@ public:
      * @return
      */
     std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const int accessibilityAbilityTypes, const AbilityStateType stateType);
+        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType);
 
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.

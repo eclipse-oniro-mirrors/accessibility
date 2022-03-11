@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,8 +41,8 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
 {
     return 0;
 }
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetAbilityList(const int abilityTypes,
-    const int stateType)
+std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetAbilityList(
+    const uint32_t abilityTypes, const int32_t stateType)
 {
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
     return abilityInfos;

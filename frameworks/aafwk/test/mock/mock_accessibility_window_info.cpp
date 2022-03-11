@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,16 +21,19 @@ namespace OHOS {
 namespace Accessibility {
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool AccessibilityWindowInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 AccessibilityWindowInfo* AccessibilityWindowInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     return nullptr;
 }
 
@@ -40,7 +43,9 @@ std::string AccessibilityWindowInfo::GetWindowTitle() const
 }
 
 void AccessibilityWindowInfo::SetWindowTitle(std::string &title)
-{}
+{
+    (void)title;
+}
 
 WindowType AccessibilityWindowInfo::GetWindowType() const
 {
@@ -48,7 +53,9 @@ WindowType AccessibilityWindowInfo::GetWindowType() const
 }
 
 void AccessibilityWindowInfo::SetWindowType(const WindowType type)
-{}
+{
+    (void)type;
+}
 
 int AccessibilityWindowInfo::GetWindowLayer() const
 {
@@ -56,10 +63,13 @@ int AccessibilityWindowInfo::GetWindowLayer() const
 }
 
 void AccessibilityWindowInfo::SetWindowLayer(const int layer)
-{}
+{
+    (void)layer;
+}
 
 bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo &elementInfo)
 {
+    (void)elementInfo;
     return true;
 }
 
@@ -68,6 +78,7 @@ void AccessibilityWindowInfo::SetAnchorId(const int anchorId)
 
 bool AccessibilityWindowInfo::GetAnchor(AccessibilityElementInfo &elementInfo)
 {
+    (void)elementInfo;
     return true;
 }
 
@@ -78,7 +89,9 @@ AccessibilityWindowInfo AccessibilityWindowInfo::GetParent()
 }
 
 void AccessibilityWindowInfo::SetParentId(const int parentId)
-{}
+{
+    (void)parentId;
+}
 
 int AccessibilityWindowInfo::GetParentId() const
 {
@@ -100,10 +113,14 @@ int AccessibilityWindowInfo::GetWindowId() const
 }
 
 void AccessibilityWindowInfo::SetWindowId(const int id)
-{}
+{
+    (void)id;
+}
 
 void AccessibilityWindowInfo::SetChannelId(const int channelId)
-{}
+{
+    (void)channelId;
+}
 
 int AccessibilityWindowInfo::GetChannelId() const
 {
@@ -116,7 +133,9 @@ Rect AccessibilityWindowInfo::GetRectInScreen() const
 }
 
 void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
-{}
+{
+    (void)bounds;
+}
 
 bool AccessibilityWindowInfo::IsActive() const
 {
@@ -124,7 +143,9 @@ bool AccessibilityWindowInfo::IsActive() const
 }
 
 void AccessibilityWindowInfo::SetActive(bool active)
-{}
+{
+    (void)active;
+}
 
 bool AccessibilityWindowInfo::IsFocused() const
 {
@@ -132,7 +153,9 @@ bool AccessibilityWindowInfo::IsFocused() const
 }
 
 void AccessibilityWindowInfo::SetFocused(bool focused)
-{}
+{
+    (void)focused;
+}
 
 bool AccessibilityWindowInfo::IsAccessibilityFocused() const
 {
@@ -140,7 +163,9 @@ bool AccessibilityWindowInfo::IsAccessibilityFocused() const
 }
 
 void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityfocused)
-{}
+{
+    (void)accessibilityfocused;
+}
 
 int AccessibilityWindowInfo::GetChildNum() const
 {
@@ -149,12 +174,15 @@ int AccessibilityWindowInfo::GetChildNum() const
 
 AccessibilityWindowInfo AccessibilityWindowInfo::GetChild(const int index)
 {
+    (void)index;
     AccessibilityWindowInfo accessibilityWindow {};
     return accessibilityWindow;
 }
 
 void AccessibilityWindowInfo::AddChild(const int childId)
-{}
+{
+    (void)childId;
+}
 
 AccessibilityWindowInfo::AccessibilityWindowInfo()
 {}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,7 +50,7 @@ public:
 void AccessibilityAbilityInfoUnitTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if ((fp = fopen(fname, "w")) == NULL) {
+    if ((fp = fopen(fname, "w")) == nullptr) {
         printf("open file %s fail \n", fname);
         return;
     }
@@ -179,7 +179,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, AccessibilityAbilityInfo_Unittest_Get
 HWTEST_F(AccessibilityAbilityInfoUnitTest, AccessibilityAbilityInfo_Unittest_GetEventTypes_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_Unittest_GetEventTypes_001 start";
-    uint32_t eventType = 0; // (uint32_t)EventType::TYPES_ALL_MASK
+    uint32_t eventType = EventType::TYPES_ALL_MASK;
     EXPECT_EQ(accessibilityAbilityInfo_->GetEventTypes(), eventType);
 
     GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_Unittest_GetEventTypes_001 end";

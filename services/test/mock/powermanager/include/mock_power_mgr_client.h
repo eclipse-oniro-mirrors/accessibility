@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,21 +13,13 @@
  * limitations under the License.
  */
 
-#ifndef POWERMGR_POWER_MGR_CLIENT_H
-#define POWERMGR_POWER_MGR_CLIENT_H
+#ifndef MOCK_POWERMGR_POWER_MGR_CLIENT_H
+#define MOCK_POWERMGR_POWER_MGR_CLIENT_H
 
-#include <string>
-#include <singleton.h>
-#include "power_state_machine_info.h"
+#include "power_mgr_client.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class PowerMgrClient final : public DelayedRefSingleton<PowerMgrClient> {
-    DECLARE_DELAYED_REF_SINGLETON(PowerMgrClient)
-
-public:
-    void RefreshActivity(UserActivityType type = UserActivityType::USER_ACTIVITY_TYPE_OTHER);
-};
 } // namespace PowerMgr
 } // namespace OHOS
 #endif // POWERMGR_POWER_MGR_CLIENT_H

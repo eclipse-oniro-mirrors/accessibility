@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -332,10 +332,13 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
     napi_value thisVar;
     void* data = nullptr;
     AccessibilityElementInfo* nodeInfo = nullptr;
+    bool ret = true;
 
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
     std::string direction;
-    ParseString(env, direction, argv[PARAM0]);
+    if (!ParseString(env, direction, argv[PARAM0]) || direction == "") {
+        ret = false;
+    }
     HILOG_DEBUG("argc = %{public}d", (int)argc);
     HILOG_INFO("direction[%{public}s]", direction.c_str());
 
@@ -347,6 +350,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
     NAccessibilityInfoData *callbackInfo = new NAccessibilityInfoData();
     callbackInfo->nativeNodeInfo_ = *nodeInfo;
     callbackInfo->content_ = direction;
+    callbackInfo->ret_ = ret;
     napi_value promise = nullptr;
     if (argc > ARGS_SIZE_ONE) {
         HILOG_DEBUG("GetNext callback mode");
@@ -364,8 +368,10 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
         [](napi_env env, void* data) {  // execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->ret_ = nodeInfo.GetNext(CovertStringToDirection(callbackInfo->content_),
-                callbackInfo->nodeInfo_);
+            if (callbackInfo->ret_) {
+                callbackInfo->ret_ = nodeInfo.GetNext(CovertStringToDirection(callbackInfo->content_),
+                    callbackInfo->nodeInfo_);
+            }
         },
         [](napi_env env, napi_status status, void* data) {  // execute the complete function
             HILOG_DEBUG("GetNext execute back");

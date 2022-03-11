@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,13 +82,13 @@ void TouchEventInjector::DestroyEvents()
     EventTransmission::DestroyEvents();
 }
 
-void TouchEventInjector::GetTapsEvents(long startTime)
+void TouchEventInjector::GetTapsEvents(int64_t startTime)
 {
     HILOG_INFO("TouchEventInjector::GetTapsEvents: start");
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
-    long downTime = startTime;
-    long nowTime = startTime;
+    int64_t downTime = startTime;
+    int64_t nowTime = startTime;
     pointer.SetPointerId(1);
     for (unsigned int i = 0; i < gesturePath_.size(); i++) {
         /* append down event */
@@ -116,13 +116,13 @@ void TouchEventInjector::GetTapsEvents(long startTime)
     }
 }
 
-void TouchEventInjector::GetMovesEvents(long startTime)
+void TouchEventInjector::GetMovesEvents(int64_t startTime)
 {
     HILOG_INFO("TouchEventInjector::GetTapsEvents: start");
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
-    long downTime = startTime;
-    long nowTime = startTime;
+    int64_t downTime = startTime;
+    int64_t nowTime = startTime;
     /* append down event */
     float px = gesturePath_[0].GetStartPosition().GetPositionX();
     float py = gesturePath_[0].GetStartPosition().GetPositionY();
@@ -168,7 +168,7 @@ void TouchEventInjector::InjectEventsInner()
 {
     HILOG_INFO("TouchEventInjector::InjectEventsInner: start");
 
-    long curTime = getSystemTime();
+    int64_t curTime = getSystemTime();
     if (isDestroyEvent_ || !GetNext()) {
         currentGestureService_->OnGestureSimulateResult(sequence_, false);
         return;
@@ -213,8 +213,8 @@ void TouchEventInjector::CancelGesture()
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
-    long time = getSystemTime();
-    pointer.SetDownTime((int32_t)time * MS_TO_US);
+    int64_t time = getSystemTime();
+    pointer.SetDownTime(time * MS_TO_US);
     pointer.SetPointerId(1);
     if (GetNext() != nullptr && isGestureUnderway_) {
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_CANCEL, pointer, time);
@@ -233,7 +233,7 @@ void TouchEventInjector::CancelInjectedEvents()
     }
 }
 
-void TouchEventInjector::GetTouchEventsFromGesturePath(long startTime)
+void TouchEventInjector::GetTouchEventsFromGesturePath(int64_t startTime)
 {
     HILOG_INFO("TouchEventInjector::GetTouchEventsFromGesturePath: start");
     if (gesturePath_[0].GetStartPosition().GetPositionX() == gesturePath_[0].GetEndPosition().GetPositionX() &&
@@ -245,7 +245,7 @@ void TouchEventInjector::GetTouchEventsFromGesturePath(long startTime)
 }
 
 std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int action,
-    MMI::PointerEvent::PointerItem point, long actionTime)
+    MMI::PointerEvent::PointerItem point, int64_t actionTime)
 {
     HILOG_INFO("TouchEventInjector::obtainTouchEvent: start");
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
@@ -258,12 +258,12 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int acti
     return pointerEvent;
 }
 
-long TouchEventInjector::getSystemTime()
+int64_t TouchEventInjector::getSystemTime()
 {
     HILOG_INFO("TouchEventInjector::getSystemTime: start");
     struct timespec times = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &times);
-    long millisecond = times.tv_sec * value_1000 + times.tv_nsec / value_1000000;
+    int64_t millisecond = (int64_t)(times.tv_sec * value_1000 + times.tv_nsec / value_1000000);
 
     return millisecond;
 }

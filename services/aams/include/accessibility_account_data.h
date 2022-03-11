@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -329,13 +329,6 @@ public:
     void init();
 
     bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
-
-    void AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
-
-    void RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
-
-    const sptr<AccessibleAbilityConnection> GetUITestConnectedAbilityConnection();
-
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -400,8 +393,6 @@ private:
     std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;   // key: The URI of the ElementName.
     std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_;    // key: The URI of the ElementName.
     std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
-
-    sptr<AccessibleAbilityConnection> uiTestConnectedA11yAbility_ = nullptr;    // key: UI test ability id.
 };
 } // namespace Accessibility
 } // namespace OHOS

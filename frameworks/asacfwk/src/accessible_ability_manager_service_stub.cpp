@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -151,12 +151,12 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetAbilityList(MessageP
 {
     HILOG_DEBUG("start");
 
-    int abilityTypes = data.ReadInt32();
-    int stateType = data.ReadInt32();
+    uint32_t abilityTypes = data.ReadUint32();
+    int32_t stateType = data.ReadInt32();
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
     abilityInfos = GetAbilityList(abilityTypes, stateType);
 
-    int32_t abilityInfoSize = abilityInfos.size();
+    int32_t abilityInfoSize = (int32_t)abilityInfos.size();
     reply.WriteInt32(abilityInfoSize);
     for (auto& abilityInfo : abilityInfos) {
         if (!reply.WriteParcelable(&abilityInfo)) {
@@ -339,17 +339,19 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetKeyEventObserverStat
 ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
-
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return ERROR;
+        }
         temp.push_back(*iter);
     }
     for (int i = 0; i < dev_num; i++) {
@@ -384,10 +386,10 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleGetInstalledAbilities(
     HILOG_DEBUG("start");
 
     std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
-    int num = it.size();
+    int32_t num = (int32_t)it.size();
 
-    reply.WriteInt32(it.size());
-    for (int i = 0; i < num; i++) {
+    reply.WriteInt32(num);
+    for (int32_t i = 0; i < num; i++) {
         bool ret = reply.WriteParcelable(&it[i]);
         if (!ret) {
             return ErrCode::ERROR;
@@ -403,13 +405,16 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
     std::map<std::string, AppExecFwk::ElementName> it {};
     int dev_num = data.ReadInt32();
     if (!dev_num) {
-        HILOG_DEBUG("ReadParcelable failed");
+        HILOG_DEBUG("ReadParcelable failed, dev_num is 0");
         return ERROR;
     }
-
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(data.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return ERROR;
+        }
         temp.push_back(*iter);
     }
     for (int i = 0; i < dev_num; i++) {

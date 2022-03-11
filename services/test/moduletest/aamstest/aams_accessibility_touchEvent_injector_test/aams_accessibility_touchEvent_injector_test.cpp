@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,7 +55,7 @@ public:
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
     void CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime);
     std::vector<GesturePathDefine> getGesturePath {};
     sptr<AccessibleAbilityChannelStubImpl> aacs_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
@@ -80,7 +80,7 @@ void AamsInjectorTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp";
     CreateAccessibilityConfigForTouchGuide();
-    // 注册bundleservice
+    // register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -128,7 +128,7 @@ void AamsInjectorTest::TearDown()
 }
 
 void AamsInjectorTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);
