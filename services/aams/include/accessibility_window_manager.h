@@ -49,6 +49,7 @@ public:
 
     // test for ut to resize a window
     void SetWindowSize(int windowId, Rect rect);
+    void UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
 
     std::map<int, AccessibilityWindowInfo> a11yWindows_ {};
     int activeWindowId_ = INVALID_WINDOW_ID;

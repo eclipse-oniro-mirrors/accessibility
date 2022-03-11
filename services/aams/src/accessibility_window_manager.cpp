@@ -80,6 +80,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
         default:
             break;
     }
+    winMgr.UpdateWindowLayer(windowInfo);
     HILOG_DEBUG("winMgr.a11yWindows[%{public}d]", winMgr.a11yWindows_.size());
 }
 
@@ -284,6 +285,22 @@ void AccessibilityWindowInfoManager::SetWindowSize(int windowId, Rect rect)
         if (window.first == windowId) {
             window.second.SetRectInScreen(rect);
             return;
+        }
+    }
+}
+
+void AccessibilityWindowInfoManager::UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo)
+{
+    HILOG_INFO("start");
+    int layer = 0;
+    for (auto& window : windowInfo->windowList_) {
+        auto it = a11yWindows_.find(window->wid_);
+        if (it == a11yWindows_.end()) {
+            HILOG_ERROR("The window(%{public}d) not in a11yWindows_", window->wid_);
+            layer++;
+        } else {
+            it->second.SetWindowLayer(layer);
+            layer++;
         }
     }
 }
