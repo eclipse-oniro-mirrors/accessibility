@@ -59,7 +59,7 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_001, TestSize.Leve
 {
     GTEST_LOG_(INFO) << "GetChannel_001 start";
     sptr<IAccessibleAbilityChannel> service = new MockAccessibleAbilityChannel();
-    AccessibilityOperator instance = AccessibilityOperator::GetInstance();
+    AccessibilityOperator &instance = AccessibilityOperator::GetInstance();
 
     GTEST_LOG_(INFO) << "AddChannel 1";
     instance.AddChannel(1, service);

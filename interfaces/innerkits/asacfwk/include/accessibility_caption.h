@@ -53,7 +53,7 @@ public:
     void SetFontColor(std::string color);
     std::string GetFontColor() const;
 
-    void SetFontEdgeType(std::string  type);
+    void SetFontEdgeType(std::string type);
     std::string  GetFontEdgeType() const;
 
     void SetWindowColor(std::string color);

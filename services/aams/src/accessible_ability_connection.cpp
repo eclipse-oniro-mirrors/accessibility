@@ -542,9 +542,9 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     recipientAccountData_->RemoveConnectedAbility(connection);
     recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
 
-    std::string uiTestUri = "/com.example.uitest/uitestability";
+    std::string uiTestUri = "/ohos.uitest/uitestability";
     if (recipientElementName_.GetURI() == uiTestUri) {
-        recipientAccountData_->RemoveInstalledAbility("com.example.uitest");
+        recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
     }
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();

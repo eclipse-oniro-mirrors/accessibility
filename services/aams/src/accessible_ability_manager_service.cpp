@@ -39,7 +39,7 @@ const string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
 const string TASK_PUBLIC_NOTICE_EVENT = "PublicNoticeEvent";
 const string TASK_SEND_PUBLIC_NOTICE_EVENT = "SendPublicNoticeEvent";
 
-const string UI_TEST_BUNDLE_NAME = "com.example.uitest";
+const string UI_TEST_BUNDLE_NAME = "ohos.uitest";
 const string UI_TEST_ABILITY_NAME = "uitestability";
 
 const bool REGISTER_RESULT =
@@ -268,6 +268,10 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
     }
 
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
+    if (!connection) {
+        HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
+        return;
+    }
     accountData->AddAccessibilityWindowConnection(windowId, connection);
 
     if (!interactionOperationDeathRecipient_) {
