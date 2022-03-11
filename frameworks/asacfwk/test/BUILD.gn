@@ -34,7 +34,7 @@ config("module_private_config") {
     "//base/accessibility/common/log/include",
     "//base/accessibility/services/test/mock/aafwk/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/uri/include",
+    "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//base/accessibility/dummyData",
     "//base/accessibility/frameworks/asacfwk/test/mock",
     "//third_party/jsoncpp/include/json",
