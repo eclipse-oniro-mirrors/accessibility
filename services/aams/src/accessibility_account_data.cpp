@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-const static std::string PREF_TEST_PATH =
+const static std::string PREF_PATH =
     "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
 
 AccessibilityAccountData::AccessibilityAccountData(int accountId)
@@ -819,7 +819,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
 void AccessibilityAccountData::init()
 {
     int errCode = 0;
-    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + "100.xml", errCode);
     if (errCode) {
         HILOG_ERROR("GetPreferences failed! errCode(%{public}d).", errCode);
         return;

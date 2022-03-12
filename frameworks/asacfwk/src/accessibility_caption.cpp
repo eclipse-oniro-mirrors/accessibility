@@ -25,12 +25,12 @@ bool CaptionProperty::CheckProperty(const std::string& property)
     return result;
 }
 
-std::string  CaptionProperty::GetBackgroundColor() const
+std::string CaptionProperty::GetBackgroundColor() const
 {
     return backgroundColor_;
 }
 
-void CaptionProperty::SetBackgroundColor(std::string  color)
+void CaptionProperty::SetBackgroundColor(std::string color)
 {
     backgroundColor_ = color;
 }
@@ -45,12 +45,12 @@ void CaptionProperty::SetFontScale(int scale)
     fontScale_ = scale;
 }
 
-std::string  CaptionProperty::GetFontColor() const
+std::string CaptionProperty::GetFontColor() const
 {
     return fontColor_;
 }
 
-void CaptionProperty::SetFontColor(std::string  color)
+void CaptionProperty::SetFontColor(std::string color)
 {
     fontColor_ = color;
 }
@@ -65,12 +65,12 @@ void CaptionProperty::SetFontEdgeType(std::string  type)
     fontEdgeType_ = type;
 }
 
-std::string  CaptionProperty::GetWindowColor() const
+std::string CaptionProperty::GetWindowColor() const
 {
     return windowColor_;
 }
 
-void CaptionProperty::SetWindowColor(std::string  color)
+void CaptionProperty::SetWindowColor(std::string color)
 {
     windowColor_ = color;
 }
