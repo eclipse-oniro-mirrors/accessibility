@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -183,7 +183,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
 /**
  * @tc.number: AAMS_moduletest_SendEvent_001
  * @tc.name: SendEvent
- * @tc.desc: Test function SendEvent aams send a event to accessibility,and check the parm of event.
+ * @tc.desc: Test function SendEvent aams send event to accessibility,and check the parm of event.
  *
  */
 HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
@@ -191,7 +191,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest SendEvent_001 start";
     // register AA
     AddAccessibleAbilityConnection();
-    // make a event
+    // make an event
     AccessibilityEventInfo eventInfo;
     eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     // aams send event
@@ -264,7 +264,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
     EXPECT_EQ(2, (int)accountData->GetInstalledAbilities().size());
 
     /* ABILITY_STATE_DISABLE */
-    int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
+    int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 1);
 
@@ -284,7 +284,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_004 start";
 
     AddAccessibleAbilityConnection();
-    int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
+    int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 0);
 

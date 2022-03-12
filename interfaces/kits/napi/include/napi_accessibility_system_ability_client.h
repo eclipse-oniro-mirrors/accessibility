@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -95,8 +95,8 @@ struct NAccessibilitySystemAbilityClient {
     napi_env env_ {};
     bool enabled_ = false;
     bool touchEnabled_ = false;
-    OHOS::Accessibility::AbilityStateType stateTypes_;
-    int32_t abilityTypes_ = 0;
+    OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
+    uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
     std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_ {};
     OHOS::Accessibility::CaptionProperty captionProperty_ {};

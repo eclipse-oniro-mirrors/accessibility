@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,14 +52,14 @@ bool AccessibilityExtensionContext::GestureSimulate(uint32_t sequence,
         return false;
     }
 
-    uint32_t totalDurationTime = 0;
+    int64_t totalDurationTime = 0;
     for (auto gesturePath : gesturePathDefineList) {
         totalDurationTime += gesturePath.GetDurationTime();
     }
-    HILOG_DEBUG("The total duration time is %{public}d.", totalDurationTime);
+    HILOG_DEBUG("The total duration time is %{public}lld.", totalDurationTime);
 
     if (totalDurationTime > gesturePathDefineList.front().GetMaxStrokeDuration()) {
-        HILOG_ERROR("The total duration time : [%{public}d] is not allowed.", totalDurationTime);
+        HILOG_ERROR("The total duration time : [%{public}lld] is not allowed.", totalDurationTime);
         return false;
     }
 

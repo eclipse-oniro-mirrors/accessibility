@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,7 +63,7 @@ public:
     void AddAccessibleAbilityConnection();
     void AddAccessibilityWindowConnection();
     void CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime);
+        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime);
     std::vector<GesturePathDefine> gestureSteps_ {};
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
     shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
@@ -248,7 +248,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
 }
 
 void AamsAccessibleAbilityChannelTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int durationTime)
+    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest CreateGesturePath";
     // create gesture

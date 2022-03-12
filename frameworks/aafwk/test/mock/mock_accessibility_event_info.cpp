@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,22 +21,27 @@ namespace OHOS {
 namespace Accessibility {
 bool AccessibilityMemo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool AccessibilityMemo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
-};
+}
 
 AccessibilityMemo* AccessibilityMemo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     AccessibilityMemo* accessibilityRecord = new AccessibilityMemo();
     return accessibilityRecord;
 }
 
 void AccessibilityMemo::SetChannelId(const int channelId)
-{}
+{
+    (void)channelId;
+}
 
 int AccessibilityMemo::GetChannelId() const
 {
@@ -44,10 +49,13 @@ int AccessibilityMemo::GetChannelId() const
 }
 
 void AccessibilityMemo::SetSource(const int componentId)
-{}
+{
+    (void)componentId;
+}
 
 bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
 {
+    (void)elementInfo;
     return true;
 }
 
@@ -62,7 +70,9 @@ int AccessibilityMemo::GetAccessibilityId() const
 }
 
 void AccessibilityMemo::SetWindowId(const int windowId)
-{}
+{
+    (void)windowId;
+}
 
 int AccessibilityMemo::GetWindowId() const
 {
@@ -75,7 +85,9 @@ int AccessibilityMemo::GetCurrentIndex() const
 }
 
 void AccessibilityMemo::SetCurrentIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 int AccessibilityMemo::GetBeginIndex() const
 {
@@ -83,7 +95,9 @@ int AccessibilityMemo::GetBeginIndex() const
 }
 
 void AccessibilityMemo::SetBeginIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 int AccessibilityMemo::GetEndIndex() const
 {
@@ -91,7 +105,9 @@ int AccessibilityMemo::GetEndIndex() const
 }
 
 void AccessibilityMemo::SetEndIndex(const int index)
-{}
+{
+    (void)index;
+}
 
 std::string AccessibilityMemo::GetComponentType() const
 {
@@ -99,7 +115,9 @@ std::string AccessibilityMemo::GetComponentType() const
 }
 
 void AccessibilityMemo::SetComponentType(const std::string &className)
-{}
+{
+    (void)className;
+}
 
 std::string AccessibilityMemo::GetBeforeText() const
 {
@@ -107,10 +125,14 @@ std::string AccessibilityMemo::GetBeforeText() const
 }
 
 void AccessibilityMemo::SetBeforeText(const std::string &beforeText)
-{}
+{
+    (void)beforeText;
+}
 
 void AccessibilityMemo::AddContent(const std::string &content)
-{}
+{
+    (void)content;
+}
 
 std::vector<std::string> AccessibilityMemo::GetContentList() const
 {
@@ -123,7 +145,9 @@ std::string AccessibilityMemo::GetLatestContent() const
 }
 
 void AccessibilityMemo::SetLatestContent(const std::string &content)
-{}
+{
+    (void)content;
+}
 
 std::string AccessibilityMemo::GetDescription() const
 {
@@ -131,10 +155,14 @@ std::string AccessibilityMemo::GetDescription() const
 }
 
 void AccessibilityMemo::SetDescription(const std::string &contentDescription)
-{}
+{
+    (void)contentDescription;
+}
 
 void AccessibilityMemo::SetItemCounts(const int itemCounts)
-{}
+{
+    (void)itemCounts;
+}
 
 int AccessibilityMemo::GetItemCounts() const
 {
@@ -143,16 +171,19 @@ int AccessibilityMemo::GetItemCounts() const
 
 bool AccessibilityEventInfo::ReadFromParcel(Parcel &parcel)
 {
+    (void)parcel;
     return true;
 }
 
 bool AccessibilityEventInfo::Marshalling(Parcel &parcel) const
 {
+    (void)parcel;
     return true;
 };
 
 AccessibilityEventInfo *AccessibilityEventInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     AccessibilityEventInfo *accessibilityEventInfo = new AccessibilityEventInfo();
     return accessibilityEventInfo;
 }
@@ -163,10 +194,14 @@ int AccessibilityEventInfo::GetRecordCount() const
 }
 
 void AccessibilityEventInfo::SetRecordCount(const int recordCount)
-{}
+{
+    (void)recordCount;
+}
 
 void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
-{}
+{
+    (void)record;
+}
 
 AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int index)
 {
@@ -189,7 +224,9 @@ WindowsContentChangeTypes AccessibilityEventInfo::GetWindowContentChangeTypes() 
 }
 
 void AccessibilityEventInfo::SetWindowContentChangeTypes(const WindowsContentChangeTypes changeTypes)
-{}
+{
+    (void)changeTypes;
+}
 
 WindowUpdateType AccessibilityEventInfo::GetWindowChangeTypes() const
 {
@@ -197,20 +234,24 @@ WindowUpdateType AccessibilityEventInfo::GetWindowChangeTypes() const
 }
 
 void AccessibilityEventInfo::SetWindowChangeTypes(const WindowUpdateType changeTypes)
-{}
+{
+    (void)changeTypes;
+}
 
 void AccessibilityEventInfo::SetEventType(const EventType eventType)
 {
     eventType_ = eventType;
 }
 
-long long AccessibilityEventInfo::GetTimeStamp() const
+int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
     return timeStamp_;
 }
 
-void AccessibilityEventInfo::SetTimeStamp(const long long eventTime)
-{}
+void AccessibilityEventInfo::SetTimeStamp(const int64_t eventTime)
+{
+    (void)eventTime;
+}
 
 std::string AccessibilityEventInfo::GetBundleName() const
 {
@@ -218,10 +259,14 @@ std::string AccessibilityEventInfo::GetBundleName() const
 }
 
 void AccessibilityEventInfo::SetBundleName(const std::string &bundleName)
-{}
+{
+    (void)bundleName;
+}
 
 void AccessibilityEventInfo::SetTextMovementStep(const TextMoveUnit granularity)
-{}
+{
+    (void)granularity;
+}
 
 TextMoveUnit AccessibilityEventInfo::GetTextMovementStep() const
 {
@@ -229,7 +274,9 @@ TextMoveUnit AccessibilityEventInfo::GetTextMovementStep() const
 }
 
 void AccessibilityEventInfo::SetTriggerAction(const ActionType action)
-{}
+{
+    (void)action;
+}
 
 ActionType AccessibilityEventInfo::GetTriggerAction() const
 {
@@ -237,13 +284,20 @@ ActionType AccessibilityEventInfo::GetTriggerAction() const
 }
 
 AccessibilityEventInfo::AccessibilityEventInfo(int windowId, WindowUpdateType windowChangeTypes)
-{}
+{
+    (void)windowId;
+    (void)windowChangeTypes;
+}
 
 AccessibilityEventInfo::AccessibilityEventInfo(EventType eventType)
-{}
+{
+    (void)eventType;
+}
 
 void AccessibilityEventInfo::SetNotificationInfo(const NotificationCategory category)
-{}
+{
+    (void)category;
+}
 
 NotificationCategory AccessibilityEventInfo::GetNotificationInfo() const
 {

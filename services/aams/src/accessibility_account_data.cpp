@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -247,7 +247,6 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
         enabledAbilities_.erase(it);
     }
     RemoveEnabledFromPref(elementName.GetBundleName());
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 // For UT
@@ -270,13 +269,12 @@ void AccessibilityAccountData::RemoveInstalledAbility(std::string bundleName)
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == bundleName) {
+            HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
             installedAbilities_.erase(it);
         } else {
             ++it;
         }
     }
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 }
 
 void AccessibilityAccountData::ClearInstalledAbility()
@@ -655,7 +653,8 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
     for (auto& info : extensionInfos) {
-        AccessibilityAbilityInfo* accessibilityInfo = new AccessibilityAbilityInfo(info);
+        std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
+            std::make_shared<AccessibilityAbilityInfo>(info);
         AddInstalledAbility(*accessibilityInfo);
     }
     return true;
@@ -664,6 +663,10 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("CaptionState", "");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", strValue.c_str());
@@ -702,6 +705,10 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
 void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
 
     std::string strValue = pref->GetString("accessible", "");
     HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
@@ -741,6 +748,11 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
+    if (pref == nullptr) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return;
+    }
+
     std::string BundleName = "";
     AccessibilityAbilityInfo abilityInfo;
 
@@ -760,7 +772,7 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
 void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult)
 {
     HILOG_DEBUG("start.");
-    int strLength = stringIn.size();
+    int strLength = (int)stringIn.size();
     std::vector<int> position;
     int wrodCount = 0;
 
@@ -774,7 +786,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
         }
     }
 
-    wrodCount = position.size();
+    wrodCount = (int)position.size();
     if ((wrodCount == 0) && (strLength > 0)) {
         vectorResult.push_back(stringIn);
     } else {
@@ -822,32 +834,11 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
 {
     HILOG_DEBUG("start.");
     for (auto &disableAbility : it) {
+        HILOG_DEBUG("DisableAbilities URI(%{public}s)", disableAbility.first.c_str());
         enabledAbilities_.erase(disableAbility.first);
         RemoveEnabledFromPref(disableAbility.second.GetBundleName());
     }
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
     return true;
-}
-
-void AccessibilityAccountData::AddUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
-{
-    HILOG_DEBUG("start.");
-    if (!uiTestConnectedA11yAbility_) {
-        HILOG_DEBUG("Add uiTestConnectedA11yAbility success");
-        uiTestConnectedA11yAbility_ = connection;
-    }
-}
-
-void AccessibilityAccountData::RemoveUITestConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
-{
-    HILOG_DEBUG("start.");
-    uiTestConnectedA11yAbility_ = nullptr;
-}
-
-const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetUITestConnectedAbilityConnection()
-{
-    HILOG_DEBUG("start.");
-    return uiTestConnectedA11yAbility_;
 }
 
 void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)

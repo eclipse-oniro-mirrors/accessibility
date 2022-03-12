@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,7 +61,7 @@ enum ClickLocation : int {
 struct InjectedEventRecorder {
     int downPointers;
     int downPointerNum;
-    long lastDownTime;
+    int64_t lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
 };
 

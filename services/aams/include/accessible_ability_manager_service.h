@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -59,7 +59,8 @@ public:
     uint32_t RegisterCaptionPropertyCallback(
         const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) override;
 
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const int abilityTypes, const int stateType) override;
+    std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes,
+        const int32_t stateType) override;
 
     void RegisterElementOperator(
         const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) override;

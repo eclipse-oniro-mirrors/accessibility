@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -235,10 +235,10 @@ void AccessibilityElementInfo::SetEnabled(const bool enabled)
 
 bool AccessibilityElementInfo::IsPassword() const
 {
-    return password_;
+    return isPassword_;
 }
 
-void AccessibilityElementInfo::SetPassword(const bool password)
+void AccessibilityElementInfo::SetPassword(const bool type)
 {}
 
 bool AccessibilityElementInfo::IsScrollable() const

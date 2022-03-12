@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Copyright (C) 2022 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -30,7 +30,6 @@ config("module_private_config") {
   include_dirs = aams_mock_include_dirs
   include_dirs += [
     "mock/aafwk/include",
-    "mock/powermanager/include",
     "../aams/test/mock/",
     "//third_party/json/include",
     "//utils/native/base/include",
@@ -56,8 +55,6 @@ config("module_private_config") {
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//base/global/resmgr_standard/interfaces/innerkits/include",
 
-    #"//foundation/distributedschedule/samgr/services/samgr/native/include",
-    #"//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
     "//foundation/appexecfwk/standard/common/log/include",
     "//third_party/jsoncpp/include/json",
@@ -81,14 +78,9 @@ config("module_private_config") {
   ]
 }
 
-MockPowerManagerSrc = [ "mock/powermanager/src/mock_power_mgr_client.cpp" ]
-
 MockAafwkSrc = [ "mock/aafwk/src/mock_ability_manager_client.cpp" ]
 
-MockDistributedscheduleSrc = [
-  #"mock/distributedschedule/src/iservice_registry.cpp",
-  #"mock/distributedschedule/src/system_ability_manager.cpp",
-]
+MockDistributedscheduleSrc = []
 
 ################################################################################
 ohos_moduletest("aams_accessibility_touch_guider_test") {
@@ -140,7 +132,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -226,7 +218,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -305,13 +297,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_subscribe_info_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_subscriber_mock.cpp",
-
-    #"//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
     "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
     "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
     "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
-
-    #"//base/accessibility/services/test/mock/system_ability_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
@@ -324,7 +312,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -336,8 +324,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-
-    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -399,13 +385,9 @@ ohos_moduletest("aams_server_test") {
     "../aams/test/mock/common_event_manager_mock.cpp",
     "../aams/test/mock/common_event_subscribe_info_mock.cpp",
     "../aams/test/mock/common_event_subscriber_mock.cpp",
-
-    #"../aams/test/mock/mock_system_ability_manager_stub.cpp",
     "../aams/test/mock/common_event_support_mock.cpp",
     "../aams/test/mock/gesture_simulation_mock.cpp",
     "../aams/test/mock/matching_skill_mock.cpp",
-
-    #"../aams/test/mock/system_ability_manager.cpp",
     "../aams/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
@@ -424,7 +406,7 @@ ohos_moduletest("aams_server_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -436,8 +418,6 @@ ohos_moduletest("aams_server_test") {
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-
-    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -512,7 +492,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -570,8 +550,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
     "//base/accessibility/services/test/mock/accessibility_ability_info_mock.cpp",
-
-    #"//base/accessibility/services/test/mock/ability_manager_client_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
     "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
@@ -592,13 +570,9 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_subscribe_info_mock.cpp",
     "//base/accessibility/services/test/mock/common_event_subscriber_mock.cpp",
-
-    #"//base/accessibility/services/test/mock/mock_system_ability_manager_stub.cpp",
     "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
     "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
     "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
-
-    #"//base/accessibility/services/test/mock/system_ability_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
@@ -609,7 +583,7 @@ ohos_moduletest("aams_common_event_registry_test") {
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
-  sources += MockPowerManagerSrc
+  sources += aams_mock_powermanager_src
   sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
@@ -621,8 +595,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-
-    #"//foundation/distributedschedule/samgr/interfaces/innerkits/common:samgr_common",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -653,13 +625,6 @@ group("moduletest") {
   deps = []
 
   if (is_phone_product) {
-    deps += [
-      ":aams_accessibility_keyevent_filter_test",
-      ":aams_accessibility_touchEvent_injector_test",
-      ":aams_accessibility_touch_guider_test",
-      ":aams_accessible_ability_channel_test",
-      ":aams_common_event_registry_test",
-      ":aams_server_test",
-    ]
+    deps += []
   }
 }

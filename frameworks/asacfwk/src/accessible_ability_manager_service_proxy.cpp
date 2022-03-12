@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -202,7 +202,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
 }
 
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetAbilityList(
-    const int abilityTypes, const int stateType)
+    const uint32_t abilityTypes, const int32_t stateType)
 {
     HILOG_DEBUG("start");
 
@@ -217,7 +217,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         return errorList;
     }
 
-    if (!data.WriteInt32(abilityTypes)) {
+    if (!data.WriteUint32(abilityTypes)) {
         HILOG_ERROR("fail, connection write abilityTypes error");
         return errorList;
     }
@@ -666,6 +666,10 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
     std::vector<AppExecFwk::ElementName> temp {};
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AppExecFwk::ElementName> iter(reply.ReadParcelable<AppExecFwk::ElementName>());
+        if (!iter) {
+            HILOG_ERROR("ReadParcelable<AppExecFwk::ElementName> failed");
+            return it;
+        }
         temp.push_back(*iter);
     }
 
@@ -698,6 +702,10 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     int dev_num = reply.ReadInt32();
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AccessibilityAbilityInfo> dev(reply.ReadParcelable<AccessibilityAbilityInfo>());
+        if (!dev) {
+            HILOG_ERROR("ReadParcelable<accessibilityAbilityInfo> failed");
+            return it;
+        }
         it.push_back(*dev);
     }
     return it;

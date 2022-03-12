@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,14 +28,15 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {
 public:
-    virtual void OnWindowUpdate(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type) override;
+    virtual void OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
+        Rosen::WindowUpdateType type) override;
 };
 
 class AccessibilityWindowInfoManager {
 public:
     ~AccessibilityWindowInfoManager() = default;
     static AccessibilityWindowInfoManager &GetInstance();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(Rosen::WindowInfo &windowInfo);
+    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(Rosen::AccessibilityWindowInfo &windowInfo);
     int ConvertToRealWindowId(int windowId, int focusType);
     void RegisterWindowChangeListener();
     void DeregisterWindowChangeListener();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -181,7 +181,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 start";
     AccessibilityEventInfo eventInfo;
-    /* EventType is white list */
+    /* EventType is in the allowed list */
     eventInfo.SetEventType(EventType::TYPE_PAGE_STATE_UPDATE);
     connection_->OnAccessibilityEvent(eventInfo);
     EXPECT_EQ(int(EventType::TYPE_PAGE_STATE_UPDATE), g_testEventType);
@@ -199,7 +199,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 start";
     AccessibilityEventInfo eventInfo;
-    /* EventType not white list */
+    /* EventType is in the allowed list */
     eventInfo.SetEventType(EventType::TYPE_VIEW_CLICKED_EVENT);
     /* invalid window */
     eventInfo.SetWindowId(3);

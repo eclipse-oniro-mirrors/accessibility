@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -133,7 +133,7 @@ public:
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        AccessibleAbilityConnectionDeathRecipient(wptr<AccessibilityAccountData>& accountData,
+        AccessibleAbilityConnectionDeathRecipient(sptr<AccessibilityAccountData> accountData,
             AppExecFwk::ElementName& elementName)
             : recipientAccountData_(accountData), recipientElementName_(elementName) {};
         ~AccessibleAbilityConnectionDeathRecipient() = default;
@@ -141,21 +141,20 @@ private:
 
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
-        wptr<AccessibilityAccountData>& recipientAccountData_;
+        sptr<AccessibilityAccountData> recipientAccountData_;
         AppExecFwk::ElementName& recipientElementName_;
     };
 
     bool IsWantedEvent(int eventType);
-    bool IsWhiteListEvent(EventType eventType);
+    bool IsAllowedListEvent(EventType eventType);
 
-    sptr<IRemoteObject::DeathRecipient> deathRecipient_ {};
+    int connectionId_ = -1;
+    sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityClient> proxy_ = nullptr;
     sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
-    AccessibilityAbilityInfo abilityInfo_;
-    AppExecFwk::ElementName elementName_;
-    sptr<AccessibilityAccountData> accountData_;
-
-    int connectionId_;
+    AccessibilityAbilityInfo abilityInfo_ {};
+    AppExecFwk::ElementName elementName_ {};
+    sptr<AccessibilityAccountData> accountData_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
