@@ -24,8 +24,9 @@ using namespace OHOS::Accessibility;
 napi_value NAccessibilityClient::aaCons_;
 napi_value NAccessibilityClient::aaStyleCons_;
 
-std::vector<std::shared_ptr<StateListener>> NAccessibilityClient::listeners_ = {};
+std::map<std::string, std::vector<std::shared_ptr<StateListener>>> NAccessibilityClient::stateListeners_ = {};
 std::vector<std::shared_ptr<CaptionListener>> NAccessibilityClient::captionListeners_ = {};
+
 napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
@@ -252,13 +253,16 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
+            napi_value ret = 0;
             napi_get_undefined(env, &undefined);
+            napi_get_undefined(env, &ret);
             if (callbackInfo->callback_) {
                 if (callbackInfo->result_) {
                     result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 } else {
                     result[PARAM0] = GetErrorValue(env, CODE_FAILED);
                 }
+                result[PARAM1] = ret;
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
@@ -288,9 +292,6 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     NAPI_ASSERT(env, status == napi_ok, "Failed to get event type");
 
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>();
-    stateListener->StartWork(env, 1, args);
-    NAccessibilityClient::listeners_.push_back(stateListener);
     std::string eventType = GetStringFromNAPI(env, args[0]);
     AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
@@ -299,18 +300,24 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
         type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+        return nullptr;
     }
+
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>();
+    stateListener->StartWork(env, 1, args);
+
+    NAccessibilityClient::stateListeners_[eventType].push_back(stateListener);
     AccessibilitySystemAbilityClient::GetInstance()->SubscribeStateObserver(stateListener, type);
     return nullptr;
 }
 
 napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start  observer size%{public}d", NAccessibilityClient::listeners_.size());
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
+    HILOG_INFO("start  observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
     AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
@@ -318,14 +325,15 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+        return nullptr;
     }
     int i = 0;
     bool result = false;
-    for (auto observer : NAccessibilityClient::listeners_) {
-        if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
+    for (auto observer : NAccessibilityClient::stateListeners_[eventType]) {
+        if (observer->GetEnv() == env) {
             result = AccessibilitySystemAbilityClient::GetInstance()->UnsubscribeStateObserver(observer, type);
-            NAccessibilityClient::listeners_.erase(NAccessibilityClient::listeners_.begin() + i);
-            break;
+            NAccessibilityClient::stateListeners_[eventType].erase(
+                NAccessibilityClient::stateListeners_[eventType].begin() + i);
         }
         i++;
     }
@@ -389,9 +397,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 void StateListener::OnStateChanged(const bool state)
 {
     HILOG_INFO("start");
-    for (auto observer : NAccessibilityClient::listeners_) {
-        observer->NotifyJS(observer->GetEnv(), state, observer->GetHandler());
-    }
+    NotifyJS(GetEnv(), state, GetHandler());
 }
 
 napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_info info)
@@ -1499,9 +1505,6 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     NAPI_ASSERT(env, status == napi_ok, "Failed to get event type");
 
-    std::shared_ptr<CaptionListener> captionListener = std::make_shared<CaptionListener>();
-    captionListener->StartWork(env, 1, args);
-    NAccessibilityClient::captionListeners_.push_back(captionListener);
     std::string eventType = GetStringFromNAPI(env, args[0]);
     CaptionObserverType type = CaptionObserverType::CAPTION_ENABLE;
     if (!std::strcmp(eventType.c_str(), "enableChange")) {
@@ -1510,7 +1513,13 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         type = CaptionObserverType::CAPTION_PROPERTY;
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+        return nullptr;
     }
+
+    std::shared_ptr<CaptionListener> captionListener = std::make_shared<CaptionListener>();
+    captionListener->StartWork(env, 1, args);
+    NAccessibilityClient::captionListeners_.push_back(captionListener);
+
     AccessibilitySystemAbilityClient::GetInstance()->AddCaptionListener(captionListener, type);
 
     return nullptr;
@@ -1745,15 +1754,11 @@ napi_value NAccessibilityClient::AccessibleAbilityConstructorStyle(napi_env env,
 napi_value NAccessibilityClient::GetCaptionsFontFamily(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
     napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &returnValue);
-
     HILOG_INFO("end");
-
     return returnValue;
 }
 
