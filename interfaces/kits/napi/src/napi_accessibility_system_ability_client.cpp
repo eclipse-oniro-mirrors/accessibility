@@ -313,38 +313,32 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
 napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_info info)
 {
+    HILOG_INFO("start");
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
-    HILOG_INFO("start  observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
     AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     } else if (!std::strcmp(eventType.c_str(), "touchGuideStateChange")) {
         type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
     } else {
-        HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+        HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
-    int i = 0;
-    bool result = false;
-    for (auto observer : NAccessibilityClient::stateListeners_[eventType]) {
+    HILOG_INFO("observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
+    bool result = true;
+    for (auto it = NAccessibilityClient::stateListeners_[eventType].begin();
+        it != NAccessibilityClient::stateListeners_[eventType].end();) {
+        std::shared_ptr<StateListener> observer= *it;
         if (observer->GetEnv() == env) {
             result = AccessibilitySystemAbilityClient::GetInstance()->UnsubscribeStateObserver(observer, type);
-            NAccessibilityClient::stateListeners_[eventType].erase(
-                NAccessibilityClient::stateListeners_[eventType].begin() + i);
+            it = NAccessibilityClient::stateListeners_[eventType].erase(it);
+            HILOG_INFO("UnsubscribeState result%{public}d", result);
+        } else {
+            it++;
         }
-        i++;
-    }
-
-    if (argc == ARGS_SIZE_TWO) {
-        napi_value jsEvent;
-        napi_get_boolean(env, result, &jsEvent);
-        napi_value callResult;
-        napi_value undefined = 0;
-        napi_get_undefined(env, &undefined);
-        napi_call_function(env, undefined, args[PARAM1], ARGS_SIZE_ONE, &jsEvent, &callResult);
     }
 
     return nullptr;
@@ -389,15 +383,19 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     napi_value undefined = 0;
     napi_get_undefined(env, &undefined);
     napi_call_function(env, undefined, handler, 1, &jsEvent, &callResult);
-    int32_t result;
-    napi_get_value_int32(env, callResult, &result);
-    HILOG_INFO("NotifyJS napi_call_function result[%{public}d]", result);
 }
 
 void StateListener::OnStateChanged(const bool state)
 {
     HILOG_INFO("start");
-    NotifyJS(GetEnv(), state, GetHandler());
+    for (auto observer : NAccessibilityClient::stateListeners_[GetEventType()]) {
+        if (observer.get() == this) {
+            HILOG_INFO("observer found");
+            observer->NotifyJS(GetEnv(), state, GetHandler());
+            return;
+        }
+    }
+    HILOG_WARN("observer not found");
 }
 
 napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_info info)
@@ -1534,85 +1532,25 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[0]);
 
-    if (argc > ARGS_SIZE_ONE) {
-        HILOG_DEBUG("DeregisterCaptionStateCallback callback mode %{public}d",
-            NAccessibilityClient::captionListeners_.size());
-        NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-        napi_create_reference(env, args[1], 1, &callbackInfo->callback_);
-        napi_value resource = nullptr;
-        napi_create_string_utf8(env, "DeregisterCaptionStateCallback", NAPI_AUTO_LENGTH, &resource);
-        callbackInfo->eventType_ = eventType;
-        callbackInfo->captionListener_ = NAccessibilityClient::captionListeners_;
-        // async to sync start
-        CaptionObserverType type = CaptionObserverType::CAPTION_ENABLE;
-        std::string eventType = callbackInfo->eventType_;
-        if (!std::strcmp(eventType.c_str(), "enableChange")) {
-            type = CaptionObserverType::CAPTION_ENABLE;
-        } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
-            type = CaptionObserverType::CAPTION_PROPERTY;
-        } else {
-            HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
-        }
-        for (auto it = NAccessibilityClient::captionListeners_.begin();
-            it != NAccessibilityClient::captionListeners_.end();) {
-            std::shared_ptr<CaptionListener> observer= *it;
-            if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-                callbackInfo->result_ =
-                    AccessibilitySystemAbilityClient::GetInstance()->DeleteCaptionListener(observer, type);
-                HILOG_DEBUG("captionListeners_ size = %{public}d,  EventType = %{public}s ", captionListeners_.size(),
-                    observer->GetEventType().c_str());
-                it = NAccessibilityClient::captionListeners_.erase(it);
-                HILOG_DEBUG("captionListeners_ size = %{public}d", captionListeners_.size());
-                HILOG_INFO("unregister result%{public}d", callbackInfo->result_);
-                retValue = retValue && callbackInfo->result_;
-            } else {
-                it++;
-            }
-        }
-        napi_value result[ARGS_SIZE_TWO] = {0};
-        napi_value callback = 0;
-        napi_value undefined = 0;
-        napi_get_undefined(env, &undefined);
-        napi_get_boolean(env, callbackInfo->result_, &result[PARAM1]);
-        if (callbackInfo->callback_) {
-            if (type == CaptionObserverType::CAPTION_ENABLE) {
-                napi_get_boolean(env, callbackInfo->result_, &result[PARAM0]); // maby rework
-            } else {
-                napi_create_object(env, &result[PARAM0]); // maby rework
-                OHOS::Accessibility::CaptionProperty captionProperty {};
-                captionProperty = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-                ConvertCaptionPropertyToJS(env, result[PARAM0], captionProperty);
-            }
-
-            napi_get_reference_value(env, callbackInfo->callback_, &callback);
-            napi_value returnVal;
-            napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-            napi_delete_reference(env, callbackInfo->callback_);
-        } else {
-            HILOG_ERROR("DeregisterCaptionStateCallback end eventType[%{public}s] is error",
-                callbackInfo->eventType_.c_str());
-        }
-        // async to sync end
+    CaptionObserverType type = CaptionObserverType::CAPTION_ENABLE;
+    if (!std::strcmp(eventType.c_str(), "enableChange")) {
+        type = CaptionObserverType::CAPTION_ENABLE;
+    } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
+        type = CaptionObserverType::CAPTION_PROPERTY;
     } else {
-        CaptionObserverType type = CaptionObserverType::CAPTION_ENABLE;
-        if (!std::strcmp(eventType.c_str(), "enableChange")) {
-            type = CaptionObserverType::CAPTION_ENABLE;
-        } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
-            type = CaptionObserverType::CAPTION_PROPERTY;
+        HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
+        return nullptr;
+    }
+    for (auto it = NAccessibilityClient::captionListeners_.begin();
+        it != NAccessibilityClient::captionListeners_.end();) {
+        std::shared_ptr<CaptionListener> observer= *it;
+        if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
+            retValue = retValue &&
+                AccessibilitySystemAbilityClient::GetInstance()->DeleteCaptionListener(observer, type);
+            it = NAccessibilityClient::captionListeners_.erase(it);
+            HILOG_INFO("unregister result%{public}d", retValue);
         } else {
-            HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
-        }
-        for (auto it = NAccessibilityClient::captionListeners_.begin();
-            it != NAccessibilityClient::captionListeners_.end();) {
-            std::shared_ptr<CaptionListener> observer= *it;
-            if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-                retValue = retValue &&
-                    AccessibilitySystemAbilityClient::GetInstance()->DeleteCaptionListener(observer, type);
-                it = NAccessibilityClient::captionListeners_.erase(it);
-                HILOG_INFO("unregister result%{public}d", retValue);
-            } else {
-                it++;
-            }
+            it++;
         }
     }
 
@@ -1673,7 +1611,7 @@ void CaptionListener::OnCaptionStateChanged(const bool& enable)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
-        if (observer->GetStateType() == CaptionObserverType::CAPTION_ENABLE) {
+        if (observer->GetStateType() == CaptionObserverType::CAPTION_ENABLE && observer.get() == this) {
             observer->NotifyStateChangedJS(observer->GetEnv(),
                 enable, observer->GetEventType(), observer->GetHandler());
         }
@@ -1708,7 +1646,7 @@ void CaptionListener::OnCaptionPropertyChanged(const CaptionProperty& caption)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
-        if (observer->GetStateType() == CaptionObserverType::CAPTION_PROPERTY) {
+        if (observer->GetStateType() == CaptionObserverType::CAPTION_PROPERTY && observer.get() == this) {
             observer->NotifyPropertyChangedJS(observer->GetEnv(),
                 caption, observer->GetEventType(), observer->GetHandler());
         }

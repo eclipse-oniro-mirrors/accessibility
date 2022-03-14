@@ -33,6 +33,7 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+std::mutex AccessibleAbilityConnection::mutex_;
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     AccessibleAbilityConnection& connection): connection_(connection)
 {
@@ -528,6 +529,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!recipientAccountData_) {
         HILOG_ERROR("recipientAccountData_ is null.");
         return;
