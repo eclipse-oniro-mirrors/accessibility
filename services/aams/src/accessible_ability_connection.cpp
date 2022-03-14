@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <map>
+#include <new>
 #include <vector>
 
 #include "ability_manager_client.h"
@@ -337,7 +338,11 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     accountData_->RemoveConnectingA11yAbility(elementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
 
-    stub_ = new AccessibleAbilityChannelStubImpl(*pointer);
+    stub_ = new(std::nothrow) AccessibleAbilityChannelStubImpl(*pointer);
+    if (!stub_) {
+        HILOG_ERROR("stub_ is null");
+        return;
+    }
     proxy_->Init(stub_, connectionId_);
 }
 
