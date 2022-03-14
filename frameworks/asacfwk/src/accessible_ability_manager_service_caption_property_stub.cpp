@@ -40,7 +40,7 @@ int AccessibleAbilityManagerServiceCaptionPropertyStub::OnRemoteRequest(uint32_t
 
     if (code ==
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceCaptionProperty::Message::ON_CAPTION_PROPERTY_CHANGED)) {
-        HandleOnCaptionPropertyChanged(data, reply);
+        return HandleOnCaptionPropertyChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
