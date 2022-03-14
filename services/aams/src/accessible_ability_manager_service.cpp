@@ -44,7 +44,7 @@ const string UI_TEST_ABILITY_NAME = "uitestability";
 
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
-
+std::mutex AccessibleAbilityManagerService::mutex_;
 static const int32_t TEMP_ACCOUNT_ID = 100;
 
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
@@ -314,6 +314,7 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     aams->DeregisterElementOperator(windowId_);
 }
@@ -466,6 +467,7 @@ void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilte
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
@@ -480,6 +482,7 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();

@@ -20,6 +20,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include "accessible_ability_manager_service_stub.h"
@@ -212,6 +213,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> stateCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> interactionOperationDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
+    static std::mutex mutex_;
 
     DISALLOW_COPY_AND_MOVE(AccessibleAbilityManagerService);
 };
