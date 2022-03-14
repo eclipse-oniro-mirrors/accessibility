@@ -147,16 +147,13 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
 
 napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start");
     size_t argc = 3;
     napi_value parameters[3] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
     std::string abilityTypes = GetStringFromNAPI(env, parameters[0]);
     std::string stateTypes = GetStringFromNAPI(env, parameters[1]);
-
-    HILOG_INFO("abilityTypes[%{public}s]", abilityTypes.c_str());
-    HILOG_INFO("stateTypes[%{public}s]", stateTypes.c_str());
+    HILOG_INFO("abilityTypes[%{public}s] stateTypes[%{public}s]", abilityTypes.c_str(), stateTypes.c_str());
 
     NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     callbackInfo->abilityTypes_ = ConvertStringToAccessibilityAbilityTypes(abilityTypes);
@@ -165,11 +162,9 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     napi_value promise = nullptr;
 
     if (argc > ARGS_SIZE_TWO) {
-        HILOG_DEBUG("GetAbilityList callback mode");
         napi_create_reference(env, parameters[ARGS_SIZE_TWO], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("GetAbilityList promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -184,7 +179,6 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             callbackInfo->abilityList_ = AccessibilitySystemAbilityClient::GetInstance()->GetAbilityList(
                 callbackInfo->abilityTypes_, callbackInfo->stateTypes_);
-            HILOG_INFO("GetAbilityList Executing GetAbilityList[%{public}d]", callbackInfo->abilityList_.size());
         },
         // execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -194,7 +188,6 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
-            HILOG_INFO("GetAbilityList ENTER ConvertAccessibleAbilityInfosToJS");
             ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
             if (callbackInfo->callback_) {
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
@@ -313,11 +306,11 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
 napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_info info)
 {
+    HILOG_INFO("start");
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
-    HILOG_INFO("start  observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
     AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
@@ -327,6 +320,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
+    HILOG_INFO("observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
     int i = 0;
     bool result = false;
     for (auto observer : NAccessibilityClient::stateListeners_[eventType]) {
@@ -472,11 +466,9 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetCaptionProperty callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetCaptionProperty promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -592,14 +584,10 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetCaptionState callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetCaptionState promise mode");
-        napi_status retStatus = napi_create_promise(env, &callbackInfo->deferred_, &promise);
-
-        HILOG_DEBUG("napi_create_promise return: %{public}d", retStatus);
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetCaptionState", NAPI_AUTO_LENGTH, &resource);
@@ -715,11 +703,9 @@ napi_value NAccessibilityClient::SetEnabled(napi_env env, napi_callback_info inf
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetEnabled callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetEnabled promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -835,11 +821,9 @@ napi_value NAccessibilityClient::SetTouchGuideState(napi_env env, napi_callback_
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetTouchGuideState callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetTouchGuideState promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -955,11 +939,9 @@ napi_value NAccessibilityClient::SetGestureState(napi_env env, napi_callback_inf
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetGestureState callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetGestureState promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -1076,11 +1058,9 @@ napi_value NAccessibilityClient::SetKeyEventObserverState(napi_env env, napi_cal
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("SetKeyEventObserverState callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("SetKeyEventObserverState promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -1197,11 +1177,9 @@ napi_value NAccessibilityClient::GetExtensionEnabled(napi_env env, napi_callback
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_ONE) {
-        HILOG_DEBUG("GetExtensionEnabled callback mode");
         napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("GetExtensionEnabled promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -1260,11 +1238,9 @@ napi_value NAccessibilityClient::ExtensionEnabled(napi_env env, napi_callback_in
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("ExtensionEnabled callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("ExtensionEnabled promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -1321,11 +1297,9 @@ napi_value NAccessibilityClient::ExtensionDisabled(napi_env env, napi_callback_i
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_TWO) {
-        HILOG_DEBUG("ExtensionDisabled callback mode");
         napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
         napi_get_undefined(env, &promise);
     } else {
-        HILOG_DEBUG("ExtensionDisabled promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
     napi_value resource = nullptr;
@@ -1767,30 +1741,24 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
     HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
         // get input FontFamily
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontFamily = %{public}s", outBuffer);
-
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
         captionProperty.SetFontFamily(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-
         HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
@@ -1799,15 +1767,11 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
 napi_value NAccessibilityClient::GetCaptionsFontScale(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
     napi_create_int32(env, captionProperty.GetFontScale(), &returnValue);
-
     HILOG_INFO("end");
-
     return returnValue;
 }
 
@@ -1816,20 +1780,16 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
     HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
         // get input FontScale
         int32_t num = 0;
         napi_get_value_int32(env, parameters[PARAM0], &num);
         HILOG_INFO("FontScale = %{public}d", num);
-
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
         captionProperty.SetFontScale(num);
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
@@ -1838,7 +1798,6 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
@@ -1847,15 +1806,11 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
 napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
-    napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &returnValue);
-
+    napi_create_uint32(env, captionProperty.GetFontColor(), &returnValue);
     HILOG_INFO("end");
-
     return returnValue;
 }
 
@@ -1864,30 +1819,19 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
     HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
-        // get input frontColor
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
-        HILOG_INFO("frontColor = %{public}s", outBuffer);
-
+        uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
-        captionProperty.SetFontColor(std::string(outBuffer));
+        captionProperty.SetFontColor(color);
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-
-        HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
@@ -1896,15 +1840,11 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
 napi_value NAccessibilityClient::GetCaptionFontEdgeType(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
     napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &returnValue);
-
     HILOG_INFO("end");
-
     return returnValue;
 }
 
@@ -1917,26 +1857,21 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
         // get input FontEdgeType
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontEdgeType = %{public}s", outBuffer);
-
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
         captionProperty.SetFontEdgeType(std::string(outBuffer));
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-
         HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
@@ -1945,15 +1880,11 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
 napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
-    napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &returnValue);
-
+    napi_create_uint32(env, captionProperty.GetBackgroundColor(), &returnValue);
     HILOG_INFO("end");
-
     return returnValue;
 }
 
@@ -1962,30 +1893,19 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
     HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
-        // get input BackgroundColor
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
-        HILOG_INFO("BackgroundColor = %{public}s", outBuffer);
-
+        uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
-        captionProperty.SetBackgroundColor(std::string(outBuffer));
+        captionProperty.SetBackgroundColor(color);
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-
-        HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
@@ -1994,15 +1914,11 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
 napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
     napi_value returnValue = nullptr;
-    napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &returnValue);
-
+    napi_create_uint32(env, captionProperty.GetWindowColor(), &returnValue);
     HILOG_INFO("end");
-
     return returnValue;
 }
 
@@ -2011,30 +1927,19 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
-
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-
-        // get input WindowColor
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
-        HILOG_INFO("WindowColor = %{public}s", outBuffer);
-
+        uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // get CaptionProperty
         OHOS::Accessibility::CaptionProperty captionProperty =
             AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-
         // change the input info and then set the CaptionProperty
-        captionProperty.SetWindowColor(std::string(outBuffer));
+        captionProperty.SetWindowColor(color);
         returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-
-        HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
     }
-
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;

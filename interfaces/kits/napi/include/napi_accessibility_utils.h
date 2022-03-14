@@ -86,5 +86,8 @@ void ConvertJSToEnabledAbilities(
 
 void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value);
 void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_);
+uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
+uint32_t GetColorValue(napi_env env, napi_value value);
+uint32_t ConvertColorStringToNumer(std::string colorStr);
 
 #endif  // NAPI_ACCESSIBILITY_UTILS_H
