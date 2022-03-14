@@ -15,6 +15,7 @@
 
 #include "accessible_ability_manager_service.h"
 
+#include <new>
 #include <unistd.h>
 #include <functional>
 
@@ -192,7 +193,10 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
     }
 
     if (!captionPropertyCallbackDeathRecipient_) {
-        captionPropertyCallbackDeathRecipient_ = new CaptionPropertyCallbackDeathRecipient();
+        captionPropertyCallbackDeathRecipient_ = new(std::nothrow) CaptionPropertyCallbackDeathRecipient();
+        if (!captionPropertyCallbackDeathRecipient_) {
+            HILOG_ERROR("captionPropertyCallbackDeathRecipient_ is null");
+        }
     }
 
     callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
@@ -218,7 +222,11 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
     }
 
     if (!stateCallbackDeathRecipient_) {
-        stateCallbackDeathRecipient_ = new StateCallbackDeathRecipient();
+        stateCallbackDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
+        if (!stateCallbackDeathRecipient_) {
+            HILOG_ERROR("stateCallbackDeathRecipient_ is null");
+            return 0;
+        }
     }
 
     callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
@@ -267,7 +275,8 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         return;
     }
 
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
+    sptr<AccessibilityWindowConnection> connection = new(std::nothrow) AccessibilityWindowConnection(windowId,
+        operation, accountId);
     if (!connection) {
         HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
         return;
@@ -360,7 +369,11 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
     }
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(currentAccountId_);
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(currentAccountId_);
+    if (!accountData) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
     a11yAccountsData_.insert(make_pair(currentAccountId_, accountData));
     return accountData;
 }
@@ -569,7 +582,11 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
         if (newAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package added is an extension ability and\
                 extension ability's name is %{public}s", newAbility.name.c_str());
-            sptr<AccessibilityAbilityInfo> accessibilityInfo = new AccessibilityAbilityInfo(newAbility);
+            sptr<AccessibilityAbilityInfo> accessibilityInfo = new(std::nothrow) AccessibilityAbilityInfo(newAbility);
+            if (!accessibilityInfo) {
+                HILOG_ERROR("accessibilityInfo is not null");
+                return;
+            }
             GetCurrentAccountData()->AddInstalledAbility(*accessibilityInfo);
             HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}d",
                 GetCurrentAccountData()->GetInstalledAbilities().size());
@@ -702,7 +719,11 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(elementName);
         if (accountData->GetEnabledAbilities().count(elementName)) {
             if (!connection) {
-                connection = new AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
+                connection = new(std::nothrow) AccessibleAbilityConnection(accountData,
+                    connectCounter_++, installAbility);
+                if (!connection) {
+                    HILOG_ERROR("connection is null");
+                }
                 connection->Connect(element);
             }
         } else {
@@ -955,7 +976,11 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
     auto currentAccountData = GetCurrentAccountData();
 
     // add installed ability
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    sptr<AccessibilityAbilityInfo> abilityInfo = new(std::nothrow) AccessibilityAbilityInfo();
+    if (!abilityInfo) {
+        HILOG_ERROR("abilityInfo is null");
+        return;
+    }
     abilityInfo->SetPackageName(UI_TEST_BUNDLE_NAME);
     uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);

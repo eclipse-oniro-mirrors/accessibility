@@ -16,6 +16,7 @@
 #include "accessibility_interaction_bridge.h"
 
 #include <algorithm>
+#include <new>
 #include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
@@ -39,7 +40,11 @@ AccessibilityInteractionBridge::AccessibilityInteractionBridge()
 {
     HILOG_DEBUG("start");
     AppExecFwk::ExtensionAbilityInfo info;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    sptr<AccessibilityAbilityInfo> abilityInfo = new(std::nothrow) AccessibilityAbilityInfo(info);
+    if (!abilityInfo) {
+        HILOG_ERROR("abilityInfo is not matched");
+        return;
+    }
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
     accountData_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountData();
     connection_ = new AccessibleAbilityConnection(accountData_, INTERACTION_BRIDGE_CHANNEL_ID, *abilityInfo);
