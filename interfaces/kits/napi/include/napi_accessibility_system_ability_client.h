@@ -17,6 +17,7 @@
 #define NAPI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H
 
 #include <vector>
+#include <map>
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_system_ability_client.h"
@@ -114,9 +115,10 @@ struct NAccessibilitySystemAbilityClient {
     bool setExtensionReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     bool result_ = false;
-    std::vector<std::shared_ptr<StateListener>> stateListener_ {};
-    std::vector<std::shared_ptr<CaptionListener>> captionListener_ {};
     std::string eventType_ = "";
+
+    std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
+    std::vector<std::shared_ptr<CaptionListener>> captionListener_;
 };
 
 class NAccessibilityClient {
@@ -172,7 +174,7 @@ public:
     static napi_value aaCons_;          // CaptionsManager
     static napi_value aaStyleCons_;     // CaptionsStyle
 
-    static std::vector<std::shared_ptr<StateListener>> listeners_;
+    static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
     static std::vector<std::shared_ptr<CaptionListener>> captionListeners_;
 
 private:
