@@ -190,14 +190,11 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     HILOG_DEBUG("start");
-
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_ACCESSIBILITY_ID);
-    {
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
-        aaCallbacks_.insert(
-            std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    }
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    aaCallbacks_.insert(
+        std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
@@ -212,15 +209,11 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
-    
-
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_TEXT);
-    {    
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
-        aaCallbacks_.insert(
-            std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    }
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    aaCallbacks_.insert(
+        std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
@@ -235,14 +228,11 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
-
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_FIND_FOCUS);
-    {
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
-        aaCallbacks_.insert(
-            std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    }
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    aaCallbacks_.insert(
+        std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
@@ -257,15 +247,11 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
-
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_FOCUS_MOVE);
-
-    {
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
-        aaCallbacks_.insert(
-            std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    }
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    aaCallbacks_.insert(
+        std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
@@ -280,15 +266,11 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
-    
-
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_PERFORM_ACTION);
-    {
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
-        aaCallbacks_.insert(
-            std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    }
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    aaCallbacks_.insert(
+        std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
     std::shared_ptr<AccessibilityElementOperator> obj =
         AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
@@ -396,7 +378,6 @@ void AccessibilityElementOperatorStub::CallbackImpl::SetExecuteActionResult(
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::recursive_mutex> lock(mutex_);
-
     auto callback = GetAACallbackList().find(requestId);
     if (callback != GetAACallbackList().end() && callback->second != nullptr) {
         callback->second->SetExecuteActionResult(succeeded, requestId);
@@ -414,7 +395,6 @@ AccessibilityElementOperatorCallbacks AccessibilityElementOperatorStub::Callback
 void AccessibilityElementOperatorStub::CallbackImpl::RemoveAACallbackList(int requestId)
 {
     HILOG_DEBUG("start");
-
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     for (auto iter = aaCallbacks_.begin(); iter != aaCallbacks_.end();) {
         if (iter->first == requestId) {
