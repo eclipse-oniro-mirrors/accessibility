@@ -16,6 +16,7 @@
 #include "napi_accessibility_utils.h"
 
 #include <cmath>
+#include <iomanip>
 #include <regex>
 #include <vector>
 
@@ -1632,17 +1633,23 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessib
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, captionProperty.GetFontScale(), &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontScale", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, captionProperty.GetFontColor(), &value));
+    uint32_t color = captionProperty.GetFontColor();
+    std::string colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontColor", value));
 
     NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontEdgeType", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, captionProperty.GetBackgroundColor(), &value));
+    color = captionProperty.GetBackgroundColor();
+    colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "backgroundColor", value));
 
-    NAPI_CALL_RETURN_VOID(env, napi_create_uint32(env, captionProperty.GetWindowColor(), &value));
+    color = captionProperty.GetWindowColor();
+    colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 
     HILOG_DEBUG("end");
@@ -1717,6 +1724,25 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         color = it->second;
     }
     return color;
+}
+constexpr int32_t RGB_LENGTH = 6;
+constexpr int32_t ALPHA_LENGTH = 2;
+constexpr int32_t ALPHA_MOVE = 24;
+const char UNICODE_BODY = '0';
+std::string ConvertColorToString(uint32_t color)
+{
+    HILOG_DEBUG("color is 0X%{public}x", color);
+    uint32_t rgb = color & (~COLOR_ALPHA_MASK);
+    uint32_t alpha = (color) >> ALPHA_MOVE;
+    std::stringstream rgbStream;
+    rgbStream << std::hex << std::setw(RGB_LENGTH) << std::setfill(UNICODE_BODY) << rgb;
+    std::stringstream alphaStream;
+    alphaStream << std::hex << std::setw(ALPHA_LENGTH) << std::setfill(UNICODE_BODY) << alpha;
+    std::string rgbStr(rgbStream.str());
+    std::string alphaStr(alphaStream.str());
+    std::string colorStr = "#" + rgbStr + alphaStr;
+    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
+    return colorStr;
 }
 
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue)

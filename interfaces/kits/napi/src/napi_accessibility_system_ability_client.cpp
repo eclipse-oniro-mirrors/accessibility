@@ -1746,7 +1746,9 @@ napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callbac
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
-    napi_create_uint32(env, captionProperty.GetFontColor(), &returnValue);
+    uint32_t color = captionProperty.GetFontColor();
+    std::string colorStr = ConvertColorToString(color);
+    napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
     HILOG_INFO("end");
     return returnValue;
 }
@@ -1820,7 +1822,9 @@ napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_ca
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
-    napi_create_uint32(env, captionProperty.GetBackgroundColor(), &returnValue);
+    uint32_t color = captionProperty.GetBackgroundColor();
+    std::string colorStr = ConvertColorToString(color);
+    napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
     HILOG_INFO("end");
     return returnValue;
 }
@@ -1854,7 +1858,9 @@ napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callba
     OHOS::Accessibility::CaptionProperty captionProperty =
         AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
-    napi_create_uint32(env, captionProperty.GetWindowColor(), &returnValue);
+    uint32_t color = captionProperty.GetWindowColor();
+    std::string colorStr = ConvertColorToString(color);
+    napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
     HILOG_INFO("end");
     return returnValue;
 }
