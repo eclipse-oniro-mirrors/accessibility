@@ -26,6 +26,7 @@ namespace AppExecFwk {
 const int TESTWINDOWID = 0;
 const int TESTUSERID = 0;
 const int STATETYPE = 1;
+static const int32_t CHILD_ID = 2;
 
 void AccessibleAbilityListenerTest::OnAbilityConnected()
 {
@@ -268,7 +269,7 @@ void AccessibilityInteractionOperationTest::SearchElementInfoByAccessibilityId(c
     info.SetWindowId(0);
     info.SetCheckable(true);
     info.SetHint("testapp_B1_findFocus");
-    info.AddChild(2);
+    info.AddChild(CHILD_ID);
     std::list<AccessibilityElementInfo> infos;
     infos.push_back(info);
     callback.SetSearchElementInfoByAccessibilityIdResult(infos, requestId);

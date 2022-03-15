@@ -319,7 +319,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
         captionProperty_.GetBackgroundColor() != caption.GetBackgroundColor() ||
         captionProperty_.GetWindowColor() != caption.GetWindowColor()) {
         auto proxyService = pimpl->GetService();
-        if (proxyService == nullptr) {
+        if (!proxyService) {
             HILOG_ERROR("Failed to get aams service");
             return false;
         }
