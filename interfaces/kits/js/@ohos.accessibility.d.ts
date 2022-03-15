@@ -246,7 +246,7 @@ declare namespace accessibility {
      /**
       * Indicates the font color of captions.
       */
-     fontColor: string;
+     fontColor: number | string;
      /**
       * Indicates the edge type of the captions font.
       */
@@ -254,11 +254,11 @@ declare namespace accessibility {
      /**
       * Indicates the background color of captions.
       */
-     backgroundColor: string;
+     backgroundColor: number | string;
      /**
       * Indicates the window color of captions.
       */
-     windowColor: string;
+     windowColor: number | string;
    }
 
    /**

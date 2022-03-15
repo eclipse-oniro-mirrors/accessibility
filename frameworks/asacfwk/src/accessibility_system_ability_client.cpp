@@ -298,11 +298,11 @@ bool AccessibilitySystemAbilityClient::SetCaptionProperty(const CaptionProperty&
 {
     HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) ||
+        captionProperty_.GetFontColor() != caption.GetFontColor() ||
         strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
         strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
-        strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) ||
-        strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str())) {
+        captionProperty_.GetBackgroundColor() != caption.GetBackgroundColor() ||
+        captionProperty_.GetWindowColor() != caption.GetWindowColor()) {
         captionProperty_ = caption;
         NotifyCaptionChanged();
     }
@@ -313,11 +313,11 @@ bool AccessibilitySystemAbilityClient::SetCaptionPropertyTojson(const CaptionPro
 {
     HILOG_DEBUG("start");
     if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        strcmp(captionProperty_.GetFontColor().c_str(), caption.GetFontColor().c_str()) ||
+        captionProperty_.GetFontColor() != caption.GetFontColor() ||
         strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
         strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
-        strcmp(captionProperty_.GetBackgroundColor().c_str(), caption.GetBackgroundColor().c_str()) ||
-        strcmp(captionProperty_.GetWindowColor().c_str(), caption.GetWindowColor().c_str())) {
+        captionProperty_.GetBackgroundColor() != caption.GetBackgroundColor() ||
+        captionProperty_.GetWindowColor() != caption.GetWindowColor()) {
         auto proxyService = pimpl->GetService();
         if (proxyService == nullptr) {
             HILOG_ERROR("Failed to get aams service");

@@ -50,17 +50,17 @@ public:
     int GetFontScale() const;
     void SetFontScale(int scale);
 
-    void SetFontColor(std::string color);
-    std::string GetFontColor() const;
+    void SetFontColor(uint32_t color);
+    uint32_t GetFontColor() const;
 
     void SetFontEdgeType(std::string type);
     std::string  GetFontEdgeType() const;
 
-    void SetWindowColor(std::string color);
-    std::string GetWindowColor() const;
+    void SetWindowColor(uint32_t color);
+    uint32_t GetWindowColor() const;
 
-    void SetBackgroundColor(std::string color);
-    std::string GetBackgroundColor() const;
+    void SetBackgroundColor(uint32_t color);
+    uint32_t GetBackgroundColor() const;
 
     /**
      * @brief read this sequenceable object from a Parcel.
@@ -95,10 +95,10 @@ private:
 
     std::string fontFamily_ = "default";
     int fontScale_ = 75;    // font size
-    std::string fontColor_ = "";     // #0055AA
+    uint32_t fontColor_ = 0xff000000;
     std::string fontEdgeType_ = "none";
-    std::string backgroundColor_ = "";
-    std::string windowColor_ = "";
+    uint32_t backgroundColor_ = 0xff000000;
+    uint32_t windowColor_ = 0xff000000;
 };
 
 enum CaptionObserverType : int {
