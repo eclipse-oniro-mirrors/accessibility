@@ -51,7 +51,7 @@ InputManager *InputManager::instance_ = nullptr;
 
 InputManager *InputManager::GetInstance()
 {
-    if (instance_ == nullptr) {
+    if (!instance_) {
         instance_ = new InputManager();
     }
     return instance_;

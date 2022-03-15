@@ -31,19 +31,17 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define GESTURE_STARTED_TIME_THRESHOLD 300
-#define GESTURE_NOT_STARTED_TIME_THRESHOLD 150
-#define DOUBLE_TAP_SLOP 100
-#define MIN_DOUBLE_TAP_TIME 40
-#define DOUBLE_TAP_TIMEOUT 300
-#define LONG_PRESS_TIMEOUT 400
-#define DEGREES_THRESHOLD 0.0
-#define DIRECTION_NUM 4
+const int64_t GESTURE_STARTED_TIME_THRESHOLD = 300;
+const int64_t GESTURE_NOT_STARTED_TIME_THRESHOLD = 150;
+const float DOUBLE_TAP_SLOP = 100.0f;
+const int64_t MIN_DOUBLE_TAP_TIME = 40;
+const int64_t DOUBLE_TAP_TIMEOUT = 300;
+const int64_t LONG_PRESS_TIMEOUT = 400;
+const float DEGREES_THRESHOLD = 0.0f;
+const int32_t DIRECTION_NUM = 4;
+const int64_t US_TO_MS = 1000;
 #define CALCULATION_DIMENSION(xdpi) ((xdpi) * (1.0f / 25.4f) * 10)
 #define MIN_PIXELS(xyDpi) ((xyDpi) * 0.1f)
-#define POINTER_COUNT_1 1
-#define POINTER_COUNT_2 2
-#define US_TO_MS 1000
 
 struct Pointer {
     float px_;

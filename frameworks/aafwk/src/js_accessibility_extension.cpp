@@ -61,19 +61,19 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
     auto& engine = jsRuntime_.GetNativeEngine();
 
     jsObj_ = jsRuntime_.LoadModule(moduleName, srcPath);
-    if (jsObj_ == nullptr) {
+    if (!jsObj_) {
         HILOG_ERROR("Failed to get jsObj_");
         return;
     }
     HILOG_INFO("JsAccessibilityExtension::Init ConvertNativeValueTo.");
     NativeObject* obj = ConvertNativeValueTo<NativeObject>(jsObj_->Get());
-    if (obj == nullptr) {
+    if (!obj) {
         HILOG_ERROR("Failed to get JsAccessibilityExtension object");
         return;
     }
 
     auto context = GetContext();
-    if (context == nullptr) {
+    if (!context) {
         HILOG_ERROR("Failed to get context");
         return;
     }
@@ -87,7 +87,7 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
     obj->SetProperty("context", contextObj);
 
     auto nativeObj = ConvertNativeValueTo<NativeObject>(contextObj);
-    if (nativeObj == nullptr) {
+    if (!nativeObj) {
         HILOG_ERROR("Failed to get accessibility extension native object");
         return;
     }
@@ -191,13 +191,13 @@ NativeValue* JsAccessibilityExtension::CallObjectMethod(const char* name, Native
 
     NativeValue* value = jsObj_->Get();
     NativeObject* obj = ConvertNativeValueTo<NativeObject>(value);
-    if (obj == nullptr) {
+    if (!obj) {
         HILOG_ERROR("Failed to get AccessibilityExtension object");
         return nullptr;
     }
 
     NativeValue* method = obj->GetProperty(name);
-    if (method == nullptr) {
+    if (!method) {
         HILOG_ERROR("Failed to get '%{public}s' from AccessibilityExtension object", name);
         return nullptr;
     }

@@ -56,18 +56,18 @@ struct AccessibilitySystemAbilityClient::Impl {
         }
 
         sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-        if (samgr == nullptr) {
+        if (!samgr) {
             HILOG_ERROR("Failed to get ISystemAbilityManager");
             return nullptr;
         }
 
         sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
-        if (object == nullptr) {
+        if (!object) {
             HILOG_ERROR("Get IAccessibleAbilityManagerServiceClient object from samgr failed");
             return nullptr;
         }
 
-        if (deathRecipient_ == nullptr) {
+        if (!deathRecipient_) {
             deathRecipient_ = new DeathRecipient();
         }
 
@@ -77,7 +77,7 @@ struct AccessibilitySystemAbilityClient::Impl {
 
         HILOG_DEBUG("get remote object ok");
         serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceClientProxy>(object);
-        if (serviceProxy_ == nullptr) {
+        if (!serviceProxy_) {
             HILOG_ERROR("IAccessibleAbilityManagerServiceClient iface_cast failed");
         }
         return serviceProxy_;
@@ -91,7 +91,7 @@ AccessibilitySystemAbilityClient::AccessibilitySystemAbilityClient(const Context
     accountId_ = accountId;
     pimpl->stateCallback_ = new AccessibleAbilityManagerServiceStateStub();
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return;
     }
@@ -166,7 +166,7 @@ int AccessibilitySystemAbilityClient::RegisterElementOperator(
         sptr<AccessibilityElementOperatorStub> aamsInteractionOperator = new AccessibilityElementOperatorStub();
         aamsInteractionOperator->SetWindowId(windowId);
         auto proxyService = pimpl->GetService();
-        if (proxyService == nullptr) {
+        if (!proxyService) {
             HILOG_ERROR("Failed to get aams service");
             return -1;
         }
@@ -182,7 +182,7 @@ void AccessibilitySystemAbilityClient::DeregisterElementOperator(const int windo
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return;
     }
@@ -246,7 +246,7 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetAbili
         check = false;
     }
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr || !check) {
+    if (!proxyService || !check) {
         HILOG_ERROR("Failed to get aams service");
         std::vector<AccessibilityAbilityInfo> infos;
         return infos;
@@ -258,7 +258,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
     const Context& abilityContext)
 {
     HILOG_DEBUG("start");
-    if (instance_ == nullptr) {
+    if (!instance_) {
         int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
     } else {
@@ -272,7 +272,7 @@ shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::G
 {
     HILOG_DEBUG("start");
     AbilityContext abilityContext = {};
-    if (instance_ == nullptr) {
+    if (!instance_) {
         int accountId = 100;    // temp deal
         instance_ = std::make_shared<AccessibilitySystemAbilityClient>(abilityContext, accountId);
     } else {
@@ -287,7 +287,7 @@ CaptionProperty AccessibilitySystemAbilityClient::GetCaptionProperty() const
     HILOG_DEBUG("start");
     CaptionProperty cp;
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return cp;
     }
@@ -344,7 +344,7 @@ bool AccessibilitySystemAbilityClient::SetCaptionStateTojson(const bool state)
     bool ret = false;
     if (isCaptionEnabled_ != state) {
         auto proxyService = pimpl->GetService();
-        if (proxyService == nullptr) {
+        if (!proxyService) {
             HILOG_ERROR("Failed to get aams service");
             return false;
         }
@@ -403,7 +403,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const EventType eventType, cons
     event.SetEventType(eventType);
     event.SetSource(componentId);
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -418,7 +418,7 @@ bool AccessibilitySystemAbilityClient::SendEvent(const AccessibilityEventInfo& e
         return false;
     }
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -715,7 +715,7 @@ bool AccessibilitySystemAbilityClient::GetEnabledState()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -726,7 +726,7 @@ bool AccessibilitySystemAbilityClient::GetCaptionState()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -739,7 +739,7 @@ bool AccessibilitySystemAbilityClient::GetTouchGuideState()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -750,7 +750,7 @@ bool AccessibilitySystemAbilityClient::GetGestureState()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -761,7 +761,7 @@ bool AccessibilitySystemAbilityClient::GetKeyEventObserverState()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -802,7 +802,7 @@ bool AccessibilitySystemAbilityClient::SetEnabledObj(std::map<std::string, AppEx
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -815,7 +815,7 @@ std::map<std::string, AppExecFwk::ElementName> AccessibilitySystemAbilityClient:
     HILOG_DEBUG("start");
 
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         std::map<std::string, AppExecFwk::ElementName> it;
         return it;
@@ -827,7 +827,7 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClient::GetInsta
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         std::vector<AccessibilityAbilityInfo> it;
         return it;
@@ -875,7 +875,7 @@ bool AccessibilitySystemAbilityClient::DisableAbilities(std::map<std::string, Ap
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -888,7 +888,7 @@ int AccessibilitySystemAbilityClient::GetActiveWindow()
 {
     HILOG_DEBUG("start");
     auto proxyService = pimpl->GetService();
-    if (proxyService == nullptr) {
+    if (!proxyService) {
         HILOG_ERROR("Failed to get aams service");
         return INVALID_WINDOW_ID;
     }

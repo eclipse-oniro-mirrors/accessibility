@@ -53,7 +53,7 @@ std::shared_ptr<AccessibilityExtensionContext> AccessibilityExtension::CreateAnd
 {
     std::shared_ptr<AccessibilityExtensionContext> context =
         ExtensionBase<AccessibilityExtensionContext>::CreateAndInitContext(record, application, handler, token);
-    if (record == nullptr) {
+    if (!record) {
         HILOG_ERROR("AccessibilityExtension::CreateAndInitContext record is nullptr");
     }
     return context;

@@ -38,7 +38,7 @@ AccessibilityOperator &AccessibilityOperator::GetInstance()
 {
     GTEST_LOG_(INFO) << "MOCK AccessibilityOperator GetInstance";
     static sptr<AccessibilityOperator> accessibilityOperator = nullptr;
-    if (accessibilityOperator == nullptr) {
+    if (!accessibilityOperator) {
         accessibilityOperator = new AccessibilityOperator();
         return *accessibilityOperator;
     }

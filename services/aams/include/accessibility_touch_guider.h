@@ -26,15 +26,15 @@ namespace OHOS {
 namespace Accessibility {
 class TouchGuider;
 
-#define MAX_POINTER_COUNT  32
-#define EXIT_GESTURE_REC_TIMEOUT 2000
-#define MAX_DRAG_GESTURE_COSINE 0.525321989
-#define MINI_POINTER_DISTANCE_DIP 200
+const int32_t MAX_POINTER_COUNT = 32;
+const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000;
+const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
+const int32_t MINI_POINTER_DISTANCE_DIP = 200;
+const int32_t INDEX_0 = 0;
+const int32_t INDEX_1 = 1;
+const int32_t INIT_POINT_ID = -1;
+const float INIT_MMIPOINT = 0.0f;
 #define DIVIDE_2(num) ((num) / 2)
-#define INDEX_0 0
-#define INDEX_1 1
-#define INIT_POINT_ID (-1)
-#define INIT_MMIPOINT 0
 
 /**
  * @brief touch Guider state define

@@ -21,7 +21,7 @@ namespace OHOS {
 namespace AppExecFwk {
 void ElementName::SetElementDeviceID(ElementName *element, const char *deviceId)
 {
-    if (element == nullptr) {
+    if (!element) {
         return;
     }
     element->SetDeviceID(deviceId);
@@ -29,7 +29,7 @@ void ElementName::SetElementDeviceID(ElementName *element, const char *deviceId)
 
 void ElementName::SetElementBundleName(ElementName *element, const char *bundleName)
 {
-    if (element == nullptr) {
+    if (!element) {
         return;
     }
     element->SetBundleName(bundleName);
@@ -37,7 +37,7 @@ void ElementName::SetElementBundleName(ElementName *element, const char *bundleN
 
 void ElementName::SetElementAbilityName(ElementName *element, const char *abilityName)
 {
-    if (element == nullptr) {
+    if (!element) {
         return;
     }
     element->SetAbilityName(abilityName);
@@ -45,7 +45,7 @@ void ElementName::SetElementAbilityName(ElementName *element, const char *abilit
 
 void ElementName::ClearElement(ElementName *element)
 {
-    if (element == nullptr) {
+    if (!element) {
         return;
     }
     element->SetDeviceID("");

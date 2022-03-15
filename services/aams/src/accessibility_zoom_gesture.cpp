@@ -56,7 +56,7 @@ bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
     if (!downCount_) {
         pLastDown_ = std::make_shared<MMI::PointerEvent>(event);
     } else {
-        if (pLastDown_ == nullptr) {
+        if (!pLastDown_) {
             HILOG_ERROR("pLastDown_ is null");
             return false;
         }
