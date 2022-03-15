@@ -534,38 +534,6 @@ HWTEST_F(AccessibleAbilityChannelStubUnitTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016
- * @tc.name: OnRemoteRequest
- * @tc.desc: Test function HandleSendSimulateGesture
- */
-HWTEST_F(AccessibleAbilityChannelStubUnitTest,
-    AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016 start";
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    int sequence = 0;
-    std::vector<GesturePathDefine> gestureSteps {};
-
-    WriteInterfaceToken(data);
-    data.WriteInt32(sequence);
-    data.WriteInt32(gestureSteps.size());
-    for (auto &step : gestureSteps) {
-        data.WriteParcelable(&step);
-    }
-
-    int res = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE),
-        data, reply, option);
-    EXPECT_EQ(res, OHOS::Accessibility::NO_ERROR);
-
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_016 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityChannelStubUnitTest_Unittest_OnRemoteRequest_018
  * @tc.name: OnRemoteRequest
  * @tc.desc: Test function OnRemoteRequest when code is error.
