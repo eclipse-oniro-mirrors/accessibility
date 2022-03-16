@@ -425,7 +425,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy(
     }
 
     bundleManager_ = iface_cast<AppExecFwk::BundleMgrProxy>(remoteObject);
-    if (bundleManager_ == nullptr) {
+    if (!bundleManager_) {
         HILOG_ERROR("fail to new bundle manager.");
     } else {
         HILOG_INFO("AccessibleAbilityManagerService::GetBundleMgrProxy OK");
@@ -1015,7 +1015,7 @@ bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
     HILOG_DEBUG("start");
     std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetAccessibleAbilityConnection(uiTestUri);
-    if (connection == nullptr) {
+    if (!connection) {
         HILOG_ERROR("connection is not existed!!");
         return false;
     }

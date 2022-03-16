@@ -29,7 +29,7 @@ static std::shared_ptr<AccessibilityUITestAbilityImpl> g_Instance = nullptr;
 std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::GetInstance()
 {
     std::lock_guard<std::mutex> lock(g_Mutex);
-    if (g_Instance == nullptr) {
+    if (!g_Instance) {
         g_Instance = std::make_shared<AccessibilityUITestAbilityImpl>();
     }
     return g_Instance;
@@ -87,7 +87,7 @@ bool AccessibilityUITestAbilityImpl::Connect()
     HILOG_DEBUG("start.");
     std::lock_guard<std::mutex> lock(g_Mutex);
 
-    if (serviceProxy_ == nullptr) {
+    if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
@@ -104,7 +104,7 @@ bool AccessibilityUITestAbilityImpl::Disconnect()
     HILOG_DEBUG("start.");
     std::lock_guard<std::mutex> lock(g_Mutex);
 
-    if (serviceProxy_ == nullptr) {
+    if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
         return false;
     }

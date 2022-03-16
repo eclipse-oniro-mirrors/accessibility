@@ -26,6 +26,7 @@ namespace AppExecFwk {
 const int TESTWINDOWID = 0;
 const int TESTUSERID = 0;
 const int STATETYPE = 1;
+static const int32_t CHILD_ID = 2;
 
 void AccessibleAbilityListenerTest::OnAbilityConnected()
 {
@@ -45,13 +46,13 @@ void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEven
     if (elementInfo.has_value()) {
         HILOG_INFO("elementInfo has value.");
     } else {
-        HILOG_INFO("elementInfo has no value.");
+        HILOG_ERROR("elementInfo has no value.");
     }
 }
 
 void AccessibleAbilityListenerTest::OnGesture(uint32_t gestureId)
 {
-    HILOG_INFO("##############AamsStAbilityB1: A gesture is received and gestureId is %{public}d.", gestureId);
+    HILOG_INFO("##############AamsStAbilityB1: A gesture is received and gestureId is %{public}u.", gestureId);
 }
 
 void AccessibleAbilityListenerTest::OnInterrupt()
@@ -268,8 +269,7 @@ void AccessibilityInteractionOperationTest::SearchElementInfoByAccessibilityId(c
     info.SetWindowId(0);
     info.SetCheckable(true);
     info.SetHint("testapp_B1_findFocus");
-    int childId = 2;
-    info.AddChild(childId);
+    info.AddChild(CHILD_ID);
     std::list<AccessibilityElementInfo> infos;
     infos.push_back(info);
     callback.SetSearchElementInfoByAccessibilityIdResult(infos, requestId);

@@ -16,8 +16,6 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 #define ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 
-#define INT32_BIT_NUM 32
-
 #include <map>
 #include <memory>
 #include <mutex>

@@ -24,8 +24,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define POINTER_COUNT_1 1
-
 /**
  * @brief Zoom state machine.
  * When the magnifying function is turned on, it is in ReadyState.
