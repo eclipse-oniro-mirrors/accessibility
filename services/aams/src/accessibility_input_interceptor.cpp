@@ -124,7 +124,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     sptr<EventTransmission> current = nullptr;
 
     if (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) {
-        sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
+        sptr<TouchEventInjector> touchEventInjector = new(std::nothrow) TouchEventInjector();
+        if (!touchEventInjector) {
+            HILOG_ERROR("touchEventInjector is null");
+            return;
+        }
         SetNextEventTransmitter(header, current, touchEventInjector);
         aams_->SetTouchEventInjector(touchEventInjector);
     }
@@ -139,7 +143,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     }
 
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
-        sptr<TouchGuider> touchGuider = new TouchGuider();
+        sptr<TouchGuider> touchGuider = new(std::nothrow) TouchGuider();
+        if (!touchGuider) {
+            HILOG_ERROR("touchGuider is null");
+            return;
+        }
         touchGuider->StartUp();
         SetNextEventTransmitter(header, current, touchGuider);
     }
