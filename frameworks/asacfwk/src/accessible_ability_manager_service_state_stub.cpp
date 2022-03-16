@@ -40,7 +40,7 @@ int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, Mes
     }
 
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerServiceState::Message::ON_STATE_CHANGED)) {
-        HandleOnStateChanged(data, reply);
+        return HandleOnStateChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }

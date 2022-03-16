@@ -15,6 +15,9 @@
 
 #include "napi_accessibility_utils.h"
 
+#include <cmath>
+#include <iomanip>
+#include <regex>
 #include <vector>
 
 #include "hilog_wrapper.h"
@@ -1630,23 +1633,164 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessib
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, captionProperty.GetFontScale(), &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontScale", value));
 
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, captionProperty.GetFontColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    uint32_t color = captionProperty.GetFontColor();
+    std::string colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontColor", value));
 
     NAPI_CALL_RETURN_VOID(env,
         napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fontEdgeType", value));
 
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, captionProperty.GetBackgroundColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    color = captionProperty.GetBackgroundColor();
+    colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "backgroundColor", value));
 
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, captionProperty.GetWindowColor().c_str(), NAPI_AUTO_LENGTH, &value));
+    color = captionProperty.GetWindowColor();
+    colorStr = ConvertColorToString(color);
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 
     HILOG_DEBUG("end");
+}
+
+const uint32_t COLOR_TRANSPARENT = 0x00000000;
+const uint32_t COLOR_WHITE = 0xffffffff;
+const uint32_t COLOR_BLACK = 0xff000000;
+const uint32_t COLOR_RED = 0xffff0000;
+const uint32_t COLOR_GREEN = 0xff00ff00;
+const uint32_t COLOR_BLUE = 0xff0000ff;
+const uint32_t COLOR_GRAY = 0xffc0c0c0;
+
+constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
+constexpr uint32_t COLOR_STRING_BASE = 16;
+const std::regex COLOR_WITH_MAGIC("#[0-9A-Fa-f]{6,8}");
+const std::regex COLOR_WITH_MAGIC_MINI("#[0-9A-Fa-f]{3,4}");
+constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
+
+uint32_t ConvertColorStringToNumer(std::string colorStr)
+{
+    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
+    uint32_t color = COLOR_TRANSPARENT;
+    if (colorStr.empty()) {
+      // empty string, return transparent
+        return color;
+    }
+    // Remove all " ".
+    colorStr.erase(std::remove(colorStr.begin(), colorStr.end(), ' '), colorStr.end());
+
+    std::smatch matches;
+    // Regex match for #909090 or #90909090.
+    if (std::regex_match(colorStr, matches, COLOR_WITH_MAGIC)) {
+        colorStr.erase(0, 1);
+        auto value = stoul(colorStr, nullptr, COLOR_STRING_BASE);
+        if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
+            // no alpha specified, set alpha to 0xff
+            value |= COLOR_ALPHA_MASK;
+        }
+        color = value;
+        return color;
+    }
+    // Regex match for #rgb or #rgba.
+    if (std::regex_match(colorStr, matches, COLOR_WITH_MAGIC_MINI)) {
+        colorStr.erase(0, 1);
+        std::string newColorStr;
+        // translate #rgb or #rgba to #rrggbb or #rrggbbaa
+        for (auto& c : colorStr) {
+            newColorStr += c;
+            newColorStr += c;
+        }
+        auto value = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
+        if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
+            // no alpha specified, set alpha to 0xff
+            value |= COLOR_ALPHA_MASK;
+        }
+        color = value;
+        return color;
+    }
+
+    // match for special string
+    static const std::map<std::string, uint32_t> colorTable {
+        std::make_pair("black", COLOR_BLACK),
+        std::make_pair("blue", COLOR_BLUE),
+        std::make_pair("gray", COLOR_GRAY),
+        std::make_pair("green", COLOR_GREEN),
+        std::make_pair("red", COLOR_RED),
+        std::make_pair("white", COLOR_WHITE),
+    };
+    auto it = colorTable.find(colorStr.c_str());
+    if (it != colorTable.end()) {
+        color = it->second;
+    }
+    return color;
+}
+constexpr int32_t RGB_LENGTH = 6;
+constexpr int32_t ALPHA_LENGTH = 2;
+constexpr int32_t ALPHA_MOVE = 24;
+const char UNICODE_BODY = '0';
+std::string ConvertColorToString(uint32_t color)
+{
+    HILOG_DEBUG("color is 0X%{public}x", color);
+    uint32_t rgb = color & (~COLOR_ALPHA_MASK);
+    uint32_t alpha = (color) >> ALPHA_MOVE;
+    std::stringstream rgbStream;
+    rgbStream << std::hex << std::setw(RGB_LENGTH) << std::setfill(UNICODE_BODY) << rgb;
+    std::stringstream alphaStream;
+    alphaStream << std::hex << std::setw(ALPHA_LENGTH) << std::setfill(UNICODE_BODY) << alpha;
+    std::string rgbStr(rgbStream.str());
+    std::string alphaStr(alphaStream.str());
+    std::string colorStr = "#" + rgbStr + alphaStr;
+    HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
+    return colorStr;
+}
+
+uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue)
+{
+    uint32_t color = COLOR_TRANSPARENT;
+    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+    size_t outSize = 0;
+    napi_valuetype valueType = napi_undefined;
+    napi_value value = nullptr;
+    napi_get_property(env, object, propertyNameValue, &value);
+    napi_status status = napi_typeof(env, value, &valueType);
+    if (status != napi_ok) {
+        HILOG_ERROR("GetColorValue error! status is %{public}d", status);
+        return color;
+    }
+    if (valueType == napi_number) {
+        napi_get_value_uint32(env, value, &color);
+        HILOG_DEBUG("valueType number, color is 0x%{public}x", color);
+    }
+    if (valueType == napi_string) {
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        color = ConvertColorStringToNumer(std::string(outBuffer));
+    }
+    HILOG_DEBUG("color is 0x%{public}x", color);
+    return color;
+}
+
+uint32_t GetColorValue(napi_env env, napi_value value)
+{
+    uint32_t color = COLOR_TRANSPARENT;
+    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+    size_t outSize = 0;
+    napi_valuetype valueType = napi_undefined;
+    napi_status status = napi_typeof(env, value, &valueType);
+    if (status != napi_ok) {
+        HILOG_ERROR("GetColorValue error! status is %{public}d", status);
+        return color;
+    }
+    if (valueType == napi_number) {
+        HILOG_DEBUG("color type is number");
+        napi_get_value_uint32(env, value, &color);
+    }
+    if (valueType == napi_string) {
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+        color = ConvertColorStringToNumer(std::string(outBuffer));
+    }
+    HILOG_DEBUG("color is 0x%{public}x", color);
+    return color;
 }
 
 void ConvertObjToCaptionProperty(
@@ -1680,12 +1824,7 @@ void ConvertObjToCaptionProperty(
     napi_create_string_utf8(env, "fontColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        ptrCaptionProperty->SetFontColor(std::string(outBuffer));
+        ptrCaptionProperty->SetFontColor(GetColorValue(env, object, propertyNameValue));
     }
 
     napi_create_string_utf8(env, "fontEdgeType", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1702,23 +1841,13 @@ void ConvertObjToCaptionProperty(
     napi_create_string_utf8(env, "backgroundColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        ptrCaptionProperty->SetBackgroundColor(std::string(outBuffer));
+        ptrCaptionProperty->SetBackgroundColor(GetColorValue(env, object, propertyNameValue));
     }
 
     napi_create_string_utf8(env, "windowColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        ptrCaptionProperty->SetWindowColor(std::string(outBuffer));
+        ptrCaptionProperty->SetWindowColor(GetColorValue(env, object, propertyNameValue));
     }
     HILOG_DEBUG("end");
 }
@@ -1731,7 +1860,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
     }
 
     bool hasElement = true;
-    for (int i = 0; hasElement == true; i++) {
+    for (int i = 0; hasElement; i++) {
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;
@@ -1791,7 +1920,7 @@ void ConvertJSToEnabledAbilities(
     }
 
     bool hasElement = true;
-    for (int i = 0; hasElement == true; i++) {
+    for (int i = 0; hasElement; i++) {
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;

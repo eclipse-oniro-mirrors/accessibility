@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <map>
+#include <new>
 #include <vector>
 
 #include "ability_manager_client.h"
@@ -33,6 +34,7 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+std::mutex AccessibleAbilityConnection::mutex_;
 AccessibleAbilityChannelStubImpl::AccessibleAbilityChannelStubImpl(
     AccessibleAbilityConnection& connection): connection_(connection)
 {
@@ -337,7 +339,11 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     accountData_->RemoveConnectingA11yAbility(elementName_);
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
 
-    stub_ = new AccessibleAbilityChannelStubImpl(*pointer);
+    stub_ = new(std::nothrow) AccessibleAbilityChannelStubImpl(*pointer);
+    if (!stub_) {
+        HILOG_ERROR("stub_ is null");
+        return;
+    }
     proxy_->Init(stub_, connectionId_);
 }
 
@@ -528,6 +534,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     const wptr<IRemoteObject>& remote)
 {
     HILOG_DEBUG("start");
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!recipientAccountData_) {
         HILOG_ERROR("recipientAccountData_ is null.");
         return;
@@ -542,9 +549,9 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     recipientAccountData_->RemoveConnectedAbility(connection);
     recipientAccountData_->RemoveEnabledAbility(recipientElementName_);
 
-    std::string uiTestUri = "/com.example.uitest/uitestability";
+    std::string uiTestUri = "/ohos.uitest/uitestability";
     if (recipientElementName_.GetURI() == uiTestUri) {
-        recipientAccountData_->RemoveInstalledAbility("com.example.uitest");
+        recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
     }
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();

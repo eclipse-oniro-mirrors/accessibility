@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-const static std::string PREF_TEST_PATH =
+const static std::string PREF_PATH =
     "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
 
 AccessibilityAccountData::AccessibilityAccountData(int accountId)
@@ -470,16 +470,16 @@ bool AccessibilityAccountData::SetCaptionPropertyPref()
     }
     std::string FONTFAMILY = captionProperty_.GetFontFamily();
     int FONTSCALE = captionProperty_.GetFontScale();
-    std::string FONTCOLOR = captionProperty_.GetFontColor();
+    uint32_t FONTCOLOR = captionProperty_.GetFontColor();
     std::string FONTEDGETYPE = captionProperty_.GetFontEdgeType();
-    std::string BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
-    std::string WINDOWCOLOR = captionProperty_.GetWindowColor();
+    uint32_t BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
+    uint32_t WINDOWCOLOR = captionProperty_.GetWindowColor();
 
     pref_->PutString("fontFamily", FONTFAMILY);
-    pref_->PutString("fontColor", FONTCOLOR);
+    pref_->PutInt("fontColor", (int)FONTCOLOR);
     pref_->PutString("fontEdgeType", FONTEDGETYPE);
-    pref_->PutString("backgroundColor", BACKGROUNDCOLOR);
-    pref_->PutString("windowColor", WINDOWCOLOR);
+    pref_->PutInt("backgroundColor", (int)BACKGROUNDCOLOR);
+    pref_->PutInt("windowColor", (int)WINDOWCOLOR);
     pref_->PutInt("fontScale", FONTSCALE);
     pref_->FlushSync();
     return true;
@@ -682,17 +682,17 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     int FONTSCALE = pref->GetInt("fontScale", 0);
     HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
 
-    std::string FONTCOLOR = pref->GetString("fontColor", "");
-    HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTCOLOR.c_str());
+    uint32_t FONTCOLOR = (uint32_t)pref->GetInt("fontColor", 0xff000000);
+    HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", FONTCOLOR);
 
     std::string FONTEDGETYPE = pref->GetString("fontEdgeType", "none");
-    HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTEDGETYPE.c_str());
+    HILOG_DEBUG(" pref->GetString() = 0x%{public}s.", FONTEDGETYPE.c_str());
 
-    std::string BACKGROUNDCOLOR = pref->GetString("backgroundColor", "");
-    HILOG_DEBUG(" pref->GetString() = %{public}s.", BACKGROUNDCOLOR.c_str());
+    uint32_t BACKGROUNDCOLOR = (uint32_t)pref->GetInt("backgroundColor", 0xff000000);
+    HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", BACKGROUNDCOLOR);
 
-    std::string WINDOWCOLOR = pref->GetString("windowColor", "");
-    HILOG_DEBUG(" pref->GetString() = %{public}s.", WINDOWCOLOR.c_str());
+    uint32_t WINDOWCOLOR = (uint32_t)pref->GetInt("windowColor", 0xff000000);
+    HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
     captionProperty_.SetFontScale(FONTSCALE);
@@ -819,7 +819,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
 void AccessibilityAccountData::init()
 {
     int errCode = 0;
-    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_TEST_PATH + "test.xml", errCode);
+    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + "100.xml", errCode);
     if (errCode) {
         HILOG_ERROR("GetPreferences failed! errCode(%{public}d).", errCode);
         return;

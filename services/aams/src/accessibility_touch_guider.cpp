@@ -114,7 +114,7 @@ void TouchGuider::OnAccessibilityEvent(AccessibilityEventInfo &event)
     HILOG_DEBUG();
 
     int eventType = event.GetEventType();
-    HILOG_DEBUG("EventType is %{public}x.", eventType);
+    HILOG_DEBUG("EventType is 0x%{public}x.", eventType);
     if (eventType == EventType::TYPE_VIEW_HOVER_EXIT_EVENT) {
         if (HasEventPending(SEND_TOUCH_GUIDE_END_MSG)) {
             CancelPostEvent(SEND_TOUCH_GUIDE_END_MSG);
@@ -148,7 +148,7 @@ void TouchGuider::DestroyEvents()
 
 void TouchGuider::SendAccessibilityEventToAA(EventType eventType)
 {
-    HILOG_DEBUG("eventType is %{public}x.", eventType);
+    HILOG_DEBUG("eventType is 0x%{public}x.", eventType);
 
     AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(eventType);
