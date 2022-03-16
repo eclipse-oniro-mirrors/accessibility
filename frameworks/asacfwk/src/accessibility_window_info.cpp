@@ -101,14 +101,14 @@ void AccessibilityWindowInfo::SetWindowType(const WindowType type)
 
 int AccessibilityWindowInfo::GetWindowLayer() const
 {
-    HILOG_DEBUG("windowLayer_[%{public}d]", windowLayer_);
+    HILOG_DEBUG("window(%{public}d)Layer_[%{public}d]", windowId_, windowLayer_);
     return windowLayer_;
 }
 
 void AccessibilityWindowInfo::SetWindowLayer(const int layer)
 {
     windowLayer_ = layer;
-    HILOG_DEBUG("windowLayer_[%{public}d]", windowLayer_);
+    HILOG_DEBUG("window(%{public}d)Layer[%{public}d]", windowId_, windowLayer_);
 }
 
 bool AccessibilityWindowInfo::GetRootAccessibilityInfo(AccessibilityElementInfo &elementInfo)

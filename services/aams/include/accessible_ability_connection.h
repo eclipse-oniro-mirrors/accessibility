@@ -16,6 +16,7 @@
 #ifndef OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_
 #define OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_
 
+#include <mutex>
 #include <set>
 #include <string>
 #include <vector>
@@ -155,6 +156,7 @@ private:
     AccessibilityAbilityInfo abilityInfo_ {};
     AppExecFwk::ElementName elementName_ {};
     sptr<AccessibilityAccountData> accountData_ = nullptr;
+    static std::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS

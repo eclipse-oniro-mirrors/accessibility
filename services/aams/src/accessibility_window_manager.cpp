@@ -80,6 +80,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
         default:
             break;
     }
+    winMgr.UpdateWindowLayer(windowInfo);
     HILOG_DEBUG("winMgr.a11yWindows[%{public}d]", winMgr.a11yWindows_.size());
 }
 
@@ -135,8 +136,10 @@ AccessibilityWindowInfo AccessibilityWindowInfoManager::CreateAccessibilityWindo
     bound.SetLeftTopScreenPostion(windowInfo.currentWindowInfo_->windowRect_.posX_,
         windowInfo.currentWindowInfo_->windowRect_.posY_);
     bound.SetRightBottomScreenPostion(
-        windowInfo.currentWindowInfo_->windowRect_.posX_ +windowInfo.currentWindowInfo_->windowRect_.width_,
-        windowInfo.currentWindowInfo_->windowRect_.posY_ + windowInfo.currentWindowInfo_->windowRect_.height_);
+        windowInfo.currentWindowInfo_->windowRect_.posX_ +
+        static_cast<int32_t>(windowInfo.currentWindowInfo_->windowRect_.width_),
+        windowInfo.currentWindowInfo_->windowRect_.posY_ +
+        static_cast<int32_t>(windowInfo.currentWindowInfo_->windowRect_.height_));
     info.SetRectInScreen(bound);
     HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
         "witdth(%{public}d) height(%{public}d)",
@@ -245,7 +248,6 @@ void AccessibilityWindowInfoManager::SetInputFocusedWindow(int windowId)
 
 std::vector<AccessibilityWindowInfo> AccessibilityWindowInfoManager::GetAccessibilityWindows()
 {
-    HILOG_INFO("start");
     HILOG_DEBUG("a11yWindows_ size[%{public}d]", a11yWindows_.size());
     std::vector<AccessibilityWindowInfo> windows;
     for (auto window : a11yWindows_) {
@@ -260,7 +262,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowInfoManager::GetAccessib
 
 bool AccessibilityWindowInfoManager::GetAccessibilityWindow(int windowId, AccessibilityWindowInfo &window)
 {
-    HILOG_INFO("start");
+    HILOG_DEBUG("start windowId(%{public}d)", windowId);
     if (a11yWindows_.count(windowId)) {
         window = a11yWindows_[windowId];
         return true;
@@ -270,7 +272,7 @@ bool AccessibilityWindowInfoManager::GetAccessibilityWindow(int windowId, Access
 
 bool AccessibilityWindowInfoManager::IsValidWindow(int windowId)
 {
-    HILOG_INFO("start");
+    HILOG_DEBUG("start windowId(%{public}d)", windowId);
     if (a11yWindows_.count(windowId)) {
         return true;
     }
@@ -279,11 +281,27 @@ bool AccessibilityWindowInfoManager::IsValidWindow(int windowId)
 
 void AccessibilityWindowInfoManager::SetWindowSize(int windowId, Rect rect)
 {
-    HILOG_INFO("start");
+    HILOG_DEBUG("start windowId(%{public}d)", windowId);
     for (auto &window : a11yWindows_) {
         if (window.first == windowId) {
             window.second.SetRectInScreen(rect);
             return;
+        }
+    }
+}
+
+void AccessibilityWindowInfoManager::UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo)
+{
+    HILOG_DEBUG("start");
+    int layer = 0;
+    for (auto& window : windowInfo->windowList_) {
+        auto it = a11yWindows_.find(window->wid_);
+        if (it == a11yWindows_.end()) {
+            HILOG_ERROR("The window(%{public}d) not in a11yWindows_", window->wid_);
+            layer++;
+        } else {
+            it->second.SetWindowLayer(layer);
+            layer++;
         }
     }
 }

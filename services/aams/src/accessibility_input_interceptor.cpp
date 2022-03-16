@@ -31,7 +31,11 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
     HILOG_DEBUG();
 
     if (instance_ == nullptr) {
-        instance_ = new AccessibilityInputInterceptor();
+        instance_ = new(std::nothrow) AccessibilityInputInterceptor();
+        if (!instance_) {
+            HILOG_ERROR("instance_ is null");
+            return nullptr;
+        }
     }
     return instance_;
 }
@@ -126,7 +130,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     }
 
     if (availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) {
-        sptr<AccessibilityZoomHandler> zoomHandler = new AccessibilityZoomHandler(0);
+        sptr<AccessibilityZoomHandler> zoomHandler = new(std::nothrow) AccessibilityZoomHandler(0);
+        if (!zoomHandler) {
+            HILOG_ERROR("zoomHandler is null");
+            return;
+        }
         SetNextEventTransmitter(header, current, zoomHandler);
     }
 
@@ -140,7 +148,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     pointerEventTransmitters_ = header;
 
     if (availableFunctions_& FEATURE_FILTER_KEY_EVENTS) {
-        sptr<KeyEventFilter> keyEventFilter = new KeyEventFilter();
+        sptr<KeyEventFilter> keyEventFilter = new(std::nothrow) KeyEventFilter();
+        if (!keyEventFilter) {
+            HILOG_ERROR("keyEventFilter is null");
+            return;
+        }
         aams_->SetKeyEventFilter(keyEventFilter);
         keyEventFilter->SetNext(instance_);
         keyEventTransmitters_ = keyEventFilter;

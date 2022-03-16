@@ -25,12 +25,12 @@ bool CaptionProperty::CheckProperty(const std::string& property)
     return result;
 }
 
-std::string CaptionProperty::GetBackgroundColor() const
+uint32_t CaptionProperty::GetBackgroundColor() const
 {
     return backgroundColor_;
 }
 
-void CaptionProperty::SetBackgroundColor(std::string color)
+void CaptionProperty::SetBackgroundColor(uint32_t color)
 {
     backgroundColor_ = color;
 }
@@ -45,12 +45,12 @@ void CaptionProperty::SetFontScale(int scale)
     fontScale_ = scale;
 }
 
-std::string CaptionProperty::GetFontColor() const
+uint32_t CaptionProperty::GetFontColor() const
 {
     return fontColor_;
 }
 
-void CaptionProperty::SetFontColor(std::string color)
+void CaptionProperty::SetFontColor(uint32_t color)
 {
     fontColor_ = color;
 }
@@ -65,12 +65,12 @@ void CaptionProperty::SetFontEdgeType(std::string type)
     fontEdgeType_ = type;
 }
 
-std::string  CaptionProperty::GetWindowColor() const
+uint32_t CaptionProperty::GetWindowColor() const
 {
     return windowColor_;
 }
 
-void CaptionProperty::SetWindowColor(std::string  color)
+void CaptionProperty::SetWindowColor(uint32_t color)
 {
     windowColor_ = color;
 }
@@ -90,10 +90,10 @@ bool CaptionProperty::ReadFromParcel(Parcel& parcel)
     HILOG_DEBUG("start");
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontFamily_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, fontScale_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontColor_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, fontColor_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontEdgeType_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundColor_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, windowColor_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, backgroundColor_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowColor_);
     return true;
 }
 
@@ -102,10 +102,10 @@ bool CaptionProperty::Marshalling(Parcel& parcel) const
     HILOG_DEBUG("start");
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontFamily_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, fontScale_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontColor_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, fontColor_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, fontEdgeType_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, backgroundColor_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, windowColor_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, backgroundColor_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowColor_);
     return true;
 }
 
