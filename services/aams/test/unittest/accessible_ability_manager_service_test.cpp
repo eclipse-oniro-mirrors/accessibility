@@ -154,7 +154,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, T
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperator_001 start";
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
-    if (accountData == nullptr) {
+    if (!accountData) {
         GTEST_LOG_(INFO) << "accountData is null";
         return;
     }

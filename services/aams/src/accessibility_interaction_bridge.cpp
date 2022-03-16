@@ -47,8 +47,17 @@ AccessibilityInteractionBridge::AccessibilityInteractionBridge()
     }
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
     accountData_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountData();
-    connection_ = new AccessibleAbilityConnection(accountData_, INTERACTION_BRIDGE_CHANNEL_ID, *abilityInfo);
-    channel_ = new AccessibleAbilityChannelStubImpl(*connection_);
+    connection_ = new(std::nothrow) AccessibleAbilityConnection(accountData_,
+        INTERACTION_BRIDGE_CHANNEL_ID, *abilityInfo);
+    if (!connection_) {
+        HILOG_ERROR("connection_ is null");
+        return;
+    }
+    channel_ = new(std::nothrow) AccessibleAbilityChannelStubImpl(*connection_);
+    if (!channel_) {
+        HILOG_ERROR("channel_ is null");
+        return;
+    }
     if (!channel_) {
         HILOG_DEBUG("channel is nullptr.");
         AccessibilityOperator::GetInstance().RemoveChannel(INTERACTION_BRIDGE_CHANNEL_ID);

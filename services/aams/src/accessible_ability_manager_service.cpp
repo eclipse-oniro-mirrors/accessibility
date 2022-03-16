@@ -196,6 +196,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
         captionPropertyCallbackDeathRecipient_ = new(std::nothrow) CaptionPropertyCallbackDeathRecipient();
         if (!captionPropertyCallbackDeathRecipient_) {
             HILOG_ERROR("captionPropertyCallbackDeathRecipient_ is null");
+            return ERR_INVALID_VALUE;
         }
     }
 
@@ -284,7 +285,11 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
     accountData->AddAccessibilityWindowConnection(windowId, connection);
 
     if (!interactionOperationDeathRecipient_) {
-        interactionOperationDeathRecipient_ = new InteractionOperationDeathRecipient(windowId);
+        interactionOperationDeathRecipient_ = new(std::nothrow) InteractionOperationDeathRecipient(windowId);
+        if (!interactionOperationDeathRecipient_) {
+            HILOG_ERROR("interactionOperationDeathRecipient_ is null");
+            return;
+        }
     }
 
     if (connection->GetProxy()) {
@@ -420,7 +425,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy(
     }
 
     bundleManager_ = iface_cast<AppExecFwk::BundleMgrProxy>(remoteObject);
-    if (bundleManager_ == nullptr) {
+    if (!bundleManager_) {
         HILOG_ERROR("fail to new bundle manager.");
     } else {
         HILOG_INFO("AccessibleAbilityManagerService::GetBundleMgrProxy OK");
@@ -989,11 +994,19 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
     currentAccountData->AddInstalledAbility(*abilityInfo);
 
     // add connected ability
-    sptr<AppExecFwk::ElementName> elementName = new AppExecFwk::ElementName();
+    sptr<AppExecFwk::ElementName> elementName = new(std::nothrow) AppExecFwk::ElementName();
+    if (!elementName) {
+        HILOG_ERROR("elementName is null");
+        return;
+    }
     elementName->SetBundleName(UI_TEST_BUNDLE_NAME);
     elementName->SetAbilityName(UI_TEST_ABILITY_NAME);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(
         currentAccountData, connectCounter_++, *abilityInfo);
+    if (!connection) {
+        HILOG_ERROR("connection is null");
+        return;
+    }
     connection->OnAbilityConnectDone(*elementName, obj, 0);
 }
 
@@ -1002,7 +1015,7 @@ bool AccessibleAbilityManagerService::DeregisterUITestAbilityConnectionClient()
     HILOG_DEBUG("start");
     std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
     sptr<AccessibleAbilityConnection> connection = GetCurrentAccountData()->GetAccessibleAbilityConnection(uiTestUri);
-    if (connection == nullptr) {
+    if (!connection) {
         HILOG_ERROR("connection is not existed!!");
         return false;
     }

@@ -63,7 +63,7 @@ void AccessibleAbilityManagerServiceCaptionPropertyStub::OnCaptionPropertyChange
 {
     HILOG_DEBUG("start");
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
-    if (instance == nullptr) {
+    if (!instance) {
         HILOG_DEBUG("Can't get asac instance");
         return;
     }

@@ -20,6 +20,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+static const int32_t POINTER_COUNT_1 = 1;
+static const int32_t POINTER_COUNT_2 = 2;
+
 TGEventHandler::TGEventHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner, TouchGuider &tgServer)
     : AppExecFwk::EventHandler(runner), tgServer_(tgServer)

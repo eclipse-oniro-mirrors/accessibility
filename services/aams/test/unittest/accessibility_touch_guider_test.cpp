@@ -62,7 +62,7 @@ void TouchGuiderTest::SetUp()
     GTEST_LOG_(INFO) << "TouchGuiderTest SetUp";
 
     touchGuider_ = std::make_unique<TouchGuider>();
-    if (touchGuider_ == nullptr) {
+    if (!touchGuider_) {
         GTEST_LOG_(INFO) << "touchGuider new failed!";
         return;
     }

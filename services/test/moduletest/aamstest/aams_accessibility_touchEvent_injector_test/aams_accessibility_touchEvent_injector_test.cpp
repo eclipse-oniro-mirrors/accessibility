@@ -140,7 +140,7 @@ void AamsInjectorTest::CreateGesturePath(
 void AamsInjectorTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if ((fp = fopen(fname, "w")) == nullptr) {
+    if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;
     }

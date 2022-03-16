@@ -17,8 +17,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-const int LIMIT_SIZE_TWO = 2;
-const int LIMIT_SIZE_THREE = 3;
+static const int LIMIT_SIZE_TWO = 2;
+static const int LIMIT_SIZE_THREE = 3;
+static const int32_t POINTER_COUNT_1 = 1;
 
 GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
@@ -51,7 +52,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 
     AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
-    if (display == nullptr) {
+    if (!display) {
         HILOG_ERROR("get display is nullptr");
         return;
     }

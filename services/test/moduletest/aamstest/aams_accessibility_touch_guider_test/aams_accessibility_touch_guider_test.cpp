@@ -68,7 +68,7 @@ protected:
 void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
 {
     FILE *fp;
-    if ((fp = fopen(fname, "w")) == nullptr) {
+    if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;
     }
@@ -261,7 +261,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent001, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent001 inputEventConsumer is null";
         return;
     }
@@ -316,7 +316,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent002, Test
     MMI::MockInputManager::ClearTouchActions();
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent002 inputEventConsumer is null";
         return;
     }
@@ -374,7 +374,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent004, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent004 inputEventConsumer is null";
         return;
     }
@@ -445,7 +445,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent005, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent005 inputEventConsumer is null";
         return;
     }
@@ -516,7 +516,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent006, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent006 inputEventConsumer is null";
         return;
     }
@@ -587,7 +587,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent007, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent007 inputEventConsumer is null";
         return;
     }
@@ -654,7 +654,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent008, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent008 inputEventConsumer is null";
         return;
     }
@@ -699,7 +699,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent009, Test
     MMI::MockInputManager::ClearTouchActions();
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent009 inputEventConsumer is null";
         return;
     }
@@ -742,7 +742,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent010, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent010 inputEventConsumer is null";
         return;
     }
@@ -789,7 +789,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent011, Test
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
                                                                 points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer == nullptr) {
+    if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent011 inputEventConsumer is null";
         return;
     }

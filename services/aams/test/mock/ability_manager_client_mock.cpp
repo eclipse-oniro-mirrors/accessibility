@@ -32,9 +32,9 @@ std::mutex AbilityManagerClient::mutex_;
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
 {
     GTEST_LOG_(INFO) << "MOCK AbilityManagerClient GetInstance";
-    if (instance_ == nullptr) {
+    if (!instance_) {
         std::lock_guard<std::mutex> lock_l(mutex_);
-        if (instance_ == nullptr) {
+        if (!instance_) {
             instance_ = std::make_shared<AbilityManagerClient>();
         }
     }

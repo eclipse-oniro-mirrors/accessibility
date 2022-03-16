@@ -59,7 +59,7 @@ void AccessibleAbilityManagerServiceStateStub::OnStateChanged(const uint32_t sta
 {
     HILOG_DEBUG("stateType[%{public}d}", stateType);
     std::shared_ptr<AccessibilitySystemAbilityClient>  instance = AccessibilitySystemAbilityClient::GetInstance();
-    if (instance == nullptr) {
+    if (!instance) {
         HILOG_DEBUG("Can't get asac instance");
         return;
     }
