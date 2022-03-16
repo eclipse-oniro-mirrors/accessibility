@@ -317,7 +317,11 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     }
 
     if (!proxy_) {
-        proxy_ = new AccessibleAbilityClientProxy(remoteObject);
+        proxy_ = new(std::nothrow) AccessibleAbilityClientProxy(remoteObject);
+        if (!proxy_) {
+            HILOG_ERROR("proxy_ is null");
+            return;
+        }
     }
 
     if (!proxy_) {
@@ -327,7 +331,11 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
-        deathRecipient_ = new AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
+        deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
+        if (!deathRecipient_) {
+            HILOG_ERROR("deathRecipient_ is null");
+            return;
+        }
     }
 
     if (!proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
