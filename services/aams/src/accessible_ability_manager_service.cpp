@@ -486,6 +486,10 @@ void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
+    if (!remote.GetRefPtr()) {
+        HILOG_ERROR("remote is null");
+        return;
+    }
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
@@ -501,6 +505,10 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
+    if (!remote.GetRefPtr()) {
+        HILOG_ERROR("remote is null");
+        return;
+    }
     remote->RemoveDeathRecipient(this);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
