@@ -101,8 +101,8 @@ ohos_shared_library("accessibleabilityms") {
     "bundle_framework:appexecfwk_core",
     "ces_standard:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
     "ipc:ipc_core",
-    "multimodalinput_base:libmmi-client",
     "os_account_standard:os_account_innerkits",
   ]
 
