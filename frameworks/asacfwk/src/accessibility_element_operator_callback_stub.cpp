@@ -75,10 +75,6 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     HILOG_DEBUG("start");
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
-    if (!accessibilityInfosize) {
-        HILOG_ERROR("accessibilityInfosize is 0");
-        return ERROR;
-    }
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
@@ -99,10 +95,6 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     HILOG_DEBUG("start");
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
-    if (!accessibilityInfosize) {
-        HILOG_ERROR("accessibilityInfosize is 0");
-        return ERROR;
-    }
     for (int i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfo> accessibilityInfo = data.ReadStrongParcelable<AccessibilityElementInfo>();
         if (!accessibilityInfo) {
