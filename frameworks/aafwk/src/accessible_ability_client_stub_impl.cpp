@@ -209,10 +209,16 @@ void AccessibleAbilityClientStubImpl::AccessibleAbilityDeathRecipient::OnRemoteD
     HILOG_DEBUG("start.");
 
     // Delete death recipient
-    if (remote.GetRefPtr()) {
+    if (!remote.GetRefPtr()) {
         HILOG_ERROR("remote is nullptr.");
-        remote->RemoveDeathRecipient(this);
+        return;
     }
+
+    if (!recipientchannel_ && (recipientchannel_->AsObject() != remote)) {
+        HILOG_ERROR("recipientchannel_ is nullptr or remote is wrong.");
+        return;
+    }
+    remote->RemoveDeathRecipient(this);
 
     // Remove channel
     AccessibilityOperator::RemoveChannel(recipientChannelId_);
