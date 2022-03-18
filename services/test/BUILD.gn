@@ -24,7 +24,6 @@ config("module_private_config") {
   cflags = []
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
-    cflags_cc = [ "-fexceptions" ]
   }
 
   include_dirs = aams_mock_include_dirs
