@@ -21,7 +21,6 @@ config("aamsSystemTestBConfig") {
     "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
     "//base/accessibility/frameworks/aafwk/include",
@@ -51,6 +50,7 @@ ohos_shared_library("aamsSystemTestB") {
   ]
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
     "ipc:ipc_core",
   ]
   subsystem_name = "aamssystemtest"

@@ -24,7 +24,6 @@ config("aamsSystemTestAConfig") {
     "//base/accessibility/common/log/include",
     "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
     "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/util/include",
     "//base/accessibility/frameworks/aafwk/include",
@@ -50,6 +49,7 @@ ohos_shared_library("aamsSystemTestA") {
   ]
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
     "ipc:ipc_core",
   ]
   subsystem_name = "aamssystemtest"
