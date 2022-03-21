@@ -245,6 +245,9 @@ declare namespace accessibility {
      fontScale: number;
      /**
       * Indicates the font color of captions.
+      * number: 0xFF112233(0xAARRGGBB )
+      * string: #012F(#RGBA) #001122FF(#RRGGBBAA) #012(#RGB) #001122(#RRGGBB)
+      *         red/green/blue/black/white/gray
       */
      fontColor: number | string;
      /**
@@ -253,10 +256,16 @@ declare namespace accessibility {
      fontEdgeType: CaptionsFontEdgeType;
      /**
       * Indicates the background color of captions.
+      * number: 0xFF112233(0xAARRGGBB )
+      * string: #012F(#RGBA) #001122FF(#RRGGBBAA) #012(#RGB) #001122(#RRGGBB)
+      *         red/green/blue/black/white/gray
       */
      backgroundColor: number | string;
      /**
       * Indicates the window color of captions.
+      * number: 0xFF112233(0xAARRGGBB )
+      * string: #012F(#RGBA) #001122FF(#RRGGBBAA) #012(#RGB) #001122(#RRGGBB)
+      *         red/green/blue/black/white/gray
       */
      windowColor: number | string;
    }

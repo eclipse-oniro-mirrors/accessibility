@@ -208,7 +208,7 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
 
 void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
 {
-    if (pref_ == nullptr) {
+    if (!pref_) {
         HILOG_ERROR("pref_ is null!");
         return;
     }
@@ -464,7 +464,7 @@ bool AccessibilityAccountData::SetCaptionState(const bool state)
 
 bool AccessibilityAccountData::SetCaptionPropertyPref()
 {
-    if (pref_ == nullptr) {
+    if (!pref_) {
         HILOG_ERROR("pref_ is null!");
         return false;
     }
@@ -506,7 +506,7 @@ std::string AccessibilityAccountData::StateChange(bool state)
 
 bool AccessibilityAccountData::SetStatePref(int type)
 {
-    if (pref_ == nullptr) {
+    if (!pref_) {
         HILOG_ERROR("pref_ is null!");
         return false;
     }
@@ -601,7 +601,7 @@ bool AccessibilityAccountData::GetCaptionState()
 
 void AccessibilityAccountData::UpdateEnabledFromPref()
 {
-    if (pref_ == nullptr) {
+    if (!pref_) {
         HILOG_ERROR("pref_ is null!");
         return;
     }
@@ -646,7 +646,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AppExecFwk::IBundleMgr> bms = nullptr;
     bms = aams->GetBundleMgrProxy();
-    if (bms == nullptr) {
+    if (!bms) {
         HILOG_ERROR("GetBundleMgrProxy failed.");
         return false;
     }
@@ -663,7 +663,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
-    if (pref == nullptr) {
+    if (!pref) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
     }
@@ -705,7 +705,7 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
 void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
-    if (pref == nullptr) {
+    if (!pref) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
     }
@@ -748,7 +748,7 @@ void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePrefere
 void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
-    if (pref == nullptr) {
+    if (!pref) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
     }

@@ -49,7 +49,7 @@ sptr<SystemAbilityManager> SystemAbilityManager::GetInstance()
 {
     HILOG_ERROR("SystemAbilityManager::GetInstance");
     std::lock_guard<std::mutex> autoLock(instanceLock);
-    if (instance == nullptr) {
+    if (!instance) {
         instance = new SystemAbilityManager;
     }
     return instance;

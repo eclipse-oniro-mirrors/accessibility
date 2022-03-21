@@ -59,7 +59,7 @@ void PullOperatorFromVector(StOperator &ParentOperator, std::vector<string> &vec
         .SetMessage(message);
     for (int i = 0; i < childnum; i++) {
         auto child = std::make_shared<StOperator>();
-        if (child == nullptr) {
+        if (!child) {
             return;
         }
         ParentOperator.AddChildOperator(child);
@@ -167,7 +167,7 @@ StOperator &StOperator::SetMessage(const string &message)
 
 StOperator &StOperator::AddChildOperator(std::shared_ptr<StOperator> childOperator)
 {
-    if (childOperator == nullptr) {
+    if (!childOperator) {
         return *this;
     }
     childOperator->g_parentOperator = std::make_shared<StOperator>(*this);

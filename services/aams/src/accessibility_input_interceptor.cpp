@@ -30,7 +30,7 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
 {
     HILOG_DEBUG();
 
-    if (instance_ == nullptr) {
+    if (!instance_) {
         instance_ = new(std::nothrow) AccessibilityInputInterceptor();
         if (!instance_) {
             HILOG_ERROR("instance_ is null");
@@ -48,7 +48,7 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
     aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (aams_ == nullptr) {
+    if (!aams_) {
         HILOG_DEBUG("aams_ is null.");
     }
     inputManager_ = MMI::InputManager::GetInstance();
@@ -124,7 +124,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     sptr<EventTransmission> current = nullptr;
 
     if (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) {
-        sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
+        sptr<TouchEventInjector> touchEventInjector = new(std::nothrow) TouchEventInjector();
+        if (!touchEventInjector) {
+            HILOG_ERROR("touchEventInjector is null");
+            return;
+        }
         SetNextEventTransmitter(header, current, touchEventInjector);
         aams_->SetTouchEventInjector(touchEventInjector);
     }
@@ -139,7 +143,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     }
 
     if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
-        sptr<TouchGuider> touchGuider = new TouchGuider();
+        sptr<TouchGuider> touchGuider = new(std::nothrow) TouchGuider();
+        if (!touchGuider) {
+            HILOG_ERROR("touchGuider is null");
+            return;
+        }
         touchGuider->StartUp();
         SetNextEventTransmitter(header, current, touchGuider);
     }
@@ -165,7 +173,7 @@ void AccessibilityInputInterceptor::CreateInterceptor()
 {
     HILOG_DEBUG();
 
-    if (inputManager_ == nullptr) {
+    if (!inputManager_) {
         HILOG_DEBUG("inputManger is null.");
         return;
     }
@@ -191,7 +199,7 @@ void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MM
 {
     HILOG_DEBUG(" start.");
 
-    if ((instance_ == nullptr) || (instance_->eventHandler_ == nullptr)) {
+    if (!instance_ || !instance_->eventHandler_) {
         HILOG_ERROR("eventHandler is nullptr.");
     }
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
@@ -203,7 +211,7 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 {
     HILOG_DEBUG();
 
-    if (inputManager_ == nullptr) {
+    if (!inputManager_) {
         HILOG_DEBUG("inputManager_ is null.");
         return;
     }
@@ -250,7 +258,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 {
     HILOG_DEBUG();
 
-    if (pointerEventTransmitters_ == nullptr) {
+    if (!pointerEventTransmitters_) {
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
         return;
     }
@@ -262,7 +270,7 @@ void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEven
 {
     HILOG_DEBUG();
 
-    if (keyEventTransmitters_ == nullptr) {
+    if (!keyEventTransmitters_) {
         HILOG_DEBUG("keyEventTransmitters_ is empty.");
         return;
     }
@@ -305,12 +313,12 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent
     HILOG_DEBUG("OnInputEvent keyEvent start.");
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    if (interceptor == nullptr) {
+    if (!interceptor) {
         HILOG_DEBUG("interceptor is null.");
         return;
     }
 
-    if (eventHandler_ == nullptr) {
+    if (!eventHandler_) {
         HILOG_DEBUG("eventHandler_ is empty.");
         return;
     }
@@ -328,12 +336,12 @@ void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerE
     HILOG_DEBUG("PointerId is %{public}d.", pointerEvent->GetPointerId());
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    if (interceptor == nullptr) {
+    if (!interceptor) {
         HILOG_DEBUG("interceptor is null.");
         return;
     }
 
-    if (eventHandler_ == nullptr) {
+    if (!eventHandler_) {
         HILOG_DEBUG("eventHandler_ is empty.");
         return;
     }

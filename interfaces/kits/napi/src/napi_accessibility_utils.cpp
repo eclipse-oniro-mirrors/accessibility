@@ -1669,6 +1669,12 @@ const std::regex COLOR_WITH_MAGIC("#[0-9A-Fa-f]{6,8}");
 const std::regex COLOR_WITH_MAGIC_MINI("#[0-9A-Fa-f]{3,4}");
 constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
 
+constexpr int32_t RGB_LENGTH = 6;
+constexpr int32_t ALPHA_LENGTH = 2;
+constexpr int32_t ALPHA_MOVE = 24;
+constexpr int32_t COLOR_MOVE = 8;
+const char UNICODE_BODY = '0';
+
 uint32_t ConvertColorStringToNumer(std::string colorStr)
 {
     HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
@@ -1680,20 +1686,23 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     // Remove all " ".
     colorStr.erase(std::remove(colorStr.begin(), colorStr.end(), ' '), colorStr.end());
 
-    std::smatch matches;
     // Regex match for #909090 or #90909090.
-    if (std::regex_match(colorStr, matches, COLOR_WITH_MAGIC)) {
+    if (std::regex_match(colorStr, COLOR_WITH_MAGIC)) {
         colorStr.erase(0, 1);
         auto value = stoul(colorStr, nullptr, COLOR_STRING_BASE);
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // no alpha specified, set alpha to 0xff
             value |= COLOR_ALPHA_MASK;
+        } else {
+            auto alpha = value << ALPHA_MOVE;
+            auto rgb = value >> COLOR_MOVE;
+            value = alpha | rgb;
         }
         color = value;
         return color;
     }
     // Regex match for #rgb or #rgba.
-    if (std::regex_match(colorStr, matches, COLOR_WITH_MAGIC_MINI)) {
+    if (std::regex_match(colorStr, COLOR_WITH_MAGIC_MINI)) {
         colorStr.erase(0, 1);
         std::string newColorStr;
         // translate #rgb or #rgba to #rrggbb or #rrggbbaa
@@ -1705,6 +1714,10 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // no alpha specified, set alpha to 0xff
             value |= COLOR_ALPHA_MASK;
+        } else {
+            auto alpha = value << ALPHA_MOVE;
+            auto rgb = value >> COLOR_MOVE;
+            value = alpha | rgb;
         }
         color = value;
         return color;
@@ -1725,10 +1738,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     }
     return color;
 }
-constexpr int32_t RGB_LENGTH = 6;
-constexpr int32_t ALPHA_LENGTH = 2;
-constexpr int32_t ALPHA_MOVE = 24;
-const char UNICODE_BODY = '0';
+
 std::string ConvertColorToString(uint32_t color)
 {
     HILOG_DEBUG("color is 0X%{public}x", color);

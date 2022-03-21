@@ -168,7 +168,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
 
-    if (client == nullptr) {
+    if (!client) {
         HILOG_ERROR("fail, Input client is null");
         return ErrCode::ERROR;
     }
@@ -257,7 +257,7 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
     MessageParcel reply;
     MessageOption option;
 
-    if (operation == nullptr) {
+    if (!operation) {
         HILOG_ERROR("fail, Input operation is null");
         return;
     }
@@ -358,7 +358,7 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCall
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    if (client == nullptr) {
+    if (!client) {
         HILOG_ERROR("fail, Input client is null");
         return ErrCode::ERROR;
     }

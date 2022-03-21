@@ -90,7 +90,7 @@ bool JsonUtils::GetJsonObjFromJson(nlohmann::json &jsonObj, const std::string &j
         HILOG_ERROR("jsonPath is too long");
         return false;
     }
-    if (realpath(jsonPath.c_str(), realPath) == nullptr) {
+    if (!realpath(jsonPath.c_str(), realPath)) {
         HILOG_ERROR("Fail to get realpath of %{public}s", jsonPath.c_str());
         return false;
     }

@@ -118,7 +118,7 @@ HWTEST_F(AccessibilityOperatorUnitTest, AccessibilityOperator_002, TestSize.Leve
     sptr<IAccessibleAbilityChannel> service = new MockAccessibleAbilityChannel();
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
 
-    if (instance == nullptr) {
+    if (!instance) {
         GTEST_LOG_(INFO) << "Cann't get  AccessibilityOperator instance";
         return;
     }

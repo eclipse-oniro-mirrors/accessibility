@@ -101,7 +101,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
     sequenceNum_++;
     for (auto iter = connectionMaps.begin(); iter != connectionMaps.end(); iter++) {
         if (iter->second->OnKeyPressEvent(event, sequenceNum_)) {
-            if (processingEvent == nullptr) {
+            if (!processingEvent) {
                 copyEvent = std::make_shared<MMI::KeyEvent>(event);
                 processingEvent = std::make_shared<ProcessingEvent>();
                 processingEvent->event_ = copyEvent;
@@ -117,7 +117,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
         }
     }
 
-    if (processingEvent == nullptr) {
+    if (!processingEvent) {
         HILOG_DEBUG("No service handles the event.");
         sequenceNum_--;
         EventTransmission::OnKeyEvent(event);
@@ -199,7 +199,7 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
 {
     HILOG_DEBUG();
 
-    if (event == nullptr) {
+    if (!event) {
         HILOG_ERROR("event is null.");
         return;
     }

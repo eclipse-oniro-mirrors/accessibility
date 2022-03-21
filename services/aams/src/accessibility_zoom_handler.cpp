@@ -18,6 +18,8 @@
 
 namespace OHOS {
 namespace Accessibility {
+static const int32_t POINTER_COUNT_1 = 1;
+
 AccessibilityZoomHandler::AccessibilityZoomHandler(int displayId)
 {
     displayId_ = displayId;
