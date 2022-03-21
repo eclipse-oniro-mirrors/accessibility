@@ -20,7 +20,6 @@ config("accessibleability_private_config") {
   include_dirs = [
     "include",
     "//base/accessibility/frameworks/aafwk/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
     "//utils/native/base/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
     "//base/accessibility/interfaces/innerkits/asacfwk/include",
@@ -109,6 +108,7 @@ ohos_shared_library("accessibility_extension_module") {
     "ability_base:want",
     "ability_runtime:runtime",
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
   ]
 
   subsystem_name = "barrierfree"

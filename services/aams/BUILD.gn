@@ -43,8 +43,6 @@ config("aams_service_config") {
     "//utils/system/safwk/native/include",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
     "//utils/native/base/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
