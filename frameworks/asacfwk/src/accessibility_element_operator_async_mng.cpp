@@ -38,6 +38,10 @@ bool AccessibilityElementAsyncOperatorMng::SearchElementResultTimer(const int se
         }
         gettimeofday(&getTime, NULL);
         uint64_t endTime = (uint64_t)(getTime.tv_sec * SECOND_TO_MILLIS + getTime.tv_usec);
+        if (endTime < startTime) {
+            HILOG_ERROR("timer is wrong.");
+            return false;
+        }
         uint64_t waitTime = (uint64_t)(endTime - startTime);
         if (TIMEOUT_OPERATOR_MILLIS < waitTime) {
             completed_ = true;

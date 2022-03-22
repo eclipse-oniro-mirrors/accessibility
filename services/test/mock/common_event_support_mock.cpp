@@ -299,7 +299,7 @@ const std::string CommonEventSupport::COMMON_EVENT_HWID_LOGOUT = "common.event.H
 const std::string CommonEventSupport::COMMON_EVENT_HWID_TOKEN_INVALID = "common.event.HWID_TOKEN_INVALID";
 
 /**
- * Indicate the action of a common event about a logoff of a account ID.
+ * Indicate the action of a common event about a logoff of an account ID.
  * This is a protected common event, which can be sent only by the system.
  */
 const std::string CommonEventSupport::COMMON_EVENT_HWID_LOGOFF = "common.event.HWID_LOGOFF";

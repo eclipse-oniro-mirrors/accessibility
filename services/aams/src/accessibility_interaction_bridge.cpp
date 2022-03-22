@@ -92,7 +92,7 @@ bool Intersect(Rect& focus, Rect source)
     int maxx = std::min(focus.GetRightBottomXScreenPostion(), source.GetRightBottomXScreenPostion());
     int maxy = std::min(focus.GetRightBottomYScreenPostion(), source.GetRightBottomYScreenPostion());
     if ((minx > maxx) || (miny > maxy)) {
-        HILOG_DEBUG("The two Rects do not intersect");
+        HILOG_ERROR("The two Rects do not intersect");
         return false;
     }
     focus.SetLeftTopScreenPostion(minx, miny);
@@ -125,7 +125,7 @@ bool AccessibilityInteractionBridge::GetPointerItermOfAccessibilityFocusClick(MM
     auto focus = FindFocusedElementInfo();
     auto focusRect = focus.GetRectInScreen();
     float denominator = 2.0;
-    /* Apply magnification if needed. */
+    // Apply magnification if needed.
 
     // Intersect with window
     auto& windowManager = AccessibilityWindowInfoManager::GetInstance();

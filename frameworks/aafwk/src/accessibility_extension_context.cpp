@@ -29,7 +29,7 @@ bool AccessibilityExtensionContext::GetFocusElementInfo(
 {
     HILOG_DEBUG("start.");
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
-        HILOG_DEBUG("focusType is not allowed.");
+        HILOG_ERROR("focusType is not allowed.");
         return false;
     }
 

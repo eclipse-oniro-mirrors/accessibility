@@ -39,7 +39,7 @@ void AccessibleAbilityListenerTest::OnAbilityConnected()
 
 void AccessibleAbilityListenerTest::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO("##############AamsStAbilityB1: An Accessibility event is received and eventType is %{public}d",
+    HILOG_INFO("##############AamsStAbilityB1: An Accessibility event is received and eventType is %{public}u",
         eventInfo.GetEventType());
     std::optional<AccessibilityElementInfo> elementInfo;
     Accessibility::AccessibleAbility::GetInstance().GetRootElementInfo(elementInfo);

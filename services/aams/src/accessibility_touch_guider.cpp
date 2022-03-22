@@ -276,7 +276,7 @@ bool TouchGuider::TouchGuideListener::OnStarted()
     server_.CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
     server_.PostGestureRecognizeExit();
     server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
-    return false;
+    return true;
 }
 
 bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
@@ -590,7 +590,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     if (pointCount == POINTER_COUNT_1) {
         HILOG_INFO("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
-        /* get densityPixels from WMS */
+        // get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
         auto display = displayMgr.GetDefaultDisplay();
         float densityPixels = display->GetVirtualPixelRatio();
@@ -629,7 +629,7 @@ float TouchGuider::GetAngleCos(float offsetX, float offsetY, bool isGetX)
 
     float ret = isGetX ? offsetX : offsetY;
     double duration = hypot(offsetX, offsetY);
-    if (duration == 0) {
+    if ((int)duration == 0) {
         return ret;
     }
     ret = ret / duration;
@@ -733,9 +733,9 @@ void TouchGuider::ClearReceivedEventRecorder()
 {
     HILOG_DEBUG();
 
-    memset_s(receivedRecorder_.pointerDownX, sizeof(receivedRecorder_.pointerDownX),
+    (void)memset_s(receivedRecorder_.pointerDownX, sizeof(receivedRecorder_.pointerDownX),
              0, sizeof(receivedRecorder_.pointerDownX));
-    memset_s(receivedRecorder_.pointerDownY, sizeof(receivedRecorder_.pointerDownY),
+    (void)memset_s(receivedRecorder_.pointerDownY, sizeof(receivedRecorder_.pointerDownY),
              0, sizeof(receivedRecorder_.pointerDownY));
     receivedRecorder_.lastEvent = nullptr;
 }

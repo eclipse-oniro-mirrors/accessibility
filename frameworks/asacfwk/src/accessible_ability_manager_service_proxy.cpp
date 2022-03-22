@@ -39,11 +39,27 @@ bool AccessibleAbilityManagerServiceClientProxy::WriteInterfaceToken(MessageParc
     return true;
 }
 
+bool AccessibleAbilityManagerServiceClientProxy::SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message code,
+    MessageParcel &data, MessageParcel &reply,  MessageOption &option)
+{
+    HILOG_DEBUG("start.");
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
+        return false;
+    }
+    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    if (result != NO_ERROR) {
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+        return false;
+    }
+    return true;
+}
+
 void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEventInfo& uiEvent, const int userId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -63,10 +79,8 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SEND_EVENT), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SendEvent fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SEND_EVENT, data, reply, option)) {
+        HILOG_ERROR("SendEvent fail");
         return;
     }
 }
@@ -74,8 +88,6 @@ void AccessibleAbilityManagerServiceClientProxy::SendEvent(const AccessibilityEv
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const CaptionProperty& caption)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -90,13 +102,8 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const Captio
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_PROPERTY),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetCaptionProperty fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_PROPERTY, data, reply, option)) {
+        HILOG_ERROR("SetCaptionProperty fail");
         return false;
     }
     return true;
@@ -105,8 +112,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionProperty(const Captio
 bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -121,10 +126,8 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool stat
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_STATE), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetCaptionState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_CAPTION_STATE, data, reply, option)) {
+        HILOG_ERROR("SetCaptionState fail");
         return false;
     }
     return true;
@@ -133,8 +136,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetCaptionState(const bool stat
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -149,10 +150,8 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabled(const bool state)
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetEnabled fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED, data, reply, option)) {
+        HILOG_ERROR("SetEnabled fail");
         return false;
     }
     return true;
@@ -162,8 +161,6 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
     const sptr<IAccessibleAbilityManagerServiceState>& client, const int userId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);
@@ -188,16 +185,11 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterStateCallback(
         return ErrCode::ERROR;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::REGISTER_STATE_CALLBACK),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SendEvent fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::REGISTER_STATE_CALLBACK,
+        data, reply, option)) {
+        HILOG_ERROR("RegisterStateCallback fail");
         return ErrCode::ERROR;
     }
-
     return reply.ReadUint32();
 }
 
@@ -205,8 +197,6 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
     const uint32_t abilityTypes, const int32_t stateType)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -227,10 +217,9 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         return errorList;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ABILITYLIST), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SendEvent fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_ABILITYLIST,
+        data, reply, option)) {
+        HILOG_ERROR("GetAbilityList fail");
         return errorList;
     }
     // read result
@@ -251,8 +240,6 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
     int windowId, const sptr<IAccessibilityElementOperator>& operation, const int userId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -282,13 +269,9 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::REGISTER_INTERACTION_CONNECTION),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Register fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::REGISTER_INTERACTION_CONNECTION,
+        data, reply, option)) {
+        HILOG_ERROR("RegisterElementOperator fail");
         return;
     }
 }
@@ -296,8 +279,6 @@ void AccessibleAbilityManagerServiceClientProxy::RegisterElementOperator(
 void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const int windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -312,13 +293,9 @@ void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_INTERACTION_CONNECTION),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Deregister fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_INTERACTION_CONNECTION,
+        data, reply, option)) {
+        HILOG_ERROR("DeregisterElementOperator fail");
         return;
     }
 }
@@ -326,8 +303,6 @@ void AccessibleAbilityManagerServiceClientProxy::DeregisterElementOperator(const
 CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -336,24 +311,25 @@ CaptionProperty AccessibleAbilityManagerServiceClientProxy::GetCaptionProperty()
         HILOG_ERROR("fail, connection write Token error");
         return property;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_PROPERTY),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_PROPERTY,
+        data, reply, option)) {
+        HILOG_ERROR("GetCaptionProperty fail");
         return property;
     }
-    return *reply.ReadParcelable<CaptionProperty>();
+
+    std::unique_ptr<CaptionProperty> captionProperty(reply.ReadParcelable<CaptionProperty>());
+    if (!captionProperty) {
+        HILOG_ERROR("ReadParcelable<CaptionProperty> failed");
+        return property;
+    }
+    return *captionProperty;
 }
 
 uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& client, const int userId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -378,16 +354,11 @@ uint32_t AccessibleAbilityManagerServiceClientProxy::RegisterCaptionPropertyCall
         return ErrCode::ERROR;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SendEvent fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::REGISTER_CAPTION_PROPERTY_CALLBACK,
+        data, reply, option)) {
+        HILOG_ERROR("RegisterCaptionPropertyCallback fail");
         return ErrCode::ERROR;
     }
-
     return reply.ReadUint32();
 }
 
@@ -399,8 +370,6 @@ sptr<IRemoteObject> AccessibleAbilityManagerServiceClientProxy::GetObject()
 bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -409,10 +378,9 @@ bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
         HILOG_ERROR("fail, connection write Token");
         return false;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetEnabled fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED,
+        data, reply, option)) {
+        HILOG_ERROR("GetEnabledState fail");
         return false;
     }
     return reply.ReadBool();
@@ -421,8 +389,6 @@ bool AccessibleAbilityManagerServiceClientProxy::GetEnabledState()
 bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -431,10 +397,9 @@ bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
         HILOG_ERROR("fail, connection write Token");
         return false;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_STATE), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetCaptionState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_CAPTION_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetCaptionState fail");
         return false;
     }
     return reply.ReadBool();
@@ -443,8 +408,6 @@ bool AccessibleAbilityManagerServiceClientProxy::GetCaptionState()
 bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -453,13 +416,9 @@ bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
         HILOG_ERROR("fail, connection write Token");
         return false;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_TOUCH_GUIDE_STATE),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetTouchGuideState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_TOUCH_GUIDE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetTouchGuideState fail");
         return false;
     }
     return reply.ReadBool();
@@ -468,8 +427,6 @@ bool AccessibleAbilityManagerServiceClientProxy::GetTouchGuideState()
 bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -478,10 +435,9 @@ bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
         HILOG_ERROR("fail, connection write Token");
         return false;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_GESTURE_STATE), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetGestureState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_GESTURE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetGestureState fail");
         return false;
     }
     return reply.ReadBool();
@@ -490,8 +446,6 @@ bool AccessibleAbilityManagerServiceClientProxy::GetGestureState()
 bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -500,13 +454,9 @@ bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
         HILOG_ERROR("fail, connection write Token");
         return false;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_KEY_EVENT_OBSERVE_STATE),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetKeyEventObserverState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_KEY_EVENT_OBSERVE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetKeyEventObserverState fail");
         return false;
     }
     return reply.ReadBool();
@@ -515,8 +465,6 @@ bool AccessibleAbilityManagerServiceClientProxy::GetKeyEventObserverState()
 bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool state)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -531,13 +479,9 @@ bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool s
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_TOUCH_GUIDE_STATE),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetTouchGuideState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_TOUCH_GUIDE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("SetTouchGuideState fail");
         return false;
     }
     return true;
@@ -546,8 +490,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetTouchGuideState(const bool s
 bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool state)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -562,10 +504,9 @@ bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool stat
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_GESTURE_STATE), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetGestureState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_GESTURE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("SetGestureState fail");
         return false;
     }
     return true;
@@ -574,8 +515,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetGestureState(const bool stat
 bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const bool state)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -590,13 +529,9 @@ bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const 
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_KEY_EVENT_OBSERVE_STATE),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetKeyEventObserverState fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_KEY_EVENT_OBSERVE_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("SetKeyEventObserverState fail");
         return false;
     }
     return true;
@@ -605,8 +540,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetKeyEventObserverState(const 
 bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -626,13 +559,9 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
         }
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED_OBJECT),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetEnabledObj fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::SET_ENABLED_OBJECT,
+        data, reply, option)) {
+        HILOG_ERROR("SetEnabledObj fail");
         return false;
     }
     return true;
@@ -641,8 +570,6 @@ bool AccessibleAbilityManagerServiceClientProxy::SetEnabledObj(std::map<std::str
 std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceClientProxy::GetEnabledAbilities()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -652,13 +579,9 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
         HILOG_ERROR("fail, connection write Token error");
         return it;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED_OBJECT),
-        data,
-        reply,
-        option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_ENABLED_OBJECT,
+        data, reply, option)) {
+        HILOG_ERROR("GetEnabledAbilities fail");
         return it;
     }
 
@@ -673,8 +596,8 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
         temp.push_back(*iter);
     }
 
-    for (int i = 0; i < dev_num; i++) {
-        it.insert(make_pair(temp[i].GetURI(), temp[i]));
+    for (int j = 0; j < dev_num; j++) {
+        it.insert(make_pair(temp[j].GetURI(), temp[j]));
     }
     return it;
 }
@@ -682,8 +605,6 @@ std::map<std::string, AppExecFwk::ElementName> AccessibleAbilityManagerServiceCl
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy::GetInstalledAbilities()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -693,12 +614,12 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         HILOG_ERROR("fail, connection write Token error");
         return it;
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_INSTALLED), data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_INSTALLED,
+        data, reply, option)) {
+        HILOG_ERROR("GetInstalledAbilities fail");
         return it;
     }
+
     int dev_num = reply.ReadInt32();
     for (int i = dev_num; i > 0; i--) {
         std::unique_ptr<AccessibilityAbilityInfo> dev(reply.ReadParcelable<AccessibilityAbilityInfo>());
@@ -714,8 +635,6 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
 bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -733,11 +652,9 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
             return false;
         }
     }
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DISABLE_ABILITIES),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetEnabledObj fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::DISABLE_ABILITIES,
+        data, reply, option)) {
+        HILOG_ERROR("DisableAbilities fail");
         return false;
     }
     return true;
@@ -746,8 +663,6 @@ bool AccessibleAbilityManagerServiceClientProxy::DisableAbilities(std::map<std::
 int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -757,12 +672,9 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
         return false;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(
-            IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("GetActiveWindow fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::GET_ACTIVE_WINDOW,
+        data, reply, option)) {
+        HILOG_ERROR("GetActiveWindow fail");
         return false;
     }
     return reply.ReadInt32();
@@ -771,8 +683,6 @@ int AccessibleAbilityManagerServiceClientProxy::GetActiveWindow()
 bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -787,11 +697,9 @@ bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnection
         return false;
     }
 
-    error = Remote()->SendRequest(static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::REGISTER_UITEST_ABILITY_CONNECTION_CLIENT),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::REGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
+        data, reply, option)) {
+        HILOG_ERROR("RegisterUITestAbilityConnectionClient fail");
         return false;
     }
     return reply.ReadBool();
@@ -800,8 +708,6 @@ bool AccessibleAbilityManagerServiceClientProxy::RegisterUITestAbilityConnection
 bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnectionClient()
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -811,11 +717,9 @@ bool AccessibleAbilityManagerServiceClientProxy::DeregisterUITestAbilityConnecti
         return false;
     }
 
-    error = Remote()->SendRequest(static_cast<uint32_t>
-        (IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("Interrupt fail, error: %{public}d", error);
+    if (!SendTransactCmd(IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_UITEST_ABILITY_CONNECTION_CLIENT,
+        data, reply, option)) {
+        HILOG_ERROR("DeregisterUITestAbilityConnectionClient fail");
         return false;
     }
     return reply.ReadBool();

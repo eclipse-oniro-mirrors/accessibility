@@ -37,12 +37,28 @@ bool AccessibilityElementOperatorCallbackProxy::WriteInterfaceToken(MessageParce
     return true;
 }
 
+bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(IAccessibilityElementOperatorCallback::Message code,
+    MessageParcel &data, MessageParcel &reply,  MessageOption &option)
+{
+    HILOG_DEBUG("start.");
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
+        return false;
+    }
+    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    if (result != NO_ERROR) {
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+        return false;
+    }
+    return true;
+}
+
 void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -62,11 +78,10 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_ACCESSIBILITY_ID),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SearchAccessibilityInfoByAccessibility fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_ACCESSIBILITY_ID,
+        data, reply, option)) {
+        HILOG_ERROR("SetSearchElementInfoByAccessibilityIdResult failed");
+        return;
     }
 }
 
@@ -74,8 +89,6 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     const std::vector<AccessibilityElementInfo> &infos, const int requestId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -95,11 +108,10 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_TEXT),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SearchAccessibilityInfoByAccessibility fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_TEXT,
+        data, reply, option)) {
+        HILOG_ERROR("SetSearchElementInfoByTextResult failed");
+        return;
     }
 }
 
@@ -107,8 +119,6 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int requestId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -127,11 +137,10 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUSED_INFO),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetFindFocusedElementInfo fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUSED_INFO,
+        data, reply, option)) {
+        HILOG_ERROR("SetFindFocusedElementInfoResult failed");
+        return;
     }
 }
 
@@ -139,8 +148,6 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
     const int requestId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -160,19 +167,16 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUS_MOVE),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetFocusMoveSearchResult fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUS_MOVE,
+        data, reply, option)) {
+        HILOG_ERROR("SetFocusMoveSearchResult failed");
+        return;
     }
 }
 
 void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const bool succeeded, const int requestId)
 {
     HILOG_DEBUG("start");
-
-    int error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -192,11 +196,10 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
         return;
     }
 
-    error = Remote()->SendRequest(
-        static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_PERFORM_ACTION),
-        data, reply, option);
-    if (error != NO_ERROR) {
-        HILOG_ERROR("SetExecuteActionResult fail, error: %d", error);
+    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_PERFORM_ACTION,
+        data, reply, option)) {
+        HILOG_ERROR("SetExecuteActionResult failed");
+        return;
     }
 }
 

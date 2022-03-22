@@ -44,7 +44,7 @@ napi_value NGesturePos::JSPosConstructor(napi_env env, napi_callback_info info)
     uint32_t x = 0, y = 0;
     ParseUint32(env, x, argv[PARAM0]);
     ParseUint32(env, y, argv[PARAM1]);
-    HILOG_INFO("JSPosConstructor, x:%{public}d, y:%{public}d", x, y);
+    HILOG_INFO("JSPosConstructor, x:%{public}u, y:%{public}u", x, y);
     napi_set_named_property(env, jsthis, "posX", argv[PARAM0]);
     napi_set_named_property(env, jsthis, "posY", argv[PARAM1]);
 

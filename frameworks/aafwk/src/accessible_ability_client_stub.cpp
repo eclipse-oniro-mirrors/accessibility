@@ -48,7 +48,7 @@ int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
     std::u16string descriptor = AccessibleAbilityClientStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        HILOG_INFO("local descriptor is not equal to remote");
+        HILOG_ERROR("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 
