@@ -629,7 +629,7 @@ float TouchGuider::GetAngleCos(float offsetX, float offsetY, bool isGetX)
 
     float ret = isGetX ? offsetX : offsetY;
     double duration = hypot(offsetX, offsetY);
-    if ((int)duration != 0) {
+    if (duration < - EPSINON || duration > EPSINON) {
         ret = ret / duration;
     }
     return ret;

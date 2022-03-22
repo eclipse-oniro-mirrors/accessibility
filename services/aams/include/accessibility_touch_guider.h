@@ -35,6 +35,7 @@ const int32_t INDEX_1 = 1;
 const int32_t INIT_POINT_ID = -1;
 const float INIT_MMIPOINT = 0.0f;
 #define DIVIDE_2(num) ((num) / 2)
+#define EPSINON 0.01
 
 /**
  * @brief touch Guider state define
