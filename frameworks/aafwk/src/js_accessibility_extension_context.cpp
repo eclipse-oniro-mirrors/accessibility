@@ -104,7 +104,7 @@ private:
                 HILOG_INFO("GetFocusElementInfo begin");
                 auto context = weak.lock();
                 if (!context) {
-                    HILOG_WARN("context is released");
+                    HILOG_ERROR("context is released");
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
@@ -121,8 +121,8 @@ private:
                     NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
                     task.Resolve(engine, nativeElementInfo);
                 } else {
-                    HILOG_ERROR("Get focus elementInfo failed.\
-                        ret: %{public}d, elementInfo.has_value(): %{public}d", ret, elementInfo.has_value());
+                    HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d, elementInfo.has_value(): %{public}d",
+                        ret, elementInfo.has_value());
                     task.Reject(engine, CreateJsError(engine, false, "Get focus elementInfo failed."));
                 }
             };
@@ -148,7 +148,7 @@ private:
                 HILOG_INFO("GetRootElementInfo begin");
                 auto context = weak.lock();
                 if (!context) {
-                    HILOG_WARN("context is released");
+                    HILOG_ERROR("context is released");
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
@@ -193,7 +193,7 @@ private:
                 HILOG_INFO("GetWindows begin");
                 auto context = weak.lock();
                 if (!context) {
-                    HILOG_WARN("context is released");
+                    HILOG_ERROR("context is released");
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
@@ -247,7 +247,7 @@ private:
                 HILOG_INFO("ExecuteCommonAction begin");
                 auto context = weak.lock();
                 if (!context) {
-                    HILOG_WARN("context is released");
+                    HILOG_ERROR("context is released");
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
@@ -304,7 +304,7 @@ private:
                 HILOG_INFO("GestureSimulate begin");
                 auto context = weak.lock();
                 if (!context) {
-                    HILOG_WARN("context is released");
+                    HILOG_ERROR("context is released");
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
@@ -336,6 +336,10 @@ NativeValue* CreateJsAccessibilityExtensionContext(
 
     std::unique_ptr<JsAccessibilityExtensionContext> jsContext =
         std::make_unique<JsAccessibilityExtensionContext>(context);
+    if (!object) {
+        HILOG_ERROR("object is nullptr.");
+        return nullptr;
+    }
     object->SetNativePointer(jsContext.release(), JsAccessibilityExtensionContext::Finalizer, nullptr);
 
     BindNativeFunction(engine, *object, "getFocusElementInfo", JsAccessibilityExtensionContext::GetFocusElementInfo);

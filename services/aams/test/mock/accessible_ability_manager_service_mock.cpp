@@ -339,15 +339,12 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     HILOG_DEBUG("InputFilter flag is %{public}d", flag);
 
-    if (flag) {
-        inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
-        inputInterceptor_->SetAvailableFunctions(flag);
-    } else if (inputInterceptor_ != nullptr) {
-        HILOG_DEBUG("Has InputInterceptor before.");
-        inputInterceptor_->SetAvailableFunctions(0);
-    } else {
-        HILOG_DEBUG("InputInterceptor is null.");
+    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
+    if (!inputInterceptor_) {
+        HILOG_ERROR("inputInterceptor_ is null.");
+        return;
     }
+    inputInterceptor_->SetAvailableFunctions(flag);
 }
 
 void AccessibleAbilityManagerService::UpdateMagnification()
@@ -363,12 +360,12 @@ void AccessibleAbilityManagerService::UpdateMagnification()
     std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
 
     if (accountData->GetScreenMagnificationFlag()) {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Register(display->GetId());
+        for (sptr<Rosen::Display> displayReg : displays) {
+            AccessibilityZoomProxy::GetInstance().Register(displayReg->GetId());
         }
     } else {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
+        for (sptr<Rosen::Display> displayUnreg : displays) {
+            AccessibilityZoomProxy::GetInstance().Unregister(displayUnreg->GetId());
         }
     }
 }

@@ -208,7 +208,7 @@ shared_ptr<AccessibilityElementOperator> AccessibilitySystemAbilityClient::GetOp
             return it->second;
         }
     }
-    HILOG_DEBUG("Failed to get interaction");
+    HILOG_ERROR("Failed to get interaction");
     return nullptr;
 }
 
@@ -518,33 +518,36 @@ bool AccessibilitySystemAbilityClient::UnsubscribeStateObserver(const shared_ptr
         return false;
     }
     bool result = false;
-    for (auto it = observersAccessibilityState_.begin(); it != observersAccessibilityState_.end(); it++) {
-        if (*it == observer) {
-            observersAccessibilityState_.erase(it);
+    for (auto accessibilityState = observersAccessibilityState_.begin();
+        accessibilityState != observersAccessibilityState_.end(); accessibilityState++) {
+        if (*accessibilityState == observer) {
+            observersAccessibilityState_.erase(accessibilityState);
             result = true;
             break;
         }
     }
 
-    for (auto it = observersTouchState_.begin(); it != observersTouchState_.end(); it++) {
-        if (*it == observer) {
-            observersTouchState_.erase(it);
+    for (auto touchState = observersTouchState_.begin(); touchState != observersTouchState_.end(); touchState++) {
+        if (*touchState == observer) {
+            observersTouchState_.erase(touchState);
             result = true;
             break;
         }
     }
 
-    for (auto it = observersKeyEventState_.begin(); it != observersKeyEventState_.end(); it++) {
-        if (*it == observer) {
-            observersKeyEventState_.erase(it);
+    for (auto keyEventState = observersKeyEventState_.begin(); keyEventState != observersKeyEventState_.end();
+        keyEventState++) {
+        if (*keyEventState == observer) {
+            observersKeyEventState_.erase(keyEventState);
             result = true;
             break;
         }
     }
 
-    for (auto it = observersGestureState_.begin(); it != observersGestureState_.end(); it++) {
-        if (*it == observer) {
-            observersGestureState_.erase(it);
+    for (auto gestureState = observersGestureState_.begin(); gestureState != observersGestureState_.end();
+        gestureState++) {
+        if (*gestureState == observer) {
+            observersGestureState_.erase(gestureState);
             result = true;
             break;
         }
@@ -663,17 +666,18 @@ bool AccessibilitySystemAbilityClient::DeleteCaptionListener(
     HILOG_DEBUG("start");
     bool result = false;
     if (type == CaptionObserverType::CAPTION_ENABLE) {
-        for (auto it = observersCaptionEnable_.begin(); it != observersCaptionEnable_.end(); ++it) {
-            if (*it == ob) {
-                observersCaptionEnable_.erase(it);
+        for (auto enable = observersCaptionEnable_.begin(); enable != observersCaptionEnable_.end(); ++enable) {
+            if (*enable == ob) {
+                observersCaptionEnable_.erase(enable);
                 result = true;
                 break;
             }
         }
     } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
-        for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); ++it) {
-            if (*it == ob) {
-                observersCaptionProperty_.erase(it);
+        for (auto property = observersCaptionProperty_.begin(); property != observersCaptionProperty_.end();
+            ++property) {
+            if (*property == ob) {
+                observersCaptionProperty_.erase(property);
                 result = true;
                 break;
             }

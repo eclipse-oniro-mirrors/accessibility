@@ -80,6 +80,10 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return false;
     }
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return false;
+    }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
         return false;
@@ -126,6 +130,10 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int accessibi
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return false;
     }
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return false;
+    }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
         return false;
@@ -168,6 +176,10 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int accessibili
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return false;
     }
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return false;
+    }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
         return false;
@@ -206,6 +218,10 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int accessibilityWindo
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
+        return false;
+    }
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
         return false;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
@@ -265,7 +281,7 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int accessibilityWindowI
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return false;
     }
-    if (!data.WriteRemoteObject(callback->AsObject())) {
+    if (!callback || !data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
         return false;
     }

@@ -145,6 +145,17 @@ private:
      * @return true: Write the descriptor successfully; otherwise is not.
      */
     bool WriteInterfaceToken(MessageParcel &data);
+
+    /**
+     * @brief Send the command data from proxy to stub in IPC mechanism.
+     * @param code The code matched the function called.
+     * @param data Serializable data
+     * @param reply The response of IPC
+     * @param option The option parameter of IPC,such as: async,sync
+     * @return true: Write the descriptor successfully; otherwise is not.
+     */
+    bool SendTransactCmd(IAccessibilityElementOperator::Message code, MessageParcel &data,
+        MessageParcel &reply,  MessageOption &option);
     static inline BrokerDelegator<AccessibilityElementOperatorProxy> delegator;
 };
 } // namespace Accessibility

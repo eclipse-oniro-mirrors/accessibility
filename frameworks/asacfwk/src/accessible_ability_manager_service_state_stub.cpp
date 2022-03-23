@@ -30,7 +30,7 @@ AccessibleAbilityManagerServiceStateStub::AccessibleAbilityManagerServiceStateSt
 int AccessibleAbilityManagerServiceStateStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibleAbilityManagerServiceStateStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
+    HILOG_DEBUG("AccessibleAbilityManagerServiceStateStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
         code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceStateStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();

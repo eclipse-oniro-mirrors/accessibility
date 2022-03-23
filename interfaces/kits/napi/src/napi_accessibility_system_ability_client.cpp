@@ -81,6 +81,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -108,10 +109,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenTouchExploration", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
+    napi_create_async_work(env, nullptr, resource,
         // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
@@ -140,6 +138,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -202,6 +201,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -271,6 +271,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -445,6 +446,7 @@ napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -504,6 +506,7 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -563,6 +566,7 @@ napi_value NAccessibilityClient::GetCaptionState(napi_env env, napi_callback_inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -591,10 +595,7 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetCaptionState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
+    napi_create_async_work(env, nullptr, resource,
         // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
@@ -623,6 +624,7 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -682,6 +684,7 @@ napi_value NAccessibilityClient::GetEnabled(napi_env env, napi_callback_info inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -741,6 +744,7 @@ napi_value NAccessibilityClient::SetEnabled(napi_env env, napi_callback_info inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -800,6 +804,7 @@ napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -859,6 +864,7 @@ napi_value NAccessibilityClient::SetTouchGuideState(napi_env env, napi_callback_
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -918,6 +924,7 @@ napi_value NAccessibilityClient::GetGestureState(napi_env env, napi_callback_inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -977,6 +984,7 @@ napi_value NAccessibilityClient::SetGestureState(napi_env env, napi_callback_inf
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1037,6 +1045,7 @@ napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_cal
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1096,6 +1105,7 @@ napi_value NAccessibilityClient::SetKeyEventObserverState(napi_env env, napi_cal
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1125,10 +1135,7 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetInstalled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
+    napi_create_async_work(env, nullptr, resource,
         // execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
@@ -1157,6 +1164,7 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1217,6 +1225,7 @@ napi_value NAccessibilityClient::GetExtensionEnabled(napi_env env, napi_callback
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1276,6 +1285,7 @@ napi_value NAccessibilityClient::ExtensionEnabled(napi_env env, napi_callback_in
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1335,6 +1345,7 @@ napi_value NAccessibilityClient::ExtensionDisabled(napi_env env, napi_callback_i
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
+            callbackInfo = nullptr;
         },
         (void*)callbackInfo,
         &callbackInfo->work_);
@@ -1400,6 +1411,7 @@ napi_value NAccessibilityClient::GetCaptionsManager(napi_env env, napi_callback_
     napi_set_named_property(env, result, "style", keyCode);
 
     delete callbackInfo;
+    callbackInfo = nullptr;
     return result;
 }
 

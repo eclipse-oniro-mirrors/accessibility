@@ -18,9 +18,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-const int value_1000 = 1000;
-const int value_1000000 = 1000000;
-const int MS_TO_US = 1000;
+const int g_value_1000 = 1000;
+const int g_value_1000000 = 1000000;
+const int g_msToUs = 1000;
 TouchInjectHandler::TouchInjectHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     TouchEventInjector &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
@@ -96,7 +96,7 @@ void TouchEventInjector::GetTapsEvents(int64_t startTime)
         float py = gesturePath_[i].GetStartPosition().GetPositionY();
         pointer.SetGlobalX(px);
         pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime * MS_TO_US);
+        pointer.SetDownTime(downTime * g_msToUs);
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
         HILOG_INFO("append down event");
         injectedEvents_.push_back(event);
@@ -107,7 +107,7 @@ void TouchEventInjector::GetTapsEvents(int64_t startTime)
         py = gesturePath_[i].GetEndPosition().GetPositionY();
         pointer.SetGlobalX(px);
         pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime * MS_TO_US);
+        pointer.SetDownTime(downTime * g_msToUs);
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
         HILOG_INFO("append up event");
         injectedEvents_.push_back(event);
@@ -118,7 +118,7 @@ void TouchEventInjector::GetTapsEvents(int64_t startTime)
 
 void TouchEventInjector::GetMovesEvents(int64_t startTime)
 {
-    HILOG_INFO("TouchEventInjector::GetTapsEvents: start");
+    HILOG_INFO("TouchEventInjector::GetMovesEvents: start");
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
     int64_t downTime = startTime;
@@ -129,7 +129,7 @@ void TouchEventInjector::GetMovesEvents(int64_t startTime)
     pointer.SetPointerId(1);
     pointer.SetGlobalX(px);
     pointer.SetGlobalY(py);
-    pointer.SetDownTime(downTime * MS_TO_US);
+    pointer.SetDownTime(downTime * g_msToUs);
     event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
     HILOG_INFO("append down event");
     injectedEvents_.push_back(event);
@@ -138,7 +138,7 @@ void TouchEventInjector::GetMovesEvents(int64_t startTime)
         py = gesturePath_[i].GetEndPosition().GetPositionY();
         pointer.SetGlobalX(px);
         pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime * MS_TO_US);
+        pointer.SetDownTime(downTime * g_msToUs);
         HILOG_INFO("append move event");
         nowTime += gesturePath_[i].GetDurationTime();
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
@@ -149,7 +149,7 @@ void TouchEventInjector::GetMovesEvents(int64_t startTime)
     py = gesturePath_[gesturePath_.size() - 1].GetEndPosition().GetPositionY();
     pointer.SetGlobalX(px);
     pointer.SetGlobalY(py);
-    pointer.SetDownTime(downTime * MS_TO_US);
+    pointer.SetDownTime(downTime * g_msToUs);
     event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
     HILOG_INFO("append up event");
     injectedEvents_.push_back(event);
@@ -186,9 +186,10 @@ void TouchEventInjector::InjectEventsInner()
         std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
         parameters->isLastEvent_ = (i == injectedEvents_.size() - 1) ? true : false;
         parameters->event_ = injectedEvents_[i];
-        int64_t timeout = injectedEvents_[i]->GetActionTime() / MS_TO_US - curTime;
-
-        handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
+        if (g_msToUs - curTime != 0) {
+            int64_t timeout = injectedEvents_[i]->GetActionTime() / g_msToUs - curTime;
+            handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
+        }
     }
     injectedEvents_.clear();
 }
@@ -214,7 +215,7 @@ void TouchEventInjector::CancelGesture()
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
     int64_t time = getSystemTime();
-    pointer.SetDownTime(time * MS_TO_US);
+    pointer.SetDownTime(time * g_msToUs);
     pointer.SetPointerId(1);
     if (GetNext() != nullptr && isGestureUnderway_) {
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_CANCEL, pointer, time);
@@ -251,7 +252,7 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int acti
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
     pointerEvent->SetPointerId(point.GetPointerId());
     pointerEvent->SetPointerAction(action);
-    pointerEvent->SetActionTime(actionTime * MS_TO_US);
+    pointerEvent->SetActionTime(actionTime * g_msToUs);
     pointerEvent->SetActionStartTime(point.GetDownTime());
     pointerEvent->AddPointerItem(point);
     pointerEvent->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -263,7 +264,7 @@ int64_t TouchEventInjector::getSystemTime()
     HILOG_INFO("TouchEventInjector::getSystemTime: start");
     struct timespec times = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t millisecond = (int64_t)(times.tv_sec * value_1000 + times.tv_nsec / value_1000000);
+    int64_t millisecond = (int64_t)(times.tv_sec * g_value_1000 + times.tv_nsec / g_value_1000000);
 
     return millisecond;
 }
