@@ -41,8 +41,7 @@ JsAccessibilityExtension::~JsAccessibilityExtension() = default;
 
 void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLocalRecord> &record,
     const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
-    std::shared_ptr<AppExecFwk::AbilityHandler> &handler,
-    const sptr<IRemoteObject> &token)
+    std::shared_ptr<AppExecFwk::AbilityHandler> &handler, const sptr<IRemoteObject> &token)
 {
     HILOG_INFO("JsAccessibilityExtension::Init begin.");
     AccessibilityExtension::Init(record, application, handler, token);
@@ -53,10 +52,13 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
         return;
     }
 
+    if (!abilityInfo_) {
+        HILOG_ERROR("abilityInfo_ is nullptr.");
+        return;
+    }
     std::string moduleName(Extension::abilityInfo_->moduleName);
     moduleName.append("::").append(abilityInfo_->name);
-    HILOG_INFO("JsAccessibilityExtension::Init moduleName:%{public}s, srcPath:%{public}s.",
-        moduleName.c_str(), srcPath.c_str());
+    HILOG_INFO("moduleName:%{public}s, srcPath:%{public}s.", moduleName.c_str(), srcPath.c_str());
     HandleScope handleScope(jsRuntime_);
     auto& engine = jsRuntime_.GetNativeEngine();
 
@@ -65,7 +67,6 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
         HILOG_ERROR("Failed to get jsObj_");
         return;
     }
-    HILOG_INFO("JsAccessibilityExtension::Init ConvertNativeValueTo.");
     NativeObject* obj = ConvertNativeValueTo<NativeObject>(jsObj_->Get());
     if (!obj) {
         HILOG_ERROR("Failed to get JsAccessibilityExtension object");
@@ -77,13 +78,14 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
         HILOG_ERROR("Failed to get context");
         return;
     }
-    HILOG_INFO("JsAccessibilityExtension::Init CreateJsAccessibilityExtensionContext.");
     NativeValue* contextObj = CreateJsAccessibilityExtensionContext(engine, context);
     auto shellContextRef = jsRuntime_.LoadSystemModule("application.AccessibilityExtensionContext", &contextObj, 1);
+    if (!shellContextRef) {
+        HILOG_ERROR("shellContextRef is nullptr.");
+        return;
+    }
     contextObj = shellContextRef->Get();
-    HILOG_INFO("JsAccessibilityExtension::Init Bind.");
     context->Bind(jsRuntime_, shellContextRef.release());
-    HILOG_INFO("JsAccessibilityExtension::SetProperty.");
     obj->SetProperty("context", contextObj);
 
     auto nativeObj = ConvertNativeValueTo<NativeObject>(contextObj);
@@ -91,16 +93,10 @@ void JsAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoc
         HILOG_ERROR("Failed to get accessibility extension native object");
         return;
     }
-
-    HILOG_INFO("Set accessibility extension context pointer: %{public}p", context.get());
-
     nativeObj->SetNativePointer(new std::weak_ptr<AbilityRuntime::Context>(context),
         [](NativeEngine*, void* data, void*) {
-            HILOG_INFO("Finalizer for weak_ptr accessibility extension context is called");
             delete static_cast<std::weak_ptr<AbilityRuntime::Context>*>(data);
         }, nullptr);
-
-    HILOG_INFO("JsAccessibilityExtension::Init end.");
 }
 
 sptr<IRemoteObject> JsAccessibilityExtension::OnConnect(const AAFwk::Want &want)
@@ -182,7 +178,7 @@ NativeValue* JsAccessibilityExtension::CallObjectMethod(const char* name, Native
 {
     HILOG_INFO("JsAccessibilityExtension::CallObjectMethod(%{public}s), begin", name);
     if (!jsObj_) {
-        HILOG_WARN("jsObj_ is nullptr");
+        HILOG_ERROR("jsObj_ is nullptr");
         return nullptr;
     }
 
@@ -207,6 +203,10 @@ NativeValue* JsAccessibilityExtension::CallObjectMethod(const char* name, Native
 
 void JsAccessibilityExtension::GetSrcPath(std::string &srcPath)
 {
+    if (!Extension::abilityInfo_) {
+        HILOG_ERROR("abilityInfo_ is nullptr");
+        return;
+    }
     if (!Extension::abilityInfo_->isModuleJson) {
         /* temporary compatibility api8 + config.json */
         srcPath.append(Extension::abilityInfo_->package);

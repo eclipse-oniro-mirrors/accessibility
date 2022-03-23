@@ -99,10 +99,9 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
     int activeWindow = AccessibilitySystemAbilityClient::GetInstance()->GetActiveWindow();
     HILOG_DEBUG("activeWindow is %{public}d", activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
-    for (auto& info : elementInfos) {
-        HILOG_DEBUG("element [elementSize:%{public}d]", elementInfosResult_.size());
-        elementInfo = info;
-        break;
+    HILOG_DEBUG("element [elementSize:%{public}d]", elementInfos.size());
+    if (!elementInfos.empty()) {
+        elementInfo = elementInfos[0];
     }
     return result;
 }
@@ -198,9 +197,7 @@ bool AccessibilityOperator::FindFocusedElementInfo(int channelId, int accessibil
         if (!result) {
             return result;
         }
-
-        HILOG_DEBUG("FindFocusedElementInfo channelId[%{public}d] elementId[%{public}d],\
-            focusType[%{public}d] sequenceNum[%{public}d]",
+        HILOG_DEBUG("channelId[%{public}d], elementId[%{public}d], focusType[%{public}d], sequenceNum[%{public}d]",
             channelId, accessibilityWindowId, elementId, focusType);
         if (!asyncElementOperatorMng_.SearchElementResultTimer(sequenceNum)) {
             HILOG_ERROR("Failed to wait result");

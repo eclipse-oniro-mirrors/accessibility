@@ -28,11 +28,11 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
     auto& winMgr = AccessibilityWindowInfoManager::GetInstance();
     switch (type) {
         case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED: {
-            auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
-            winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfo);
-            AccessibilityEventInfo evtInf(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_ADDED);
-            aams->SendEvent(evtInf, aams->GetCurrentAccountId());
-            if (a11yWindowInfo.IsFocused()) {
+            auto a11yWindowInfoAdded = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
+            winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfoAdded);
+            AccessibilityEventInfo evtInfAdded(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_ADDED);
+            aams->SendEvent(evtInfAdded, aams->GetCurrentAccountId());
+            if (a11yWindowInfoAdded.IsFocused()) {
                 winMgr.SetActiveWindow(windowInfo->currentWindowInfo_->wid_);
             }
             break;
@@ -51,30 +51,30 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
                 winMgr.SetInputFocusedWindow(INVALID_WINDOW_ID);
             }
             winMgr.a11yWindows_.erase(windowInfo->currentWindowInfo_->wid_);
-            AccessibilityEventInfo evtInf(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_REMOVED);
-            aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            AccessibilityEventInfo evtInfRemoved(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_REMOVED);
+            aams->SendEvent(evtInfRemoved, aams->GetCurrentAccountId());
             break;
         }
         case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: {
-            AccessibilityEventInfo evtInf(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_BOUNDS);
-            aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            AccessibilityEventInfo evtInfBounds(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_BOUNDS);
+            aams->SendEvent(evtInfBounds, aams->GetCurrentAccountId());
             break;
         }
         case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE:
             if (!winMgr.a11yWindows_.count(windowInfo->currentWindowInfo_->wid_)) {
-                auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
-                winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfo);
+                auto a11yWindowInfoActive = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
+                winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfoActive);
             }
             winMgr.SetActiveWindow(windowInfo->currentWindowInfo_->wid_);
             break;
         case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: {
             if (!winMgr.a11yWindows_.count(windowInfo->currentWindowInfo_->wid_)) {
-                auto a11yWindowInfo = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
-                winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfo);
+                auto a11yWindowInfoFocused = winMgr.CreateAccessibilityWindowInfo(*windowInfo);
+                winMgr.a11yWindows_.emplace(windowInfo->currentWindowInfo_->wid_, a11yWindowInfoFocused);
             }
             winMgr.SetActiveWindow(windowInfo->currentWindowInfo_->wid_);
-            AccessibilityEventInfo evtInf(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_FOCUSED);
-            aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+            AccessibilityEventInfo evtInfFocused(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_FOCUSED);
+            aams->SendEvent(evtInfFocused, aams->GetCurrentAccountId());
             break;
         }
         default:
@@ -208,7 +208,7 @@ void AccessibilityWindowInfoManager::SetAccessibilityFocusedWindow(int windowId)
     }
 
     if (!a11yWindows_.count(windowId)) {
-        HILOG_WARN("Window id is not found");
+        HILOG_ERROR("Window id is not found");
         return;
     }
 

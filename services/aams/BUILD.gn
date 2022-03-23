@@ -63,11 +63,8 @@ config("aams_service_config") {
 
   if (target_cpu == "arm") {
     cflags = [ "-DBINDER_IPC_32BIT" ]
-    # cflags_cc = ["-frtti"]
   }
 }
-
-# remove_configs = [ "//build/config/compiler:no_rtti" ]
 
 ohos_shared_library("accessibleabilityms") {
   install_enable = true

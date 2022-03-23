@@ -376,20 +376,28 @@ const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbiliti
             connectedA11yAbilities_.size(), enabledAbilities.size());
         return enabledAbilities;
     } else if (state == ABILITY_STATE_DISABLE) {
-        std::vector<AccessibilityAbilityInfo> disabledAbilities = installedAbilities_;
-        for (auto enabledAbility : connectedA11yAbilities_) {
-            for (auto itr = disabledAbilities.begin(); itr != disabledAbilities.end();) {
-                if (itr->GetId() == enabledAbility.second->GetAbilityInfo().GetId()) {
-                    disabledAbilities.erase(itr);
-                } else {
-                    itr++;
-                }
-            }
-        }
+        std::vector<AccessibilityAbilityInfo> disabledAbilities = GetDisableAbilities();
+        HILOG_DEBUG("the size of disable abilities is %{public}d", disabledAbilities.size());
         return disabledAbilities;
     } else {
         return installedAbilities_;
     }
+}
+
+const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetDisableAbilities()
+{
+    HILOG_DEBUG("start.");
+    std::vector<AccessibilityAbilityInfo> disabledAbilities = installedAbilities_;
+    for (auto enabledAbility : connectedA11yAbilities_) {
+        for (auto itr = disabledAbilities.begin(); itr != disabledAbilities.end();) {
+            if (itr->GetId() == enabledAbility.second->GetAbilityInfo().GetId()) {
+                disabledAbilities.erase(itr);
+            } else {
+                itr++;
+            }
+        }
+    }
+    return disabledAbilities;
 }
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
@@ -774,19 +782,18 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
     HILOG_DEBUG("start.");
     int strLength = (int)stringIn.size();
     std::vector<int> position;
-    int wrodCount = 0;
 
     if (strLength == 0) {
         return;
     }
 
-    for (int i = 0; i < strLength; i++) {
-        if (stringIn[i] == ',') {
-            position.push_back(i);
+    for (int j = 0; j < strLength; j++) {
+        if (stringIn[j] == ',') {
+            position.push_back(j);
         }
     }
 
-    wrodCount = (int)position.size();
+    int wrodCount = (int)position.size();
     if ((wrodCount == 0) && (strLength > 0)) {
         vectorResult.push_back(stringIn);
     } else {
@@ -794,7 +801,6 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
         int length = 0;
         for (int i = 0; i <= wrodCount; i++) {
             if (i == 0) {
-                startWrod = 0;
                 length = position[i];
                 vectorResult.push_back(stringIn.substr(startWrod, length)); // first string
             } else if (i < wrodCount) {

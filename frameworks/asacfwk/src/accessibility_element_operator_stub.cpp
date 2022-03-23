@@ -57,7 +57,8 @@ AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibilityElementOperatorStub::OnRemoteRequest,cmd = %d,flags= %d", code, option.GetFlags());
+    HILOG_DEBUG("AccessibilityElementOperatorStub::OnRemoteRequest,cmd = %{public}u, flags = %{public}d",
+        code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
@@ -200,7 +201,7 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     if (obj != nullptr) {
         obj->SearchElementInfoByAccessibilityId(elementId, requestId, *tempCallback, mode);
     } else {
-        HILOG_DEBUG("Can not find interaction object");
+        HILOG_ERROR("Can not find interaction object");
     }
 }
 

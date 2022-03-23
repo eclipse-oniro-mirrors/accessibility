@@ -97,13 +97,13 @@ AccessibleAbilityManagerServiceClientStub::~AccessibleAbilityManagerServiceClien
 int AccessibleAbilityManagerServiceClientStub::OnRemoteRequest(
     uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
-    HILOG_DEBUG("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
+    HILOG_DEBUG("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
         code,
         option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerServiceClientStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        HILOG_INFO("local descriptor is not equal to remote");
+        HILOG_ERROR("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 
@@ -354,8 +354,8 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleSetEnabledObj(MessagePa
         }
         temp.push_back(*iter);
     }
-    for (int i = 0; i < dev_num; i++) {
-        it.insert(make_pair(temp[i].GetURI(), temp[i]));
+    for (int j = 0; j < dev_num; j++) {
+        it.insert(make_pair(temp[j].GetURI(), temp[j]));
     }
     SetEnabledObj(it);
 
@@ -417,8 +417,8 @@ ErrCode AccessibleAbilityManagerServiceClientStub::HandleDisableAbilities(Messag
         }
         temp.push_back(*iter);
     }
-    for (int i = 0; i < dev_num; i++) {
-        it.insert(make_pair(temp[i].GetURI(), temp[i]));
+    for (int j = 0; j < dev_num; j++) {
+        it.insert(make_pair(temp[j].GetURI(), temp[j]));
     }
     DisableAbilities(it);
 

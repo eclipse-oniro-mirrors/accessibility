@@ -200,11 +200,18 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
         }
     }
 
+    if (!callback) {
+        HILOG_ERROR("callback is null");
+        return 0;
+    }
+    if (!callback->AsObject()) {
+        HILOG_ERROR("object is null");
+        return 0;
+    }
     callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
     accountData->AddCaptionPropertyCallback(callback);
-    printf("accountData  AddCaptionPropertyCallback %d\n", accountData->GetCaptionPropertyCallbacks().size());
-    HILOG_INFO("AccessibleAbilityManagerService::RegisterCaptionPropertyCallback successfully");
-
+    HILOG_DEBUG("the size of caption property callbacks is %{public}d",
+        accountData->GetCaptionPropertyCallbacks().size());
     return NO_ERROR;
 }
 
@@ -230,6 +237,14 @@ uint32_t AccessibleAbilityManagerService::RegisterStateCallback(
         }
     }
 
+    if (!callback) {
+        HILOG_ERROR("callback is null");
+        return 0;
+    }
+    if (!callback->AsObject()) {
+        HILOG_ERROR("object is null");
+        return 0;
+    }
     callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
     accountData->AddStateCallback(callback);
     HILOG_INFO("AccessibleAbilityManagerService::RegisterStateCallback successfully");
@@ -449,14 +464,18 @@ void AccessibleAbilityManagerService::ClearFocus(int windowId)
 {
     HILOG_DEBUG("start");
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    connection->GetProxy()->ClearFocus();
+    if (connection && connection->GetProxy()) {
+        connection->GetProxy()->ClearFocus();
+    }
 }
 
 void AccessibleAbilityManagerService::OutsideTouch(int windowId)
 {
     HILOG_DEBUG("start");
     sptr<AccessibilityWindowConnection> connection = GetAccessibilityWindowConnection(windowId);
-    connection->GetProxy()->OutsideTouch();
+    if (connection && connection->GetProxy()) {
+        connection->GetProxy()->OutsideTouch();
+    }
 }
 
 void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri& uri)
@@ -569,6 +588,10 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
     for (auto& connectedAbility : connectedAbilities) {
         std::size_t firstPos = connectedAbility.first.find_first_of('/') + 1;
         std::size_t endPos = connectedAbility.first.find_last_of('/');
+        if (endPos <= firstPos) {
+            HILOG_ERROR("it's a wrong ability and the uri is %{public}s", connectedAbility.first.c_str());
+            continue;
+        }
         std::string connectedBundleName = connectedAbility.first.substr(firstPos, endPos - firstPos);
         if (connectedBundleName == bundleName) {
             HILOG_DEBUG("Remove connected ability and it's bundle name is %{public}s", connectedBundleName.c_str());
@@ -734,10 +757,9 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             if (!connection) {
                 connection = new(std::nothrow) AccessibleAbilityConnection(accountData,
                     connectCounter_++, installAbility);
-                if (!connection) {
-                    HILOG_ERROR("connection is null");
+                if (connection) {
+                    connection->Connect(element);
                 }
-                connection->Connect(element);
             }
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");
@@ -804,15 +826,12 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
 
-    if (flag) {
-        inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
-        inputInterceptor_->SetAvailableFunctions(flag);
-    } else if (inputInterceptor_ != nullptr) {
-        HILOG_DEBUG("Has InputInterceptor before.");
-        inputInterceptor_->SetAvailableFunctions(0);
-    } else {
-        HILOG_DEBUG("InputInterceptor is null.");
+    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
+    if (!inputInterceptor_) {
+        HILOG_ERROR("inputInterceptor_ is null.");
+        return;
     }
+    inputInterceptor_->SetAvailableFunctions(flag);
 }
 
 void AccessibleAbilityManagerService::UpdateMagnification()
@@ -828,12 +847,12 @@ void AccessibleAbilityManagerService::UpdateMagnification()
     std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
 
     if (accountData->GetScreenMagnificationFlag()) {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Register(display->GetId());
+        for (sptr<Rosen::Display> displayReg : displays) {
+            AccessibilityZoomProxy::GetInstance().Register(displayReg->GetId());
         }
     } else {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
+        for (sptr<Rosen::Display> displayUnreg : displays) {
+            AccessibilityZoomProxy::GetInstance().Unregister(displayUnreg->GetId());
         }
     }
 }

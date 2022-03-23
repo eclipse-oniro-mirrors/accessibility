@@ -216,8 +216,8 @@ void AccessibilityElementInfo::SetComponentId(const int componentId)
 
 bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInfo &elementInfo)
 {
-    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], focus[%{public}d]", channelId_, windowId_, elementId_, focus);
+    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d], focus[%{public}d]",
+        channelId_, windowId_, elementId_, focus);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
@@ -230,8 +230,8 @@ bool AccessibilityElementInfo::GetFocus(const int focus, AccessibilityElementInf
 
 bool AccessibilityElementInfo::GetNext(const FocusMoveDirection direction, AccessibilityElementInfo &elementInfo)
 {
-    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], direction[%{public}d]", channelId_, windowId_, elementId_, direction);
+    HILOG_INFO("channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d], direction[%{public}d]",
+        channelId_, windowId_, elementId_, direction);
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
@@ -383,7 +383,7 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
         return instance->ExecuteAction(channelId_, windowId_, elementId_, action,
             const_cast<std::map<std::string, std::string> &>(actionArguments));
     } else {
-        HILOG_INFO("Can't get AccessibilityOperator instance");
+        HILOG_ERROR("Can't get AccessibilityOperator instance");
         return false;
     }
 }
@@ -391,8 +391,8 @@ bool AccessibilityElementInfo::ExecuteAction(const ActionType &action,
 bool AccessibilityElementInfo::GetByContent(const std::string &text,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
-    HILOG_INFO("called channelId_[%{public}d], windowId_[%{public}d],\
-        elementId_[%{public}d], text[%{public}s]", channelId_, windowId_, elementId_, text.c_str());
+    HILOG_INFO("called channelId_[%{public}d], windowId_[%{public}d], elementId_[%{public}d], text[%{public}s]",
+        channelId_, windowId_, elementId_, text.c_str());
     AccessibilityOperator *instance = &AccessibilityOperator::GetInstance();
     bool result = false;
     if (instance != nullptr) {
@@ -447,7 +447,7 @@ bool AccessibilityElementInfo::GetParent(AccessibilityElementInfo &elementInfo)
             elementInfo = elementInfos.front();
         }
     } else {
-        HILOG_INFO("Can't get AccessibilityOperator instance");
+        HILOG_ERROR("Can't get AccessibilityOperator instance");
     }
     return result;
 }

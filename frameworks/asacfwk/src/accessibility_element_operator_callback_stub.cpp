@@ -49,12 +49,12 @@ AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackS
 int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, cmd = %d, flags= %d",
+    HILOG_DEBUG("AccessibilityElementOperatorCallbackStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
         code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        HILOG_INFO("local descriptor is not equal to remote");
+        HILOG_ERROR("local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 
