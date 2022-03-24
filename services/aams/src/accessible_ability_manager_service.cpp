@@ -1014,7 +1014,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject>&
         return;
     }
     abilityInfo->SetPackageName(UI_TEST_BUNDLE_NAME);
-    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_GESTURE;
+    uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
     abilityInfo->SetAccessibilityAbilityType(ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
