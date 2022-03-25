@@ -29,7 +29,6 @@ class AccessibleAbilityListenerTest;
 
 class AamsStAbilityB1 : public Ability {
 public:
-    // aams
     void Interrupt();
     void RegisterInteractionOperation();
     void DeregisterInteractionOperation();
@@ -38,12 +37,9 @@ public:
     void GetAccessibilityCaptionProperties();
     void SendEventWithType();
     void SendEvent();
-    // state callback
     void SubscribeStateObserver();
     void UnsubscribeStateObserver();
     void UnsubscribeStateObserverEventType();
-
-    // AA->AAMS
     void RegisterListenerToAA();
     void ConnectToAAMS();
     void GetRootElementInfo();

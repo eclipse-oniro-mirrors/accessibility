@@ -94,7 +94,7 @@ private:
     bool HasWindowColor();
 
     std::string fontFamily_ = "default";
-    int fontScale_ = 75;    // font size
+    int fontScale_ = 75;
     uint32_t fontColor_ = 0xff000000;
     std::string fontEdgeType_ = "none";
     uint32_t backgroundColor_ = 0xff000000;

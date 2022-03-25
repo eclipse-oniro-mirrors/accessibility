@@ -94,9 +94,14 @@ void AccessibilityOperator::RemoveChannel(int channelId)
 
 bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &elementInfo)
 {
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return false;
+    }
     AccessibilityElementInfo element {};
     std::vector<AccessibilityElementInfo> elementInfos {};
-    int activeWindow = AccessibilitySystemAbilityClient::GetInstance()->GetActiveWindow();
+    int activeWindow = instance->GetActiveWindow();
     HILOG_DEBUG("activeWindow is %{public}d", activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
     HILOG_DEBUG("element [elementSize:%{public}d]", elementInfos.size());

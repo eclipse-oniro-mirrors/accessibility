@@ -1682,7 +1682,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     HILOG_DEBUG("colorStr is %{public}s", colorStr.c_str());
     uint32_t color = COLOR_TRANSPARENT;
     if (colorStr.empty()) {
-      // empty string, return transparent
+        // Empty string, return transparent
         return color;
     }
     // Remove all " ".
@@ -1693,7 +1693,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         colorStr.erase(0, 1);
         auto value = stoul(colorStr, nullptr, COLOR_STRING_BASE);
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // no alpha specified, set alpha to 0xff
+            // No alpha specified, set alpha to 0xff
             value |= COLOR_ALPHA_MASK;
         } else {
             auto alpha = value << ALPHA_MOVE;
@@ -1707,14 +1707,14 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     if (std::regex_match(colorStr, COLOR_WITH_MAGIC_MINI)) {
         colorStr.erase(0, 1);
         std::string newColorStr;
-        // translate #rgb or #rgba to #rrggbb or #rrggbbaa
+        // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
         for (auto& c : colorStr) {
             newColorStr += c;
             newColorStr += c;
         }
         auto valueMini = stoul(newColorStr, nullptr, COLOR_STRING_BASE);
         if (newColorStr.length() < COLOR_STRING_SIZE_STANDARD) {
-            // no alpha specified, set alpha to 0xff
+            // No alpha specified, set alpha to 0xff
             valueMini |= COLOR_ALPHA_MASK;
         } else {
             auto alphaMini = valueMini << ALPHA_MOVE;
@@ -1725,7 +1725,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         return color;
     }
 
-    // match for special string
+    // Match for special string
     static const std::map<std::string, uint32_t> colorTable {
         std::make_pair("black", COLOR_BLACK),
         std::make_pair("blue", COLOR_BLUE),

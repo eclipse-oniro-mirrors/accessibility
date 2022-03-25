@@ -137,7 +137,7 @@ public:
      */
     void AddConnectingA11yAbility(const AppExecFwk::ElementName& elementName);
 
-    void AddEnabledAbility(const AppExecFwk::ElementName& elementName);  // For UT
+    void AddEnabledAbility(const AppExecFwk::ElementName& elementName); // For UT
 
     /**
      * @brief Remove accessibility that have been opened.
@@ -146,7 +146,7 @@ public:
      */
     void RemoveEnabledAbility(const AppExecFwk::ElementName& elementName);
 
-    void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo);  // For UT
+    void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo); // For UT
 
     /**
      * @brief Empty installed accessibility list.
@@ -391,13 +391,13 @@ private:
     bool isGesturesSimulation_ = false;
     bool isCaptionState_ = false;
     CaptionProperty captionProperty_;
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_;   // key: The URI of the
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: The URI of ElementName.
     std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_;
-    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_;    // key: windowId
+    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;   // key: The URI of the ElementName.
-    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_;    // key: The URI of the ElementName.
+    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_; // key: The URI of the ElementName.
+    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_; // key: The URI of the ElementName.
     std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
 };
 } // namespace Accessibility

@@ -171,9 +171,9 @@ public:
     static napi_value GetCaptionWindowColor(napi_env env, napi_callback_info info);
     static napi_value SetCaptionWindowColor(napi_env env, napi_callback_info info);
 
-    static napi_value aaCons_;          // CaptionsManager
+    static napi_value aaCons_; // CaptionsManager
     static napi_ref aaConsRef_;
-    static napi_value aaStyleCons_;  // CaptionsStyle
+    static napi_value aaStyleCons_; // CaptionsStyle
     static napi_ref aaStyleConsRef_;
 
     static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;

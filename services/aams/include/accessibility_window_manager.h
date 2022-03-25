@@ -47,7 +47,7 @@ public:
     bool GetAccessibilityWindow(int windowId, AccessibilityWindowInfo &window);
     bool IsValidWindow(int windowId);
 
-    // test for ut to resize a window
+    // Test for ut to resize a window
     void SetWindowSize(int windowId, Rect rect);
     void UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
 

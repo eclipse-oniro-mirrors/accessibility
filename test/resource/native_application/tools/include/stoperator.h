@@ -53,9 +53,8 @@ private:
     string g_abilityType;
     string g_bundleName;
     string g_abilityName;
-    string g_operatorName;  // data ability
+    string g_operatorName; // data ability
     string g_message;
-    /* data */
     static int countChild;
 };
 } // namespace STtools

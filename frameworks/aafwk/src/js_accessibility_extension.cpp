@@ -152,7 +152,7 @@ bool JsAccessibilityExtension::OnKeyPressEvent(const MMI::KeyEvent& keyEvent)
 
     HandleScope handleScope(jsRuntime_);
     NativeEngine* nativeEngine = &jsRuntime_.GetNativeEngine();
-    // wrap keyEvent
+    // Wrap keyEvent
     napi_value napiEventInfo = nullptr;
     if (napi_create_object(reinterpret_cast<napi_env>(nativeEngine), &napiEventInfo) != napi_ok) {
         HILOG_ERROR("Create keyEvent object failed.");
@@ -163,7 +163,7 @@ bool JsAccessibilityExtension::OnKeyPressEvent(const MMI::KeyEvent& keyEvent)
     NativeValue* argv[] = {nativeEventInfo};
     NativeValue* nativeResult = CallObjectMethod("onKeyPressEvent", argv, 1);
 
-    // unwrap result
+    // Unwrap result
     bool result = false;
     if (!ConvertFromJsValue(*nativeEngine, nativeResult, result)) {
         HILOG_ERROR("ConvertFromJsValue failed");
@@ -208,7 +208,6 @@ void JsAccessibilityExtension::GetSrcPath(std::string &srcPath)
         return;
     }
     if (!Extension::abilityInfo_->isModuleJson) {
-        /* temporary compatibility api8 + config.json */
         srcPath.append(Extension::abilityInfo_->package);
         srcPath.append("/assets/js/");
         if (!Extension::abilityInfo_->srcPath.empty()) {

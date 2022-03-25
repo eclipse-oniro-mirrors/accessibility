@@ -85,7 +85,6 @@ HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_001, TestSize.Level1)
 HWTEST_F(ASACStateStubUnitTest, OnRemoteRequest_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnRemoteRequest_002 start";
-    // set descriptor
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;

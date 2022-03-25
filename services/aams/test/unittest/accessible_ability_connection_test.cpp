@@ -76,15 +76,13 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
 
-    // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy =
         new AccessibilityElementOperatorProxy(stub);
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(0, proxy, 0);
-    // aams RegisterElementOperator
+    // RegisterElementOperator
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->
         RegisterElementOperator(0, proxy, 0);
-    // new AAconnection
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     accountData_ = new AccessibilityAccountData(0);
@@ -181,7 +179,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 start";
     AccessibilityEventInfo eventInfo;
-    /* EventType is in the allowed list */
+    // EventType is in the allowed list
     eventInfo.SetEventType(EventType::TYPE_PAGE_STATE_UPDATE);
     connection_->OnAccessibilityEvent(eventInfo);
     EXPECT_EQ(int(EventType::TYPE_PAGE_STATE_UPDATE), g_testEventType);
@@ -199,9 +197,9 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 start";
     AccessibilityEventInfo eventInfo;
-    /* EventType is in the allowed list */
+    // EventType is in the allowed list
     eventInfo.SetEventType(EventType::TYPE_VIEW_CLICKED_EVENT);
-    /* invalid window */
+    // Invalid window
     eventInfo.SetWindowId(3);
     connection_->OnAccessibilityEvent(eventInfo);
     EXPECT_EQ(-1, g_testEventType);

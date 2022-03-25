@@ -32,7 +32,6 @@ AccessibilityInteractionBridge& AccessibilityInteractionBridge::GetInstance()
 {
     HILOG_DEBUG("start");
     static AccessibilityInteractionBridge instance_;
-
     return instance_;
 }
 
@@ -46,7 +45,12 @@ AccessibilityInteractionBridge::AccessibilityInteractionBridge()
         return;
     }
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE);
-    accountData_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountData();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    accountData_ = aams->GetCurrentAccountData();
     connection_ = new(std::nothrow) AccessibleAbilityConnection(accountData_,
         INTERACTION_BRIDGE_CHANNEL_ID, *abilityInfo);
     if (!connection_) {

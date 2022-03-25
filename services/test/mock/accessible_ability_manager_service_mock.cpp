@@ -244,7 +244,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
         AppExecFwk::ElementName element(installAbility.GetAbilityInfo().deviceId,
                                         installAbility.GetPackageName(), installAbility.GetName());
         std::string elementName =  element.GetURI();
-        // wait for the connecting ability.
+        // Wait for the connecting ability.
         if (accountData->GetConnectingA11yAbilities().count(elementName)) {
             continue;
         }

@@ -129,7 +129,7 @@ void AamsTouchGuideTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUp";
     CreateAccessibilityConfigForTouchGuide();
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -141,7 +141,7 @@ void AamsTouchGuideTest::SetUp()
 
     stub_ = new AccessibleAbilityClientStubImpl();
 
-    // add an ability connection client
+    // Add an ability connection client
     AppExecFwk::ExtensionAbilityInfo extensionInfo;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
@@ -218,7 +218,6 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int acti
 void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "aamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
-    // accessibility interaction connection
     int windowId = 0;
     sptr<IAccessibilityElementOperator> operation = nullptr;
     int accountId = 0;

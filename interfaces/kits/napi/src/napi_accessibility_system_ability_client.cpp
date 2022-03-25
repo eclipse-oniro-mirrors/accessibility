@@ -49,17 +49,17 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "IsOpenAccessibility", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->enabled_ = AccessibilitySystemAbilityClient::GetInstance()->IsEnabled();
-            HILOG_INFO("IsOpenAccessibility Executing enabled[%{public}d]", callbackInfo->enabled_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->enabled_ = instance->IsEnabled();
+                HILOG_INFO("IsOpenAccessibility Executing enabled[%{public}d]", callbackInfo->enabled_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -110,13 +110,16 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     napi_create_string_utf8(env, "IsOpenTouchExploration", NAPI_AUTO_LENGTH, &resource);
 
     napi_create_async_work(env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->touchEnabled_ = AccessibilitySystemAbilityClient::GetInstance()->IsTouchExplorationEnabled();
-            HILOG_INFO("IsOpenTouchExploration Executing touchEnabled[%{public}d]", callbackInfo->touchEnabled_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->touchEnabled_ = instance->IsTouchExplorationEnabled();
+                HILOG_INFO("IsOpenTouchExploration Executing touchEnabled[%{public}d]", callbackInfo->touchEnabled_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -171,17 +174,17 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetAbilityList", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->abilityList_ = AccessibilitySystemAbilityClient::GetInstance()->GetAbilityList(
-                callbackInfo->abilityTypes_, callbackInfo->stateTypes_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->abilityList_ = instance->GetAbilityList(
+                    callbackInfo->abilityTypes_, callbackInfo->stateTypes_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -231,15 +234,12 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SendEvent", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
+    napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            if (callbackInfo->result_) {
-                callbackInfo->result_ =
-                    AccessibilitySystemAbilityClient::GetInstance()->SendEvent(callbackInfo->eventInfo_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (callbackInfo->result_ && instance) {
+                callbackInfo->result_ = instance->SendEvent(callbackInfo->eventInfo_);
             }
             HILOG_INFO("SendEvent result[%{public}d]", callbackInfo->result_);
         },
@@ -303,7 +303,10 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     stateListener->StartWork(env, 1, args);
 
     NAccessibilityClient::stateListeners_[eventType].push_back(stateListener);
-    AccessibilitySystemAbilityClient::GetInstance()->SubscribeStateObserver(stateListener, type);
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (instance) {
+        instance->SubscribeStateObserver(stateListener, type);
+    }
     return nullptr;
 }
 
@@ -329,9 +332,12 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         it != NAccessibilityClient::stateListeners_[eventType].end();) {
         std::shared_ptr<StateListener> observer= *it;
         if (observer->GetEnv() == env) {
-            result = AccessibilitySystemAbilityClient::GetInstance()->UnsubscribeStateObserver(observer, type);
-            it = NAccessibilityClient::stateListeners_[eventType].erase(it);
-            HILOG_INFO("UnsubscribeState result%{public}d", result);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                result = instance->UnsubscribeStateObserver(observer, type);
+                it = NAccessibilityClient::stateListeners_[eventType].erase(it);
+                HILOG_INFO("UnsubscribeState result%{public}d", result);
+            }
         } else {
             it++;
         }
@@ -416,16 +422,16 @@ napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetCaptionProperty", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->captionProperty_ = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->captionProperty_ = instance->GetCaptionProperty();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -475,17 +481,17 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetCaptionProperty", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setCaptionPropertyReturn_ = AccessibilitySystemAbilityClient::GetInstance()
-                ->SetCaptionPropertyTojson(callbackInfo->captionProperty_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setCaptionPropertyReturn_ = instance->SetCaptionPropertyTojson(
+                    callbackInfo->captionProperty_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -536,16 +542,16 @@ napi_value NAccessibilityClient::GetCaptionState(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetCaptionState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->captionState_ = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionState();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->captionState_ = instance->GetCaptionState();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -596,13 +602,15 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
     napi_create_string_utf8(env, "SetCaptionState", NAPI_AUTO_LENGTH, &resource);
 
     napi_create_async_work(env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setCaptionStateReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetCaptionStateTojson(callbackInfo->captionState_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setCaptionStateReturn_ = instance->SetCaptionStateTojson(callbackInfo->captionState_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -654,16 +662,16 @@ napi_value NAccessibilityClient::GetEnabled(napi_env env, napi_callback_info inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetEnabled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->enabledState_ = AccessibilitySystemAbilityClient::GetInstance()->GetEnabledState();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->enabledState_ = instance->GetEnabledState();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -713,17 +721,16 @@ napi_value NAccessibilityClient::SetEnabled(napi_env env, napi_callback_info inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetEnabled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setEnabledReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetEnabled(callbackInfo->enabledState_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setEnabledReturn_ = instance->SetEnabled(callbackInfo->enabledState_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -774,16 +781,16 @@ napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetTouchGuideState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->touchGuideState_ = AccessibilitySystemAbilityClient::GetInstance()->GetTouchGuideState();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->touchGuideState_ = instance->GetTouchGuideState();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -833,17 +840,16 @@ napi_value NAccessibilityClient::SetTouchGuideState(napi_env env, napi_callback_
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetTouchGuideState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setTouchGuideStateReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetTouchGuideState(callbackInfo->touchGuideState_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setTouchGuideStateReturn_ = instance->SetTouchGuideState(callbackInfo->touchGuideState_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -894,16 +900,16 @@ napi_value NAccessibilityClient::GetGestureState(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetGestureState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->gestureState_ = AccessibilitySystemAbilityClient::GetInstance()->GetGestureState();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->gestureState_ = instance->GetGestureState();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -953,17 +959,16 @@ napi_value NAccessibilityClient::SetGestureState(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetGestureState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setGestureStateReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetGestureState(callbackInfo->gestureState_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setGestureStateReturn_ = instance->SetGestureState(callbackInfo->gestureState_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1014,17 +1019,16 @@ napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_cal
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetKeyEventObserverState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->keyEventObserverState_ =
-                AccessibilitySystemAbilityClient::GetInstance()->GetKeyEventObserverState();
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->keyEventObserverState_ = instance->GetKeyEventObserverState();
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1074,17 +1078,17 @@ napi_value NAccessibilityClient::SetKeyEventObserverState(napi_env env, napi_cal
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "SetKeyEventObserverState", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setKeyEvenReturn_ = AccessibilitySystemAbilityClient::GetInstance()->SetKeyEventObserverState(
-                callbackInfo->keyEventObserverState_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setKeyEvenReturn_ = instance->SetKeyEventObserverState(
+                    callbackInfo->keyEventObserverState_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1136,14 +1140,16 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
     napi_create_string_utf8(env, "GetInstalled", NAPI_AUTO_LENGTH, &resource);
 
     napi_create_async_work(env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->abilityList_ = AccessibilitySystemAbilityClient::GetInstance()->GetInstalledAbilities();
-
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->abilityList_ = instance->GetInstalledAbilities();
+            }
             HILOG_INFO("GetInstalled Executing GetInstalled[%{public}d]", callbackInfo->abilityList_.size());
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1192,19 +1198,18 @@ napi_value NAccessibilityClient::GetExtensionEnabled(napi_env env, napi_callback
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "GetExtensionEnabled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->enabledAbilities_ = AccessibilitySystemAbilityClient::GetInstance()->GetEnabledAbilities();
-
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->enabledAbilities_ = instance->GetEnabledAbilities();
+            }
             HILOG_INFO("GetExtensionEnabled Executing GetExtensionEnabled[%{public}d]",
                 callbackInfo->enabledAbilities_.size());
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1254,17 +1259,16 @@ napi_value NAccessibilityClient::ExtensionEnabled(napi_env env, napi_callback_in
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "ExtensionEnabled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setExtensionReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->SetEnabledObj(callbackInfo->enabledAbilities_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setExtensionReturn_ = instance->SetEnabledObj(callbackInfo->enabledAbilities_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1314,17 +1318,16 @@ napi_value NAccessibilityClient::ExtensionDisabled(napi_env env, napi_callback_i
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "ExtensionDisabled", NAPI_AUTO_LENGTH, &resource);
 
-    napi_create_async_work(
-        env,
-        nullptr,
-        resource,
-        // execute async to call c++ function
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            callbackInfo->setExtensionReturn_ =
-                AccessibilitySystemAbilityClient::GetInstance()->DisableAbilities(callbackInfo->enabledAbilities_);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (instance) {
+                callbackInfo->setExtensionReturn_ = instance->DisableAbilities(callbackInfo->enabledAbilities_);
+            }
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             napi_value result[ARGS_SIZE_TWO] = {0};
@@ -1392,8 +1395,12 @@ napi_value NAccessibilityClient::GetCaptionsManager(napi_env env, napi_callback_
     NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     napi_value result = 0;
 
-    callbackInfo->captionState_ = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionState();
-    callbackInfo->captionProperty_ = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return result;
+    }
+    callbackInfo->captionState_ = instance->GetCaptionState();
+    callbackInfo->captionProperty_ = instance->GetCaptionProperty();
 
     napi_get_reference_value(env, NAccessibilityClient::aaConsRef_,
                              &NAccessibilityClient::aaCons_);
@@ -1426,8 +1433,11 @@ napi_value NAccessibilityClient::SetCaptionStateEnabled(napi_env env, napi_callb
         napi_get_value_bool(env, parameters[PARAM0], &captionState);
         HILOG_INFO("captionState = %{public}s", captionState?"True":"False");
 
-        bool returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionStateTojson(captionState);
-        HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            bool returnVal = instance->SetCaptionStateTojson(captionState);
+            HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
+        }
     } else {
         HILOG_INFO("argc size Error");
     }
@@ -1442,7 +1452,11 @@ napi_value NAccessibilityClient::GetCaptionStateEnabled(napi_env env, napi_callb
     HILOG_INFO("start");
     napi_value captionStateEnabled = nullptr;
 
-    bool captionState = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionState();
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return captionStateEnabled;
+    }
+    bool captionState = instance->GetCaptionState();
     napi_get_boolean(env, captionState, &captionStateEnabled);
 
     HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
@@ -1459,8 +1473,11 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         ConvertObjToCaptionProperty(env, parameters[PARAM0], &captionProperty);
-        bool returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
-        HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            bool returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+            HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
+        }
     } else {
         HILOG_INFO("argc size Error");
     }
@@ -1477,7 +1494,11 @@ napi_value NAccessibilityClient::GetCaptionStyle(napi_env env, napi_callback_inf
     OHOS::Accessibility::CaptionProperty captionProperty {};
     napi_value captionStyle = nullptr;
 
-    captionProperty = AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return captionStyle;
+    }
+    captionProperty = instance->GetCaptionProperty();
 
     napi_get_reference_value(env, NAccessibilityClient::aaStyleConsRef_,
                              &NAccessibilityClient::aaStyleCons_);
@@ -1514,7 +1535,10 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     captionListener->StartWork(env, 1, args);
     NAccessibilityClient::captionListeners_.push_back(captionListener);
 
-    AccessibilitySystemAbilityClient::GetInstance()->AddCaptionListener(captionListener, type);
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (instance) {
+        instance->AddCaptionListener(captionListener, type);
+    }
 
     return nullptr;
 }
@@ -1540,9 +1564,9 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     for (auto it = NAccessibilityClient::captionListeners_.begin();
         it != NAccessibilityClient::captionListeners_.end();) {
         std::shared_ptr<CaptionListener> observer= *it;
-        if (observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-            retValue = retValue &&
-                AccessibilitySystemAbilityClient::GetInstance()->DeleteCaptionListener(observer, type);
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance && observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
+            retValue = retValue && instance->DeleteCaptionListener(observer, type);
             it = NAccessibilityClient::captionListeners_.erase(it);
             HILOG_INFO("unregister result%{public}d", retValue);
         } else {
@@ -1691,9 +1715,12 @@ napi_value NAccessibilityClient::AccessibleAbilityConstructorStyle(napi_env env,
 napi_value NAccessibilityClient::GetCaptionsFontFamily(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     HILOG_INFO("end");
     return returnValue;
@@ -1707,17 +1734,19 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-        // get input FontFamily
+        // Get input FontFamily
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontFamily = %{public}s", outBuffer);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetFontFamily(std::string(outBuffer));
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetFontFamily(std::string(outBuffer));
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
         HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
@@ -1730,9 +1759,12 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
 napi_value NAccessibilityClient::GetCaptionsFontScale(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     napi_create_int32(env, captionProperty.GetFontScale(), &returnValue);
     HILOG_INFO("end");
     return returnValue;
@@ -1746,16 +1778,18 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-        // get input FontScale
+        // Get input FontScale
         int32_t num = 0;
         napi_get_value_int32(env, parameters[PARAM0], &num);
         HILOG_INFO("FontScale = %{public}d", num);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetFontScale(num);
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+        OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetFontScale(num);
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
 
         HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
@@ -1769,9 +1803,12 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
 napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     uint32_t color = captionProperty.GetFontColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1788,12 +1825,14 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetFontColor(color);
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetFontColor(color);
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
     } else {
         HILOG_INFO("argc size Error");
     }
@@ -1805,9 +1844,12 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
 napi_value NAccessibilityClient::GetCaptionFontEdgeType(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     HILOG_INFO("end");
     return returnValue;
@@ -1822,17 +1864,19 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
-        // get input FontEdgeType
+        // Get input FontEdgeType
         char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
         size_t outSize = 0;
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontEdgeType = %{public}s", outBuffer);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetFontEdgeType(std::string(outBuffer));
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetFontEdgeType(std::string(outBuffer));
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
         HILOG_INFO("SetCaptionPropertyTojson() return = %{public}s", returnVal ? "True" : "False");
     } else {
         HILOG_INFO("argc size Error");
@@ -1845,9 +1889,12 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
 napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     uint32_t color = captionProperty.GetBackgroundColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1864,12 +1911,14 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetBackgroundColor(color);
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetBackgroundColor(color);
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
     } else {
         HILOG_INFO("argc size Error");
     }
@@ -1881,9 +1930,12 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
 napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
-    OHOS::Accessibility::CaptionProperty captionProperty =
-        AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
     napi_value returnValue = nullptr;
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return returnValue;
+    }
+    OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
     uint32_t color = captionProperty.GetWindowColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -1900,12 +1952,14 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     if (argc >= ARGS_SIZE_ONE) {
         bool returnVal = false;
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        // get CaptionProperty
-        OHOS::Accessibility::CaptionProperty captionProperty =
-            AccessibilitySystemAbilityClient::GetInstance()->GetCaptionProperty();
-        // change the input info and then set the CaptionProperty
-        captionProperty.SetWindowColor(color);
-        returnVal = AccessibilitySystemAbilityClient::GetInstance()->SetCaptionPropertyTojson(captionProperty);
+        // Get CaptionProperty
+        auto instance = AccessibilitySystemAbilityClient::GetInstance();
+        if (instance) {
+            OHOS::Accessibility::CaptionProperty captionProperty = instance->GetCaptionProperty();
+            // Change the input info and then set the CaptionProperty
+            captionProperty.SetWindowColor(color);
+            returnVal = instance->SetCaptionPropertyTojson(captionProperty);
+        }
     } else {
         HILOG_INFO("argc size Error");
     }

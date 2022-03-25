@@ -69,7 +69,12 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     int slop = (int) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
-    runner_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetMainRunner();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    runner_ = aams->GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -159,7 +164,7 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     pointerRoute_.push_back(mp);
     prePointer_ = pointerIterm;
     startPointer_ = pointerIterm;
-    startTime_ = event.GetActionTime() / US_TO_MS;
+    startTime_ = event.GetActionTime();
 }
 
 bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
@@ -171,7 +176,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    int64_t eventTime = event.GetActionTime() / US_TO_MS;
+    int64_t eventTime = event.GetActionTime();
     float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
     float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
     double duration = hypot(offsetX, offsetY);
@@ -250,14 +255,14 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
                     isDoubleTapdetecting_ = true;
                     isDoubleTap_ = true;
                 } else {
-                    handler_->SendEvent(SINGLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT);
+                    handler_->SendEvent(SINGLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
                 }
                 pCurDown_ = std::make_shared<MMI::PointerEvent>(event);
                 isTapDown_ = true;
                 continueDown_ = true;
                 isLongpress_ = false;
                 handler_->RemoveEvent(LONG_PRESS_MSG);
-                handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT);
+                handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS);
             } else {
                 StandardGestureCancled();
             }
@@ -322,14 +327,17 @@ bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent &even
 bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (!listener_) {
+        HILOG_ERROR("listener_ is nullptr.");
+        return false;
+    }
 
     if (pointerRoute_.size() < LIMIT_SIZE_TWO) {
         return listener_->OnCancelled(event);
     }
 
-    /* Check the angle of the most recent motion vector versus the preceding motion vector,
-     * segment the line if the angle is about 90 degrees.
-     */
+    // Check the angle of the most recent motion vector versus the preceding motion vector, 
+    // segment the line if the angle is about 90 degrees.
     std::vector<Pointer> pointerPath = GetPointerPath(pointerRoute_);
 
     if (pointerPath.size() == LIMIT_SIZE_TWO) {
@@ -410,7 +418,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
 bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    int64_t durationTime = (event.GetActionTime() - pPreUp_->GetActionTime()) / US_TO_MS;
+    int64_t durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
         return false;
     }

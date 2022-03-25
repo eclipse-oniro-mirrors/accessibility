@@ -70,7 +70,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState001 start";
     int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    /* Initial state */
+    // Initial state
     accountData->SetTouchGuideState(true);
     int stateType = accountData->GetAccessibilityState();
     int stateTypeTest = AccessibilitySystemAbilityClient::STATE_EXPLORATION_ENABLED;
@@ -93,7 +93,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add connected ability */
+    // Add connected ability
     accountData->AddConnectedAbility(connection);
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
@@ -123,7 +123,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    /* add connecting A11y ability */
+    // Add connecting A11y ability
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     accountData->AddConnectingA11yAbility(elementName);
     bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
@@ -156,9 +156,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    /* add connected ability */
+    // Add connected ability
     accountData->AddConnectedAbility(connection);
-    /* add connecting A11y ability */
+    // Add connecting A11y ability
     accountData->AddConnectingA11yAbility(elementName);
 
     accountData->SetGestureState(true);
@@ -186,7 +186,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add connected ability */
+    // Add connected ability
     accountData->AddConnectedAbility(connection);
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
@@ -210,12 +210,12 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add */
+    // Add
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
-    /* remove */
+    // Remove
     accountData->RemoveConnectedAbility(connection);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
 
@@ -237,14 +237,14 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add */
+    // Add
     accountData->AddConnectedAbility(connection);
     const std::string elementNameURI = connection->GetElementName().GetURI();
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementNameURI));
 
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    /* disconnect */
+    // Disconnect
     accountData->RemoveConnectedAbility(connection);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     AppExecFwk::ElementName& elementName = connection->GetElementName();
@@ -268,13 +268,13 @@ HWTEST_F(AccessibilityAccountDataTest,
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    /* add connecting A11y ability */
+    // Add connecting A11y ability
     accountData->AddConnectingA11yAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
     bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
         accountData->GetConnectingA11yAbilities().end();
     EXPECT_TRUE(test);
-    /* remove */
+    // Remove
     accountData->RemoveConnectingA11yAbility(elementName);
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
 
@@ -293,7 +293,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
-    /* add */
+    // Add
     accountData->AddEnabledAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
     bool test =
@@ -315,13 +315,13 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
-    /* add */
+    // Add
     accountData->AddEnabledAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
     bool test =
         accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
     EXPECT_TRUE(test);
-    /* remove */
+    // Remove
     accountData->RemoveEnabledAbility(elementName);
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
 
@@ -342,7 +342,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInst
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    /* add */
+    // Add
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
 
@@ -361,10 +361,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveI
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    /* add */
+    // Add
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    /* remove */
+    // Remove
     accountData->RemoveInstalledAbility(abilityInfo->GetPackageName());
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
 
@@ -383,10 +383,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    /* add */
+    / Add
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    /* clear */
+    // Clear
     accountData->ClearInstalledAbility();
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
 
@@ -412,7 +412,7 @@ HWTEST_F(AccessibilityAccountDataTest,
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     const std::string elementName = connection->GetElementName().GetURI();
-    /* get */
+    // Get
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 end";
 }
@@ -434,7 +434,7 @@ HWTEST_F(AccessibilityAccountDataTest,
         *abilityInfo);
     accountData->AddConnectedAbility(connection);
     const std::string elementName = "111name";
-    /* get */
+    // Get
     EXPECT_EQ(nullptr, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002 end";
 }
@@ -453,12 +453,12 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConn
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
-    /* get */
+    // Get
     int size = accountData->GetConnectedA11yAbilities().size();
     EXPECT_EQ(0, size);
-    /* add */
+    // Add
     accountData->AddConnectedAbility(connection);
-    /* get */
+    // Get
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001 end";
@@ -476,12 +476,12 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStat
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     sptr<AccessibleAbilityManagerServiceStateStub> stub = new AccessibleAbilityManagerServiceStateStub();
     const sptr<IAccessibleAbilityManagerServiceState> state = new AccessibleAbilityManagerServiceStateProxy(stub);
-    /* get */
+    // Get
     int size = accountData->GetStateCallbacks().size();
     EXPECT_EQ(0, size);
-    /* add */
+    // Add
     accountData->AddStateCallback(state);
-    /* get */
+    // Get
     EXPECT_EQ(1, (int)accountData->GetStateCallbacks().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetStateCallbacks001 end";
@@ -497,7 +497,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAsac
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAsacConnections001 start";
     const int accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    /* get */
+    // Get
     int size = accountData->GetAsacConnections().size();
     EXPECT_EQ(0, size);
 
@@ -506,9 +506,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAsac
     sptr<IAccessibilityElementOperator> operation = new AccessibilityElementOperatorProxy(operationStub);
     sptr<AccessibilityWindowConnection> operationConnection = new AccessibilityWindowConnection(windowId,
         operation, accountId);
-    /* add asacConnections */
+    // Add asacConnections
     accountData->AddAccessibilityWindowConnection(windowId, operationConnection);
-    /* get */
+    // Get
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAsacConnections001 end";
@@ -541,14 +541,13 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
-    /* add connected ability */
+    // Add connected ability
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    /* ABILITY_STATE_ENABLE */
     int stateType = AbilityStateType::ABILITY_STATE_ENABLE;
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
-    /* get ability */
+    // Get ability
     std::vector<AccessibilityAbilityInfo> enabledAbilities = accountData->GetAbilitiesByState(state);
     EXPECT_EQ(1, (int)enabledAbilities.size());
     EXPECT_EQ(connection->GetAbilityInfo().GetPackageName(), enabledAbilities.begin()->GetPackageName());
@@ -575,18 +574,17 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
         *abilityInfo);
     EXPECT_NE(abilityInfo->GetId(), installAbilityInfo->GetId());
-    /* add connected ability */
+    // Add connected ability
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    /* add install ability */
+    // Add install ability
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
     accountData->AddInstalledAbility(*installAbilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    /* ABILITY_STATE_DISABLE */
     int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
-    /* get ability */
+    // Get ability
     std::vector<AccessibilityAbilityInfo> disabledAbilities = accountData->GetAbilitiesByState(state);
     EXPECT_EQ(1, (int)disabledAbilities.size());
 
@@ -610,10 +608,8 @@ HWTEST_F(AccessibilityAccountDataTest,
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
         operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
-    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
-    /* get */
     EXPECT_EQ(connection, accountData->GetAccessibilityWindowConnection(windowId));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001 end";
@@ -637,10 +633,8 @@ HWTEST_F(AccessibilityAccountDataTest,
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
         operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
-    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
-    /* get */
     EXPECT_EQ(nullptr, accountData->GetAccessibilityWindowConnection(windowIdTest));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001 end";
@@ -663,10 +657,8 @@ HWTEST_F(AccessibilityAccountDataTest,
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
         operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
-    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
-    /* remove */
     accountData->RemoveAccessibilityWindowConnection(windowId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
 
@@ -697,25 +689,25 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccountSwitched001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_OnAccountSwitched001 start";
-    // new accountData
+    // New accountData
     const int accountId = 101;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    // new abilityInfo
+    // New abilityInfo
     AppExecFwk::ExtensionAbilityInfo info;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
     abilityInfo->SetCapabilityValues(
         CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE | CAPABILITY_GESTURE |
         CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM);
-    // new AAconnection
+    // New AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    // new aastub
+    // New aastub
     sptr<AccessibleAbilityClientStubImpl> aastub = new AccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     AAConnection->OnAbilityConnectDone(elementName, aastub, 0);
     GTEST_LOG_(INFO) << "add connected A11y Ability";
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    /* CapabilityValues */
+    // CapabilityValues
     accountData->UpdateAccountCapabilities();
     bool test1 = accountData->GetGesturesSimulationFlag();
     EXPECT_TRUE(test1);
@@ -725,10 +717,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     EXPECT_TRUE(test3);
     bool test4 = accountData->GetScreenMagnificationFlag();
     EXPECT_TRUE(test4);
-    /* Account Switched */
+    // Account Switched
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    /* initialization */
+    // Initialization
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     bool test5 = accountData->GetGesturesSimulationFlag();
     EXPECT_FALSE(test5);
@@ -753,7 +745,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    /* add connecting A11y ability */
+    // Add connecting A11y ability
     accountData->AddConnectingA11yAbility(elementName);
     EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
     bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
@@ -860,10 +852,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     const AppExecFwk::ElementName elementName("aaa", "TEST_BUNDLE_NAME", "ccc");
-
-    /* add */
     accountData->AddEnabledAbility(elementName);
-    /* get */
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
 
     bool test = accountData->SetEnabledObj(accountData->GetEnabledAbilities());

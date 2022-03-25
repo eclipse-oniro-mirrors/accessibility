@@ -115,7 +115,7 @@ void AccessibleAbilityClientStubImplUnitTest::InitToSetChannelId()
 
     stub_->RegisterListenerImpl(listener);
     stub_->Init(channel, channelId);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     stub = nullptr;
     channel = nullptr;
@@ -154,7 +154,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
     int channelId = 0;
 
     stub_->Init(channel, channelId);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     stub = nullptr;
     channel = nullptr;
@@ -179,7 +179,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest, AccessibleAbilityClientStubImp
 
     stub_->RegisterListenerImpl(listener);
     stub_->Init(channel, channelId);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     stub = nullptr;
     channel = nullptr;
@@ -200,7 +200,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
     int channelId = 0;
     InitToSetChannelId();
     stub_->Disconnect(channelId);
-    sleep(1); // sleep for task Disconnect completed.
+    sleep(1); // Sleep for task Disconnect completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_Disconnect_001 end";
 }
@@ -219,7 +219,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
 
     InitToSetChannelId();
     stub_->OnAccessibilityEvent(eventInfo);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnAccessibilityEvent_001 end";
 }
@@ -239,7 +239,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
 
     InitToSetChannelId();
     stub_->OnKeyPressEvent(*keyEvent, sequence);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnKeyPressEvent_001 end";
 }
@@ -262,7 +262,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
 
     InitToSetChannelId();
     stub_->OnDisplayResized(displayId, rect, scale, centerX, centerY);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnDisplayResized_001 end";
 }
@@ -282,7 +282,7 @@ HWTEST_F(AccessibleAbilityClientStubImplUnitTest,
 
     InitToSetChannelId();
     stub_->OnGestureSimulateResult(sequence, completedSuccessfully);
-    sleep(1); // sleep for task completed.
+    sleep(1); // Sleep for task completed.
 
     GTEST_LOG_(INFO) << "AccessibleAbilityClientStubImpl_Unittest_OnGestureSimulateResult_001 end";
 }

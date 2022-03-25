@@ -105,12 +105,11 @@ HWTEST_F(AccessibilityInteractionBridgeTest, FindFocusedElementInfo_001, TestSiz
 HWTEST_F(AccessibilityInteractionBridgeTest, GetPointerItermOfAccessibilityFocusClick_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInteractionBridgeTest_GetPointerItermOfAccessibilityFocusClick_001 start";
-    // regist InteractionConnection
+    // Regist InteractionConnection
     sptr<AccessibilityElementOperatorStub> aamsInteractionOperator = new AccessibilityElementOperatorStub();
     ins_->RegisterElementOperator(0, aamsInteractionOperator, 0);
     // Set window info
     sptr<Rosen::WindowInfo> winInfo = new Rosen::WindowInfo();
-    // auto AccessibilityWindowInfoManager::GetInstance() = AccessibilityWindowInfoManager::GetInstance();
     AccessibilityWindowInfoManager::GetInstance().activeWindowId_ = 0;
     int windowId = 0;
     AccessibilityWindowInfo info =

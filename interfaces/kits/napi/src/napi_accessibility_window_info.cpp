@@ -89,13 +89,13 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
 
     napi_create_async_work(
         env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->result_ = windowInfo.GetAnchor(callbackInfo->nodeInfo_);
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetAnchorElementInfo execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
@@ -170,13 +170,13 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
 
     napi_create_async_work(
         env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->result_ = windowInfo.GetRootAccessibilityInfo(callbackInfo->nodeInfo_);
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetRootElementInfo execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
@@ -251,13 +251,13 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
 
     napi_create_async_work(
         env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->window_ = windowInfo.GetParent();
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetParent execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;
@@ -332,13 +332,13 @@ napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info i
 
     napi_create_async_work(
         env, nullptr, resource,
-        // execute async to call c++ function
+        // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
             AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
             callbackInfo->window_ = windowInfo.GetChild(callbackInfo->childIndex_);
         },
-        // execute the complete function
+        // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetChild execute back");
             NAccessibilityWindowInfoData* callbackInfo = (NAccessibilityWindowInfoData*)data;

@@ -181,7 +181,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(event);
     }
-    /* wait ProcessTouchEvent */
+    // Wait ProcessTouchEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002 end";
@@ -213,7 +213,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(event);
     }
-    /* wait ProcessTouchEvent */
+    // Wait ProcessTouchEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003 end";
@@ -264,7 +264,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(event);
     }
-    /* wait ProcessMouseEvent */
+    // Wait ProcessMouseEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002 end";
@@ -294,7 +294,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(event);
     }
-    /* wait ProcessMouseEvent */
+    // Wait ProcessMouseEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003 end";
@@ -331,7 +331,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     keyEvent->AddKeyItem(item);
     keyEvent->SetKeyCode(1);
 
-    /* wait ProcessKeyEvent */
+    // Wait ProcessKeyEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002 end";
@@ -355,7 +355,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     keyEvent->AddKeyItem(item);
     keyEvent->SetKeyCode(1);
 
-    /* wait ProcessKeyEvent */
+    // Wait ProcessKeyEvent
     sleep(3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003 end";

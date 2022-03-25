@@ -38,7 +38,6 @@ int AccessibilityAccountData::GetAccountId()
     return id_;
 }
 
-// get client state.
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
     HILOG_DEBUG("start.");
@@ -73,11 +72,10 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     return state;
 }
 
-// switch the user causes state changed.
 void AccessibilityAccountData::OnAccountSwitched()
 {
     HILOG_DEBUG("start.");
-    // reset AccessibleAbilityConnection
+    // Reset AccessibleAbilityConnection
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         itr->second->Disconnect();
     }
@@ -95,7 +93,6 @@ void AccessibilityAccountData::OnAccountSwitched()
     isGesturesSimulation_ = false;
 }
 
-// add connect ability.
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
@@ -106,7 +103,6 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
     HILOG_DEBUG("Add ConnectedAbility: %{public}d", connectedA11yAbilities_.size());
 }
 
-// remove connect ability.
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
@@ -125,7 +121,6 @@ void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityMan
     stateCallbacks_.push_back(callback);
 }
 
-// remove IAccessibleAbilityManagerServiceState
 void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("start.");
@@ -154,7 +149,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
         }
     }
 }
-// add AccessibilityInteractionConnection
+
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
@@ -164,7 +159,6 @@ void AccessibilityAccountData::AddAccessibilityWindowConnection(
     }
 }
 
-// remove AccessibilityWindowConnection
 void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
@@ -195,7 +189,6 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::Ele
     HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}d", connectingA11yAbilities_.size());
 }
 
-// For UT
 void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& elementName)
 {
     HILOG_DEBUG("start.");
@@ -249,7 +242,6 @@ void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementNam
     RemoveEnabledFromPref(elementName.GetBundleName());
 }
 
-// For UT
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
     HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
@@ -283,7 +275,6 @@ void AccessibilityAccountData::ClearInstalledAbility()
     installedAbilities_.clear();
 }
 
-// get AccessibleAbilityConnection
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string elementName)
 {
@@ -301,7 +292,6 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
     return nullptr;
 }
 
-// get AccessibilityWindowConnection.
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int windowId)
 {
@@ -313,7 +303,6 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
     return nullptr;
 }
 
-// get map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
     HILOG_DEBUG("start.");
@@ -326,7 +315,6 @@ const std::vector<sptr<IAccessibleAbilityManagerServiceState>> AccessibilityAcco
     return stateCallbacks_;
 }
 
-// get map<int, sptr<AccessibilityWindowConnection>> asacConnections_
 const std::map<int, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
     HILOG_DEBUG("start.");
@@ -339,14 +327,12 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
     return captionPropertyCallbacks_;
 }
 
-// get connectingA11yAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetConnectingA11yAbilities()
 {
     HILOG_DEBUG("start.");
     return connectingA11yAbilities_;
 }
 
-// get enabledAbilities_.
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
 {
     HILOG_DEBUG("enabledAbilities_ size is (%{public}d).", enabledAbilities_.size());
@@ -357,7 +343,6 @@ const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::G
     return enabledAbilities_;
 }
 
-// get installedAbilities_.
 const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities()
 {
     HILOG_DEBUG("start.");
@@ -422,7 +407,7 @@ void AccessibilityAccountData::UpdateEventTouchGuideCapability()
             return;
         }
     }
-    isEventTouchGuideState_ = false; // temp deal
+    isEventTouchGuideState_ = false;
 }
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
@@ -629,8 +614,6 @@ void AccessibilityAccountData::UpdateEnabledFromPref()
 bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
 {
     HILOG_DEBUG("start.");
-
-    // add ability to the last of enabledAbilities_
     for (auto& ability : it) {
         enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(ability.first, ability.second));
     }
@@ -645,13 +628,16 @@ bool AccessibilityAccountData::ReadConfigurationForAccountData()
     return true;
 }
 
-// get installedAbilities_.
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("start.");
 
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr.");
+        return false;
+    }
     sptr<AppExecFwk::IBundleMgr> bms = nullptr;
     bms = aams->GetBundleMgrProxy();
     if (!bms) {
@@ -802,15 +788,15 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
         for (int i = 0; i <= wrodCount; i++) {
             if (i == 0) {
                 length = position[i];
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // first string
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // First string
             } else if (i < wrodCount) {
                 startWrod = position[i - 1] + 1;
                 length = position[i] - position[i - 1] - 1;
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // second string to last-1 string
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // Second string to last-1 string
             } else {
                 startWrod = position[i - 1] + 1;
                 length = strLength - position[i - 1] - 1;
-                vectorResult.push_back(stringIn.substr(startWrod, length)); // last string
+                vectorResult.push_back(stringIn.substr(startWrod, length)); // Last string
             }
         }
     }

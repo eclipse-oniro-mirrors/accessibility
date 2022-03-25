@@ -82,7 +82,7 @@ void KeyEventFilterUnitTest::AddConnection()
     sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl();
     shared_ptr<AccessibleAbilityManagerService> aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 
-    // add an ability connection client
+    // Add an ability connection client
     AppExecFwk::ExtensionAbilityInfo extensionInfo;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
@@ -308,7 +308,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestS
     keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Process event";
-    sleep(3); // wait for ProcessEvent
+    sleep(3); // Wait for ProcessEvent
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 end";
 }

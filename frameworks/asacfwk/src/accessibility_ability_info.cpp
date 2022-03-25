@@ -59,7 +59,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(std::string &config)
     HILOG_DEBUG("start.");
     nlohmann::json sourceJson = nlohmann::json::parse(config);
 
-    // accessibilityCapabilities
+    // Parse accessibilityCapabilities
     vector<string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(
         sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES,
@@ -69,7 +69,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(std::string &config)
     }
     PraseVecUtils::ParseCapabilitiesFromVec(capabilities, capabilities_);
 
-    // accessibilityCapabilityRationale
+    // Parse accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(
         sourceJson,
         AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE,
@@ -78,7 +78,7 @@ bool AccessibilityAbilityInfo::ParseAAConfig(std::string &config)
         return false;
     }
 
-    // settingsAbility
+    // Parse settingsAbility
     if (!JsonUtils::GetStringFromJson(
         sourceJson, AccessibleAbility_JSON_KEY_SETTINGS_ABILITY,
         settingsAbility_)) {

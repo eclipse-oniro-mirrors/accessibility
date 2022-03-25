@@ -53,7 +53,7 @@ enum ActionType :int {
     ACCESSIBILITY_ACTION_TYPE_MASK = 0x1FFFFFFF,
 };
 
-// text move step
+// Text move step
 enum TextMoveUnit : int {
     STEP_INVALID = 0,
     STEP_CHARACTER = 0x00000001,
@@ -63,7 +63,7 @@ enum TextMoveUnit : int {
     STEP_PARAGRAPH = 0x00000010,
 };
 
-// text move step
+// Text move step
 extern const std::string MOVE_UNIT_CHARACTER;
 extern const std::string MOVE_UNIT_WORD;
 extern const std::string MOVE_UNIT_LINE;
@@ -131,7 +131,7 @@ static const int FOCUS_TYPE_INVALID = -1;
 static const int FOCUS_TYPE_INPUT = 1 << 0;
 static const int FOCUS_TYPE_ACCESSIBILITY = 1 << 1;
 
-// grid mode
+// Grid mode
 static const int SELECTION_MODE_NONE = 0;
 static const int SELECTION_MODE_SINGLE = 1;
 static const int SELECTION_MODE_MULTIPLE = 2;
@@ -1801,7 +1801,7 @@ private:
     int childCount_ = 0;
     std::vector<AccessibleAction> operations_;
     int textLengthLimit_ = -1;
-    int channelId_ = UNDEFINED_CHANNEL_ID; // rename
+    int channelId_ = UNDEFINED_CHANNEL_ID;
     Rect bounds_ {};
     bool accessibilityGroup_ = false;
     bool checkable_ = false;
@@ -1834,7 +1834,7 @@ private:
     int labeled_ = 0;
     int beginSelected_ = 0;
     int endSelected_ = 0;
-    int inputType_ = 0; // text input type added
+    int inputType_ = 0; // Text input type added
     bool validElement_ = true;
 };
 } // namespace Accessibility

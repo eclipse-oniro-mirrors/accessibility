@@ -23,6 +23,10 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
 {
     HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", windowInfo->currentWindowInfo_->wid_, type);
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     auto accountData = aams->GetCurrentAccountData();
 
     auto& winMgr = AccessibilityWindowInfoManager::GetInstance();
@@ -190,8 +194,10 @@ void AccessibilityWindowInfoManager::SetActiveWindow(int windowId)
         activeWindowId_ = windowId;
         a11yWindows_[activeWindowId_].SetActive(true);
         auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-        AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
-        aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+        if (aams) {
+            AccessibilityEventInfo evtInf(activeWindowId_, WINDOW_UPDATE_ACTIVE);
+            aams->SendEvent(evtInf, aams->GetCurrentAccountId());
+        }
     }
     HILOG_DEBUG("activeWindowId is %{public}d", activeWindowId_);
 }

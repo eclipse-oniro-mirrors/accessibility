@@ -191,13 +191,17 @@ void AccessibilityElementOperatorStub::SearchElementInfoByAccessibilityId(const 
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode)
 {
     HILOG_DEBUG("start");
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_ACCESSIBILITY_ID);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     aaCallbacks_.insert(
         std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->SearchElementInfoByAccessibilityId(elementId, requestId, *tempCallback, mode);
     } else {
@@ -210,13 +214,17 @@ void AccessibilityElementOperatorStub::SearchElementInfosByText(const long eleme
     const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_TEXT);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     aaCallbacks_.insert(
         std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->SearchElementInfosByText(elementId, text, requestId, *tempCallback);
     } else {
@@ -229,13 +237,17 @@ void AccessibilityElementOperatorStub::FindFocusedElementInfo(const long element
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_FIND_FOCUS);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     aaCallbacks_.insert(
         std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->FindFocusedElementInfo(elementId, focusType, requestId, *tempCallback);
     } else {
@@ -248,13 +260,17 @@ void AccessibilityElementOperatorStub::FocusMoveSearch(const long elementId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_BY_FOCUS_MOVE);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     aaCallbacks_.insert(
         std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->FocusMoveSearch(elementId, direction, requestId, *tempCallback);
     } else {
@@ -267,13 +283,17 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
     int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
     AccessibilityElementOperatorCallback *tempCallback = new CallbackImpl(requestId,
         CallbackImpl::CALLBACK_PERFORM_ACTION);
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     aaCallbacks_.insert(
         std::pair<const int, const sptr<IAccessibilityElementOperatorCallback>>(requestId, callback));
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->ExecuteAction(elementId, action, actionArguments, requestId, *tempCallback);
     } else {
@@ -284,8 +304,12 @@ void AccessibilityElementOperatorStub::ExecuteAction(const long elementId,
 void AccessibilityElementOperatorStub::ClearFocus()
 {
     HILOG_DEBUG("start");
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->ClearFocus();
     } else {
@@ -296,8 +320,12 @@ void AccessibilityElementOperatorStub::ClearFocus()
 void AccessibilityElementOperatorStub::OutsideTouch()
 {
     HILOG_DEBUG("start");
-    std::shared_ptr<AccessibilityElementOperator> obj =
-        AccessibilitySystemAbilityClient::GetInstance()->GetOperatorObject(GetWindowId());
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return;
+    }
+    std::shared_ptr<AccessibilityElementOperator> obj = instance->GetOperatorObject(GetWindowId());
     if (obj != nullptr) {
         obj->OutsideTouch();
     } else {

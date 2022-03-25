@@ -92,7 +92,12 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
             return;
         }
 
-        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId);
+        auto instance = AccessibilityUITestAbility::GetInstance();
+        if (!instance) {
+            HILOG_ERROR("instance is nullptr");
+            return;
+        }
+        instance->SetChannelId(channelId);
         AccessibilityOperator::AddChannel(channelId, channel);
         channelId_ = channelId;
         channel_ = channel;
@@ -133,7 +138,12 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
             listener_ = nullptr;
         }
     } else {
-        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
+        auto instance = AccessibilityUITestAbility::GetInstance();
+        if (!instance) {
+            HILOG_ERROR("instance is nullptr");
+            return;
+        }
+        instance->SetChannelId(channelId_);
         if (uiTestListener_) {
             uiTestListener_->OnAbilityDisconnected();
             uiTestListener_ = nullptr;
@@ -200,8 +210,12 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
         if (uiTestEnabled_) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
-            AccessibilityUITestAbility::GetInstance()->DispatchOnSimulationGestureResult(
-                sequence, completedSuccessfully);
+            auto instance = AccessibilityUITestAbility::GetInstance();
+            if (!instance) {
+                HILOG_ERROR("instance is nullptr");
+                return;
+            }
+            instance->DispatchOnSimulationGestureResult(sequence, completedSuccessfully);
         }
     }
 }

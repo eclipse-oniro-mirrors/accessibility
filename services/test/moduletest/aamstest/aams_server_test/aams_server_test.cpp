@@ -77,7 +77,7 @@ void AAMSServerTest::TearDownTestCase()
 void AAMSServerTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AAMSServerTest SetUp";
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -162,7 +162,6 @@ void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()
 void AAMSServerTest::AddAccessibleAbilityConnection()
 {
     GTEST_LOG_(INFO) << "AAMSServerTest AddAccessibleAbilityConnection";
-    // accessibleAbility connection
     AppExecFwk::ExtensionAbilityInfo info;
     AAFwk::Want want;
     AppExecFwk::ElementName name;
@@ -189,15 +188,15 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
 HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest SendEvent_001 start";
-    // register AA
+    // Register AA
     AddAccessibleAbilityConnection();
-    // make an event
+    // Make an event
     AccessibilityEventInfo eventInfo;
     eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
-    // aams send event
+    // Send event
     aams_->SendEvent(eventInfo, 100);
     sleep(1);
-    // check aa proxy
+    // Check aa proxy
     EXPECT_EQ(g_testEventType, int(EventType::TYPE_WINDOW_UPDATE));
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -258,12 +257,12 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
     installAbilityInfo->SetPackageName("123");
     auto accountData = aams_->GetCurrentAccountData();
 
-    /* add install ability dummy */
+    // Add install ability dummy
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
     accountData->AddInstalledAbility(*installAbilityInfo);
     EXPECT_EQ(2, (int)accountData->GetInstalledAbilities().size());
 
-    /* ABILITY_STATE_DISABLE */
+    // ABILITY_STATE_DISABLE
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 1);
@@ -358,12 +357,12 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    // wrong windowId
+    // Wrong windowId
     aams_->DeregisterElementOperator(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    // true windowId
+    // True windowId
     aams_->DeregisterElementOperator(0);
     sleep(1);
     map = accountData->GetAsacConnections();

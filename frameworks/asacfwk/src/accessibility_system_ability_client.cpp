@@ -42,7 +42,12 @@ struct AccessibilitySystemAbilityClient::Impl {
 
         void OnRemoteDied(const wptr<IRemoteObject>& remote)
         {
-            AccessibilitySystemAbilityClient::GetInstance()->ResetService(remote);
+            auto instance = AccessibilitySystemAbilityClient::GetInstance();
+            if (!instance) {
+                HILOG_ERROR("instance is nullptr");
+                return;
+            }
+            instance->ResetService(remote);
         }
     };
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;

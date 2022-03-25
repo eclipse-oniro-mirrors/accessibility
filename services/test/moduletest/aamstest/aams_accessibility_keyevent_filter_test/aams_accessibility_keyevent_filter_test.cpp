@@ -104,7 +104,7 @@ void AamsKeyEventFilterTest::SetUp()
 
     sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl();
 
-    // add an ability connection client
+    // Add an ability connection client
     AppExecFwk::ExtensionAbilityInfo extensionInfo;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");

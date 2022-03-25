@@ -73,7 +73,7 @@ HWTEST_F(ASACStubUnitTest, OnRemoteRequest_001, TestSize.Level1)
         data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
 
-    // set descriptor
+    // Set descriptor
     WriteInterfaceToken(data);
     res = mockStub_->OnRemoteRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::SEND_EVENT), data, reply, option);
@@ -94,7 +94,7 @@ HWTEST_F(ASACStubUnitTest, OnRemoteRequest_002, TestSize.Level1)
         data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
 
-    // set descriptor
+    // Set descriptor
     WriteInterfaceToken(data);
     res = mockStub_->OnRemoteRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::REGISTER_STATE_CALLBACK),
@@ -121,7 +121,7 @@ HWTEST_F(ASACStubUnitTest, OnRemoteRequest_003, TestSize.Level1)
         data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
 
-    // set descriptor
+    // Set descriptor
     WriteInterfaceToken(data);
     res = mockStub_->OnRemoteRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::GET_ABILITYLIST),
@@ -148,7 +148,7 @@ HWTEST_F(ASACStubUnitTest, OnRemoteRequest_004, TestSize.Level1)
         data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
 
-    // set descriptor
+    // Set descriptor
     WriteInterfaceToken(data);
     res = mockStub_->OnRemoteRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::REGISTER_INTERACTION_CONNECTION),
@@ -175,7 +175,7 @@ HWTEST_F(ASACStubUnitTest, OnRemoteRequest_005, TestSize.Level1)
         data, reply, option);
     EXPECT_EQ(res, OHOS::Accessibility::ERR_INVALID_STATE);
 
-    // set descriptor
+    // Set descriptor
     WriteInterfaceToken(data);
     res = mockStub_->OnRemoteRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerServiceClient::Message::DEREGISTER_INTERACTION_CONNECTION),
