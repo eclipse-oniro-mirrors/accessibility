@@ -343,7 +343,7 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("Start. ResultCode is %{public}d", resultCode);
     if (!accountData_) {
         HILOG_ERROR("accountData_ is nullptr.");
         return;
@@ -356,7 +356,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
-        HILOG_ERROR("Connect failed!");
         accountData_->RemoveEnabledAbility(elementName_);
         accountData_->RemoveConnectingA11yAbility(elementName_);
         aams->UpdateAbilities();
@@ -376,12 +375,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             return;
         }
     }
-
-    if (!proxy_) {
-        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy failed");
-        return;
-    }
-    HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
 
     if (!deathRecipient_) {
         deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
@@ -430,7 +423,6 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     accountData_->RemoveConnectedAbility(pointer);
     accountData_->RemoveEnabledAbility(element);
 
-
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     if (!aams) {
         HILOG_ERROR("aams is nullptr");
@@ -438,8 +430,7 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     }
     aams->UpdateAbilities();
 
-    int32_t currentAccountId = aams->GetCurrentAccountId();
-    if (accountData_->GetAccountId() == currentAccountId) {
+    if (accountData_->GetAccountId() == aams->GetCurrentAccountId()) {
         aams->UpdateAccessibilityManagerService();
     }
 }

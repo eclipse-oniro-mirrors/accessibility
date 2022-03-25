@@ -383,6 +383,7 @@ void ConvertAccessibilityWindowInfoToJS(
 void ConvertAccessibilityWindowInfosToJS(
     napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
 {
+    HILOG_DEBUG("Start");
     size_t idx = 0;
 
     if (accessibilityWindowInfos.empty()) {

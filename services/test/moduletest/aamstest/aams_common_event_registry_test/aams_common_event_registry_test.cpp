@@ -139,7 +139,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 start";
     AddAccessibleAbilityConnection();
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
-    // PackageChanged 
+    // PackageChanged
     std::string bundleName = "bundleName";
     aams_->PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));

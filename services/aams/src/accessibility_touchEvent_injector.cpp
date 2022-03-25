@@ -18,9 +18,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-#define NS_TO_US 1000
-#define S_TO_US 1000000
-#define MS_TO_US 1000
+constexpr int MS_TO_US = 1000;
 TouchInjectHandler::TouchInjectHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     TouchEventInjector &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
@@ -38,7 +36,7 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
             parameters = event->GetSharedObject<SendEventArgs>();
             server_.SendPointerEvent(*parameters->event_);
             if (parameters->isLastEvent_) {
-                if (server_.GetCurrentGestureService()){
+                if (server_.GetCurrentGestureService()) {
                     server_.GetCurrentGestureService()->OnGestureSimulateResult(server_.GetSequence(), true);
                 }
             }
@@ -277,7 +275,7 @@ int64_t TouchEventInjector::getSystemTime()
     HILOG_INFO("TouchEventInjector::getSystemTime: start");
     struct timespec times = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t microsecond = (int64_t)(times.tv_sec * S_TO_US + times.tv_nsec / NS_TO_US);
+    int64_t microsecond = (int64_t)(times.tv_sec * 1000000 + times.tv_nsec / 1000);
 
     return microsecond;
 }

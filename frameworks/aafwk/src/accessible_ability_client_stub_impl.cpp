@@ -55,11 +55,11 @@ bool AccessibleAbilityClientStubImpl::RegisterUITestAbilityListener(
 void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
 {
     HILOG_DEBUG("start.");
+    if (!channel) {
+        HILOG_ERROR("channel is nullptr.");
+        return;
+    }
     if (!uiTestEnabled_) {
-        if (!channel) {
-            HILOG_DEBUG("channel is nullptr.");
-            return;
-        }
         if (!listener_ || !listener_->GetContext()) {
             HILOG_ERROR("listener_ is nullptr or there is no context in listener_.");
             return;
@@ -83,10 +83,6 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
 
         listener_->OnAbilityConnected();
     } else {
-        if (!channel) {
-            HILOG_DEBUG("channel is nullptr.");
-            return;
-        }
         if (!uiTestListener_) {
             HILOG_ERROR("listener_ is nullptr.");
             return;

@@ -336,7 +336,7 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
         return listener_->OnCancelled(event);
     }
 
-    // Check the angle of the most recent motion vector versus the preceding motion vector, 
+    // Check the angle of the most recent motion vector versus the preceding motion vector,
     // segment the line if the angle is about 90 degrees.
     std::vector<Pointer> pointerPath = GetPointerPath(pointerRoute_);
 

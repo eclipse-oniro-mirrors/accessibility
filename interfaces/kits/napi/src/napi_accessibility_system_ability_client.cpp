@@ -1119,7 +1119,6 @@ napi_value NAccessibilityClient::SetKeyEventObserverState(napi_env env, napi_cal
 
 napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
@@ -1157,7 +1156,6 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
-            HILOG_INFO("GetInstalled ENTER ConvertAccessibleAbilityInfosToJS");
             ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
             if (callbackInfo->callback_) {
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
