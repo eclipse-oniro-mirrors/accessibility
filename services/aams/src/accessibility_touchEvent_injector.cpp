@@ -195,11 +195,13 @@ void TouchEventInjector::InjectEventsInner()
         std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
         parameters->isLastEvent_ = (i == injectedEvents_.size() - 1) ? true : false;
         parameters->event_ = injectedEvents_[i];
-        int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
-        if (timeout < 0) {
-            HILOG_INFO("timeout is error.%{public}lld", timeout);
-        } else {
-            handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
+        if (injectedEvents_[i]) {
+            int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
+            if (timeout < 0) {
+                HILOG_INFO("timeout is error.%{public}lld", timeout);
+            } else {
+                handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
+            }
         }
     }
     injectedEvents_.clear();
