@@ -61,7 +61,7 @@ void AccessibilityCommonEventRegistryTest::TearDownTestCase()
 void AccessibilityCommonEventRegistryTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -117,7 +117,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
     AddAccessibleAbilityConnection();
     accountData_->AddConnectingA11yAbility(*elementName_);
     EXPECT_EQ(1, int(accountData_->GetConnectingA11yAbilities().size()));
-    /* PackageUpdateFinished */
+    // PackageUpdateFinished
     std::string str = "bundleName";
     aams_->PackageUpdateFinished(str);
     EXPECT_EQ(0, int(accountData_->GetConnectingA11yAbilities().size()));
@@ -139,7 +139,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 start";
     AddAccessibleAbilityConnection();
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
-    /* PackageChanged */
+    // PackageChanged
     std::string bundleName = "bundleName";
     aams_->PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));

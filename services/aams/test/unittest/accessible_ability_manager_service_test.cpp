@@ -63,7 +63,7 @@ void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -87,7 +87,7 @@ void AccessibleAbilityManagerServiceUnitTest::TearDown()
 
 void AccessibleAbilityManagerServiceUnitTest::RegisterAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
-    // add an ability connection client
+    // Add an ability connection client
     AppExecFwk::ExtensionAbilityInfo extensionInfo;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
@@ -243,7 +243,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemovedUser_001, TestSize.Leve
     RegisterAbilityConnectionClient(stub_);
     EXPECT_EQ(int(ins_->GetCurrentAccountData()->GetConnectedA11yAbilities().size()), 1);
     ins_->RemovedUser(1);
-    // can't to check a11yAccountsData_ because it is private,and don't provite api.
+    // Can't to check a11yAccountsData_ because it is private,and don't provite api.
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_RemovedUser_001 end";
 }
 
@@ -287,7 +287,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 start";
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
     accountData->ClearInstalledAbility();
-    /* install ability is null */
+    // Install ability is null
     GTEST_LOG_(INFO) << "GetInstalledAbilities start";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "PackageChanged start";
@@ -296,7 +296,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     GTEST_LOG_(INFO) << "PackageChanged end";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
-    /* add install ability */
+    // Add install ability
     RegisterAbilityConnectionClient(stub_);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     bundleName = "bundleName2";

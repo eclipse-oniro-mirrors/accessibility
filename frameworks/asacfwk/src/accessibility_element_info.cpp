@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-// text move step
+// Text move step
 const std::string MOVE_UNIT_CHARACTER = "char";
 const std::string MOVE_UNIT_WORD = "word";
 const std::string MOVE_UNIT_LINE = "line";
@@ -58,7 +58,6 @@ const std::string HTML_ITEM_H5 = "h5";
 const std::string HTML_ITEM_H6 = "h6";
 const std::string HTML_ITEM_UNKOWN = "unknown";
 
-/* AccessibilityElementInfo       Parcel struct                 */
 bool AccessibilityElementInfo::ReadFromParcel(Parcel &parcel)
 {
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);

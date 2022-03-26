@@ -55,7 +55,7 @@ void AccessibilityCommonEventRegistryUnitTest::TearDownTestCase()
 void AccessibilityCommonEventRegistryUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();

@@ -45,6 +45,10 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfoByAccessibilityId(const 
     const int mode)
 {
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    if (!accountData.GetRefPtr()) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
                                                                                            FOCUS_TYPE_INVALID);
     sptr<AccessibilityWindowConnection> connection =
@@ -71,6 +75,10 @@ bool AccessibleAbilityChannelStubImpl::SearchElementInfosByText(const int access
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    if (!accountData.GetRefPtr()) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
                                                                                            FOCUS_TYPE_INVALID);
 
@@ -97,6 +105,10 @@ bool AccessibleAbilityChannelStubImpl::FindFocusedElementInfo(const int accessib
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    if (!accountData.GetRefPtr()) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
                                                                                            focusType);
 
@@ -122,6 +134,10 @@ bool AccessibleAbilityChannelStubImpl::FocusMoveSearch(const int accessibilityWi
     const int direction, const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    if (!accountData.GetRefPtr()) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
                                                                                            FOCUS_TYPE_INVALID);
 
@@ -135,6 +151,10 @@ bool AccessibleAbilityChannelStubImpl::FocusMoveSearch(const int accessibilityWi
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::FocusMoveSearch failed: no capability");
         return false;
     }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("get proxy failed");
+        return false;
+    }
     connection->GetProxy()->FocusMoveSearch(elementId, direction, requestId, callback);
     return true;
 }
@@ -145,6 +165,10 @@ bool AccessibleAbilityChannelStubImpl::ExecuteAction(const int accessibilityWind
 {
     HILOG_DEBUG("ExecuteAction accessibilityWindowId = %{public}d", accessibilityWindowId);
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    if (!accountData.GetRefPtr()) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
     int realWindowId = AccessibilityWindowInfoManager::GetInstance().ConvertToRealWindowId(accessibilityWindowId,
                                                                                            FOCUS_TYPE_INVALID);
 
@@ -156,6 +180,10 @@ bool AccessibleAbilityChannelStubImpl::ExecuteAction(const int accessibilityWind
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannelStubImpl::ExecuteAction failed: no capability");
+        return false;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("get proxy failed");
         return false;
     }
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
@@ -221,8 +249,12 @@ bool AccessibleAbilityChannelStubImpl::ExecuteCommonAction(int action)
 
 void AccessibleAbilityChannelStubImpl::SetOnKeyPressEventResult(const bool handled, const int sequence)
 {
-    sptr<KeyEventFilter> keyEventFilter =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetKeyEventFilter();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    sptr<KeyEventFilter> keyEventFilter = aams->GetKeyEventFilter();
     if (!keyEventFilter) {
         return;
     }
@@ -280,8 +312,12 @@ void AccessibleAbilityChannelStubImpl::SendSimulateGesture(const int requestId,
         proxy->OnGestureSimulateResult(requestId, false);
         return;
     }
-    sptr<TouchEventInjector> touchEventInjector =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetTouchEventInjector();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    sptr<TouchEventInjector> touchEventInjector = aams->GetTouchEventInjector();
     if (!touchEventInjector) {
         proxy->OnGestureSimulateResult(requestId, false);
         return;
@@ -307,14 +343,22 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int resultCode)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("Start. ResultCode is %{public}d", resultCode);
+    if (!accountData_) {
+        HILOG_ERROR("accountData_ is nullptr.");
+        return;
+    }
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr.");
+        return;
+    }
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
-        HILOG_ERROR("Connect failed!");
         accountData_->RemoveEnabledAbility(elementName_);
         accountData_->RemoveConnectingA11yAbility(elementName_);
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
+        aams->UpdateAbilities();
         // temp deal: Notify setting
         return;
     }
@@ -332,12 +376,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         }
     }
 
-    if (!proxy_) {
-        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy failed");
-        return;
-    }
-    HILOG_DEBUG("AccessibleAbilityConnection::OnAbilityConnectDone get AccessibleAbilityClientProxy successfully");
-
     if (!deathRecipient_) {
         deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
         if (!deathRecipient_) {
@@ -346,14 +384,14 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         }
     }
 
-    if (!proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
+    if (!proxy_->AsObject() || !proxy_->AsObject()->AddDeathRecipient(deathRecipient_)) {
         HILOG_ERROR("Failed to add death recipient");
     }
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->AddConnectedAbility(pointer);
     accountData_->RemoveConnectingA11yAbility(elementName_);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
+    aams->UpdateAccessibilityManagerService();
 
     stub_ = new(std::nothrow) AccessibleAbilityChannelStubImpl(*pointer);
     if (!stub_) {
@@ -377,14 +415,23 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
         return;
     }
 
+    if (!accountData_) {
+        HILOG_ERROR("accountData_ is nullptr.");
+        return;
+    }
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->RemoveConnectedAbility(pointer);
     accountData_->RemoveEnabledAbility(element);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
 
-    int32_t currentAccountId = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetCurrentAccountId();
-    if (accountData_->GetAccountId() == currentAccountId) {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    aams->UpdateAbilities();
+
+    if (accountData_->GetAccountId() == aams->GetCurrentAccountId()) {
+        aams->UpdateAccessibilityManagerService();
     }
 }
 
@@ -460,6 +507,10 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     }
 
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return false;
+    }
     if (aams->IsWantedKeyEvent(const_cast<MMI::KeyEvent&>(keyEvent))) {
         proxy_->OnKeyPressEvent(keyEvent, sequence);
         return true;
@@ -507,7 +558,12 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG("start");
-    if (AAFwk::AbilityManagerClient::GetInstance()->DisconnectAbility(this) != ERR_OK) {
+    auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+    if (!abilityManagerClient) {
+        HILOG_ERROR("abilityManagerClient is nullptr");
+        return;
+    }
+    if (abilityManagerClient->DisconnectAbility(this) != ERR_OK) {
         HILOG_ERROR("Disconnect failed!");
         return;
     }
@@ -516,17 +572,31 @@ void AccessibleAbilityConnection::Disconnect()
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
 {
     HILOG_DEBUG("start");
+    if (!accountData_) {
+        HILOG_ERROR("accountData_ is nullptr");
+        return;
+    }
     elementName_ = element;
     AAFwk::Want want = CreateWant(elementName_);
     HILOG_DEBUG("GetBundleName is %{public}s ", elementName_.GetBundleName().c_str());
     HILOG_DEBUG("GetAbilityName is %{public}s ", elementName_.GetAbilityName().c_str());
     HILOG_DEBUG("current accountId is %{public}d ", accountData_->GetAccountId());
 
-    int uid = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetBundleMgrProxy()->
-    GetUidByBundleName(elementName_.GetBundleName(), accountData_->GetAccountId());
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams || !aams->GetBundleMgrProxy()) {
+        HILOG_ERROR("get bundleMgr failed");
+        return;
+    }
+    int uid = aams->GetBundleMgrProxy()->GetUidByBundleName(
+        elementName_.GetBundleName(), accountData_->GetAccountId());
     HILOG_DEBUG("uid is %{public}d ", uid);
 
-    if (AAFwk::AbilityManagerClient::GetInstance()->ConnectAbility(
+    auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
+    if (!abilityManagerClient) {
+        HILOG_ERROR("abilityManagerClient is nullptr");
+        return;
+    }
+    if (abilityManagerClient->ConnectAbility(
         want, this, nullptr, uid / UID_MASK) != ERR_OK) {
         HILOG_ERROR("ConnectAbility failed!");
         // temp deal: Remove this enabled ability from Setting
@@ -565,8 +635,13 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
     }
 
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAbilities();
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->UpdateAccessibilityManagerService();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    aams->UpdateAbilities();
+    aams->UpdateAccessibilityManagerService();
     // temp deal: notify setting
 }
 } // namespace Accessibility

@@ -222,7 +222,6 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceClientProxy
         HILOG_ERROR("GetAbilityList fail");
         return errorList;
     }
-    // read result
     int32_t abilityInfoSize = reply.ReadInt32();
     for (int i = 0; i < abilityInfoSize; i++) {
         std::shared_ptr<AccessibilityAbilityInfo> accessibilityAbilityInfo(

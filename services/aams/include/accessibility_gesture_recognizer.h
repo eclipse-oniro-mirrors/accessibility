@@ -31,12 +31,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-const int64_t GESTURE_STARTED_TIME_THRESHOLD = 300;
-const int64_t GESTURE_NOT_STARTED_TIME_THRESHOLD = 150;
+const int64_t GESTURE_STARTED_TIME_THRESHOLD = 300000; // microsecond
+const int64_t GESTURE_NOT_STARTED_TIME_THRESHOLD = 150000; // microsecond
 const float DOUBLE_TAP_SLOP = 100.0f;
-const int64_t MIN_DOUBLE_TAP_TIME = 40;
-const int64_t DOUBLE_TAP_TIMEOUT = 300;
-const int64_t LONG_PRESS_TIMEOUT = 400;
+const int64_t MIN_DOUBLE_TAP_TIME = 40000; // microsecond
+const int64_t DOUBLE_TAP_TIMEOUT = 300000; // microsecond
+const int64_t LONG_PRESS_TIMEOUT = 400000; // microsecond
 const float DEGREES_THRESHOLD = 0.0f;
 const int32_t DIRECTION_NUM = 4;
 const int64_t US_TO_MS = 1000;
@@ -333,7 +333,7 @@ private:
     bool isDoubleTap_ = false;
     bool isRecognizingGesture_ = false;
     bool isGestureStarted_ = false;
-    int64_t startTime_ = 0;
+    int64_t startTime_ = 0; // microsecond
     float xMinPixels_ = 0;
     float yMinPixels_ = 0;
     float threshold_ = 0;

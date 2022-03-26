@@ -27,7 +27,7 @@ namespace Accessibility {
 class TouchGuider;
 
 const int32_t MAX_POINTER_COUNT = 32;
-const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000;
+const int64_t EXIT_GESTURE_REC_TIMEOUT = 2000; // millisecond
 const double MAX_DRAG_GESTURE_COSINE = 0.525321989;
 const int32_t MINI_POINTER_DISTANCE_DIP = 200;
 const int32_t INDEX_0 = 0;

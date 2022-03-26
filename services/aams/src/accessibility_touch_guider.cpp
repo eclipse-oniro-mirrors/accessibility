@@ -41,6 +41,10 @@ void TouchGuider::StartUp()
     HILOG_DEBUG();
     touchGuideListener_ = std::make_unique<TouchGuideListener>(*this);
     gestureRecognizer_.RegisterListener(*touchGuideListener_.get());
+    if (!pAams_) {
+        HILOG_ERROR("pAams_ is nullptr");
+        return;
+    }
     runner_ = pAams_->GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
@@ -293,7 +297,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
     server_.currentState_ = static_cast<int>(TouchGuideState::TOUCH_GUIDING);
 
-    // send customize gesture type to aa
+    // Send customize gesture type to aa
     AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
     eventInfo.SetGestureType(gestureId);
@@ -590,7 +594,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     if (pointCount == POINTER_COUNT_1) {
         HILOG_INFO("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
-        // get densityPixels from WMS
+        // Get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
         auto display = displayMgr.GetDefaultDisplay();
         float densityPixels = display->GetVirtualPixelRatio();
@@ -787,7 +791,7 @@ void TouchGuider::PostHoverEnterAndMove(MMI::PointerEvent &event)
 
     CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
     pointerEvents_.push_back(event);
-    handler_->SendEvent(SEND_HOVER_ENTER_MOVE_MSG, 0, DOUBLE_TAP_TIMEOUT);
+    handler_->SendEvent(SEND_HOVER_ENTER_MOVE_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
 }
 
 void TouchGuider::PostHoverExit()
@@ -795,7 +799,7 @@ void TouchGuider::PostHoverExit()
     HILOG_DEBUG();
 
     CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
-    handler_->SendEvent(SEND_HOVER_EXIT_MSG, 0, DOUBLE_TAP_TIMEOUT);
+    handler_->SendEvent(SEND_HOVER_EXIT_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
 }
 
 void TouchGuider::PostAccessibilityEvent(uint32_t innerEventID)

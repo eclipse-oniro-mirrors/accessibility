@@ -18,7 +18,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-/**
+/*
  * Triple: DOWN UP DOWN UP DOWN
  */
 const int DOWN_COUNT = 3;

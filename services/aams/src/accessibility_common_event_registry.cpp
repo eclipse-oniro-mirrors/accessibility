@@ -63,7 +63,6 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
 {
     HILOG_DEBUG("start.");
 
-    bool subscribeResult = false;
     MatchingSkills matchingSkills;
     for (auto &event : handleEventFunc_) {
         HILOG_DEBUG("Add event: %{public}s", event.first.c_str());
@@ -76,9 +75,9 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
 
     int retry = RETRY_SUBSCRIBER;
     do {
-        subscribeResult = CommonEventManager::SubscribeCommonEvent(accessibilityCommonEventSubscriber_);
+        bool subscribeResult = CommonEventManager::SubscribeCommonEvent(accessibilityCommonEventSubscriber_);
         if (subscribeResult) {
-            break;
+            return true;
         } else {
             HILOG_DEBUG("SubscribeCommonEvent failed, retry %{public}d", retry);
             retry--;
@@ -86,7 +85,7 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
         }
     } while (retry);
 
-    return subscribeResult;
+    return false;
 }
 
 void AccessibilityCommonEventRegistry::UnRegister()
@@ -123,43 +122,72 @@ void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
 void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const
 {
     HILOG_DEBUG("start.");
-
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     int32_t accountId = want.GetIntParam(CommonEventSupport::COMMON_EVENT_USER_REMOVED, -1);
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->RemovedUser(accountId);
+    aams->RemovedUser(accountId);
 }
 
 void AccessibilityCommonEventRegistry::HandlePresentUser(const Want &want) const
 {
     HILOG_DEBUG("start.");
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PresentUser();
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
+    aams->PresentUser();
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageRemoved(const Want &want) const
 {
     HILOG_DEBUG("start.");
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     string bundleName = want.GetBundle();
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageRemoved(bundleName);
+    aams->PackageRemoved(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageAdd(const Want &want) const
 {
     HILOG_DEBUG("start.");
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     string bundleName = want.GetBundle();
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageAdd(bundleName);
+    aams->PackageAdd(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &want) const
 {
     HILOG_DEBUG("start.");
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     string bundleName = want.GetBundle();
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageUpdateFinished(bundleName);
+    aams->PackageUpdateFinished(bundleName);
 }
 
 void AccessibilityCommonEventRegistry::HandlePackageChanged(const Want &want) const
 {
     HILOG_DEBUG("start.");
+    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    if (!aams) {
+        HILOG_ERROR("aams is nullptr");
+        return;
+    }
     string bundleName = want.GetBundle();
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->PackageChanged(bundleName);
+    aams->PackageChanged(bundleName);
 }
 } // namespace Accessibility
 } // namespace OHOS

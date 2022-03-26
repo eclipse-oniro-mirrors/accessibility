@@ -174,12 +174,12 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             callbackInfo->ret_ = nodeInfo.GetByContent(callbackInfo->content_, callbackInfo->nodeInfos_);
         },
-        [](napi_env env, napi_status status, void* data) {   // execute the complete function
+        [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -368,7 +368,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             if (callbackInfo->ret_) {
@@ -376,7 +376,7 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
                     callbackInfo->nodeInfo_);
             }
         },
-        [](napi_env env, napi_status status, void* data) {  // execute the complete function
+        [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("GetNext execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -453,12 +453,12 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info)
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             callbackInfo->ret_ = nodeInfo.GetChild(callbackInfo->childIndex_, callbackInfo->nodeInfo_);
         },
-        [](napi_env env, napi_status status, void* data) {  // execute the complete function
+        [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("GetChild execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -532,12 +532,12 @@ napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info)
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) {  // execute async to call c++ function
+        [](napi_env env, void* data) { // execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
             callbackInfo->ret_ = nodeInfo.GetParent(callbackInfo->nodeInfo_);
         },
-        [](napi_env env, napi_status status, void* data) {  // execute the complete function
+        [](napi_env env, napi_status status, void* data) { // execute the complete function
             HILOG_DEBUG("GetParent execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;

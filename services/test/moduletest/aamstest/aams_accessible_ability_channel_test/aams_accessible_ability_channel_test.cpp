@@ -86,7 +86,7 @@ void AamsAccessibleAbilityChannelTest::TearDownTestCase()
 void AamsAccessibleAbilityChannelTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest SetUp";
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -103,7 +103,7 @@ void AamsAccessibleAbilityChannelTest::SetUp()
 void AamsAccessibleAbilityChannelTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown";
-    // reset test value
+    // Reset test value
     g_testChannelElementId = -1;
     g_testChannelrequestId = -1;
     g_testChannelmode = -1;
@@ -115,7 +115,7 @@ void AamsAccessibleAbilityChannelTest::TearDown()
     g_testActionArguments.clear();
     // Deregister ElementOperator
     aams_->DeregisterElementOperator(0);
-    // stop AAMS
+    // Stop AAMS
     aams_->OnStop();
     mock_ = nullptr;
     aams_ = nullptr;
@@ -216,7 +216,6 @@ void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigNoCapability()
 void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibleAbilityConnection";
-    // accessibleAbility connection
     AppExecFwk::ExtensionAbilityInfo info;
     AAFwk::Want want;
     AppExecFwk::ElementName name;
@@ -237,7 +236,6 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
 void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
-    // accessibility interaction connection
     int windowId = 0;
     sptr<IAccessibilityElementOperator> operation = nullptr;
     int accountId = 0;
@@ -251,7 +249,7 @@ void AamsAccessibleAbilityChannelTest::CreateGesturePath(
     GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest CreateGesturePath";
-    // create gesture
+    // Create gesture
     GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);
     gesturePathDefine.SetEndPosition(endpoint);
@@ -269,9 +267,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -298,9 +296,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -326,9 +324,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -355,9 +353,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -384,9 +382,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -413,9 +411,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -442,9 +440,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -470,9 +468,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -498,9 +496,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -526,9 +524,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_ExecuteAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -557,9 +555,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_ExecuteAction_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -587,9 +585,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_GetWindows_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_002 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // not add interaction connection,add accessibleAbility connection
+    // Not add interaction connection,add accessibleAbility connection
     AddAccessibleAbilityConnection();
 
     ASSERT_TRUE(g_testStub);
@@ -610,9 +608,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
 HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigForTouchGuide();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -642,9 +640,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -670,9 +668,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -699,9 +697,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -728,9 +726,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -757,9 +755,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -789,9 +787,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 
@@ -814,9 +812,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001 start";
-    // create json
+    // Create json
     CreateAccessibilityConfigNoCapability();
-    // add connection
+    // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
 

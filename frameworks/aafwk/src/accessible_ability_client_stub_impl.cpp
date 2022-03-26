@@ -55,11 +55,11 @@ bool AccessibleAbilityClientStubImpl::RegisterUITestAbilityListener(
 void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int channelId)
 {
     HILOG_DEBUG("start.");
+    if (!channel) {
+        HILOG_ERROR("channel is nullptr.");
+        return;
+    }
     if (!uiTestEnabled_) {
-        if (!channel) {
-            HILOG_DEBUG("channel is nullptr.");
-            return;
-        }
         if (!listener_ || !listener_->GetContext()) {
             HILOG_ERROR("listener_ is nullptr or there is no context in listener_.");
             return;
@@ -83,16 +83,17 @@ void AccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>
 
         listener_->OnAbilityConnected();
     } else {
-        if (!channel) {
-            HILOG_DEBUG("channel is nullptr.");
-            return;
-        }
         if (!uiTestListener_) {
             HILOG_ERROR("listener_ is nullptr.");
             return;
         }
 
-        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId);
+        auto instance = AccessibilityUITestAbility::GetInstance();
+        if (!instance) {
+            HILOG_ERROR("instance is nullptr");
+            return;
+        }
+        instance->SetChannelId(channelId);
         AccessibilityOperator::AddChannel(channelId, channel);
         channelId_ = channelId;
         channel_ = channel;
@@ -133,7 +134,12 @@ void AccessibleAbilityClientStubImpl::Disconnect(const int channelId)
             listener_ = nullptr;
         }
     } else {
-        AccessibilityUITestAbility::GetInstance()->SetChannelId(channelId_);
+        auto instance = AccessibilityUITestAbility::GetInstance();
+        if (!instance) {
+            HILOG_ERROR("instance is nullptr");
+            return;
+        }
+        instance->SetChannelId(channelId_);
         if (uiTestListener_) {
             uiTestListener_->OnAbilityDisconnected();
             uiTestListener_ = nullptr;
@@ -200,8 +206,12 @@ void AccessibleAbilityClientStubImpl::OnGestureSimulateResult(const int sequence
 
         if (uiTestEnabled_) {
             HILOG_DEBUG("Dispatch the result of simulation gesture.");
-            AccessibilityUITestAbility::GetInstance()->DispatchOnSimulationGestureResult(
-                sequence, completedSuccessfully);
+            auto instance = AccessibilityUITestAbility::GetInstance();
+            if (!instance) {
+                HILOG_ERROR("instance is nullptr");
+                return;
+            }
+            instance->DispatchOnSimulationGestureResult(sequence, completedSuccessfully);
         }
     }
 }

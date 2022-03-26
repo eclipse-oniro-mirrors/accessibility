@@ -29,7 +29,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-const int64_t DOUBLE_TAP_MIN_TIME = 50;
+const int64_t DOUBLE_TAP_MIN_TIME = 50000; // microsecond
 
 struct SendEventArgs {
     std::shared_ptr<MMI::PointerEvent> event_;

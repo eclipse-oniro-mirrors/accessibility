@@ -19,7 +19,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-/* AccessibleAction     Parcel struct                   */
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
     int windowType = TYPE_WINDOW_INVALID;

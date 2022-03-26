@@ -76,13 +76,13 @@ private:
     NativeValue* OnGetFocusElementInfo(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO("called.");
-        // only support one or two params
+        // Only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
 
-        // unwrap focusType
+        // Unwrap focusType
         std::string focusType;
         if (!ConvertFromJsValue(engine, info.argv[PARAM0], focusType)) {
             HILOG_ERROR("ConvertFromJsValue failed");
@@ -137,7 +137,7 @@ private:
     NativeValue* OnGetRootElementInfo(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO("called.");
-        // only support zero or one params
+        // Only support zero or one params
         if (info.argc != ARGS_SIZE_ZERO && info.argc != ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
@@ -182,7 +182,7 @@ private:
     NativeValue* OnGetWindows(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO("called.");
-        // only support zero or one params
+        // Only support zero or one params
         if (info.argc != ARGS_SIZE_ZERO && info.argc != ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
@@ -225,13 +225,13 @@ private:
     NativeValue* OnExecuteCommonAction(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO("called.");
-        // only support one or two params
+        // Only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
 
-        // unwrap actionType
+        // Unwrap actionType
         std::string actionType;
         if (!ConvertFromJsValue(engine, info.argv[PARAM0], actionType)) {
             HILOG_ERROR("ConvertFromJsValue failed");
@@ -271,29 +271,29 @@ private:
     NativeValue* OnGestureSimulate(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO("called.");
-        // only support two or three params
+        // Only support two or three params
         if (info.argc != ARGS_SIZE_TWO && info.argc != ARGS_SIZE_THREE) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
 
-        // unwrap gesturePaths
+        // Unwrap gesturePaths
         napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
         std::vector<GesturePathDefine> gesturePaths;
         ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePaths);
 
-        // unwrap callback
+        // Unwrap callback
         if (info.argv[PARAM1]->TypeOf() != NATIVE_FUNCTION) {
             HILOG_ERROR("The type of params is %{public}d.", info.argv[PARAM1]->TypeOf());
             return engine.CreateUndefined();
         }
-        // create callback info
+        // Create callback info
         std::shared_ptr<jsGestureResultListenerInfo> pCallbackInfo = std::make_shared<jsGestureResultListenerInfo>();
         pCallbackInfo->env_ = reinterpret_cast<napi_env>(&engine);
         NAPI_CALL(reinterpret_cast<napi_env>(&engine), napi_create_reference(reinterpret_cast<napi_env>(&engine),
             reinterpret_cast<napi_value>(info.argv[PARAM1]), 1, &pCallbackInfo->callback_));
         pCallbackInfo->listener_ = std::make_shared<JSGestureResultListener>();
-        // save callback info
+        // Save callback info
         gestureInjectSequence ++;
         jsGestureResultListenerInfos[gestureInjectSequence] = pCallbackInfo;
 

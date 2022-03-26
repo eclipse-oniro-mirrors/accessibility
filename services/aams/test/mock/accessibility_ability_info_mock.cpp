@@ -54,11 +54,10 @@ void AccessibilityAbilityInfo::SetPackageName(string bundleName)
 
 AccessibilityAbilityInfo::AccessibilityAbilityInfo(const ExtensionAbilityInfo &abilityInfo)
 {
-    // CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM |
-    // CAPABILITY_RETRIEVE | CAPABILITY_GESTURE
-    uint32_t capabilities = 0x0008 | 0x0002 | 0x0010 | 0x0001 | 0x0020;
+    uint32_t capabilities = CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_TOUCH_GUIDE |
+        CAPABILITY_ZOOM | CAPABILITY_RETRIEVE;
     capabilities_ = capabilities;
-    eventTypes_ = 0xFFFFFFFF;   // TYPES_ALL_MASK
+    eventTypes_ = 0xFFFFFFFF; // TYPES_ALL_MASK
     name_ = abilityInfo.name;
     bundleName_ = abilityInfo.bundleName;
 }

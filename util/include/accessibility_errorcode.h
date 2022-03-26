@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-/* Accessibility errcode defines */
 enum ErrCode {
     NO_ERROR = 0,
     ERR_INVALID_STATE,

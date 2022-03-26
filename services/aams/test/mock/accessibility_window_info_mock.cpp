@@ -22,7 +22,6 @@ AccessibilityWindowInfo::AccessibilityWindowInfo()
 {
 }
 
-/* AccessibleAction Parcel struct */
 bool AccessibilityWindowInfo::ReadFromParcel(Parcel &parcel)
 {
     int windowType;

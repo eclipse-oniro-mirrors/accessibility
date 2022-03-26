@@ -497,7 +497,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    AccessibilityEventInfo GetRecord(const int index);    // remained
+    AccessibilityEventInfo GetRecord(const int index);    // Remained
 
     /**
      * @brief Gets the accessibility record list.
@@ -580,7 +580,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetTimeStamp(const int64_t eventTime);  // remained:for send event timestamp
+    void SetTimeStamp(const int64_t eventTime);  // Remained:for send event timestamp
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.

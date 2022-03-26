@@ -80,7 +80,7 @@ void AamsInjectorTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp";
     CreateAccessibilityConfigForTouchGuide();
-    // register bundleservice
+    // Register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
@@ -90,10 +90,9 @@ void AamsInjectorTest::SetUp()
     g_ins = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     g_ins->OnStart();
 
-    // accessibleAbility connection
     sptr<AccessibleAbilityClientStubImpl> accessibleAbility = new AccessibleAbilityClientStubImpl();
 
-    // add an ability connection client
+    // Add an ability connection client
     AppExecFwk::ExtensionAbilityInfo extensionInfo;
     sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
@@ -188,7 +187,6 @@ void AamsInjectorTest::CreateAccessibilityConfigForTouchGuide()
 void AamsInjectorTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "AamsInjectorTest AddAccessibilityWindowConnection";
-    // accessibility interaction connection
     int windowId = 0;
     sptr<IAccessibilityElementOperator> operation = nullptr;
     int accountId = 0;
