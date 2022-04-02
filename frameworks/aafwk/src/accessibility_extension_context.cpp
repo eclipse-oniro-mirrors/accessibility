@@ -48,7 +48,7 @@ bool AccessibilityExtensionContext::GestureSimulate(uint32_t sequence,
 
     if (gesturePathDefineList.size() > gesturePathDefineList.front().GetMaxStrokes() ||
         gesturePathDefineList.size() <= 0) {
-        HILOG_ERROR("The number of gesturePathDefine : [%{public}d] is not allowed.", gesturePathDefineList.size());
+        HILOG_ERROR("The number of gesturePathDefine : [%{public}zu] is not allowed.", gesturePathDefineList.size());
         return false;
     }
 
@@ -56,10 +56,10 @@ bool AccessibilityExtensionContext::GestureSimulate(uint32_t sequence,
     for (auto gesturePath : gesturePathDefineList) {
         totalDurationTime += gesturePath.GetDurationTime();
     }
-    HILOG_DEBUG("The total duration time is %{public}lld.", totalDurationTime);
+    HILOG_DEBUG("The total duration time is %{public}lld.", (long long)totalDurationTime);
 
     if (totalDurationTime > gesturePathDefineList.front().GetMaxStrokeDuration()) {
-        HILOG_ERROR("The total duration time : [%{public}lld] is not allowed.", totalDurationTime);
+        HILOG_ERROR("The total duration time : [%{public}lld] is not allowed.", (long long)totalDurationTime);
         return false;
     }
 

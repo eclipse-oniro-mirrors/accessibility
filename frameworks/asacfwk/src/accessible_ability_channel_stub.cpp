@@ -223,7 +223,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
 
     vector<AccessibilityWindowInfo> windows = GetWindows();
     if (!reply.WriteInt32((int32_t)windows.size())) {
-        HILOG_ERROR("windows.size() write error: %{public}d, ", windows.size());
+        HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;
     }
     for (auto &window : windows) {

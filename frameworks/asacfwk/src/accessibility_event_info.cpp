@@ -100,7 +100,7 @@ bool AccessibilityMemo::GetSource(AccessibilityElementInfo &elementInfo) const
     bool result = false;
     if (instance != nullptr) {
         result = instance->SearchElementInfosByAccessibilityId(channelId_, windowId_, elementId_, 0, elementInfos);
-        HILOG_DEBUG("elementInfos' size is [%{public}d]", elementInfos.size());
+        HILOG_DEBUG("elementInfos' size is [%{public}zu]", elementInfos.size());
         if (!elementInfos.empty()) {
             HILOG_INFO("called] GetSource OK");
             result = true;

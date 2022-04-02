@@ -326,7 +326,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
-    HILOG_INFO("observer size%{public}d", NAccessibilityClient::stateListeners_[eventType].size());
+    HILOG_INFO("observer size%{public}zu", NAccessibilityClient::stateListeners_[eventType].size());
     bool result = true;
     for (auto it = NAccessibilityClient::stateListeners_[eventType].begin();
         it != NAccessibilityClient::stateListeners_[eventType].end();) {
@@ -1146,7 +1146,7 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
             if (instance) {
                 callbackInfo->abilityList_ = instance->GetInstalledAbilities();
             }
-            HILOG_INFO("GetInstalled Executing GetInstalled[%{public}d]", callbackInfo->abilityList_.size());
+            HILOG_INFO("GetInstalled Executing GetInstalled[%{public}zu]", callbackInfo->abilityList_.size());
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -1204,7 +1204,7 @@ napi_value NAccessibilityClient::GetExtensionEnabled(napi_env env, napi_callback
             if (instance) {
                 callbackInfo->enabledAbilities_ = instance->GetEnabledAbilities();
             }
-            HILOG_INFO("GetExtensionEnabled Executing GetExtensionEnabled[%{public}d]",
+            HILOG_INFO("GetExtensionEnabled Executing GetExtensionEnabled[%{public}zu]",
                 callbackInfo->enabledAbilities_.size());
         },
         // Execute the complete function
@@ -1543,7 +1543,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
 
 napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start observer size%{public}d", NAccessibilityClient::captionListeners_.size());
+    HILOG_INFO("start observer size%{public}zu", NAccessibilityClient::captionListeners_.size());
     bool retValue = true;
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};

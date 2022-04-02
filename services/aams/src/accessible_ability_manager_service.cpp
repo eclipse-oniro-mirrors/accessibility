@@ -223,7 +223,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionPropertyCallback(
     }
     callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
     accountData->AddCaptionPropertyCallback(callback);
-    HILOG_DEBUG("the size of caption property callbacks is %{public}d",
+    HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
         accountData->GetCaptionPropertyCallbacks().size());
     return NO_ERROR;
 }
@@ -283,14 +283,14 @@ vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList
 
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
     vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
-    HILOG_DEBUG("abilityes count is %{public}d", abilities.size());
+    HILOG_DEBUG("abilityes count is %{public}zu", abilities.size());
     for (auto& ability : abilities) {
         if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
            (ability.GetAccessibilityAbilityType() & abilityTypes)) {
             infoList.push_back(ability);
         }
     }
-    HILOG_DEBUG("infoList count is %{public}d", infoList.size());
+    HILOG_DEBUG("infoList count is %{public}zu", infoList.size());
     return infoList;
 }
 
@@ -689,7 +689,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
     }
     bundleMgrProxy->QueryExtensionAbilityInfos(
         AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
-    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
+    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto newAbility : extensionInfos) {
         if (newAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package added is an extension ability and\
@@ -700,7 +700,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
                 return;
             }
             packageAccount->AddInstalledAbility(*accessibilityInfo);
-            HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}d",
+            HILOG_DEBUG("add new extension ability successfully and installed abilities's size is %{public}zu",
                 packageAccount->GetInstalledAbilities().size());
             hasNewExtensionAbility = true;
             break;
@@ -738,7 +738,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
     }
     bundleMgrProxy->QueryExtensionAbilityInfos(
         AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
-    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
+    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto changedAbility : extensionInfos) {
         if (changedAbility.bundleName == bundleName) {
             HILOG_DEBUG("The package changed is an extension ability and\
@@ -746,7 +746,7 @@ void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
             std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
                 std::make_shared<AccessibilityAbilityInfo>(changedAbility);
             packageAccount->AddInstalledAbility(*accessibilityInfo);
-            HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}d",
+            HILOG_DEBUG("update new extension ability successfully and installed abilities's size is %{public}zu",
                 packageAccount->GetInstalledAbilities().size());
             hasChanged = true;
             break;
@@ -828,7 +828,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
     }
 
     vector<AccessibilityAbilityInfo> installedAbilities = accountData->GetInstalledAbilities();
-    HILOG_DEBUG("installedAbilities is %{public}d.", installedAbilities.size());
+    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities.size());
     for (auto& installAbility : installedAbilities) {
         // temp deal: deviceId
         std::string deviceId;
