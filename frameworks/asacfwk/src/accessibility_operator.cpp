@@ -47,11 +47,11 @@ AccessibilityOperator &AccessibilityOperator::GetInstance()
         }
     }
 
-    HILOG_DEBUG("new instance instanceSize[%{public}u]", instances_.size());
+    HILOG_DEBUG("new instance instanceSize[%{public}zu]", instances_.size());
     sptr<AccessibilityOperator> inst(new AccessibilityOperator());
     instances_.push_back(inst);
 
-    HILOG_DEBUG("End instanceSize[%{public}u]", instances_.size());
+    HILOG_DEBUG("End instanceSize[%{public}zu]", instances_.size());
     return *(inst.GetRefPtr());
 }
 
@@ -104,7 +104,7 @@ bool AccessibilityOperator::GetRoot(int channelId, AccessibilityElementInfo &ele
     int activeWindow = instance->GetActiveWindow();
     HILOG_DEBUG("activeWindow is %{public}d", activeWindow);
     bool result = SearchElementInfosByAccessibilityId(channelId, activeWindow, NONE_ID, 0, elementInfos);
-    HILOG_DEBUG("element [elementSize:%{public}d]", elementInfos.size());
+    HILOG_DEBUG("element [elementSize:%{public}zu]", elementInfos.size());
     if (!elementInfos.empty()) {
         elementInfo = elementInfos[0];
     }
@@ -154,7 +154,7 @@ bool AccessibilityOperator::SearchElementInfosByAccessibilityId(int channelId,
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("search element info End[size:%{public}d]", elementInfosResult_.size());
+    HILOG_DEBUG("search element info End[size:%{public}zu]", elementInfosResult_.size());
     elementInfos = elementInfosResult_;
     return result;
 }
@@ -183,7 +183,7 @@ bool AccessibilityOperator::SearchElementInfosByText(int channelId, int accessib
         info.SetChannelId(channelId);
     }
     asyncElementOperatorMng_.SetOperationStatus(true);
-    HILOG_DEBUG("[size:%{public}d] end", elementInfosResult_.size());
+    HILOG_DEBUG("[size:%{public}zu] end", elementInfosResult_.size());
     elementInfos = elementInfosResult_;
 
     return result;
@@ -283,7 +283,7 @@ bool AccessibilityOperator::ExecuteAction(int channelId, int accessibilityWindow
 void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int sequenceNum)
 {
-    HILOG_DEBUG("Response[elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+    HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [sequenceNum:%{public}d]",
         infos.size(), sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         HILOG_DEBUG("Response");
@@ -296,7 +296,7 @@ void AccessibilityOperator::SetSearchElementInfoByAccessibilityIdResult(
 void AccessibilityOperator::SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
     const int sequenceNum)
 {
-    HILOG_DEBUG("Response [elementInfoSize:%{public}d] [sequenceNum:%{public}d]",
+    HILOG_DEBUG("Response [elementInfoSize:%{public}zu] [sequenceNum:%{public}d]",
         infos.size(), sequenceNum);
     for (auto iter = infos.begin(); iter != infos.end(); iter++) {
         elementInfosResult_.push_back(*iter);

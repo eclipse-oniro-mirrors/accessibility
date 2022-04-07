@@ -557,7 +557,7 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int requestId,
         return;
     }
     if (!data.WriteInt32(gestureSteps.size())) {
-        HILOG_ERROR("gestureSteps.size() write error: %{public}d, ", gestureSteps.size());
+        HILOG_ERROR("gestureSteps.size() write error: %{public}zu, ", gestureSteps.size());
         return;
     }
     for (auto &step : gestureSteps) {

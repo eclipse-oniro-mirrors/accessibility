@@ -85,7 +85,7 @@ void AccessibilityWindowListener::OnWindowUpdate(const sptr<Rosen::Accessibility
             break;
     }
     winMgr.UpdateWindowLayer(windowInfo);
-    HILOG_DEBUG("winMgr.a11yWindows[%{public}d]", winMgr.a11yWindows_.size());
+    HILOG_DEBUG("winMgr.a11yWindows[%{public}zu]", winMgr.a11yWindows_.size());
 }
 
 AccessibilityWindowInfoManager &AccessibilityWindowInfoManager::GetInstance()
@@ -254,12 +254,12 @@ void AccessibilityWindowInfoManager::SetInputFocusedWindow(int windowId)
 
 std::vector<AccessibilityWindowInfo> AccessibilityWindowInfoManager::GetAccessibilityWindows()
 {
-    HILOG_DEBUG("a11yWindows_ size[%{public}d]", a11yWindows_.size());
+    HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
     std::vector<AccessibilityWindowInfo> windows;
     for (auto window : a11yWindows_) {
         windows.push_back(window.second);
     }
-    HILOG_DEBUG("window size[%{public}d]", windows.size());
+    HILOG_DEBUG("window size[%{public}zu]", windows.size());
     for (auto logWindow : windows) {
         HILOG_DEBUG("logWindow id[%{public}d]", logWindow.GetWindowId());
     }

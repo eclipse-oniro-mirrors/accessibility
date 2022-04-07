@@ -719,7 +719,7 @@ void ConvertElementInfosToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
 {
     size_t index = 0;
-    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}d)", elementInfos.size());
+    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}zu)", elementInfos.size());
 
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
@@ -1418,7 +1418,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value contentsValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &contentsValue);
         napi_value data = nullptr;
-        size_t dataLen = 0;
+        uint32_t dataLen = 0;
         napi_get_array_length(env, contentsValue, &dataLen);
         for (int i = 0; i < int(dataLen); i++) {
             napi_get_element(env, contentsValue, i, &data);
@@ -1882,7 +1882,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
             AccessibilityAbilityInfo info = {};
             ConvertJSToAccessibleAbilityInfo(env, value, info);
             accessibleAbilityInfos.push_back(info);
-            HILOG_DEBUG("size = %{public}d ", accessibleAbilityInfos.size());
+            HILOG_DEBUG("size = %{public}zu ", accessibleAbilityInfos.size());
         }
     }
 }

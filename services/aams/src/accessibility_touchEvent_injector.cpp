@@ -198,7 +198,7 @@ void TouchEventInjector::InjectEventsInner()
         if (injectedEvents_[i]) {
             int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
             if (timeout < 0) {
-                HILOG_INFO("timeout is error.%{public}lld", timeout);
+                HILOG_INFO("timeout is error.%{public}lld", (long long)timeout);
             } else {
                 handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
             }

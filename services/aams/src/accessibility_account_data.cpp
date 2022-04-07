@@ -100,7 +100,7 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
         connectedA11yAbilities_.insert(make_pair(connection->GetElementName().GetURI(), connection));
     }
 
-    HILOG_DEBUG("Add ConnectedAbility: %{public}d", connectedA11yAbilities_.size());
+    HILOG_DEBUG("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
@@ -112,7 +112,7 @@ void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConn
         connectedA11yAbilities_.erase(it);
     }
 
-    HILOG_DEBUG("Remove ConnectedAbility: %{public}d", connectedA11yAbilities_.size());
+    HILOG_DEBUG("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState>& callback)
@@ -175,7 +175,7 @@ void AccessibilityAccountData::AddConnectingA11yAbility(const AppExecFwk::Elemen
         connectingA11yAbilities_.insert(make_pair(elementName.GetURI(), elementName));
     }
 
-    HILOG_DEBUG("Add ConnectingA11yAbility: %{public}d", connectingA11yAbilities_.size());
+    HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::ElementName& elementName)
@@ -186,7 +186,7 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::Ele
         connectingA11yAbilities_.erase(it);
     }
 
-    HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}d", connectingA11yAbilities_.size());
+    HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& elementName)
@@ -196,7 +196,7 @@ void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& 
         enabledAbilities_.insert(make_pair(elementName.GetURI(), elementName));
     }
 
-    HILOG_DEBUG("Add EnabledAbility: %{public}d", enabledAbilities_.size());
+    HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
@@ -234,7 +234,7 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleNam
 void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
 {
     std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
-    HILOG_DEBUG("EnabledAbility size(%{public}d)", enabledAbilities_.size());
+    HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
     if (it != enabledAbilities_.end()) {
         HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", elementName.GetBundleName().c_str());
         enabledAbilities_.erase(it);
@@ -252,7 +252,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
         }
     }
     installedAbilities_.push_back(abilityInfo);
-    HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}d",
+    HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}zu",
         installedAbilities_.size());
 }
 
@@ -335,7 +335,7 @@ const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::G
 
 const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("enabledAbilities_ size is (%{public}d).", enabledAbilities_.size());
+    HILOG_DEBUG("enabledAbilities_ size is (%{public}zu).", enabledAbilities_.size());
     for (auto& abilitie : enabledAbilities_) {
         std::string bundleName = abilitie.second.GetBundleName();
         HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
@@ -357,12 +357,12 @@ const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbiliti
         for (auto ability : connectedA11yAbilities_) {
             enabledAbilities.push_back(ability.second->GetAbilityInfo());
         }
-        HILOG_DEBUG("connectedA11yAbilities_ is (%{public}d) enabledAbilities is (%{public}d).",
+        HILOG_DEBUG("connectedA11yAbilities_ is (%{public}zu) enabledAbilities is (%{public}zu).",
             connectedA11yAbilities_.size(), enabledAbilities.size());
         return enabledAbilities;
     } else if (state == ABILITY_STATE_DISABLE) {
         std::vector<AccessibilityAbilityInfo> disabledAbilities = GetDisableAbilities();
-        HILOG_DEBUG("the size of disable abilities is %{public}d", disabledAbilities.size());
+        HILOG_DEBUG("the size of disable abilities is %{public}zu", disabledAbilities.size());
         return disabledAbilities;
     } else {
         return installedAbilities_;
@@ -645,7 +645,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         return false;
     }
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
-    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}d.", extensionInfos.size());
+    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto& info : extensionInfos) {
         std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
             std::make_shared<AccessibilityAbilityInfo>(info);
