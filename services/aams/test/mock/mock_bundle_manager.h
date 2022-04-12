@@ -162,7 +162,7 @@ public:
     MOCK_METHOD1(BundleClone, bool(const std::string &bundleName));
     MOCK_METHOD1(CheckBundleNameInAllowList, bool(const std::string &bundleName));
     MOCK_METHOD0(GetBundleUserMgr, sptr<IBundleUserMgr>());
-    MOCK_METHOD4(GetDistributedBundleInfo, bool(const std::string &networkId, int32_t userId,
+    MOCK_METHOD3(GetDistributedBundleInfo, bool(const std::string &networkId,
         const std::string &bundleName, DistributedBundleInfo &distributedBundleInfo));
     MOCK_METHOD1(GetAppType, std::string(const std::string &bundleName));
     MOCK_METHOD1(CheckIsSystemAppByUid, bool(const int uid));
