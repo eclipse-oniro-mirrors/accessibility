@@ -69,7 +69,7 @@ ohos_shared_library("accessibleability") {
   ]
 
   public_deps = [
-    "//base/global/i18n_standard/frameworks/intl:intl_util",
+    "//base/global/i18n/frameworks/intl:intl_util",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
   ]
 
