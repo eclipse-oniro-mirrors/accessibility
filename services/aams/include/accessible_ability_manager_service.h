@@ -16,6 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 #define ACCESSIBLE_ABILITY_MANAGER_SERVICE_H
 
+#include <future>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -42,37 +43,36 @@ namespace Accessibility {
 class AccessibilityAccountData;
 class TouchEventInjector;
 
-class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceClientStub {
+class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceStub {
     DECLARE_DELAYED_SINGLETON(AccessibleAbilityManagerService)
     DECLEAR_SYSTEM_ABILITY(AccessibleAbilityManagerService)
 public:
     void OnStart() override;
     void OnStop() override;
 
-    /* For AccessibleAbilityManagerServiceClientStub */
-    void SendEvent(const AccessibilityEventInfo& uiEvent, const int accountId) override;
+    /* For AccessibleAbilityManagerServiceStub */
+    void SendEvent(const AccessibilityEventInfo& uiEvent, const int32_t accountId) override;
 
-    uint32_t RegisterStateCallback(
-        const sptr<IAccessibleAbilityManagerServiceState>& callback, const int accountId) override;
+    uint32_t RegisterStateObserver(
+        const sptr<IAccessibleAbilityManagerStateObserver> &callback, const int32_t accountId) override;
 
-    uint32_t RegisterCaptionPropertyCallback(
-        const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback, const int accountId) override;
+    uint32_t RegisterCaptionObserver(
+        const sptr<IAccessibleAbilityManagerCaptionObserver> &callback, const int32_t accountId) override;
 
     std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes,
         const int32_t stateType) override;
 
-    void RegisterElementOperator(
-        const int windowId, const sptr<IAccessibilityElementOperator>& operation, const int accountId) override;
+    void RegisterElementOperator(const int32_t windowId,
+        const sptr<IAccessibilityElementOperator> &operation, const int32_t accountId) override;
 
-    void DeregisterElementOperator(const int windowId) override;
+    void DeregisterElementOperator(const int32_t windowId) override;
 
     CaptionProperty GetCaptionProperty() override;
-    bool SetCaptionProperty(const CaptionProperty& caption) override;
+    bool SetCaptionProperty(const CaptionProperty &caption) override;
     bool SetCaptionState(const bool state) override;
-    bool SetEnabled(const bool state) override;
 
     /* For InputFilter */
-    void SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector);
+    void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
     inline sptr<TouchEventInjector> GetTouchEventInjector()
     {
@@ -80,17 +80,17 @@ public:
     }
 
     /* For Key Event Filter */
-    bool IsWantedKeyEvent(MMI::KeyEvent& event);
+    bool IsWantedKeyEvent(MMI::KeyEvent &event);
 
     inline sptr<KeyEventFilter> GetKeyEventFilter()
     {
         return keyEventFilter_;
     }
 
-    void SetKeyEventFilter(const sptr<KeyEventFilter>& keyEventFilter);
+    void SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter);
 
     /* For DisplayResize */
-    void NotifyDisplayResizeStateChanged(int displayId, Rect& rect, float scale, float centerX, float centerY);
+    void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
 
     inline int32_t GetCurrentAccountId()
     {
@@ -102,12 +102,12 @@ public:
         return connectCounter_;
     }
 
-    inline std::shared_ptr<AAMSEventHandler>& GetMainHandler()
+    inline std::shared_ptr<AAMSEventHandler> &GetMainHandler()
     {
         return handler_;
     }
 
-    inline std::shared_ptr<AppExecFwk::EventRunner>& GetMainRunner()
+    inline std::shared_ptr<AppExecFwk::EventRunner> &GetMainRunner()
     {
         return runner_;
     }
@@ -118,10 +118,10 @@ public:
     /* For common event */
     void RemovedUser(int32_t accountId);
     void PresentUser();
-    void PackageChanged(std::string& bundleName);
-    void PackageRemoved(std::string& bundleName);
-    void PackageAdd(std::string& bundleName);
-    void PackageUpdateFinished(std::string& bundleName);
+    void PackageChanged(std::string &bundleName);
+    void PackageRemoved(std::string &bundleName);
+    void PackageAdd(std::string &bundleName);
+    void PackageUpdateFinished(std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
     void UpdateAbilities();
@@ -132,24 +132,20 @@ public:
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
 
-    bool SetTouchGuideState(const bool state) override;
-    bool SetGestureState(const bool state) override;
-    bool SetKeyEventObserverState(const bool state) override;
-
-    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it) override;
-    std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities() override;
+    bool EnableAbilities(std::vector<std::string> &abilities) override;
+    std::vector<std::string> GetEnabledAbilities() override;
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
-    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it) override;
-    bool RegisterUITestAbilityConnectionClient(const sptr<IRemoteObject>& obj) override;
-    bool DeregisterUITestAbilityConnectionClient() override;
-    int GetActiveWindow() override;
+    bool DisableAbilities(std::vector<std::string> &abilities) override;
+    bool EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
+    bool DisableUITestAbility() override;
+    int32_t GetActiveWindow() override;
 protected:
-    void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
-    void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
+    void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
 
 private:
-    void AddUITestClient(const sptr<IRemoteObject>& obj);
-    void RemoveUITestClient(sptr<AccessibleAbilityConnection>& connection);
+    void AddUITestClient(const sptr<IRemoteObject> &obj);
+    void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection);
 
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
@@ -157,17 +153,17 @@ private:
         ~StateCallbackDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(StateCallbackDeathRecipient);
 
-        void OnRemoteDied(const wptr<IRemoteObject>& remote) final;
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
     class InteractionOperationDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        InteractionOperationDeathRecipient(int windowId) : windowId_(windowId) {};
+        InteractionOperationDeathRecipient(int32_t windowId) : windowId_(windowId) {};
         ~InteractionOperationDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(InteractionOperationDeathRecipient);
 
-        void OnRemoteDied(const wptr<IRemoteObject>& remote) final;
-        int windowId_ = INVALID_WINDOW_ID;
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+        int32_t windowId_ = INVALID_WINDOW_ID;
     };
 
     class CaptionPropertyCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -176,14 +172,39 @@ private:
         ~CaptionPropertyCallbackDeathRecipient() final = default;
         DISALLOW_COPY_AND_MOVE(CaptionPropertyCallbackDeathRecipient);
 
-        void OnRemoteDied(const wptr<IRemoteObject>& remote) final;
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
     bool Init();
-    void SendEventInner(AccessibilityEventInfo& uiEvent);
-    sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int windowId);
-    void ClearFocus(int windowId);
-    void OutsideTouch(int windowId);
+    void InnerSendEvent(AccessibilityEventInfo &uiEvent);
+    void InnerRegisterStateObserver(std::promise<uint32_t> &syncPromise,
+        const sptr<IAccessibleAbilityManagerStateObserver> &callback, const int32_t accountId);
+    void InnerRegisterCaptionObserver(std::promise<uint32_t> &syncPromise,
+        const sptr<IAccessibleAbilityManagerCaptionObserver> &callback, const int32_t accountId);
+    void InnerGetAbilityList(std::promise<std::vector<AccessibilityAbilityInfo>> &syncPromise,
+        const uint32_t abilityTypes, const int32_t stateType);
+    void InnerRegisterElementOperator(const int32_t windowId,
+        const sptr<IAccessibilityElementOperator> operation, const int32_t accountId);
+    void InnerDeregisterElementOperator(const int32_t windowId);
+    void InnerGetCaptionProperty(std::promise<CaptionProperty> &syncPromise);
+    void InnerSetCaptionProperty(std::promise<bool> &syncPromise, const CaptionProperty &caption);
+    void InnerSetCaptionState(std::promise<bool> &syncPromise, const bool state);
+    void InnerGetEnabledState(std::promise<bool> &syncPromise);
+    void InnerGetCaptionState(std::promise<bool> &syncPromise);
+    void InnerGetTouchGuideState(std::promise<bool> &syncPromise);
+    void InnerGetGestureState(std::promise<bool> &syncPromise);
+    void InnerGetKeyEventObserverState(std::promise<bool> &syncPromise);
+    void InnerEnableAbilities(std::promise<bool> &syncPromise, std::vector<std::string> &abilities);
+    void InnerGetEnabledAbilities(std::promise<std::vector<std::string>> &syncPromise);
+    void InnerGetInstalledAbilities(std::promise<std::vector<AccessibilityAbilityInfo>> &syncPromise);
+    void InnerDisableAbilities(std::promise<bool> &syncPromise, std::vector<std::string> &abilities);
+    void InnerEnableUITestAbility(std::promise<bool> &syncPromise, const sptr<IRemoteObject>& obj);
+    void InnerDisableUITestAbility(std::promise<bool> &syncPromise);
+    void InnerGetActiveWindow(std::promise<int32_t> &syncPromise);
+
+    sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);
+    void ClearFocus(int32_t windowId);
+    void OutsideTouch(int32_t windowId);
     void OnChanging(bool selfChange, Uri &uri);
     void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
 
@@ -196,8 +217,8 @@ private:
     bool isRunning_ = false;
     int32_t currentAccountId_ = 0;
     uint32_t connectCounter_ = 1;
-    AccessibilityCommonEventRegistry accessibilityCommonEventRegistry_;
-    std::map<int, sptr<AccessibilityAccountData>> a11yAccountsData_;
+    std::shared_ptr<AccessibilityCommonEventRegistry> commonEventRegistry_ = nullptr;
+    std::map<int32_t, sptr<AccessibilityAccountData>> a11yAccountsData_;
     sptr<AppExecFwk::IBundleMgr> bundleManager_;
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_;

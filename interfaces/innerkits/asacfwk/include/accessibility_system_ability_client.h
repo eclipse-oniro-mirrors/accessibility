@@ -16,34 +16,21 @@
 #ifndef ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H
 #define ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H
 
-#include <cstdint>
-#include <list>
 #include <map>
-#include <mutex>
-#include <string>
 #include <vector>
-
 #include "accessibility_ability_info.h"
 #include "accessibility_caption.h"
 #include "accessibility_element_operator.h"
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
-#include "context.h"
-#include "refbase.h"
+#include "accessibility_window_info.h"
 
 namespace OHOS {
 namespace Accessibility {
-enum AccessibilityControlType : int {
+enum AccessibilityControlType : int32_t {
     CONTENT_CONTROLS = 0x00000001,
     CONTENT_ICONS = 0x00000002,
     CONTENT_TEXT = 0x00000004,
-};
-
-enum AbilityStateType : int32_t {
-    ABILITY_STATE_INVALID = 0,
-    ABILITY_STATE_ENABLE,
-    ABILITY_STATE_DISABLE,
-    ABILITY_STATE_INSTALLED,
 };
 
 /*
@@ -55,71 +42,6 @@ enum AbilityStateType : int32_t {
 class AccessibilitySystemAbilityClient {
 public:
     static const int32_t NUM_INT32 = 32;
-    static const uint32_t STATE_ACCESSIBILITY_ENABLED = 0x00000001;
-    static const uint32_t STATE_EXPLORATION_ENABLED = 0x00000002;
-    static const uint32_t STATE_CAPTION_ENABLED = 0x00000004;
-    static const uint32_t STATE_KEYEVENT_ENABLED = 0x00000008;
-    static const uint32_t STATE_GESTURE_ENABLED = 0x00000010;
-
-    /**
-     * @brief Construct.
-     * @param context Indicates the context of the associated ability.
-     * @param accountId User Id
-     */
-    AccessibilitySystemAbilityClient(const AppExecFwk::Context& context, int accountId);
-
-    /**
-     * @brief Register the interaction operation, so the AA can get node info from ACE.
-     * @param windowId Window ID
-     * @param operation The callback object.
-     * @param accountId User ID
-     * @return 0: Succeed ; otherwise is failed.
-     */
-    int RegisterElementOperator(
-        const int windowId, const std::shared_ptr<AccessibilityElementOperator>& operation, int accountId);
-
-    /**
-     * @brief Deregister the interaction operation.
-     * @param windowId Window ID
-     * @return
-     */
-    void DeregisterElementOperator(const int windowId);
-
-    /**
-     * @brief Checks whether accessibility ability is enabled.
-     * @param -
-     * @return true: enabled; false: disabled
-     */
-    bool IsEnabled();
-
-    /**
-     * @brief Checks whether touch exploration ability is enabled.
-     * @param -
-     * @return true: enabled; false: disabled
-     */
-    bool IsTouchExplorationEnabled();
-
-    bool IsCaptionEnabled();
-
-    /**
-     * @brief Queries the list of accessibility abilities.
-     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
-     *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
-     * @param stateType Indicates the accessibility ability status.
-     *                  1 indicates that the ability is enabled;
-     *                  2 indicates that the ability is disabled;
-     *                  4 indicates that the ability has been installed.
-     * @return
-     */
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType);
-
-    /**
-     * @brief Obtains the AccessibilitySystemAbilityClient instance.
-     * @param abilityContext Indicates the context of the associated ability.
-     * @return AccessibilitySystemAbilityClient instance
-     */
-    static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance(const AppExecFwk::Context& abilityContext);
 
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.
@@ -129,16 +51,78 @@ public:
     static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance();
 
     /**
+     * @brief Desconstruct.
+     * @param
+     * @return
+     */
+    virtual ~AccessibilitySystemAbilityClient() = default;
+
+    /**
+     * @brief Register the interaction operation, so the AA can get node info from ACE.
+     * @param windowId Window ID
+     * @param operation The callback object.
+     * @param accountId User ID
+     * @return 0: Succeed ; otherwise is failed.
+     */
+    virtual int32_t RegisterElementOperator(const int32_t windowId,
+        const std::shared_ptr<AccessibilityElementOperator> &operation, int32_t accountId) = 0;
+
+    /**
+     * @brief Deregister the interaction operation.
+     * @param windowId Window ID
+     * @return
+     */
+    virtual void DeregisterElementOperator(const int32_t windowId) = 0;
+
+    /**
+     * @brief Checks whether accessibility ability is enabled.
+     * @param -
+     * @return true: enabled; false: disabled
+     */
+    virtual bool IsEnabled() = 0;
+
+    /**
+     * @brief Checks whether touch exploration ability is enabled.
+     * @param -
+     * @return true: enabled; false: disabled
+     */
+    virtual bool IsTouchExplorationEnabled() = 0;
+
+    /**
+     * @brief Checks whether Caption ability is enabled.
+     * @param -
+     * @return true: enabled; false: disabled
+     */
+    virtual bool IsCaptionEnabled() = 0;
+
+    /**
+     * @brief Queries the list of accessibility abilities.
+     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
+     *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
+     * @param stateType Indicates the accessibility ability status.
+     *                  1 indicates that the ability is enabled;
+     *                  2 indicates that the ability is disabled;
+     *                  4 indicates that the ability has been installed.
+     * @return Return accessibility ability infos by specified types.
+     */
+    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
+        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType) = 0;
+
+    /**
      * @brief Obtains the properties of the accessibility caption function.
      * Remained for caption.
      * @param -
      * @return Returns the properties of the accessibility caption function.
      */
-    CaptionProperty GetCaptionProperty() const;
+    virtual CaptionProperty GetCaptionProperty() const = 0;
 
-    bool SetCaptionProperty(const CaptionProperty& caption);
-
-    bool SetCaptionState(const bool state);
+    /**
+     * @brief Set the properties of the accessibility caption function.
+     * Remained for caption.
+     * @param - The properties of the accessibility caption.
+     * @return Returns success : true, failed : false.
+     */
+    virtual bool SetCaptionProperty(const CaptionProperty &caption) = 0;
 
     /**
      * @brief Checks whether the accessibility caption function is enabled.
@@ -146,7 +130,7 @@ public:
      * @param -
      * @return True if the caption function is enabled; returns False otherwise.
      */
-    bool IsAccessibilityCaptionEnabled() const;
+    virtual bool IsAccessibilityCaptionEnabled() const = 0;
 
     /**
      * @brief Sends an accessibility event.
@@ -154,14 +138,14 @@ public:
      * @param componentId Indicates the ID of the component to be associated with the event.
      * @return true: send ok; otherwise is refused.
      */
-    bool SendEvent(const EventType eventType, const int componentId);
+    virtual bool SendEvent(const EventType eventType, const int32_t componentId) = 0;
 
     /**
      * @brief Sends information about an accessibility event.
      * @param event Indicates the accessibility event information specified by AccessibilityEventInfo.
      * @return true: send ok; otherwise is refused.
      */
-    bool SendEvent(const AccessibilityEventInfo& event);
+    virtual bool SendEvent(const AccessibilityEventInfo &event) = 0;
 
     /**
      * @brief Subscribes to the specified type of accessibility status change events.
@@ -169,25 +153,22 @@ public:
      *              by AccessibilityStateObserver.
      * @param eventType Indicates the status type, which is specified by AccessibilityStateEvent
      *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
+     *              #EVENT_SCREEN_MAGNIFIER_CHANGED and EVENT_AUTO_CLICK_CHANGED and #EVENT_SHORT_KEY_CHANGED
      * @return true: send ok; otherwise is refused.
      */
-    bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer, const int eventType);
+    virtual bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
+        const uint32_t eventType) = 0;
 
     /**
      * @brief Unsubscribe the specified type of accessibility status change events.
      * @param observer Indicates the registered accessibility status event observer.
      * @param eventType Indicates the status type, which is specified by AccessibilityStateEvent
      *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
+     *              #EVENT_SCREEN_MAGNIFIER_CHANGED and EVENT_AUTO_CLICK_CHANGED and #EVENT_SHORT_KEY_CHANGED
      * @return true: send ok; otherwise is refused.
      */
-    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer, const int eventType);
-
-    /**
-     * @brief Unsubscribe the accessibility status change events from the observer.
-     * @param observer Indicates the registered accessibility status event observer.
-     * @return true is succeed otherwise is failed.
-     */
-    bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver>& observer);
+    virtual bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
+        const uint32_t eventType) = 0;
 
     /**
      * @brief Inner function for aams status update;
@@ -195,7 +176,7 @@ public:
      * @param enabled true is enabled otherwise is disabled.
      * @return -
      */
-    void UpdateEnabled(const bool enabled);
+    virtual void UpdateEnabled(const bool enabled) = 0;
 
     /**
      * @brief Inner function for aams status update;
@@ -203,161 +184,178 @@ public:
      * @param enabled true is enabled otherwise is disabled.
      * @return -
      */
-    void UpdateTouchExplorationEnabled(const bool enabled);
+    virtual void UpdateTouchExplorationEnabled(const bool enabled) = 0;
 
     /**
-     * @brief Update the properties of caption.
-     * @param
-     * @return
+     * @brief Inner function for aams status update;
+     *        Set whether gesture state is enabled.
+     * @param enabled true is enabled otherwise is disabled.
+     * @return -
      */
-    void UpdatecaptionProperty(const CaptionProperty& property);
+    virtual void UpdateGestureState(const bool state) = 0;
 
-    void SetCaptionEnabled(const bool enabled);
+    /**
+     * @brief Inner function for aams status update;
+     *        Set whether key event observer is enabled.
+     * @param enabled true is enabled otherwise is disabled.
+     * @return -
+     */
+    virtual void UpdateKeyEventObserverState(const bool state) = 0;
 
-    bool SetEnabled(const bool state);
+    /**
+     * @brief Inner function for aams status update;
+     *        Set whether caption is enabled.
+     * @param enabled true is enabled otherwise is disabled.
+     * @return -
+     */
+    virtual void UpdateCaptionEnabled(const bool enabled) = 0;
 
     /**
      * @brief Get eventlist that accessibility abilities are needed.
      * @return enabled eventlist mask.
      */
-    int GetEnabledEventMask();
+    virtual int32_t GetEnabledEventMask() = 0;
 
     /**
-     * @brief Check otherwise Accessibility Ability(AA) is conflicted with
-     * other AA. Remained for setting subsystem.
-     * @param abilityName The AA specified (include
-     * deviceId/bundleName/abilityName)
-     * @return LAUNCH_CONFLICT_NONE: no conflict;
-     *          LAUNCH_CONFLICT_TOUCH_BROWSER: conflict with touch browser;
-     *          LAUNCH_CONFLICT_DISPLAY_RESIZE: conflict with display resize;
-     *          LAUNCH_CONFLICT_KEY_EVENT: conflict with key event;
+     * @brief Add the listener of caption.
+     * @param ob The listener of caption.
+     * @param type The type of caption observer.
+     * @return Return true if add listener successfully, else return false.
      */
-    int CheckConflictWithEnabledAbility(const AppExecFwk::ElementName& abilityName)
-    {
-        return 0;
-    }
+    virtual bool AddCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) = 0;
 
     /**
-     * @brief Get the AA specified capability.
-     * Remained for setting subsystem.
-     * @param abilityName The AA specified (include deviceId/bundleName/abilityName)
-     * @return refer to AccessibilityAbilityInfo.Capability
+     * @brief delete the listener of caption.
+     * @param ob The listener of caption.
+     * @param type The type of caption observer.
+     * @return Return true if delete listener successfully, else return false.
      */
-    int GetAccessibleAbilityCapability(const AppExecFwk::ElementName& abilityName)
-    {
-        return 0;
-    }
+    virtual bool DeleteCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) = 0;
 
     /**
-     * @brief Inner function.
-     *        Get the callback object registered by ACE.
-     * @param windowId The window id related the operation object registered.
-     * @return The callback object of ACE.
+     * @brief Get the enabled state of accessibility.
+     * @return Return true if accessibility is enabled, else return false.
      */
-    std::shared_ptr<AccessibilityElementOperator> GetOperatorObject(int windowId);
-
-    bool AddCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type);
-    bool DeleteCaptionListener(const std::shared_ptr<CaptionObserver>& ob, const int type);
-
-    bool GetEnabledState();
-    bool GetCaptionState();
-    bool GetTouchGuideState();
-    bool GetGestureState();
-    bool GetKeyEventObserverState();
-
-    bool SetTouchGuideState(const bool state);
-    bool SetGestureState(const bool state);
-    bool SetKeyEventObserverState(const bool state);
-
-    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
-    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities();
-    std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities();
-    bool SetCaptionPropertyTojson(const CaptionProperty& caption);
-    bool SetCaptionStateTojson(const bool state);
-    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
-    int GetActiveWindow();
-
-private:
-    /**
-     * @brief Clean the AAMS object data.
-     * @param remote The object access to AAMS.
-     * @return
-     */
-    void ResetService(const wptr<IRemoteObject>& remote);
+    virtual bool GetEnabledState() = 0;
 
     /**
-     * @brief Notify the state of accessibility is changed.
-     * @param
-     * @return
+     * @brief Get the enabled state of caption.
+     * @return Return true if caption is enabled, else return false.
      */
-    void NotifyAccessibilityStateChanged();
+    virtual bool GetCaptionState() = 0;
 
     /**
-     * @brief Notify the state of touch exploration is changed.
-     * @param
-     * @return
+     * @brief Get the enabled state of touch guide.
+     * @return Return true if touch guide is enabled, else return false.
      */
-    void NotifyTouchExplorationStateChanged();
+    virtual bool GetTouchGuideState() = 0;
 
     /**
-     * @brief Notify the state of caption is changed.
-     * @param
-     * @return
+     * @brief Get the enabled state of gesture.
+     * @return Return true if gesture is enabled, else return false.
      */
-    void NotifyCaptionStateChanged();
+    virtual bool GetGestureState() = 0;
 
     /**
-     * @brief Notify the properties of caption is changed.
-     * @param
-     * @return
+     * @brief Get the enabled state of key event observer.
+     * @return Return true if key event observer is enabled, else return false.
      */
-    void NotifyCaptionChanged();
+    virtual bool GetKeyEventObserverState() = 0;
 
     /**
-     * @brief Check the event type is valid or not.
-     * @param eventType The data of event type.
-     * @return True: The data of event type is valid; otherwise is not.
+     * @brief Enabled specified abilities
+     * @param abilities The specified abilities.
+     * @return Return true if the command is sent successfully, else return false.
      */
-    bool CheckEventType(EventType eventType);
+    virtual bool EnableAbilities(std::vector<std::string> &abilities) = 0;
 
     /**
-     * @brief Check the action type is valid or not.
-     * @param eventType The data of event type.
-     * @return True: The data of event type is valid; otherwise is not.
+     * @brief Get installed abilities.
+     * @return Return the installed accessibility ability infos.
      */
-    bool CheckActionType(ActionType actionType);
+    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
 
-    void NotifyKeyEventStateChanged();
+    /**
+     * @brief Get enabled abilities.
+     * @return Return the info of enabled abilities.
+     */
+    virtual std::vector<std::string> GetEnabledAbilities() = 0;
 
-    void NotifyGestureStateChanged();
+    /**
+     * @brief Set caption property
+     * @param caption The caption property to set.
+     * @return Return true if set caption property successfully, else return false.
+     */
+    virtual bool SetCaptionPropertyTojson(const CaptionProperty &caption) = 0;
 
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersAccessibilityState_;
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersTouchState_;
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_;
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_;
+    /**
+     * @brief Set caption state
+     * @param state The caption state to set.
+     * @return Return true if set caption state successfully, else return false.
+     */
+    virtual bool SetCaptionStateTojson(const bool state) = 0;
 
-    CaptionProperty captionProperty_;
-    int accountId_ = 0;
-    bool isEnabled_ = 0;
-    bool isTouchExplorationEnabled_ = 0;
-    bool isCaptionEnabled_ = 0;
-    std::recursive_mutex asacProxyLock_;
-    static std::shared_ptr<AccessibilitySystemAbilityClient> instance_;
-    std::shared_ptr<AccessibilityElementOperator> interactionOperator_ = nullptr;
-    std::map<int, std::shared_ptr<AccessibilityElementOperator>> interactionOperators_;
-    int connectionWindowId_ = 0;
+    /**
+     * @brief Disabled specified abilities
+     * @param abilities The specified abilities.
+     * @return Return true if the command is sent successfully, else return false.
+     */
+    virtual bool DisableAbilities(std::vector<std::string> &abilities) = 0;
 
-    std::vector<AccessibilityAbilityInfo> installedAbilities_;
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_;
+    /**
+     * @brief Enable Screen Magnifier
+     * @return Return true if the command is sent successfully, else return false.
+     */
+    virtual bool EnableScreenMagnifier() = 0;
+    /**
+     * @brief Disable Screen Magnifier
+     * @return Return true if the command is sent successfully, else return
+     * false.
+     */
+    virtual bool DisableScreenMagnifier() = 0;
+    /**
+     * @brief Get Screen Magnifier feather state
+     * @return Return the open state of screen magnifier.
+     * false.
+     */
+    virtual bool GetScreenMagnifierState() = 0;
 
-    bool isFilteringKeyEventsEnabled_ = 0;
-    bool isGesturesSimulationEnabled_ = 0;
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersKeyEventState_;
-    std::vector<std::shared_ptr<AccessibilityStateObserver>> observersGestureState_;
+    /**
+     * @brief Enable AutoClick
+     * @return Return true if the command is sent successfully, else return false.
+     */
+    virtual bool EnableAutoClick() = 0;
+    /**
+     * @brief Disable AutoClick
+     * @return Return true if the command is sent successfully, else return
+     * false.
+     */
+    virtual bool DisableAutoClick() = 0;
+    /**
+     * @brief Get AutoClick feather state
+     * @return Return the open state of screen magnifier.
+     * false.
+     */
+    virtual bool GetAutoClickState() = 0;
 
-    struct Impl;
-    std::unique_ptr<Impl> pimpl;
+    /**
+     * @brief Enable short key
+     * @return Return true if the command is sent successfully, else return false.
+     */
+    virtual bool EnableShortKey() = 0;
+    /**
+     * @brief Disable short key
+     * @return Return true if the command is sent successfully, else return
+     * false.
+     */
+    virtual bool DisableShortKey() = 0;
+    /**
+     * @brief Get short key feather state
+     * @return Return the open state of screen magnifier.
+     * false.
+     */
+    virtual bool GetShortKeyState() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif
+#endif // ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H

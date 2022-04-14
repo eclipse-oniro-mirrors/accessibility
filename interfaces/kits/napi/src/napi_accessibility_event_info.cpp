@@ -14,7 +14,7 @@
  */
 
 #include "napi_accessibility_event_info.h"
-#include "accessibility_event_info.h"
+#include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -25,14 +25,15 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NAccessibilityEventInfo::cons_ = nullptr;
-napi_ref NAccessibilityEventInfo::consRef_ = nullptr;
+thread_local napi_ref  NAccessibilityEventInfo::consRef_ = nullptr;
 
 void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
 {
     napi_property_descriptor descForAccessibilityEventInfo[] = {
         DECLARE_NAPI_FUNCTION("getSource", NAccessibilityEventInfo::GetSource),
     };
+
+    napi_value constructor = nullptr;
 
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
@@ -42,8 +43,8 @@ void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
             nullptr,
             sizeof(descForAccessibilityEventInfo) / sizeof(descForAccessibilityEventInfo[0]),
             descForAccessibilityEventInfo,
-            &NAccessibilityEventInfo::cons_));
-    napi_create_reference(env, NAccessibilityEventInfo::cons_, 1, &NAccessibilityEventInfo::consRef_);
+            &constructor));
+    napi_create_reference(env, constructor, 1, &NAccessibilityEventInfo::consRef_);
 }
 
 napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)
@@ -77,8 +78,10 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
         env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityEventInfoData *callbackInfo = (NAccessibilityEventInfoData*)data;
-            AccessibilityEventInfo eventInfo = callbackInfo->eventInfo_;
-            callbackInfo->result_ = eventInfo.GetSource(callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->GetSource(callbackInfo->eventInfo_, callbackInfo->nodeInfo_);
+            }
         },
         [](napi_env env, napi_status status, void* data) {
             NAccessibilityEventInfoData* callbackInfo = (NAccessibilityEventInfoData*)data;
@@ -88,8 +91,9 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
             argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {

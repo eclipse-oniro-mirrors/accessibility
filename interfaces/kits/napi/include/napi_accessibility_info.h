@@ -16,6 +16,7 @@
 #ifndef NAPI_ACCESSIBILITY_INFO_H
 #define NAPI_ACCESSIBILITY_INFO_H
 
+#include <map>
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_element_info.h"
@@ -31,7 +32,7 @@ struct NAccessibilityInfoData {
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> nodeInfos_ {};
     OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
     std::string content_ = "";
-    int childIndex_ = 0;
+    int32_t childIndex_ = 0;
     std::map<std::string, std::string> actionArguments_;
     bool ret_ = false;
 };
@@ -48,8 +49,7 @@ public:
     static napi_value GetChild(napi_env env, napi_callback_info info);
     static napi_value GetParent(napi_env env, napi_callback_info info);
 
-    static napi_value cons_;
-    static napi_ref consRef_;
+    static thread_local napi_ref consRef_;
 private:
     NElementInfo() = default;
     ~NElementInfo() = default;

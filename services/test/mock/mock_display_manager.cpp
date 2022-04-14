@@ -13,19 +13,18 @@
  * limitations under the License.
  */
 
-#include "display.h"
-#include "display_manager.h"
-#include "windowmanager/utils/include/display_info.h"
-
 #include <cinttypes>
-
+#include "display_manager.h"
+#include "display.h"
 #include "dm_common.h"
 #include "singleton_delegator.h"
+#include "windowmanager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
 WM_IMPLEMENT_SINGLE_INSTANCE(DisplayManager)
 class DisplayManager::Impl : public RefBase {
-friend class DisplayManager;
+    friend class DisplayManager;
+
 private:
     bool CheckRectValid(const Media::Rect& rect, int32_t oriHeight, int32_t oriWidth) const;
     bool CheckSizeValid(const Media::Size& size, int32_t oriHeight, int32_t oriWidth) const;
@@ -43,16 +42,13 @@ bool DisplayManager::Impl::CheckSizeValid(const Media::Size& size, int32_t oriHe
 }
 
 void DisplayManager::Impl::ClearDisplayStateCallback()
-{
-}
+{}
 
 DisplayManager::DisplayManager()
-{
-}
+{}
 
 DisplayManager::~DisplayManager()
-{
-}
+{}
 
 DisplayId DisplayManager::GetDefaultDisplayId()
 {
@@ -71,8 +67,8 @@ std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId display
     return nullptr;
 }
 
-std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId, const Media::Rect &rect,
-                                                               const Media::Size &size, int rotation)
+std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(
+    DisplayId displayId, const Media::Rect& rect, const Media::Size& size, int rotation)
 {
     return nullptr;
 }
@@ -151,6 +147,5 @@ uint32_t DisplayManager::GetScreenBrightness(uint64_t screenId) const
 }
 
 void DisplayManager::NotifyDisplayEvent(DisplayEvent event)
-{
-}
+{}
 } // namespace OHOS::Rosen

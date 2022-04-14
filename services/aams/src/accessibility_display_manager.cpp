@@ -30,7 +30,7 @@ AccessibilityDisplayManager &AccessibilityDisplayManager::GetInstance()
     return displayMgr;
 }
 
-const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int id)
+const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int32_t id)
 {
     return Rosen::DisplayManager::GetInstance().GetDisplayById((Rosen::DisplayId)id);
 }

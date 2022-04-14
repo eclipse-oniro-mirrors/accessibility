@@ -21,7 +21,6 @@
 
 #include "accessibility_display_manager.h"
 #include "accessibility_event_info.h"
-#include "accessibility_extension_context.h"
 #include "accessible_ability_manager_service.h"
 #include "event_handler.h"
 #include "event_runner.h"
@@ -282,12 +281,12 @@ private:
      * @param secondP the endpoint
      * @return the type of swipe direction
      */
-    int GetSwipeDirection(Pointer firstP, Pointer secondP);
+    int32_t GetSwipeDirection(Pointer firstP, Pointer secondP);
 
-    static constexpr int SWIPE_UP = 0;
-    static constexpr int SWIPE_DOWN = 1;
-    static constexpr int SWIPE_LEFT = 2;
-    static constexpr int SWIPE_RIGHT = 3;
+    static constexpr int32_t SWIPE_UP = 0;
+    static constexpr int32_t SWIPE_DOWN = 1;
+    static constexpr int32_t SWIPE_LEFT = 2;
+    static constexpr int32_t SWIPE_RIGHT = 3;
 
     static constexpr GestureType GESTURE_DIRECTION[DIRECTION_NUM] = {
         GestureType::GESTURE_SWIPE_UP,
@@ -337,7 +336,7 @@ private:
     float xMinPixels_ = 0;
     float yMinPixels_ = 0;
     float threshold_ = 0;
-    int doubleTapScaledSlop_ = 0;
+    int32_t doubleTapScaledSlop_ = 0;
     MMI::PointerEvent::PointerItem prePointer_ = {};
     MMI::PointerEvent::PointerItem startPointer_ = {};
     std::vector<Pointer> pointerRoute_ {};

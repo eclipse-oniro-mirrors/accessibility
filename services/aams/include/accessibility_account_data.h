@@ -21,27 +21,20 @@
 #include <vector>
 
 #include "accessibility_caption.h"
-#include "accessibility_state_event.h"
-#include "accessibility_system_ability_client.h"
 #include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
-#include "accessible_ability_manager_service_caption_property_interface.h"
-#include "accessible_ability_manager_service_state_interface.h"
+#include "i_accessible_ability_manager_caption_observer.h"
+#include "i_accessible_ability_manager_state_observer.h"
 #include "element_name.h"
 #include "preferences_helper.h"
-#include "refbase.h"
 
 namespace OHOS {
 namespace Accessibility {
-using CaptionPropertyCallbacks = std::vector<sptr<IAccessibleAbilityManagerServiceCaptionProperty>>;
+using CaptionPropertyCallbacks = std::vector<sptr<IAccessibleAbilityManagerCaptionObserver>>;
 class AccessibleAbilityConnection;
-
-class IAccessibleAbilityManagerServiceState;
-
 class AccessibilityWindowConnection;
-class IAccessibleAbilityManagerServiceCaptionProperty;
 
-enum STATE : int {
+enum STATE : int32_t {
     ACCESSIBILITY,
     TOUCHGUIDE,
     GESTURE,
@@ -51,7 +44,7 @@ enum STATE : int {
 
 class AccessibilityAccountData final : public RefBase {
 public:
-    AccessibilityAccountData(int accountId);
+    AccessibilityAccountData(int32_t accountId);
     ~AccessibilityAccountData();
 
     /**
@@ -59,7 +52,7 @@ public:
      * @param
      * @return Returns accountId.
      */
-    int GetAccountId();
+    int32_t GetAccountId();
 
     /**
      * @brief Get Accessibility state.
@@ -94,14 +87,14 @@ public:
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void RemoveConnectingA11yAbility(const AppExecFwk::ElementName& elementName);
+    void RemoveConnectingA11yAbility(const std::string &bundleName);
 
     /**
      * @brief Add accessibility monitoring connection.
      * @param callback Accessibility monitoring connection.
      * @return
      */
-    void AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState>& callback);
+    void AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback);
 
     /**
      * @brief Remove accessibility monitoring connection.
@@ -110,7 +103,7 @@ public:
      */
     void RemoveStateCallback(const wptr<IRemoteObject>& callback);
 
-    void AddCaptionPropertyCallback(const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback);
+    void AddCaptionPropertyCallback(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback);
     void RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback);
     /**
      * @brief Add interface operation interactive connection.
@@ -121,30 +114,30 @@ public:
      * @return
      */
     void AddAccessibilityWindowConnection(
-        const int windowId, const sptr<AccessibilityWindowConnection>& interactionConnection);
+        const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection);
 
     /**
      * @brief Remove interface operation interactive connection.
      * @param windowId Interface operation interactive connection the corresponding window id.
      * @return
      */
-    void RemoveAccessibilityWindowConnection(const int windowId);
+    void RemoveAccessibilityWindowConnection(const int32_t windowId);
 
     /**
      * @brief Add connecting accessibility.
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void AddConnectingA11yAbility(const AppExecFwk::ElementName& elementName);
+    void AddConnectingA11yAbility(const std::string &bundleName);
 
-    void AddEnabledAbility(const AppExecFwk::ElementName& elementName); // For UT
+    void AddEnabledAbility(const std::string &bundleName); // For UT
 
     /**
      * @brief Remove accessibility that have been opened.
      * @param elementName Accessibility corresponding elementName.
      * @return
      */
-    void RemoveEnabledAbility(const AppExecFwk::ElementName& elementName);
+    void RemoveEnabledAbility(const std::string &bundleName);
 
     void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo); // For UT
 
@@ -174,7 +167,7 @@ public:
      * @param
      * @return Store vector of accessibility listening connection.
      */
-    const std::vector<sptr<IAccessibleAbilityManagerServiceState>> GetStateCallbacks();
+    const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> GetStateCallbacks();
 
     const CaptionPropertyCallbacks GetCaptionPropertyCallbacks();
 
@@ -183,7 +176,7 @@ public:
      * @param
      * @return Store map of interface operation interactive connection.
      */
-    const std::map<int, sptr<AccessibilityWindowConnection>> GetAsacConnections();
+    const std::map<int32_t, sptr<AccessibilityWindowConnection>> GetAsacConnections();
 
     /**
      * @brief Query accessible ability connection through elementName URI.
@@ -197,14 +190,14 @@ public:
      * @param windowId Interface operation interactive connection the corresponding window id.
      * @return Interface operation interactive connection corresponding to window id.
      */
-    const sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(const int windowId);
+    const sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(const int32_t windowId);
 
     /**
      * @brief Get connecting abilities list.
      * @param
      * @return Store map of connecting abilities.
      */
-    const std::map<std::string, AppExecFwk::ElementName> GetConnectingA11yAbilities();
+    const std::vector<std::string> &GetConnectingA11yAbilities();
 
     /**
      * @brief Get the accessibility ability info of the corresponding state according to the
@@ -225,7 +218,7 @@ public:
      * @param
      * @return Store map of enable accessibility abilities.
      */
-    const std::map<std::string, AppExecFwk::ElementName> GetEnabledAbilities();
+    const std::vector<std::string> &GetEnabledAbilities();
 
     /**
      * @brief Get install accessibility list.
@@ -330,11 +323,11 @@ public:
 
     bool GetCaptionState();
 
-    bool SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it);
+    bool EnableAbilities(std::vector<std::string> &abilities);
 
     void init();
 
-    bool DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it);
+    bool DisableAbilities(const std::vector<std::string> &abilities);
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -373,17 +366,17 @@ private:
     void UpdateMagnificationCapability();
 
     void CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
+    void CapabilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
     void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
     void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
     void VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut);
     void RemoveEnabledFromPref(const std::string bundleName);
     void UpdateEnabledFromPref();
-    bool SetStatePref(int type);
+    bool SetStatePref(int32_t type);
     bool SetCaptionPropertyPref();
     std::string StateChange(bool state);
 
-    int id_;
+    int32_t id_;
     bool isEnabled_ = false;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
@@ -392,12 +385,12 @@ private:
     bool isCaptionState_ = false;
     CaptionProperty captionProperty_;
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: The URI of ElementName.
-    std::vector<sptr<IAccessibleAbilityManagerServiceState>> stateCallbacks_;
-    std::map<int, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
+    std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
+    std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
-    std::map<std::string, AppExecFwk::ElementName> enabledAbilities_; // key: The URI of the ElementName.
-    std::map<std::string, AppExecFwk::ElementName> connectingA11yAbilities_; // key: The URI of the ElementName.
+    std::vector<std::string> enabledAbilities_; // The bundle name of enabled ability
+    std::vector<std::string> connectingA11yAbilities_; // The bundle name of enabled ability
     std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
 };
 } // namespace Accessibility

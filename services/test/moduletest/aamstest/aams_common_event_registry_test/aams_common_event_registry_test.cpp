@@ -14,7 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "common_event_manager.h"
@@ -25,14 +25,15 @@
 using namespace testing;
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityCommonEventRegistryTest : public ::testing::Test {
 public:
-    AccessibilityCommonEventRegistryTest() {}
-    ~AccessibilityCommonEventRegistryTest() {}
+    AccessibilityCommonEventRegistryTest()
+    {}
+    ~AccessibilityCommonEventRegistryTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -40,9 +41,9 @@ public:
     void TearDown() override;
     void AddAccessibleAbilityConnection();
 
-    shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
+    std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
-    sptr<AccessibleAbilityClientStubImpl> aastub_ = nullptr;
+    sptr<AccessibleAbilityChannel> aastub_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
     sptr<AccessibleAbilityConnection> AAConnection_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
@@ -50,12 +51,12 @@ public:
 
 void AccessibilityCommonEventRegistryTest::SetUpTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventRegistryTest Start ####################";
+    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest SetUpTestCase";
 }
 
 void AccessibilityCommonEventRegistryTest::TearDownTestCase()
 {
-    GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventRegistryTest End ######################";
+    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest TearDownTestCase";
 }
 
 void AccessibilityCommonEventRegistryTest::SetUp()
@@ -89,17 +90,18 @@ void AccessibilityCommonEventRegistryTest::TearDown()
 void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest AddAccessibleAbilityConnection";
-    AppExecFwk::ExtensionAbilityInfo info;
     AAFwk::Want want;
     AppExecFwk::ElementName name;
     name.SetAbilityName("com.example.aalisttest.MainAbility");
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("name", "bundleName", "id");
-    aastub_ = new AccessibleAbilityClientStubImpl();
+    aastub_ = new AccessibleAbilityChannel(*AAConnection_);
     AAConnection_->OnAbilityConnectDone(*elementName_, aastub_, 0);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
@@ -115,11 +117,12 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 start";
     AddAccessibleAbilityConnection();
-    accountData_->AddConnectingA11yAbility(*elementName_);
+    std::string bundleName = "bundleName";
+    accountData_->AddConnectingA11yAbility(bundleName);
     EXPECT_EQ(1, int(accountData_->GetConnectingA11yAbilities().size()));
+
     // PackageUpdateFinished
-    std::string str = "bundleName";
-    aams_->PackageUpdateFinished(str);
+    aams_->PackageUpdateFinished(bundleName);
     EXPECT_EQ(0, int(accountData_->GetConnectingA11yAbilities().size()));
 
     accountData_->ClearInstalledAbility();
@@ -154,20 +157,21 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
  * @tc.name: PresentUser
  * @tc.desc: After presenting user, the ability which is connected before is still connected.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001,
-    TestSize.Level1)
+HWTEST_F(
+    AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 start";
     ASSERT_TRUE(aams_);
 
     GTEST_LOG_(INFO) << "Add an account.";
     AddAccessibleAbilityConnection();
+    sleep(2);
     EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
     EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);
 
     GTEST_LOG_(INFO) << "Present account";
     aams_->PresentUser();
-
+    sleep(2);
     GTEST_LOG_(INFO) << "Check account data";
     EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
     EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);

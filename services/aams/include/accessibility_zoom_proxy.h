@@ -17,6 +17,7 @@
 #define ACCESSIBILITY_ZOOM_PROXY_H
 
 #include <vector>
+#include "accessibility_element_info.h"
 #include "refbase.h"
 
 namespace OHOS {
@@ -113,16 +114,16 @@ public:
      */
     void DeleteListener(AccessibilityDisplayResizeListener &listener) {}
 
-    void Register(int displayId) {}
+    void Register(int32_t displayId) {}
 
-    void Unregister(int displayId) {}
+    void Unregister(int32_t displayId) {}
 
-    bool IsRegistered(int displayId)
+    bool IsRegistered(int32_t displayId)
     {
         return false;
     }
 
-    bool IsRunning(int displayId)
+    bool IsRunning(int32_t displayId)
     {
         return false;
     }
@@ -135,7 +136,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetScale(int displayId)
+    float GetScale(int32_t displayId)
     {
         return 0.0;
     }
@@ -148,7 +149,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetCenterX(int displayId)
+    float GetCenterX(int32_t displayId)
     {
         return 0.0;
     }
@@ -161,7 +162,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    float GetCenterY(int displayId)
+    float GetCenterY(int32_t displayId)
     {
         return 0.0;
     }
@@ -174,7 +175,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    Rect GetDisplayResizeRect(int displayId)
+    Rect GetDisplayResizeRect(int32_t displayId)
     {
         Rect rc {};
         return rc;
@@ -188,7 +189,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    bool Reset(int displayId)
+    bool Reset(int32_t displayId)
     {
         return false;
     }
@@ -203,7 +204,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    bool SetScaleAndCenter(int displayId, float scale, float centerX, float centerY)
+    bool SetScaleAndCenter(int32_t displayId, float scale, float centerX, float centerY)
     {
         return false;
     }
@@ -220,7 +221,7 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    bool SetScale(int displayId, float scale, float pivotX, float pivotY, bool animate, int id)
+    bool SetScale(int32_t displayId, float scale, float pivotX, float pivotY, bool animate, int32_t id)
     {
         return false;
     }
@@ -234,7 +235,7 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    bool SetCenter(int displayId, float centerX, float centerY, bool animate, int id)
+    bool SetCenter(int32_t displayId, float centerX, float centerY, bool animate, int32_t id)
     {
         return false;
     }
@@ -250,7 +251,7 @@ private:
      * @since 1.0
      * @version 1.0
      */
-    void SetDisplayResizeOffset(int displayId, float offsetX, float offsetY) {}
+    void SetDisplayResizeOffset(int32_t displayId, float offsetX, float offsetY) {}
 };
 } // namespace Accessibility
 } // namespace OHOS

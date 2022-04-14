@@ -14,27 +14,26 @@
  */
 
 #include "accessibility_common_event_registry.h"
+#include <unistd.h>
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
-using namespace std;
-using namespace OHOS::EventFwk;
-using namespace OHOS::AAFwk;
-
 namespace OHOS {
 namespace Accessibility {
-AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry()
+static int32_t RETRY_SUBSCRIBER = 3;
+AccessibilityCommonEventRegistry::AccessibilityCommonEventRegistry(
+    const std::shared_ptr<AppExecFwk::EventHandler> &handler) : eventHandler_(handler)
 {
     HILOG_DEBUG("AccessibilityCommonEventRegistry AccessibilityCommonEventRegistry");
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED] =
         &AccessibilityCommonEventRegistry::HandleRemovedUser;
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_USER_PRESENT] =
         &AccessibilityCommonEventRegistry::HandlePresentUser;
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_ADDED] =
         &AccessibilityCommonEventRegistry::HandlePackageAdd;
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_REMOVED] =
         &AccessibilityCommonEventRegistry::HandlePackageRemoved;
-    handleEventFunc_[CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED] =
+    handleEventFunc_[EventFwk::CommonEventSupport::COMMON_EVENT_PACKAGE_CHANGED] =
         &AccessibilityCommonEventRegistry::HandlePackageChanged;
 }
 
@@ -48,7 +47,7 @@ bool AccessibilityCommonEventRegistry::StartRegister()
 
     for (auto it = handleEventFunc_.begin(); it != handleEventFunc_.end(); ++it) {
         HILOG_DEBUG("Add event: %{public}s", it->first.c_str());
-        eventHandles_.emplace(it->first, bind(it->second, this, placeholders::_1));
+        eventHandles_.emplace(it->first, std::bind(it->second, this, std::placeholders::_1));
     }
 
     if (!RegisterSubscriber()) {
@@ -63,19 +62,18 @@ bool AccessibilityCommonEventRegistry::RegisterSubscriber()
 {
     HILOG_DEBUG("start.");
 
-    MatchingSkills matchingSkills;
+    EventFwk::MatchingSkills matchingSkills;
     for (auto &event : handleEventFunc_) {
         HILOG_DEBUG("Add event: %{public}s", event.first.c_str());
         matchingSkills.AddEvent(event.first);
     }
 
-    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    accessibilityCommonEventSubscriber_ =
-        std::make_shared<AccessibilityCommonEventSubscriber>(subscribeInfo, eventHandles_);
+    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscriber_ = std::make_shared<AccessibilityCommonEventSubscriber>(subscribeInfo, *this);
 
-    int retry = RETRY_SUBSCRIBER;
+    int32_t retry = RETRY_SUBSCRIBER;
     do {
-        bool subscribeResult = CommonEventManager::SubscribeCommonEvent(accessibilityCommonEventSubscriber_);
+        bool subscribeResult = EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber_);
         if (subscribeResult) {
             return true;
         } else {
@@ -92,21 +90,27 @@ void AccessibilityCommonEventRegistry::UnRegister()
 {
     HILOG_DEBUG("start.");
     eventHandles_.clear();
-    if (accessibilityCommonEventSubscriber_ != nullptr) {
-        bool subscribeResult = CommonEventManager::UnSubscribeCommonEvent(accessibilityCommonEventSubscriber_);
+    if (subscriber_ != nullptr) {
+        bool subscribeResult = EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
         HILOG_DEBUG("subscribeResult = %{public}d", subscribeResult);
-        accessibilityCommonEventSubscriber_.reset();
+        subscriber_.reset();
     }
     HILOG_DEBUG("UnRegister end.");
 }
 
-void AccessibilityCommonEventSubscriber::OnReceiveEvent(const CommonEventData &data)
+void AccessibilityCommonEventRegistry::OnReceiveEvent(const AAFwk::Want &want)
 {
-    HILOG_DEBUG("start.");
-    HandleEvent(data.GetWant());
+    HILOG_DEBUG("start");
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return;
+    }
+    std::function<void()> onReceiveEventFunc = std::bind(&AccessibilityCommonEventRegistry::HandleEvent,
+        this, want);
+    eventHandler_->PostTask(onReceiveEventFunc, "TASK_ON_RECEIVE_EVENT");
 }
 
-void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
+void AccessibilityCommonEventRegistry::HandleEvent(const AAFwk::Want &want)
 {
     HILOG_DEBUG("start.");
     auto action = want.GetAction();
@@ -119,7 +123,7 @@ void AccessibilityCommonEventSubscriber::HandleEvent(const Want &want)
     it->second(want);
 }
 
-void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const
+void AccessibilityCommonEventRegistry::HandleRemovedUser(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -127,11 +131,11 @@ void AccessibilityCommonEventRegistry::HandleRemovedUser(const Want &want) const
         HILOG_ERROR("aams is nullptr");
         return;
     }
-    int32_t accountId = want.GetIntParam(CommonEventSupport::COMMON_EVENT_USER_REMOVED, -1);
+    int32_t accountId = want.GetIntParam(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED, -1);
     aams->RemovedUser(accountId);
 }
 
-void AccessibilityCommonEventRegistry::HandlePresentUser(const Want &want) const
+void AccessibilityCommonEventRegistry::HandlePresentUser(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -142,7 +146,7 @@ void AccessibilityCommonEventRegistry::HandlePresentUser(const Want &want) const
     aams->PresentUser();
 }
 
-void AccessibilityCommonEventRegistry::HandlePackageRemoved(const Want &want) const
+void AccessibilityCommonEventRegistry::HandlePackageRemoved(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -150,11 +154,11 @@ void AccessibilityCommonEventRegistry::HandlePackageRemoved(const Want &want) co
         HILOG_ERROR("aams is nullptr");
         return;
     }
-    string bundleName = want.GetBundle();
+    std::string bundleName = want.GetBundle();
     aams->PackageRemoved(bundleName);
 }
 
-void AccessibilityCommonEventRegistry::HandlePackageAdd(const Want &want) const
+void AccessibilityCommonEventRegistry::HandlePackageAdd(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -162,11 +166,11 @@ void AccessibilityCommonEventRegistry::HandlePackageAdd(const Want &want) const
         HILOG_ERROR("aams is nullptr");
         return;
     }
-    string bundleName = want.GetBundle();
+    std::string bundleName = want.GetBundle();
     aams->PackageAdd(bundleName);
 }
 
-void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &want) const
+void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -174,11 +178,11 @@ void AccessibilityCommonEventRegistry::HandlePackageUpdateFinished(const Want &w
         HILOG_ERROR("aams is nullptr");
         return;
     }
-    string bundleName = want.GetBundle();
+    std::string bundleName = want.GetBundle();
     aams->PackageUpdateFinished(bundleName);
 }
 
-void AccessibilityCommonEventRegistry::HandlePackageChanged(const Want &want) const
+void AccessibilityCommonEventRegistry::HandlePackageChanged(const AAFwk::Want &want) const
 {
     HILOG_DEBUG("start.");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -186,7 +190,7 @@ void AccessibilityCommonEventRegistry::HandlePackageChanged(const Want &want) co
         HILOG_ERROR("aams is nullptr");
         return;
     }
-    string bundleName = want.GetBundle();
+    std::string bundleName = want.GetBundle();
     aams->PackageChanged(bundleName);
 }
 } // namespace Accessibility

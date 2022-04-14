@@ -21,8 +21,8 @@ namespace Accessibility {
 /*
  * Triple: DOWN UP DOWN UP DOWN
  */
-const int DOWN_COUNT = 3;
-const int UP_COUNT = 2;
+const int32_t DOWN_COUNT = 3;
+const int32_t UP_COUNT = 2;
 
 AccessibilityZoomGesture::AccessibilityZoomGesture()
 {
@@ -39,7 +39,7 @@ void AccessibilityZoomGesture::Initialize()
     timeout_ = GetSysTimeout();
 }
 
-int AccessibilityZoomGesture::GetSysDistance() const
+int32_t AccessibilityZoomGesture::GetSysDistance() const
 {
     return 0;
 }
@@ -72,7 +72,7 @@ bool AccessibilityZoomGesture::ValidDown(MMI::PointerEvent &event)
             HILOG_ERROR("get last GetPointerItem(%d) failed", pLastDown_->GetPointerId());
             return false;
         }
-        int dist = std::sqrt(std::pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
+        int32_t dist = std::sqrt(std::pow(currentPointerItem.GetGlobalX() - lastPointerItem.GetGlobalX(), 2)
             + std::pow(currentPointerItem.GetGlobalY() - lastPointerItem.GetLocalY(), 2));
         if (dist > distance_) {
             Reset(event);

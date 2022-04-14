@@ -18,6 +18,7 @@
 #include <cmath>
 #include <iomanip>
 #include <regex>
+#include <sstream>
 #include <vector>
 
 #include "hilog_wrapper.h"
@@ -338,7 +339,7 @@ void ConvertAccessibilityWindowInfoToJS(
     uint32_t idx = 0;
     napi_value nChildIds;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nChildIds));
-    std::vector<int> childIds = accessibilityWindowInfo.GetChildIds();
+    std::vector<int32_t> childIds = accessibilityWindowInfo.GetChildIds();
     for (auto childId : childIds) {
         napi_value nChildId;
         NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, childId, &nChildId));
@@ -389,10 +390,12 @@ void ConvertAccessibilityWindowInfosToJS(
     if (accessibilityWindowInfos.empty()) {
         return;
     }
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NAccessibilityWindowInfo::consRef_, &constructor);
 
     for (auto& windowInfo : accessibilityWindowInfos) {
         napi_value obj = nullptr;
-        napi_new_instance(env, NAccessibilityWindowInfo::cons_, 0, nullptr, &obj);
+        napi_new_instance(env, constructor, 0, nullptr, &obj);
         ConvertAccessibilityWindowInfoToJS(env, obj, windowInfo);
         napi_set_element(env, result, idx, obj);
         idx++;
@@ -583,19 +586,19 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "timeStamp", nTimeStamp));
 
     napi_value nWindowId;
-    int windowId = eventInfo.GetWindowId();
+    int32_t windowId = eventInfo.GetWindowId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, windowId, &nWindowId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "windowId", nWindowId));
     HILOG_DEBUG("windowId[%{public}d]", windowId);
 
     napi_value nPageId;
-    int pageId = eventInfo.GetPageId();
+    int32_t pageId = eventInfo.GetPageId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, pageId, &nPageId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "pageId", nPageId));
     HILOG_DEBUG("pageId[%{public}d]", pageId);
 
     napi_value nComponentId;
-    int componentId = eventInfo.GetViewId();
+    int32_t componentId = eventInfo.GetViewId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "componentId", nComponentId));
     HILOG_DEBUG("componentId[%{public}d]", componentId);
@@ -635,22 +638,22 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "lastContent", nLastContent));
 
     napi_value nBeginIndex;
-    int beginIndex = eventInfo.GetBeginIndex();
+    int32_t beginIndex = eventInfo.GetBeginIndex();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, beginIndex, &nBeginIndex));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "beginIndex", nBeginIndex));
 
     napi_value nCurrentIndex;
-    int currentIndex = eventInfo.GetCurrentIndex();
+    int32_t currentIndex = eventInfo.GetCurrentIndex();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, currentIndex, &nCurrentIndex));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "currentIndex", nCurrentIndex));
 
     napi_value nEndIndex;
-    int endIndex = eventInfo.GetEndIndex();
+    int32_t endIndex = eventInfo.GetEndIndex();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, endIndex, &nEndIndex));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "endIndex", nEndIndex));
 
     napi_value nItemCount;
-    int itemCount = eventInfo.GetItemCounts();
+    int32_t itemCount = eventInfo.GetItemCounts();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, itemCount, &nItemCount));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "itemCount", nItemCount));
 
@@ -721,9 +724,12 @@ void ConvertElementInfosToJS(
     size_t index = 0;
     HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}zu)", elementInfos.size());
 
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
-        napi_status status = napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &obj);
+        napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
         HILOG_INFO("status is %{public}d", status);
         ConvertElementInfoToJS(env, obj, elementInfo);
         napi_set_element(env, result, index, obj);
@@ -781,13 +787,13 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     HILOG_DEBUG("windowId[%{public}d]", elementInfo.GetWindowId());
 
     napi_value nAccessibilityId;
-    int accessibilityId = elementInfo.GetAccessibilityId();
+    int32_t accessibilityId = elementInfo.GetAccessibilityId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityId, &nAccessibilityId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "accessibilityId", nAccessibilityId));
     HILOG_DEBUG("accessibilityId[%{public}d]", accessibilityId);
 
     napi_value nComponentId;
-    int componentId = elementInfo.GetAccessibilityId();
+    int32_t componentId = elementInfo.GetAccessibilityId();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentId", nComponentId));
     HILOG_DEBUG("componentId[%{public}d]", componentId);
@@ -806,7 +812,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     HILOG_DEBUG("componentType[%{public}s]", strComponentType.c_str());
 
     napi_value nInputType;
-    int inputType = elementInfo.GetInputType();
+    int32_t inputType = elementInfo.GetInputType();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, inputType, &nInputType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "inputType", nInputType));
     HILOG_DEBUG("inputType[%{public}d]", inputType);
@@ -835,7 +841,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "resourceName", nResourceName));
 
     napi_value nChildNodeIds;
-    std::vector<int> childIds = elementInfo.GetChildIds();
+    std::vector<int32_t> childIds = elementInfo.GetChildIds();
     size_t childCount = childIds.size();
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nChildNodeIds));
 
@@ -859,7 +865,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "operations", nOperations));
 
     napi_value nTextLengthLimit;
-    int textLengthLimit = elementInfo.GetTextLengthLimit();
+    int32_t textLengthLimit = elementInfo.GetTextLengthLimit();
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, textLengthLimit, &nTextLengthLimit));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "textLengthLimit", nTextLengthLimit));
 
@@ -1420,7 +1426,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value data = nullptr;
         uint32_t dataLen = 0;
         napi_get_array_length(env, contentsValue, &dataLen);
-        for (int i = 0; i < int(dataLen); i++) {
+        for (uint32_t i = 0; i < dataLen; i++) {
             napi_get_element(env, contentsValue, i, &data);
             str = GetStringFromNAPI(env, data);
             eventInfo.AddContent(str);
@@ -1493,7 +1499,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
 }
 
 static void ConvertGesturePathPositionJSToNAPI(
-    napi_env env, napi_value object, GesturePathPositionDefine& gesturePathPosition)
+    napi_env env, napi_value object, AccessibilityGesturePathPosition& gesturePathPosition)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
@@ -1505,7 +1511,7 @@ static void ConvertGesturePathPositionJSToNAPI(
         napi_value valueX = nullptr;
         napi_get_property(env, object, propertyNameValue, &valueX);
         napi_get_value_double(env, valueX, &position);
-        gesturePathPosition.SetPositionX((float)position);
+        gesturePathPosition.positionX_ = (float)position;
     }
 
     napi_create_string_utf8(env, "posY", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1514,15 +1520,15 @@ static void ConvertGesturePathPositionJSToNAPI(
         napi_value valueY = nullptr;
         napi_get_property(env, object, propertyNameValue, &valueY);
         napi_get_value_double(env, valueY, &position);
-        gesturePathPosition.SetPositionY((float)position);
+        gesturePathPosition.positionY_ = (float)position;
     }
 }
 
-static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object, GesturePathDefine& gesturePath)
+static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object, AccessibilityGesturePath& gesturePath)
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
-    GesturePathPositionDefine gesturePathPosition;
+    AccessibilityGesturePathPosition gesturePathPosition;
 
     napi_create_string_utf8(env, "startPos", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
@@ -1553,7 +1559,7 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object, GestureP
     }
 }
 
-void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<GesturePathDefine>& gesturePaths)
+void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<AccessibilityGesturePath>& gesturePaths)
 {
     uint32_t arraySize = 0;
     bool isArray = false;
@@ -1572,7 +1578,7 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<Ge
 
     for (uint32_t i = 0; i < arraySize; i++) {
         jsValue = nullptr;
-        GesturePathDefine path;
+        AccessibilityGesturePath path;
         if (napi_get_element(env, object, i, &jsValue) != napi_ok) {
             HILOG_ERROR("get element of paths failed and i = %{public}d", i);
             return;
@@ -1583,19 +1589,19 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object, std::vector<Ge
     }
 }
 
-void ConvertKeyEventToJS(napi_env env, napi_value result, OHOS::MMI::KeyEvent& keyEvent)
+void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
 {
     napi_value keyCode;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent.GetKeyCode(), &keyCode));
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent->GetKeyCode(), &keyCode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyCode", keyCode));
 
     napi_value keyAction;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent.GetKeyAction(), &keyAction));
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent->GetKeyAction(), &keyAction));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyAction", keyAction));
 
     napi_value keys;
     uint32_t idx = 0;
-    std::vector<OHOS::MMI::KeyEvent::KeyItem> keyItems = keyEvent.GetKeyItems();
+    std::vector<OHOS::MMI::KeyEvent::KeyItem> keyItems = keyEvent->GetKeyItems();
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keys));
     for (auto key : keyItems) {
         napi_value keyItem = nullptr;
@@ -1873,7 +1879,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
     }
 
     bool hasElement = true;
-    for (int i = 0; hasElement; i++) {
+    for (int32_t i = 0; hasElement; i++) {
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;
@@ -1882,7 +1888,7 @@ void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
             AccessibilityAbilityInfo info = {};
             ConvertJSToAccessibleAbilityInfo(env, value, info);
             accessibleAbilityInfos.push_back(info);
-            HILOG_DEBUG("size = %{public}zu ", accessibleAbilityInfos.size());
+            HILOG_DEBUG("size = %{public}zu", accessibleAbilityInfos.size());
         }
     }
 }
@@ -1907,8 +1913,7 @@ void ConvertJSToAccessibleAbilityInfo(
     }
 }
 
-void ConvertEnabledAbilitiesToJS(
-    napi_env env, napi_value result, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities)
+void ConvertEnabledAbilitiesToJS(napi_env env, napi_value result, std::vector<std::string>& enabledAbilities)
 {
     size_t index = 0;
 
@@ -1916,24 +1921,23 @@ void ConvertEnabledAbilitiesToJS(
         return;
     }
 
-    for (auto& abilitie : enabledAbilities) {
+    for (auto& ability : enabledAbilities) {
         napi_value str = nullptr;
-        std::string bundleName = abilitie.second.GetBundleName();
+        std::string bundleName = ability;
         napi_create_string_utf8(env, bundleName.c_str(), bundleName.size(), &str);
         napi_set_element(env, result, index, str);
         index++;
     }
 }
 
-void ConvertJSToEnabledAbilities(
-    napi_env env, napi_value arrayValue, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities)
+void ConvertJSToEnabledAbilities(napi_env env, napi_value arrayValue, std::vector<std::string>& enabledAbilities)
 {
     if (!enabledAbilities.empty()) {
         enabledAbilities.clear();
     }
 
     bool hasElement = true;
-    for (int i = 0; hasElement; i++) {
+    for (int32_t i = 0; hasElement; i++) {
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;
@@ -1943,9 +1947,7 @@ void ConvertJSToEnabledAbilities(
             size_t outSize = 0;
             napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
 
-            OHOS::AppExecFwk::ElementName elementName("", std::string(outBuffer), "");
-            enabledAbilities.insert(
-                std::pair<std::string, OHOS::AppExecFwk::ElementName>(elementName.GetURI(), elementName));
+            enabledAbilities.push_back(std::string(outBuffer));
         }
     }
 }

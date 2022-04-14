@@ -11,8 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/accessibility/services/aams/accessibleabilityms.gni")
 import("//build/ohos.gni")
+
+services_path = "//base/accessibility/services/aams"
 
 ohos_prebuilt_etc("accessibility_service.rc") {
   source = "etc/accessibility_service.rc"
@@ -26,80 +27,65 @@ config("aams_service_config") {
 
   include_dirs = [
     "include",
-    "//third_party/icu/icu4c/source/common",
-    "//base/accessibility/frameworks/asacfwk/include",
-    "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//base/accessibility/frameworks/aafwk/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
-    "//base/accessibility/util/include",
-    "//base/accessibility/services/aams/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//base/notification/ces_standard/interfaces/innerkits/native/include",
-    "//base/accessibility/dummyData",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//base/accessibility/common/log/include",
-    "//utils/system/safwk/native/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//utils/native/base/include",
-    "//base/powermgr/power_manager/interfaces/innerkits/native/include",
-    "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
-    "//base/global/resmgr_standard/interfaces/innerkits/include",
-    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
-    "//foundation/windowmanager/interfaces/innerkits/wm",
-    "//foundation/windowmanager/interfaces/innerkits/dm",
-    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility\"",
     "AAMS_LOG_DOMAIN = 0xD005200",
   ]
-
-  if (target_cpu == "arm") {
-    cflags = [ "-DBINDER_IPC_32BIT" ]
-  }
 }
 
-ohos_shared_library("accessibleabilityms") {
-  install_enable = true
+accessibleabilityms_files = [
+  "${services_path}/src/accessible_ability_channel.cpp",
+  "${services_path}/src/accessible_ability_connection.cpp",
+  "${services_path}/src/accessible_ability_manager_service_event_handler.cpp",
+  "${services_path}/src/accessible_ability_manager_service.cpp",
+  "${services_path}/src/accessibility_account_data.cpp",
+  "${services_path}/src/accessibility_window_connection.cpp",
+  "${services_path}/src/accessibility_zoom_gesture.cpp",
+  "${services_path}/src/accessibility_zoom_handler.cpp",
+  "${services_path}/src/accessibility_common_event_registry.cpp",
+  "${services_path}/src/accessibility_touch_guider.cpp",
+  "${services_path}/src/accessibility_gesture_recognizer.cpp",
+  "${services_path}/src/accessibility_event_transmission.cpp",
+  "${services_path}/src/accessibility_input_interceptor.cpp",
+  "${services_path}/src/accessibility_touchEvent_injector.cpp",
+  "${services_path}/src/accessibility_keyevent_filter.cpp",
+  "${services_path}/src/accessibility_window_manager.cpp",
+  "${services_path}/src/accessibility_display_manager.cpp",
+  "${services_path}/src/json_utils.cpp",
+]
 
+ohos_shared_library("accessibleabilityms") {
   sources = accessibleabilityms_files
 
   configs = [ ":aams_service_config" ]
 
   deps = [
-    "//base/accessibility/frameworks/aafwk:accessibleability",
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-    "//base/account/os_account/frameworks/osaccount/core:os_account_core",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences:native_preferences",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//foundation/windowmanager/dm:libdm",
-    "//foundation/windowmanager/wm:libwm",
-    "//utils/native/base:utils",
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
   ]
 
   external_deps = [
     "ability_base:want",
-    "ability_runtime:runtime",
+    "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "ces_standard:cesfwk_innerkits",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
-    "os_account_standard:os_account_innerkits",
+    "native_appdatamgr:native_preferences",
+    "safwk:system_ability_fwk",
+    "samgr_standard:samgr_proxy",
+    "utils_base:utils",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
+
+  install_enable = true
 
   subsystem_name = "barrierfree"
   part_name = "accessibility"

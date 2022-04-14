@@ -13,17 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_
-#define OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_
+#ifndef ACCESSIBLE_ABILITY_CONNECTION_H
+#define ACCESSIBLE_ABILITY_CONNECTION_H
 
 #include <mutex>
-#include <set>
-#include <string>
-#include <vector>
 #include "ability_connect_callback_stub.h"
-#include "accessible_ability_client_proxy.h"
-#include "accessible_ability_channel_stub.h"
 #include "accessibility_ability_info.h"
+#include "accessible_ability_channel.h"
+#include "accessible_ability_client_proxy.h"
 #include "common_event_manager.h"
 
 namespace OHOS {
@@ -31,78 +28,29 @@ namespace Accessibility {
 #define UID_MASK 200000
 
 class AccessibilityAccountData;
-class AccessibleAbilityManagerService;
-class AccessibleAbilityConnection;
-
-class AccessibleAbilityChannelStubImpl : public AccessibleAbilityChannelStub {
-public:
-    AccessibleAbilityChannelStubImpl(AccessibleAbilityConnection &connection);
-    ~AccessibleAbilityChannelStubImpl() = default;
-    bool SearchElementInfoByAccessibilityId(const int accessibilityWindowId, const long elementId,
-        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int mode) override;
-
-    bool SearchElementInfosByText(const int accessibilityWindowId, const long elementId,
-        const std::string &text, const int requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
-
-    bool FindFocusedElementInfo(const int accessibilityWindowId, const long elementId,
-        const int focusType, const int requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
-
-    bool FocusMoveSearch(const int accessibilityWindowId, const long elementId, const int direction,
-        const int requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
-
-    bool ExecuteAction(const int accessibilityWindowId, const long elementId, const int action,
-        std::map<std::string, std::string> &actionArguments, const int requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback) override;
-
-    std::vector<AccessibilityWindowInfo> GetWindows() override;
-
-    bool ExecuteCommonAction(const int action) override;
-
-    void SetOnKeyPressEventResult(const bool handled, const int sequence) override;
-
-    float GetDisplayResizeScale(const int displayId) override;
-
-    float GetDisplayResizeCenterX(const int displayId) override;
-
-    float GetDisplayResizeCenterY(const int displayId) override;
-
-    Rect GetDisplayResizeRect(const int displayId) override;
-
-    bool ResetDisplayResize(const int displayId, bool animate) override;
-
-    bool SetDisplayResizeScaleAndCenter(const int displayId, const float scale, const float centerX,
-        const float centerY, const bool animate) override;
-
-    void SendSimulateGesture(const int requestId, const std::vector<GesturePathDefine> &gestureSteps) override;
-
-private:
-    AccessibleAbilityConnection& connection_;
-};
 
 class AccessibleAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
-    AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData, const int connectionId,
+    AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData, const int32_t connectionId,
         AccessibilityAbilityInfo &abilityInfo);
 
     virtual ~AccessibleAbilityConnection();
 
     virtual void OnAbilityConnectDone(const AppExecFwk::ElementName &element,
                                       const sptr<IRemoteObject> &remoteObject,
-                                      int resultCode) override;
+                                      int32_t resultCode) override;
 
-    virtual void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int resultCode) override;
+    virtual void OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode) override;
 
     // For AccessibleAbilityClientProxy
     void OnAccessibilityEvent(AccessibilityEventInfo &eventInfo);
 
-    bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int sequence);
+    bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence);
 
-    void OnDisplayResized(const int displayId, const Rect &rect, const float scale, const float centerX,
+    void OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale, const float centerX,
         const float centerY);
 
-    void OnGestureSimulateResult(const int sequence, const bool completedSuccessfully);
+    void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully);
 
     // Get Attribution
     inline AccessibilityAbilityInfo& GetAbilityInfo()
@@ -120,16 +68,16 @@ public:
         return accountData_;
     }
 
-    inline sptr<IAccessibleAbilityClient> GetProxy()
+    inline sptr<IAccessibleAbilityClient> GetAbilityClient()
     {
-        return proxy_;
+        return abilityClient_;
     }
 
     void Disconnect();
 
     void Connect(const AppExecFwk::ElementName &element);
 
-    int GetChannelId();
+    int32_t GetChannelId();
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -146,18 +94,23 @@ private:
         AppExecFwk::ElementName& recipientElementName_;
     };
 
-    bool IsWantedEvent(int eventType);
+    bool IsWantedEvent(int32_t eventType);
     bool IsAllowedListEvent(EventType eventType);
 
-    int connectionId_ = -1;
+    void InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
+        const sptr<IRemoteObject> &remoteObject, int32_t resultCode);
+    void InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode);
+
+    int32_t connectionId_ = -1;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
-    sptr<IAccessibleAbilityClient> proxy_ = nullptr;
-    sptr<AccessibleAbilityChannelStubImpl> stub_ = nullptr;
+    sptr<IAccessibleAbilityClient> abilityClient_ = nullptr;
+    sptr<AccessibleAbilityChannel> channel_ = nullptr;
     AccessibilityAbilityInfo abilityInfo_ {};
     AppExecFwk::ElementName elementName_ {};
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     static std::mutex mutex_;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // OHOS_ACCESSIBLE_ABILITY_CONNECTION_H_
+#endif // ACCESSIBLE_ABILITY_CONNECTION_H

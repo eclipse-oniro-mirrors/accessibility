@@ -14,7 +14,7 @@
  */
 
 #include "napi_accessibility_window_info.h"
-
+#include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "napi_accessibility_info.h"
 #include "napi_accessibility_utils.h"
@@ -22,8 +22,7 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NAccessibilityWindowInfo::cons_ = nullptr;
-napi_ref NAccessibilityWindowInfo::consRef_ = nullptr;
+thread_local napi_ref NAccessibilityWindowInfo::consRef_ = nullptr;
 
 void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env)
 {
@@ -34,6 +33,8 @@ void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env)
         DECLARE_NAPI_FUNCTION("getChild", NAccessibilityWindowInfo::GetChild),
     };
 
+    napi_value constructor = nullptr;
+
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "AccessibilityWindowInfo",
@@ -42,8 +43,8 @@ void NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(napi_env env)
             nullptr,
             sizeof(descForAccessibilityWindowInfo) / sizeof(descForAccessibilityWindowInfo[0]),
             descForAccessibilityWindowInfo,
-            &NAccessibilityWindowInfo::cons_));
-    napi_create_reference(env, NAccessibilityWindowInfo::cons_, 1, &NAccessibilityWindowInfo::consRef_);
+            &constructor));
+    napi_create_reference(env, constructor, 1, &NAccessibilityWindowInfo::consRef_);
 }
 
 napi_value NAccessibilityWindowInfo::JSConstructor(napi_env env, napi_callback_info info)
@@ -92,8 +93,11 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
-            AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->result_ = windowInfo.GetAnchor(callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->GetAnchor(
+                    callbackInfo->nativeWindowInfo_, callbackInfo->nodeInfo_);
+            }
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -104,9 +108,9 @@ napi_value NAccessibilityWindowInfo::GetAnchorElementInfo(napi_env env, napi_cal
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
@@ -173,8 +177,11 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
-            AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->result_ = windowInfo.GetRootAccessibilityInfo(callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->GetRootByWindow(callbackInfo->nativeWindowInfo_,
+                    callbackInfo->nodeInfo_);
+            }
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -185,9 +192,9 @@ napi_value NAccessibilityWindowInfo::GetRootElementInfo(napi_env env, napi_callb
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
@@ -254,8 +261,11 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
-            AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->window_ = windowInfo.GetParent();
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->GetParentWindowInfo(callbackInfo->nativeWindowInfo_,
+                    callbackInfo->window_);
+            }
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -266,20 +276,24 @@ napi_value NAccessibilityWindowInfo::GetParent(napi_env env, napi_callback_info 
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NAccessibilityWindowInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NAccessibilityWindowInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertAccessibilityWindowInfoToJS(env, argv[PARAM1], callbackInfo->window_);
 
+            argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
                 // Callback mode
-                argv[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, argv, &jsReturnValue);
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
                 // Promise mode
-                napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
+                if (callbackInfo->result_) {
+                    napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
+                } else {
+                    napi_reject_deferred(env, callbackInfo->deferred_, argv[PARAM0]);
+                }
             }
 
             napi_delete_async_work(env, callbackInfo->work_);
@@ -310,7 +324,7 @@ napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info i
     if (!windowInfo) {
         HILOG_DEBUG("windowInfo is null!!");
     }
-    int childIndex;
+    int32_t childIndex;
     napi_get_value_int32(env, argv[PARAM0], &childIndex);
     HILOG_INFO("GetChild childIndex = %{public}d", childIndex);
 
@@ -335,8 +349,11 @@ napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info i
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityWindowInfoData *callbackInfo = (NAccessibilityWindowInfoData*)data;
-            AccessibilityWindowInfo windowInfo = callbackInfo->nativeWindowInfo_;
-            callbackInfo->window_ = windowInfo.GetChild(callbackInfo->childIndex_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->GetChildWindowInfo(callbackInfo->childIndex_,
+                    callbackInfo->nativeWindowInfo_, callbackInfo->window_);
+            }
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
@@ -347,20 +364,24 @@ napi_value NAccessibilityWindowInfo::GetChild(napi_env env, napi_callback_info i
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NAccessibilityWindowInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NAccessibilityWindowInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertAccessibilityWindowInfoToJS(env, argv[PARAM1], callbackInfo->window_);
 
+            argv[PARAM0] = GetErrorValue(env, callbackInfo->result_ ? CODE_SUCCESS : CODE_FAILED);
             if (callbackInfo->callback_) {
                 // Callback mode
-                argv[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, argv, &jsReturnValue);
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
                 // Promise mode
-                napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
+                if (callbackInfo->result_) {
+                    napi_resolve_deferred(env, callbackInfo->deferred_, argv[PARAM1]);
+                } else {
+                    napi_reject_deferred(env, callbackInfo->deferred_, argv[PARAM0]);
+                }
             }
 
             napi_delete_async_work(env, callbackInfo->work_);

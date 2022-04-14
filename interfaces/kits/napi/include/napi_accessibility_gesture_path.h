@@ -21,7 +21,7 @@
 
 class NGesturePath {
 public:
-    static napi_value pathCons_;
+    static thread_local napi_ref consRef_;
     static void DefineJSGesturePath(napi_env env);
     static napi_value JSPathConstructor(napi_env env, napi_callback_info info);
 };

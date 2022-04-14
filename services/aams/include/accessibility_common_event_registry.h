@@ -17,45 +17,48 @@
 #define ACCESSIBILITY_COMMON_EVENT_REGISTRY_H
 
 #include <map>
-#include <string>
-#include <functional>
 #include <memory>
-#include "want.h"
+#include <functional>
+#include <string>
+#include "bundlemgr/bundle_mgr_interface.h"
 #include "common_event_manager.h"
 #include "common_event_support.h"
-#include "bundlemgr/bundle_mgr_interface.h"
+#include "event_handler.h"
+#include "want.h"
 
 using EventHandle = std::function<void(const OHOS::AAFwk::Want&)>;
 
 namespace OHOS {
 namespace Accessibility {
-#define RETRY_SUBSCRIBER 3
-class AccessibilityCommonEventSubscriber : public EventFwk::CommonEventSubscriber {
-public:
-    AccessibilityCommonEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscriberInfo,
-        const std::map<std::string, EventHandle> &handles)
-        : CommonEventSubscriber(subscriberInfo), eventHandles_(handles) {}
-
-    ~AccessibilityCommonEventSubscriber() = default;
-
-    void OnReceiveEvent(const EventFwk::CommonEventData &data) override;
-
-private:
-    void HandleEvent(const AAFwk::Want &want);
-    const std::map<std::string, EventHandle> &eventHandles_;
-};
-
 class AccessibilityCommonEventRegistry {
 public:
-    AccessibilityCommonEventRegistry();
+    explicit AccessibilityCommonEventRegistry(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     ~AccessibilityCommonEventRegistry() = default;
 
     bool StartRegister();
     void UnRegister();
+    void OnReceiveEvent(const AAFwk::Want &want);
 
 private:
+    class AccessibilityCommonEventSubscriber : public EventFwk::CommonEventSubscriber {
+    public:
+        explicit AccessibilityCommonEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscriberInfo,
+            AccessibilityCommonEventRegistry &registry)
+            : CommonEventSubscriber(subscriberInfo), registry_(registry) {}
+        ~AccessibilityCommonEventSubscriber() = default;
+
+        void OnReceiveEvent(const EventFwk::CommonEventData &data) override
+        {
+            registry_.OnReceiveEvent(data.GetWant());
+        }
+
+    private:
+        AccessibilityCommonEventRegistry &registry_;
+    };
+
     bool RegisterSubscriber();
 
+    void HandleEvent(const AAFwk::Want &want);
     void HandleRemovedUser(const AAFwk::Want &want) const;
     void HandlePresentUser(const AAFwk::Want &want) const;
 
@@ -65,11 +68,11 @@ private:
     void HandlePackageAdd(const AAFwk::Want &want) const;
 
     typedef void (AccessibilityCommonEventRegistry::*HandleEventFunc)(const AAFwk::Want&) const;
-    std::map<std::string, HandleEventFunc> handleEventFunc_;
-    std::shared_ptr<AccessibilityCommonEventSubscriber> accessibilityCommonEventSubscriber_;
     std::map<std::string, EventHandle> eventHandles_;
+    std::map<std::string, HandleEventFunc> handleEventFunc_;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
+    std::shared_ptr<AccessibilityCommonEventSubscriber> subscriber_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
-
 #endif  // ACCESSIBILITY_COMMON_EVENT_REGISTRY_H

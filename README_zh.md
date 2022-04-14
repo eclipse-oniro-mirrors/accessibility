@@ -23,11 +23,10 @@
 │   ├── innerkits           # AccessibleAbility 和 AccessibleAbilityClient 的子系统接口
 │   └── kits                # AccessibleAbility 和 AccessibleAbilityClient 的开发者接口
 ├── sa_profile              # 系统服务配置文件
-├── services
-│   └── aams                # AccessibleAbility 管理服务框架代码
-│   └── test                # 测试目录
-├── test                    # 测试目录
-└── util                    # 工具类目录
+└── services
+    └── aams                # AccessibleAbility 管理服务框架代码
+    └── interface           # AccessibleAbility 管理服务接口层
+    └── test                # 测试目录
 ```
 
 # 相关仓<a name="relevant"></a>

@@ -19,10 +19,12 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NGesturePath::pathCons_ = nullptr;
+thread_local napi_ref NGesturePath::consRef_;
 
 void NGesturePath::DefineJSGesturePath(napi_env env)
 {
+    napi_value constructor = nullptr;
+
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "GesturePath",
@@ -31,7 +33,9 @@ void NGesturePath::DefineJSGesturePath(napi_env env)
             nullptr,
             0,
             nullptr,
-            &NGesturePath::pathCons_));
+            &constructor));
+
+    napi_create_reference(env, constructor, 1, &NGesturePath::consRef_);
 }
 
 napi_value NGesturePath::JSPathConstructor(napi_env env, napi_callback_info info)

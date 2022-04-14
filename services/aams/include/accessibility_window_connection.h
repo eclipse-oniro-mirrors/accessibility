@@ -12,17 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ACCESSIBILITY_WINDOW_CONNECTION_H
 #define ACCESSIBILITY_WINDOW_CONNECTION_H
-#include <string>
-#include "accessibility_element_operator_interface.h"
+
+#include "i_accessibility_element_operator.h"
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowConnection : public RefBase {
 public:
-    AccessibilityWindowConnection(const int windowId, const sptr<IAccessibilityElementOperator> &connection,
-                                       const int accountId);
+    AccessibilityWindowConnection(const int32_t windowId, const sptr<IAccessibilityElementOperator> &connection,
+		const int32_t accountId);
     ~AccessibilityWindowConnection();
 
     inline sptr<IAccessibilityElementOperator> GetProxy()
@@ -31,8 +32,8 @@ public:
     }
 
 private:
-    int windowId_;
-    int accountId_;
+    int32_t windowId_;
+    int32_t accountId_;
     sptr<IAccessibilityElementOperator> proxy_;
 };
 } // namespace Accessibility

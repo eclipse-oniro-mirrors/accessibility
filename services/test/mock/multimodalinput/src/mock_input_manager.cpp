@@ -47,9 +47,9 @@ std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
     return mockInputEventConsumer;
 }
 
-InputManager *InputManager::instance_ = nullptr;
+InputManager* InputManager::instance_ = nullptr;
 
-InputManager *InputManager::GetInstance()
+InputManager* InputManager::GetInstance()
 {
     if (!instance_) {
         instance_ = new InputManager();
@@ -86,7 +86,6 @@ int32_t InputManager::AddInterceptor(std::function<void(std::shared_ptr<KeyEvent
 }
 
 void InputManager::RemoveInterceptor(int32_t interceptorId)
-{
-}
-}
-}
+{}
+} // namespace MMI
+} // namespace OHOS

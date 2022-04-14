@@ -20,25 +20,120 @@
 #include "ability_config.h"
 #include "ability_info.h"
 #include "application_info.h"
-#include "hilog_wrapper.h"
 #include "bundle_mgr_client.h"
+#include "hilog_wrapper.h"
 
 using namespace OHOS::AAFwk;
 namespace OHOS {
 const static std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
 namespace AppExecFwk {
-int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
+int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
     return 0;
 }
 
-bool BundleMgrService::GetBundleInfo(const std::string &bundleName, const BundleFlag flag,
-    BundleInfo &bundleInfo, int32_t userId)
+auto HiWordInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "Helloworld";
+    abilityInfo.applicationInfo.name = "Helloworld";
+    abilityInfo.type = AbilityType::PAGE;
+    abilityInfo.applicationInfo.isLauncherApp = true;
+    return true;
+};
+
+auto HiMusicInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "hiMusic";
+    abilityInfo.applicationInfo.name = "hiMusic";
+    abilityInfo.type = AbilityType::PAGE;
+    abilityInfo.applicationInfo.isLauncherApp = false;
+
+    if (elementTemp.GetAbilityName() == "MusicAbility") {
+        abilityInfo.process = "p1";
+        abilityInfo.launchMode = LaunchMode::STANDARD;
+    }
+    if (elementTemp.GetAbilityName() == "MusicTopAbility") {
+        abilityInfo.process = "p1";
+        abilityInfo.launchMode = LaunchMode::SINGLETOP;
+    }
+    if (elementTemp.GetAbilityName() == "MusicSAbility") {
+        abilityInfo.process = "p2";
+        abilityInfo.launchMode = LaunchMode::SINGLETON;
+    }
+    return true;
+};
+
+auto HiRadioInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "hiRadio";
+    abilityInfo.applicationInfo.name = "hiRadio";
+    abilityInfo.type = AbilityType::PAGE;
+    abilityInfo.process = "p3";
+    if (elementTemp.GetAbilityName() == "RadioAbility") {
+        abilityInfo.launchMode = LaunchMode::STANDARD;
+    }
+    if (elementTemp.GetAbilityName() == "RadioTopAbility") {
+        abilityInfo.launchMode = LaunchMode::SINGLETON;
+    }
+    return true;
+};
+
+auto HiServiceInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "hiService";
+    abilityInfo.applicationInfo.name = "hiService";
+    abilityInfo.type = AbilityType::SERVICE;
+    abilityInfo.process = "p4";
+    return true;
+};
+
+auto MusicServiceInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "musicService";
+    abilityInfo.applicationInfo.name = "musicService";
+    abilityInfo.type = AbilityType::SERVICE;
+    abilityInfo.process = "p5";
+    return true;
+};
+
+auto HiDataInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementName& elementTemp) {
+    abilityInfo.name = elementTemp.GetAbilityName();
+    abilityInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationInfo.bundleName = elementTemp.GetBundleName();
+    abilityInfo.applicationName = "hiData";
+    abilityInfo.applicationInfo.name = "hiData";
+    abilityInfo.type = AbilityType::DATA;
+    abilityInfo.process = "p6";
+    return true;
+};
+
+BundleMgrService::BundleMgrService()
+{
+    abilityInfoMap_.emplace(COM_IX_HIWORLD, HiWordInfo);
+    abilityInfoMap_.emplace(COM_IX_HIMUSIC, HiMusicInfo);
+    abilityInfoMap_.emplace(COM_IX_HIRADIO, HiRadioInfo);
+    abilityInfoMap_.emplace(COM_IX_HISERVICE, HiServiceInfo);
+    abilityInfoMap_.emplace(COM_IX_MUSICSERVICE, MusicServiceInfo);
+    abilityInfoMap_.emplace(COM_IX_HIDATA, HiDataInfo);
+}
+
+bool BundleMgrService::GetBundleInfo(
+    const std::string& bundleName, const BundleFlag flag, BundleInfo& bundleInfo, int32_t userId)
 {
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want &want, AbilityInfo &abilityInfo)
+bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want& want, AbilityInfo& abilityInfo)
 {
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo ------------ start");
     if (CheckWantEntity(want, abilityInfo)) {
@@ -83,13 +178,13 @@ bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want &want, AbilityInfo &ab
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfoByUri(const std::string &uri, AbilityInfo &abilityInfo)
+bool BundleMgrService::QueryAbilityInfoByUri(const std::string& uri, AbilityInfo& abilityInfo)
 {
     return false;
 }
 
 bool BundleMgrService::GetApplicationInfo(
-    const std::string &appName, const ApplicationFlag flag, const int userId, ApplicationInfo &appInfo)
+    const std::string& appName, const ApplicationFlag flag, const int userId, ApplicationInfo& appInfo)
 {
     if (appName.empty()) {
         return false;
@@ -97,7 +192,7 @@ bool BundleMgrService::GetApplicationInfo(
     return true;
 }
 
-bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abilityInfo)
+bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abilityInfo)
 {
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------1");
     auto entityVector = want.GetEntities();
@@ -108,7 +203,7 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
 
     auto find = false;
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------2");
-    for (const auto &entity : entityVector) {
+    for (const auto& entity : entityVector) {
         if (entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
             element.GetBundleName().empty()) {
             find = true;
@@ -119,8 +214,8 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     auto bundleName = element.GetBundleName();
     auto abilityName = element.GetAbilityName();
     if (find || (bundleName == AbilityConfig::SYSTEM_UI_BUNDLE_NAME &&
-        (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
-        abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
+                    (abilityName == AbilityConfig::SYSTEM_UI_STATUS_BAR ||
+                        abilityName == AbilityConfig::SYSTEM_UI_NAVIGATION_BAR))) {
         GTEST_LOG_(INFO) << "QueryAbilityInfo ++> system luncher, find :" << find;
         HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------4");
         return true;
@@ -129,44 +224,44 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want &want, AbilityInfo &abi
     return false;
 }
 
-bool BundleMgrService::QueryAbilityInfos(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrService::QueryAbilityInfos(const Want& want, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfosForClone(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrService::QueryAbilityInfosForClone(const Want& want, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo> &formInfos)
+bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
-bool BundleMgrService::GetFormsInfoByApp(const std::string &bundleName, std::vector<FormInfo> &formInfos)
+bool BundleMgrService::GetFormsInfoByApp(const std::string& bundleName, std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
-bool BundleMgrService::GetFormsInfoByModule(const std::string &bundleName, const std::string &moduleName,
-    std::vector<FormInfo> &formInfos)
+bool BundleMgrService::GetFormsInfoByModule(
+    const std::string& bundleName, const std::string& moduleName, std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
-bool BundleMgrService::GetShortcutInfos(const std::string &bundleName, std::vector<ShortcutInfo> &shortcutInfos)
+bool BundleMgrService::GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos)
 {
     return true;
 }
 
-bool BundleMgrService::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords)
+bool BundleMgrService::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord>& moduleUsageRecords)
 {
     return true;
 }
 
-bool BundleMgrService::NotifyAbilityLifeStatus(const std::string &bundleName, const std::string &abilityName,
-    const int64_t launchTime, const int uid)
+bool BundleMgrService::NotifyAbilityLifeStatus(
+    const std::string& bundleName, const std::string& abilityName, const int64_t launchTime, const int uid)
 {
     return true;
 }
@@ -176,8 +271,8 @@ BundleMgrClient::BundleMgrClient()
 
 BundleMgrClient::~BundleMgrClient()
 {}
-bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo &extensionInfo, const std::string &metadataName,
-    std::vector<std::string> &profileInfos) const
+bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo& extensionInfo, const std::string& metadataName,
+    std::vector<std::string>& profileInfos) const
 {
     std::ifstream jsonFileStream;
     jsonFileStream.open(AccessibleAbility_JSON_FILE_PATH, std::ios::in);

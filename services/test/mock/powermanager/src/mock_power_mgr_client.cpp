@@ -17,8 +17,10 @@
 
 namespace OHOS {
 namespace PowerMgr {
-PowerMgrClient::PowerMgrClient() {}
-PowerMgrClient::~PowerMgrClient() {}
+PowerMgrClient::PowerMgrClient()
+{}
+PowerMgrClient::~PowerMgrClient()
+{}
 
 ErrCode PowerMgrClient::Connect()
 {
@@ -26,32 +28,25 @@ ErrCode PowerMgrClient::Connect()
 }
 
 void PowerMgrClient::ResetProxy(const wptr<IRemoteObject>& remote)
-{
-}
+{}
 
 void PowerMgrClient::PowerMgrDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
-{
-}
+{}
 
 void PowerMgrClient::RebootDevice(const std::string& reason)
-{
-}
+{}
 
 void PowerMgrClient::ShutDownDevice(const std::string& reason)
-{
-}
+{}
 
 void PowerMgrClient::SuspendDevice(SuspendDeviceType reason, bool suspendImmed)
-{
-}
+{}
 
 void PowerMgrClient::WakeupDevice(WakeupDeviceType reason, const std::string& detail)
-{
-}
+{}
 
 void PowerMgrClient::RefreshActivity(UserActivityType type)
-{
-}
+{}
 
 bool PowerMgrClient::IsRunningLockTypeSupported(uint32_t type)
 {
@@ -70,7 +65,7 @@ bool PowerMgrClient::IsScreenOn()
 
 PowerState PowerMgrClient::GetState()
 {
-    return  PowerState::UNKNOWN;
+    return PowerState::UNKNOWN;
 }
 
 std::shared_ptr<RunningLock> PowerMgrClient::CreateRunningLock(const std::string& name, RunningLockType type)
@@ -79,37 +74,29 @@ std::shared_ptr<RunningLock> PowerMgrClient::CreateRunningLock(const std::string
 }
 
 void PowerMgrClient::RegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
-{
-}
+{}
 
 void PowerMgrClient::UnRegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
-{
-}
+{}
 
-void PowerMgrClient::RegisterShutdownCallback(const sptr<IShutdownCallback>& callback,
-    IShutdownCallback::ShutdownPriority priority)
-{
-}
+void PowerMgrClient::RegisterShutdownCallback(
+    const sptr<IShutdownCallback>& callback, IShutdownCallback::ShutdownPriority priority)
+{}
 
 void PowerMgrClient::UnRegisterShutdownCallback(const sptr<IShutdownCallback>& callback)
-{
-}
+{}
 
 void PowerMgrClient::RegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
-{
-}
+{}
 
 void PowerMgrClient::UnRegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
-{
-}
+{}
 
 void PowerMgrClient::SetDisplaySuspend(bool enable)
-{
-}
+{}
 
 void PowerMgrClient::SetDeviceMode(const uint32_t mode)
-{
-}
+{}
 
 uint32_t PowerMgrClient::GetDeviceMode()
 {

@@ -13,26 +13,29 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include <map>
 #include <memory>
-#include <gtest/gtest.h>
 #include "accessibility_keyevent_filter.h"
-#include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_channel.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
+#include "mock_accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+const static uint32_t SLEEP_TIME_3 = 3;
 class KeyEventFilterUnitTest : public ::testing::Test {
 public:
-    KeyEventFilterUnitTest() {}
-    ~KeyEventFilterUnitTest() {}
+    KeyEventFilterUnitTest()
+    {}
+    ~KeyEventFilterUnitTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -40,8 +43,9 @@ public:
     void TearDown() override;
 
     void AddConnection();
-    shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
+    std::shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
+    sptr<AccessibleAbilityChannel> aastub_ = nullptr;
 };
 
 void KeyEventFilterUnitTest::SetUpTestCase()
@@ -66,7 +70,7 @@ void KeyEventFilterUnitTest::SetUp()
 
     DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
 
-    keyEventFilter_ = make_shared<KeyEventFilter>();
+    keyEventFilter_ = std::make_shared<KeyEventFilter>();
 }
 
 void KeyEventFilterUnitTest::TearDown()
@@ -74,22 +78,25 @@ void KeyEventFilterUnitTest::TearDown()
     GTEST_LOG_(INFO) << "TearDown";
     keyEventFilter_ = nullptr;
     mock_ = nullptr;
+    aastub_ = nullptr;
 }
 
 void KeyEventFilterUnitTest::AddConnection()
 {
     GTEST_LOG_(INFO) << "KeyEventFilterUnitTest AddConnection";
-    sptr<AccessibleAbilityClientStubImpl> stub = new AccessibleAbilityClientStubImpl();
-    shared_ptr<AccessibleAbilityManagerService> aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
+    std::shared_ptr<AccessibleAbilityManagerService> aams =
+        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 
-    // Add an ability connection client
-    AppExecFwk::ExtensionAbilityInfo extensionInfo;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
+    // add an ability connection client
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    connection->OnAbilityConnectDone(elementName, stub, 0);
+    aastub_ = new AccessibleAbilityChannel(*connection);
+    connection->OnAbilityConnectDone(elementName, aastub_, 0);
+    sleep(SLEEP_TIME_3);
 }
 
 /**
@@ -137,13 +144,13 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 
     bool isHandled = true;
     uint32_t sequenceNum = 0;
-    int connectionId = 0;
-    int accountId = 0;
+    int32_t connectionId = 0;
+    int32_t accountId = 0;
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     AccessibilityAbilityInfo abilityInfo;
-    shared_ptr<AccessibleAbilityConnection> connection =
-        make_shared<AccessibleAbilityConnection>(accountData, connectionId, abilityInfo);
+    std::shared_ptr<AccessibleAbilityConnection> connection =
+        std::make_shared<AccessibleAbilityConnection>(accountData, connectionId, abilityInfo);
 
     AddConnection();
     keyEventFilter_->OnKeyEvent(*event);
@@ -171,7 +178,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-        ->GetCurrentAccountData()->GetConnectedA11yAbilities();
+            ->GetCurrentAccountData()
+            ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
@@ -203,7 +211,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-        ->GetCurrentAccountData()->GetConnectedA11yAbilities();
+            ->GetCurrentAccountData()
+            ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
@@ -235,7 +244,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-        ->GetCurrentAccountData()->GetConnectedA11yAbilities();
+            ->GetCurrentAccountData()
+            ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
@@ -266,7 +276,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     GTEST_LOG_(INFO) << "Clear service KeyEvents";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-        ->GetCurrentAccountData()->GetConnectedA11yAbilities();
+            ->GetCurrentAccountData()
+            ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
@@ -308,7 +319,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestS
     keyEventFilter_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "Process event";
-    sleep(3); // Wait for ProcessEvent
+    sleep(SLEEP_TIME_3);  // wait for ProcessEvent
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 end";
 }
