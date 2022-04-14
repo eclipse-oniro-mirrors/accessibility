@@ -400,8 +400,7 @@ bool BundleMgrProxy::RemoveClonedBundle(const std::string &bundleName, const int
     return true;
 }
 
-bool BundleMgrProxy::GetDistributedBundleInfo(
-    const std::string &networkId, int32_t userId, const std::string &bundleName,
+bool BundleMgrProxy::GetDistributedBundleInfo(const std::string &networkId, const std::string &bundleName,
     DistributedBundleInfo &distributedBundleInfo)
 {
     return true;
