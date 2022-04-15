@@ -182,11 +182,6 @@ bool BundleMgrProxy::QueryKeepAliveBundleInfos(std::vector<BundleInfo> &bundleIn
     return true;
 }
 
-std::string BundleMgrProxy::GetAbilityLabel(const std::string &bundleName, const std::string &className)
-{
-    return Constants::EMPTY_STRING;
-}
-
 bool BundleMgrProxy::GetBundleArchiveInfo(const std::string &hapFilePath, const BundleFlag flag, BundleInfo &bundleInfo)
 {
     return true;
@@ -303,11 +298,6 @@ bool BundleMgrProxy::IsAbilityEnabled(const AbilityInfo &abilityInfo)
 bool BundleMgrProxy::SetAbilityEnabled(const AbilityInfo &abilityInfo, bool isEnabled, int32_t userId)
 {
     return true;
-}
-
-std::string BundleMgrProxy::GetAbilityIcon(const std::string &bundleName, const std::string &className)
-{
-    return Constants::EMPTY_STRING;
 }
 
 sptr<IBundleInstaller> BundleMgrProxy::GetBundleInstaller()
