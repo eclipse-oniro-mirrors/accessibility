@@ -168,7 +168,6 @@ public:
     MOCK_METHOD1(CheckIsSystemAppByUid, bool(const int uid));
     MOCK_METHOD2(GetBundleInfosByMetaData, bool(const std::string &metaData, std::vector<BundleInfo> &bundleInfos));
     MOCK_METHOD1(QueryKeepAliveBundleInfos, bool(std::vector<BundleInfo> &bundleInfos));
-    MOCK_METHOD2(GetAbilityLabel, std::string(const std::string &bundleName, const std::string &className));
     MOCK_METHOD3(
         GetBundleArchiveInfo, bool(const std::string &hapFilePath, const BundleFlag flag, BundleInfo &bundleInfo));
     MOCK_METHOD2(GetHapModuleInfo, bool(const AbilityInfo &abilityInfo, HapModuleInfo &hapModuleInfo));
@@ -198,7 +197,6 @@ public:
     MOCK_METHOD2(GetNameForUid, bool(const int uid, std::string &name));
     MOCK_METHOD1(IsAbilityEnabled, bool(const AbilityInfo &abilityInfo));
     MOCK_METHOD3(SetAbilityEnabled, bool(const AbilityInfo &abilityInfo, bool isEnabled, int32_t userId));
-    MOCK_METHOD2(GetAbilityIcon, std::string(const std::string &bundleName, const std::string &className));
     MOCK_METHOD3(CanRequestPermission, bool(const std::string &bundleName, const std::string &permissionName,
         const int userId));
     MOCK_METHOD3(RequestPermissionFromUser, bool(const std::string &bundleName, const std::string &permission,
