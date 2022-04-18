@@ -189,6 +189,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
     callbackInfo->keyEvent_ = MMI::KeyEvent::Clone(keyEvent);
     callbackInfo->extension_ = this;
     work->data = callbackInfo;
+    std::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     uv_queue_work(
         loop,
@@ -203,6 +204,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
                 data = nullptr;
                 delete work;
                 work = nullptr;
+                data->syncPromise_.set_value(false);
                 return;
             }
             ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
@@ -218,18 +220,20 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
                 data = nullptr;
                 delete work;
                 work = nullptr;
-
+                data->syncPromise_.set_value(false);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
-            
+            data->syncPromise_.set_value(result);
+
             delete data;
             data = nullptr;
             delete work;
             work = nullptr;
         });
-    HILOG_INFO("end.");
-    return true;
+    bool callbackResult = syncFuture.get();
+    HILOG_INFO("OnKeyPressEvent callbackResult = %{public}d", callbackResult);
+    return callbackResult;
 }
 
 NativeValue* NAccessibilityExtension::CallObjectMethod(const char* name, NativeValue* const* argv, size_t argc)

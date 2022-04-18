@@ -16,6 +16,7 @@
 #ifndef NAPI_ACCESSIBILITY_EXTENSION_H
 #define NAPI_ACCESSIBILITY_EXTENSION_H
 
+#include <future>
 #include "accessibility_extension.h"
 #include "accessible_ability_listener.h"
 #include "js_runtime.h"
@@ -147,6 +148,7 @@ struct ExtensionCallbackInfo {
 
 struct KeyEventCallbackInfo : public ExtensionCallbackInfo {
     std::shared_ptr<MMI::KeyEvent> keyEvent_;
+    std::promise<bool> syncPromise_;
 };
 
 struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {

@@ -117,6 +117,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 start";
     AddAccessibleAbilityConnection();
+    sleep(2);
     std::string bundleName = "bundleName";
     accountData_->AddConnectingA11yAbility(bundleName);
     EXPECT_EQ(1, int(accountData_->GetConnectingA11yAbilities().size()));
