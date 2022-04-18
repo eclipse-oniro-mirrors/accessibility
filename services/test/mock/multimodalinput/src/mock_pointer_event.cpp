@@ -111,12 +111,12 @@ void PointerEvent::PointerItem::SetHeight(int32_t height)
     height_ = height;
 }
 
-int32_t PointerEvent::PointerItem::GetPressure() const
+double PointerEvent::PointerItem::GetPressure() const
 {
     return pressure_;
 }
 
-void PointerEvent::PointerItem::SetPressure(int32_t pressure)
+void PointerEvent::PointerItem::SetPressure(double pressure)
 {
     pressure_ = pressure;
 }
