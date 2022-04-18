@@ -100,6 +100,7 @@ void AccessibleAbilityManagerServiceUnitTest::RegisterAbilityConnectionClient(co
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     connection->OnAbilityConnectDone(elementName, obj, 0);
+    sleep(SLEEP_TIME_1);
 }
 
 /**
@@ -200,6 +201,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, Tes
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 start";
     sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
+    sleep(SLEEP_TIME_1);
     ins_->SetTouchEventInjector(touchEventInjector);
     auto ret = ins_->GetTouchEventInjector();
     EXPECT_TRUE(ret);
@@ -303,10 +305,13 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
     /* add install ability */
+    sleep(SLEEP_TIME_1);
     RegisterAbilityConnectionClient(stub_);
+    sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     bundleName = "bundleName2";
     ins_->PackageChanged(bundleName);
+    sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }

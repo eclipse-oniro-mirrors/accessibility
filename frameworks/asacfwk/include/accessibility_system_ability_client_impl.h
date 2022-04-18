@@ -26,6 +26,7 @@
 
 namespace OHOS {
 namespace Accessibility {
+using StateArray = std::array<bool, AccessibilityStateEventType::EVENT_TYPE_MAX>;
 using StateObserverVector = std::vector<std::shared_ptr<AccessibilityStateObserver>>;
 using StateObserversArray = std::array<StateObserverVector, AccessibilityStateEventType::EVENT_TYPE_MAX>;
 class AccessibilitySystemAbilityClientImpl : public AccessibilitySystemAbilityClient {
@@ -98,7 +99,7 @@ public:
      * @param -
      * @return Returns the properties of the accessibility caption.
      */
-    virtual CaptionProperty GetCaptionProperty() const override;
+    virtual CaptionProperty GetCaptionProperty() override;
 
     /**
      * @brief Sets the properties of the accessibility caption.
@@ -151,46 +152,6 @@ public:
      */
     virtual bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
         const uint32_t eventType) override;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether accessibility ability is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateEnabled(const bool enabled) override;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether touch exploration is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateTouchExplorationEnabled(const bool enabled) override;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether gesture state is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateGestureState(const bool state) override;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether key event observer is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateKeyEventObserverState(const bool state) override;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether caption is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateCaptionEnabled(const bool enabled) override;
 
     /**
      * @brief Get eventlist that accessibility abilities are needed.
@@ -451,32 +412,21 @@ private:
     bool ConnectToService();
 
     /**
-     * @brief Notify the state of accessibility is changed.
-     * @param
-     * @return
+     * @brief Inner function for aams status update;
+     *        Set whether caption is enabled.
+     * @param enabled true is enabled otherwise is disabled.
+     * @return -
      */
-    void NotifyAccessibilityStateChanged();
+    void UpdateCaptionEnabled(const bool enabled);
 
     /**
-     * @brief Notify the state of touch exploration is changed.
-     * @param
+     * @brief Notify the state is changed.
+     * @param stateType The state type and value.
+     *                  state type: Refer to AccessibilityStateEventType.
+     * @param value The value be changed.
      * @return
      */
-    void NotifyTouchExplorationStateChanged();
-
-    /**
-     * @brief Notify the state of key event is changed.
-     * @param
-     * @return
-     */
-    void NotifyKeyEventStateChanged();
-
-    /**
-     * @brief Notify the state of gesture is changed.
-     * @param
-     * @return
-     */
-    void NotifyGestureStateChanged();
+    void NotifyStateChanged(uint32_t eventType, bool value);
 
     /**
      * @brief Notify the state of caption is changed.
@@ -507,24 +457,19 @@ private:
     bool CheckActionType(ActionType actionType);
 
     std::mutex mutex_;
+    StateArray stateArray_;
     StateObserversArray stateObserversArray_;
     std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_;
     std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_;
 
     CaptionProperty captionProperty_ {};
     int32_t accountId_ = 0;
-    bool isEnabled_ = false;
-    bool isTouchExplorationEnabled_ = false;
-    bool isFilteringKeyEventsEnabled_ = false;
-    bool isGesturesSimulationEnabled_ = false;
     bool isScreenMagnifierEnabled_ = false;
     bool isAutoClickEnabled_ = false;
     bool isShortKeyEnabled_ = false;
     bool isCaptionEnabled_ = false;
 
-    std::recursive_mutex asacProxyLock_;
     std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> interactionOperators_;
-    int32_t connectionWindowId_ = 0;
 
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
 

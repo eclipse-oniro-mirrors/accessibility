@@ -115,37 +115,26 @@ MMI::PointerEvent TouchEventInjectorTest::CreateTouchEvent(int32_t action)
 HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 start";
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 122";
     touchEventInjector_->SetNext(inputInterceptor_);
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 124";
 
     AccessibilityGesturePathPosition startpoint = {10.0f, 10.0f};
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 127";
 
     AccessibilityGesturePathPosition endpoint = {10.0f, 10.0f};
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 130";
 
     CreateGesturePath(startpoint, endpoint, 100);
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 133";
 
     touchEventInjector_->InjectEvents(getGesturePath, service, 1);
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 136";
 
     sleep(SLEEP_TIME_2);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 139";
 
     EXPECT_EQ(touchAction[0], expectValue);
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 143";
 
     expectValue = MMI::PointerEvent::POINTER_ACTION_UP;
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 146";
 
     EXPECT_EQ(touchAction[1], expectValue);
-
-    GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 end";
 }
 
 /**

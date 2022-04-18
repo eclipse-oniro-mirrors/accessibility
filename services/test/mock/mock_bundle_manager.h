@@ -85,7 +85,7 @@ public:
     MOCK_METHOD1(QueryKeepAliveBundleInfos, bool(std::vector<BundleInfo>& bundleInfos));
     MOCK_METHOD2(GetAbilityLabel, std::string(const std::string& bundleName, const std::string& className));
     MOCK_METHOD3(GetBundleArchiveInfo,
-        bool(const std::string& hapFilePath,const BundleFlag flag, BundleInfo& bundleInfo));
+        bool(const std::string& hapFilePath, const BundleFlag flag, BundleInfo& bundleInfo));
     MOCK_METHOD2(GetHapModuleInfo, bool(const AbilityInfo& abilityInfo, HapModuleInfo& hapModuleInfo));
     MOCK_METHOD2(GetLaunchWantForBundle, bool(const std::string& bundleName, Want& want));
     MOCK_METHOD2(CheckPublicKeys, int(const std::string& firstBundleName, const std::string& secondBundleName));

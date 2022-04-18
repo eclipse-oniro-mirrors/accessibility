@@ -63,8 +63,7 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     if (!proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, elementOperator)) {
         return false;
     }
-    HILOG_DEBUG("channelId[%{public}d], accessibilityWindowId[%{public}d], \
-        elementId[%{public}d], focusType[%{public}d]",
+    HILOG_DEBUG("channelId:%{public}d, accessibilityWindowId:%{public}d, elementId:%{public}d, focusType:%{public}d",
         channelId_, accessibilityWindowId, elementId, focusType);
 
     std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));

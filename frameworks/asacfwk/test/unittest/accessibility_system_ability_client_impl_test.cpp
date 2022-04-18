@@ -286,27 +286,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, UnsubscribeStateObserver_001,
 }
 
 /**
- * @tc.number: UpdateCapabilitiesState_001
- * @tc.name: UpdateEnabled
- * @tc.desc: Test function UpdateEnabled
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, UpdateCapabilitiesState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "UpdateCapabilitiesState_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    impl_->UpdateEnabled(true);
-    impl_->UpdateCaptionEnabled(true);
-    impl_->UpdateKeyEventObserverState(true);
-    impl_->UpdateGestureState(true);
-    impl_->UpdateTouchExplorationEnabled(true);
-
-    GTEST_LOG_(INFO) << "UpdateCapabilitiesState_001 end";
-}
-
-/**
  * @tc.number: AddCaptionListener_001
  * @tc.name: AddCaptionListener
  * @tc.desc: Test function AddCaptionListener

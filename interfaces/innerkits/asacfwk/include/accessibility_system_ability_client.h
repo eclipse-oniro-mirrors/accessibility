@@ -114,7 +114,7 @@ public:
      * @param -
      * @return Returns the properties of the accessibility caption function.
      */
-    virtual CaptionProperty GetCaptionProperty() const = 0;
+    virtual CaptionProperty GetCaptionProperty() = 0;
 
     /**
      * @brief Set the properties of the accessibility caption function.
@@ -169,46 +169,6 @@ public:
      */
     virtual bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
         const uint32_t eventType) = 0;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether accessibility ability is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateEnabled(const bool enabled) = 0;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether touch exploration is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateTouchExplorationEnabled(const bool enabled) = 0;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether gesture state is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateGestureState(const bool state) = 0;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether key event observer is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateKeyEventObserverState(const bool state) = 0;
-
-    /**
-     * @brief Inner function for aams status update;
-     *        Set whether caption is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    virtual void UpdateCaptionEnabled(const bool enabled) = 0;
 
     /**
      * @brief Get eventlist that accessibility abilities are needed.
