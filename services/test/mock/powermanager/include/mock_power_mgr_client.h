@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef MOCK_POWERMGR_POWER_MGR_CLIENT_H
-#define MOCK_POWERMGR_POWER_MGR_CLIENT_H
+#ifndef MOCK_POWER_MGR_CLIENT_H
+#define MOCK_POWER_MGR_CLIENT_H
 
 #include "power_mgr_client.h"
 
@@ -22,4 +22,4 @@ namespace OHOS {
 namespace PowerMgr {
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // POWERMGR_POWER_MGR_CLIENT_H
+#endif // MOCK_POWER_MGR_CLIENT_H

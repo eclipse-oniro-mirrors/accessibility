@@ -62,8 +62,8 @@ public:
     static void NotifyPropertyChangedJS(
         napi_env env, OHOS::Accessibility::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
-    void OnCaptionStateChanged(const bool& enable) override;
-    void OnCaptionPropertyChanged(const OHOS::Accessibility::CaptionProperty& caption) override;
+    void OnStateChanged(const bool& enable) override;
+    void OnPropertyChanged(const OHOS::Accessibility::CaptionProperty& caption) override;
     OHOS::Accessibility::CaptionObserverType GetStateType();
 
     std::string GetEventType() const
@@ -99,7 +99,7 @@ struct NAccessibilitySystemAbilityClient {
     OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
     uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
-    std::map<std::string, OHOS::AppExecFwk::ElementName> enabledAbilities_ {};
+    std::vector<std::string> enabledAbilities_ {};
     OHOS::Accessibility::CaptionProperty captionProperty_ {};
     bool setCaptionPropertyReturn_ = false;
     bool captionState_ = false;
@@ -134,13 +134,9 @@ public:
     static napi_value GetCaptionState(napi_env env, napi_callback_info info);
     static napi_value SetCaptionState(napi_env env, napi_callback_info info);
     static napi_value GetEnabled(napi_env env, napi_callback_info info);
-    static napi_value SetEnabled(napi_env env, napi_callback_info info);
     static napi_value GetTouchGuideState(napi_env env, napi_callback_info info);
-    static napi_value SetTouchGuideState(napi_env env, napi_callback_info info);
     static napi_value GetGestureState(napi_env env, napi_callback_info info);
-    static napi_value SetGestureState(napi_env env, napi_callback_info info);
     static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
-    static napi_value SetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value GetInstalled(napi_env env, napi_callback_info info);
     static napi_value GetExtensionEnabled(napi_env env, napi_callback_info info);
     static napi_value ExtensionEnabled(napi_env env, napi_callback_info info);
@@ -171,10 +167,8 @@ public:
     static napi_value GetCaptionWindowColor(napi_env env, napi_callback_info info);
     static napi_value SetCaptionWindowColor(napi_env env, napi_callback_info info);
 
-    static napi_value aaCons_; // CaptionsManager
-    static napi_ref aaConsRef_;
-    static napi_value aaStyleCons_; // CaptionsStyle
-    static napi_ref aaStyleConsRef_;
+    static thread_local napi_ref aaConsRef_;
+    static thread_local napi_ref aaStyleConsRef_;
 
     static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
     static std::vector<std::shared_ptr<CaptionListener>> captionListeners_;

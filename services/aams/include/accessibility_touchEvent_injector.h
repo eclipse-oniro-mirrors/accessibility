@@ -19,10 +19,10 @@
 
 #include <time.h>
 #include "accessibility_event_transmission.h"
-#include "accessible_ability_client_interface.h"
+#include "i_accessible_ability_client.h"
 #include "event_handler.h"
 #include "event_runner.h"
-#include "gesture_simulation.h"
+#include "accessibility_gesture_path.h"
 #include "hilog_wrapper.h"
 #include "pointer_event.h"
 #include "singleton.h"
@@ -95,8 +95,8 @@ public:
      * @param sequence the sequence of gesture
      * @return
      */
-    void InjectEvents(const std::vector<GesturePathDefine> &gesturePath,
-        const sptr<IAccessibleAbilityClient> &service, int sequence);
+    void InjectEvents(const std::vector<AccessibilityGesturePath> &gesturePath,
+        const sptr<IAccessibleAbilityClient> &service, int32_t sequence);
 
     /**
      * @brief Send pointer event to next stream node.
@@ -127,7 +127,7 @@ public:
      * @param
      * @return the sequence of gesture
      */
-    int GetSequence()
+    int32_t GetSequence()
     {
         return sequence_;
     }
@@ -177,7 +177,7 @@ private:
      * @param point the endpoint of event
      * @return the created touchevent
      */
-    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int action,
+    std::shared_ptr<MMI::PointerEvent> obtainTouchEvent(int32_t action,
         MMI::PointerEvent::PointerItem point, int64_t actionTime);
 
     /**
@@ -187,10 +187,10 @@ private:
      */
     int64_t getSystemTime();
 
-    int sequence_ = -1;
+    int32_t sequence_ = -1;
     bool isGestureUnderway_ = false;
     bool isDestroyEvent_ = false;
-    std::vector<GesturePathDefine> gesturePath_;
+    std::vector<AccessibilityGesturePath> gesturePath_;
     sptr<IAccessibleAbilityClient> currentGestureService_ = nullptr;
     std::shared_ptr<TouchInjectHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;

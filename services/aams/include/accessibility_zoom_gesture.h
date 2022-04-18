@@ -34,10 +34,10 @@ public:
     void Clear();
 
 private:
-    int distance_ = 0;
+    int32_t distance_ = 0;
     int64_t timeout_ = 0;
-    int upCount_ = 0;
-    int downCount_ = 0;
+    int32_t upCount_ = 0;
+    int32_t downCount_ = 0;
     std::shared_ptr<MMI::PointerEvent> pLastDown_ = nullptr;
 
     void Initialize();
@@ -52,7 +52,7 @@ private:
      * @brief Gets the effective distance between two pointer events
      *        set by the system.
      */
-    int GetSysDistance() const;
+    int32_t GetSysDistance() const;
 
     /**
      * @brief Gets the effective time interval between two pointer events

@@ -20,9 +20,11 @@ namespace MMI {
 const int32_t KeyEvent::KEYCODE_VOLUME_UP = 16;
 const int32_t KeyEvent::KEYCODE_VOLUME_DOWN = 17;
 
-KeyEvent::KeyItem::KeyItem() {}
+KeyEvent::KeyItem::KeyItem()
+{}
 
-KeyEvent::KeyItem::~KeyItem() {}
+KeyEvent::KeyItem::~KeyItem()
+{}
 
 int32_t KeyEvent::KeyItem::GetKeyCode() const
 {
@@ -64,15 +66,15 @@ void KeyEvent::KeyItem::SetPressed(bool pressed)
     pressed_ = pressed;
 }
 
-KeyEvent::KeyEvent(int32_t eventType) : InputEvent(eventType) {}
+KeyEvent::KeyEvent(int32_t eventType) : InputEvent(eventType)
+{}
 
 KeyEvent::KeyEvent(const KeyEvent& other)
-    : InputEvent(other),
-    keyCode_(other.keyCode_),
-    keys_(other.keys_),
-    keyAction_(other.keyAction_) {}
+    : InputEvent(other), keyCode_(other.keyCode_), keys_(other.keys_), keyAction_(other.keyAction_)
+{}
 
-KeyEvent::~KeyEvent() {}
+KeyEvent::~KeyEvent()
+{}
 
 std::shared_ptr<KeyEvent> KeyEvent::Create()
 {
@@ -94,14 +96,14 @@ void KeyEvent::SetKeyCode(int32_t keyCode)
     keyCode_ = keyCode;
 }
 
-bool KeyEvent::WriteToParcel(Parcel &out) const
+bool KeyEvent::WriteToParcel(Parcel& out) const
 {
     return true;
 }
 
-bool KeyEvent::ReadFromParcel(Parcel &in)
+bool KeyEvent::ReadFromParcel(Parcel& in)
 {
     return true;
 }
-}
-}
+} // namespace MMI
+} // namespace OHOS

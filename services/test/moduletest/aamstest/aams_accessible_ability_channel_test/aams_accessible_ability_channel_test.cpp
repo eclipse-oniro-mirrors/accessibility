@@ -14,43 +14,34 @@
  */
 
 #include <gtest/gtest.h>
-
 #include "accessibility_display_manager.h"
-#include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
-#include "accessible_ability_client_stub_impl.h"
+#include "accessibility_helper.h"
+#include "accessible_ability_channel.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "json.h"
+#include "mock_accessibility_element_operator_impl.h"
+#include "mock_accessibility_element_operator_proxy.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
 
-using namespace std;
 using namespace testing;
 using namespace testing::ext;
 using namespace Json;
 
 namespace OHOS {
 namespace Accessibility {
-extern OHOS::sptr<OHOS::Accessibility::IAccessibleAbilityChannel> g_testStub;
-extern int g_testChannelElementId;
-extern int g_testChannelrequestId;
-extern int g_testChannelmode;
-extern std::string g_testText;
-extern int g_testFocusType;
-extern int g_testDirection;
-extern int g_testAction;
-extern int g_testGestureSimulate;
-extern std::map<std::string, std::string> g_testActionArguments;
+const static int32_t timeout = 10000;
+const static int32_t testNum_2 = 2;
+const static int32_t testNum_3 = 3;
 
-const int timeout = 10000;
-const int testNum_2 = 2;
-const int testNum_3 = 3;
 class AamsAccessibleAbilityChannelTest : public testing::Test {
 public:
-
-    AamsAccessibleAbilityChannelTest() {}
-    ~AamsAccessibleAbilityChannelTest() {}
+    AamsAccessibleAbilityChannelTest()
+    {}
+    ~AamsAccessibleAbilityChannelTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -60,17 +51,18 @@ public:
     void WritefileAll(const char* fname, const char* data);
     void CreateAccessibilityConfigForTouchGuide();
     void CreateAccessibilityConfigNoCapability();
-    void AddAccessibleAbilityConnection();
+    void AddAccessibleAbilityConnection(bool isNoCapability = false);
     void AddAccessibilityWindowConnection();
     void CreateGesturePath(
-        GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime);
-    std::vector<GesturePathDefine> gestureSteps_ {};
+        AccessibilityGesturePathPosition startpoint, AccessibilityGesturePathPosition endpoint, int64_t durationTime);
+    std::vector<AccessibilityGesturePath> gestureSteps_ {};
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
-    shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
+    std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
-    sptr<AccessibleAbilityClientStubImpl> aastub_ = nullptr;
+    sptr<AccessibleAbilityChannel> aastub_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
     sptr<AccessibleAbilityConnection> AAConnection_ = nullptr;
+    sptr<MockAccessibilityElementOperatorProxy> proxy_ = nullptr;
 };
 
 void AamsAccessibleAbilityChannelTest::SetUpTestCase()
@@ -103,16 +95,8 @@ void AamsAccessibleAbilityChannelTest::SetUp()
 void AamsAccessibleAbilityChannelTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown";
-    // Reset test value
-    g_testChannelElementId = -1;
-    g_testChannelrequestId = -1;
-    g_testChannelmode = -1;
-    g_testAction = 0;
-    g_testDirection = 0;
-    g_testText = "";
-    g_testFocusType = 0;
-    g_testGestureSimulate = -1;
-    g_testActionArguments.clear();
+    AccessibilityHelper::GetInstance().SetTestGestureSimulate(-1);
+
     // Deregister ElementOperator
     aams_->DeregisterElementOperator(0);
     // Stop AAMS
@@ -123,11 +107,12 @@ void AamsAccessibleAbilityChannelTest::TearDown()
     aastub_ = nullptr;
     elementName_ = nullptr;
     AAConnection_ = nullptr;
+    proxy_ = nullptr;
 }
 
 void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const char* data)
 {
-    FILE *fp;
+    FILE* fp;
     if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;
@@ -140,8 +125,8 @@ void AamsAccessibleAbilityChannelTest::WritefileAll(const char* fname, const cha
 void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigForTouchGuide()
 {
     std::ostringstream os;
-    Json::Value object1,
-        targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes,
+        accessibilityCapabilities;
     string jsonStr;
 
     if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
@@ -173,14 +158,14 @@ void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigForTouchGuide()
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
     jsonWriter->write(object1, &os);
     jsonStr = os.str();
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json",  jsonStr.c_str());
+    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
 }
 
 void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigNoCapability()
 {
     std::ostringstream os;
-    Json::Value object1,
-        targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
+    Json::Value object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes,
+        accessibilityCapabilities;
     string jsonStr;
 
     if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
@@ -210,13 +195,12 @@ void AamsAccessibleAbilityChannelTest::CreateAccessibilityConfigNoCapability()
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
     jsonWriter->write(object1, &os);
     jsonStr = os.str();
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json",  jsonStr.c_str());
+    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
 }
 
-void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
+void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoCapability)
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibleAbilityConnection";
-    AppExecFwk::ExtensionAbilityInfo info;
     AAFwk::Want want;
     AppExecFwk::ElementName name;
     std::string deviceId;
@@ -224,11 +208,17 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
     name.SetBundleName("com.example.aalisttest");
     want.SetElement(name);
 
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
+    if (!isNoCapability) {
+        abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE | Capability::CAPABILITY_TOUCH_GUIDE |
+                                         Capability::CAPABILITY_GESTURE | Capability::CAPABILITY_KEY_EVENT_OBSERVER);
+    }
     accountData_ = aams_->GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
-    elementName_ = new AppExecFwk::ElementName(deviceId, info.bundleName, info.name);
-    aastub_ = new AccessibleAbilityClientStubImpl();
+    elementName_ = new AppExecFwk::ElementName(deviceId, initParams.bundleName, initParams.name);
+    aastub_ = new AccessibleAbilityChannel(*AAConnection_);
     AAConnection_->OnAbilityConnectDone(*elementName_, aastub_, 0);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
@@ -236,21 +226,23 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection()
 void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
-    int windowId = 0;
-    sptr<IAccessibilityElementOperator> operation = nullptr;
-    int accountId = 0;
-    sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
-    GTEST_LOG_(INFO) << "aams RegisterElementOperator";
+    // accessibility interaction connection
+    int32_t windowId = 0;
+    std::shared_ptr<AccessibilityElementOperator> operation = nullptr;
+    int32_t accountId = 0;
+
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorImpl(windowId, operation);
+    sptr<MockAccessibilityElementOperatorProxy> proxy = new MockAccessibilityElementOperatorProxy(stub);
+    proxy_ = proxy;
     aams_->RegisterElementOperator(windowId, proxy, accountId);
 }
 
 void AamsAccessibleAbilityChannelTest::CreateGesturePath(
-    GesturePathPositionDefine startpoint, GesturePathPositionDefine endpoint, int64_t durationTime)
+    AccessibilityGesturePathPosition startpoint, AccessibilityGesturePathPosition endpoint, int64_t durationTime)
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest CreateGesturePath";
     // Create gesture
-    GesturePathDefine gesturePathDefine = GesturePathDefine(startpoint, endpoint, durationTime);
+    AccessibilityGesturePath gesturePathDefine = AccessibilityGesturePath(startpoint, endpoint, durationTime);
     gesturePathDefine.SetStartPosition(startpoint);
     gesturePathDefine.SetEndPosition(endpoint);
     gesturePathDefine.SetDurationTime(durationTime);
@@ -263,8 +255,8 @@ void AamsAccessibleAbilityChannelTest::CreateGesturePath(
  * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId,
  *           check SearchElementInfoByAccessibilityId.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001 start";
     // Create json
@@ -272,14 +264,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result =
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, g_testChannelElementId);
-    EXPECT_EQ(0, g_testChannelrequestId);
-    EXPECT_EQ(0, g_testChannelmode);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(0, proxy_->testChannelMode_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -292,8 +285,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId,
  *           check SearchElementInfoByAccessibilityId.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 start";
     // Create json
@@ -301,15 +294,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->SearchElementInfoByAccessibilityId(ACTIVE_WINDOW_ID, 0, 0, nullptr, 0);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(
+        ACTIVE_WINDOW_ID, 0, 0, nullptr, 0);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_EQ(-1, g_testChannelmode);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(-1, proxy_->testChannelMode_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 end";
@@ -320,8 +314,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: SearchElementInfosByText
  * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check SearchElementInfosByText.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001 start";
     // Create json
@@ -329,15 +323,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    bool result = g_testStub->SearchElementInfosByText(0, 0, text, 0, nullptr);
-
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, g_testChannelElementId);
-    EXPECT_EQ(0, g_testChannelrequestId);
-    EXPECT_EQ(text, g_testText);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(text, proxy_->testText_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -349,8 +343,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: SearchElementInfosByText
  * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check SearchElementInfosByText.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 start";
     // Create json
@@ -358,16 +352,17 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    bool result = g_testStub->SearchElementInfosByText(ACTIVE_WINDOW_ID, 0, text, 0, nullptr);
-
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(
+        ACTIVE_WINDOW_ID, 0, text, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(text, g_testText);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(text, proxy_->testText_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 end";
@@ -378,8 +373,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: AccessibilityWindowId is accessibility interaction connection windowId, check FindFocusedElementInfo.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001 start";
     // Create json
@@ -387,15 +382,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    bool result = g_testStub->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, g_testChannelElementId);
-    EXPECT_EQ(0, g_testChannelrequestId);
-    EXPECT_EQ(focusType, g_testFocusType);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -407,8 +402,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: AccessibilityWindowId not accessibility interaction connection windowId, check FindFocusedElementInfo.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 start";
     // Create json
@@ -416,16 +411,17 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    bool result = g_testStub->FindFocusedElementInfo(ACTIVE_WINDOW_ID, 0, focusType, 0, nullptr);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(
+        ACTIVE_WINDOW_ID, 0, focusType, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(focusType, g_testFocusType);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(focusType, proxy_->testFocusType_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 end";
@@ -436,8 +432,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: FocusType is FOCUS_TYPE_ACCESSIBILITY, check FindFocusedElementInfo.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003 start";
     // Create json
@@ -445,15 +441,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int focusType = OHOS::Accessibility::FOCUS_TYPE_ACCESSIBILITY;
-    bool result = g_testStub->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_ACCESSIBILITY;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, g_testChannelElementId);
-    EXPECT_EQ(1, g_testChannelrequestId);
-    EXPECT_EQ(focusType, g_testFocusType);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -473,15 +469,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int direction = FocusMoveDirection::UP;
-    bool result = g_testStub->FocusMoveSearch(0, 0, direction, 0, nullptr);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t direction = FocusMoveDirection::UP;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, g_testChannelElementId);
-    EXPECT_EQ(0, g_testChannelrequestId);
-    EXPECT_EQ(direction, g_testDirection);
+    EXPECT_EQ(0, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(direction, proxy_->testDirection_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -501,16 +497,17 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int direction = FocusMoveDirection::UP;
-    bool result = g_testStub->FocusMoveSearch(ACTIVE_WINDOW_ID, 0, direction, 0, nullptr);
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t direction = FocusMoveDirection::UP;
+    bool result =
+        AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(ACTIVE_WINDOW_ID, 0, direction, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(direction, g_testDirection);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(direction, proxy_->testDirection_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 end";
@@ -529,18 +526,18 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
+    sleep(2);
     std::map<std::string, std::string> actionArguments;
-    actionArguments.insert(make_pair("invalid", "invalid"));
+    actionArguments.insert(std::make_pair("invalid", "invalid"));
 
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
-
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(4, g_testChannelElementId);
-    EXPECT_EQ(0, g_testChannelrequestId);
-    EXPECT_EQ(3, g_testAction);
-    EXPECT_EQ(actionArguments, g_testActionArguments);
+    EXPECT_EQ(4, proxy_->testChannelElementId_);
+    EXPECT_EQ(0, proxy_->testChannelRequestId_);
+    EXPECT_EQ(3, proxy_->testAction_);
+    EXPECT_EQ(actionArguments, proxy_->testActionArguments_);
     EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -560,18 +557,19 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
+    sleep(2);
     std::map<std::string, std::string> actionArguments;
-    actionArguments.insert(make_pair("invalid", "invalid"));
+    actionArguments.insert(std::make_pair("invalid", "invalid"));
 
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->ExecuteAction(ACTIVE_WINDOW_ID, 4, 3, actionArguments, 0, nullptr);
-
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(
+        ACTIVE_WINDOW_ID, 4, 3, actionArguments, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_EQ(0, g_testAction);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(0, proxy_->testAction_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_002 end";
@@ -589,10 +587,10 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
     CreateAccessibilityConfigForTouchGuide();
     // Not add interaction connection,add accessibleAbility connection
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    auto result = g_testStub->GetWindows();
-
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    auto result = AccessibilityHelper::GetInstance().GetTestStub()->GetWindows();
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, int(result.size()));
 
@@ -613,16 +611,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    GesturePathPositionDefine startpoint(10.0f, 10.0f);
-    GesturePathPositionDefine endpoint(10.0f, 10.0f);
+    sleep(2);
+    AccessibilityGesturePathPosition startpoint = {10.0f, 10.0f};
+    AccessibilityGesturePathPosition endpoint = {10.0f, 10.0f};
     CreateGesturePath(startpoint, endpoint, 100);
 
-    ASSERT_TRUE(g_testStub);
-    g_testStub->SendSimulateGesture(1, gestureSteps_);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(1, gestureSteps_);
     sleep(2);
 
-    int result = aams_->GetTouchEventInjector()->GetSequence();
+    int32_t result = aams_->GetTouchEventInjector()->GetSequence();
     EXPECT_EQ(1, result);
     gestureSteps_.clear();
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -644,16 +642,17 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
-
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result =
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_EQ(-1, g_testChannelmode);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(-1, proxy_->testChannelMode_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001 end";
@@ -672,17 +671,17 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    bool result = g_testStub->SearchElementInfosByText(0, 0, text, 0, nullptr);
-
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(text, g_testText);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(text, proxy_->testText_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001 end";
@@ -693,25 +692,25 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: No retrieve capability, check FindFocusedElementInfo.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 start";
     // Create json
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    bool result = g_testStub->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
-
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(focusType, g_testFocusType);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(focusType, proxy_->testFocusType_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 end";
@@ -722,25 +721,25 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: FocusMoveSearch
  * @tc.desc: No retrieve capability, check FocusMoveSearch.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 start";
     // Create json
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    int direction = FocusMoveDirection::UP;
-    bool result = g_testStub->FocusMoveSearch(0, 0, direction, 0, nullptr);
-
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    int32_t direction = FocusMoveDirection::UP;
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_NE(direction, g_testDirection);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_NE(direction, proxy_->testDirection_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 end";
@@ -751,28 +750,28 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: ExecuteAction
  * @tc.desc: No retrieve capability, check ExecuteAction.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 start";
     // Create json
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
     std::map<std::string, std::string> actionArguments;
-    actionArguments.insert(make_pair("invalid", "invalid"));
+    actionArguments.insert(std::make_pair("invalid", "invalid"));
 
-    ASSERT_TRUE(g_testStub);
-    bool result = g_testStub->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
-
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(-1, g_testChannelElementId);
-    EXPECT_EQ(-1, g_testChannelrequestId);
-    EXPECT_EQ(0, g_testAction);
-    EXPECT_NE(actionArguments, g_testActionArguments);
-    EXPECT_FALSE(result);
+    EXPECT_EQ(-1, proxy_->testChannelElementId_);
+    EXPECT_EQ(-1, proxy_->testChannelRequestId_);
+    EXPECT_EQ(0, proxy_->testAction_);
+    EXPECT_NE(actionArguments, proxy_->testActionArguments_);
+    EXPECT_TRUE(result);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 end";
@@ -783,8 +782,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: GetWindows
  * @tc.desc: No retrieve capability, check get windows.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001, TestSize.Level1)
+HWTEST_F(
+    AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 start";
     // Create json
@@ -792,9 +791,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-
-    ASSERT_TRUE(g_testStub);
-    auto result = g_testStub->GetWindows();
+    sleep(2);
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    auto result = AccessibilityHelper::GetInstance().GetTestStub()->GetWindows();
 
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, int(result.size()));
@@ -808,25 +807,24 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
  * @tc.name: SendSimulateGesture
  * @tc.desc: No gesture capability, check send simulate gesture.
  */
-HWTEST_F(AamsAccessibleAbilityChannelTest,
-    AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001, TestSize.Level1)
+HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001 start";
     // Create json
     CreateAccessibilityConfigNoCapability();
     // Add connection
     AddAccessibilityWindowConnection();
-    AddAccessibleAbilityConnection();
-
-    GesturePathPositionDefine startpoint(10.0f, 10.0f);
-    GesturePathPositionDefine endpoint(10.0f, 10.0f);
+    AddAccessibleAbilityConnection(true);
+    sleep(2);
+    AccessibilityGesturePathPosition startpoint = {10.0f, 10.0f};
+    AccessibilityGesturePathPosition endpoint = {10.0f, 10.0f};
     CreateGesturePath(startpoint, endpoint, 100);
 
-    ASSERT_TRUE(g_testStub);
-    g_testStub->SendSimulateGesture(1, gestureSteps_);
-
-    EXPECT_EQ(1, g_testGestureSimulate);
-
+    ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(1, gestureSteps_);
+    sleep(2);
+    EXPECT_EQ(1, AccessibilityHelper::GetInstance().GetTestGestureSimulate());
     gestureSteps_.clear();
     GTEST_LOG_(INFO) << "clear end";
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);

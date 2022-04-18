@@ -13,109 +13,108 @@
  * limitations under the License.
  */
 
+#include "appexecfwk_errors.h"
+#include "bundle_constants.h"
 #include "bundle_mgr_proxy.h"
-
 #include "ipc_types.h"
 #include "parcel.h"
 #include "string_ex.h"
-#include "appexecfwk_errors.h"
-#include "bundle_constants.h"
 
 namespace OHOS {
 namespace AppExecFwk {
-BundleMgrProxy::BundleMgrProxy(const sptr<IRemoteObject> &impl) : IRemoteProxy<IBundleMgr>(impl)
-{
-}
+BundleMgrProxy::BundleMgrProxy(const sptr<IRemoteObject>& impl) : IRemoteProxy<IBundleMgr>(impl)
+{}
 
 BundleMgrProxy::~BundleMgrProxy()
-{
-}
+{}
 
-bool BundleMgrProxy::GetApplicationInfo(
-    const std::string &appName, const ApplicationFlag flag, const int userId, ApplicationInfo &appInfo)
+bool BundleMgrProxy::GetAbilityInfo(
+    const std::string& bundleName, const std::string& abilityName, AbilityInfo& abilityInfo)
 {
     return true;
 }
 
 bool BundleMgrProxy::GetApplicationInfo(
-    const std::string &appName, int32_t flags, int32_t userId, ApplicationInfo &appInfo)
+    const std::string& appName, const ApplicationFlag flag, const int userId, ApplicationInfo& appInfo)
+{
+    return true;
+}
+
+bool BundleMgrProxy::GetApplicationInfo(
+    const std::string& appName, int32_t flags, int32_t userId, ApplicationInfo& appInfo)
 {
     return true;
 }
 
 bool BundleMgrProxy::GetApplicationInfos(
-    const ApplicationFlag flag, const int userId, std::vector<ApplicationInfo> &appInfos)
+    const ApplicationFlag flag, const int userId, std::vector<ApplicationInfo>& appInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetApplicationInfos(
-    int32_t flags, int32_t userId, std::vector<ApplicationInfo> &appInfos)
-{
-    return true;
-}
-
-bool BundleMgrProxy::GetBundleInfo(
-    const std::string &bundleName, const BundleFlag flag, BundleInfo &bundleInfo, int32_t userId)
+bool BundleMgrProxy::GetApplicationInfos(int32_t flags, int32_t userId, std::vector<ApplicationInfo>& appInfos)
 {
     return true;
 }
 
 bool BundleMgrProxy::GetBundleInfo(
-    const std::string &bundleName, int32_t flags, BundleInfo &bundleInfo, int32_t userId)
+    const std::string& bundleName, const BundleFlag flag, BundleInfo& bundleInfo, int32_t userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetBundleInfos(
-    const BundleFlag flag, std::vector<BundleInfo> &bundleInfos, int32_t userId)
+bool BundleMgrProxy::GetBundleInfo(const std::string& bundleName, int32_t flags, BundleInfo& bundleInfo, int32_t userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetBundleInfos(
-    int32_t flags, std::vector<BundleInfo> &bundleInfos, int32_t userId)
+bool BundleMgrProxy::GetBundleInfos(const BundleFlag flag, std::vector<BundleInfo>& bundleInfos, int32_t userId)
 {
     return true;
 }
 
-int BundleMgrProxy::GetUidByBundleName(const std::string &bundleName, const int userId)
+bool BundleMgrProxy::GetBundleInfos(int32_t flags, std::vector<BundleInfo>& bundleInfos, int32_t userId)
+{
+    return true;
+}
+
+int BundleMgrProxy::GetUidByBundleName(const std::string& bundleName, const int userId)
 {
     return 0;
 }
 
-std::string BundleMgrProxy::GetAppIdByBundleName(const std::string &bundleName, const int userId)
+std::string BundleMgrProxy::GetAppIdByBundleName(const std::string& bundleName, const int userId)
 {
     std::string appId = Constants::EMPTY_STRING;
     return appId;
 }
 
-bool BundleMgrProxy::GetBundleNameForUid(const int uid, std::string &bundleName)
+bool BundleMgrProxy::GetBundleNameForUid(const int uid, std::string& bundleName)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetBundlesForUid(const int uid, std::vector<std::string> &bundleNames)
+bool BundleMgrProxy::GetBundlesForUid(const int uid, std::vector<std::string>& bundleNames)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetNameForUid(const int uid, std::string &name)
+bool BundleMgrProxy::GetNameForUid(const int uid, std::string& name)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetBundleGids(const std::string &bundleName, std::vector<int> &gids)
+bool BundleMgrProxy::GetBundleGids(const std::string& bundleName, std::vector<int>& gids)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetBundleGidsByUid(const std::string &bundleName, const int &uid, std::vector<int> &gids)
+bool BundleMgrProxy::GetBundleGidsByUid(const std::string& bundleName, const int& uid, std::vector<int>& gids)
 {
     return true;
 }
 
-std::string BundleMgrProxy::GetAppType(const std::string &bundleName)
+std::string BundleMgrProxy::GetAppType(const std::string& bundleName)
 {
     return Constants::EMPTY_STRING;
 }
@@ -125,59 +124,58 @@ bool BundleMgrProxy::CheckIsSystemAppByUid(const int uid)
     return true;
 }
 
-bool BundleMgrProxy::GetBundleInfosByMetaData(const std::string &metaData, std::vector<BundleInfo> &bundleInfos)
+bool BundleMgrProxy::GetBundleInfosByMetaData(const std::string& metaData, std::vector<BundleInfo>& bundleInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfo(const Want &want, AbilityInfo &abilityInfo)
+bool BundleMgrProxy::QueryAbilityInfo(const Want& want, AbilityInfo& abilityInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfo(const Want &want, int32_t flags, int32_t userId, AbilityInfo &abilityInfo)
+bool BundleMgrProxy::QueryAbilityInfo(const Want& want, int32_t flags, int32_t userId, AbilityInfo& abilityInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfos(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrProxy::QueryAbilityInfos(const Want& want, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
 bool BundleMgrProxy::QueryAbilityInfos(
-    const Want &want, int32_t flags, int32_t userId, std::vector<AbilityInfo> &abilityInfos)
+    const Want& want, int32_t flags, int32_t userId, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAllAbilityInfos(const Want &want, int32_t userId, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrProxy::QueryAllAbilityInfos(const Want& want, int32_t userId, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfosForClone(const Want &want, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrProxy::QueryAbilityInfosForClone(const Want& want, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfoByUri(const std::string &abilityUri, AbilityInfo &abilityInfo)
+bool BundleMgrProxy::QueryAbilityInfoByUri(const std::string& abilityUri, AbilityInfo& abilityInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfosByUri(const std::string &abilityUri, std::vector<AbilityInfo> &abilityInfos)
+bool BundleMgrProxy::QueryAbilityInfosByUri(const std::string& abilityUri, std::vector<AbilityInfo>& abilityInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfoByUri(
-    const std::string &abilityUri, int32_t userId, AbilityInfo &abilityInfo)
+bool BundleMgrProxy::QueryAbilityInfoByUri(const std::string& abilityUri, int32_t userId, AbilityInfo& abilityInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryKeepAliveBundleInfos(std::vector<BundleInfo> &bundleInfos)
+bool BundleMgrProxy::QueryKeepAliveBundleInfos(std::vector<BundleInfo>& bundleInfos)
 {
     return true;
 }
@@ -187,58 +185,58 @@ bool BundleMgrProxy::GetBundleArchiveInfo(const std::string &hapFilePath, const 
     return true;
 }
 
-bool BundleMgrProxy::GetBundleArchiveInfo(const std::string &hapFilePath, int32_t flags, BundleInfo &bundleInfo)
+bool BundleMgrProxy::GetBundleArchiveInfo(const std::string& hapFilePath, int32_t flags, BundleInfo& bundleInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetHapModuleInfo(const AbilityInfo &abilityInfo, HapModuleInfo &hapModuleInfo)
+bool BundleMgrProxy::GetHapModuleInfo(const AbilityInfo& abilityInfo, HapModuleInfo& hapModuleInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetLaunchWantForBundle(const std::string &bundleName, Want &want)
+bool BundleMgrProxy::GetLaunchWantForBundle(const std::string& bundleName, Want& want)
 {
     return true;
 }
 
-int BundleMgrProxy::CheckPublicKeys(const std::string &firstBundleName, const std::string &secondBundleName)
+int BundleMgrProxy::CheckPublicKeys(const std::string& firstBundleName, const std::string& secondBundleName)
 {
     return 0;
 }
 
-int BundleMgrProxy::CheckPermission(const std::string &bundleName, const std::string &permission)
+int BundleMgrProxy::CheckPermission(const std::string& bundleName, const std::string& permission)
 {
     return 0;
 }
 
-int BundleMgrProxy::CheckPermissionByUid(const std::string &bundleName, const std::string &permission, const int userId)
+int BundleMgrProxy::CheckPermissionByUid(const std::string& bundleName, const std::string& permission, const int userId)
 {
     return 0;
 }
 
-bool BundleMgrProxy::GetPermissionDef(const std::string &permissionName, PermissionDef &permissionDef)
+bool BundleMgrProxy::GetPermissionDef(const std::string& permissionName, PermissionDef& permissionDef)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetAllPermissionGroupDefs(std::vector<PermissionDef> &permissionDefs)
+bool BundleMgrProxy::GetAllPermissionGroupDefs(std::vector<PermissionDef>& permissionDefs)
 {
     return true;
 }
 
 bool BundleMgrProxy::GetAppsGrantedPermissions(
-    const std::vector<std::string> &permissions, std::vector<std::string> &appNames)
+    const std::vector<std::string>& permissions, std::vector<std::string>& appNames)
 {
     return true;
 }
 
-bool BundleMgrProxy::HasSystemCapability(const std::string &capName)
+bool BundleMgrProxy::HasSystemCapability(const std::string& capName)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetSystemAvailableCapabilities(std::vector<std::string> &systemCaps)
+bool BundleMgrProxy::GetSystemAvailableCapabilities(std::vector<std::string>& systemCaps)
 {
     return true;
 }
@@ -249,22 +247,22 @@ bool BundleMgrProxy::IsSafeMode()
 }
 
 bool BundleMgrProxy::CleanBundleCacheFiles(
-    const std::string &bundleName, const sptr<ICleanCacheCallback> &cleanCacheCallback, int32_t userId)
+    const std::string& bundleName, const sptr<ICleanCacheCallback>& cleanCacheCallback, int32_t userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::CleanBundleDataFiles(const std::string &bundleName, const int userId)
+bool BundleMgrProxy::CleanBundleDataFiles(const std::string& bundleName, const int userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::RegisterBundleStatusCallback(const sptr<IBundleStatusCallback> &bundleStatusCallback)
+bool BundleMgrProxy::RegisterBundleStatusCallback(const sptr<IBundleStatusCallback>& bundleStatusCallback)
 {
     return true;
 }
 
-bool BundleMgrProxy::ClearBundleStatusCallback(const sptr<IBundleStatusCallback> &bundleStatusCallback)
+bool BundleMgrProxy::ClearBundleStatusCallback(const sptr<IBundleStatusCallback>& bundleStatusCallback)
 {
     return true;
 }
@@ -274,28 +272,27 @@ bool BundleMgrProxy::UnregisterBundleStatusCallback()
     return true;
 }
 
-bool BundleMgrProxy::DumpInfos(
-    const DumpFlag flag, const std::string &bundleName, int32_t userId, std::string &result)
+bool BundleMgrProxy::DumpInfos(const DumpFlag flag, const std::string& bundleName, int32_t userId, std::string& result)
 {
     return true;
 }
 
-bool BundleMgrProxy::IsApplicationEnabled(const std::string &bundleName)
+bool BundleMgrProxy::IsApplicationEnabled(const std::string& bundleName)
 {
     return true;
 }
 
-bool BundleMgrProxy::SetApplicationEnabled(const std::string &bundleName, bool isEnable, int32_t userId)
+bool BundleMgrProxy::SetApplicationEnabled(const std::string& bundleName, bool isEnable, int32_t userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::IsAbilityEnabled(const AbilityInfo &abilityInfo)
+bool BundleMgrProxy::IsAbilityEnabled(const AbilityInfo& abilityInfo)
 {
     return true;
 }
 
-bool BundleMgrProxy::SetAbilityEnabled(const AbilityInfo &abilityInfo, bool isEnabled, int32_t userId)
+bool BundleMgrProxy::SetAbilityEnabled(const AbilityInfo& abilityInfo, bool isEnabled, int32_t userId)
 {
     return true;
 }
@@ -311,110 +308,110 @@ sptr<IBundleUserMgr> BundleMgrProxy::GetBundleUserMgr()
 }
 
 bool BundleMgrProxy::CanRequestPermission(
-    const std::string &bundleName, const std::string &permissionName, const int userId)
+    const std::string& bundleName, const std::string& permissionName, const int userId)
 {
     return true;
 }
 
 bool BundleMgrProxy::RequestPermissionFromUser(
-    const std::string &bundleName, const std::string &permission, const int userId)
+    const std::string& bundleName, const std::string& permission, const int userId)
 {
     return true;
 }
 
-bool BundleMgrProxy::RegisterAllPermissionsChanged(const sptr<OnPermissionChangedCallback> &callback)
+bool BundleMgrProxy::RegisterAllPermissionsChanged(const sptr<OnPermissionChangedCallback>& callback)
 {
     return true;
 }
 
 bool BundleMgrProxy::RegisterPermissionsChanged(
-    const std::vector<int> &uids, const sptr<OnPermissionChangedCallback> &callback)
+    const std::vector<int>& uids, const sptr<OnPermissionChangedCallback>& callback)
 {
     return true;
 }
 
-bool BundleMgrProxy::UnregisterPermissionsChanged(const sptr<OnPermissionChangedCallback> &callback)
+bool BundleMgrProxy::UnregisterPermissionsChanged(const sptr<OnPermissionChangedCallback>& callback)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetAllFormsInfo(std::vector<FormInfo> &formInfos)
+bool BundleMgrProxy::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetFormsInfoByApp(const std::string &bundleName, std::vector<FormInfo> &formInfos)
+bool BundleMgrProxy::GetFormsInfoByApp(const std::string& bundleName, std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
 bool BundleMgrProxy::GetFormsInfoByModule(
-    const std::string &bundleName, const std::string &moduleName, std::vector<FormInfo> &formInfos)
+    const std::string& bundleName, const std::string& moduleName, std::vector<FormInfo>& formInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetShortcutInfos(const std::string &bundleName, std::vector<ShortcutInfo> &shortcutInfos)
+bool BundleMgrProxy::GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetAllCommonEventInfo(const std::string &eventKey, std::vector<CommonEventInfo> &commonEventInfos)
+bool BundleMgrProxy::GetAllCommonEventInfo(const std::string& eventKey, std::vector<CommonEventInfo>& commonEventInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord> &moduleUsageRecords)
+bool BundleMgrProxy::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord>& moduleUsageRecords)
 {
     return true;
 }
 
 bool BundleMgrProxy::NotifyAbilityLifeStatus(
-    const std::string &bundleName, const std::string &abilityName, const int64_t launchTime, const int uid)
+    const std::string& bundleName, const std::string& abilityName, const int64_t launchTime, const int uid)
 {
     return true;
 }
 
-bool BundleMgrProxy::CheckBundleNameInAllowList(const std::string &bundleName)
+bool BundleMgrProxy::CheckBundleNameInAllowList(const std::string& bundleName)
 {
     return true;
 }
 
-bool BundleMgrProxy::BundleClone(const std::string &bundleName)
+bool BundleMgrProxy::BundleClone(const std::string& bundleName)
 {
     return true;
 }
 
-bool BundleMgrProxy::RemoveClonedBundle(const std::string &bundleName, const int32_t uid)
+bool BundleMgrProxy::RemoveClonedBundle(const std::string& bundleName, const int32_t uid)
 {
     return true;
 }
 
-bool BundleMgrProxy::GetDistributedBundleInfo(const std::string &networkId, const std::string &bundleName,
-    DistributedBundleInfo &distributedBundleInfo)
+bool BundleMgrProxy::GetDistributedBundleInfo(const std::string& networkId,
+    const std::string& bundleName, DistributedBundleInfo& distributedBundleInfo)
 {
     return true;
 }
 
-std::string BundleMgrProxy::GetAppPrivilegeLevel(const std::string &bundleName, int32_t userId)
+std::string BundleMgrProxy::GetAppPrivilegeLevel(const std::string& bundleName, int32_t userId)
 {
     return Constants::EMPTY_STRING;
 }
 
-bool BundleMgrProxy::QueryExtensionAbilityInfos(const Want &want, const int32_t &flag, const int32_t &userId,
-    std::vector<ExtensionAbilityInfo> &extensionInfos)
+bool BundleMgrProxy::QueryExtensionAbilityInfos(
+    const Want& want, const int32_t& flag, const int32_t& userId, std::vector<ExtensionAbilityInfo>& extensionInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryExtensionAbilityInfos(const Want &want, const ExtensionAbilityType &extensionType,
-    const int32_t &flag, const int32_t &userId, std::vector<ExtensionAbilityInfo> &extensionInfos)
+bool BundleMgrProxy::QueryExtensionAbilityInfos(const Want& want, const ExtensionAbilityType& extensionType,
+    const int32_t& flag, const int32_t& userId, std::vector<ExtensionAbilityInfo>& extensionInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::QueryExtensionAbilityInfos(const ExtensionAbilityType &extensionType, const int32_t &userId,
-    std::vector<ExtensionAbilityInfo> &extensionInfos)
+bool BundleMgrProxy::QueryExtensionAbilityInfos(
+    const ExtensionAbilityType& extensionType, const int32_t& userId, std::vector<ExtensionAbilityInfo>& extensionInfos)
 {
     return true;
 }
@@ -425,18 +422,18 @@ bool BundleMgrProxy::GetParcelableInfo(IBundleMgr::Message code, MessageParcel &
     return true;
 }
 
-template<typename T>
-bool BundleMgrProxy::GetParcelableInfos(IBundleMgr::Message code, MessageParcel &data, std::vector<T> &parcelableInfos)
+template <typename T>
+bool BundleMgrProxy::GetParcelableInfos(IBundleMgr::Message code, MessageParcel& data, std::vector<T>& parcelableInfos)
 {
     return true;
 }
 
-bool BundleMgrProxy::SendTransactCmd(IBundleMgr::Message code, MessageParcel &data, MessageParcel &reply)
+bool BundleMgrProxy::SendTransactCmd(IBundleMgr::Message code, MessageParcel& data, MessageParcel& reply)
 {
     return true;
 }
 
-bool BundleMgrProxy::VerifyCallingPermission(const std::string &permission)
+bool BundleMgrProxy::VerifyCallingPermission(const std::string& permission)
 {
     return true;
 }
@@ -447,8 +444,8 @@ std::vector<std::string> BundleMgrProxy::GetAccessibleAppCodePaths(int32_t userI
     return vec;
 }
 
-bool BundleMgrProxy::QueryExtensionAbilityInfoByUri(const std::string &uri, int32_t userId,
-    ExtensionAbilityInfo &extensionAbilityInfo)
+bool BundleMgrProxy::QueryExtensionAbilityInfoByUri(
+    const std::string& uri, int32_t userId, ExtensionAbilityInfo& extensionAbilityInfo)
 {
     return true;
 }

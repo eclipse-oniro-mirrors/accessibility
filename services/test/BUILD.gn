@@ -28,54 +28,57 @@ config("module_private_config") {
 
   include_dirs = aams_mock_include_dirs
   include_dirs += [
-    "mock/aafwk/include",
-    "../aams/test/mock/",
-    "//third_party/json/include",
-    "//utils/native/base/include",
-    "//utils/system/safwk/native/include",
-    "//base/accessibility/services/aams/include",
-    "//base/accessibility/frameworks/asacfwk/include",
-    "//base/accessibility/frameworks/aafwk/include",
-    "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//base/accessibility/util/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//base/notification/ces_standard/interfaces/innerkits/native/include",
-    "//base/accessibility/dummyData",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//base/accessibility/common/log/include",
-    "//utils/system/safwk/native/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//utils/native/base/include",
-    "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
-    "//base/global/resmgr_standard/interfaces/innerkits/include",
-
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
-    "//foundation/appexecfwk/standard/common/log/include",
-    "//third_party/jsoncpp/include/json",
-    "//third_party/jsoncpp/include",
-    "//foundation/aafwk/standard/frameworks/kits/appkit/native/app/include/",
-    "//foundation/aafwk/standard/interfaces/innerkits/app_manager/include/appmgr",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native/include/",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
-    "//foundation/windowmanager/interfaces/innerkits/wm",
-    "//foundation/windowmanager/interfaces/innerkits/dm",
-    "//foundation",
-    "//foundation/multimedia/image_standard/interfaces/kits/native/include",
-    "//foundation/windowmanager/utils/include",
-    "//foundation/windowmanager/dm/include",
-    "//foundation/graphic/standard/rosen/modules/render_service_base/include",
+    "//base/accessibility/dummyData",
+    "//base/accessibility/frameworks/aafwk/include",
+    "//base/accessibility/frameworks/asacfwk/include",
     "//base/accessibility/interfaces/innerkits/aafwk/include",
+    "//base/accessibility/interfaces/innerkits/asacfwk/include",
+    "//base/accessibility/interfaces/innerkits/common/include",
+    "//base/accessibility/services/aams/include",
+    "//base/accessibility/services/test/mock",
+    "//base/accessibility/util/include",
+    "//base/global/resmgr_standard/interfaces/innerkits/include",
+    "//base/notification/ces_standard/interfaces/innerkits/native/include",
+    "//foundation",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native/include/",
+    "//foundation/aafwk/standard/frameworks/kits/appkit/native/ability_runtime",
+    "//foundation/aafwk/standard/frameworks/kits/appkit/native/ability_runtime/context",
+    "//foundation/aafwk/standard/frameworks/kits/appkit/native/app/include/",
+    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
+    "//foundation/aafwk/standard/interfaces/innerkits/app_manager/include/appmgr",
+    "//foundation/aafwk/standard/interfaces/innerkits/base/include",
+    "//foundation/aafwk/standard/interfaces/innerkits/want/include",
+    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
+    "//foundation/aafwk/standard/services/abilitymgr/include",
+    "//foundation/appexecfwk/standard/common/log/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
+    "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
+    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
+    "//foundation/graphic/standard/rosen/modules/render_service_base/include",
+    "//foundation/multimedia/image_standard/interfaces/kits/native/include",
+    "//foundation/multimodalinput/input/util/common/include",
+    "//foundation/windowmanager/dm/include",
+    "//foundation/windowmanager/interfaces/innerkits/dm",
+    "//foundation/windowmanager/interfaces/innerkits/wm",
+    "//foundation/windowmanager/utils/include",
+    "//third_party/json/include",
+    "//third_party/jsoncpp/include",
+    "//third_party/jsoncpp/include/json",
+    "//utils/native/base/include",
+    "//utils/native/base/include",
+    "//utils/system/safwk/native/include",
+    "//utils/system/safwk/native/include",
+    "mock/aafwk/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
     "AAMS_LOG_DOMAIN = 0xD005205",
   ]
 }
-
-MockAafwkSrc = [ "mock/aafwk/src/mock_ability_manager_client.cpp" ]
 
 MockDistributedscheduleSrc = []
 
@@ -90,7 +93,6 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "../aams/src/accessibility_event_transmission.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -98,44 +100,34 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//base/accessibility/frameworks/asacfwk/src/accessibility_ability_info.cpp",
-    "//base/accessibility/frameworks/asacfwk/src/accessibility_event_info.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/frameworks/common/src/accessibility_window_info.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_impl.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
     "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_touch_guider_test/aams_accessibility_touch_guider_test.cpp",
-    "moduletest/aamstest/aams_accessibility_touch_guider_test/mock/accessibility_window_info_mock.cpp",
   ]
-
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -145,7 +137,6 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -176,7 +167,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_event_transmission.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -184,45 +174,35 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//base/accessibility/frameworks/asacfwk/src/accessibility_ability_info.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_impl.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_gesture_simulation.cpp",
     "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_touchEvent_injector_test/aams_accessibility_touchEvent_injector_test.cpp",
-    "moduletest/aamstest/aams_accessibility_touchEvent_injector_test/mock/accessibility_window_info_mock.cpp",
   ]
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
-    "//base/accessibility/frameworks/aafwk:accessibleability",
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -232,7 +212,6 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -260,9 +239,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_account_data.cpp",
     "../aams/src/accessibility_common_event_registry.cpp",
     "../aams/src/accessibility_display_manager.cpp",
+    "../aams/src/accessibility_event_transmission.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -270,39 +249,26 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//base/accessibility/frameworks/asacfwk/src/accessibility_ability_info.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_transmission_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_window_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_data_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_subscribe_info_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_subscriber_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
-    "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
-    "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_impl.cpp",
+    "//base/accessibility/services/test/mock/mock_accessibility_element_operator_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_data.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_manager.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscribe_info.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscriber.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_support.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/services/test/mock/mock_window_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_matching_skill.cpp",
     "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessible_ability_channel_test/aams_accessible_ability_channel_test.cpp",
   ]
@@ -310,12 +276,13 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -325,7 +292,6 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -353,9 +319,9 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_account_data.cpp",
     "../aams/src/accessibility_common_event_registry.cpp",
     "../aams/src/accessibility_display_manager.cpp",
+    "../aams/src/accessibility_event_transmission.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -363,53 +329,38 @@ ohos_moduletest("aams_server_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "../aams/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "../aams/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "../aams/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "../aams/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "../aams/test/mock/accessibility_event_transmission_mock.cpp",
-    "../aams/test/mock/accessibility_info_mock.cpp",
-    "../aams/test/mock/accessibility_operator_mock.cpp",
-    "../aams/test/mock/accessibility_window_info_mock.cpp",
-    "../aams/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "../aams/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "../aams/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "../aams/test/mock/accessible_ability_client_stub_mock.cpp",
-    "../aams/test/mock/common_event_data_mock.cpp",
-    "../aams/test/mock/common_event_manager_mock.cpp",
-    "../aams/test/mock/common_event_subscribe_info_mock.cpp",
-    "../aams/test/mock/common_event_subscriber_mock.cpp",
-    "../aams/test/mock/common_event_support_mock.cpp",
-    "../aams/test/mock/gesture_simulation_mock.cpp",
-    "../aams/test/mock/matching_skill_mock.cpp",
-    "../aams/test/mock/mock_bundle_manager.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_data.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_manager.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscribe_info.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscriber.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_support.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_matching_skill.cpp",
     "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
-    "mock/accessibility_ability_info_mock.cpp",
-    "mock/accessibility_event_info_mock.cpp",
-    "mock/accessible_ability_client_proxy_mock.cpp",
-    "mock/accessible_ability_manager_service_state_proxy_mock.cpp",
-    "mock/accessible_ability_manager_service_state_stub_mock.cpp",
-    "mock/accessible_ability_manager_service_stub_mock.cpp",
     "moduletest/aamstest/aams_server_test/aams_server_test.cpp",
   ]
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -419,7 +370,6 @@ ohos_moduletest("aams_server_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -450,7 +400,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_event_transmission.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -458,31 +407,18 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//base/accessibility/frameworks/asacfwk/src/accessibility_ability_info.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_window_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
     "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_keyevent_filter_test/aams_accessibility_keyevent_filter_test.cpp",
   ]
@@ -490,12 +426,13 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -505,7 +442,6 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -530,12 +466,12 @@ ohos_moduletest("aams_common_event_registry_test") {
   module_out_path = module_output_path
 
   sources = [
+    "../aams/src//accessibility_event_transmission.cpp",
     "../aams/src/accessibility_account_data.cpp",
     "../aams/src/accessibility_common_event_registry.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_gesture_recognizer.cpp",
     "../aams/src/accessibility_input_interceptor.cpp",
-    "../aams/src/accessibility_interaction_bridge.cpp",
     "../aams/src/accessibility_keyevent_filter.cpp",
     "../aams/src/accessibility_touchEvent_injector.cpp",
     "../aams/src/accessibility_touch_guider.cpp",
@@ -543,50 +479,37 @@ ohos_moduletest("aams_common_event_registry_test") {
     "../aams/src/accessibility_window_manager.cpp",
     "../aams/src/accessibility_zoom_gesture.cpp",
     "../aams/src/accessibility_zoom_handler.cpp",
+    "../aams/src/accessible_ability_channel.cpp",
     "../aams/src/accessible_ability_connection.cpp",
     "../aams/src/accessible_ability_manager_service.cpp",
     "../aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//base/accessibility/services/test/mock/accessibility_ability_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_caption_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_callback_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_element_operator_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_event_transmission_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_operator_mock.cpp",
-    "//base/accessibility/services/test/mock/accessibility_window_info_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_channel_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_proxy_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_impl_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_client_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/accessible_ability_manager_service_stub_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_data_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_manager_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_subscribe_info_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_subscriber_mock.cpp",
-    "//base/accessibility/services/test/mock/common_event_support_mock.cpp",
-    "//base/accessibility/services/test/mock/gesture_simulation_mock.cpp",
-    "//base/accessibility/services/test/mock/matching_skill_mock.cpp",
+    "../aams/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_connect_callback_stub.cpp",
+    "//base/accessibility/services/test/mock/mock_ability_manager_client.cpp",
+    "//base/accessibility/services/test/mock/mock_accessible_ability_client_proxy.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_manager.cpp",
     "//base/accessibility/services/test/mock/mock_bundle_mgr_proxy.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_data.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_manager.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscribe_info.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_subscriber.cpp",
+    "//base/accessibility/services/test/mock/mock_common_event_support.cpp",
     "//base/accessibility/services/test/mock/mock_display.cpp",
     "//base/accessibility/services/test/mock/mock_display_manager.cpp",
-    "//base/accessibility/util/src/json_utils.cpp",
+    "//base/accessibility/services/test/mock/mock_matching_skill.cpp",
     "moduletest/aamstest/aams_common_event_registry_test/aams_common_event_registry_test.cpp",
   ]
 
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
   sources += aams_mock_powermanager_src
-  sources += MockAafwkSrc
   sources += MockDistributedscheduleSrc
 
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base:appexecfwk_base",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
@@ -596,7 +519,6 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -620,8 +542,14 @@ ohos_moduletest("aams_common_event_registry_test") {
 group("moduletest") {
   testonly = true
   deps = []
-
   if (is_phone_product) {
-    deps += []
+    deps += [
+      ":aams_accessibility_keyevent_filter_test",
+      ":aams_accessibility_touchEvent_injector_test",
+      ":aams_accessibility_touch_guider_test",
+      ":aams_accessible_ability_channel_test",
+      ":aams_common_event_registry_test",
+      ":aams_server_test",
+    ]
   }
 }

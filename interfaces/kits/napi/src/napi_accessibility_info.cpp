@@ -14,14 +14,14 @@
  */
 
 #include "napi_accessibility_info.h"
+#include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "napi_accessibility_utils.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NElementInfo::cons_ = nullptr;
-napi_ref NElementInfo::consRef_ = nullptr;
+thread_local napi_ref NElementInfo::consRef_ = nullptr;
 
 void NElementInfo::DefineJSElementInfo(napi_env env)
 {
@@ -34,6 +34,8 @@ void NElementInfo::DefineJSElementInfo(napi_env env)
         DECLARE_NAPI_FUNCTION("getParent", NElementInfo::GetParent),
     };
 
+    napi_value constructor = nullptr;
+
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "AccessibilityElementInfo",
@@ -42,8 +44,8 @@ void NElementInfo::DefineJSElementInfo(napi_env env)
             nullptr,
             sizeof(descForElementInfo) / sizeof(descForElementInfo[0]),
             descForElementInfo,
-            &NElementInfo::cons_));
-    napi_create_reference(env, NElementInfo::cons_, 1, &NElementInfo::consRef_);
+            &constructor));
+    napi_create_reference(env, constructor, 1, &NElementInfo::consRef_);
 }
 
 napi_value NElementInfo::JSConstructor(napi_env env, napi_callback_info info)
@@ -99,8 +101,11 @@ napi_value NElementInfo::ExecuteAction(napi_env env, napi_callback_info info)
         [](napi_env env, void* data) {
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
             ActionType action = ConvertStringToAccessibleOperationType(callbackInfo->content_);
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->result_ = nodeInfo.ExecuteAction(action, callbackInfo->actionArguments_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->result_ = abilityClient->ExecuteAction(
+                    callbackInfo->nativeNodeInfo_, action, callbackInfo->actionArguments_);
+            }
         },
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("ExecuteAction execute back");
@@ -176,8 +181,11 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
         env, nullptr, resource,
         [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->ret_ = nodeInfo.GetByContent(callbackInfo->content_, callbackInfo->nodeInfos_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->ret_ = abilityClient->GetByContent(callbackInfo->nativeNodeInfo_,
+                    callbackInfo->content_, callbackInfo->nodeInfos_);
+            }
         },
         [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("execute back");
@@ -189,7 +197,6 @@ napi_value NElementInfo::GetByContent(napi_env env, napi_callback_info info)
             napi_get_undefined(env, &undefined);
 
             napi_create_array(env, &argv[PARAM1]);
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
             ConvertElementInfosToJS(env, argv[PARAM1], callbackInfo->nodeInfos_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
@@ -258,7 +265,7 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info)
         env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
-            int focus = 0;
+            int32_t focus = 0;
             if (!std::strcmp(callbackInfo->content_.c_str(), "accessibility")) {
                 focus = FOCUS_TYPE_ACCESSIBILITY;
             } else if (!std::strcmp(callbackInfo->content_.c_str(), "normal")) {
@@ -266,8 +273,11 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info)
             } else {
                 focus = FOCUS_TYPE_INVALID;
             }
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->ret_ = nodeInfo.GetFocus(focus, callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->ret_ = abilityClient->GetFocusByElementInfo(
+                    callbackInfo->nativeNodeInfo_, focus, callbackInfo->nodeInfo_);
+            }
         },
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("execute back");
@@ -278,8 +288,10 @@ napi_value NElementInfo::GetFocus(napi_env env, napi_callback_info info)
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
@@ -370,10 +382,10 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
         env, nullptr, resource,
         [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            if (callbackInfo->ret_) {
-                callbackInfo->ret_ = nodeInfo.GetNext(CovertStringToDirection(callbackInfo->content_),
-                    callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (callbackInfo->ret_ && abilityClient) {
+                callbackInfo->ret_ = abilityClient->GetNext(callbackInfo->nativeNodeInfo_,
+                    CovertStringToDirection(callbackInfo->content_), callbackInfo->nodeInfo_);
             }
         },
         [](napi_env env, napi_status status, void* data) { // Execute the complete function
@@ -385,8 +397,9 @@ napi_value NElementInfo::GetNext(napi_env env, napi_callback_info info)
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
@@ -427,7 +440,7 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info)
 
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
     HILOG_DEBUG("argc = %{public}d", (int)argc);
-    int childIndex;
+    int32_t childIndex;
     napi_get_value_int32(env, argv[PARAM0], &childIndex);
     HILOG_INFO("childIndex[%{public}d]", childIndex);
 
@@ -455,8 +468,11 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info)
         env, nullptr, resource,
         [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->ret_ = nodeInfo.GetChild(callbackInfo->childIndex_, callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->ret_ = abilityClient->GetChildElementInfo(callbackInfo->childIndex_,
+                    callbackInfo->nativeNodeInfo_, callbackInfo->nodeInfo_);
+            }
         },
         [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("GetChild execute back");
@@ -467,8 +483,9 @@ napi_value NElementInfo::GetChild(napi_env env, napi_callback_info info)
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
 
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);
@@ -532,12 +549,15 @@ napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info)
 
     napi_create_async_work(
         env, nullptr, resource,
-        [](napi_env env, void* data) { // execute async to call c++ function
+        [](napi_env env, void* data) { // Execute async to call c++ function
             NAccessibilityInfoData *callbackInfo = (NAccessibilityInfoData*)data;
-            AccessibilityElementInfo nodeInfo = callbackInfo->nativeNodeInfo_;
-            callbackInfo->ret_ = nodeInfo.GetParent(callbackInfo->nodeInfo_);
+            sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
+            if (abilityClient) {
+                callbackInfo->ret_ = abilityClient->GetParentElementInfo(
+                    callbackInfo->nativeNodeInfo_, callbackInfo->nodeInfo_);
+            }
         },
-        [](napi_env env, napi_status status, void* data) { // execute the complete function
+        [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("GetParent execute back");
             NAccessibilityInfoData* callbackInfo = (NAccessibilityInfoData*)data;
             napi_value jsReturnValue = 0;
@@ -545,9 +565,9 @@ napi_value NElementInfo::GetParent(napi_env env, napi_callback_info info)
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-
-            napi_get_reference_value(env, NElementInfo::consRef_, &NElementInfo::cons_);
-            napi_new_instance(env, NElementInfo::cons_, 0, nullptr, &argv[PARAM1]);
+            napi_value constructor = nullptr;
+            napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
+            napi_new_instance(env, constructor, 0, nullptr, &argv[PARAM1]);
             ConvertElementInfoToJS(env, argv[PARAM1], callbackInfo->nodeInfo_);
 
             argv[PARAM0] = GetErrorValue(env, callbackInfo->ret_ ? CODE_SUCCESS : CODE_FAILED);

@@ -37,9 +37,10 @@
     "build": {
       "sub_component": [
         "//base/accessibility/services/aams:accessibleabilityms",
-        "//base/accessibility/frameworks/aafwk:accessibleability",
-        "//base/accessibility/frameworks/aafwk:accessibility_extension_module",
+        "//base/accessibility/services/interface:aams_interface",
+        "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
         "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+        "//base/accessibility/interfaces/innerkits/common:accessibility_common",
         "//base/accessibility/interfaces/kits/napi:napi_packages",
         "//base/accessibility/sa_profile:aams_sa_profile",
         "//base/accessibility/sa_profile:accessibility_cfg"
@@ -47,11 +48,14 @@
       "inner_kits": [
         {
           "type": "so",
-          "name": "//base/accessibility/frameworks/aafwk:accessibleability",
+          "name": "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
           "header": {
             "header_files": [
-              "accessibility_ui_test_ability_listener.h",
-              "accessibility_ui_test_ability.h"
+              "accessibility_display_resize_controller.h",
+              "accessibility_gesture_result_listener.h",
+              "accessibility_ui_test_ability.h",
+              "accessible_ability_client.h",
+              "accessible_ability_listener.h"
             ],
             "header_base": "//base/accessibility/interfaces/innerkits/aafwk/include"
           }
@@ -61,14 +65,25 @@
           "name": "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
           "header": {
             "header_files": [
-              "accessibility_event_info.h",
-              "accessibility_element_info.h",
               "accessibility_state_event.h",
-              "accessibility_system_ability_client.h",
-              "accessibility_ability_info.h",
-              "accessibility_window_info.h"
+              "accessibility_system_ability_client.h"
             ],
             "header_base": "//base/accessibility/interfaces/innerkits/asacfwk/include"
+          }
+        },
+        {
+          "type": "so",
+          "name": "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+          "header": {
+            "header_files": [
+              "accessibility_ability_info.h",
+              "accessibility_constants.h",
+              "accessibility_def.h",
+              "accessibility_element_info.h",
+              "accessibility_event_info.h",
+              "accessibility_window_info.h"
+            ],
+            "header_base": "//base/accessibility/interfaces/innerkits/common/include"
           }
         }
       ],
@@ -76,8 +91,7 @@
         "//base/accessibility/services/test:moduletest",
         "//base/accessibility/services/aams/test:unittest",
         "//base/accessibility/frameworks/aafwk/test:unittest",
-        "//base/accessibility/frameworks/asacfwk/test:unittest",
-        "//base/accessibility/frameworks/systemtest:systemtest"
+        "//base/accessibility/frameworks/asacfwk/test:unittest"
       ]
     }
   }

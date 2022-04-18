@@ -23,23 +23,23 @@
 using namespace testing;
 using namespace testing::ext;
 using namespace OHOS::EventFwk;
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityCommonEventRegistryUnitTest : public ::testing::Test {
 public:
-    AccessibilityCommonEventRegistryUnitTest() {}
-    ~AccessibilityCommonEventRegistryUnitTest() {}
+    AccessibilityCommonEventRegistryUnitTest()
+    {}
+    ~AccessibilityCommonEventRegistryUnitTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
 
-    shared_ptr<AccessibilityCommonEventRegistry> accessibilityCommonEventRegistry_ = nullptr;
-    shared_ptr<CommonEventManager> commonEventManagerMock_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
+    std::shared_ptr<AccessibilityCommonEventRegistry> accessibilityCommonEventRegistry_ = nullptr;
+    std::shared_ptr<CommonEventManager> commonEventManagerMock_ = nullptr;
 };
 
 void AccessibilityCommonEventRegistryUnitTest::SetUpTestCase()
@@ -55,15 +55,11 @@ void AccessibilityCommonEventRegistryUnitTest::TearDownTestCase()
 void AccessibilityCommonEventRegistryUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // Register bundleservice
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
-
-    accessibilityCommonEventRegistry_ = make_shared<AccessibilityCommonEventRegistry>();
-    commonEventManagerMock_ = make_shared<CommonEventManager>();
+    accessibilityCommonEventRegistry_ = std::make_shared<AccessibilityCommonEventRegistry>(nullptr);
+    commonEventManagerMock_ = std::make_shared<CommonEventManager>();
 }
 
 void AccessibilityCommonEventRegistryUnitTest::TearDown()
@@ -71,7 +67,6 @@ void AccessibilityCommonEventRegistryUnitTest::TearDown()
     GTEST_LOG_(INFO) << "TearDown";
     accessibilityCommonEventRegistry_ = nullptr;
     commonEventManagerMock_ = nullptr;
-    mock_ = nullptr;
 }
 
 /**

@@ -18,6 +18,7 @@
 
 #include <string>
 #include "accessibility_element_info.h"
+#include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_event_transmission.h"
 #include "accessibility_gesture_recognizer.h"
 #include "accessible_ability_manager_service.h"
@@ -40,7 +41,7 @@ const float INIT_MMIPOINT = 0.0f;
 /**
  * @brief touch Guider state define
  */
-enum class TouchGuideState : int {
+enum class TouchGuideState : int32_t {
     TOUCH_GUIDING,
     DRAGGING,
     TRANSMITTING,
@@ -50,7 +51,7 @@ enum class TouchGuideState : int {
 /**
  * @brief Click location define
  */
-enum ClickLocation : int {
+enum ClickLocation : int32_t {
     CLICK_NONE,
     CLICK_ACCESSIBILITY_FOCUS,
     CLICK_LAST_TOUCH_GUIDE
@@ -60,8 +61,8 @@ enum ClickLocation : int {
  * @brief struct to record injected pointers.
  */
 struct InjectedEventRecorder {
-    int downPointers;
-    int downPointerNum;
+    int32_t downPointers;
+    int32_t downPointerNum;
     int64_t lastDownTime;
     std::shared_ptr<MMI::PointerEvent> lastHoverEvent;
 };
@@ -75,7 +76,7 @@ struct ReceivedEventRecorder {
     std::shared_ptr<MMI::PointerEvent> lastEvent;
 };
 
-enum ChangeAction : int {
+enum ChangeAction : int32_t {
     NO_CHANGE,
     HOVER_MOVE,
     POINTER_DOWN,
@@ -171,7 +172,7 @@ public:
      * @param action the action of the event
      * @return
      */
-    void SendEventToMultimodal(MMI::PointerEvent &event, int action);
+    void SendEventToMultimodal(MMI::PointerEvent &event, int32_t action);
 
     /**
      * @brief Send accessibility event to specific AccessiblityAbility.
@@ -218,6 +219,13 @@ public:
         isTouchStart_ = false;
     }
 
+    /**
+     * @brief Perform action on Accessibility Focus.
+     * @param action the action of Accessibility node.
+     * @return Returns true if the action perform successfully; returns false code otherwise.
+     */
+    bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
+
 private:
     class TouchGuideListener : public AccessibilityGestureRecognizeListener {
     public:
@@ -262,15 +270,8 @@ private:
          * @return
          */
         bool OnCancelled(MMI::PointerEvent &event) override;
+
     private:
-
-        /**
-         * @brief Get the click position.
-         * @param outPoint the click point
-         * @return the click location
-         */
-        int GetClickPosition(MMI::PointerEvent::PointerItem &outPoint);
-
         /**
          * @brief Send the single tap events to the Multimodal.
          * @param event the event prepared to send to Multimodal
@@ -280,6 +281,30 @@ private:
         bool TransformToSingleTap(MMI::PointerEvent &event, MMI::PointerEvent::PointerItem &point);
         TouchGuider &server_;
     };
+
+    class ElementOperatorCallbackImpl : public AccessibilityElementOperatorCallbackStub {
+    public:
+        explicit ElementOperatorCallbackImpl(std::promise<void> &promise);
+        ~ElementOperatorCallbackImpl() = default;
+
+        virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
+            const int32_t requestId) override;
+        virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
+            const int32_t requestId) override;
+        virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
+            const int32_t requestId) override;
+        virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
+        virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+
+    private:
+        std::promise<void> &promise_;
+        bool executeActionResult_ = false;
+        AccessibilityElementInfo accessibilityInfoResult_ = {};
+        std::vector<AccessibilityElementInfo> elementInfosResult_;
+
+        friend class TouchGuider;
+    };
+
     /**
      * @brief Determine whether to clear the touchguide.
      * @param
@@ -458,8 +483,8 @@ private:
      */
     void HandleDraggingStateInnerMove(MMI::PointerEvent &event);
 
-    int currentState_ = -1;
-    int longPressPointId_ = INIT_POINT_ID;
+    int32_t currentState_ = -1;
+    int32_t longPressPointId_ = INIT_POINT_ID;
     float longPressOffsetX_ = INIT_MMIPOINT;
     float longPressOffsetY_ = INIT_MMIPOINT;
     bool isTouchStart_ = false;

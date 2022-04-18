@@ -21,7 +21,7 @@ class Display::Impl : public RefBase {
 public:
     Impl(const std::string& name, sptr<DisplayInfo> info)
     {
-        name_= name;
+        name_ = name;
         displayInfo_ = info;
     }
     ~Impl() = default;
@@ -29,14 +29,11 @@ public:
     DEFINE_VAR_FUNC_GET_SET(sptr<DisplayInfo>, DisplayInfo, displayInfo);
 };
 
-Display::Display(const std::string& name, sptr<DisplayInfo> info)
-    : pImpl_(new Impl(name, info))
-{
-}
+Display::Display(const std::string& name, sptr<DisplayInfo> info) : pImpl_(new Impl(name, info))
+{}
 
 Display::~Display()
-{
-}
+{}
 
 DisplayId Display::GetId() const
 {

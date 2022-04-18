@@ -17,9 +17,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int LIMIT_SIZE_TWO = 2;
-static const int LIMIT_SIZE_THREE = 3;
+static const int32_t LIMIT_SIZE_TWO = 2;
+static const int32_t LIMIT_SIZE_THREE = 3;
 static const int32_t POINTER_COUNT_1 = 1;
+static const float EPSINON = 0.0001f;
 
 GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
@@ -66,7 +67,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
     float densityPixels = display->GetVirtualPixelRatio();
-    int slop = (int) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
+    int32_t slop = (int32_t) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
@@ -341,24 +342,24 @@ bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent
     std::vector<Pointer> pointerPath = GetPointerPath(pointerRoute_);
 
     if (pointerPath.size() == LIMIT_SIZE_TWO) {
-        int swipeDirection = GetSwipeDirection(pointerPath[0], pointerPath[1]);
+        int32_t swipeDirection = GetSwipeDirection(pointerPath[0], pointerPath[1]);
         return listener_->OnCompleted(GESTURE_DIRECTION[swipeDirection]);
     } else if (pointerPath.size() == LIMIT_SIZE_THREE) {
-        int swipeDirectionH = GetSwipeDirection(pointerPath[0], pointerPath[1]);
-        int swipeDirectionHV = GetSwipeDirection(pointerPath[1], pointerPath[2]);
+        int32_t swipeDirectionH = GetSwipeDirection(pointerPath[0], pointerPath[1]);
+        int32_t swipeDirectionHV = GetSwipeDirection(pointerPath[1], pointerPath[2]);
         return listener_->OnCompleted(GESTURE_DIRECTION_TO_ID[swipeDirectionH][swipeDirectionHV]);
     }
     return listener_->OnCancelled(event);
 }
 
-int AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer secondP)
+int32_t AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointer secondP)
 {
     float offsetX = secondP.px_ - firstP.px_;
     float offsetY = secondP.py_ - firstP.py_;
     if (abs(offsetX) > abs(offsetY)) {
-        return offsetX > 0.0 ? SWIPE_RIGHT : SWIPE_LEFT;
+        return offsetX > EPSINON ? SWIPE_RIGHT : SWIPE_LEFT;
     } else {
-        return offsetY < 0.0 ? SWIPE_UP : SWIPE_DOWN;
+        return offsetY < EPSINON ? SWIPE_UP : SWIPE_DOWN;
     }
 }
 
@@ -375,10 +376,10 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
     float xVector = 0;
     float yVector = 0;
     float vectorLength = 0;
-    int numSinceFirstSep = 0;
+    int32_t numSinceFirstSep = 0;
 
     pointerPath.push_back(firstSeparation);
-    for (unsigned int i = 1; i < route.size(); i++) {
+    for (size_t i = 1; i < route.size(); i++) {
         nextPoint = route[i];
         if (numSinceFirstSep > 0) {
             xVector = xUnitVector / numSinceFirstSep;
@@ -389,7 +390,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
             float xNextUnitVector = nextPoint.px_ - newSeparation.px_;
             float yNextUnitVector = nextPoint.py_ - newSeparation.py_;
             float nextVectorLength = hypot(xNextUnitVector, yNextUnitVector);
-            if (nextVectorLength > 0.0f) {
+            if (nextVectorLength > EPSINON) {
                 xNextUnitVector /= nextVectorLength;
                 yNextUnitVector /= nextVectorLength;
             }
@@ -406,7 +407,7 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
         yVector = nextPoint.py_ - firstSeparation.py_;
         vectorLength = hypot(xVector, yVector);
         numSinceFirstSep += 1;
-        if (vectorLength > 0.0f) {
+        if (vectorLength > EPSINON) {
             xUnitVector += xVector / vectorLength;
             yUnitVector += yVector / vectorLength;
         }
@@ -430,8 +431,8 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem firstPI;
     pCurDown_->GetPointerItem(pCurDown_->GetPointerId(), firstPI);
-    int durationX = (int)firstPI.GetGlobalX() - (int)curPI.GetGlobalX();
-    int durationY = (int)firstPI.GetGlobalY() - (int)curPI.GetGlobalY();
+    int32_t durationX = (int32_t)firstPI.GetGlobalX() - (int32_t)curPI.GetGlobalX();
+    int32_t durationY = (int32_t)firstPI.GetGlobalY() - (int32_t)curPI.GetGlobalY();
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }

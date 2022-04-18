@@ -23,6 +23,6 @@ namespace NativePreferences {
 class MockPreferencesHelper : public PreferencesHelper {
 public:
 };
-} // NativePreferences
-} // OHOS
+} // namespace NativePreferences
+} // namespace OHOS
 #endif // MOCK_PREFERENCES_HELPER_H

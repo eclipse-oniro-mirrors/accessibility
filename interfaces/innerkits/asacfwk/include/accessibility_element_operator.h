@@ -16,10 +16,7 @@
 #ifndef ACCESSIBILITY_ELEMENT_OPERATOR_H
 #define ACCESSIBILITY_ELEMENT_OPERATOR_H
 
-#include <cstdint>
-#include <list>
-#include <string>
-
+#include <map>
 #include "accessibility_element_operator_callback.h"
 
 namespace OHOS {
@@ -36,9 +33,9 @@ public:
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param mode PREFETCH_PREDECESSORS: Need to make the parent node info also.
-     *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
-     *              PREFETCH_CHILDREN: Need to make the child node info also.
-     *              otherwise: Make the node information by elementId only.
+     *             PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
+     *             PREFETCH_CHILDREN: Need to make the child node info also.
+     *             otherwise: Make the node information by elementId only.
      * @return -
      */
     virtual void SearchElementInfoByAccessibilityId(const long elementId,
@@ -123,4 +120,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif
+#endif // ACCESSIBILITY_ELEMENT_OPERATOR_H

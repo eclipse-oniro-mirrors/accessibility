@@ -17,9 +17,11 @@
 
 namespace OHOS {
 namespace MMI {
-PointerEvent::PointerItem::PointerItem() {}
+PointerEvent::PointerItem::PointerItem()
+{}
 
-PointerEvent::PointerItem::~PointerItem() {}
+PointerEvent::PointerItem::~PointerItem()
+{}
 
 int32_t PointerEvent::PointerItem::GetPointerId() const
 {
@@ -131,14 +133,21 @@ void PointerEvent::PointerItem::SetDeviceId(int32_t deviceId)
     deviceId_ = deviceId;
 }
 
-PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType) {}
+PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType)
+{}
 
 PointerEvent::PointerEvent(const PointerEvent& other)
-    : InputEvent(other), pointerId_(other.pointerId_), pointers_(other.pointers_),
-    pressedButtons_(other.pressedButtons_), sourceType_(other.sourceType_),
-    pointerAction_(other.pointerAction_), buttonId_(other.buttonId_),
-    axes_(other.axes_), axisValues_(other.axisValues_),
-    pressedKeys_(other.pressedKeys_) {}
+    : InputEvent(other),
+      pointerId_(other.pointerId_),
+      pointers_(other.pointers_),
+      pressedButtons_(other.pressedButtons_),
+      sourceType_(other.sourceType_),
+      pointerAction_(other.pointerAction_),
+      buttonId_(other.buttonId_),
+      axes_(other.axes_),
+      axisValues_(other.axisValues_),
+      pressedKeys_(other.pressedKeys_)
+{}
 
 PointerEvent::~PointerEvent()
 {
@@ -182,9 +191,9 @@ void PointerEvent::SetPointerId(int32_t pointerId)
     pointerId_ = pointerId;
 }
 
-bool PointerEvent::GetPointerItem(int32_t pointerId, PointerItem &pointerItem)
+bool PointerEvent::GetPointerItem(int32_t pointerId, PointerItem& pointerItem)
 {
-    for (auto &item : pointers_) {
+    for (auto& item : pointers_) {
         if (item.GetPointerId() == pointerId) {
             pointerItem = item;
             return true;
@@ -203,7 +212,7 @@ void PointerEvent::RemovePointerItem(int32_t pointerId)
     }
 }
 
-void PointerEvent::AddPointerItem(PointerItem &pointerItem)
+void PointerEvent::AddPointerItem(PointerItem& pointerItem)
 {
     pointers_.push_back(pointerItem);
 }
@@ -212,11 +221,15 @@ std::vector<int32_t> PointerEvent::GetPointersIdList() const
 {
     std::vector<int32_t> pointerIdList;
 
-    for (auto &item : pointers_) {
+    for (auto& item : pointers_) {
         pointerIdList.push_back(item.GetPointerId());
     }
 
     return pointerIdList;
 }
+
+void PointerEvent::Reset()
+{
 }
-}
+} // namespace MMI
+} // namespace OHOS

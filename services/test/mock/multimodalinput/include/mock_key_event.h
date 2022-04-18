@@ -23,6 +23,6 @@ namespace MMI {
 class MockKeyEvent : public KeyEvent {
 public:
 };
-} // MMI
-} // OHOS
+} // namespace MMI
+} // namespace OHOS
 #endif // MOCK_KEY_EVENT_H

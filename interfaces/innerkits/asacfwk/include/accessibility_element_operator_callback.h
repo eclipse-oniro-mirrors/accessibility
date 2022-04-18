@@ -16,10 +16,7 @@
 #ifndef ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_H
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_H
 
-#include <cstdint>
 #include <list>
-#include <string>
-
 #include "accessibility_element_info.h"
 
 namespace OHOS {
@@ -36,7 +33,7 @@ public:
      * @return
      */
     virtual void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
-        const int requestId) = 0;
+        const int32_t requestId) = 0;
 
     /**
      * @brief Set the element information matched with text to AA.
@@ -45,7 +42,7 @@ public:
      * @return
      */
     virtual void SetSearchElementInfoByTextResult(const std::list<AccessibilityElementInfo> &infos,
-        const int requestId) = 0;
+        const int32_t requestId) = 0;
 
     /**
      * @brief Set the element information matched with focus type to AA.
@@ -53,7 +50,7 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
-    virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int requestId) = 0;
+    virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int32_t requestId) = 0;
 
     /**
      * @brief Set the element information by focus direction to AA.
@@ -61,7 +58,7 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
-    virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int requestId) = 0;
+    virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) = 0;
 
     /**
      * @brief Set the result of action executed to AA.
@@ -69,8 +66,8 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
-    virtual void SetExecuteActionResult(const bool succeeded, const int requestId) = 0;
+    virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) = 0;
 };
 } // namespace Accessibility
-} // namesapce OHOS
-#endif
+} // namespace OHOS
+#endif // ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_H

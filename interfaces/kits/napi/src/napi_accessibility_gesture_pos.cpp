@@ -20,10 +20,12 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NGesturePos::posCons_ = nullptr;
+thread_local napi_ref NGesturePos::consRef_;
 
 void NGesturePos::DefineJSGesturePos(napi_env env)
 {
+    napi_value constructor = nullptr;
+
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "GesturePos",
@@ -32,7 +34,9 @@ void NGesturePos::DefineJSGesturePos(napi_env env)
             nullptr,
             0,
             nullptr,
-            &NGesturePos::posCons_));
+            &constructor));
+    
+    napi_create_reference(env, constructor, 1, &NGesturePos::consRef_);
 }
 
 napi_value NGesturePos::JSPosConstructor(napi_env env, napi_callback_info info)

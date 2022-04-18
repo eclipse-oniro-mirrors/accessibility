@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 static const int32_t POINTER_COUNT_1 = 1;
 
-AccessibilityZoomHandler::AccessibilityZoomHandler(int displayId)
+AccessibilityZoomHandler::AccessibilityZoomHandler(int32_t displayId)
 {
     displayId_ = displayId;
 
@@ -47,7 +47,7 @@ void AccessibilityZoomHandler::OnPointerEvent(MMI::PointerEvent &event)
     currentState_.OnPointerEvent(event);
 }
 
-void AccessibilityZoomHandler::OnTransitionTo(const int state)
+void AccessibilityZoomHandler::OnTransitionTo(const int32_t state)
 {
     currentState_.Exit();
     {

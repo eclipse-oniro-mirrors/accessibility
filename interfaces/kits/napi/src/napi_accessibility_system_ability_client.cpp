@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "napi_accessibility_system_ability_client.h"
 
+#include <uv.h>
 #include "accessibility_state_event.h"
 #include "hilog_wrapper.h"
 #include "napi_accessibility_utils.h"
@@ -21,10 +23,8 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-napi_value NAccessibilityClient::aaCons_;
-napi_value NAccessibilityClient::aaStyleCons_;
-napi_ref NAccessibilityClient::aaConsRef_;
-napi_ref NAccessibilityClient::aaStyleConsRef_;
+thread_local napi_ref NAccessibilityClient::aaConsRef_;
+thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
 
 std::map<std::string, std::vector<std::shared_ptr<StateListener>>> NAccessibilityClient::stateListeners_ = {};
 std::vector<std::shared_ptr<CaptionListener>> NAccessibilityClient::captionListeners_ = {};
@@ -83,8 +83,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
+        (void*)callbackInfo, &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -289,7 +288,7 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     NAPI_ASSERT(env, status == napi_ok, "Failed to get event type");
 
     std::string eventType = GetStringFromNAPI(env, args[0]);
-    AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
+    uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     } else if (!std::strcmp(eventType.c_str(), "touchGuideStateChange")) {
@@ -317,7 +316,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
-    AccessibilityStateEventType type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
+    uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     } else if (!std::strcmp(eventType.c_str(), "touchGuideStateChange")) {
@@ -376,15 +375,36 @@ napi_value StateListener::StartWork(napi_env env, size_t functionIndex, napi_val
 void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 {
     HILOG_INFO("start");
-    napi_value jsEvent;
-    napi_get_boolean(env, state, &jsEvent);
+    
+    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    callbackInfo->state_ = state;
+    callbackInfo->env_ = env;
+    callbackInfo->ref_ = handlerRef;
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env, &loop);
+    uv_work_t *work = new uv_work_t;
+    work->data = (StateCallbackInfo *)callbackInfo;
 
-    napi_value handler = nullptr;
-    napi_value callResult;
-    napi_get_reference_value(env, handlerRef, &handler);
-    napi_value undefined = 0;
-    napi_get_undefined(env, &undefined);
-    napi_call_function(env, undefined, handler, 1, &jsEvent, &callResult);
+    uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_value jsEvent = nullptr;
+            napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
+
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
 }
 
 void StateListener::OnStateChanged(const bool state)
@@ -700,65 +720,6 @@ napi_value NAccessibilityClient::GetEnabled(napi_env env, napi_callback_info inf
     return promise;
 }
 
-napi_value NAccessibilityClient::SetEnabled(napi_env env, napi_callback_info info)
-{
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-    napi_get_value_bool(env, parameters[PARAM0], &callbackInfo->enabledState_);
-
-    napi_value promise = nullptr;
-
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
-    } else {
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-    napi_value resource = nullptr;
-    napi_create_string_utf8(env, "SetEnabled", NAPI_AUTO_LENGTH, &resource);
-
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            auto instance = AccessibilitySystemAbilityClient::GetInstance();
-            if (instance) {
-                callbackInfo->setEnabledReturn_ = instance->SetEnabled(callbackInfo->enabledState_);
-            }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->setEnabledReturn_, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("SetEnabled complete function callback mode");
-            } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
-    return promise;
-}
-
 napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
@@ -808,65 +769,6 @@ napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_
                 napi_delete_reference(env, callbackInfo->callback_);
             } else {
                 napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
-    return promise;
-}
-
-napi_value NAccessibilityClient::SetTouchGuideState(napi_env env, napi_callback_info info)
-{
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-    napi_get_value_bool(env, parameters[PARAM0], &callbackInfo->touchGuideState_);
-
-    napi_value promise = nullptr;
-
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
-    } else {
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-    napi_value resource = nullptr;
-    napi_create_string_utf8(env, "SetTouchGuideState", NAPI_AUTO_LENGTH, &resource);
-
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            auto instance = AccessibilitySystemAbilityClient::GetInstance();
-            if (instance) {
-                callbackInfo->setTouchGuideStateReturn_ = instance->SetTouchGuideState(callbackInfo->touchGuideState_);
-            }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->setTouchGuideStateReturn_, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("SetTouchGuideState complete function callback mode");
-            } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
@@ -938,65 +840,6 @@ napi_value NAccessibilityClient::GetGestureState(napi_env env, napi_callback_inf
     return promise;
 }
 
-napi_value NAccessibilityClient::SetGestureState(napi_env env, napi_callback_info info)
-{
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-    napi_get_value_bool(env, parameters[PARAM0], &callbackInfo->gestureState_);
-
-    napi_value promise = nullptr;
-
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
-    } else {
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-    napi_value resource = nullptr;
-    napi_create_string_utf8(env, "SetGestureState", NAPI_AUTO_LENGTH, &resource);
-
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            auto instance = AccessibilitySystemAbilityClient::GetInstance();
-            if (instance) {
-                callbackInfo->setGestureStateReturn_ = instance->SetGestureState(callbackInfo->gestureState_);
-            }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->setGestureStateReturn_, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("SetGestureState complete function callback mode");
-            } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
-    return promise;
-}
-
 napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
@@ -1057,68 +900,9 @@ napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_cal
     return promise;
 }
 
-napi_value NAccessibilityClient::SetKeyEventObserverState(napi_env env, napi_callback_info info)
-{
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-    napi_get_value_bool(env, parameters[PARAM0], &callbackInfo->keyEventObserverState_);
-
-    napi_value promise = nullptr;
-
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
-    } else {
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-    napi_value resource = nullptr;
-    napi_create_string_utf8(env, "SetKeyEventObserverState", NAPI_AUTO_LENGTH, &resource);
-
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            auto instance = AccessibilitySystemAbilityClient::GetInstance();
-            if (instance) {
-                callbackInfo->setKeyEvenReturn_ = instance->SetKeyEventObserverState(
-                    callbackInfo->keyEventObserverState_);
-            }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->setKeyEvenReturn_, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("SetKeyEventObserverState complete function callback mode");
-            } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
-    return promise;
-}
-
 napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info info)
 {
+    HILOG_INFO("start");
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
@@ -1263,7 +1047,7 @@ napi_value NAccessibilityClient::ExtensionEnabled(napi_env env, napi_callback_in
             NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
-                callbackInfo->setExtensionReturn_ = instance->SetEnabledObj(callbackInfo->enabledAbilities_);
+                callbackInfo->setExtensionReturn_ = instance->EnableAbilities(callbackInfo->enabledAbilities_);
             }
         },
         // Execute the complete function
@@ -1365,6 +1149,7 @@ void NAccessibilityClient::DefineJSCaptionsManager(napi_env env)
         DECLARE_NAPI_FUNCTION("off", NAccessibilityClient::DeregisterCaptionStateCallback),
     };
 
+    napi_value aaCons = nullptr;
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "NAccessibilityClient",
@@ -1373,10 +1158,9 @@ void NAccessibilityClient::DefineJSCaptionsManager(napi_env env)
             nullptr,
             sizeof(captionsManagerDesc) / sizeof(captionsManagerDesc[0]),
             captionsManagerDesc,
-            &NAccessibilityClient::aaCons_));
+            &aaCons));
 
-    napi_create_reference(env, NAccessibilityClient::aaCons_, 1,
-                          &NAccessibilityClient::aaConsRef_);
+    napi_create_reference(env, aaCons, 1, &NAccessibilityClient::aaConsRef_);
 }
 
 napi_value NAccessibilityClient::AccessibleAbilityConstructor(napi_env env, napi_callback_info info)
@@ -1400,17 +1184,17 @@ napi_value NAccessibilityClient::GetCaptionsManager(napi_env env, napi_callback_
     callbackInfo->captionState_ = instance->GetCaptionState();
     callbackInfo->captionProperty_ = instance->GetCaptionProperty();
 
-    napi_get_reference_value(env, NAccessibilityClient::aaConsRef_,
-                             &NAccessibilityClient::aaCons_);
-    napi_new_instance(env, NAccessibilityClient::aaCons_, 0, nullptr, &result);
+    napi_value aaCons = nullptr;
+    napi_get_reference_value(env, NAccessibilityClient::aaConsRef_, &aaCons);
+    napi_new_instance(env, aaCons, 0, nullptr, &result);
 
     napi_value keyCode;
     napi_get_boolean(env, callbackInfo->captionState_, &keyCode);
     napi_set_named_property(env, result, "enabled", keyCode);
 
-    napi_get_reference_value(env, NAccessibilityClient::aaStyleConsRef_,
-                             &NAccessibilityClient::aaStyleCons_);
-    napi_status status = napi_new_instance(env, NAccessibilityClient::aaStyleCons_, 0, nullptr, &keyCode);
+    napi_value aaStyleCons = nullptr;
+    napi_get_reference_value(env, NAccessibilityClient::aaStyleConsRef_, &aaStyleCons);
+    napi_status status = napi_new_instance(env, aaStyleCons, 0, nullptr, &keyCode);
     HILOG_INFO("napi_new_instance() = %{public}d ", (int32_t)status);
     ConvertCaptionPropertyToJS(env, keyCode, callbackInfo->captionProperty_);
     napi_set_named_property(env, result, "style", keyCode);
@@ -1498,9 +1282,9 @@ napi_value NAccessibilityClient::GetCaptionStyle(napi_env env, napi_callback_inf
     }
     captionProperty = instance->GetCaptionProperty();
 
-    napi_get_reference_value(env, NAccessibilityClient::aaStyleConsRef_,
-                             &NAccessibilityClient::aaStyleCons_);
-    napi_status status = napi_new_instance(env, NAccessibilityClient::aaStyleCons_, 0, nullptr, &captionStyle);
+    napi_value aaStyleCons = nullptr;
+    napi_get_reference_value(env, NAccessibilityClient::aaStyleConsRef_, &aaStyleCons);
+    napi_status status = napi_new_instance(env, aaStyleCons, 0, nullptr, &captionStyle);
     HILOG_INFO("napi_new_instance() = %{public}d ", (int32_t)status);
     ConvertCaptionPropertyToJS(env, captionStyle, captionProperty);
 
@@ -1608,24 +1392,44 @@ void CaptionListener::NotifyStateChangedJS(napi_env env, bool enabled, std::stri
     HILOG_INFO("start");
 
     if (!std::strcmp(eventType.c_str(), "enableChange")) {
-        napi_value jsEvent;
-        napi_get_boolean(env, enabled, &jsEvent);
+        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+        callbackInfo->state_ = enabled;
+        callbackInfo->env_ = env;
+        callbackInfo->ref_ = handlerRef;
+        uv_loop_s *loop = nullptr;
+        napi_get_uv_event_loop(env, &loop);
+        uv_work_t *work = new uv_work_t;
+        work->data = (StateCallbackInfo *)callbackInfo;
 
-        napi_value handler = nullptr;
-        napi_value callResult;
-        napi_get_reference_value(env, handlerRef, &handler);
-        napi_value undefined = 0;
-        napi_get_undefined(env, &undefined);
-        napi_call_function(env, undefined, handler, 1, &jsEvent, &callResult);
-        int32_t result;
-        napi_get_value_int32(env, callResult, &result);
-        HILOG_INFO("NotifyJS napi_call_function result[%{public}d]", result);
+        uv_queue_work(
+            loop,
+            work,
+            [](uv_work_t *work) {},
+            [](uv_work_t *work, int status) {
+                StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
+                napi_value jsEvent;
+                napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
+
+                napi_value handler = nullptr;
+                napi_value callResult = nullptr;
+                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+                napi_value undefined = nullptr;
+                napi_get_undefined(callbackInfo->env_, &undefined);
+                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+                int32_t result;
+                napi_get_value_int32(callbackInfo->env_, callResult, &result);
+                HILOG_INFO("NotifyStateChangedJS napi_call_function result[%{public}d]", result);
+                delete callbackInfo;
+                callbackInfo = nullptr;
+                delete work;
+                work = nullptr;
+            });
     } else {
         HILOG_ERROR("NotifyStateChangedJS eventType[%s] is error", eventType.c_str());
     }
 }
 
-void CaptionListener::OnCaptionStateChanged(const bool& enable)
+void CaptionListener::OnStateChanged(const bool& enable)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
@@ -1640,27 +1444,47 @@ void CaptionListener::NotifyPropertyChangedJS(napi_env env,
     CaptionProperty caption, std::string eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
-    napi_value jsEvent;
-    napi_create_object(env, &jsEvent);
 
     if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        ConvertCaptionPropertyToJS(env, jsEvent, caption);
+        CaptionCallbackInfo *callbackInfo = new CaptionCallbackInfo();
+        callbackInfo->caption_ = caption;
+        callbackInfo->env_ = env;
+        callbackInfo->ref_ = handlerRef;
+        uv_loop_s *loop = nullptr;
+        napi_get_uv_event_loop(env, &loop);
+        uv_work_t *work = new uv_work_t;
+        work->data = (CaptionCallbackInfo *)callbackInfo;
 
-        napi_value handler = nullptr;
-        napi_value callResult;
-        napi_get_reference_value(env, handlerRef, &handler);
-        napi_value undefined = 0;
-        napi_get_undefined(env, &undefined);
-        napi_call_function(env, undefined, handler, 1, &jsEvent, &callResult);
-        int32_t result;
-        napi_get_value_int32(env, callResult, &result);
-        HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
+        uv_queue_work(
+            loop,
+            work,
+            [](uv_work_t *work) {},
+            [](uv_work_t *work, int status) {
+                CaptionCallbackInfo *callbackInfo = (CaptionCallbackInfo *)work->data;
+                napi_value jsEvent;
+                napi_create_object(callbackInfo->env_, &jsEvent);
+                ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
+
+                napi_value handler = nullptr;
+                napi_value callResult = nullptr;
+                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+                napi_value undefined = nullptr;
+                napi_get_undefined(callbackInfo->env_, &undefined);
+                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+                int32_t result;
+                napi_get_value_int32(callbackInfo->env_, callResult, &result);
+                HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
+                delete callbackInfo;
+                callbackInfo = nullptr;
+                delete work;
+                work = nullptr;
+            });
     } else {
         HILOG_ERROR("NotifyPropertyChangedJS eventType[%s] is error", eventType.c_str());
     }
 }
 
-void CaptionListener::OnCaptionPropertyChanged(const CaptionProperty& caption)
+void CaptionListener::OnPropertyChanged(const CaptionProperty& caption)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
@@ -1688,6 +1512,8 @@ void NAccessibilityClient::DefineJSCaptionsStyle(napi_env env)
             NAccessibilityClient::GetCaptionWindowColor, NAccessibilityClient::SetCaptionWindowColor),
     };
 
+    napi_value aaStyleCons = nullptr;
+
     NAPI_CALL_RETURN_VOID(env,
         napi_define_class(env,
             "NAccessibilityClientStyle",
@@ -1696,10 +1522,9 @@ void NAccessibilityClient::DefineJSCaptionsStyle(napi_env env)
             nullptr,
             sizeof(captionsStyleDesc) / sizeof(captionsStyleDesc[0]),
             captionsStyleDesc,
-            &NAccessibilityClient::aaStyleCons_));
+            &aaStyleCons));
 
-    napi_create_reference(env, NAccessibilityClient::aaStyleCons_, 1,
-                          &NAccessibilityClient::aaStyleConsRef_);
+    napi_create_reference(env, aaStyleCons, 1, &NAccessibilityClient::aaStyleConsRef_);
 }
 
 napi_value NAccessibilityClient::AccessibleAbilityConstructorStyle(napi_env env, napi_callback_info info)

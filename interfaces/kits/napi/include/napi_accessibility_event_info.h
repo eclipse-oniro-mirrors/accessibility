@@ -21,7 +21,6 @@
 #include "accessibility_event_info.h"
 #include "accessibility_element_info.h"
 
-
 struct NAccessibilityEventInfoData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
@@ -32,7 +31,7 @@ struct NAccessibilityEventInfoData {
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
     std::string content_ = "";
-    int childIndex_ = 0;
+    int32_t childIndex_ = 0;
 };
 
 class NAccessibilityEventInfo {
@@ -42,8 +41,7 @@ public:
 
     static napi_value GetSource(napi_env env, napi_callback_info info);
 
-    static napi_value cons_;
-    static napi_ref consRef_;
+    static thread_local napi_ref consRef_;
 private:
     NAccessibilityEventInfo() = default;
     ~NAccessibilityEventInfo() = default;

@@ -21,7 +21,7 @@
 
 class NGesturePos {
 public:
-    static napi_value posCons_;
+    static thread_local napi_ref consRef_;
     static void DefineJSGesturePos(napi_env env);
     static napi_value JSPosConstructor(napi_env env, napi_callback_info info);
 };

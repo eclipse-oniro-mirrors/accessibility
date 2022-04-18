@@ -16,23 +16,28 @@
 #include <gtest/gtest.h>
 #include "accessibility_ability_info.h"
 #include "accessibility_account_data.h"
+#include "accessibility_constants.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
-#include "accessibility_system_ability_client.h"
-#include "accessible_ability_client_stub_impl.h"
-#include "accessible_ability_manager_service_state_proxy.h"
-#include "accessible_ability_manager_service_state_stub.h"
+#include "mock_accessibility_element_operator_proxy.h"
+#include "mock_accessibility_element_operator_stub.h"
+#include "mock_accessible_ability_client_stub_impl.h"
+#include "mock_accessible_ability_connection.h"
+#include "mock_accessible_ability_manager_service_state_observer_proxy.h"
+#include "mock_accessible_ability_manager_service_state_observer_stub.h"
 
 using namespace testing;
 using namespace testing::ext;
-using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
+const static unsigned int SLEEP_TIME_1 = 1;
 class AccessibilityAccountDataTest : public testing::Test {
 public:
-    AccessibilityAccountDataTest() {}
-    ~AccessibilityAccountDataTest() {}
+    AccessibilityAccountDataTest()
+    {}
+    ~AccessibilityAccountDataTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -68,12 +73,12 @@ void AccessibilityAccountDataTest::TearDown()
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState001 start";
-    int accountId = 1;
+    int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    // Initial state
+    /* Initial state */
     accountData->SetTouchGuideState(true);
-    int stateType = accountData->GetAccessibilityState();
-    int stateTypeTest = AccessibilitySystemAbilityClient::STATE_EXPLORATION_ENABLED;
+    uint32_t stateType = accountData->GetAccessibilityState();
+    uint32_t stateTypeTest = Accessibility::STATE_EXPLORATION_ENABLED;
     EXPECT_EQ(stateTypeTest, stateType);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState001 end";
 }
@@ -86,23 +91,24 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState002 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    // Add connected ability
+    /* add connected ability */
     accountData->AddConnectedAbility(connection);
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
 
     accountData->SetCaptionState(true);
-    int stateType = accountData->GetAccessibilityState();
-    int stateTypeTest = AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED |
-        AccessibilitySystemAbilityClient::STATE_CAPTION_ENABLED;
+    uint32_t stateType = accountData->GetAccessibilityState();
+    uint32_t stateTypeTest = Accessibility::STATE_ACCESSIBILITY_ENABLED | Accessibility::STATE_CAPTION_ENABLED;
     EXPECT_EQ(stateTypeTest, stateType);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState002 end";
@@ -116,26 +122,35 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState003 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    // Add connecting A11y ability
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    accountData->AddConnectingA11yAbility(elementName);
-    bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
-        accountData->GetConnectingA11yAbilities().end();
+    /* add connecting A11y ability */
+    const std::string bundleName = "bbb";
+
+    accountData->AddConnectingA11yAbility(bundleName);
+
+    std::vector<std::string> res;
+    res = accountData->GetConnectingA11yAbilities();
+
+    std::vector<string>::iterator iter;
+    iter = find(res.begin(), res.end(), bundleName);
+    bool test = false;
+    if (iter != res.end()) {
+        test = true;
+    }
     EXPECT_TRUE(test);
     EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
 
     accountData->SetKeyEventObserverState(true);
 
-    int stateType = accountData->GetAccessibilityState();
-    int stateTypeTest = AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED |
-        AccessibilitySystemAbilityClient::STATE_KEYEVENT_ENABLED;
+    uint32_t stateType = accountData->GetAccessibilityState();
+    uint32_t stateTypeTest = Accessibility::STATE_ACCESSIBILITY_ENABLED | Accessibility::STATE_KEYEVENT_ENABLED;
     EXPECT_EQ(stateTypeTest, stateType);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState003 end";
@@ -149,23 +164,24 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityState004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState004 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    // Add connected ability
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
+    /* add connected ability */
     accountData->AddConnectedAbility(connection);
-    // Add connecting A11y ability
-    accountData->AddConnectingA11yAbility(elementName);
+    /* add connecting A11y ability */
+
+    const std::string bundleName = "bbb";
+    accountData->AddConnectingA11yAbility(bundleName);
 
     accountData->SetGestureState(true);
 
-    int stateType = accountData->GetAccessibilityState();
-    int stateTypeTest = AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED |
-        AccessibilitySystemAbilityClient::STATE_GESTURE_ENABLED;
+    uint32_t stateType = accountData->GetAccessibilityState();
+    uint32_t stateTypeTest = Accessibility::STATE_ACCESSIBILITY_ENABLED | Accessibility::STATE_GESTURE_ENABLED;
     EXPECT_EQ(stateTypeTest, stateType);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState004 end";
@@ -179,14 +195,15 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConnectedAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectedAbility001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    // Add connected ability
+    /* add connected ability */
     accountData->AddConnectedAbility(connection);
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
@@ -203,19 +220,20 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveConnectedAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectedAbility001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    // Add
+    /* add */
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     const std::string elementName = connection->GetElementName().GetURI();
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
-    // Remove
+    /* remove */
     accountData->RemoveConnectedAbility(connection);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
 
@@ -230,28 +248,24 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AbilityDisconnected001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AbilityDisconnected001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    // Add
+    /* add */
     accountData->AddConnectedAbility(connection);
     const std::string elementNameURI = connection->GetElementName().GetURI();
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementNameURI));
 
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    // Disconnect
+    /* disconnect */
     accountData->RemoveConnectedAbility(connection);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
-    AppExecFwk::ElementName& elementName = connection->GetElementName();
-    bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
-        accountData->GetConnectingA11yAbilities().end();
-    EXPECT_TRUE(test);
-
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AbilityDisconnected001 end";
 }
 
@@ -260,22 +274,29 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
  * @tc.name: RemoveConnectingA11yAbility
  * @tc.desc: Check the remove connecting A11y ability.GetAccessibilityWindows
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001, TestSize.Level1)
+HWTEST_F(
+    AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
+    const std::string bundleName = "bbb";
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    // Add connecting A11y ability
-    accountData->AddConnectingA11yAbility(elementName);
+    /* add connecting A11y ability */
+    accountData->AddConnectingA11yAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
-    bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
-        accountData->GetConnectingA11yAbilities().end();
+    std::vector<std::string> res;
+    res = accountData->GetConnectingA11yAbilities();
+
+    std::vector<string>::iterator iter;
+    iter = find(res.begin(), res.end(), bundleName);
+    bool test = false;
+    if (iter != res.end()) {
+        test = true;
+    }
     EXPECT_TRUE(test);
-    // Remove
-    accountData->RemoveConnectingA11yAbility(elementName);
+    /* remove */
+    accountData->RemoveConnectingA11yAbility(bundleName);
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001 end";
@@ -289,17 +310,13 @@ HWTEST_F(AccessibilityAccountDataTest,
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnabledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
+    const std::string bundleName = "bbb";
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
-    // Add
-    accountData->AddEnabledAbility(elementName);
+    /* add */
+    accountData->AddEnabledAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-    bool test =
-        accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
-    EXPECT_TRUE(test);
-
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 end";
 }
 
@@ -311,18 +328,16 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveEnabledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
+    const std::string bundleName = "bbb";
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
-    // Add
-    accountData->AddEnabledAbility(elementName);
+    /* add */
+    accountData->AddEnabledAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-    bool test =
-        accountData->GetEnabledAbilities().find(elementName.GetURI()) != accountData->GetEnabledAbilities().end();
-    EXPECT_TRUE(test);
-    // Remove
-    accountData->RemoveEnabledAbility(elementName);
+
+    /* remove */
+    accountData->RemoveEnabledAbility(bundleName);
     EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility001 end";
@@ -336,13 +351,13 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInstalledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddInstalledAbility001 start";
-    const int accountId = 1;
-    AppExecFwk::ExtensionAbilityInfo info;
-    info.bundleName = "TEST_BUNDLE_NAME";
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    const int32_t accountId = 1;
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "TEST_BUNDLE_NAME";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    // Add
+    /* add */
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
 
@@ -357,14 +372,15 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddInst
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveInstalledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveInstalledAbility001 start";
-    const int accountId = 1;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    // Add
+    /* add */
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    // Remove
+    /* remove */
     accountData->RemoveInstalledAbility(abilityInfo->GetPackageName());
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
 
@@ -379,14 +395,15 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveI
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearInstalledAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ClearInstalledAbility001 start";
-    const int accountId = 1;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
-    / Add
+    /* add */
     accountData->AddInstalledAbility(*abilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    // Clear
+    /* clear */
     accountData->ClearInstalledAbility();
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
 
@@ -398,21 +415,22 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
  * @tc.name: GetAccessibleAbilityConnection
  * @tc.desc: Check the get accessibility connection.
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001, TestSize.Level1)
+HWTEST_F(
+    AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     const std::string elementName = connection->GetElementName().GetURI();
-    // Get
+    /* get */
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 end";
 }
@@ -422,19 +440,20 @@ HWTEST_F(AccessibilityAccountDataTest,
  * @tc.name: GetAccessibleAbilityConnection
  * @tc.desc: Check the get accessibility connection.
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002, TestSize.Level1)
+HWTEST_F(
+    AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     accountData->AddConnectedAbility(connection);
     const std::string elementName = "111name";
-    // Get
+    /* get */
     EXPECT_EQ(nullptr, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection002 end";
 }
@@ -447,18 +466,19 @@ HWTEST_F(AccessibilityAccountDataTest,
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
-    // Get
-    int size = accountData->GetConnectedA11yAbilities().size();
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
+    /* get */
+    int size = (int)accountData->GetConnectedA11yAbilities().size();
     EXPECT_EQ(0, size);
-    // Add
+    /* add */
     accountData->AddConnectedAbility(connection);
-    // Get
+    /* get */
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetConnectedA11yAbilities001 end";
@@ -472,16 +492,16 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConn
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStateCallbacks001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetStateCallbacks001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityManagerServiceStateStub> stub = new AccessibleAbilityManagerServiceStateStub();
-    const sptr<IAccessibleAbilityManagerServiceState> state = new AccessibleAbilityManagerServiceStateProxy(stub);
-    // Get
-    int size = accountData->GetStateCallbacks().size();
+    sptr<AccessibleAbilityManagerStateObserverStub> stub = new MockAccessibleAbilityManagerStateObserverStub();
+    const sptr<IAccessibleAbilityManagerStateObserver> state = new MockAccessibleAbilityManagerStateObserverProxy(stub);
+    /* get */
+    int size = (int)accountData->GetStateCallbacks().size();
     EXPECT_EQ(0, size);
-    // Add
+    /* add */
     accountData->AddStateCallback(state);
-    // Get
+    /* get */
     EXPECT_EQ(1, (int)accountData->GetStateCallbacks().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetStateCallbacks001 end";
@@ -495,20 +515,20 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStat
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAsacConnections001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAsacConnections001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    // Get
-    int size = accountData->GetAsacConnections().size();
+    /* get */
+    int size = (int)accountData->GetAsacConnections().size();
     EXPECT_EQ(0, size);
 
-    const int windowId = 1;
-    sptr<AccessibilityElementOperatorStub> operationStub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> operation = new AccessibilityElementOperatorProxy(operationStub);
-    sptr<AccessibilityWindowConnection> operationConnection = new AccessibilityWindowConnection(windowId,
-        operation, accountId);
-    // Add asacConnections
+    const int32_t windowId = 1;
+    sptr<AccessibilityElementOperatorStub> operationStub = new MockAccessibilityElementOperatorStub();
+    sptr<IAccessibilityElementOperator> operation = new MockAccessibilityElementOperatorProxy(operationStub);
+    sptr<AccessibilityWindowConnection> operationConnection =
+        new AccessibilityWindowConnection(windowId, operation, accountId);
+    /* add asacConnections */
     accountData->AddAccessibilityWindowConnection(windowId, operationConnection);
-    // Get
+    /* get */
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAsacConnections001 end";
@@ -517,7 +537,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAsac
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnabled, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabled start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     bool state = true;
@@ -535,19 +555,20 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnab
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState001 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
-    // Add connected ability
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
+    /* add connected ability */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    int stateType = AbilityStateType::ABILITY_STATE_ENABLE;
-    AbilityStateType state = static_cast<AbilityStateType>(stateType);
-    // Get ability
+    /* ABILITY_STATE_ENABLE */
+    AbilityStateType state = AbilityStateType::ABILITY_STATE_ENABLE;;
+    /* get ability */
     std::vector<AccessibilityAbilityInfo> enabledAbilities = accountData->GetAbilitiesByState(state);
     EXPECT_EQ(1, (int)enabledAbilities.size());
     EXPECT_EQ(connection->GetAbilityInfo().GetPackageName(), enabledAbilities.begin()->GetPackageName());
@@ -563,31 +584,40 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbilitiesByState003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState003 start";
-    const int accountId = 1;
-    int connectCounter = 0;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo();
-    AppExecFwk::ExtensionAbilityInfo info;
-    info.name = "TEST_ABILITY_NAME";
-    info.bundleName = "TEST_BUNDLE_NAME";
-    sptr<AccessibilityAbilityInfo> installAbilityInfo = new AccessibilityAbilityInfo(info);
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+
+    AccessibilityAbilityInitParams initParamsDefault;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParamsDefault);
+    AccessibilityAbilityInitParams initParams;
+    initParams.name = "TEST_ABILITY_NAME";
+    initParams.bundleName = "TEST_BUNDLE_NAME";
+    std::shared_ptr<AccessibilityAbilityInfo> installAbilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, connectCounter++,
-        *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
+
     EXPECT_NE(abilityInfo->GetId(), installAbilityInfo->GetId());
-    // Add connected ability
+
+    /* add connected ability */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    // Add install ability
+
+    /* add install ability */
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
     accountData->AddInstalledAbility(*installAbilityInfo);
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
-    int stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    AbilityStateType state = static_cast<AbilityStateType>(stateType);
-    // Get ability
+    sleep(SLEEP_TIME_1);
+
+    /* ABILITY_STATE_DISABLE */
+    AbilityStateType state = AbilityStateType::ABILITY_STATE_DISABLE;
+
+    /* get ability */
     std::vector<AccessibilityAbilityInfo> disabledAbilities = accountData->GetAbilitiesByState(state);
     EXPECT_EQ(1, (int)disabledAbilities.size());
-
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAbilitiesByState003 end";
 }
 
@@ -596,20 +626,21 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAbil
  * @tc.name: AddAccessibilityWindowConnection
  * @tc.desc: Check the add accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001 star";
-    const int accountId = 1;
-    const int windowId = 1;
+    const int32_t accountId = 1;
+    const int32_t windowId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> operation = new AccessibilityElementOperatorProxy(stub);
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
-        operation, accountId);
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    sptr<IAccessibilityElementOperator> operation = new MockAccessibilityElementOperatorProxy(stub);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
+    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
+    /* get */
     EXPECT_EQ(connection, accountData->GetAccessibilityWindowConnection(windowId));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityWindowConnection001 end";
@@ -620,21 +651,22 @@ HWTEST_F(AccessibilityAccountDataTest,
  * @tc.name: GetAccessibilityWindowConnection
  * @tc.desc: Check the get accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001 star";
-    const int accountId = 1;
-    const int windowId = 1;
-    const int windowIdTest = 2;
+    const int32_t accountId = 1;
+    const int32_t windowId = 1;
+    const int32_t windowIdTest = 2;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> operation = new AccessibilityElementOperatorProxy(stub);
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
-        operation, accountId);
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    sptr<IAccessibilityElementOperator> operation = new MockAccessibilityElementOperatorProxy(stub);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
+    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
+    /* get */
     EXPECT_EQ(nullptr, accountData->GetAccessibilityWindowConnection(windowIdTest));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityWindowConnection001 end";
@@ -645,20 +677,21 @@ HWTEST_F(AccessibilityAccountDataTest,
  * @tc.name: RemoveAccessibilityWindowConnection
  * @tc.desc: Check the remove accessibility interaction connection.
  */
-HWTEST_F(AccessibilityAccountDataTest,
-    AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAccessibilityWindowConnection001 star";
-    const int accountId = 1;
-    const int windowId = 1;
+    const int32_t accountId = 1;
+    const int32_t windowId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> operation = new AccessibilityElementOperatorProxy(stub);
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId,
-        operation, accountId);
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
+    sptr<IAccessibilityElementOperator> operation = new MockAccessibilityElementOperatorProxy(stub);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
+    /* add */
     accountData->AddAccessibilityWindowConnection(windowId, connection);
     EXPECT_EQ(1, (int)accountData->GetAsacConnections().size());
+    /* remove */
     accountData->RemoveAccessibilityWindowConnection(windowId);
     EXPECT_EQ(0, (int)accountData->GetAsacConnections().size());
 
@@ -668,7 +701,7 @@ HWTEST_F(AccessibilityAccountDataTest,
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCaptionState, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetCaptionState start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     bool state = true;
@@ -689,25 +722,24 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccountSwitched001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_OnAccountSwitched001 start";
-    // New accountData
-    const int accountId = 101;
+    // new accountData
+    const int32_t accountId = 101;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    // New abilityInfo
-    AppExecFwk::ExtensionAbilityInfo info;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
-    abilityInfo->SetCapabilityValues(
-        CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE | CAPABILITY_GESTURE |
-        CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM);
-    // New AAconnection
+    // new abilityInfo
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_RETRIEVE | CAPABILITY_TOUCH_GUIDE | CAPABILITY_GESTURE |
+                                     CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_ZOOM);
+    // new AAconnection
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    // New aastub
-    sptr<AccessibleAbilityClientStubImpl> aastub = new AccessibleAbilityClientStubImpl();
+    // new aastub
+    sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
     AAConnection->OnAbilityConnectDone(elementName, aastub, 0);
     GTEST_LOG_(INFO) << "add connected A11y Ability";
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    // CapabilityValues
+    /* CapabilityValues */
     accountData->UpdateAccountCapabilities();
     bool test1 = accountData->GetGesturesSimulationFlag();
     EXPECT_TRUE(test1);
@@ -717,10 +749,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     EXPECT_TRUE(test3);
     bool test4 = accountData->GetScreenMagnificationFlag();
     EXPECT_TRUE(test4);
-    // Account Switched
+    /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    // Initialization
+    /* initialization */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     bool test5 = accountData->GetGesturesSimulationFlag();
     EXPECT_FALSE(test5);
@@ -741,15 +773,22 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConnectingA11yAbility001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectingA11yAbility001 start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
+    const std::string bundleName = "bbb";
     EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    // Add connecting A11y ability
-    accountData->AddConnectingA11yAbility(elementName);
+    /* add connecting A11y ability */
+    accountData->AddConnectingA11yAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
-    bool test = accountData->GetConnectingA11yAbilities().find(elementName.GetURI()) !=
-        accountData->GetConnectingA11yAbilities().end();
+    std::vector<std::string> res;
+    res = accountData->GetConnectingA11yAbilities();
+
+    std::vector<string>::iterator iter;
+    iter = find(res.begin(), res.end(), bundleName);
+    bool test = false;
+    if (iter != res.end()) {
+        test = true;
+    }
     EXPECT_TRUE(test);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectingA11yAbility001 end";
@@ -758,7 +797,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetTouchGuideState, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetTouchGuideState start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     bool state = true;
@@ -774,7 +813,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetTouc
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetGestureState, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetGestureState start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     bool state = false;
@@ -790,7 +829,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetGest
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyEventObserverState, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetKeyEventObserverState start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     bool state = true;
@@ -806,9 +845,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetKeyE
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCaptionProperty, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetCaptionProperty start";
-    const int accountId = 1;
-    AppExecFwk::ExtensionAbilityInfo info;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     CaptionProperty caption;
@@ -821,10 +858,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearInstalledAbility, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ClearInstalledAbility start";
-    const int accountId = 1;
-    AppExecFwk::ExtensionAbilityInfo info;
-    info.bundleName = "TEST_BUNDLE_NAME";
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(info);
+    const int32_t accountId = 1;
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "TEST_BUNDLE_NAME";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
     accountData->AddInstalledAbility(*abilityInfo);
@@ -836,29 +873,30 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveEnabledAbility, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility start";
-    const int accountId = 1;
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    accountData->RemoveEnabledAbility(elementName);
+    const std::string bundleName = "bbb";
+    accountData->RemoveEnabledAbility(bundleName);
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility end";
 }
 
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetEnabledObj, TestSize.Level1)
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbilities, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabledObj start";
-    const int accountId = 1;
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilities start";
+    const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    const AppExecFwk::ElementName elementName("aaa", "TEST_BUNDLE_NAME", "ccc");
-    accountData->AddEnabledAbility(elementName);
+    const std::string bundleName = "bbb";
+    /* add */
+    accountData->AddEnabledAbility(bundleName);
+    /* get */
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-
-    bool test = accountData->SetEnabledObj(accountData->GetEnabledAbilities());
+    bool test = accountData->EnableAbilities(const_cast<vector<std::string>&>(accountData->GetEnabledAbilities()));
     EXPECT_TRUE(test);
 
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_SetEnabledObj end";
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilities end";
 }
 } // namespace Accessibility
 } // namespace OHOS

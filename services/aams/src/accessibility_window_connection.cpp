@@ -19,8 +19,8 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-AccessibilityWindowConnection::AccessibilityWindowConnection(const int windowId,
-    const sptr<IAccessibilityElementOperator> &connection, const int accountId)
+AccessibilityWindowConnection::AccessibilityWindowConnection(const int32_t windowId,
+    const sptr<IAccessibilityElementOperator> &connection, const int32_t accountId)
 {
     windowId_ = windowId;
     proxy_ = connection;

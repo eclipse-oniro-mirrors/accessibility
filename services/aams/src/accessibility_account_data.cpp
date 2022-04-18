@@ -18,13 +18,14 @@
 #include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
+#include "json_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
 const static std::string PREF_PATH =
     "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
 
-AccessibilityAccountData::AccessibilityAccountData(int accountId)
+AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
 {
     id_ = accountId;
 }
@@ -32,7 +33,7 @@ AccessibilityAccountData::AccessibilityAccountData(int accountId)
 AccessibilityAccountData::~AccessibilityAccountData()
 {}
 
-int AccessibilityAccountData::GetAccountId()
+int32_t AccessibilityAccountData::GetAccountId()
 {
     HILOG_DEBUG("start.");
     return id_;
@@ -43,7 +44,7 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     HILOG_DEBUG("start.");
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
-        state |= AccessibilitySystemAbilityClient::STATE_ACCESSIBILITY_ENABLED;
+        state |= STATE_ACCESSIBILITY_ENABLED;
         if (!isEnabled_) {
             SetEnabled(true);
         }
@@ -54,19 +55,19 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     }
 
     if (isEventTouchGuideState_) {
-        state |= AccessibilitySystemAbilityClient::STATE_EXPLORATION_ENABLED;
+        state |= STATE_EXPLORATION_ENABLED;
     }
 
     if (isCaptionState_) {
-        state |= AccessibilitySystemAbilityClient::STATE_CAPTION_ENABLED;
+        state |= STATE_CAPTION_ENABLED;
     }
 
     if (isFilteringKeyEvents_) {
-        state |= AccessibilitySystemAbilityClient::STATE_KEYEVENT_ENABLED;
+        state |= STATE_KEYEVENT_ENABLED;
     }
 
     if (isGesturesSimulation_) {
-        state |= AccessibilitySystemAbilityClient::STATE_GESTURE_ENABLED;
+        state |= STATE_GESTURE_ENABLED;
     }
 
     return state;
@@ -115,7 +116,7 @@ void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConn
     HILOG_DEBUG("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
-void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerServiceState>& callback)
+void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback)
 {
     HILOG_DEBUG("start.");
     stateCallbacks_.push_back(callback);
@@ -133,7 +134,7 @@ void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& ca
 }
 
 void AccessibilityAccountData::AddCaptionPropertyCallback(
-    const sptr<IAccessibleAbilityManagerServiceCaptionProperty>& callback)
+    const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
     HILOG_DEBUG("start.");
     captionPropertyCallbacks_.push_back(callback);
@@ -151,7 +152,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 }
 
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
-    const int windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
+    const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
     if (!asacConnections_.count(windowId)) {
@@ -159,43 +160,52 @@ void AccessibilityAccountData::AddAccessibilityWindowConnection(
     }
 }
 
-void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int windowId)
+void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
-    std::map<int, sptr<AccessibilityWindowConnection>>::iterator it = asacConnections_.find(windowId);
+    std::map<int32_t, sptr<AccessibilityWindowConnection>>::iterator it = asacConnections_.find(windowId);
     if (it != asacConnections_.end()) {
         asacConnections_.erase(it);
     }
 }
 
-void AccessibilityAccountData::AddConnectingA11yAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
-    if (!connectingA11yAbilities_.count(elementName.GetURI())) {
-        connectingA11yAbilities_.insert(make_pair(elementName.GetURI(), elementName));
+    for (auto &ability : connectingA11yAbilities_) {
+        if (ability == bundleName) {
+            HILOG_ERROR("The ability is already connecting, and it's bundle name is %{public}s", bundleName.c_str());
+            return;
+        }
     }
-
+    connectingA11yAbilities_.push_back(bundleName);
     HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveConnectingA11yAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &bundleName)
 {
-    HILOG_DEBUG("start.");
-    std::map<std::string, AppExecFwk::ElementName>::iterator it = connectingA11yAbilities_.find(elementName.GetURI());
-    if (it != connectingA11yAbilities_.end()) {
-        connectingA11yAbilities_.erase(it);
+    HILOG_DEBUG("start");
+    for (auto it = connectingA11yAbilities_.begin(); it != connectingA11yAbilities_.end(); it++) {
+        if (*it == bundleName) {
+            HILOG_DEBUG("Removed %{public}s from ConnectingA11yAbility: ", bundleName.c_str());
+            connectingA11yAbilities_.erase(it);
+            HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
+            return;
+        }
     }
-
-    HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
+    HILOG_ERROR("The ability(%{public}s) is not connecting.", bundleName.c_str());
 }
 
-void AccessibilityAccountData::AddEnabledAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::AddEnabledAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
-    if (!enabledAbilities_.count(elementName.GetURI())) {
-        enabledAbilities_.insert(make_pair(elementName.GetURI(), elementName));
+    for (auto &ability : enabledAbilities_) {
+        if (ability == bundleName) {
+            HILOG_ERROR("The ability is already enabled, and it's bundle name is %{public}s", bundleName.c_str());
+            return;
+        }
     }
-
+    enabledAbilities_.push_back(bundleName);
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
@@ -231,15 +241,19 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleNam
     }
 }
 
-void AccessibilityAccountData::RemoveEnabledAbility(const AppExecFwk::ElementName& elementName)
+void AccessibilityAccountData::RemoveEnabledAbility(const std::string &bundleName)
 {
-    std::map<std::string, AppExecFwk::ElementName>::iterator it = enabledAbilities_.find(elementName.GetURI());
-    HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
-    if (it != enabledAbilities_.end()) {
-        HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", elementName.GetBundleName().c_str());
-        enabledAbilities_.erase(it);
+    HILOG_DEBUG("start");
+    for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
+        if (*it == bundleName) {
+            HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", bundleName.c_str());
+            enabledAbilities_.erase(it);
+            RemoveEnabledFromPref(bundleName);
+            HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
+            return;
+        }
     }
-    RemoveEnabledFromPref(elementName.GetBundleName());
+    HILOG_ERROR("The ability(%{public}s) is not enabled.", bundleName.c_str());
 }
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
@@ -293,7 +307,7 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 }
 
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
-    const int windowId)
+    const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d).", windowId);
     if (asacConnections_.count(windowId) > 0) {
@@ -309,13 +323,13 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
     return connectedA11yAbilities_;
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerServiceState>> AccessibilityAccountData::GetStateCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> AccessibilityAccountData::GetStateCallbacks()
 {
     HILOG_DEBUG("start.");
     return stateCallbacks_;
 }
 
-const std::map<int, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
+const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
     HILOG_DEBUG("start.");
     return asacConnections_;
@@ -327,18 +341,17 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
     return captionPropertyCallbacks_;
 }
 
-const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetConnectingA11yAbilities()
+const std::vector<std::string> &AccessibilityAccountData::GetConnectingA11yAbilities()
 {
     HILOG_DEBUG("start.");
     return connectingA11yAbilities_;
 }
 
-const std::map<std::string, AppExecFwk::ElementName> AccessibilityAccountData::GetEnabledAbilities()
+const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
 {
     HILOG_DEBUG("enabledAbilities_ size is (%{public}zu).", enabledAbilities_.size());
-    for (auto& abilitie : enabledAbilities_) {
-        std::string bundleName = abilitie.second.GetBundleName();
-        HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
+    for (auto& ability : enabledAbilities_) {
+        HILOG_DEBUG("bundleName = %{public}s ", ability.c_str());
     }
     return enabledAbilities_;
 }
@@ -462,7 +475,7 @@ bool AccessibilityAccountData::SetCaptionPropertyPref()
         return false;
     }
     std::string FONTFAMILY = captionProperty_.GetFontFamily();
-    int FONTSCALE = captionProperty_.GetFontScale();
+    int32_t FONTSCALE = captionProperty_.GetFontScale();
     uint32_t FONTCOLOR = captionProperty_.GetFontColor();
     std::string FONTEDGETYPE = captionProperty_.GetFontEdgeType();
     uint32_t BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
@@ -497,7 +510,7 @@ std::string AccessibilityAccountData::StateChange(bool state)
     }
 }
 
-bool AccessibilityAccountData::SetStatePref(int type)
+bool AccessibilityAccountData::SetStatePref(int32_t type)
 {
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -598,12 +611,10 @@ void AccessibilityAccountData::UpdateEnabledFromPref()
         HILOG_ERROR("pref_ is null!");
         return;
     }
-    std::string bundleName = "";
     std::vector<std::string> vecvalue;
-    for (auto& abilitie : enabledAbilities_) {
-        bundleName = abilitie.second.GetBundleName();
-        vecvalue.push_back(bundleName);
-        HILOG_DEBUG("bundleName = %{public}s ", bundleName.c_str());
+    for (auto& ability : enabledAbilities_) {
+        vecvalue.push_back(ability);
+        HILOG_DEBUG("ability bundleName = %{public}s ", ability.c_str());
     }
     std::string stringOut = "";
     VectorToString(vecvalue, stringOut);
@@ -611,11 +622,21 @@ void AccessibilityAccountData::UpdateEnabledFromPref()
     pref_->FlushSync();
 }
 
-bool AccessibilityAccountData::SetEnabledObj(std::map<std::string, AppExecFwk::ElementName> it)
+bool AccessibilityAccountData::EnableAbilities(std::vector<std::string> &abilities)
 {
     HILOG_DEBUG("start.");
-    for (auto& ability : it) {
-        enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(ability.first, ability.second));
+    for (auto &ability : abilities) {
+        bool isEnabledAbility = false;
+        for (auto &enabledAbility : enabledAbilities_) {
+            if (ability == enabledAbility) {
+                HILOG_ERROR("The ability[%{public}s] is already enabled", ability.c_str());
+                isEnabledAbility = true;
+                break;
+            }
+        }
+        if (!isEnabledAbility) {
+            enabledAbilities_.push_back(ability);
+        }
     }
     UpdateEnabledFromPref();
     return true;
@@ -647,8 +668,10 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto& info : extensionInfos) {
+        AccessibilityAbilityInitParams initParams;
+        AccessibilityConfigParse::Parse(info, initParams);
         std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
-            std::make_shared<AccessibilityAbilityInfo>(info);
+            std::make_shared<AccessibilityAbilityInfo>(initParams);
         AddInstalledAbility(*accessibilityInfo);
     }
     return true;
@@ -673,7 +696,7 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     std::string FONTFAMILY = pref->GetString("fontFamily", "default");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTFAMILY.c_str());
 
-    int FONTSCALE = pref->GetInt("fontScale", 0);
+    int32_t FONTSCALE = (uint32_t)pref->GetInt("fontScale", 0);
     HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
 
     uint32_t FONTCOLOR = (uint32_t)pref->GetInt("fontColor", 0xff000000);
@@ -696,7 +719,7 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     captionProperty_.SetWindowColor(WINDOWCOLOR);
 }
 
-void AccessibilityAccountData::CapbilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
+void AccessibilityAccountData::CapabilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
 {
     HILOG_DEBUG("start.");
     if (!pref) {
@@ -747,7 +770,6 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
         return;
     }
 
-    std::string BundleName = "";
     AccessibilityAbilityInfo abilityInfo;
 
     std::string strValue = pref->GetString("BundleName", "");
@@ -755,37 +777,35 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
 
     std::vector<std::string> vecvalue;
     StringToVector(strValue, vecvalue);
-    for (auto i = vecvalue.begin(); i != vecvalue.end(); i++) {
-        BundleName = *i;
-        HILOG_DEBUG("BundleName = %{public}s", BundleName.c_str());
-        AppExecFwk::ElementName elementName("", BundleName, "");
-        enabledAbilities_.insert(std::pair<std::string, AppExecFwk::ElementName>(elementName.GetURI(), elementName));
+    for (auto &value : vecvalue) {
+        HILOG_DEBUG("BundleName = %{public}s", value.c_str());
+        enabledAbilities_.push_back(value);
     }
 }
 
 void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult)
 {
     HILOG_DEBUG("start.");
-    int strLength = (int)stringIn.size();
-    std::vector<int> position;
+    int32_t strLength = (int32_t)stringIn.size();
+    std::vector<int32_t> position;
 
     if (strLength == 0) {
         return;
     }
 
-    for (int j = 0; j < strLength; j++) {
+    for (int32_t j = 0; j < strLength; j++) {
         if (stringIn[j] == ',') {
             position.push_back(j);
         }
     }
 
-    int wrodCount = (int)position.size();
+    int32_t wrodCount = (int32_t)position.size();
     if ((wrodCount == 0) && (strLength > 0)) {
         vectorResult.push_back(stringIn);
     } else {
-        int startWrod = 0;
-        int length = 0;
-        for (int i = 0; i <= wrodCount; i++) {
+        int32_t startWrod = 0;
+        int32_t length = 0;
+        for (int32_t i = 0; i <= wrodCount; i++) {
             if (i == 0) {
                 length = position[i];
                 vectorResult.push_back(stringIn.substr(startWrod, length)); // First string
@@ -818,17 +838,25 @@ void AccessibilityAccountData::init()
     }
 
     CaptionInit(pref_);
-    CapbilityInit(pref_);
+    CapabilityInit(pref_);
     EnabledListInit(pref_);
 }
 
-bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk::ElementName> it)
+bool AccessibilityAccountData::DisableAbilities(const std::vector<std::string> &abilities)
 {
     HILOG_DEBUG("start.");
-    for (auto &disableAbility : it) {
-        HILOG_DEBUG("DisableAbilities URI(%{public}s)", disableAbility.first.c_str());
-        enabledAbilities_.erase(disableAbility.first);
-        RemoveEnabledFromPref(disableAbility.second.GetBundleName());
+    for (auto &ability : abilities) {
+        HILOG_ERROR("disable ability[%{public}s] start", ability.c_str());
+        for (auto iter = enabledAbilities_.begin(); iter != enabledAbilities_.end();) {
+            if (*iter == ability) {
+                enabledAbilities_.erase(iter);
+                RemoveEnabledFromPref(ability);
+                HILOG_DEBUG("Removed %{public}s and EnabledAbility size(%{public}zu)",
+                    ability.c_str(), enabledAbilities_.size());
+            } else {
+                iter++;
+            }
+        }
     }
     return true;
 }
@@ -836,7 +864,7 @@ bool AccessibilityAccountData::DisableAbilities(std::map<std::string, AppExecFwk
 void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)
 {
     HILOG_DEBUG("start.");
-    int i = 0;
+    int32_t i = 0;
     for (auto& var : vectorVal) {
         if (i > 0) {
             stringOut = stringOut + ',';
@@ -846,5 +874,5 @@ void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVa
     }
     HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+} // namespace Accessibility
+} // namespace OHOS

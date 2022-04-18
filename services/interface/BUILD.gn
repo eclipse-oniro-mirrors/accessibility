@@ -1,0 +1,87 @@
+# Copyright (C) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+config("aams_interface_private_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [ "//base/accessibility/common/log/include" ]
+
+  defines = [
+    "AAMS_LOG_TAG = \"aams_interface\"",
+    "AAMS_LOG_DOMAIN = 0xD005202",
+  ]
+
+  if (target_cpu == "arm") {
+    cflags = [ "-DBINDER_IPC_32BIT" ]
+  }
+}
+
+config("aams_interface_public_config") {
+  include_dirs = [
+    "include",
+    "include/parcel",
+  ]
+}
+
+aams_interface_src = [
+  "src/accessibility_element_operator_callback_proxy.cpp",
+  "src/accessibility_element_operator_callback_stub.cpp",
+  "src/accessibility_element_operator_proxy.cpp",
+  "src/accessibility_element_operator_stub.cpp",
+  "src/accessible_ability_channel_proxy.cpp",
+  "src/accessible_ability_channel_stub.cpp",
+  "src/accessible_ability_client_proxy.cpp",
+  "src/accessible_ability_client_stub.cpp",
+  "src/accessible_ability_manager_caption_observer_stub.cpp",
+  "src/accessible_ability_manager_service_proxy.cpp",
+  "src/accessible_ability_manager_service_stub.cpp",
+  "src/accessible_ability_manager_state_observer_proxy.cpp",
+  "src/accessible_ability_manager_state_observer_stub.cpp",
+]
+
+aams_data_parcel_src = [
+  "src/parcel/accessibility_ability_info_parcel.cpp",
+  "src/parcel/accessibility_caption_parcel.cpp",
+  "src/parcel/accessibility_element_info_parcel.cpp",
+  "src/parcel/accessibility_event_info_parcel.cpp",
+  "src/parcel/accessibility_window_info_parcel.cpp",
+  "src/parcel/accessibility_gesture_path_parcel.cpp",
+]
+
+ohos_shared_library("aams_interface") {
+  sources = aams_interface_src
+  sources += aams_data_parcel_src
+
+  configs = [ ":aams_interface_private_config" ]
+
+  public_configs = [ ":aams_interface_public_config" ]
+
+  deps = [
+    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
+    "ipc:ipc_core",
+    "utils_base:utils",
+  ]
+
+  install_enable = true
+
+  subsystem_name = "barrierfree"
+  part_name = "accessibility"
+}

@@ -55,7 +55,7 @@ class ZoomObserver {
 public:
     ZoomObserver() {}
     virtual ~ZoomObserver() {}
-    virtual void OnTransitionTo(const int state) {}
+    virtual void OnTransitionTo(const int32_t state) {}
     virtual void OnBack(MMI::PointerEvent &event) {}
     virtual void OnZoomIn() {}
     virtual void OnZoomOut() {}
@@ -97,7 +97,7 @@ public:
      * @since 1.0
      * @version 1.0
      */
-    explicit AccessibilityZoomHandler(int displayId);
+    explicit AccessibilityZoomHandler(int32_t displayId);
 
     /**
      * @brief A destructor used to delete the zoom handler.
@@ -155,10 +155,10 @@ private:
     ZoomInState zoomInState_ {};
     SlidingState slidingState_ {};
     std::recursive_mutex stateMutex_ {};
-    int displayId_ = 0;
+    int32_t displayId_ = 0;
     void Initialize();
     void OnBack(MMI::PointerEvent &event) override;
-    void OnTransitionTo(const int state) override;
+    void OnTransitionTo(const int32_t state) override;
     void OnZoomIn() override;
     void OnZoomOut() override;
 };

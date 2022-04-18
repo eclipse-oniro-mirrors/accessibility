@@ -32,7 +32,7 @@ struct NAccessibilityWindowInfoData {
     OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
     OHOS::Accessibility::AccessibilityWindowInfo window_ {};
     std::string content_ = "";
-    int childIndex_ = 0;
+    int32_t childIndex_ = 0;
 };
 
 class NAccessibilityWindowInfo {
@@ -45,8 +45,7 @@ public:
     static napi_value GetParent(napi_env env, napi_callback_info info);
     static napi_value GetChild(napi_env env, napi_callback_info info);
 
-    static napi_value cons_;
-    static napi_ref consRef_;
+    static thread_local napi_ref consRef_;
 private:
     NAccessibilityWindowInfo() = default;
     ~NAccessibilityWindowInfo() = default;

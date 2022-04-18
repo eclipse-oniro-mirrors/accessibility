@@ -20,22 +20,22 @@ namespace NativePreferences {
 std::map<std::string, std::shared_ptr<Preferences>> PreferencesHelper::prefsCache_;
 std::mutex PreferencesHelper::prefsCacheMutex_;
 
-std::string PreferencesHelper::GetRealPath(const std::string &path, int &errorCode)
+std::string PreferencesHelper::GetRealPath(const std::string& path, int& errorCode)
 {
     return "";
 }
 
-std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const std::string &path, int &errCode)
+std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const std::string& path, int& errCode)
 {
     return nullptr;
 }
 
-int PreferencesHelper::DeletePreferences(const std::string &path)
+int PreferencesHelper::DeletePreferences(const std::string& path)
 {
     return 0;
 }
 
-int PreferencesHelper::RemovePreferencesFromCache(const std::string &path)
+int PreferencesHelper::RemovePreferencesFromCache(const std::string& path)
 {
     return 0;
 }

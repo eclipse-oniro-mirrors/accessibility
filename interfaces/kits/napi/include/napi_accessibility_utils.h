@@ -17,17 +17,18 @@
 #define NAPI_ACCESSIBILITY_UTILS_H
 
 #include <cstdint>
+#include <map>
 #include <string>
 #include "accessibility_ability_info.h"
+#include "accessibility_caption.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_window_info.h"
-#include "accessibility_extension_context.h"
-#include "gesture_simulation.h"
+#include "accessibility_gesture_path.h"
+#include "element_name.h"
 #include "key_event.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_system_ability_client.h"
 
 constexpr size_t CALLBACK_SIZE = 1;
 constexpr size_t ARGS_SIZE_ZERO = 0;
@@ -70,25 +71,37 @@ void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 
 void ConvertGesturePathsJSToNAPI(
-    napi_env env, napi_value object, std::vector<OHOS::Accessibility::GesturePathDefine>& gesturePaths);
-void ConvertKeyEventToJS(napi_env env, napi_value result, OHOS::MMI::KeyEvent& keyEvent);
-void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::Accessibility::CaptionProperty captionProperty);
+    napi_env env, napi_value object, std::vector<OHOS::Accessibility::AccessibilityGesturePath>& gesturePaths);
+void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
+void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
+    OHOS::Accessibility::CaptionProperty captionProperty);
 void ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::Accessibility::CaptionProperty* ptrCaptionProperty);
 void ConvertJSToAccessibleAbilityInfos(napi_env env, napi_value arrayValue,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
 void ConvertJSToAccessibleAbilityInfo(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityAbilityInfo& abilityInfo);
-void ConvertEnabledAbilitiesToJS(
-    napi_env env, napi_value result, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities);
-void ConvertJSToEnabledAbilities(
-    napi_env env, napi_value arrayValue, std::map<std::string, OHOS::AppExecFwk::ElementName>& enabledAbilities);
+void ConvertEnabledAbilitiesToJS(napi_env env, napi_value result, std::vector<std::string>& enabledAbilities);
+void ConvertJSToEnabledAbilities(napi_env env, napi_value arrayValue, std::vector<std::string>& enabledAbilities);
 
 void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value);
-void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::Accessibility::CaptionProperty captionProperty_);
+void ConvertStyleToJS(napi_env env, napi_value& captionsManager,
+    OHOS::Accessibility::CaptionProperty captionProperty_);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
 std::string ConvertColorToString(uint32_t color);
 
+struct AccessibilityCallbackInfo {
+    napi_env env_;
+    napi_ref ref_;
+};
+
+struct StateCallbackInfo: public AccessibilityCallbackInfo {
+    bool state_;
+};
+
+struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
+    OHOS::Accessibility::CaptionProperty caption_;
+};
 #endif  // NAPI_ACCESSIBILITY_UTILS_H

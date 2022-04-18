@@ -23,18 +23,24 @@ InputEvent::InputEvent(int32_t eventType) : eventType_(eventType)
 }
 
 InputEvent::InputEvent(const InputEvent& other)
-    : eventType_(other.eventType_), id_(other.id_), actionTime_(other.actionTime_),
-    action_(other.action_), actionStartTime_(other.actionStartTime_),
-    deviceId_(other.deviceId_), targetDisplayId_(other.targetDisplayId_),
-    targetWindowId_(other.targetWindowId_), agentWindowId_(other.agentWindowId_),
-    bitwise_(other.bitwise_), processedCallback_(other.processedCallback_)
+    : eventType_(other.eventType_),
+      id_(other.id_),
+      actionTime_(other.actionTime_),
+      action_(other.action_),
+      actionStartTime_(other.actionStartTime_),
+      deviceId_(other.deviceId_),
+      targetDisplayId_(other.targetDisplayId_),
+      targetWindowId_(other.targetWindowId_),
+      agentWindowId_(other.agentWindowId_),
+      bitwise_(other.bitwise_),
+      processedCallback_(other.processedCallback_)
 {}
 
-InputEvent::~InputEvent() {}
+InputEvent::~InputEvent()
+{}
 
 void InputEvent::Reset()
-{
-}
+{}
 
 std::shared_ptr<InputEvent> InputEvent::Create()
 {
@@ -52,8 +58,7 @@ void InputEvent::SetId(int32_t id)
 }
 
 void InputEvent::UpdateId()
-{
-}
+{}
 
 int64_t InputEvent::GetActionTime() const
 {
@@ -104,5 +109,5 @@ void InputEvent::ClearFlag()
 {
     bitwise_ = EVENT_FLAG_NONE;
 }
-}
-}
+} // namespace MMI
+} // namespace OHOS

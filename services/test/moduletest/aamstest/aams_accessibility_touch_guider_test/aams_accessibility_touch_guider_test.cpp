@@ -15,51 +15,55 @@
 
 #include <gtest/gtest.h>
 #include <unistd.h>
-
+#include "accessibility_touch_guider.h"
 #include "accessibility_account_data.h"
 #include "accessibility_display_manager.h"
-#include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
+#include "accessibility_helper.h"
 #include "accessibility_input_interceptor.h"
-#include "accessibility_touch_guider.h"
-#include "accessible_ability_client_stub_impl.h"
+#include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "json.h"
+#include "mock_accessibility_element_operator_impl.h"
+#include "mock_accessibility_element_operator_proxy.h"
 #include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
 #include "system_ability_definition.h"
 
-using namespace std;
 using namespace testing;
 using namespace testing::ext;
 using namespace Json;
 
 namespace OHOS {
 namespace Accessibility {
-extern std::vector<EventType> g_mTeventType;
-extern int g_mTgestureId;
-const int timeout = 10000;
-const int sleepTime = 2;
-const int testNum_2 = 2;
+const static int32_t timeout = 10000;
+const static int32_t sleepTime = 3;
+const static int32_t testNum_2 = 2;
+
 class AamsTouchGuideTest : public testing::Test {
 public:
-    AamsTouchGuideTest() {}
-    ~AamsTouchGuideTest() {}
+    AamsTouchGuideTest()
+    {}
+    ~AamsTouchGuideTest()
+    {}
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-protected:
-    std::shared_ptr<MMI::PointerEvent> CreateMoveEvent(int pointerCount, int pointId);
-    std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action, int pointId);
-    std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int action, std::vector<MMI::PointerEvent::PointerItem> point,
-        unsigned int occurredTime, unsigned int startTime, int pointId);
 
-    sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
-    shared_ptr<AccessibleAbilityManagerService> ins_ = nullptr;
+protected:
+    std::shared_ptr<MMI::PointerEvent> CreateMoveEvent(int32_t pointerCount, int32_t pointId);
+    std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int32_t action, int32_t pointId);
+    std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int32_t action,
+        std::vector<MMI::PointerEvent::PointerItem> point, int64_t occurredTime, int64_t startTime,
+        int32_t pointId);
+
+    sptr<AccessibleAbilityChannel> aastub_ = nullptr;
+    std::shared_ptr<AccessibleAbilityManagerService> ins_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
+    std::shared_ptr<MMI::IInputEventConsumer> interceptorId_ = nullptr;
     void CreateAccessibilityConfigForTouchGuide();
     void WritefileAll(const char* fname, const char* data);
     void AddAccessibilityWindowConnection();
@@ -67,7 +71,7 @@ protected:
 
 void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
 {
-    FILE *fp;
+    FILE* fp;
     if (!(fp = fopen(fname, "w"))) {
         printf("open file %s fail \n", fname);
         return;
@@ -112,7 +116,7 @@ void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
     std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
     jsonWriter->write(object1, &os);
     jsonStr = os.str();
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json",  jsonStr.c_str());
+    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
 }
 
 void AamsTouchGuideTest::SetUpTestCase()
@@ -129,26 +133,30 @@ void AamsTouchGuideTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUp";
     CreateAccessibilityConfigForTouchGuide();
-    // Register bundleservice
+    // register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
     systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
 
+    interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
+    MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);
+
     ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     ins_->OnStart();
 
-    stub_ = new AccessibleAbilityClientStubImpl();
-
-    // Add an ability connection client
-    AppExecFwk::ExtensionAbilityInfo extensionInfo;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
+    // add an ability connection client
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
+    abilityInfo->SetCapabilityValues(Capability::CAPABILITY_TOUCH_GUIDE);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    connection->OnAbilityConnectDone(elementName, stub_, 0);
+    aastub_ = new AccessibleAbilityChannel(*connection);
+    connection->OnAbilityConnectDone(elementName, aastub_, 0);
 
     AddAccessibilityWindowConnection();
 }
@@ -161,13 +169,14 @@ void AamsTouchGuideTest::TearDown()
     sleep(sleepTime);
     ins_.reset();
     ins_ = nullptr;
-    stub_ = nullptr;
+    aastub_ = nullptr;
     mock_ = nullptr;
-    g_mTeventType.clear();
+    interceptorId_ = nullptr;
+    AccessibilityHelper::GetInstance().GetEventType().clear();
     MMI::MockInputManager::ClearTouchActions();
 }
 
-std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int action, int pointId)
+std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int32_t action, int32_t pointId)
 {
     std::shared_ptr<MMI::PointerEvent> touchEvent = MMI::PointerEvent::Create();
     MMI::PointerEvent::PointerItem item = {};
@@ -181,12 +190,12 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int acti
     return touchEvent;
 }
 
-std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateMoveEvent(int pointerCount, int pointId)
+std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateMoveEvent(int32_t pointerCount, int32_t pointId)
 {
     std::shared_ptr<MMI::PointerEvent> touchEvent = MMI::PointerEvent::Create();
     MMI::PointerEvent::PointerItem item = {};
 
-    for (int i = 0; i < pointerCount; i++) {
+    for (int32_t i = 0; i < pointerCount; i++) {
         item.SetPointerId(i + 1);
         touchEvent->AddPointerItem(item);
     }
@@ -197,9 +206,9 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateMoveEvent(int point
     return touchEvent;
 }
 
-std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int action,
-    std::vector<MMI::PointerEvent::PointerItem> points,
-    unsigned int occurredTime, unsigned int startTime, int pointId)
+std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int32_t action,
+    std::vector<MMI::PointerEvent::PointerItem> points, int64_t occurredTime, int64_t startTime,
+    int32_t pointId)
 {
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
 
@@ -218,11 +227,12 @@ std::shared_ptr<MMI::PointerEvent> AamsTouchGuideTest::CreateTouchEvent(int acti
 void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "aamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
-    int windowId = 0;
-    sptr<IAccessibilityElementOperator> operation = nullptr;
-    int accountId = 0;
-    sptr<AccessibilityElementOperatorStub> stub = new AccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
+    // accessibility interaction connection
+    int32_t windowId = 0;
+    std::shared_ptr<AccessibilityElementOperator> operation = nullptr;
+    int32_t accountId = 0;
+    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorImpl(windowId, operation);
+    sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
     ins_->RegisterElementOperator(windowId, proxy, accountId);
 }
@@ -230,13 +240,13 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
 /**
  * @tc.number: OnTouchEvent001
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the event that two fingers moving in sanme directions in dragging state.
+ * @tc.desc: Check the event that two fingers moving in same directions in dragging state.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent001 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -247,18 +257,18 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent001, Test
     point2.SetGlobalX(1000);
     point2.SetGlobalY(500);
     point2.SetPointerId(2);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(2000);
     point3.SetGlobalY(500);
     point3.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point4= {};
+    MMI::PointerEvent::PointerItem point4 = {};
     point4.SetGlobalX(2500);
     point4.SetGlobalY(500);
     point4.SetPointerId(2);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent001 inputEventConsumer is null";
@@ -288,10 +298,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent001, Test
     points.emplace_back(point4);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 2);
     inputEventConsumer->OnInputEvent(event);
-
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_END);
+    sleep(1);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_END);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
@@ -311,7 +320,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent002, Test
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent002 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
@@ -327,15 +336,15 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent002, Test
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_BEGIN);
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent002 ENDs";
 }
@@ -343,13 +352,13 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent002, Test
 /**
  * @tc.number: OnTouchEvent004
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the LEFT_THEN_RIGHT gesture.
+ * @tc.desc: Check the GESTURE_SWIPE_LEFT_THEN_RIGHT gesture.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent004 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -360,18 +369,18 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent004, Test
     point2.SetGlobalX(1500);
     point2.SetGlobalY(2500);
     point2.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(0);
     point3.SetGlobalY(2500);
     point3.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point4= {};
+    MMI::PointerEvent::PointerItem point4 = {};
     point4.SetGlobalX(2500);
     point4.SetGlobalY(2250);
     point4.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent004 inputEventConsumer is null";
@@ -397,30 +406,31 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent004, Test
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
     EXPECT_EQ(mtTouchAction[2], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(g_mTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent004 ENDs";
 }
 
 /**
  * @tc.number: OnTouchEvent005
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the UP_THEN_DOWN gesture.
+ * @tc.desc: Check the GESTURE_SWIPE_DOWN_THEN_UP gesture.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent005, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent005 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -431,18 +441,18 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent005, Test
     point2.SetGlobalX(2500);
     point2.SetGlobalY(3500);
     point2.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(2500);
     point3.SetGlobalY(5000);
     point3.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point4= {};
+    MMI::PointerEvent::PointerItem point4 = {};
     point4.SetGlobalX(2250);
     point4.SetGlobalY(2500);
     point4.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent005 inputEventConsumer is null";
@@ -468,30 +478,31 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent005, Test
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
     EXPECT_EQ(mtTouchAction[2], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(g_mTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_UP_THEN_DOWN));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_SWIPE_DOWN_THEN_UP));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent005 ENDs";
 }
 
 /**
  * @tc.number: OnTouchEvent006
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the RIGHT_THEN_LEFT gesture.
+ * @tc.desc: Check the GESTURE_SWIPE_RIGHT_THEN_LEFT gesture.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent006, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent006 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -502,18 +513,18 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent006, Test
     point2.SetGlobalX(3500);
     point2.SetGlobalY(2500);
     point2.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(5000);
     point3.SetGlobalY(2500);
     point3.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point4= {};
+    MMI::PointerEvent::PointerItem point4 = {};
     point4.SetGlobalX(2500);
     point4.SetGlobalY(2250);
     point4.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent006 inputEventConsumer is null";
@@ -539,30 +550,31 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent006, Test
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
     EXPECT_EQ(mtTouchAction[2], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(g_mTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent006 ENDs";
 }
 
 /**
  * @tc.number: OnTouchEvent007
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the DOWN_THEN_UP gesture.
+ * @tc.desc: Check the GESTURE_SWIPE_UP_THEN_DOWN gesture.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent007, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent007 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -573,18 +585,18 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent007, Test
     point2.SetGlobalX(2500);
     point2.SetGlobalY(1500);
     point2.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(2500);
     point3.SetGlobalY(0);
     point3.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point4= {};
+    MMI::PointerEvent::PointerItem point4 = {};
     point4.SetGlobalX(2250);
     point4.SetGlobalY(2500);
     point4.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent007 inputEventConsumer is null";
@@ -611,29 +623,30 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent007, Test
     inputEventConsumer->OnInputEvent(event);
 
     sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
     EXPECT_EQ(mtTouchAction[2], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(g_mTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_DOWN_THEN_UP));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
+        static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP_THEN_DOWN));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent007 ENDs";
 }
 
 /**
  * @tc.number: OnTouchEvent008
  * @tc.name:OnTouchEvent
- * @tc.desc: Check the DOWN gesture.
+ * @tc.desc: Check the UP gesture.
  */
 HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent008, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent008 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -644,14 +657,14 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent008, Test
     point2.SetGlobalX(2500);
     point2.SetGlobalY(1500);
     point2.SetPointerId(1);
-    MMI::PointerEvent::PointerItem point3= {};
+    MMI::PointerEvent::PointerItem point3 = {};
     point3.SetGlobalX(2500);
     point3.SetGlobalY(0);
     point3.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent008 inputEventConsumer is null";
@@ -672,21 +685,21 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent008, Test
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
-    EXPECT_EQ(g_mTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_DOWN));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP));
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent008 ENDs";
 }
 
 /**
- * @tc.number: OnTouchEvent008
+ * @tc.number: OnTouchEvent009
  * @tc.name:OnTouchEvent
  * @tc.desc: Check the single tap event.
  */
@@ -694,7 +707,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent009, Test
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent009 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
@@ -706,16 +719,16 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent009, Test
 
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, 1);
     inputEventConsumer->OnInputEvent(event);
-    sleep(3);
+    sleep(sleepTime);
 
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_GUIDE_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[1], EventType::TYPE_TOUCH_GUIDE_BEGIN);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
     EXPECT_EQ(mtTouchAction[1], expectValue);
-    EXPECT_EQ(g_mTeventType[2], EventType::TYPE_TOUCH_GUIDE_END);
-    EXPECT_EQ(g_mTeventType[3], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[2], EventType::TYPE_TOUCH_GUIDE_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent009 ends";
 }
@@ -729,7 +742,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent010, Test
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent010 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -738,31 +751,31 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent010, Test
     point1.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent010 inputEventConsumer is null";
         return;
     }
     inputEventConsumer->OnInputEvent(event);
-
+    sleep(1);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 40, 0, 1);
     inputEventConsumer->OnInputEvent(event);
-
+    sleep(sleepTime);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 200, 0, 1);
     inputEventConsumer->OnInputEvent(event);
-    sleep(1);
+    sleep(sleepTime);
 
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
-    sleep(3);
+    sleep(sleepTime);
 
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_END);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent010 ends";
 }
@@ -776,7 +789,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent011, Test
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent011 starts";
 
-    g_mTeventType = {};
+    AccessibilityHelper::GetInstance().GetEventType() = {};
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
@@ -785,31 +798,31 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnTouchEvent011, Test
     point1.SetPointerId(1);
 
     points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN,
-                                                                points, 0, 0, 1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnTouchEvent011 inputEventConsumer is null";
         return;
     }
     inputEventConsumer->OnInputEvent(event);
-
+    sleep(1);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
-
+    sleep(1);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 100, 0, 1);
     inputEventConsumer->OnInputEvent(event);
-
+    sleep(1);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
     inputEventConsumer->OnInputEvent(event);
 
-    sleep(3);
-    EXPECT_EQ(g_mTeventType[0], EventType::TYPE_TOUCH_BEGIN);
-    EXPECT_EQ(g_mTeventType[1], EventType::TYPE_TOUCH_END);
-    int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
+    sleep(sleepTime);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[0], EventType::TYPE_TOUCH_BEGIN);
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventType()[3], EventType::TYPE_TOUCH_END);
+    int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
     EXPECT_EQ(mtTouchAction[0], expectValue);
-    expectValue = MMI::PointerEvent::POINTER_ACTION_UP;
+    expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     EXPECT_EQ(mtTouchAction[1], expectValue);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnTouchEvent011 ends";

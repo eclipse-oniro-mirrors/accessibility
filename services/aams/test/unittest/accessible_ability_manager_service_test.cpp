@@ -15,36 +15,36 @@
 
 #include <gtest/gtest.h>
 #include <optional>
-#include "accessible_ability_manager_service.h"
+#include "accessibility_ability_info.h"
 #include "accessibility_display_manager.h"
-#include "accessible_ability_client_stub_impl.h"
-#include "accessible_ability_manager_service_state_proxy.h"
-#include "accessible_ability_manager_service_state_stub.h"
+#include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
+#include "mock_accessible_ability_client_stub_impl.h"
+#include "mock_accessible_ability_manager_service_state_observer_proxy.h"
+#include "mock_accessible_ability_manager_service_state_observer_stub.h"
 #include "mock_bundle_manager.h"
 #include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
-using namespace std;
-
-extern int g_testChannalId;
-extern int g_testEventType;
 
 namespace OHOS {
 namespace Accessibility {
+const static uint32_t SLEEP_TIME_1 = 1;
 class AccessibleAbilityManagerServiceUnitTest : public ::testing::Test {
 public:
-    AccessibleAbilityManagerServiceUnitTest() {}
-    ~AccessibleAbilityManagerServiceUnitTest() {}
+    AccessibleAbilityManagerServiceUnitTest()
+    {}
+    ~AccessibleAbilityManagerServiceUnitTest()
+    {}
 
     static void SetUpTestCase();
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
 
-    shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> ins_ = nullptr;
-    sptr<AccessibleAbilityClientStubImpl> stub_ = nullptr;
+    std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> ins_ = nullptr;
+    sptr<AccessibleAbilityClientStub> stub_ = nullptr;
     sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 
     void RegisterAbilityConnectionClient(const sptr<IRemoteObject>& obj);
@@ -63,17 +63,21 @@ void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
-    // Register bundleservice
+    // register bundleservice
     mock_ = new OHOS::AppExecFwk::BundleMgrService();
     sptr<ISystemAbilityManager> systemAbilityManager =
         SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
+    if (systemAbilityManager != nullptr) {
+        systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
+    } else {
+        return;
+    }
 
     ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     ins_->OnStart();
 
-    stub_ = new AccessibleAbilityClientStubImpl();
+    stub_ = new MockAccessibleAbilityClientStubImpl();
 }
 
 void AccessibleAbilityManagerServiceUnitTest::TearDown()
@@ -87,15 +91,16 @@ void AccessibleAbilityManagerServiceUnitTest::TearDown()
 
 void AccessibleAbilityManagerServiceUnitTest::RegisterAbilityConnectionClient(const sptr<IRemoteObject>& obj)
 {
-    // Add an ability connection client
-    AppExecFwk::ExtensionAbilityInfo extensionInfo;
-    sptr<AccessibilityAbilityInfo> abilityInfo = new AccessibilityAbilityInfo(extensionInfo);
+    // add an ability connection client
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     connection->OnAbilityConnectDone(elementName, obj, 0);
+    sleep(SLEEP_TIME_1);
 }
 
 /**
@@ -122,10 +127,10 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterStateCallback_001, Tes
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterStateCallback_001 start";
 
-    sptr<AccessibleAbilityManagerServiceStateStub> stub = new AccessibleAbilityManagerServiceStateStub();
-    sptr<IAccessibleAbilityManagerServiceState> state = new AccessibleAbilityManagerServiceStateProxy(stub);
+    sptr<AccessibleAbilityManagerStateObserverStub> stub = new MockAccessibleAbilityManagerStateObserverStub();
+    sptr<IAccessibleAbilityManagerStateObserver> state = new MockAccessibleAbilityManagerStateObserverProxy(stub);
 
-    int ret = ins_->RegisterStateCallback(state, 1);
+    uint32_t ret = ins_->RegisterStateObserver(state, 1);
     EXPECT_EQ(ret, 0);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterStateCallback_001 end";
@@ -161,6 +166,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, T
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
     ins_->RegisterElementOperator(0, nullptr, 0);
+    sleep(SLEEP_TIME_1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
@@ -178,6 +184,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_001,
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperator_001 start";
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
     ins_->DeregisterElementOperator(0);
+    sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
 
@@ -194,6 +201,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, Tes
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 start";
     sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
+    sleep(SLEEP_TIME_1);
     ins_->SetTouchEventInjector(touchEventInjector);
     auto ret = ins_->GetTouchEventInjector();
     EXPECT_TRUE(ret);
@@ -243,7 +251,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemovedUser_001, TestSize.Leve
     RegisterAbilityConnectionClient(stub_);
     EXPECT_EQ(int(ins_->GetCurrentAccountData()->GetConnectedA11yAbilities().size()), 1);
     ins_->RemovedUser(1);
-    // Can't to check a11yAccountsData_ because it is private,and don't provite api.
+    // can't to check a11yAccountsData_ because it is private,and don't provite api.
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_RemovedUser_001 end";
 }
 
@@ -287,7 +295,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 start";
     sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
     accountData->ClearInstalledAbility();
-    // Install ability is null
+    /* install ability is null */
     GTEST_LOG_(INFO) << "GetInstalledAbilities start";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "PackageChanged start";
@@ -296,11 +304,14 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     GTEST_LOG_(INFO) << "PackageChanged end";
     EXPECT_EQ(0, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "GetInstalledAbilities end";
-    // Add install ability
+    /* add install ability */
+    sleep(SLEEP_TIME_1);
     RegisterAbilityConnectionClient(stub_);
+    sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     bundleName = "bundleName2";
     ins_->PackageChanged(bundleName);
+    sleep(SLEEP_TIME_1);
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }
