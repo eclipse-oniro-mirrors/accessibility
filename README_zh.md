@@ -37,6 +37,6 @@
 
 [appexecfwk_standard](https://gitee.com/openharmony/appexecfwk_standard)
 
-[notification_ces_standard](https://gitee.com/openharmony/notification_ces_standard)
+[notification_common_event_service](https://gitee.com/openharmony/notification_ces_standard)
 
 [multimodalinput_input](https://gitee.com/openharmony/multimodalinput_input)
