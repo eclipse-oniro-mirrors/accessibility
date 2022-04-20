@@ -1494,7 +1494,7 @@ void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject> 
         HILOG_ERROR("connection is null");
         return;
     }
-    connection->OnAbilityConnectDone(*elementName, obj, 0);
+    connection->OnAbilityConnectDoneSync(*elementName, obj, 0);
 }
 
 bool AccessibleAbilityManagerService::DisableUITestAbility()
@@ -1545,7 +1545,7 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
         return;
     }
     accountData->RemoveInstalledAbility(UI_TEST_BUNDLE_NAME);
-    connection->OnAbilityDisconnectDone(connection->GetElementName(), 0);
+    connection->OnAbilityDisconnectDoneSync(connection->GetElementName(), 0);
 }
 
 int32_t AccessibleAbilityManagerService::GetActiveWindow()
