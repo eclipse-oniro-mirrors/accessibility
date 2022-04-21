@@ -18,11 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-AccessibilityElementOperatorCallbackImpl::AccessibilityElementOperatorCallbackImpl(std::promise<void> &promise)
-    : promise_(promise)
-{
-}
-
 void AccessibilityElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
     const int32_t requestId)
 {

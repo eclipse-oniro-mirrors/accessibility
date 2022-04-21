@@ -30,7 +30,6 @@ public:
     {}
     ~AccessibilityElementOperatorCallbackImplTest()
     {}
-    std::promise<void> promise_;
 
     std::shared_ptr<AccessibilityElementOperatorCallbackImpl> instance_ = nullptr;
 
@@ -45,7 +44,7 @@ public:
     void SetUp()
     {
         GTEST_LOG_(INFO) << "AccessibilityElementOperatorCallbackImplTest SetUp()";
-        instance_ = std::make_shared<AccessibilityElementOperatorCallbackImpl>(promise_);
+        instance_ = std::make_shared<AccessibilityElementOperatorCallbackImpl>();
     };
     void TearDown()
     {

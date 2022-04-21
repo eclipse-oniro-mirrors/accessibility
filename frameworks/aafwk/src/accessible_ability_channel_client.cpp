@@ -55,10 +55,8 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     }
 
     int32_t requestId = GenrateRequestId();
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
-        new AccessibilityElementOperatorCallbackImpl(std::ref(findPromise));
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, elementOperator)) {
         return false;
@@ -100,10 +98,8 @@ bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId
     }
 
     int32_t requestId = GenrateRequestId();
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
-        new AccessibilityElementOperatorCallbackImpl(std::ref(findPromise));
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, elementOperator)) {
         return false;
@@ -128,10 +124,8 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     }
 
     int32_t requestId = GenrateRequestId();
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
-        new AccessibilityElementOperatorCallbackImpl(std::ref(findPromise));
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
         elementOperator, mode)) {
@@ -178,10 +172,8 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
     }
 
     int32_t requestId = GenrateRequestId();
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
-        new AccessibilityElementOperatorCallbackImpl(std::ref(findPromise));
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, elementOperator)) {
         return false;
@@ -211,10 +203,8 @@ bool AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindow
     }
 
     int32_t requestId = GenrateRequestId();
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
-        new AccessibilityElementOperatorCallbackImpl(std::ref(findPromise));
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator)) {
         return false;
