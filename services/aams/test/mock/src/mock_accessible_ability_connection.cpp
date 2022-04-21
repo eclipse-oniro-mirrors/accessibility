@@ -276,5 +276,20 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
 {
     (void)eventInfo;
 }
+
+void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
+{
+    (void)element;
+    (void)remoteObject;
+    (void)resultCode;
+}
+
+void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
+    int32_t resultCode)
+{
+    (void)element;
+    (void)resultCode;
+}
 } // namespace Accessibility
 } // namespace OHOS
