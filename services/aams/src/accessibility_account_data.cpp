@@ -696,7 +696,7 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     std::string FONTFAMILY = pref->GetString("fontFamily", "default");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTFAMILY.c_str());
 
-    int32_t FONTSCALE = (uint32_t)pref->GetInt("fontScale", 0);
+    int32_t FONTSCALE = (int32_t)pref->GetInt("fontScale", 0);
     HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
 
     uint32_t FONTCOLOR = (uint32_t)pref->GetInt("fontColor", 0xff000000);
