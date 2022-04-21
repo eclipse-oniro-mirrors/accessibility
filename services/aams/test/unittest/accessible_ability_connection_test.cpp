@@ -88,11 +88,15 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData_ = new AccessibilityAccountData(0);
-    accountData_->AddAccessibilityWindowConnection(0, connection);
+    if (accountData_ != nullptr) {
+        accountData_->AddAccessibilityWindowConnection(0, connection);
+    }
     connection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new MockAccessibleAbilityClientStubImpl();
-    connection_->OnAbilityConnectDone(*elementName_, obj_, 0);
+    if (obj_ != nullptr && connection_ != nullptr) {
+        connection_->OnAbilityConnectDone(*elementName_, obj_, 0);
+    }
 }
 
 void AccessibleAbilityConnectionUnitTest::TearDown()
@@ -120,11 +124,11 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
 HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_GetAbilityInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAbilityInfo_001 start";
-
-    auto abilityInfo = connection_->GetAbilityInfo();
-    auto abilities = abilityInfo.GetAccessibilityAbilityType();
-    EXPECT_EQ(abilities, 0);
-
+    if (connection_ != nullptr) {
+        auto abilityInfo = connection_->GetAbilityInfo();
+        auto abilities = abilityInfo.GetAccessibilityAbilityType();
+        EXPECT_EQ(abilities, 0);
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAbilityInfo_001 end";
 }
 
@@ -136,12 +140,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_GetElementName_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetElementName_001 start";
-    sleep(SLEEP_TIME_2);
-    auto elementName = connection_->GetElementName();
-    auto ret = elementName.GetDeviceID();
-    sleep(SLEEP_TIME_2);
-    EXPECT_STREQ(ret.c_str(), "1");
-
+    if (connection_ != nullptr) {
+        sleep(SLEEP_TIME_2);
+        auto elementName = connection_->GetElementName();
+        auto ret = elementName.GetDeviceID();
+        sleep(SLEEP_TIME_2);
+        EXPECT_STREQ(ret.c_str(), "1");
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetElementName_001 end";
 }
 
@@ -153,10 +158,10 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_GetAccountData_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAccountData_001 start";
-
-    auto ret = connection_->GetAccountData();
-    EXPECT_TRUE(ret.GetRefPtr());
-
+    if (connection_ != nullptr) {
+        auto ret = connection_->GetAccountData();
+        EXPECT_TRUE(ret.GetRefPtr());
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAccountData_001 end";
 }
 
@@ -169,11 +174,12 @@ HWTEST_F(
     AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_GetAbilityClient_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetProxy_001 start";
-    sleep(SLEEP_TIME_2);
-    auto ret = connection_->GetAbilityClient();
-    sleep(SLEEP_TIME_2);
-    EXPECT_TRUE(ret);
-
+    if (connection_ != nullptr) {
+        sleep(SLEEP_TIME_2);
+        auto ret = connection_->GetAbilityClient();
+        sleep(SLEEP_TIME_2);
+        EXPECT_TRUE(ret);
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetProxy_001 end";
 }
 
@@ -186,14 +192,15 @@ HWTEST_F(
     AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 start";
-    AccessibilityEventInfo eventInfo;
-    /* EventType is in the allowed list */
-    eventInfo.SetEventType(EventType::TYPE_PAGE_STATE_UPDATE);
-    sleep(SLEEP_TIME_2);
-    connection_->OnAccessibilityEvent(eventInfo);
-    sleep(SLEEP_TIME_2);
-    EXPECT_EQ(int(EventType::TYPE_PAGE_STATE_UPDATE), AccessibilityAbilityHelper::GetInstance().GetTestEventType());
-
+    if (connection_ != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is in the allowed list */
+        eventInfo.SetEventType(EventType::TYPE_PAGE_STATE_UPDATE);
+        sleep(SLEEP_TIME_2);
+        connection_->OnAccessibilityEvent(eventInfo);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(int(EventType::TYPE_PAGE_STATE_UPDATE), AccessibilityAbilityHelper::GetInstance().GetTestEventType());
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_001 end";
 }
 
@@ -206,16 +213,17 @@ HWTEST_F(
     AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 start";
-    AccessibilityEventInfo eventInfo;
-    /* EventType is in the allowed list */
-    eventInfo.SetEventType(EventType::TYPE_VIEW_CLICKED_EVENT);
-    /* invalid window */
-    eventInfo.SetWindowId(3);
-    sleep(SLEEP_TIME_2);
-    connection_->OnAccessibilityEvent(eventInfo);
-    sleep(SLEEP_TIME_2);
-    EXPECT_EQ(1, AccessibilityAbilityHelper::GetInstance().GetTestEventType());
-
+    if (connection_ != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is in the allowed list */
+        eventInfo.SetEventType(EventType::TYPE_VIEW_CLICKED_EVENT);
+        /* invalid window */
+        eventInfo.SetWindowId(3);
+        sleep(SLEEP_TIME_2);
+        connection_->OnAccessibilityEvent(eventInfo);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(1, AccessibilityAbilityHelper::GetInstance().GetTestEventType());
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_002 end";
 }
 
@@ -228,12 +236,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 start";
-    sleep(SLEEP_TIME_2);
-    OHOS::Accessibility::Rect rect(0, 0, 0, 0);
-    connection_->OnGestureInjectResult(1, false);
-    sleep(SLEEP_TIME_2);
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestGestureSimulateResult(), 1);
-
+    if (connection_ != nullptr) {
+        sleep(SLEEP_TIME_2);
+        OHOS::Accessibility::Rect rect(0, 0, 0, 0);
+        connection_->OnGestureInjectResult(1, false);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestGestureSimulateResult(), 1);
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 end";
 }
 
@@ -245,13 +254,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_Connect_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 start";
-
-    AppExecFwk::ElementName element;
-    connection_->Connect(element);
-    sleep(SLEEP_TIME_3);
-    auto accountData = connection_->GetAccountData();
-    EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
-
+    if (connection_ != nullptr) {
+        AppExecFwk::ElementName element;
+        connection_->Connect(element);
+        sleep(SLEEP_TIME_3);
+        auto accountData = connection_->GetAccountData();
+        EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";
 }
 
@@ -263,10 +272,10 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_Disconnect_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Disconnect_001 start";
-
-    connection_->Disconnect();
-    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), 0);
-
+    if (connection_ != nullptr) {
+        connection_->Disconnect();
+        EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), 0);
+    }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Reset_001 end";
 }
 } // namespace Accessibility
