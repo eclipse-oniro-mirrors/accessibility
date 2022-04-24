@@ -15,7 +15,7 @@ import("//build/ohos.gni")
 
 ohos_shared_library("accessibility") {
   include_dirs = [
-    "//foundation/ace/napi/interfaces/kits",
+    "//foundation/arkui/napi/interfaces/kits",
     "//third_party/node/src",
     "//utils/system/safwk/native/include",
     "//base/accessibility/common/log/include",
@@ -54,7 +54,7 @@ ohos_shared_library("accessibility") {
     "//base/accessibility/services/interface:aams_interface",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
-    "//foundation/ace/napi:ace_napi",
+    "//foundation/arkui/napi:ace_napi",
     "//utils/native/base:utils",
   ]
 
