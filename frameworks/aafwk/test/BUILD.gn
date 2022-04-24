@@ -117,7 +117,7 @@ ohos_unittest("accessible_ability_test") {
     "ability_runtime:abilitykit_native",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
-    "ces_standard:cesfwk_innerkits",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
