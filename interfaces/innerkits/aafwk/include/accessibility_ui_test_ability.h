@@ -21,7 +21,6 @@
 #include "accessibility_display_resize_controller.h"
 #include "accessibility_gesture_path.h"
 #include "accessibility_gesture_result_listener.h"
-#include "accessibility_ui_test_ability_listener.h"
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
 
@@ -44,17 +43,6 @@ public:
     static std::shared_ptr<AccessibilityUITestAbility> GetInstance();
 
     /**
-     * @brief RegisterListener
-     *        This API not work, should be deleted.
-     * @param
-     * @return
-     */
-    virtual bool RegisterListener(const std::shared_ptr<IAccessibleUITestAbilityListener> &listener)
-    {
-        return false;
-    }
-
-    /**
      * @brief Register ability listener.
      * @param listener The listener to add.
      * @return Return true if registers listener successfully, else return false.
@@ -72,17 +60,6 @@ public:
      * @return Return true if the command of disconnect is sent successfully, else return false.
      */
     virtual bool Disconnect() = 0;
-
-    /**
-     * @brief Obtains elementInfo of the accessible root node.
-     *        This API not work, should be deleted.
-     * @param elementInfo The elementInfo of the accessible root node.
-     * @return Return true if obtains elementInfo successfully, else return false.
-     */
-    virtual bool GetRootElementInfo(std::optional<AccessibilityElementInfo> &elementInfo)
-    {
-        return false;
-    }
 
     /**
      * @brief Obtains elementInfo of focus.

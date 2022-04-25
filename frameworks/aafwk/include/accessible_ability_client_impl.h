@@ -38,13 +38,6 @@ public:
     ~AccessibleAbilityClientImpl() = default;
 
     /**
-     * @brief Gets an instance of AccessibleAbilityClient.
-     * @param
-     * @return Return an instance of AccessibleAbilityClient.
-     */
-    static sptr<AccessibleAbilityClient> GetInstance();
-
-    /**
      * @brief Gets remote object.
      * @param
      * @return Remote object.
