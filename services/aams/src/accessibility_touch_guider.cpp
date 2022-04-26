@@ -323,11 +323,6 @@ bool TouchGuider::TouchGuideListener::TransformToSingleTap(MMI::PointerEvent &ev
     return true;
 }
 
-TouchGuider::ElementOperatorCallbackImpl::ElementOperatorCallbackImpl(std::promise<void> &promise)
-    : promise_(promise)
-{
-}
-
 void TouchGuider::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
     const int32_t requestId)
 {
@@ -883,27 +878,27 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
     }
 
     uint32_t timeOut = 500;
-    std::promise<void> findPromise;
-    std::future<void> promiseFutrue = findPromise.get_future();
-    sptr<ElementOperatorCallbackImpl> callback = new ElementOperatorCallbackImpl(std::ref(findPromise));
-
-    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, callback);
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(timeOut));
-    if (wait != std::future_status::ready) {
+    sptr<ElementOperatorCallbackImpl> focusCallback = new ElementOperatorCallbackImpl();
+    std::future<void> focusFutrue = focusCallback->promise_.get_future();
+    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
+    std::future_status waitFocus = focusFutrue.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitFocus != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
     }
+    elementId = focusCallback->accessibilityInfoResult_.GetAccessibilityId();
 
     std::map<std::string, std::string> actionArguments {};
-    elementId = callback->accessibilityInfoResult_.GetAccessibilityId();
-    connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, callback);
-    wait = promiseFutrue.wait_for(std::chrono::milliseconds(timeOut));
-    if (wait != std::future_status::ready) {
+    sptr<ElementOperatorCallbackImpl> actionCallback = new ElementOperatorCallbackImpl();
+    std::future<void> actionFutrue = actionCallback->promise_.get_future();
+    connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    std::future_status waitAction = actionFutrue.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitAction != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
     }
 
-    return callback->executeActionResult_;
+    return actionCallback->executeActionResult_;
 }
 
 void TGEventHandler::HoverEnterAndMoveRunner()

@@ -284,7 +284,7 @@ private:
 
     class ElementOperatorCallbackImpl : public AccessibilityElementOperatorCallbackStub {
     public:
-        explicit ElementOperatorCallbackImpl(std::promise<void> &promise);
+        ElementOperatorCallbackImpl() = default;
         ~ElementOperatorCallbackImpl() = default;
 
         virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
@@ -297,7 +297,7 @@ private:
         virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
     private:
-        std::promise<void> &promise_;
+        std::promise<void> promise_;
         bool executeActionResult_ = false;
         AccessibilityElementInfo accessibilityInfoResult_ = {};
         std::vector<AccessibilityElementInfo> elementInfosResult_;

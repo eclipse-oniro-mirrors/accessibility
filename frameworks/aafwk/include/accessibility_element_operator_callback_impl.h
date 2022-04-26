@@ -35,7 +35,7 @@ public:
      * @param promise The promise of execution
      * @return
      */
-    explicit AccessibilityElementOperatorCallbackImpl(std::promise<void> &promise);
+    AccessibilityElementOperatorCallbackImpl() = default;
 
     /**
      * @brief desconstruct function
@@ -87,7 +87,7 @@ public:
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
 private:
-    std::promise<void> &promise_;
+    std::promise<void> promise_;
     bool executeActionResult_ = false;
     AccessibilityElementInfo accessibilityInfoResult_ = {};
     std::vector<AccessibilityElementInfo> elementInfosResult_;
