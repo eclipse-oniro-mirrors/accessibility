@@ -50,6 +50,7 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
     aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
     if (!aams_) {
         HILOG_DEBUG("aams_ is null.");
+        return;
     }
     inputManager_ = MMI::InputManager::GetInstance();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(aams_->GetMainRunner());
@@ -201,6 +202,7 @@ void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MM
 
     if (!instance_ || !instance_->eventHandler_) {
         HILOG_ERROR("eventHandler is nullptr.");
+        return;
     }
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
     instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
