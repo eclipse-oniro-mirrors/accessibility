@@ -42,7 +42,7 @@ config("module_private_config") {
     "//base/accessibility/services/test/mock/include/extern",
     "//base/accessibility/util/include",
     "//base/hiviewdfx/hiview/adapter/utility/include/extra/singleton.h",
-    "//foundation/ace/napi/native_engine",
+    "//foundation/arkui/napi/native_engine",
     "//foundation/multimodalinput/input/util/common/include",
     "//base/accessibility/services/aams/test/mock/include",
   ]
@@ -104,7 +104,7 @@ ohos_unittest("accessible_ability_test") {
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
-    "//foundation/ace/napi:ace_napi",
+    "//foundation/arkui/napi:ace_napi",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",
