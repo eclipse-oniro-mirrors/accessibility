@@ -118,10 +118,6 @@ public:
         CanRequestPermission, bool(const std::string& bundleName, const std::string& permissionName, const int userId));
     MOCK_METHOD3(RequestPermissionFromUser,
         bool(const std::string& bundleName, const std::string& permission, const int userId));
-    MOCK_METHOD1(UnregisterPermissionsChanged, bool(const sptr<OnPermissionChangedCallback>& callback));
-    MOCK_METHOD2(RegisterPermissionsChanged,
-        bool(const std::vector<int>& uids, const sptr<OnPermissionChangedCallback>& callback));
-    MOCK_METHOD1(RegisterAllPermissionsChanged, bool(const sptr<OnPermissionChangedCallback>& callback));
 
     bool GetBundleInfo(const std::string& bundleName, const BundleFlag flag, BundleInfo& bundleInfo,
         int32_t userId = Constants::UNSPECIFIED_USERID) override;
