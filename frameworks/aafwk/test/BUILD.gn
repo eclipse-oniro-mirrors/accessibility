@@ -103,7 +103,7 @@ ohos_unittest("accessible_ability_test") {
   deps = [
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/interface:aams_interface",
-    "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/arkui/napi:ace_napi",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",

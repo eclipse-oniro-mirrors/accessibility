@@ -96,7 +96,7 @@ ohos_unittest("asac_unit_test") {
   deps = [
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/interface:aams_interface",
-    "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/miscservices/time/services:time_service",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",

@@ -69,7 +69,7 @@ ohos_shared_library("accessibleability") {
   public_deps = [
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/global/i18n/frameworks/intl:intl_util",
-    "//base/global/resmgr_standard/frameworks/resmgr:global_resmgr",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
   ]
 
   install_enable = true
