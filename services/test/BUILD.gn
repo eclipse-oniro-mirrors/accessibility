@@ -140,7 +140,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
@@ -215,7 +215,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
@@ -296,7 +296,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
@@ -375,7 +375,7 @@ ohos_moduletest("aams_server_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
@@ -447,7 +447,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
@@ -525,7 +525,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "os_account_standard:os_account_innerkits",
+    "os_account:os_account_innerkits",
   ]
 
   public_deps = [
