@@ -55,7 +55,7 @@ config("module_private_config") {
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
-    "//foundation/graphic/standard/rosen/modules/render_service_base/include",
+    "//foundation/graphic/graphic/rosen/modules/render_service_base/include",
     "//foundation/multimedia/image_standard/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
     "//foundation/windowmanager/dm/include",

@@ -53,7 +53,7 @@ config("module_private_config") {
     "//foundation/aafwk/standard/services/abilitymgr/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/graphic/standard/rosen/modules/render_service_base/include",
+    "//foundation/graphic/graphic/rosen/modules/render_service_base/include",
     "//foundation/multimedia/image_standard/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
     "//foundation/windowmanager/dm/include",
@@ -145,7 +145,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -220,7 +220,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -300,7 +300,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -378,7 +378,7 @@ ohos_moduletest("aams_server_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -450,7 +450,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -527,7 +527,7 @@ ohos_moduletest("aams_common_event_registry_test") {
   ]
 
   public_deps = [
-    "//foundation/graphic/standard:libwmclient",
+    "//foundation/graphic/graphic:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
