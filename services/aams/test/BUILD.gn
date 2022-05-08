@@ -37,7 +37,7 @@ config("module_private_config") {
     "//base/accessibility/services/interface/include",
     "//base/accessibility/services/interface/include/parcel",
     "//base/accessibility/util/include",
-    "//base/global/resource_management/interfaces/innerkits/include",
+    "//base/global/resource_management/interfaces/inner_api/include",
     "//base/notification/common_event_service/interfaces/inner_api",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation",

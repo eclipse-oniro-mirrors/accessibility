@@ -38,7 +38,7 @@ config("module_private_config") {
     "//base/accessibility/services/aams/include",
     "//base/accessibility/services/test/mock",
     "//base/accessibility/util/include",
-    "//base/global/resource_management/interfaces/innerkits/include",
+    "//base/global/resource_management/interfaces/inner_api/include",
     "//base/notification/common_event_service/interfaces/inner_api",
     "//foundation",
     "//foundation/aafwk/standard/frameworks/kits/ability/native/include/",
