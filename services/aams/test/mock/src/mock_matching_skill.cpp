@@ -32,7 +32,7 @@ MatchingSkills::MatchingSkills(const MatchingSkills& matchingSkills)
 MatchingSkills::~MatchingSkills()
 {}
 
-std::string MatchingSkills::GetEntity(int index) const
+std::string MatchingSkills::GetEntity(size_t index) const
 {
     (void)index;
     std::string entity;
@@ -55,7 +55,7 @@ void MatchingSkills::RemoveEntity(const std::string& entity)
     (void)entity;
 }
 
-int MatchingSkills::CountEntities() const
+size_t MatchingSkills::CountEntities() const
 {
     return entities_.size();
 }
@@ -66,12 +66,12 @@ void MatchingSkills::AddEvent(const std::string& event)
     GTEST_LOG_(INFO) << "MOCK MatchingSkills AddEvent";
 }
 
-int MatchingSkills::CountEvent() const
+size_t MatchingSkills::CountEvent() const
 {
     return events_.size();
 }
 
-std::string MatchingSkills::GetEvent(int index) const
+std::string MatchingSkills::GetEvent(size_t index) const
 {
     std::string event;
     (void)index;
@@ -94,7 +94,7 @@ bool MatchingSkills::HasEvent(const std::string& event) const
     return true;
 }
 
-std::string MatchingSkills::GetScheme(int index) const
+std::string MatchingSkills::GetScheme(size_t index) const
 {
     std::string schemes;
     (void)index;
@@ -117,7 +117,7 @@ void MatchingSkills::RemoveScheme(const std::string& scheme)
     (void)scheme;
 }
 
-int MatchingSkills::CountSchemes() const
+size_t MatchingSkills::CountSchemes() const
 {
     return 0;
 }
