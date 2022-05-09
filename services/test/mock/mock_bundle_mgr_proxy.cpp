@@ -205,28 +205,7 @@ int BundleMgrProxy::CheckPublicKeys(const std::string& firstBundleName, const st
     return 0;
 }
 
-int BundleMgrProxy::CheckPermission(const std::string& bundleName, const std::string& permission)
-{
-    return 0;
-}
-
-int BundleMgrProxy::CheckPermissionByUid(const std::string& bundleName, const std::string& permission, const int userId)
-{
-    return 0;
-}
-
 bool BundleMgrProxy::GetPermissionDef(const std::string& permissionName, PermissionDef& permissionDef)
-{
-    return true;
-}
-
-bool BundleMgrProxy::GetAllPermissionGroupDefs(std::vector<PermissionDef>& permissionDefs)
-{
-    return true;
-}
-
-bool BundleMgrProxy::GetAppsGrantedPermissions(
-    const std::vector<std::string>& permissions, std::vector<std::string>& appNames)
 {
     return true;
 }
@@ -305,34 +284,6 @@ sptr<IBundleInstaller> BundleMgrProxy::GetBundleInstaller()
 sptr<IBundleUserMgr> BundleMgrProxy::GetBundleUserMgr()
 {
     return nullptr;
-}
-
-bool BundleMgrProxy::CanRequestPermission(
-    const std::string& bundleName, const std::string& permissionName, const int userId)
-{
-    return true;
-}
-
-bool BundleMgrProxy::RequestPermissionFromUser(
-    const std::string& bundleName, const std::string& permission, const int userId)
-{
-    return true;
-}
-
-bool BundleMgrProxy::RegisterAllPermissionsChanged(const sptr<OnPermissionChangedCallback>& callback)
-{
-    return true;
-}
-
-bool BundleMgrProxy::RegisterPermissionsChanged(
-    const std::vector<int>& uids, const sptr<OnPermissionChangedCallback>& callback)
-{
-    return true;
-}
-
-bool BundleMgrProxy::UnregisterPermissionsChanged(const sptr<OnPermissionChangedCallback>& callback)
-{
-    return true;
 }
 
 bool BundleMgrProxy::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
