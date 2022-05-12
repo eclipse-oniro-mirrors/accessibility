@@ -186,10 +186,10 @@ private:
         NativeValue* lastParam = nullptr;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 break;
             case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                     lastParam = info.argv[PARAM0];
                 }
@@ -205,7 +205,7 @@ private:
                 }
                 break;
             case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
                     HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
                     return engine.CreateUndefined();
@@ -264,10 +264,10 @@ private:
         NativeValue* lastParam = nullptr;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 break;
             case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                     lastParam = info.argv[PARAM0];
                 }
@@ -284,7 +284,7 @@ private:
                 }
                 break;
             case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (!ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
                     HILOG_ERROR("Convert windowId failed");
                     return engine.CreateUndefined();
@@ -353,10 +353,10 @@ private:
         NativeValue* lastParam = nullptr;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 break;
             case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                     lastParam = info.argv[PARAM0];
                 }
@@ -372,7 +372,7 @@ private:
                 }
                 break;
             case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}d", info.argc);
+                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
                     HILOG_ERROR("Convert displayId failed");
                     return engine.CreateUndefined();

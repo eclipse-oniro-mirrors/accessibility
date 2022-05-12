@@ -87,7 +87,7 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
         HILOG_DEBUG("promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     } else {
-        HILOG_ERROR("The size of args is err[%{public}d]", argc);
+        HILOG_ERROR("The size of args is err[%{public}zu]", argc);
         return nullptr;
     }
     napi_value resource = nullptr;

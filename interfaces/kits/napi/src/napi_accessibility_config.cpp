@@ -458,7 +458,7 @@ void ConfigListener::NotifyStringChanged2JSInner(
                 const uint32_t BUF_SIZE = 1024;
                 char buf[BUF_SIZE] = {0};
                 napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
-                HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}d]", result);
+                HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
                 delete callbackInfo;
                 callbackInfo = nullptr;
                 delete work;
