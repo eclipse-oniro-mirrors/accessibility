@@ -148,7 +148,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
 
 std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId)
 {
-    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}llu]", channelId_, displayId);
+    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}ju]", channelId_, displayId);
     if (proxy_) {
         auto windows = proxy_->GetWindows(displayId);
         for (auto &window : windows) {

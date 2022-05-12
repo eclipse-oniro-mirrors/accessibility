@@ -132,7 +132,7 @@ public:
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
-	/**
+    /**
      * @brief Send simulation gesture through the proxy object.
      * @param requestId The sequence of simulation gesture.
      * @param gesturePath The gesture path to send.

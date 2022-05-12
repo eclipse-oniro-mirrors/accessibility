@@ -78,15 +78,10 @@ private:
         std::shared_ptr<MMI::PointerEvent> secondEvent);
 
     bool startScaling_ = false;
-    // bool scaling_ = false;
-    // float scaleRatio_ = -1;
     float preSpan_ = 0;
     float lastSpan_ = 0;
-    // float initSpan_ = 0;
     float lastScrollFocusX_ = 0.0f;
     float lastScrollFocusY_ = 0.0f;
-    // float lastScaleCenterX_ = 0;
-    // float lastScaleCenterY_ = 0;
     int32_t tapDistance_ = 0;
     int32_t multiTapDistance_ = 0;
     ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;

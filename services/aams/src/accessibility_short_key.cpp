@@ -22,12 +22,13 @@ namespace Accessibility {
 static const int32_t KEY_ITEM_COUNT_1 = 1;
 static const uint32_t SHORT_KEY_TIMEOUT_MSG = 1;
 static const int32_t MULTI_PRESS_TIMER = 300; // ms
+static const int32_t TRIPLE_PRESS_COUNT = 3;
 
 AccessibilityShortKey::AccessibilityShortKey()
 {
     HILOG_DEBUG();
 
-    std::shared_ptr<AppExecFwk::EventRunner> runner = 
+    std::shared_ptr<AppExecFwk::EventRunner> runner =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner) {
         HILOG_ERROR("get runner failed");
@@ -145,7 +146,7 @@ bool AccessibilityShortKey::IsTriplePress()
         }
     }
 
-    if (upEventCount >= 3) {
+    if (upEventCount >= TRIPLE_PRESS_COUNT) {
         return true;
     }
     return false;
@@ -171,7 +172,7 @@ void AccessibilityShortKey::ClearCachedEventsAndMsg()
 }
 
 AccessibilityShortKey::ShortKeyEventHandler::ShortKeyEventHandler(
-    const std::shared_ptr<AppExecFwk::EventRunner> &runner, 
+    const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityShortKey &shortKey) : AppExecFwk::EventHandler(runner), shortKey_(shortKey)
 {
     HILOG_DEBUG("ShortKeyEventHandler is created");

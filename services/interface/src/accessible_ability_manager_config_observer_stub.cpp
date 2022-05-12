@@ -37,7 +37,8 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONFIG_STATE_CHANGED)) {
         return HandleOnConfigStateChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_DALTONIZATION_COLOR_FILTER_CHANGED)) {
+    if (code == static_cast<uint32_t>(
+                    IAccessibleAbilityManagerConfigObserver::Message::ON_DALTONIZATION_COLOR_FILTER_CHANGED)) {
         return HandleOnDaltonizationColorFilterChanged(data, reply);
     }
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONTENT_TIMEOUT_CHANGED)) {
@@ -46,7 +47,8 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_MOUSE_AUTOCLICK_CHANGED)) {
         return HandleOnMouseAutoClickChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_BRIGHTNESS_DISCOUNT_CHANGED)) {
+    if (code ==
+        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_BRIGHTNESS_DISCOUNT_CHANGED)) {
         return HandleOnBrightnessDiscountChanged(data, reply);
     }
     if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_AUDIO_BALANCE_CHANGED)) {
@@ -68,7 +70,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnConfigStateChanged(M
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnAudioBalanceChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnAudioBalanceChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     float audioBalance = data.ReadFloat();
@@ -76,7 +79,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnAudioBalanceChanged(
 
     return NO_ERROR;
 }
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnBrightnessDiscountChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnBrightnessDiscountChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     float brightnessDiscount = data.ReadFloat();
@@ -85,7 +89,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnBrightnessDiscountCh
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     uint32_t contentTimeout = data.ReadUint32();
@@ -93,7 +98,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChange
 
     return NO_ERROR;
 }
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFilterChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFilterChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     uint32_t filterType = data.ReadUint32();
@@ -101,7 +107,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFi
 
     return NO_ERROR;
 }
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     int32_t mouseAutoClick = data.ReadInt32();
@@ -109,7 +116,8 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChange
 
     return NO_ERROR;
 }
-ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChanged(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChanged(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     std::string shortkeyTarget = data.ReadString();

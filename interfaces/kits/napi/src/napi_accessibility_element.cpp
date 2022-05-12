@@ -14,14 +14,22 @@
  */
 
 #include "napi_accessibility_element.h"
-#include <algorithm>
-#include <map>
-#include <vector>
 #include "hilog_wrapper.h"
 #include "napi_accessibility_utils.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+
+static const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"windowId", "pageId", "accessibilityId",
+    "componentId", "bundleName", "componentType", "inputType", "text", "hintText", "description", "resourceName",
+    "childNodeIds", "textLengthLimit", "rect", "checkable", "checked", "focusable", "focused", "isVisible",
+    "accessibilityFocused", "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
+    "editable", "popupSupported", "pluralLineSupported", "deleteable", "isHint", "isEssential", "itemCount",
+    "currentIndex", "startIndex", "endIndex", "rangeInfo", "grid", "gridItem", "activeRegion", "isContentInvalid",
+    "error", "label", "beginSelected", "endSelected", "textMoveUnit", "parent"};
+static const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"screenRect", "id", "layer", "title", "type",
+    "childIds", "parentId", "isAccessibilityFocused", "isActive", "isFocused", "anchor", "rootElement",
+    "parent", "childs"};
 
 thread_local napi_ref NAccessibilityElement::consRef_ = nullptr;
 
@@ -207,7 +215,6 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     }
     FindElementCondition condition = NAccessibilityElement::CovertStringToDirection(conditionType);
     if (condition == FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT) {
-
     }
     return nullptr;
 }

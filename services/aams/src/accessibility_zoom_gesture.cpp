@@ -19,17 +19,15 @@
 
 namespace OHOS {
 namespace Accessibility {
-/*
- * Triple: DOWN UP DOWN UP DOWN
- */
 const int32_t POINTER_COUNT_1 = 1;
+const int32_t TAP_MIN_DISTANCE = 8;
 const int32_t MULTI_TAP_TIMER = 300; // ms
 const int32_t LONG_PRESS_TIMER = 500; // ms
 const int64_t US_TO_MS = 1000;
 const float MIN_SCALE_SPAN = 27.0f; // 27mm
-// const float SCALE_SPAN_SLOP = 16.0f;
-// const float SCALE_RATIO_THRESHOLD = 0.3f;
 const float DOUBLE_TAP_SLOP = 100.0f;
+const float HALF = 0.5f;
+const uint32_t TRIPLE_TAP_COUNT = 3;
 
 AccessibilityZoomGesture::AccessibilityZoomGesture(Rosen::DisplayId displayId)
 {
@@ -39,7 +37,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture(Rosen::DisplayId displayId)
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner(), *this);
 
-    tapDistance_ = 8;
+    tapDistance_ = TAP_MIN_DISTANCE; // Temp deal
 
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
@@ -218,10 +216,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
                 lastScrollFocusX_ = focusXY.centerX;
                 lastScrollFocusY_ = focusXY.centerY;
 
-                // Used for scale algorithm.
-                // lastScaleCenterX_ = focusXY.centerX;
-                // lastScaleCenterY_ = focusXY.centerY;
-                
+                // Used for scale algorithm.              
                 float span = CalcScaleSpan(event, focusXY);
                 if (span >= MIN_SCALE_SPAN) {
                     startScaling_ = true;
@@ -311,7 +306,6 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
 
     int32_t action = event.GetPointerAction();
     int32_t pointerCount = event.GetPointersIdList().size();
-
     if (((action == MMI::PointerEvent::POINTER_ACTION_UP) && (pointerCount == POINTER_COUNT_1)) ||
         (action == MMI::PointerEvent::POINTER_ACTION_CANCEL)) {
         startScaling_ = false;
@@ -424,8 +418,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
 
     float spanX = sumSpanX / count;
     float spanY = sumSpanY / count;
-    span = hypot(spanX, spanY) * 2;
-
+    span = hypot(spanX, spanY) / HALF;
     return span;
 }
 
@@ -474,7 +467,7 @@ bool AccessibilityZoomGesture::IsTripleTaps()
         }
     }
 
-    if (upEventCount >= 3) {
+    if (upEventCount >= TRIPLE_TAP_COUNT) {
         return true;
     }
 

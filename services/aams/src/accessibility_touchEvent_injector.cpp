@@ -19,7 +19,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-constexpr int MS_TO_US = 1000;
+constexpr int32_t MS_TO_US = 1000;
+constexpr int32_t MOVE_GESTURE_MIN_PATH_COUNT = 2;
 TouchInjectHandler::TouchInjectHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     TouchEventInjector &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
@@ -237,7 +238,7 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime)
 
     std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
     int32_t positionSize = positions.size();
-    if (positionSize < 2) {
+    if (positionSize < MOVE_GESTURE_MIN_PATH_COUNT) {
         HILOG_ERROR("positionSize is zero.");
         return;
     }

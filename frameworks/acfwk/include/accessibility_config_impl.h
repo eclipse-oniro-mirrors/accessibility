@@ -17,8 +17,8 @@
 #define ACCESSIBILITY_CONFIG_IMPL_H
 
 #include <cstdint>
-#include "singleton.h"
 #include <mutex>
+#include "singleton.h"
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
@@ -27,7 +27,6 @@
 
 namespace OHOS {
 namespace AccessibilityConfig {
-
 class AccessibilityConfigImpl : public AccessibilityConfig {
 public:
     explicit AccessibilityConfigImpl();
@@ -79,7 +78,6 @@ public:
      * @return Return true if the command is sent successfully, else return false.
      */
     virtual bool DisableAbilities(const std::string name) override;
-
 
     virtual bool SetScreenMagnificationState(const bool state) override;
     virtual bool SetShortKeyState(const bool state) override;
@@ -145,7 +143,8 @@ private:
         AccessibilityConfigImpl &client_;
     };
 
-    class AccessibleAbilityManagerCaptionObserverImpl : public Accessibility::AccessibleAbilityManagerCaptionObserverStub {
+    class AccessibleAbilityManagerCaptionObserverImpl
+        : public Accessibility::AccessibleAbilityManagerCaptionObserverStub {
     public:
         explicit AccessibleAbilityManagerCaptionObserverImpl(AccessibilityConfigImpl &config_)
             : config_(config_) {}
@@ -159,7 +158,8 @@ private:
         AccessibilityConfigImpl &config_;
     };
 
-    class AccessibleAbilityManagerConfigObserverImpl : public Accessibility::AccessibleAbilityManagerConfigObserverStub {
+    class AccessibleAbilityManagerConfigObserverImpl
+        : public Accessibility::AccessibleAbilityManagerConfigObserverStub {
     public:
         explicit AccessibleAbilityManagerConfigObserverImpl(AccessibilityConfigImpl &config_)
             : config_(config_) {}
@@ -233,7 +233,7 @@ private:
     bool mouseKey_ = false;
     bool captionState_ = false;
     CaptionProperty captionProperty_;
-    int32_t mouseAutoClick_;  
+    int32_t mouseAutoClick_;
     bool screenMagnifier_ = false;
     bool shortkey_ = false;
     std::string shortkeyTarget_ = "";

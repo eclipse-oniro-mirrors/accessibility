@@ -32,10 +32,12 @@ public:
     void NotifyIntChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, int32_t value);
     void NotifyUintChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, uint32_t value);
     void NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, float value);
-    void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption);
+    void NotifyPropertyChanged2JS(
+        const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption);
 
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE]);
-    virtual void OnConfigChanged(const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue &value) override;
+    virtual void OnConfigChanged(
+        const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override;
     OHOS::AccessibilityConfig::CONFIG_ID GetStateType();
 
     std::string GetEventType() const
@@ -56,10 +58,15 @@ private:
     static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
     static void NotifyPropertyChangedJS(
         napi_env env, OHOS::AccessibilityConfig::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
-    static void NotifyStringChanged2JSInner(napi_env env, const std::string &value, const std::string &eventType, napi_ref handlerRef);
-    static void NotifyIntChanged2JSInner(napi_env env, int32_t value, const std::string &eventType, napi_ref handlerRef);
-    static void NotifyUintChanged2JSInner(napi_env env, uint32_t value, const std::string &eventType, napi_ref handlerRef);
-    static void NotifyFloatChanged2JSInner(napi_env env, float value, const std::string &eventType, napi_ref handlerRef);
+    static void NotifyStringChanged2JSInner(
+        napi_env env, const std::string& value, const std::string& eventType, napi_ref handlerRef);
+    static void NotifyIntChanged2JSInner(
+        napi_env env, int32_t value, const std::string& eventType, napi_ref handlerRef);
+    static void NotifyUintChanged2JSInner(
+        napi_env env, uint32_t value, const std::string& eventType, napi_ref handlerRef);
+    static void NotifyFloatChanged2JSInner(
+        napi_env env, float value, const std::string& eventType, napi_ref handlerRef);
+
 private:
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;

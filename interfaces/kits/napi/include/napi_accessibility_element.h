@@ -21,18 +21,9 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
-const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"windowId", "pageId", "accessibilityId", "componentId",
-    "bundleName", "componentType", "inputType", "text", "hintText", "description", "resourceName", "childNodeIds",
-    "textLengthLimit", "rect", "checkable", "checked", "focusable", "focused", "isVisible", "accessibilityFocused",
-    "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable", "editable", "popupSupported",
-    "pluralLineSupported", "deleteable", "isHint", "isEssential", "itemCount", "currentIndex", "startIndex",
-    "endIndex", "rangeInfo", "grid", "gridItem", "activeRegion", "isContentInvalid", "error", "label",
-    "beginSelected", "endSelected", "textMoveUnit", "parent"};
-const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"screenRect", "id", "layer", "title", "type", "childIds",
-        "parentId", "isAccessibilityFocused", "isActive", "isFocused", "anchor", "rootElement", "parent", "childs"};
-
 struct AccessibilityElement {
-    ~AccessibilityElement() {
+    ~AccessibilityElement()
+    {
         if (elementInfo_) {
             delete elementInfo_;
             elementInfo_ = nullptr;

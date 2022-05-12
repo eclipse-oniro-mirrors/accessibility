@@ -166,7 +166,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if add listener successfully, else return false.
      */
-    virtual bool AddCaptionListener(const std::shared_ptr<AccessibilityConfig::CaptionObserver> &ob, const int32_t type) override;
+    virtual bool AddCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
      * @brief delete the listener of caption.
@@ -174,7 +175,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(const std::shared_ptr<AccessibilityConfig::CaptionObserver> &ob, const int32_t type) override;
+    virtual bool DeleteCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
      * @brief Get the enabled state of accessibility.

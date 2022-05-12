@@ -627,7 +627,6 @@ float AccessibleAbilityManagerService::GetBrightnessDiscount()
 
 float AccessibleAbilityManagerService::GetAudioBalance()
 {
-
     return 0;
 }
 
@@ -675,7 +674,7 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetConfigCallbacks().size());
         syncPromise.set_value(NO_ERROR);
-    }), "TASK_REGISTER_CONFIG_OBSERVER");
+        }), "TASK_REGISTER_CONFIG_OBSERVER");
     return syncFuture.get();
 }
 
@@ -700,7 +699,6 @@ void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 {
     HILOG_DEBUG("accountId(%{public}d)", accountId);
-
 }
 
 void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)

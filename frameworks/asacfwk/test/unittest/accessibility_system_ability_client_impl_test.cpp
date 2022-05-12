@@ -45,8 +45,10 @@ public:
     {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(ABILITY_MGR_SERVICE_ID, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(
+            SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(
+            BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(DISPLAY_MANAGER_SERVICE_SA_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, "");
@@ -56,10 +58,13 @@ public:
     {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(ABILITY_MGR_SERVICE_ID, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(
+            SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(
+            BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(COMMON_EVENT_SERVICE_ID, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(DISPLAY_MANAGER_SERVICE_SA_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(
+            DISPLAY_MANAGER_SERVICE_SA_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(WINDOW_MANAGER_SERVICE_ID, "");
         GTEST_LOG_(INFO) << "AccessibilitySystemAbilityClientImplTest End";
     }

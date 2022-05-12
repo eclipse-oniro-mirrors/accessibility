@@ -78,21 +78,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteFloat(audioBalance))
-    {
+    if (!data.WriteFloat(audioBalance)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -100,8 +97,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_AUDIO_BALANCE_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnAudioBalanceChanged fail, error: %{public}d", error);
         return;
     }
@@ -115,21 +111,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteFloat(brightnessDiscount))
-    {
+    if (!data.WriteFloat(brightnessDiscount)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -137,8 +130,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_BRIGHTNESS_DISCOUNT_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnBrightnessDiscountChanged fail, error: %{public}d", error);
         return;
     }
@@ -152,21 +144,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteUint32(contentTimeout))
-    {
+    if (!data.WriteUint32(contentTimeout)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -174,13 +163,13 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONTENT_TIMEOUT_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnContentTimeoutChanged fail, error: %{public}d", error);
         return;
     }
 }
-void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChanged(const AccessibilityConfig::DALTONIZATION_TYPE filterType)
+void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChanged(
+    const AccessibilityConfig::DALTONIZATION_TYPE filterType)
 {
     HILOG_DEBUG("start");
 
@@ -189,21 +178,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteUint32(filterType))
-    {
+    if (!data.WriteUint32(filterType)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -211,8 +197,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_DALTONIZATION_COLOR_FILTER_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnDaltonizationColorFilterChanged fail, error: %{public}d", error);
         return;
     }
@@ -226,21 +211,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteInt32(mouseAutoClick))
-    {
+    if (!data.WriteInt32(mouseAutoClick)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -248,8 +230,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_MOUSE_AUTOCLICK_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnMouseAutoClickChanged fail, error: %{public}d", error);
         return;
     }
@@ -263,21 +244,18 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     MessageParcel reply;
     MessageOption option;
 
-    if (!WriteInterfaceToken(data))
-    {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
     }
 
-    if (!data.WriteString(shortkeyTarget))
-    {
+    if (!data.WriteString(shortkeyTarget)) {
         HILOG_ERROR("fail, connection write stateType error");
         return;
     }
 
     sptr<IRemoteObject> remote = Remote();
-    if (!remote)
-    {
+    if (!remote) {
         HILOG_ERROR("fail to send transact cmd due to remote object");
         return;
     }
@@ -285,8 +263,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     error = remote->SendRequest(
         static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_SHORTKEY_TARGET_CHANGED),
         data, reply, option);
-    if (error != NO_ERROR)
-    {
+    if (error != NO_ERROR) {
         HILOG_ERROR("OnShortkeyTargetChanged fail, error: %{public}d", error);
         return;
     }

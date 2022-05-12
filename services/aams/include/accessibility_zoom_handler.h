@@ -16,9 +16,6 @@
 #ifndef ACCESSIBILITY_ZOOM_HANDLER_H
 #define ACCESSIBILITY_ZOOM_HANDLER_H
 
-#include <vector>
-#include <mutex>
-
 #include "accessibility_display_manager.h"
 
 namespace OHOS {

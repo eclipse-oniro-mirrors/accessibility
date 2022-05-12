@@ -442,8 +442,8 @@ void AccessibilitySystemAbilityClientImpl::NotifyCaptionStateChanged()
     HILOG_DEBUG("end");
 }
 
-bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(const std::shared_ptr<AccessibilityConfig::CaptionObserver> &ob,
-    const int32_t type)
+bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(
+    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -464,8 +464,8 @@ bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(const std::shared_
     return result;
 }
 
-bool AccessibilitySystemAbilityClientImpl::DeleteCaptionListener(const std::shared_ptr<AccessibilityConfig::CaptionObserver> &ob,
-    const int32_t type)
+bool AccessibilitySystemAbilityClientImpl::DeleteCaptionListener(
+    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);

@@ -475,8 +475,9 @@ void AccessibilityConfigImpl::NotifyShortkeyTargetChanged()
     for (auto observer : configObservers_) {
         if (observer) {
             ConfigValue configValue;
-            configValue.shortkey_target = shortkeyTarget_;;
-            HILOG_ERROR("NotifyShortkeyTargetChanged configValue.shortkey_target is [%{public}s]", configValue.shortkey_target.c_str());
+            configValue.shortkey_target = shortkeyTarget_;
+            HILOG_ERROR("NotifyShortkeyTargetChanged configValue.shortkey_target is [%{public}s]",
+                configValue.shortkey_target.c_str());
             observer->OnConfigChanged(CONFIG_SHORT_KEY_TARGET, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
@@ -578,7 +579,7 @@ void AccessibilityConfigImpl::NotifyDaltonizationColorFilterChanged()
     for (auto observer : configObservers_) {
         if (observer) {
             ConfigValue configValue;
-            configValue.daltonizationColorFilter = ( DALTONIZATION_TYPE )daltonizationColorFilter_;
+            configValue.daltonizationColorFilter = (DALTONIZATION_TYPE)daltonizationColorFilter_;
             observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
@@ -840,56 +841,62 @@ void AccessibilityConfigImpl::OnAccessibleAbilityManagerCongfigStateChanged(cons
         UpdateMouseKeyEnabled(true);
     } else {
         UpdateMouseKeyEnabled(false);
-    }   
+    }
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("audioBalance[%{public}f}", audioBalance);
     audioBalance_ = audioBalance;
     NotifyAudioBalanceChanged();
-    HILOG_DEBUG("end");   
+    HILOG_DEBUG("end");
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("brightnessDiscount[%{public}f}", brightnessDiscount);
     brightnessDiscount_ = brightnessDiscount;
     NotifyBrightnessDiscountChanged();
-    HILOG_DEBUG("end");  
+    HILOG_DEBUG("end");
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("contentTimeout[%{public}d}", contentTimeout);
     contentTimeout_ = contentTimeout;
     NotifyContentTimeoutChanged();
-    HILOG_DEBUG("end");  
+    HILOG_DEBUG("end");
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const DALTONIZATION_TYPE filterType) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerDaltonizationColorFilterChanged(
+    const DALTONIZATION_TYPE filterType)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("filterType[%{public}d}", (uint32_t)filterType);
     daltonizationColorFilter_ = filterType;
     NotifyDaltonizationColorFilterChanged();
-    HILOG_DEBUG("end");  
+    HILOG_DEBUG("end");
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("mouseAutoClick[%{public}d}", mouseAutoClick);
     mouseAutoClick_ = mouseAutoClick;
     NotifyMouseAutoClickChanged();
-    HILOG_DEBUG("end"); 
+    HILOG_DEBUG("end");
 }
 
-void AccessibilityConfigImpl::OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget) {
+void AccessibilityConfigImpl::OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget)
+{
     HILOG_DEBUG("start");
     HILOG_DEBUG("shortkeyTarget[%{public}s}", shortkeyTarget.c_str());
     shortkeyTarget_ = shortkeyTarget;
     NotifyShortkeyTargetChanged();
-    HILOG_DEBUG("end");   
+    HILOG_DEBUG("end");
 }
-
-}// namespace AccessibilityConfig
-}// namespace OHOS
+} // namespace AccessibilityConfig
+} // namespace OHOS

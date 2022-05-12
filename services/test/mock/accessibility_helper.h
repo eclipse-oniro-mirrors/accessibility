@@ -26,6 +26,8 @@
 
 namespace OHOS {
 namespace Accessibility {
+static const int32_t SLEEP_TIME = 10;
+
 class AccessibilityHelper {
 public:
     static AccessibilityHelper& GetInstance()
@@ -158,7 +160,7 @@ public:
     void WaitForServicePublish()
     {
         while (1) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
             if (isServicePublished_) {
                 return;
             }

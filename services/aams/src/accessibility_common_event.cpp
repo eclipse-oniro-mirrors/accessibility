@@ -115,7 +115,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const AAFwk::Want &want)
         }
         HILOG_DEBUG("Handle event: %{public}s", action.c_str());
         it->second(want);
-    }), "TASK_ON_RECEIVE_EVENT");
+        }), "TASK_ON_RECEIVE_EVENT");
 }
 
 void AccessibilityCommonEvent::HandleUserAdded(const AAFwk::Want &want) const

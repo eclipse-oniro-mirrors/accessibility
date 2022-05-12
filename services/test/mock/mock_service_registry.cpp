@@ -44,15 +44,15 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAb
 {
     sptr<IRemoteObject> remote = nullptr;
     switch (systemAbilityId) {
-    case BUNDLE_MGR_SERVICE_SYS_ABILITY_ID:
-        if (!g_bundleMgrService) {
-            g_bundleMgrService = new AppExecFwk::BundleMgrService();
-        }
-        remote = g_bundleMgrService;
-        break;
-    default:
-        GTEST_LOG_(INFO) << "This service is not dummy!!!!" << systemAbilityId;
-        break;
+        case BUNDLE_MGR_SERVICE_SYS_ABILITY_ID:
+            if (!g_bundleMgrService) {
+                g_bundleMgrService = new AppExecFwk::BundleMgrService();
+            }
+            remote = g_bundleMgrService;
+            break;
+        default:
+            GTEST_LOG_(INFO) << "This service is not dummy!!!!" << systemAbilityId;
+            break;
     }
     return remote;
 }
@@ -135,7 +135,8 @@ int32_t SystemAbilityManagerProxy::AddSystemAbilityWrapper(int32_t code, Message
     return -1;
 }
 
-int32_t SystemAbilityManagerProxy::AddSystemProcess(const std::u16string& procName, const sptr<IRemoteObject>& procObject)
+int32_t SystemAbilityManagerProxy::AddSystemProcess(
+    const std::u16string& procName, const sptr<IRemoteObject>& procObject)
 {
     return -1;
 }

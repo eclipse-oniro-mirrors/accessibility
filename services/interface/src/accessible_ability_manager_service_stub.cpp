@@ -425,7 +425,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
 
@@ -525,7 +526,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageP
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
 
@@ -569,7 +571,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
 
@@ -650,7 +653,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageP
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
+    MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
 

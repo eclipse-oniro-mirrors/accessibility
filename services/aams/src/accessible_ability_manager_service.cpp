@@ -39,6 +39,7 @@ static const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
 static const std::string UI_TEST_ABILITY_NAME = "uitestability";
 static const int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
 static const int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+static const int32_t OS_ACCOUNT_ID = 100;
 
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
@@ -153,7 +154,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
         if (Init() == false) {
             HILOG_ERROR("AccessibleAbilityManagerService::Init failed!");
-            return;            
+            return;
         }
 
         if (Publish(this) == false) {
@@ -161,7 +162,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
             return;
         }
         HILOG_DEBUG("AAMS is ready!");
-    }), "OnAddSystemAbility");
+        }), "OnAddSystemAbility");
 }
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
@@ -198,7 +199,7 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &ui
                 ability.second->OnAccessibilityEvent(event);
             }
         }
-    }, uiEvent), "TASK_SEND_EVENT");
+        }, uiEvent), "TASK_SEND_EVENT");
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
@@ -242,7 +243,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
 
         uint32_t state = accountData->GetAccessibilityState();
         syncPromise.set_value(state);
-    }), "TASK_REGISTER_STATE_OBSERVER");
+        }), "TASK_REGISTER_STATE_OBSERVER");
 
     return syncFuture.get();
 }
@@ -285,7 +286,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetCaptionPropertyCallbacks().size());
         syncPromise.set_value(NO_ERROR);
-    }), "TASK_REGISTER_CAPTION_OBSERVER");
+        }), "TASK_REGISTER_CAPTION_OBSERVER");
     return syncFuture.get();
 }
 
@@ -324,7 +325,7 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         observer->AsObject()->AddDeathRecipient(enableAbilityListsObserverDeathRecipient_);
         accountData->AddEnableAbilityListsObserver(observer);
         syncPromise.set_value();
-    }), "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
+        }), "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
     return syncFuture.get();
 }
 
@@ -360,7 +361,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilit
         }
         HILOG_DEBUG("infoList count is %{public}zu", infoList.size());
         syncPromise.set_value();
-    }), "TASK_GET_ABILITY_LIST");
+        }), "TASK_GET_ABILITY_LIST");
     syncFuture.get();
 
     return infoList;
@@ -419,7 +420,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
                 HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
             }
         }
-    }), "TASK_REGISTER_ELEMENT_OPERATOR");
+        }), "TASK_REGISTER_ELEMENT_OPERATOR");
 }
 
 void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
@@ -452,7 +453,7 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
         }
 
         accountData->RemoveAccessibilityWindowConnection(windowId); 
-    }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
+        }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
 }
 
 AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
@@ -475,8 +476,8 @@ AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaption
             return;
         }
         property = accountData->GetCaptionProperty();
-		syncPromise.set_value();
-    }), "TASK_GET_CAPTION_PROPERTY");
+        syncPromise.set_value();
+        }), "TASK_GET_CAPTION_PROPERTY");
     syncFuture.get();
 
     return property;
@@ -503,9 +504,8 @@ bool AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConf
         bool result = accountData->SetCaptionProperty(caption);
         syncPromise.set_value(result);
         UpdateCaptionProperty();
-    }), "TASK_SET_CAPTION_PROPERTY");
+        }), "TASK_SET_CAPTION_PROPERTY");
     return syncFuture.get();
-
 }
 
 bool AccessibleAbilityManagerService::SetCaptionState(const bool state)
@@ -529,7 +529,7 @@ bool AccessibleAbilityManagerService::SetCaptionState(const bool state)
         bool result = accountData->SetCaptionState(state);
         syncPromise.set_value(result);
         UpdateAccessibilityState();
-    }), "TASK_SET_CAPTION_STATE");
+        }), "TASK_SET_CAPTION_STATE");
     return syncFuture.get();
 }
 
@@ -553,7 +553,7 @@ bool AccessibleAbilityManagerService::GetEnabledState()
         }
         bool result = accountData->GetEnabledState();
         syncPromise.set_value(result);
-    }), "TASK_GET_ENABLE_STATE");
+        }), "TASK_GET_ENABLE_STATE");
     return syncFuture.get();
 }
 
@@ -577,7 +577,7 @@ bool AccessibleAbilityManagerService::GetCaptionState()
         }
         bool result = accountData->GetCaptionState();
         syncPromise.set_value(result);
-    }), "TASK_GET_CAPTION_STATE");
+        }), "TASK_GET_CAPTION_STATE");
     return syncFuture.get();
 }
 
@@ -601,7 +601,7 @@ bool AccessibleAbilityManagerService::GetTouchGuideState()
         }
         bool result = accountData->GetTouchGuideState();
         syncPromise.set_value(result);
-    }), "TASK_GET_TOUCH_GUIDE_STATE");
+        }), "TASK_GET_TOUCH_GUIDE_STATE");
     return syncFuture.get();
 }
 
@@ -625,7 +625,7 @@ bool AccessibleAbilityManagerService::GetGestureState()
         }
         bool result = accountData->GetGestureState();
         syncPromise.set_value(result);
-    }), "TASK_GET_GESTURE_STATE");
+        }), "TASK_GET_GESTURE_STATE");
     return syncFuture.get();
 }
 
@@ -649,7 +649,7 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
         }
         bool result = accountData->GetKeyEventObserverState();
         syncPromise.set_value(result);
-    }), "TASK_GET_KEY_EVENT_OBSERVER_STATE");
+        }), "TASK_GET_KEY_EVENT_OBSERVER_STATE");
     return syncFuture.get();
 }
 
@@ -674,7 +674,7 @@ bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, co
         bool result = accountData->EnableAbilities(name, capabilities);
         UpdateAbilities();
         syncPromise.set_value(result);
-    }), "TASK_ENABLE_ABILITIES");
+        }), "TASK_ENABLE_ABILITIES");
     return syncFuture.get();
 }
 
@@ -699,7 +699,7 @@ std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
         }
         abilities = accountData->GetEnabledAbilities();
         syncPromise.set_value();
-    }), "TASK_GET_ENABLE_ABILITIES");
+        }), "TASK_GET_ENABLE_ABILITIES");
     syncFuture.get();
 
     return abilities;
@@ -726,7 +726,7 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
         }
         abilities = accountData->GetInstalledAbilities();
         syncPromise.set_value();
-    }), "TASK_GET_INSTALLED_ABILITIES");
+        }), "TASK_GET_INSTALLED_ABILITIES");
     syncFuture.get();
 
     return abilities;
@@ -753,7 +753,7 @@ bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
         accountData->RemoveEnabledAbility(name);
         UpdateAbilities();
         syncPromise.set_value(true);
-    }), "TASK_DISABLE_ABILITIES");
+        }), "TASK_DISABLE_ABILITIES");
     return syncFuture.get();
 }
 
@@ -787,7 +787,7 @@ bool AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObje
             std::bind(&AccessibleAbilityManagerService::AddUITestClient, this, obj);
         handler_->PostTask(addUITestClientFunc, "AddUITestClient");
         syncPromise.set_value(true);
-    }), "TASK_ENABLE_UI_TEST_ABILITIES");
+        }), "TASK_ENABLE_UI_TEST_ABILITIES");
     return syncFuture.get();
 }
 
@@ -820,7 +820,7 @@ bool AccessibleAbilityManagerService::DisableUITestAbility()
             std::bind(&AccessibleAbilityManagerService::RemoveUITestClient, this, connection);
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
         syncPromise.set_value(true);
-    }), "TASK_DISABLE_UI_TEST_ABILITIES");
+        }), "TASK_DISABLE_UI_TEST_ABILITIES");
     return syncFuture.get();
 }
 
@@ -837,7 +837,7 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
     handler_->PostTask(std::bind([this, &syncPromise]() -> void {
         HILOG_DEBUG("start");
         syncPromise.set_value(Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_);
-    }), "TASK_GET_ACTIVE_WINDOW");
+        }), "TASK_GET_ACTIVE_WINDOW");
     return syncFuture.get();
 }
 
@@ -1465,22 +1465,8 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
 int32_t AccessibleAbilityManagerService::GetOsAccountId()
 {
     HILOG_DEBUG("start");
-    // std::vector<int32_t> ids;
-    // OHOS::ErrCode result = AccountSA::OsAccountManager::QueryActiveOsAccountIds(ids);
-    // if (result != ERR_OK) {
-    //     HILOG_ERROR("query current os account failed! errcode is %{public}d", result);
-    //     return -1;
-    // }
-    // if (ids.empty()) {
-    //     HILOG_ERROR("The ids query from os account is empty");
-    //     return -1;
-    // }
-    // int32_t osAccountId = ids[0];
-    // HILOG_DEBUG("os account id is %{public}d", osAccountId);
-    // return osAccountId;
-
     // Temp deal
-    return 100;
+    return OS_ACCOUNT_ID;
 }
 
 bool AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
@@ -1494,7 +1480,7 @@ bool AccessibleAbilityManagerService::SetScreenMagnificationState(const bool sta
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
 
-        handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
@@ -1505,7 +1491,7 @@ bool AccessibleAbilityManagerService::SetScreenMagnificationState(const bool sta
         UpdateConfigState();
         UpdateInputFilter();
         syncPromise.set_value(result);
-    }), "TASK_SET_SCREENMAGNIFICATION_STATE");
+        }), "TASK_SET_SCREENMAGNIFICATION_STATE");
     return syncFuture.get();
 }
 
@@ -1520,7 +1506,7 @@ bool AccessibleAbilityManagerService::SetShortKeyState(const bool state)
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
 
-        handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr.");
@@ -1536,7 +1522,7 @@ bool AccessibleAbilityManagerService::SetShortKeyState(const bool state)
             DisableShortKeyTargetAbility();
         }
         syncPromise.set_value(result);
-    }), "TASK_SET_SHORTKEY_STATE");
+        }), "TASK_SET_SHORTKEY_STATE");
     return syncFuture.get();
 }
 
@@ -1551,16 +1537,16 @@ bool AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return;
-    }
-    bool result = accountData->SetMouseKeyState(state);
-    UpdateConfigState();
-    UpdateInputFilter();
-    syncPromise.set_value(result);
-    }), "TASK_SET_MOUSEKEY_STATE");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        bool result = accountData->SetMouseKeyState(state);
+        UpdateConfigState();
+        UpdateInputFilter();
+        syncPromise.set_value(result);
+        }), "TASK_SET_MOUSEKEY_STATE");
     return syncFuture.get();
 }
 
@@ -1584,7 +1570,7 @@ bool AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
         UpdateMouseAutoClick();
         UpdateInputFilter();
         syncPromise.set_value(result);
-    }), "TASK_SET_MOUSE_AUTOCLICK");
+        }), "TASK_SET_MOUSE_AUTOCLICK");
 
     return syncFuture.get();
 }
@@ -1609,7 +1595,7 @@ bool AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
         bool result = accountData->SetShortkeyTarget(name);
         UpdateShortkeyTarget();
         syncPromise.set_value(result);
-    }), "TASK_SET_SHORTKEY_TARGET");
+        }), "TASK_SET_SHORTKEY_TARGET");
     return syncFuture.get();
 }
 
@@ -1633,9 +1619,9 @@ bool AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
         bool result = accountData->SetHighContrastTextState(state);
         UpdateConfigState();
         syncPromise.set_value(result);
-    }), "TASK_SET_HIGHCONTRASTTEXT_STATE");
+        }), "TASK_SET_HIGHCONTRASTTEXT_STATE");
 
-    return syncFuture.get();;
+    return syncFuture.get();
 }
 
 bool AccessibleAbilityManagerService::SetInvertColorState(const bool state)
@@ -1658,9 +1644,9 @@ bool AccessibleAbilityManagerService::SetInvertColorState(const bool state)
         bool result = accountData->SetInvertColorState(state);
         UpdateConfigState();
         syncPromise.set_value(result);
-    }), "TASK_SET_INVERTCOLOR_STATE");
+        }), "TASK_SET_INVERTCOLOR_STATE");
 
-    return syncFuture.get();;
+    return syncFuture.get();
 }
 
 bool AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
@@ -1683,7 +1669,7 @@ bool AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
         bool result = accountData->SetAnimationOffState(state);
         UpdateConfigState();
         syncPromise.set_value(result);
-    }), "TASK_SET_ANIMATIONOFF_STATE");
+        }), "TASK_SET_ANIMATIONOFF_STATE");
 
     return syncFuture.get();
 }
@@ -1707,7 +1693,7 @@ bool AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
         bool result = accountData->SetAnimationOffState(state);
         UpdateConfigState();
         syncPromise.set_value(result);
-    }), "TASK_SET_AUDIOMONO_STATE");
+        }), "TASK_SET_AUDIOMONO_STATE");
 
     return syncFuture.get();
 }
@@ -1732,7 +1718,7 @@ bool AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_
         bool result = accountData->SetDaltonizationColorFilter(filter);
         UpdateDaltonizationColorFilter();
         syncPromise.set_value(result);
-    }), "TASK_SET_DALTONIZATION_COLORFILTER");
+        }), "TASK_SET_DALTONIZATION_COLORFILTER");
 
     return syncFuture.get();
 }
@@ -1757,7 +1743,7 @@ bool AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
         bool result = accountData->SetContentTimeout(time);
         UpdateContentTimeout();
         syncPromise.set_value(result);
-    }), "TASK_SET_CONTENT_TIMEOUT");
+        }), "TASK_SET_CONTENT_TIMEOUT");
 
     return syncFuture.get();
 }
@@ -1782,7 +1768,7 @@ bool AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount
         bool result = accountData->SetBrightnessDiscount(discount);
         UpdateBrightnessDiscount();
         syncPromise.set_value(result);
-    }), "TASK_SET_BRIGHTNESS_DISCOUNT");
+        }), "TASK_SET_BRIGHTNESS_DISCOUNT");
     return syncFuture.get();
 }
 
@@ -1806,7 +1792,7 @@ bool AccessibleAbilityManagerService::SetAudioBalance(const float balance)
         bool result = accountData->SetAudioBalance(balance);
         UpdateAudioBalance();
         syncPromise.set_value(result);
-    }), "TASK_SET_AUDIO_BALANCE");
+        }), "TASK_SET_AUDIO_BALANCE");
 
     return syncFuture.get();
 }
@@ -1831,7 +1817,7 @@ bool AccessibleAbilityManagerService::GetScreenMagnificationState()
         }
         bool result = accountData->GetScreenMagnificationState();
         syncPromise.set_value(result);
-    }), "TASK_GET_SCREENMAGNIFIER_STATE");
+        }), "TASK_GET_SCREENMAGNIFIER_STATE");
     return syncFuture.get();
 }
 
@@ -1855,7 +1841,7 @@ bool AccessibleAbilityManagerService::GetShortKeyState()
         }
         bool result = accountData->GetShortKeyState();
         syncPromise.set_value(result);
-    }), "TASK_GET_SHORTKEY_STATE");
+        }), "TASK_GET_SHORTKEY_STATE");
     return syncFuture.get();
 }
 
@@ -1879,7 +1865,7 @@ bool AccessibleAbilityManagerService::GetMouseKeyState()
         }
         bool result = accountData->GetMouseKeyState();
         syncPromise.set_value(result);
-    }), "TASK_GET_MOUSEKEY_STATE");
+        }), "TASK_GET_MOUSEKEY_STATE");
     return syncFuture.get();
 }
 
@@ -1898,7 +1884,7 @@ int32_t AccessibleAbilityManagerService::GetMouseAutoClick()
         }
         int32_t result = accountData->GetMouseAutoClick();
         syncPromise.set_value(result);
-    }), "TASK_GET_MOUSE_AUTOCLICK");
+        }), "TASK_GET_MOUSE_AUTOCLICK");
 
     return syncFuture.get();
 }
@@ -1918,7 +1904,7 @@ std::string AccessibleAbilityManagerService::GetShortkeyTarget()
         }
         std::string result = accountData->GetShortkeyTarget();
         syncPromise.set_value(result);
-    }), "TASK_GET_SHORTKEY_TARGET");
+        }), "TASK_GET_SHORTKEY_TARGET");
 
     return syncFuture.get();
 }
@@ -1938,7 +1924,7 @@ bool AccessibleAbilityManagerService::GetHighContrastTextState()
         }
         bool result = accountData->GetHighContrastTextState();
         syncPromise.set_value(result);
-    }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
+        }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
 
     return syncFuture.get();
 }
@@ -1958,7 +1944,7 @@ bool AccessibleAbilityManagerService::GetInvertColorState()
         }
         bool result = accountData->GetInvertColorState();
         syncPromise.set_value(result);
-    }), "TASK_GET_INVERTCOLOR_STATE");
+        }), "TASK_GET_INVERTCOLOR_STATE");
 
     return syncFuture.get();
 }
@@ -1978,7 +1964,7 @@ bool AccessibleAbilityManagerService::GetAnimationOffState()
         }
         bool result = accountData->GetAnimationOffState();
         syncPromise.set_value(result);
-    }), "TASK_GET_ANIMATIONOFF_STATE");
+        }), "TASK_GET_ANIMATIONOFF_STATE");
 
     return syncFuture.get();
 }
@@ -1998,7 +1984,7 @@ bool AccessibleAbilityManagerService::GetAudioMonoState()
         }
         bool result = accountData->GetAudioMonoState();
         syncPromise.set_value(result);
-    }), "TASK_GET_AUDIOMONO_STATE");
+        }), "TASK_GET_AUDIOMONO_STATE");
 
     return syncFuture.get();
 }
@@ -2018,7 +2004,7 @@ uint32_t AccessibleAbilityManagerService::GetDaltonizationColorFilter()
         }
         uint32_t result = accountData->GetDaltonizationColorFilter();
         syncPromise.set_value(result);
-    }), "TASK_GET_DALTONIZATION_COLORFILTER");
+        }), "TASK_GET_DALTONIZATION_COLORFILTER");
 
     return syncFuture.get();
 }
@@ -2038,7 +2024,7 @@ uint32_t AccessibleAbilityManagerService::GetContentTimeout()
         }
         uint32_t result = accountData->GetContentTimeout();
         syncPromise.set_value(result);
-    }), "TASK_GET_CONTENT_TIMEOUT");
+        }), "TASK_GET_CONTENT_TIMEOUT");
 
     return syncFuture.get();
 }
@@ -2058,7 +2044,7 @@ float AccessibleAbilityManagerService::GetBrightnessDiscount()
         }
         float result = accountData->GetBrightnessDiscount();
         syncPromise.set_value(result);
-    }), "TASK_GET_BRIGHTNESS_DISCOUNT");
+        }), "TASK_GET_BRIGHTNESS_DISCOUNT");
 
     return syncFuture.get();
 }
@@ -2078,7 +2064,7 @@ float AccessibleAbilityManagerService::GetAudioBalance()
         }
         float result = accountData->GetAudioBalance();
         syncPromise.set_value(result);
-    }), "TASK_GET_AUDIO_BALANCE");
+        }), "TASK_GET_AUDIO_BALANCE");
 
     return syncFuture.get();
 }
@@ -2163,7 +2149,7 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetConfigCallbacks().size());
         syncPromise.set_value(NO_ERROR);
-    }), "TASK_REGISTER_CONFIG_OBSERVER");
+        }), "TASK_REGISTER_CONFIG_OBSERVER");
     return syncFuture.get();
 }
 
@@ -2204,9 +2190,9 @@ void AccessibleAbilityManagerService::UpdateConfigState()
     }
 }
 
-void AccessibleAbilityManagerService::UpdateAudioBalance(){
+void AccessibleAbilityManagerService::UpdateAudioBalance()
+{
     HILOG_DEBUG("start.");
-
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2220,9 +2206,10 @@ void AccessibleAbilityManagerService::UpdateAudioBalance(){
         }
     }
 }
-void AccessibleAbilityManagerService::UpdateBrightnessDiscount(){
-    HILOG_DEBUG("start.");
 
+void AccessibleAbilityManagerService::UpdateBrightnessDiscount()
+{
+    HILOG_DEBUG("start.");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2236,9 +2223,10 @@ void AccessibleAbilityManagerService::UpdateBrightnessDiscount(){
         }
     }
 }
-void AccessibleAbilityManagerService::UpdateContentTimeout(){
-    HILOG_DEBUG("start.");
 
+void AccessibleAbilityManagerService::UpdateContentTimeout()
+{
+    HILOG_DEBUG("start.");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2252,9 +2240,10 @@ void AccessibleAbilityManagerService::UpdateContentTimeout(){
         }
     }
 }
-void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter(){
-    HILOG_DEBUG("start.");
 
+void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter()
+{
+    HILOG_DEBUG("start.");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2264,13 +2253,15 @@ void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter(){
     uint32_t daltonizationColorFilter = accountData->GetDaltonizationColorFilter();
     for (auto &callback : accountData->GetConfigCallbacks()) {
         if (callback) {
-            callback->OnDaltonizationColorFilterChanged((AccessibilityConfig::DALTONIZATION_TYPE)daltonizationColorFilter);
+            callback->OnDaltonizationColorFilterChanged(
+                (AccessibilityConfig::DALTONIZATION_TYPE)daltonizationColorFilter);
         }
     }
 }
-void AccessibleAbilityManagerService::UpdateMouseAutoClick(){
-    HILOG_DEBUG("start.");
 
+void AccessibleAbilityManagerService::UpdateMouseAutoClick()
+{
+    HILOG_DEBUG("start.");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2284,9 +2275,10 @@ void AccessibleAbilityManagerService::UpdateMouseAutoClick(){
         }
     }
 }
-void AccessibleAbilityManagerService::UpdateShortkeyTarget(){
-    HILOG_DEBUG("start.");
 
+void AccessibleAbilityManagerService::UpdateShortkeyTarget()
+{
+    HILOG_DEBUG("start.");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");

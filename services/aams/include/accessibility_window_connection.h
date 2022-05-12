@@ -23,7 +23,7 @@ namespace Accessibility {
 class AccessibilityWindowConnection : public RefBase {
 public:
     AccessibilityWindowConnection(const int32_t windowId, const sptr<IAccessibilityElementOperator> &connection,
-		const int32_t accountId);
+        const int32_t accountId);
     ~AccessibilityWindowConnection();
 
     inline sptr<IAccessibilityElementOperator> GetProxy()

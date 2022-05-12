@@ -202,7 +202,7 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
 
 bool AccessibleAbilityClientImpl::GestureInject(const uint32_t sequence,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener>& listener) 
+    const std::shared_ptr<AccessibilityGestureResultListener>& listener)
 {
     HILOG_DEBUG("start.");
 
@@ -284,7 +284,7 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows()
         return temp;
     }
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    return channelClient_->GetWindows(displayId); 
+    return channelClient_->GetWindows(displayId);
 }
 
 std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId)
@@ -336,7 +336,7 @@ bool AccessibleAbilityClientImpl::GetChildWindowInfo(const int32_t index, const 
     int32_t channelId = parent.GetChannelId();
     int32_t childId = parent.GetChildIdByIndex(index);
     uint64_t displayId = parent.GetDisplayId();
-    HILOG_INFO("channelId[%{public}d], childId[%{public}d], displayId[%{public}llu]", channelId, childId, displayId);
+    HILOG_INFO("channelId[%{public}d], childId[%{public}d], displayId[%{public}ju]", channelId, childId, displayId);
     if (childId == -1) {
         HILOG_ERROR("index[%{public}d] is invalid", childId);
         return false;

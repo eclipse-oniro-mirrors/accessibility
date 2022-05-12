@@ -26,7 +26,7 @@ AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
 {
     HILOG_DEBUG();
 
-    std::shared_ptr<AppExecFwk::EventRunner> runner = 
+    std::shared_ptr<AppExecFwk::EventRunner> runner =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner) {
         HILOG_ERROR("get runner failed");
@@ -55,7 +55,6 @@ void AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointers = event.GetPointersIdList();
     int32_t pointerCount = pointers.size();
-
     if ((source != MMI::PointerEvent::SOURCE_TYPE_MOUSE) ||
         (action != MMI::PointerEvent::POINTER_ACTION_MOVE) ||
         (pointerCount != POINTER_COUNT_1)) {
@@ -153,7 +152,6 @@ bool AccessibilityMouseAutoclick::IsMouseMovement(MMI::PointerEvent &event)
     lastMouseEvent_->GetPointerItem(pointerId, item);
     int32_t oldX = item.GetGlobalX();
     int32_t oldY = item.GetGlobalY();
-
     if ((newX != oldX) || (newY != oldY)) {
         return true;
     }

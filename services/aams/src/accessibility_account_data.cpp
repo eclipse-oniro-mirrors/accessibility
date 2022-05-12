@@ -581,19 +581,19 @@ bool AccessibilityAccountData::SetStatePref(int32_t type)
         case STATE::HIGHCONTRASTTEXT:
             strValue = StateChange(highContrastTextState_);
             pref_->PutString("highContrastText", strValue);
-            break;  
+            break;
         case STATE::INVERTCOLORSTATE:
             strValue = StateChange(invertColorState_);
             pref_->PutString("invertColor", strValue);
-            break;  
+            break;
         case STATE::ANIMATIONOFF:
             strValue = StateChange(animationOffState_);
             pref_->PutString("animationOff", strValue);
-            break;  
+            break;
         case STATE::AUDIOMONO:
             strValue = StateChange(audioMonoState_);
             pref_->PutString("audioMono", strValue);
-            break;    
+            break;
         default:
             break;
     }
@@ -1125,7 +1125,7 @@ bool AccessibilityAccountData::SetContentTimeout(const uint32_t time)
     return true;
 }
 
-bool AccessibilityAccountData:: SetBrightnessDiscount(const float discount)
+bool AccessibilityAccountData::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("start.");
     brightnessDiscount_ = discount;

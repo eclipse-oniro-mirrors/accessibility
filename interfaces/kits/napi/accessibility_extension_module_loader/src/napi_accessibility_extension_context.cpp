@@ -349,7 +349,7 @@ private:
         }
 
         int64_t displayId = OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-        HILOG_DEBUG("Get default display id from dms[%{public}llu]", displayId);
+        HILOG_DEBUG("Get default display id from dms[%{public}ju]", displayId);
         NativeValue* lastParam = nullptr;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
@@ -362,7 +362,7 @@ private:
                 }
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
                     if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                        HILOG_ERROR("Convert displayId failed. displayId[%{public}llu]", displayId);
+                        HILOG_ERROR("Convert displayId failed. displayId[%{public}ju]", displayId);
                         return engine.CreateUndefined();
                     }
                 }

@@ -497,7 +497,7 @@ bool AccessibilityAccountData::SetContentTimeout(const uint32_t time)
     return true;
 }
 
-bool AccessibilityAccountData:: SetBrightnessDiscount(const float discount)
+bool AccessibilityAccountData::SetBrightnessDiscount(const float discount)
 {
     (void)discount;
     return true;

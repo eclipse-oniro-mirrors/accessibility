@@ -122,7 +122,7 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
         }
         UpdateWindowLayer(windowInfo);
         HILOG_DEBUG("a11yWindows[%{public}zu]", a11yWindows_.size());
-    }), "TASK_ON_WINDOW_UPDATE");
+        }), "TASK_ON_WINDOW_UPDATE");
 }
 
 int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int32_t focusType)
@@ -168,13 +168,13 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     info.SetFocused(windowInfo->focused_);
     Rect bound;
     bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
-    bound.SetRightBottomScreenPostion( windowInfo->windowRect_.posX_ +
-        static_cast<int32_t>(windowInfo->windowRect_.width_),
+    bound.SetRightBottomScreenPostion(
+        windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
         windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
     info.SetRectInScreen(bound);
     info.SetDisplayId(windowInfo->displayId_);
     HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
-        "witdth(%{public}d) height(%{public}d) display id(%{public}llu)",
+        "witdth(%{public}d) height(%{public}d) display id(%{public}ju)",
         windowInfo->wid_, windowInfo->type_, windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_,
         windowInfo->windowRect_.width_, windowInfo->windowRect_.height_, windowInfo->displayId_);
     return info;

@@ -268,7 +268,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> interactionOperationDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
-    sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;  
+    sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     static std::mutex mutex_;
 };
 } // namespace Accessibility

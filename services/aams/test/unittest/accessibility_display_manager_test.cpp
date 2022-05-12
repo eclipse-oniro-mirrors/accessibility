@@ -100,7 +100,8 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
  * @tc.name: GetDefaultDisplay
  * @tc.desc: Test function GetDefaultDisplay
  */
-HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001, TestSize.Level1)
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001 start";
 

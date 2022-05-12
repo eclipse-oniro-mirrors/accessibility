@@ -1197,7 +1197,8 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     NAPI_ASSERT(env, status == napi_ok, "Failed to get event type");
 
     std::string eventType = GetStringFromNAPI(env, args[0]);
-    OHOS::AccessibilityConfig::CaptionObserverType type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
+    OHOS::AccessibilityConfig::CaptionObserverType type =
+        OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     if (!std::strcmp(eventType.c_str(), "enableChange")) {
         type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
@@ -1228,7 +1229,8 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[0]);
 
-    OHOS::AccessibilityConfig::CaptionObserverType type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
+    OHOS::AccessibilityConfig::CaptionObserverType type =
+        OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     if (!std::strcmp(eventType.c_str(), "enableChange")) {
         type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
@@ -1260,7 +1262,8 @@ CaptionListener::CaptionListener()
 OHOS::AccessibilityConfig::CaptionObserverType CaptionListener::GetStateType()
 {
     HILOG_INFO("start");
-    OHOS::AccessibilityConfig::CaptionObserverType type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
+    OHOS::AccessibilityConfig::CaptionObserverType type =
+        OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     if (!std::strcmp(eventType_.c_str(), "enableChange")) {
         type = OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE;
     } else if (!std::strcmp(eventType_.c_str(), "styleChange")) {
@@ -1327,9 +1330,10 @@ void CaptionListener::OnStateChanged(const bool& enable)
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
-        if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE && observer.get() == this) {
-            observer->NotifyStateChangedJS(observer->GetEnv(),
-                enable, observer->GetEventType(), observer->GetHandler());
+        if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE &&
+            observer.get() == this) {
+            observer->NotifyStateChangedJS(
+                observer->GetEnv(), enable, observer->GetEventType(), observer->GetHandler());
         }
     }
 }
@@ -1382,9 +1386,10 @@ void CaptionListener::OnPropertyChanged(const OHOS::AccessibilityConfig::Caption
 {
     HILOG_INFO("start");
     for (auto observer : NAccessibilityClient::captionListeners_) {
-        if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY && observer.get() == this) {
-            observer->NotifyPropertyChangedJS(observer->GetEnv(),
-                caption, observer->GetEventType(), observer->GetHandler());
+        if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY &&
+            observer.get() == this) {
+            observer->NotifyPropertyChangedJS(
+                observer->GetEnv(), caption, observer->GetEventType(), observer->GetHandler());
         }
     }
 }

@@ -124,7 +124,7 @@ public:
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) = 0;
 
-	/**
+    /**
      * @brief Send simulation gesture.
      * @param requestId The sequence of simulation gesture.
      * @param gesturePath The gesture path to send.
@@ -157,7 +157,7 @@ public:
         EXECUTE_COMMON_ACTION,
         DISABLE_ABILITY,
         SET_ON_KEY_PRESS_EVENT_RESULT,
-		SEND_SIMULATE_GESTURE_PATH,
+        SEND_SIMULATE_GESTURE_PATH,
         SET_EVENT_TYPE_FILTER,
         SET_TARGET_BUNDLE_NAME,
     };

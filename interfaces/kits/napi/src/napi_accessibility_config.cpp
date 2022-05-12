@@ -236,7 +236,8 @@ OHOS::AccessibilityConfig::CONFIG_ID ConfigListener::GetStateType()
     return type;
 }
 
-napi_value ConfigListener::StartWork(napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE])
+napi_value ConfigListener::StartWork(
+    napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE])
 {
     HILOG_INFO("start");
     eventType_ = GetStringFromNAPI(env, args[0]);
@@ -282,8 +283,7 @@ void ConfigListener::NotifyStateChangedJS(napi_env env, bool enabled, std::strin
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
+            });
     } else {
         HILOG_ERROR("NotifyStateChangedJS eventType[%s] is error", eventType.c_str());
     }
@@ -292,43 +292,42 @@ void ConfigListener::NotifyStateChangedJS(napi_env env, bool enabled, std::strin
 void ConfigListener::OnConfigChanged(const CONFIG_ID id, const ConfigValue &value)
 {
     HILOG_INFO("start");
-    switch (id)
-    {
-    case CONFIG_CAPTION_STATE:
-        NotifyStateChanged2JS(id, value.captionState);
-        break;
-    case CONFIG_CAPTION_STYLE:
-        NotifyPropertyChanged2JS(id, value.captionStyle);
-        break;
-    case CONFIG_SCREEN_MAGNIFICATION:
-        NotifyStateChanged2JS(id, value.screenMagnifier);
-        break;
-    case CONFIG_MOUSE_KEY:
-        NotifyStateChanged2JS(id, value.mouseKey);
-        break;
-    case CONFIG_SHORT_KEY:
-        NotifyStateChanged2JS(id, value.shortkey);
-        break;
-    case CONFIG_SHORT_KEY_TARGET:
-        NotifyStringChanged2JS(id, value.shortkey_target);
-        break;
-    case CONFIG_MOUSE_AUTOCLICK:
-        NotifyIntChanged2JS(id, value.mouseAutoClick);
-        break;
-    case CONFIG_DALTONIZATION_COLOR_FILTER:
-        NotifyUintChanged2JS(id, value.daltonizationColorFilter);
-        break;
-    case CONFIG_CONTENT_TIMEOUT:
-        NotifyUintChanged2JS(id, value.contentTimeout);
-        break;
-    case CONFIG_BRIGHTNESS_DISCOUNT:
-        NotifyFloatChanged2JS(id, value.brightnessDiscount);
-        break;
-    case CONFIG_AUDIO_BALANCE:
-        NotifyFloatChanged2JS(id, value.audioBalance);
-        break;
-    default:
-        break;
+    switch (id) {
+        case CONFIG_CAPTION_STATE:
+            NotifyStateChanged2JS(id, value.captionState);
+            break;
+        case CONFIG_CAPTION_STYLE:
+            NotifyPropertyChanged2JS(id, value.captionStyle);
+            break;
+        case CONFIG_SCREEN_MAGNIFICATION:
+            NotifyStateChanged2JS(id, value.screenMagnifier);
+            break;
+        case CONFIG_MOUSE_KEY:
+            NotifyStateChanged2JS(id, value.mouseKey);
+            break;
+        case CONFIG_SHORT_KEY:
+            NotifyStateChanged2JS(id, value.shortkey);
+            break;
+        case CONFIG_SHORT_KEY_TARGET:
+            NotifyStringChanged2JS(id, value.shortkey_target);
+            break;
+        case CONFIG_MOUSE_AUTOCLICK:
+            NotifyIntChanged2JS(id, value.mouseAutoClick);
+            break;
+        case CONFIG_DALTONIZATION_COLOR_FILTER:
+            NotifyUintChanged2JS(id, value.daltonizationColorFilter);
+            break;
+        case CONFIG_CONTENT_TIMEOUT:
+            NotifyUintChanged2JS(id, value.contentTimeout);
+            break;
+        case CONFIG_BRIGHTNESS_DISCOUNT:
+            NotifyFloatChanged2JS(id, value.brightnessDiscount);
+            break;
+        case CONFIG_AUDIO_BALANCE:
+            NotifyFloatChanged2JS(id, value.audioBalance);
+            break;
+        default:
+            break;
     }
 }
 
@@ -370,9 +369,7 @@ void ConfigListener::NotifyPropertyChangedJS(napi_env env,
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
-
+            });
     } else {
         HILOG_ERROR("NotifyPropertyChangedJS eventType[%s] is error", eventType.c_str());
     }
@@ -385,7 +382,8 @@ void ConfigListener::NotifyStateChanged2JS(const OHOS::AccessibilityConfig::CONF
             enabled, GetEventType(), GetHandler());
     }
 }
-void ConfigListener::NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption)
+void ConfigListener::NotifyPropertyChanged2JS(
+    const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption)
 {
     if (GetStateType() == id) {
         NotifyPropertyChangedJS(GetEnv(),
@@ -423,8 +421,8 @@ void ConfigListener::NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONF
     }
 }
 
-//todo
-void ConfigListener::NotifyStringChanged2JSInner(napi_env env, const std::string &value, const std::string &eventType, napi_ref handlerRef)
+void ConfigListener::NotifyStringChanged2JSInner(
+    napi_env env, const std::string& value, const std::string& eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
 
@@ -445,7 +443,10 @@ void ConfigListener::NotifyStringChanged2JSInner(napi_env env, const std::string
             [](uv_work_t *work, int status) {
                 StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
                 napi_value jsEvent;
-                napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(), callbackInfo->stringValue_.length(), &jsEvent);
+                napi_create_string_utf8(callbackInfo->env_,
+                    callbackInfo->stringValue_.c_str(),
+                    callbackInfo->stringValue_.length(),
+                    &jsEvent);
 
                 napi_value handler = nullptr;
                 napi_value callResult = nullptr;
@@ -462,14 +463,14 @@ void ConfigListener::NotifyStringChanged2JSInner(napi_env env, const std::string
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
-
+            });
     } else {
         HILOG_ERROR("NotifyStringChanged2JSInner eventType[%s] is error", eventType.c_str());
     }
 }
-void ConfigListener::NotifyIntChanged2JSInner(napi_env env, int32_t value, const std::string &eventType, napi_ref handlerRef)
+
+void ConfigListener::NotifyIntChanged2JSInner(
+    napi_env env, int32_t value, const std::string& eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
 
@@ -505,14 +506,14 @@ void ConfigListener::NotifyIntChanged2JSInner(napi_env env, int32_t value, const
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
-
+            });
     } else {
         HILOG_ERROR("NotifyIntChanged2JSInner eventType[%s] is error", eventType.c_str());
     }
 }
-void ConfigListener::NotifyUintChanged2JSInner(napi_env env, uint32_t value, const std::string &eventType, napi_ref handlerRef)
+
+void ConfigListener::NotifyUintChanged2JSInner(
+    napi_env env, uint32_t value, const std::string& eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
 
@@ -548,14 +549,14 @@ void ConfigListener::NotifyUintChanged2JSInner(napi_env env, uint32_t value, con
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
-
+            });
     } else {
         HILOG_ERROR("NotifyUintChanged2JSInner eventType[%s] is error", eventType.c_str());
     }
 }
-void ConfigListener::NotifyFloatChanged2JSInner(napi_env env, float value, const std::string &eventType, napi_ref handlerRef)
+
+void ConfigListener::NotifyFloatChanged2JSInner(
+    napi_env env, float value, const std::string& eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
 
@@ -591,9 +592,7 @@ void ConfigListener::NotifyFloatChanged2JSInner(napi_env env, float value, const
                 callbackInfo = nullptr;
                 delete work;
                 work = nullptr;
-            } 
-        );
-
+            });
     } else {
         HILOG_ERROR("NotifyFloatChanged2JSInner eventType[%s] is error", eventType.c_str());
     }

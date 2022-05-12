@@ -309,7 +309,7 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(c
     }
 
     if (!data.WriteUint64(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}llu, ", displayId);
+        HILOG_ERROR("displayId write error: %{public}ju, ", displayId);
         return windowsError;
     }
 

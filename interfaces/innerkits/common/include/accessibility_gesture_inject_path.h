@@ -16,7 +16,6 @@
 #ifndef ACCESSIBILITY_GESTURE_INJECT_PATH_H
 #define ACCESSIBILITY_GESTURE_INJECT_PATH_H
 
-#include <cstdint>
 #include <vector>
 
 namespace OHOS {

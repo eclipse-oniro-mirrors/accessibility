@@ -391,7 +391,7 @@ void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t reques
     }
 
     sptr<TouchEventInjector> touchEventInjector =
-	    Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
     if (!touchEventInjector) {
         abilityClient->OnGestureInjectResult(requestId, false);
         return;

@@ -183,13 +183,13 @@ AccessibilityWindowInfo::AccessibilityWindowInfo()
 
 void AccessibilityWindowInfo::SetDisplayId(const uint64_t displayId)
 {
-    HILOG_DEBUG("displayId[%{public}llu]", displayId);
+    HILOG_DEBUG("displayId[%{public}ju]", displayId);
     displayId_ = displayId;
 }
 
 uint64_t AccessibilityWindowInfo::GetDisplayId() const
 {
-    HILOG_DEBUG("displayId[%{public}llu]", displayId_);
+    HILOG_DEBUG("displayId[%{public}ju]", displayId_);
     return displayId_;
 }
 } // namespace Accessibility

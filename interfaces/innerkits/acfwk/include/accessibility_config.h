@@ -17,9 +17,9 @@
 #define ACCESSIBILITY_CONFIG_H
 
 #include <cstdint>
+#include <string>
 #include "accessibility_caption.h"
 #include "singleton.h"
-#include <string>
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -38,7 +38,7 @@ enum CONFIG_ID : int32_t {
     CONFIG_CAPTION_STYLE,
     CONFIG_SCREEN_MAGNIFICATION,
     CONFIG_SHORT_KEY_TARGET,
-    CONFIG_MOUSE_AUTOCLICK,   
+    CONFIG_MOUSE_AUTOCLICK,
     CONFIG_ID_MAX,
 };
 

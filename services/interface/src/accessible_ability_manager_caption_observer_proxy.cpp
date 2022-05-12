@@ -36,7 +36,8 @@ bool AccessibleAbilityManagerCaptionObserverProxy::WriteInterfaceToken(MessagePa
     return true;
 }
 
-void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property)
+void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
+    const AccessibilityConfig::CaptionProperty& property)
 {
     HILOG_DEBUG("start");
 

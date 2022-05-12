@@ -129,34 +129,6 @@ static std::string ConvertWindowTypeToString(WindowType type)
     return windowTypeTable.at(type);
 }
 
-// static std::string CoverGestureTypeToString(GestureType type)
-// {
-//     static const std::map<GestureType, const std::string> gestureTypeTable = {
-//         {GestureType::GESTURE_SWIPE_LEFT, "left"},
-//         {GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT, "leftThenRight"},
-//         {GestureType::GESTURE_SWIPE_LEFT_THEN_UP, "leftThenUp"},
-//         {GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN, "leftThenDown"},
-//         {GestureType::GESTURE_SWIPE_RIGHT, "right"},
-//         {GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT, "rightThenLeft"},
-//         {GestureType::GESTURE_SWIPE_RIGHT_THEN_UP, "rightThenUp"},
-//         {GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN, "rightThenDown"},
-//         {GestureType::GESTURE_SWIPE_UP, "up"},
-//         {GestureType::GESTURE_SWIPE_UP_THEN_LEFT, "upThenLeft"},
-//         {GestureType::GESTURE_SWIPE_UP_THEN_RIGHT, "upThenRight"},
-//         {GestureType::GESTURE_SWIPE_UP_THEN_DOWN, "upThenDown"},
-//         {GestureType::GESTURE_SWIPE_DOWN, "down"},
-//         {GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT, "downThenLeft"},
-//         {GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT, "downThenRight"},
-//         {GestureType::GESTURE_SWIPE_DOWN_THEN_UP, "downThenUp"}
-//     };
-
-//     if (gestureTypeTable.find(type) == gestureTypeTable.end()) {
-//         return "";
-//     }
-
-//     return gestureTypeTable.at(type);
-// }
-
 static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
 {
     std::vector<std::string> result;
@@ -460,28 +432,6 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type)
     return a11yEvtTypeTable.at(type);
 }
 
-// static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
-// {
-//     static const std::map<WindowUpdateType, const std::string> windowUpdateTypeTable = {
-//         {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
-//         {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"},
-//         {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
-//         {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
-//         {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
-//         {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"},
-//         {WindowUpdateType::WINDOW_UPDATE_TITLE, "title"},
-//         {WindowUpdateType::WINDOW_UPDATE_LAYER, "layer"},
-//         {WindowUpdateType::WINDOW_UPDATE_PARENT, "parent"},
-//         {WindowUpdateType::WINDOW_UPDATE_CHILDREN, "children"},
-//         {WindowUpdateType::WINDOW_UPDATE_PIP, "pip"}};
-
-//     if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
-//         return "";
-//     }
-
-//     return windowUpdateTypeTable.at(type);
-// }
-
 static const std::string ConvertOperationTypeToString(ActionType type)
 {
     static const std::map<ActionType, const std::string> triggerActionTable = {
@@ -515,46 +465,6 @@ static const std::string ConvertOperationTypeToString(ActionType type)
 
     return triggerActionTable.at(type);
 }
-
-// static const std::string CovertTextMoveStepToString(TextMoveUnit step)
-// {
-//     static const std::map<TextMoveUnit, const std::string> textMoveStepTable = {{TextMoveUnit::STEP_CHARACTER, "char"},
-//         {TextMoveUnit::STEP_WORD, "word"},
-//         {TextMoveUnit::STEP_LINE, "line"},
-//         {TextMoveUnit::STEP_PAGE, "page"},
-//         {TextMoveUnit::STEP_PARAGRAPH, "paragraph"}};
-
-//     if (textMoveStepTable.find(step) == textMoveStepTable.end()) {
-//         return "";
-//     }
-
-//     return textMoveStepTable.at(step);
-// }
-
-// static const std::string ConvertCategoryNotificationToString(NotificationCategory category)
-// {
-//     static const std::map<NotificationCategory, const std::string> categoryTable = {
-//         {NotificationCategory::CATEGORY_CALL, "call"},
-//         {NotificationCategory::CATEGORY_MSG, "msg"},
-//         {NotificationCategory::CATEGORY_EMAIL, "email"},
-//         {NotificationCategory::CATEGORY_EVENT, "event"},
-//         {NotificationCategory::CATEGORY_PROMO, "promo"},
-//         {NotificationCategory::CATEGORY_ALARM, "alarm"},
-//         {NotificationCategory::CATEGORY_PROGRESS, "progress"},
-//         {NotificationCategory::CATEGORY_SOCIAL, "social"},
-//         {NotificationCategory::CATEGORY_ERR, "err"},
-//         {NotificationCategory::CATEGORY_TRANSPORT, "transport"},
-//         {NotificationCategory::CATEGORY_SYS, "sys"},
-//         {NotificationCategory::CATEGORY_SERVICE, "service"},
-//         {NotificationCategory::CATEGORY_OTHERS, ""},
-//     };
-
-//     if (categoryTable.find(category) == categoryTable.end()) {
-//         return "";
-//     }
-
-//     return categoryTable.at(category);
-// }
 
 void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo)
 {
@@ -1576,7 +1486,8 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keys", keys));
 }
 
-void ConvertCaptionPropertyToJS(napi_env env, napi_value& result, OHOS::AccessibilityConfig::CaptionProperty captionProperty)
+void ConvertCaptionPropertyToJS(
+    napi_env env, napi_value& result, OHOS::AccessibilityConfig::CaptionProperty captionProperty)
 {
     HILOG_DEBUG("start");
 
@@ -1885,7 +1796,8 @@ void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
     HILOG_DEBUG("END.");
 }
 
-void ConvertStyleToJS(napi_env env, napi_value& captionsManager, OHOS::AccessibilityConfig::CaptionProperty captionProperty_)
+void ConvertStyleToJS(
+    napi_env env, napi_value& captionsManager, OHOS::AccessibilityConfig::CaptionProperty captionProperty_)
 {
     HILOG_DEBUG("start.");
     napi_value keyCode;

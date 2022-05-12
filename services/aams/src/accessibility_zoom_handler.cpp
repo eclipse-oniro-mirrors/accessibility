@@ -19,6 +19,7 @@
 namespace OHOS {
 namespace Accessibility {
 const float DEFAULT_SCALE = 2.0f;
+const float HALF = 0.5f;
 
 AccessibilityZoomHandler::AccessibilityZoomHandler(Rosen::DisplayId displayId)
 {
@@ -32,18 +33,18 @@ AccessibilityZoomHandler::AccessibilityZoomHandler(Rosen::DisplayId displayId)
     }
     int32_t displayWith = display->GetWidth();
     int32_t displayHeight = display->GetHeight();
-    displayCenterX_ = displayWith / 2;
-    displayCenterY_ = displayHeight / 2;
+    displayCenterX_ = displayWith * HALF;
+    displayCenterY_ = displayHeight * HALF;
 }
 
 void AccessibilityZoomHandler::OnZoomIn(int32_t centerX, int32_t centerY)
 {
     HILOG_DEBUG("centerX:%{public}d, centerY:%{public}d.", centerX, centerY);
 
-    //setToWMS(DEFAULT_SCALE, centerX, centerY);
+    // Temp deal:set default scale and centerXY to WMS.
     // Update the following information based on the return value of wms.
-    // currentCenterX_ = xxx;
-    // currentCenterY_ = xxx;
+    currentCenterX_ = centerX; // Temp deal
+    currentCenterY_ = centerY; // Temp deal
     currentScale_ = DEFAULT_SCALE; // Temp deal
 }
 
@@ -51,11 +52,11 @@ void AccessibilityZoomHandler::OnZoomOut()
 {
     HILOG_DEBUG();
 
-    //setToWMS(1, displayCenterX_, displayCenterY_);
+    // Temp deal:reset scale and centerXY to WMS.
     // Update the following information based on the return value of wms.
-    // currentCenterX_ = xxx;
-    // currentCenterY_ = xxx;
-    // currentScale_ = xxx;
+    currentCenterX_ = displayCenterX_; // Temp deal
+    currentCenterY_ = displayCenterY_; // Temp deal
+    currentScale_ = 1.0f; // Temp deal
 }
 
 void AccessibilityZoomHandler::OnScroll(float offsetX, float offsetY)
@@ -65,17 +66,20 @@ void AccessibilityZoomHandler::OnScroll(float offsetX, float offsetY)
     float newCenterX = (currentCenterX_ * currentScale_ - offsetX) / currentScale_;
     float newCenterY = (currentCenterY_ * currentScale_ - offsetY) / currentScale_;
 
-    //setToWMS(DEFAULT_SCALE, centerX, centerY);
+    // Temp deal:set scale and centerXY to WMS.
     // Update the following information based on the return value of wms.
     currentCenterX_ = newCenterX; // Temp deal
     currentCenterY_ = newCenterY; // Temp deal
-    // currentScale_ = xxx;
 }
 
 void AccessibilityZoomHandler::OnScale(float scaleRatio, float focusX, float focusY)
 {
     HILOG_DEBUG("scaleRatio:%{public}f, focusX:%{public}f, focusY:%{public}f.", scaleRatio, focusX, focusY);
 
+    if ((currentScale_ <= 0) || (scaleRatio <= 0)) {
+        HILOG_ERROR("scale or scale ratio is wrong.");
+        return;
+    }
     float offsetX = displayCenterX_ - currentCenterX_ * currentScale_;
     float offsetY = displayCenterY_ - currentCenterY_ * currentScale_;
 
@@ -87,7 +91,7 @@ void AccessibilityZoomHandler::OnScale(float scaleRatio, float focusX, float foc
     float newCenterX = originalFocusX + centerOffsetX;
     float newCenterY = originalFocusY + centerOffsetY;
     float newScale = currentScale_ * scaleRatio;
-    //setToWMS(newScale, newCenterX, newCenterY);
+    // Temp deal:set scale and centerXY to WMS.
     // Update the following information based on the return value of wms.
     currentCenterX_ = newCenterX; // Temp deal
     currentCenterY_ = newCenterY; // Temp deal

@@ -112,7 +112,7 @@ private:
      */
     ErrCode HandleSetOnKeyPressEventResult(MessageParcel &data, MessageParcel &reply);
 
-	/**
+    /**
      * @brief Handle the IPC request for the function:HandleSendSimulateGesturePath.
      * @param data The data of process communication
      * @param reply The response of IPC request
