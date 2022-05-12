@@ -452,7 +452,7 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
             }
         }
 
-        accountData->RemoveAccessibilityWindowConnection(windowId); 
+        accountData->RemoveAccessibilityWindowConnection(windowId);
         }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
 }
 

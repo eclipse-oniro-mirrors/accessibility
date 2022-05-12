@@ -815,8 +815,8 @@ bool AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uin
         return false;
     }
 
-    if (!SendTransactCmd(
-            IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER, data, reply, option)) {
+    if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER,
+        data, reply, option)) {
         HILOG_ERROR("SetDaltonizationColorFilter fail");
         return false;
     }

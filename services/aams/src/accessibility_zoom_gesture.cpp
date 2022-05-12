@@ -216,7 +216,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
                 lastScrollFocusX_ = focusXY.centerX;
                 lastScrollFocusY_ = focusXY.centerY;
 
-                // Used for scale algorithm.              
+                // Used for scale algorithm.
                 float span = CalcScaleSpan(event, focusXY);
                 if (span >= MIN_SCALE_SPAN) {
                     startScaling_ = true;
