@@ -20,9 +20,12 @@
 #include <vector>
 #include "accessibility_ability_info.h"
 #include "accessibility_caption.h"
+#include "accessibility_config.h"
 #include "accessibility_event_info.h"
 #include "i_accessibility_element_operator.h"
+#include "i_accessibility_enable_ability_lists_observer.h"
 #include "i_accessible_ability_manager_caption_observer.h"
+#include "i_accessible_ability_manager_config_observer.h"
 #include "i_accessible_ability_manager_state_observer.h"
 #include "iremote_broker.h"
 
@@ -38,22 +41,21 @@ public:
     /**
      * @brief Sends information about an accessibility event.
      * @param uiEvent Indicates the accessibility event information specified by AccessibilityEventInfo.
-     * @param accountId The user id.
      * @return true: send ok; otherwise is refused.
      */
-    virtual void SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t accountId) = 0;
+    virtual void SendEvent(const AccessibilityEventInfo &uiEvent) = 0;
 
     /**
      * @brief Register the state observer of AAMS.
      * @param callback state observer
-     * @param accountId The user id.
      * @return 0: Register ok; otherwise is refused.
      */
-    virtual uint32_t RegisterStateObserver(
-        const sptr<IAccessibleAbilityManagerStateObserver> &callback, const int32_t accountId) = 0;
+    virtual uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) = 0;
 
-    virtual uint32_t RegisterCaptionObserver(
-        const sptr<IAccessibleAbilityManagerCaptionObserver> &callback, const int32_t accountId) = 0;
+    virtual uint32_t RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) = 0;
+
+    virtual void RegisterEnableAbilityListsObserver(
+        const sptr<IAccessibilityEnableAbilityListsObserver> &observer) = 0;
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -70,11 +72,10 @@ public:
      * @brief Register the interaction operation, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
     virtual void RegisterElementOperator(
-        const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, const int32_t accountId) = 0;
+        const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation) = 0;
 
     /**
      * @brief Deregister the interaction operation.
@@ -83,26 +84,55 @@ public:
      */
     virtual void DeregisterElementOperator(const int32_t windowId) = 0;
 
-    virtual CaptionProperty GetCaptionProperty() = 0;
+    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() = 0;
     virtual bool GetEnabledState() = 0;
     virtual bool GetCaptionState() = 0;
     virtual bool GetTouchGuideState() = 0;
     virtual bool GetGestureState() = 0;
     virtual bool GetKeyEventObserverState() = 0;
 
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) = 0;
+    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
     virtual bool SetCaptionState(const bool state) = 0;
 
-    virtual bool EnableAbilities(std::vector<std::string> &abilities) = 0;
+    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) = 0;
     virtual std::vector<std::string> GetEnabledAbilities() = 0;
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
 
-    virtual bool DisableAbilities(std::vector<std::string> &abilities) =0;
+    virtual bool DisableAbilities(const std::string name) = 0;
     virtual int32_t GetActiveWindow() = 0;
 
     virtual bool EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;
     virtual bool DisableUITestAbility() = 0;
 
+    virtual bool SetScreenMagnificationState(const bool state) = 0;
+    virtual bool SetShortKeyState(const bool state) = 0;
+    virtual bool SetMouseKeyState(const bool state) = 0;
+    virtual bool SetMouseAutoClick(const int32_t time) = 0;
+    virtual bool SetShortkeyTarget(const std::string &name) = 0;
+    virtual bool SetHighContrastTextState(const bool state) = 0;
+    virtual bool SetInvertColorState(const bool state) = 0;
+    virtual bool SetAnimationOffState(const bool state) = 0;
+    virtual bool SetAudioMonoState(const bool state) = 0;
+    virtual bool SetDaltonizationColorFilter(const uint32_t filter) = 0;
+    virtual bool SetContentTimeout(const uint32_t time) = 0;
+    virtual bool SetBrightnessDiscount(const float discount) = 0;
+    virtual bool SetAudioBalance(const float balance) = 0;
+
+    virtual bool GetScreenMagnificationState() = 0;
+    virtual bool GetShortKeyState() = 0;
+    virtual bool GetMouseKeyState() = 0;
+    virtual int32_t GetMouseAutoClick() = 0;
+    virtual std::string GetShortkeyTarget() = 0;
+    virtual bool GetHighContrastTextState() = 0;
+    virtual bool GetInvertColorState() = 0;
+    virtual bool GetAnimationOffState() = 0;
+    virtual bool GetAudioMonoState() = 0;
+    virtual uint32_t GetDaltonizationColorFilter() = 0;
+    virtual uint32_t GetContentTimeout() = 0;
+    virtual float GetBrightnessDiscount() = 0;
+    virtual float GetAudioBalance() = 0;
+
+    virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
     enum class Message {
         SEND_EVENT = 0,
         REGISTER_STATE_CALLBACK,
@@ -125,6 +155,34 @@ public:
         ENABLE_UI_TEST_ABILITY,
         DISABLE_UI_TEST_ABILITY,
         GET_ACTIVE_WINDOW,
+        SET_SCREENMAGNIFIER_STATE,
+        SET_SHORTKEY_STATE,
+        SET_MOUSEKEY_STATE,
+        SET_SHORTKEY_TARGET,
+        SET_MOUSEKEY_AUTOCLICK,
+        SET_INVERTCOLOR_STATE,
+        SET_HIGHCONTRASTTEXT_STATE,
+        SET_AUDIOMONO_STATE,
+        SET_ANIMATIONOFF_STATE,
+        SET_DALTONIZATION_COLORFILTER,
+        SET_CONTENT_TIMEOUT,
+        SET_BRIGHTNESS_DISCOUNT,
+        SET_AUDIO_BALANCE,
+        GET_SCREENMAGNIFIER_STATE,
+        GET_SHORTKEY_STATE,
+        GET_MOUSEKEY_STATE,
+        GET_SHORTKEY_TARGET,
+        GET_MOUSEKEY_AUTOCLICK,
+        GET_INVERTCOLOR_STATE,
+        GET_HIGHCONTRASTTEXT_STATE,
+        GET_AUDIOMONO_STATE,
+        GET_ANIMATIONOFF_STATE,
+        GET_DALTONIZATION_COLORFILTER,
+        GET_CONTENT_TIMEOUT,
+        GET_BRIGHTNESS_DISCOUNT,
+        GET_AUDIO_BALANCE,
+        REGISTER_ENABLE_ABILITY_LISTS_OBSERVER,
+        REGISTER_CONFIG_CALLBACK,
     };
 };
 } // namespace Accessibility

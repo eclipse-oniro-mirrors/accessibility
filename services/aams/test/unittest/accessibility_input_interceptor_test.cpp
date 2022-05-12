@@ -14,13 +14,13 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_ability_helper.h"
 #include "accessibility_input_interceptor.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -41,7 +41,6 @@ public:
     void TearDown() override;
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 };
 
 void AccessibilityInputInterceptorTest::SetUpTestCase()
@@ -57,18 +56,9 @@ void AccessibilityInputInterceptorTest::TearDownTestCase()
 void AccessibilityInputInterceptorTest::SetUp()
 {
     MMI::MockInputManager::ClearInputEventConsumer();
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    if (systemAbilityManager != nullptr) {
-        systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
-    } else {
-        return;
-    }
-
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 
@@ -76,7 +66,6 @@ void AccessibilityInputInterceptorTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest TearDown";
     inputInterceptor_ = nullptr;
-    mock_ = nullptr;
 }
 
 /**

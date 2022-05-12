@@ -15,6 +15,7 @@
 
 #include "accessibility_touchEvent_injector.h"
 #include "accessible_ability_manager_service.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -41,8 +42,8 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
                 }
             }
             break;
-        case TouchEventInjector::INJECT_EVENT_MSG:
-            server_.InjectEventsInner();
+        case TouchEventInjector::GESTURE_INJECT_EVENT_MSG:
+            server_.InjectGesturePathInner();
             break;
         default:
             break;
@@ -51,12 +52,7 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
 
 TouchEventInjector::TouchEventInjector()
 {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    runner_ = aams->GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -89,122 +85,6 @@ void TouchEventInjector::DestroyEvents()
     CancelInjectedEvents();
     isDestroyEvent_ = true;
     EventTransmission::DestroyEvents();
-}
-
-void TouchEventInjector::GetTapsEvents(int64_t startTime)
-{
-    HILOG_INFO("TouchEventInjector::GetTapsEvents: start");
-    std::shared_ptr<MMI::PointerEvent> event;
-    MMI::PointerEvent::PointerItem pointer = {};
-    int64_t downTime = startTime;
-    int64_t nowTime = startTime;
-    pointer.SetPointerId(1);
-    for (size_t i = 0; i < gesturePath_.size(); i++) {
-        // Append down event
-        float px = gesturePath_[i].GetStartPosition().positionX_;
-        float py = gesturePath_[i].GetStartPosition().positionY_;
-        pointer.SetGlobalX(px);
-        pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime);
-        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
-        HILOG_INFO("append down event");
-        injectedEvents_.push_back(event);
-
-        nowTime += gesturePath_[i].GetDurationTime() * MS_TO_US;
-        // Append up event
-        px = gesturePath_[i].GetEndPosition().positionX_;
-        py = gesturePath_[i].GetEndPosition().positionY_;
-        pointer.SetGlobalX(px);
-        pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime);
-        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
-        HILOG_INFO("append up event");
-        injectedEvents_.push_back(event);
-        nowTime += DOUBLE_TAP_MIN_TIME;
-        downTime += DOUBLE_TAP_MIN_TIME;
-    }
-}
-
-void TouchEventInjector::GetMovesEvents(int64_t startTime)
-{
-    HILOG_INFO("TouchEventInjector::GetMovesEvents: start");
-    std::shared_ptr<MMI::PointerEvent> event;
-    MMI::PointerEvent::PointerItem pointer = {};
-    int64_t downTime = startTime;
-    int64_t nowTime = startTime;
-    // Append down event
-    float px = gesturePath_[0].GetStartPosition().positionX_;
-    float py = gesturePath_[0].GetStartPosition().positionY_;
-    pointer.SetPointerId(1);
-    pointer.SetGlobalX(px);
-    pointer.SetGlobalY(py);
-    pointer.SetDownTime(downTime);
-    event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
-    HILOG_INFO("append down event");
-    injectedEvents_.push_back(event);
-    for (size_t i = 0; i < gesturePath_.size(); i++) {
-        px = gesturePath_[i].GetEndPosition().positionX_;
-        py = gesturePath_[i].GetEndPosition().positionY_;
-        pointer.SetGlobalX(px);
-        pointer.SetGlobalY(py);
-        pointer.SetDownTime(downTime);
-        HILOG_INFO("append move event");
-        nowTime += gesturePath_[i].GetDurationTime() * MS_TO_US;
-        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
-        injectedEvents_.push_back(event);
-    }
-    // Append up event
-    px = gesturePath_[gesturePath_.size() - 1].GetEndPosition().positionX_;
-    py = gesturePath_[gesturePath_.size() - 1].GetEndPosition().positionY_;
-    pointer.SetGlobalX(px);
-    pointer.SetGlobalY(py);
-    pointer.SetDownTime(downTime);
-    event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
-    HILOG_INFO("append up event");
-    injectedEvents_.push_back(event);
-}
-
-void TouchEventInjector::InjectEvents(const std::vector<AccessibilityGesturePath> &gesturePath,
-    const sptr<IAccessibleAbilityClient> &service, int32_t sequence)
-{
-    sequence_ = sequence;
-    currentGestureService_ = service;
-    gesturePath_ = gesturePath;
-    handler_->SendEvent(INJECT_EVENT_MSG, 0, 0);
-}
-
-void TouchEventInjector::InjectEventsInner()
-{
-    HILOG_INFO("TouchEventInjector::InjectEventsInner: start");
-
-    int64_t curTime = getSystemTime();
-    if (isDestroyEvent_ || !GetNext()) {
-        currentGestureService_->OnGestureInjectResult(sequence_, false);
-        return;
-    }
-    CancelInjectedEvents();
-    CancelGesture();
-
-    GetTouchEventsFromGesturePath(curTime);
-
-    if (injectedEvents_.empty()) {
-        currentGestureService_->OnGestureInjectResult(sequence_, false);
-        return;
-    }
-    for (size_t i = 0; i < injectedEvents_.size(); i++) {
-        std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
-        parameters->isLastEvent_ = (i == injectedEvents_.size() - 1) ? true : false;
-        parameters->event_ = injectedEvents_[i];
-        if (injectedEvents_[i]) {
-            int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
-            if (timeout < 0) {
-                HILOG_INFO("timeout is error.%{public}jd", timeout);
-            } else {
-                handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
-            }
-        }
-    }
-    injectedEvents_.clear();
 }
 
 void TouchEventInjector::SendPointerEvent(MMI::PointerEvent &event)
@@ -247,17 +127,6 @@ void TouchEventInjector::CancelInjectedEvents()
     }
 }
 
-void TouchEventInjector::GetTouchEventsFromGesturePath(int64_t startTime)
-{
-    HILOG_INFO("TouchEventInjector::GetTouchEventsFromGesturePath: start");
-    if (gesturePath_[0].GetStartPosition().positionX_ == gesturePath_[0].GetEndPosition().positionX_ &&
-        gesturePath_[0].GetStartPosition().positionY_ == gesturePath_[0].GetEndPosition().positionY_) {
-        GetTapsEvents(startTime);
-    } else {
-        GetMovesEvents(startTime);
-    }
-}
-
 std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int32_t action,
     MMI::PointerEvent::PointerItem point, int64_t actionTime)
 {
@@ -280,6 +149,151 @@ int64_t TouchEventInjector::getSystemTime()
     int64_t microsecond = (int64_t)(times.tv_sec * 1000000 + times.tv_nsec / 1000);
 
     return microsecond;
+}
+
+void TouchEventInjector::InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
+    const sptr<IAccessibleAbilityClient> &service, int32_t sequence)
+{
+    sequence_ = sequence;
+    currentGestureService_ = service;
+    gesturePositions_ = gesturePath;
+    handler_->SendEvent(GESTURE_INJECT_EVENT_MSG, 0, 0);
+}
+
+void TouchEventInjector::InjectGesturePathInner()
+{
+    HILOG_INFO("TouchEventInjector::InjectGesturePathInner: start");
+
+    int64_t curTime = getSystemTime();
+    if (isDestroyEvent_ || !GetNext()) {
+        currentGestureService_->OnGestureInjectResult(sequence_, false);
+        return;
+    }
+    CancelInjectedEvents();
+    CancelGesture();
+
+    ParseTouchEventsFromGesturePath(curTime);
+
+    if (injectedEvents_.empty()) {
+        currentGestureService_->OnGestureInjectResult(sequence_, false);
+        return;
+    }
+    for (size_t i = 0; i < injectedEvents_.size(); i++) {
+        std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
+        parameters->isLastEvent_ = (i == injectedEvents_.size() - 1) ? true : false;
+        parameters->event_ = injectedEvents_[i];
+        if (injectedEvents_[i]) {
+            int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
+            if (timeout < 0) {
+                HILOG_INFO("timeout is error.%{public}jd", timeout);
+            } else {
+                handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
+            }
+        }
+    }
+    injectedEvents_.clear();
+}
+
+void TouchEventInjector::ParseTapsEvents(int64_t startTime)
+{
+    HILOG_INFO("TouchEventInjector::ParseTapsEvents: start");
+
+    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
+    int32_t positionSize = positions.size();
+    if (!positionSize) {
+        HILOG_ERROR("positionSize is zero.");
+        return;
+    }
+    int64_t perDurationTime = gesturePositions_->GetDurationTime() / positionSize;
+    int64_t downTime = startTime;
+    int64_t nowTime = startTime;
+    for (size_t i = 0; i < positionSize; i++) {
+        std::shared_ptr<MMI::PointerEvent> event;
+        MMI::PointerEvent::PointerItem pointer = {};
+        pointer.SetPointerId(1);
+        // Append down event
+        int32_t px = static_cast<int32_t>(positions[i].positionX_);
+        int32_t py = static_cast<int32_t>(positions[i].positionY_);
+        pointer.SetGlobalX(px);
+        pointer.SetGlobalY(py);
+        pointer.SetDownTime(downTime);
+        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
+        HILOG_INFO("append down event");
+        injectedEvents_.push_back(event);
+
+        // Append up event
+        nowTime += perDurationTime * MS_TO_US;
+        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
+        HILOG_INFO("append up event");
+        injectedEvents_.push_back(event);
+        nowTime += DOUBLE_TAP_MIN_TIME;
+        downTime += DOUBLE_TAP_MIN_TIME;
+    }
+}
+
+void TouchEventInjector::ParseMovesEvents(int64_t startTime)
+{
+    HILOG_INFO("TouchEventInjector::ParseMovesEvents: start");
+
+    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
+    int32_t positionSize = positions.size();
+    if (positionSize < 2) {
+        HILOG_ERROR("positionSize is zero.");
+        return;
+    }
+    int64_t perDurationTime = gesturePositions_->GetDurationTime() / (positionSize - 1);
+    int64_t downTime = startTime;
+    int64_t nowTime = startTime;
+    for (size_t i = 0; i < positionSize; i++) {
+        std::shared_ptr<MMI::PointerEvent> event;
+        MMI::PointerEvent::PointerItem pointer = {};
+        int32_t px = static_cast<int32_t>(positions[i].positionX_);
+        int32_t py = static_cast<int32_t>(positions[i].positionY_);
+        pointer.SetPointerId(1);
+        pointer.SetGlobalX(px);
+        pointer.SetGlobalY(py);
+        pointer.SetDownTime(downTime);
+        if (i == 0) { // Append down event
+            HILOG_INFO("append down event");
+            event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, pointer, downTime);
+            injectedEvents_.push_back(event);
+        } else if (i < (positionSize - 1)) { // Append move event
+            HILOG_INFO("append move event");
+            nowTime += perDurationTime * MS_TO_US;
+            event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
+            injectedEvents_.push_back(event);
+        } else { // Append up event
+            HILOG_INFO("append move event");
+            nowTime += perDurationTime * MS_TO_US;
+            event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, pointer, nowTime);
+            injectedEvents_.push_back(event);
+            
+            HILOG_INFO("append up event");
+            event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
+            injectedEvents_.push_back(event);
+        }
+    }
+}
+
+void TouchEventInjector::ParseTouchEventsFromGesturePath(int64_t startTime)
+{
+    HILOG_INFO("TouchEventInjector::GetTouchEventsFromGesturePath: start");
+    if (!gesturePositions_) {
+        HILOG_ERROR("gesturePositions_ is null.");
+        return;
+    }
+    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
+    if (positions.size() == 0) {
+        HILOG_ERROR("position size is 0.");
+        return;
+    }
+    if ((positions.size() == 1) ||
+        ((positions[0].positionX_ == positions[1].positionX_) &&
+        (positions[0].positionY_ == positions[1].positionY_))) {
+        ParseTapsEvents(startTime);
+    } else {
+        ParseMovesEvents(startTime);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

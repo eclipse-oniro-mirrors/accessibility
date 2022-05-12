@@ -25,10 +25,6 @@ using namespace testing::ext;
 
 const static int32_t CHANNEL_ID = 1;
 const static int32_t SEQUENCE = 1;
-const static int32_t DISPLAY_ID = 1;
-const static float SCALE = 1.0;
-const static float CENTER_X = 1.0;
-const static float CENTER_Y = 1.0;
 const static int32_t FOCUS_TYPE = 1;
 const static int32_t INDEX = 1;
 const static std::string TEST = "test";
@@ -46,12 +42,12 @@ public:
 
     static void SetUpTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
         GTEST_LOG_(INFO) << "AccessibleAbilityClientImplTest Start";
     }
     static void TearDownTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStop();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
         GTEST_LOG_(INFO) << "AccessibleAbilityClientImplTest End";
     }
     void SetUp()
@@ -108,31 +104,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_001, TestSize.Lev
     AccessibilityEventInfo eventInfo {};
     instance_->OnAccessibilityEvent(eventInfo);
     GTEST_LOG_(INFO) << "OnAccessibilityEvent_001 end";
-}
-
-/**
- * @tc.number: OnDisplayResized_001
- * @tc.name: OnDisplayResized
- * @tc.desc: Test function OnDisplayResized
- */
-HWTEST_F(AccessibleAbilityClientImplTest, OnDisplayResized_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "OnDisplayResized_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    Rect rect {};
-    instance_->OnDisplayResized(DISPLAY_ID, rect, SCALE, CENTER_X, CENTER_Y);
-    GTEST_LOG_(INFO) << "OnDisplayResized_001 end";
 }
 
 /**
@@ -281,66 +252,11 @@ HWTEST_F(AccessibleAbilityClientImplTest, GestureInject_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
         return;
     }
-    std::vector<AccessibilityGesturePath> gesturePathList {};
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
-    EXPECT_FALSE(instance_->GestureInject(SEQUENCE, gesturePathList, listener));
+    EXPECT_FALSE(instance_->GestureInject(SEQUENCE, gesturePath, listener));
 
     GTEST_LOG_(INFO) << "GestureInject_001 end";
-}
-
-/**
- * @tc.number: GetDisplayResizeController_001
- * @tc.name: GetDisplayResizeController
- * @tc.desc: Test function GetDisplayResizeController
- */
-HWTEST_F(AccessibleAbilityClientImplTest, GetDisplayResizeController_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-
-    std::shared_ptr<DisplayResizeController> res = nullptr;
-    res = instance_->GetDisplayResizeController();
-    EXPECT_NE(res, nullptr);
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_001 end";
-}
-
-/**
- * @tc.number: GetDisplayResizeController_002
- * @tc.name: GetDisplayResizeController
- * @tc.desc: Test function GetDisplayResizeController
- */
-HWTEST_F(AccessibleAbilityClientImplTest, GetDisplayResizeController_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_002 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    std::shared_ptr<DisplayResizeController> res = nullptr;
-    res = instance_->GetDisplayResizeController(DISPLAY_ID);
-    EXPECT_NE(res, nullptr);
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_002 end";
 }
 
 /**

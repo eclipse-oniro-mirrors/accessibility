@@ -18,7 +18,10 @@ acfwk_path = "//base/accessibility/frameworks/acfwk"
 config("accessibilityconfig_private_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "${acfwk_path}/include" ]
+  include_dirs = [
+    "${acfwk_path}/include",
+    "//base/accessibility/common/log/include",
+  ]
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_acfwk\"",

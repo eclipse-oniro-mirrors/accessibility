@@ -18,6 +18,7 @@
 #include "accessibility_system_ability_client_impl.h"
 #include "accessible_ability_manager_service.h"
 #include "mock_accessibility_element_operator.h"
+#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -42,19 +43,30 @@ public:
 
     static void SetUpTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(ABILITY_MGR_SERVICE_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(DISPLAY_MANAGER_SERVICE_SA_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, "");
         GTEST_LOG_(INFO) << "AccessibilitySystemAbilityClientImplTest Start";
     }
     static void TearDownTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStop();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(ABILITY_MGR_SERVICE_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(COMMON_EVENT_SERVICE_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(DISPLAY_MANAGER_SERVICE_SA_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(WINDOW_MANAGER_SERVICE_ID, "");
         GTEST_LOG_(INFO) << "AccessibilitySystemAbilityClientImplTest End";
     }
     void SetUp()
     {
         GTEST_LOG_(INFO) << "AccessibilitySystemAbilityClientImplTest SetUp()";
-        int32_t accountId = 0;
-        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>(accountId);
+        impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     };
     void TearDown()
     {
@@ -77,6 +89,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_001, 
     }
     std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
     EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID));
+    impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "RegisterElementOperator_001 end";
 }
 
@@ -92,6 +105,8 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
+    std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
+    impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID);
     impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
@@ -192,7 +207,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetCaptionProperty_001, TestS
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    CaptionProperty res;
+    AccessibilityConfig::CaptionProperty res;
     res = impl_->GetCaptionProperty();
     EXPECT_EQ(0xff000000, res.GetWindowColor());
     EXPECT_EQ(0xff000000, res.GetFontColor());
@@ -212,7 +227,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaptionProperty_001, TestS
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    CaptionProperty caption;
+    AccessibilityConfig::CaptionProperty caption;
     EXPECT_TRUE(impl_->SetCaptionProperty(caption));
     GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
@@ -265,6 +280,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SubscribeStateObserver_001, T
     }
     std::shared_ptr<AccessibilityStateObserver> observer = nullptr;
     EXPECT_FALSE(impl_->SubscribeStateObserver(observer, EVENT_TYPE));
+    impl_->UnsubscribeStateObserver(observer, EVENT_TYPE);
     GTEST_LOG_(INFO) << "SubscribeStateObserver_001 end";
 }
 
@@ -281,6 +297,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, UnsubscribeStateObserver_001,
         return;
     }
     std::shared_ptr<AccessibilityStateObserver> observer = nullptr;
+    impl_->SubscribeStateObserver(observer, EVENT_TYPE);
     EXPECT_FALSE(impl_->UnsubscribeStateObserver(observer, EVENT_TYPE));
     GTEST_LOG_(INFO) << "UnsubscribeStateObserver_001 end";
 }
@@ -297,8 +314,9 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, AddCaptionListener_001, TestS
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    std::shared_ptr<CaptionObserver> ob = nullptr;
+    std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
     EXPECT_TRUE(impl_->AddCaptionListener(ob, TYPE));
+    impl_->DeleteCaptionListener(ob, TYPE);
     GTEST_LOG_(INFO) << "AddCaptionListener_001 end";
 }
 
@@ -314,8 +332,9 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeleteCaptionListener_001, Te
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    std::shared_ptr<CaptionObserver> ob = nullptr;
-    EXPECT_FALSE(impl_->DeleteCaptionListener(ob, TYPE));
+    std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
+    impl_->AddCaptionListener(ob, TYPE);
+    EXPECT_TRUE(impl_->DeleteCaptionListener(ob, TYPE));
     GTEST_LOG_(INFO) << "DeleteCaptionListener_001 end";
 }
 
@@ -339,9 +358,27 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetCapabilitiesState_001, Tes
 }
 
 /**
- * @tc.number: SetCaption_001
+ * @tc.number: SetCaptionPropertyTojson_001
  * @tc.name: SetCaptionPropertyTojson
  * @tc.desc: Test function SetCaptionPropertyTojson
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaptionPropertyTojson_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCaptionPropertyTojson_001 start";
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    AccessibilityConfig::CaptionProperty caption;
+    caption.SetFontScale(101);
+    EXPECT_TRUE(impl_->SetCaptionPropertyTojson(caption));
+    GTEST_LOG_(INFO) << "SetCaptionPropertyTojson_001 end";
+}
+
+/**
+ * @tc.number: SetCaption_001
+ * @tc.name: SetCaptionStateTojson
+ * @tc.desc: Test function SetCaptionStateTojson
  */
 HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaption_001, TestSize.Level1)
 {
@@ -350,8 +387,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaption_001, TestSize.Leve
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    CaptionProperty caption;
-    EXPECT_TRUE(impl_->SetCaptionPropertyTojson(caption));
     EXPECT_TRUE(impl_->SetCaptionStateTojson(true));
     GTEST_LOG_(INFO) << "SetCaption_001 end";
 }
@@ -402,43 +437,9 @@ HWTEST_F(
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    CaptionProperty caption;
+    AccessibilityConfig::CaptionProperty caption;
     impl_->OnAccessibleAbilityManagerCaptionPropertyChanged(caption);
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerCaptionPropertyChanged_001 end";
-}
-
-/**
- * @tc.number: EnableAbilities_001
- * @tc.name: EnableAbilities
- * @tc.desc: Test function EnableAbilities
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, EnableAbilities_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "EnableAbilities_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    std::vector<std::string> it {};
-    EXPECT_TRUE(impl_->EnableAbilities(it));
-    GTEST_LOG_(INFO) << "EnableAbilities_001 end";
-}
-
-/**
- * @tc.number: DisableAbilities_001
- * @tc.name: DisableAbilities
- * @tc.desc: Test function DisableAbilities
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, DisableAbilities_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "DisableAbilities_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    std::vector<std::string> it {};
-    EXPECT_TRUE(impl_->DisableAbilities(it));
-    GTEST_LOG_(INFO) << "DisableAbilities_001 end";
 }
 
 /**

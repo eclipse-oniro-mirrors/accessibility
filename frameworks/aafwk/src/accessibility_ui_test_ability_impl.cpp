@@ -17,6 +17,7 @@
 
 #include <mutex>
 #include "accessible_ability_client.h"
+#include "display_manager.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -128,9 +129,9 @@ bool AccessibilityUITestAbilityImpl::GetFocusByElementInfo(const AccessibilityEl
     return instance->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-bool AccessibilityUITestAbilityImpl::GestureInject(
-    const uint32_t sequence, const std::vector<AccessibilityGesturePath> &gesturePathList,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibilityUITestAbilityImpl::GestureInject(const uint32_t sequence,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
+    const std::shared_ptr<AccessibilityGestureResultListener>& listener)
 {
     HILOG_DEBUG("start.");
     sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
@@ -138,30 +139,7 @@ bool AccessibilityUITestAbilityImpl::GestureInject(
         HILOG_ERROR("instance is nullptr");
         return false;
     }
-    return instance->GestureInject(sequence, gesturePathList, listener);
-}
-
-std::shared_ptr<DisplayResizeController> AccessibilityUITestAbilityImpl::GetDisplayResizeController()
-{
-    HILOG_DEBUG("start.");
-    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
-    if (!instance) {
-        HILOG_ERROR("instance is nullptr");
-        return nullptr;
-    }
-    return instance->GetDisplayResizeController();
-}
-
-std::shared_ptr<DisplayResizeController> AccessibilityUITestAbilityImpl::GetDisplayResizeController(
-    const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
-    if (!instance) {
-        HILOG_ERROR("instance is nullptr");
-        return nullptr;
-    }
-    return instance->GetDisplayResizeController(displayId);
+    return instance->GestureInject(sequence, gesturePath, listener);
 }
 
 bool AccessibilityUITestAbilityImpl::GetRoot(AccessibilityElementInfo &elementInfo)
@@ -197,6 +175,18 @@ std::vector<AccessibilityWindowInfo> AccessibilityUITestAbilityImpl::GetWindows(
         return temp;
     }
     return instance->GetWindows();
+}
+
+std::vector<AccessibilityWindowInfo> AccessibilityUITestAbilityImpl::GetWindows(const uint64_t displayId)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        std::vector<AccessibilityWindowInfo> temp;
+        return temp;
+    }
+    return instance->GetWindows(displayId);
 }
 
 bool AccessibilityUITestAbilityImpl::ExecuteCommonAction(const GlobalAction action)
@@ -328,6 +318,28 @@ bool AccessibilityUITestAbilityImpl::ExecuteAction(const AccessibilityElementInf
         return false;
     }
     return instance->ExecuteAction(elementInfo, action, actionArguments);
+}
+
+bool AccessibilityUITestAbilityImpl::SetEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return false;
+    }
+    return instance->SetEventTypeFilter(eventTypes);
+}
+
+bool AccessibilityUITestAbilityImpl::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return false;
+    }
+    return instance->SetTargetBundleName(targetBundleNames);
 }
 } // namespace Accessibility
 } // namespace OHOS

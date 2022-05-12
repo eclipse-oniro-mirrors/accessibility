@@ -47,10 +47,11 @@ public:
 
     bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence);
 
-    void OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale, const float centerX,
-        const float centerY);
-
     void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully);
+
+    void SetAbilityInfoEventTypeFilter(const uint32_t eventTypes);
+
+    void SetAbilityInfoTargetBundleName(const std::vector<std::string> targetBundleNames);
 
     // Get Attribution
     inline AccessibilityAbilityInfo& GetAbilityInfo()

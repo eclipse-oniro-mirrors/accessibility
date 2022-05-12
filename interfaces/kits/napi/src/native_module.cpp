@@ -19,14 +19,16 @@
 #include <unistd.h>
 
 #include "hilog_wrapper.h"
-#include "napi/native_api.h"
-#include "napi/native_node_api.h"
-#include "napi_accessibility_system_ability_client.h"
+#include "napi_accessibility_config.h"
+#include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
 #include "napi_accessibility_gesture_path.h"
 #include "napi_accessibility_gesture_pos.h"
-#include "napi_accessibility_window_info.h"
 #include "napi_accessibility_info.h"
+#include "napi_accessibility_system_ability_client.h"
+#include "napi_accessibility_window_info.h"
+#include "napi/native_api.h"
+#include "napi/native_node_api.h"
 
 EXTERN_C_START
 /*
@@ -49,17 +51,18 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getTouchGuideState", NAccessibilityClient::GetTouchGuideState),
         DECLARE_NAPI_FUNCTION("getGestureState", NAccessibilityClient::GetGestureState),
         DECLARE_NAPI_FUNCTION("getKeyEventObserverState", NAccessibilityClient::GetKeyEventObserverState),
-        DECLARE_NAPI_FUNCTION("extensionEnabled", NAccessibilityClient::ExtensionEnabled),
-        DECLARE_NAPI_FUNCTION("extensionDisabled", NAccessibilityClient::ExtensionDisabled),
+        DECLARE_NAPI_FUNCTION("enableAbility", NAccessibilityConfig::EnableAbility),
+        DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
+    NAccessibilityElement::DefineJSAccessibilityElement(env);
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
-    NElementInfo::DefineJSElementInfo(env);
-    NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(env);
+    // NElementInfo::DefineJSElementInfo(env);
+    // NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
     NGesturePos::DefineJSGesturePos(env);
     NGesturePath::DefineJSGesturePath(env);

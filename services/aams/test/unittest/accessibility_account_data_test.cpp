@@ -734,9 +734,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     sptr<AccessibleAbilityConnection> AAConnection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     // new aastub
     sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
-    GTEST_LOG_(INFO) << "OnAbilityConnectDone start !!!!!";
+    GTEST_LOG_(INFO) << "OnAbilityConnectDoneSync start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    AAConnection->OnAbilityConnectDone(elementName, aastub, 0);
+    AAConnection->OnAbilityConnectDoneSync(elementName, aastub, 0);
     GTEST_LOG_(INFO) << "add connected A11y Ability";
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     /* CapabilityValues */
@@ -752,6 +752,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
+    AAConnection->OnAbilityDisconnectDoneSync(elementName, 0);
+    accountData->UpdateAccountCapabilities();
     /* initialization */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     bool test5 = accountData->GetGesturesSimulationFlag();
@@ -848,7 +850,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_SetCapt
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    CaptionProperty caption;
+    AccessibilityConfig::CaptionProperty caption;
     bool test = accountData->SetCaptionProperty(caption);
     EXPECT_TRUE(test);
 
@@ -888,13 +890,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
 
-    const std::string bundleName = "bbb";
-    /* add */
-    accountData->AddEnabledAbility(bundleName);
-    /* get */
-    EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
-    bool test = accountData->EnableAbilities(const_cast<vector<std::string>&>(accountData->GetEnabledAbilities()));
-    EXPECT_TRUE(test);
+    const std::string name = "bundle/ability";
+    uint32_t capabilities = 0;
+    bool test = accountData->EnableAbilities(name, capabilities);
+    EXPECT_FALSE(test);
+    ASSERT_EQ(0, (int)accountData->GetEnabledAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilities end";
 }

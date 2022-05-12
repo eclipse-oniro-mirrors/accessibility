@@ -23,7 +23,7 @@ CaptionPropertyParcel::CaptionPropertyParcel(const CaptionProperty &property)
 {
     HILOG_DEBUG("start");
 
-    CaptionProperty *self = this;
+    AccessibilityConfig::CaptionProperty *self = this;
     *self = property;
 }
 

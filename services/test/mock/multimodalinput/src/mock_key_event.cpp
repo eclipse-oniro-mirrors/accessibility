@@ -19,6 +19,11 @@ namespace OHOS {
 namespace MMI {
 const int32_t KeyEvent::KEYCODE_VOLUME_UP = 16;
 const int32_t KeyEvent::KEYCODE_VOLUME_DOWN = 17;
+const int32_t KeyEvent::KEYCODE_POWER = 18;
+const int32_t KeyEvent::KEY_ACTION_UNKNOWN = 0X00000000;
+const int32_t KeyEvent::KEY_ACTION_CANCEL = 0X00000001;
+const int32_t KeyEvent::KEY_ACTION_DOWN = 0x00000002;
+const int32_t KeyEvent::KEY_ACTION_UP = 0X00000003;
 
 KeyEvent::KeyItem::KeyItem()
 {}
@@ -104,6 +109,22 @@ bool KeyEvent::WriteToParcel(Parcel& out) const
 bool KeyEvent::ReadFromParcel(Parcel& in)
 {
     return true;
+}
+
+std::vector<int32_t> KeyEvent::GetPressedKeys() const
+{
+    std::vector<int32_t> result;
+    for (const auto &item : keys_) {
+        if (item.IsPressed()) {
+            result.push_back(item.GetKeyCode());
+        }
+    }
+    return result;
+}
+
+int32_t KeyEvent::GetKeyAction() const
+{
+    return keyAction_;
 }
 } // namespace MMI
 } // namespace OHOS

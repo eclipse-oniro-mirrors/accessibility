@@ -43,22 +43,21 @@ public:
     /**
      * @brief Sends information about an accessibility event.
      * @param uiEvent Indicates the accessibility event information specified by AccessibilityEventInfo.
-     * @param accountId The user id.
      * @return true: send ok; otherwise is refused.
      */
-    virtual void SendEvent(const AccessibilityEventInfo &uiEvent, const int32_t accountId) override;
+    virtual void SendEvent(const AccessibilityEventInfo &uiEvent) override;
 
     /**
      * @brief Register the state observer of AAMS.
      * @param callback state observer
-     * @param accountId The user id.
      * @return 0: Register ok; otherwise is refused.
      */
-    virtual uint32_t RegisterStateObserver(
-        const sptr<IAccessibleAbilityManagerStateObserver> &callback, const int32_t accountId) override;
+    virtual uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
-    virtual uint32_t RegisterCaptionObserver(
-        const sptr<IAccessibleAbilityManagerCaptionObserver> &callback, const int32_t accountId) override;
+    virtual uint32_t RegisterCaptionObserver(const sptr<IAccessibleAbilityManagerCaptionObserver> &callback) override;
+
+    virtual void RegisterEnableAbilityListsObserver(
+        const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -75,11 +74,10 @@ public:
      * @brief Register the interaction operation, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
     virtual void RegisterElementOperator(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &operation, const int32_t accountId) override;
+        const sptr<IAccessibilityElementOperator> &operation) override;
 
     /**
      * @brief Deregister the interaction operation.
@@ -88,8 +86,8 @@ public:
      */
     virtual void DeregisterElementOperator(const int32_t windowId) override;
 
-    virtual CaptionProperty GetCaptionProperty() override;
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) override;
+    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
+    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
     virtual bool SetCaptionState(const bool state) override;
 
     virtual bool GetEnabledState() override;
@@ -98,22 +96,44 @@ public:
     virtual bool GetGestureState() override;
     virtual bool GetKeyEventObserverState() override;
 
-    virtual bool EnableAbilities(std::vector<std::string> &abilities) override;
+    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) override;
     virtual std::vector<std::string> GetEnabledAbilities() override;
     virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
 
-    virtual bool DisableAbilities(std::vector<std::string> &abilities) override;
+    virtual bool DisableAbilities(const std::string name) override;
     virtual int32_t GetActiveWindow() override;
 
     virtual bool EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
     virtual bool DisableUITestAbility() override;
 
-    /**
-     * @brief Get IPC object.
-     * @param
-     * @return IPC object
-     */
-    sptr<IRemoteObject> GetRemoteObject();
+    virtual bool SetScreenMagnificationState(const bool state) override;
+    virtual bool SetShortKeyState(const bool state) override;
+    virtual bool SetMouseKeyState(const bool state) override;
+    virtual bool SetMouseAutoClick(const int32_t time) override;
+    virtual bool SetShortkeyTarget(const std::string &name) override;
+    virtual bool SetHighContrastTextState(const bool state) override;
+    virtual bool SetInvertColorState(const bool state) override;
+    virtual bool SetAnimationOffState(const bool state) override;
+    virtual bool SetAudioMonoState(const bool state) override;
+    virtual bool SetDaltonizationColorFilter(const uint32_t filter) override;
+    virtual bool SetContentTimeout(const uint32_t time) override;
+    virtual bool SetBrightnessDiscount(const float discount) override;
+    virtual bool SetAudioBalance(const float balance) override;
+
+    virtual bool GetScreenMagnificationState() override;
+    virtual bool GetShortKeyState() override;
+    virtual bool GetMouseKeyState() override;
+    virtual int32_t GetMouseAutoClick() override;
+    virtual std::string GetShortkeyTarget() override;
+    virtual bool GetHighContrastTextState() override;
+    virtual bool GetInvertColorState() override;
+    virtual bool GetAnimationOffState() override;
+    virtual bool GetAudioMonoState() override;
+    virtual uint32_t GetDaltonizationColorFilter() override;
+    virtual uint32_t GetContentTimeout() override;
+    virtual float GetBrightnessDiscount() override;
+    virtual float GetAudioBalance() override;    
+    virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override; 
 private:
     /**
      * @brief Write the descriptor of IPC.

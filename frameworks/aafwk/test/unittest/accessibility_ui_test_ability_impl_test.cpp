@@ -25,7 +25,6 @@ using namespace testing;
 using namespace testing::ext;
 
 const static int32_t FOCUS_TYPE = 1;
-const static int32_t DISPLAY_ID = 1;
 const static int32_t INDEX = 1;
 const static std::string TEST = "test";
 const static uint32_t SEQUENCE = 1;
@@ -42,12 +41,12 @@ public:
     std::shared_ptr<AccessibilityUITestAbilityImpl> instance_ = nullptr;
     static void SetUpTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
         GTEST_LOG_(INFO) << "AccessibilityUITestAbilityImplTest Start";
     }
     static void TearDownTestCase()
     {
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStop();
+        Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
         GTEST_LOG_(INFO) << "AccessibilityUITestAbilityImplTest End";
     }
     void SetUp()
@@ -113,7 +112,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, Disconnect_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
         return;
     }
-    EXPECT_FALSE(instance_->Disconnect());
+    EXPECT_TRUE(instance_->Disconnect());
 
     GTEST_LOG_(INFO) << "Disconnect_001 end";
 }
@@ -170,50 +169,11 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GestureInject_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
         return;
     }
-    std::vector<AccessibilityGesturePath> gesturePathList {};
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
-    EXPECT_FALSE(instance_->GestureInject(SEQUENCE, gesturePathList, listener));
+    EXPECT_FALSE(instance_->GestureInject(SEQUENCE, gesturePath, listener));
 
     GTEST_LOG_(INFO) << "GestureInject_001 end";
-}
-
-/**
- * @tc.number: GetDisplayResizeController_001
- * @tc.name: GetDisplayResizeController
- * @tc.desc: Test function GetDisplayResizeController
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetDisplayResizeController_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-
-    std::shared_ptr<DisplayResizeController> res = nullptr;
-    res = instance_->GetDisplayResizeController();
-    EXPECT_EQ(res, nullptr);
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_001 end";
-}
-
-/**
- * @tc.number: GetDisplayResizeController_002
- * @tc.name: GetDisplayResizeController
- * @tc.desc: Test function GetDisplayResizeController
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetDisplayResizeController_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_002 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    std::shared_ptr<DisplayResizeController> res = nullptr;
-    res = instance_->GetDisplayResizeController(DISPLAY_ID);
-    EXPECT_EQ(res, nullptr);
-    GTEST_LOG_(INFO) << "GetDisplayResizeController_002 end";
 }
 
 /**

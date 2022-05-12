@@ -29,7 +29,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     description_ = initParams.description;
     capabilities_ = initParams.capabilities;
     settingsAbility_ = initParams.settingsAbility;
-    eventTypes_ = EventType::TYPES_ALL_MASK;
+    abilityTypes_ = initParams.abilityTypes;
 
     HILOG_DEBUG("ability name is [%{public}s]].", name_.c_str());
     HILOG_DEBUG("bundle name is [%{public}s].", bundleName_.c_str());
@@ -37,6 +37,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     HILOG_DEBUG("capabilities is [%{public}d].", capabilities_);
     HILOG_DEBUG("rationale is [%{public}s].", rationale_.c_str());
     HILOG_DEBUG("settingsAbility is [%{public}s]].", settingsAbility_.c_str());
+    HILOG_DEBUG("abilityTypes is [%{public}d]].", abilityTypes_);
 }
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()

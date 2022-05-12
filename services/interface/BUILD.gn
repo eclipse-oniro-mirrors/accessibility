@@ -32,6 +32,7 @@ config("aams_interface_public_config") {
   include_dirs = [
     "include",
     "include/parcel",
+    "//base/accessibility/interfaces/innerkits/acfwk/include",
   ]
 }
 
@@ -40,15 +41,20 @@ aams_interface_src = [
   "src/accessibility_element_operator_callback_stub.cpp",
   "src/accessibility_element_operator_proxy.cpp",
   "src/accessibility_element_operator_stub.cpp",
+  "src/accessibility_enable_ability_lists_observer_proxy.cpp",
+  "src/accessibility_enable_ability_lists_observer_stub.cpp",
   "src/accessible_ability_channel_proxy.cpp",
   "src/accessible_ability_channel_stub.cpp",
   "src/accessible_ability_client_proxy.cpp",
   "src/accessible_ability_client_stub.cpp",
+  "src/accessible_ability_manager_caption_observer_proxy.cpp",
   "src/accessible_ability_manager_caption_observer_stub.cpp",
   "src/accessible_ability_manager_service_proxy.cpp",
   "src/accessible_ability_manager_service_stub.cpp",
   "src/accessible_ability_manager_state_observer_proxy.cpp",
   "src/accessible_ability_manager_state_observer_stub.cpp",
+  "src/accessible_ability_manager_config_observer_proxy.cpp",
+  "src/accessible_ability_manager_config_observer_stub.cpp",
 ]
 
 aams_data_parcel_src = [
@@ -57,7 +63,7 @@ aams_data_parcel_src = [
   "src/parcel/accessibility_element_info_parcel.cpp",
   "src/parcel/accessibility_event_info_parcel.cpp",
   "src/parcel/accessibility_window_info_parcel.cpp",
-  "src/parcel/accessibility_gesture_path_parcel.cpp",
+  "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
 ]
 
 ohos_shared_library("aams_interface") {

@@ -20,7 +20,7 @@
 #include <vector>
 #include <map>
 
-#include "accessibility_gesture_path.h"
+#include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
 #include "i_accessibility_element_operator_callback.h"
 #include "iremote_broker.h"
@@ -104,10 +104,10 @@ public:
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
-     * @param
+     * @param displayId the id of display
      * @return The information of windows.
      */
-    virtual std::vector<AccessibilityWindowInfo> GetWindows() = 0;
+    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) = 0;
 
     /**
      * @brief Executes a specified action.
@@ -124,62 +124,28 @@ public:
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) = 0;
 
-    /**
-     * @brief Obtains the resizing scale of this display resizing rectangle.
-     * @param displayId The id of display.
-     * @return Returns the resizing scale.
-     */
-    virtual float GetDisplayResizeScale(const int32_t displayId) = 0;
-
-    /**
-     * @brief Obtains the X coordinate of the center in this display resizing rectangle.
-     * @param displayId The id of display.
-     * @return Returns the X coordinate of the center.
-     */
-    virtual float GetDisplayResizeCenterX(const int32_t displayId) = 0;
-
-    /**
-     * @brief Obtains the Y coordinate of the center in this display resizing rectangle.
-     * @param displayId The id of display.
-     * @return Returns the Y coordinate of the center.
-     */
-    virtual float GetDisplayResizeCenterY(const int32_t displayId) = 0;
-
-    /**
-     * @brief Obtains the display resizing rectangle.
-     * @param displayId The id of display.
-     * @return Returns the display resizing rectangle.
-     */
-    virtual Rect GetDisplayResizeRect(const int32_t displayId) = 0;
-
-    /**
-     * @brief Resets the display to its initial size.
-     * @param displayId The id of display.
-     * @param animate Specifies whether animation is required.
-     * @return Returns true if the display is successfully reset; returns false otherwise.
-     */
-    virtual bool ResetDisplayResize(const int32_t displayId, const bool animate) = 0;
-
-    /**
-     * @brief Sets the center coordinates and scale for the display resizing rectangle.
-     * @param displayId The id of display.
-     * @param scale Indicates the scale for resizing the display
-     * @param centerX Indicates the X coordinate of the center for resizing the display.
-     * @param centerY Indicates the Y coordinate of the center for resizing the display.
-     * @param animate Specifies whether animation is required.
-     * @return Returns true if the center coordinates and scale are successfully set; returns false otherwise.
-     */
-    virtual bool SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale, const float centerX,
-        const float centerY, const bool animate) = 0;
-
-    /**
+	/**
      * @brief Send simulation gesture.
      * @param requestId The sequence of simulation gesture.
-     * @param gestureSteps The gesture to send.
+     * @param gesturePath The gesture path to send.
      * @return
      */
     virtual void SendSimulateGesture(const int32_t requestId,
-        const std::vector<AccessibilityGesturePath> &gestureSteps) = 0;
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) = 0;
+
+    /**
+     * @brief Set event types to filter.
+     * @param eventTypes The event types which you want.
+     * @return Return true if sets event types successfully, else return false.
+     */
+    virtual bool SetEventTypeFilter(const uint32_t eventTypes) = 0;
+
+    /**
+     * @brief Set target bundle names.
+     * @param targetBundleNames The target bundle name
+     * @return Return true if sets target bundle names successfully, else return false.
+     */
+    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) = 0;
 
     enum class Message {
         SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID = 0,
@@ -191,13 +157,9 @@ public:
         EXECUTE_COMMON_ACTION,
         DISABLE_ABILITY,
         SET_ON_KEY_PRESS_EVENT_RESULT,
-        GET_DISPALYRESIZE_SCALE,
-        GET_DISPALYRESIZE_CENTER_X,
-        GET_DISPLAYRESIZE_CENTER_Y,
-        GET_DISPLAYRESIZE_RECT,
-        RESET_DISPALYRESIZE,
-        SET_DISPLAYRESIZE_SCALE_AND_CENTER,
-        SEND_SIMULATE_GESTURE,
+		SEND_SIMULATE_GESTURE_PATH,
+        SET_EVENT_TYPE_FILTER,
+        SET_TARGET_BUNDLE_NAME,
     };
 };
 } // namespace Accessibility

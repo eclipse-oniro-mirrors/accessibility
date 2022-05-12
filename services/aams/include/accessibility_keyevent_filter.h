@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_KEYEVENT_FILTER_H_
-#define OHOS_KEYEVENT_FILTER_H_
+#ifndef ACCESSIBILITY_KEYEVENT_FILTER_H_
+#define ACCESSIBILITY_KEYEVENT_FILTER_H_
 
 #include <map>
 #include <vector>
@@ -112,7 +112,6 @@ private:
     std::shared_ptr<ProcessingEvent> FindProcessingEvent(AccessibleAbilityConnection &connection,
         uint32_t sequenceNum);
 
-    std::shared_ptr<AccessibleAbilityManagerService> aams_ = nullptr;
     std::map<sptr<AccessibleAbilityConnection>, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_;
     std::shared_ptr<KeyEventFilterEventHandler> timeouthandler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
@@ -141,4 +140,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // OHOS_KEYEVENT_FILTER_H_
+#endif // ACCESSIBILITY_KEYEVENT_FILTER_H_

@@ -65,9 +65,10 @@ public:
     /**
      * @brief Send simulate gesture to aams.
      * @param sequenceNum  The sequence of gesture.
-     * @param gestureSteps The steps of gesture.
+     * @param gesturePath The path of gesture.
      */
-    void SendSimulateGesture(const int32_t sequenceNum, const std::vector<AccessibilityGesturePath> &gestureSteps);
+    void SendSimulateGesture(const int32_t sequenceNum,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
     /**
      * @brief execute the action on the component.
@@ -110,9 +111,10 @@ public:
 
     /**
      * @brief Get all windows of accessibility.
+     * @param displayId the id of display
      * @return All windows information of accessibility.
      */
-    std::vector<AccessibilityWindowInfo> GetWindows();
+    std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId);
 
     /**
      * @brief Find the node information filtered by text.
@@ -145,53 +147,18 @@ public:
     bool ExecuteCommonAction(const int32_t action);
 
     /**
-     * @brief Get center X of the display resize.
-     * @param displayId The display id
-     * @return Return center X.
+     * @brief Set event types to filter.
+     * @param eventTypes The event types which you want.
+     * @return Return true if sets event types successfully, else return false.
      */
-    float GetDisplayResizeCenterX(const int32_t displayId);
+    bool SetEventTypeFilter(const uint32_t eventTypes);
 
     /**
-     * @brief Get center Y of the display resize.
-     * @param displayId The display id
-     * @return Return center Y.
+     * @brief Set target bundle names.
+     * @param targetBundleNames The target bundle name
+     * @return Return true if sets target bundle names successfully, else return false.
      */
-    float GetDisplayResizeCenterY(const int32_t displayId);
-
-    /**
-     * @brief Get scale of the display resize.
-     * @param displayId The display id
-     * @return Return scale.
-     */
-    float GetDisplayResizeScale(const int32_t displayId);
-
-    /**
-     * @brief Get rect of the display resize.
-     * @param displayId The display id
-     * @return The range displayed.
-     */
-    Rect GetDisplayResizeRect(const int32_t displayId);
-
-    /**
-     * @brief Reset the display resize.
-     * @param displayId The display id
-     * @param animate true: It is animation; otherwise is not.
-     * @return true: Reset successfully; otherwise is not.
-     */
-    bool ResetDisplayResize(const int32_t displayId, const bool animate);
-
-    /**
-     * @brief Set the scale and center of display resize.
-     * @param displayId The display id
-     * @param scale The value of scaled.
-     * @param centerX coordinate X.
-     * @param centerY coordinate Y.
-     * @param animate true: It is animation; otherwise is not.
-     * @return true: Resize successfully; otherwise is not.
-     */
-    bool SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale,
-        const float centerX, const float centerY, const bool animate);
-
+    bool SetTargetBundleName(const std::vector<std::string> targetBundleNames);
 private:
     int32_t GenrateRequestId();
 

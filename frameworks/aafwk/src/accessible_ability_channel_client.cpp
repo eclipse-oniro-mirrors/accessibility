@@ -78,11 +78,11 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
 }
 
 void AccessibleAbilityChannelClient::SendSimulateGesture(const int32_t sequenceNum,
-    const std::vector<AccessibilityGesturePath> &gestureSteps)
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
-        proxy_->SendSimulateGesture(sequenceNum, gestureSteps);
+        proxy_->SendSimulateGesture(sequenceNum, gesturePath);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
     }
@@ -146,11 +146,11 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelClient::GetWindows()
+std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId)
 {
-    HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}llu]", channelId_, displayId);
     if (proxy_) {
-        auto windows = proxy_->GetWindows();
+        auto windows = proxy_->GetWindows(displayId);
         for (auto &window : windows) {
             window.SetChannelId(channelId_);
         }
@@ -232,68 +232,22 @@ bool AccessibleAbilityChannelClient::ExecuteCommonAction(const int32_t action)
     }
 }
 
-float AccessibleAbilityChannelClient::GetDisplayResizeCenterX(const int32_t displayId)
+bool AccessibleAbilityChannelClient::SetEventTypeFilter(const uint32_t eventTypes)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
-        return proxy_->GetDisplayResizeCenterX(displayId);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return 1.0f;
-    }
-}
-
-float AccessibleAbilityChannelClient::GetDisplayResizeCenterY(const int32_t displayId)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->GetDisplayResizeCenterY(displayId);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return 1.0f;
-    }
-}
-
-float AccessibleAbilityChannelClient::GetDisplayResizeScale(const int32_t displayId)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->GetDisplayResizeScale(displayId);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return 1.0f;
-    }
-}
-
-Rect AccessibleAbilityChannelClient::GetDisplayResizeRect(const int32_t displayId)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->GetDisplayResizeRect(displayId);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        Rect temp {};
-        return temp;
-    }
-}
-
-bool AccessibleAbilityChannelClient::ResetDisplayResize(const int32_t displayId, const bool animate)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->ResetDisplayResize(displayId, animate);
+        return proxy_->SetEventTypeFilter(eventTypes);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
     }
 }
 
-bool AccessibleAbilityChannelClient::SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale,
-    const float centerX, const float centerY, const bool animate)
+bool AccessibleAbilityChannelClient::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
-        return proxy_->SetDisplayResizeScaleAndCenter(displayId, scale, centerX, centerY, animate);
+        return proxy_->SetTargetBundleName(targetBundleNames);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;

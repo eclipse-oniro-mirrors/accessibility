@@ -60,7 +60,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -98,7 +98,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -136,7 +136,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
@@ -166,7 +166,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
@@ -196,7 +196,7 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");

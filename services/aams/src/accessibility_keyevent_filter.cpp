@@ -21,25 +21,31 @@ namespace OHOS {
 namespace Accessibility {
 int64_t g_taskTime = 500;
 
+static bool IsWantedKeyEvent(MMI::KeyEvent &event)
+{
+    HILOG_DEBUG("start");
+
+    int32_t keyCode = event.GetKeyCode();
+    if (keyCode == MMI::KeyEvent::KEYCODE_VOLUME_UP || keyCode == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+        return true;
+    }
+    return false;
+}
+
 KeyEventFilter::KeyEventFilter()
 {
     HILOG_DEBUG();
 
-    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (aams_ != nullptr) {
-        HILOG_DEBUG();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
+    if (!runner_) {
+        HILOG_ERROR("get runner failed");
+        return;
+    }
 
-        runner_ = aams_->GetMainRunner();
-        if (!runner_) {
-            HILOG_ERROR("get runner failed");
-            return;
-        }
-
-        timeouthandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
-        if (!timeouthandler_) {
-            HILOG_ERROR("create event handler failed");
-            return;
-        }
+    timeouthandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
+    if (!timeouthandler_) {
+        HILOG_ERROR("create event handler failed");
+        return;
     }
 }
 
@@ -54,7 +60,7 @@ void KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
-    bool whetherIntercept = aams_->IsWantedKeyEvent(event);
+    bool whetherIntercept = IsWantedKeyEvent(event);
     if (whetherIntercept) {
         DispatchKeyEvent(event);
     } else {
@@ -108,7 +114,8 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
-    sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps = accountData->GetConnectedA11yAbilities();
 
     std::shared_ptr<ProcessingEvent> processingEvent = nullptr;

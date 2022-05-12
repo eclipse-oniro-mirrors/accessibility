@@ -19,7 +19,7 @@
 #include "accessibility_def.h"
 
 namespace OHOS {
-namespace Accessibility {
+namespace AccessibilityConfig {
 class CaptionProperty {
 public:
     CaptionProperty() = default;

@@ -294,7 +294,7 @@ void AccessibilityElementOperatorProxy::ClearFocus()
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;
@@ -311,7 +311,7 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
         return;

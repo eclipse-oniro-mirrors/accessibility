@@ -56,6 +56,12 @@ public:
     // Feature flag for inject touch events.
     const static uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
 
+    // Feature flag for mouse autoclick.
+    const static uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
+
+    // Feature flag for short key.
+    const static uint32_t FEATURE_SHORT_KEY = 0x00000020;
+
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
     void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
@@ -71,12 +77,13 @@ private:
     static sptr<AccessibilityInputInterceptor> instance_;
     void CreateTransmitters();
     void DestroyTransmitters();
+    void CreatePointerEventTransmitters();
+    void CreateKeyEventTransmitters();
     void SetNextEventTransmitter(sptr<EventTransmission> &header, sptr<EventTransmission> &current,
         const sptr<EventTransmission> &next);
     void CreateInterceptor();
     void DestroyInterceptor();
 
-    std::shared_ptr<AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
     uint32_t availableFunctions_ = 0;
@@ -88,4 +95,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_INPUT_INTERCEPTOR_H
+#endif // ACCESSIBILITY_INPUT_INTERCEPTOR_H

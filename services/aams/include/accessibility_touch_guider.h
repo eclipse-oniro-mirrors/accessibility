@@ -494,7 +494,6 @@ private:
     std::list<MMI::PointerEvent> pointerEvents_ {};
     AccessibilityGestureRecognizer gestureRecognizer_;
     std::unique_ptr<TouchGuideListener> touchGuideListener_ = nullptr;
-    std::shared_ptr<AccessibleAbilityManagerService> pAams_ = nullptr;
     std::shared_ptr<TGEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
 };

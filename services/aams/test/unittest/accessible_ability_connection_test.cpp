@@ -27,7 +27,6 @@
 #include "mock_accessible_ability_client_stub_impl.h"
 #include "mock_accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -53,7 +52,6 @@ public:
     sptr<AccessibleAbilityClientStub> obj_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 };
 
 void AccessibleAbilityConnectionUnitTest::SetUpTestCase()
@@ -70,22 +68,18 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
     // Start AAMS
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
 
     // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(0, proxy, 0);
     // aams RegisterElementOperator
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->RegisterElementOperator(0, proxy, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, proxy);
     // new AAconnection
     AccessibilityAbilityInitParams initParams;
+    initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData_ = new AccessibilityAccountData(0);
     if (accountData_ != nullptr) {
@@ -103,7 +97,7 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     // Deregister ElementOperator
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     if (connection_ != nullptr) {
         connection_->OnAbilityDisconnectDone(*elementName_, 0);
     } else {
@@ -111,7 +105,6 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
     }
     connection_ = nullptr;
     elementName_ = nullptr;
-    mock_ = nullptr;
     obj_ = nullptr;
     accountData_ = nullptr;
 }
@@ -127,7 +120,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     if (connection_ != nullptr) {
         auto abilityInfo = connection_->GetAbilityInfo();
         auto abilities = abilityInfo.GetAccessibilityAbilityType();
-        EXPECT_EQ(abilities, 0);
+        EXPECT_EQ(abilities, ACCESSIBILITY_ABILITY_TYPE_ALL);
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAbilityInfo_001 end";
 }

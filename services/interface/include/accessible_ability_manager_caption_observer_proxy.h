@@ -42,7 +42,7 @@ public:
      * @param caption the caption property
      * @return
      */
-    virtual void OnPropertyChanged(const CaptionProperty &property) override;
+    virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override;
 private:
     /**
      * @brief Write the descriptor of IPC.

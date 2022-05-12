@@ -17,29 +17,35 @@
 #define ACCESSIBILITY_DISPLAY_MANAGER_H
 
 #include <memory>
-#include <vector>
-
 #include "display_manager.h"
-#include "display.h"
+#include "event_handler.h"
+#include "singleton.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityDisplayManager : public Rosen::DisplayManager::IDisplayListener {
+class AccessibilityDisplayManager {
+    DECLARE_SINGLETON(AccessibilityDisplayManager)
 public:
-    ~AccessibilityDisplayManager() = default;
-
-    static AccessibilityDisplayManager &GetInstance();
     const sptr<Rosen::Display> GetDisplay(int32_t id);
     std::vector<sptr<Rosen::Display>> GetDisplays();
     const sptr<Rosen::Display> GetDefaultDisplay();
-    void RegisterDisplayChangeListener();
 
-    virtual void OnCreate(Rosen::DisplayId dId) override;
-    virtual void OnDestroy(Rosen::DisplayId dId) override;
-    virtual void OnChange(Rosen::DisplayId dId) override;
+    void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
+    void UnregisterDisplayListener();
 
 private:
-    AccessibilityDisplayManager();
+    class DisplayListener : public Rosen::DisplayManager::IDisplayListener {
+    public:
+        explicit DisplayListener() {}
+        ~DisplayListener() = default;
+
+        virtual void OnCreate(Rosen::DisplayId dId) override {}
+        virtual void OnDestroy(Rosen::DisplayId dId) override {}
+        virtual void OnChange(Rosen::DisplayId dId) override {}
+    };
+
+    sptr<DisplayListener> listener_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

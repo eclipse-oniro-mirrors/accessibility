@@ -16,50 +16,88 @@
 #ifndef ACCESSIBILITY_ZOOM_GESTURE_H
 #define ACCESSIBILITY_ZOOM_GESTURE_H
 
-#include "hilog_wrapper.h"
+#include "accessibility_event_transmission.h"
+#include "accessibility_zoom_handler.h"
+#include "event_handler.h"
 #include "pointer_event.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityZoomGesture {
-public:
-    AccessibilityZoomGesture();
-    ~AccessibilityZoomGesture();
+enum ACCESSIBILITY_ZOOM_STATE {
+    READY_STATE,
+    ZOOMIN_STATE,
+    SLIDING_STATE
+};
 
-    /**
-     * @brief Is it a triple tip.
-     */
-    bool Triple(MMI::PointerEvent &event);
-    void Up();
-    void Clear();
+enum ACCESSIBILITY_ZOOM_GESTURE_MSG : uint32_t {
+    MULTI_TAP_MSG,
+};
+
+struct ZOOM_FOCUS_COORDINATE {
+    float centerX;
+    float centerY;
+};
+
+class AccessibilityZoomGesture : public EventTransmission {
+public:
+    AccessibilityZoomGesture(Rosen::DisplayId displayId);
+    ~AccessibilityZoomGesture() = default;
+
+    virtual void OnPointerEvent(MMI::PointerEvent &event) override;
 
 private:
-    int32_t distance_ = 0;
-    int64_t timeout_ = 0;
-    int32_t upCount_ = 0;
-    int32_t downCount_ = 0;
-    std::shared_ptr<MMI::PointerEvent> pLastDown_ = nullptr;
+    class ZoomGestureEventHandler : public AppExecFwk::EventHandler {
+    public:
+        ZoomGestureEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
+            AccessibilityZoomGesture &zoomGesture);
+        virtual ~ZoomGestureEventHandler() = default;
 
-    void Initialize();
-    void Reset(const MMI::PointerEvent &event);
+        virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
+    private:
+        AccessibilityZoomGesture &zoomGesture_;
+    };
 
-    /**
-     * @brief Is it a valid continuous DOWN event.
-     */
-    bool ValidDown(MMI::PointerEvent &event);
+    void TransferState(ACCESSIBILITY_ZOOM_STATE state);
+    void CacheEvents(MMI::PointerEvent &event);
+    void SendCacheEventsToNext();
+    void ClearCacheEventsAndMsg();
+    void RecognizeInReadyState(MMI::PointerEvent &event);
+    void RecognizeInZoomState(MMI::PointerEvent &event);
+    void RecognizeInSlidingState(MMI::PointerEvent &event);
+    void RecognizeScroll(MMI::PointerEvent &event);
+    void RecognizeScale(MMI::PointerEvent &event);
+    void CalcFocusCoordinate(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE &coordinate);
+    float CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE coordinate);
+    bool IsDownValid();
+    bool IsUpValid();
+    bool IsTripleTaps();
+    void OnTripleTaps(MMI::PointerEvent &event);
+    int64_t CalcIntervalTime(std::shared_ptr<MMI::PointerEvent> firstEvent,
+        std::shared_ptr<MMI::PointerEvent> secondEvent);
+    int32_t CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
+        std::shared_ptr<MMI::PointerEvent> secondEvent);
 
-    /**
-     * @brief Gets the effective distance between two pointer events
-     *        set by the system.
-     */
-    int32_t GetSysDistance() const;
-
-    /**
-     * @brief Gets the effective time interval between two pointer events
-     *        set by the system.
-     */
-    int64_t GetSysTimeout() const;
+    bool startScaling_ = false;
+    // bool scaling_ = false;
+    // float scaleRatio_ = -1;
+    float preSpan_ = 0;
+    float lastSpan_ = 0;
+    // float initSpan_ = 0;
+    float lastScrollFocusX_ = 0.0f;
+    float lastScrollFocusY_ = 0.0f;
+    // float lastScaleCenterX_ = 0;
+    // float lastScaleCenterY_ = 0;
+    int32_t tapDistance_ = 0;
+    int32_t multiTapDistance_ = 0;
+    ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;
+    std::shared_ptr<MMI::PointerEvent> preLastDownEvent_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> lastDownEvent_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> preLastUpEvent_ = nullptr;
+    std::shared_ptr<MMI::PointerEvent> lastUpEvent_ = nullptr;
+    std::shared_ptr<AccessibilityZoomHandler> zoomHandler_ = nullptr;
+    std::shared_ptr<ZoomGestureEventHandler> zoomGestureEventHandler_ = nullptr;
+    std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEvents_;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_ZOOM_GESTURE_H
+#endif // ACCESSIBILITY_ZOOM_GESTURE_H

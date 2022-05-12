@@ -24,14 +24,8 @@ using namespace std;
 namespace OHOS {
 namespace Accessibility {
 const std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
-const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_EVENT_TYPES = "accessibilityEventTypes";
-const std::string AccessibleAbility_JSON_KEY_TARGET_BUNDLE_NAMES = "targetBundleNames";
 const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_ABILITY_TYPES = "accessibilityAbilityTypes";
-const std::string AccessibleAbility_JSON_KEY_NOTIFICATION_TIMEOUT = "notificationTimeout";
-const std::string AccessibleAbility_JSON_KEY_UI_NONINTERACTIVE_TIMEOUT = "uiNoninteractiveTimeout";
-const std::string AccessibleAbility_JSON_KEY_UI_INTERACTIVE_TIMEOUT = "uiInteractiveTimeout";
 const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES = "accessibilityCapabilities";
-const std::string AccessibleAbility_JSON_KEY_DESCRIPTION = "description";
 const std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY = "settingsAbility";
 const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE =
     "accessibilityCapabilityRationale";
@@ -109,6 +103,16 @@ void AccessibilityConfigParse::Parse(const AppExecFwk::ExtensionAbilityInfo &abi
         return;
     }
     PraseVecUtils::ParseCapabilitiesFromVec(capabilities, initParams.capabilities);
+
+    // accessibilityAbilityTypes
+    vector<string> abilityTypes;
+    if (!JsonUtils::GetStringVecFromJson(
+        sourceJson, AccessibleAbility_JSON_KEY_ACCESSIBILITY_ABILITY_TYPES,
+        abilityTypes)) {
+        HILOG_ERROR("Get stringVec from json failed.");
+        return;
+    }
+    PraseVecUtils::ParseAbilityTypesFromVec(abilityTypes, initParams.abilityTypes);
 
     // accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "accessibility_ability_helper.h"
 #include "system_ability.h"
 
 using namespace OHOS;
@@ -25,12 +26,13 @@ SystemAbility::~SystemAbility()
 bool SystemAbility::MakeAndRegisterAbility(SystemAbility* systemAbility)
 {
     (void)systemAbility;
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetIsServicePublished(false);
     return true;
 }
 
 bool SystemAbility::AddSystemAbilityListener(int32_t systemAbilityId)
 {
-    (void)systemAbilityId;
+    OnAddSystemAbility(systemAbilityId, "");
     return true;
 }
 
@@ -44,6 +46,7 @@ bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
 {
     printf("Publish mock start");
     systemAbility.ForceSetRefPtr(nullptr);
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetIsServicePublished(true);
     printf("Publish mock end");
     return true;
 }

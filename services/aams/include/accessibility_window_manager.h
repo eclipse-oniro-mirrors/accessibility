@@ -26,16 +26,15 @@
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowManager {
+    DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
-    ~AccessibilityWindowManager() = default;
-    static AccessibilityWindowManager &GetInstance();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(Rosen::AccessibilityWindowInfo &windowInfo);
+    bool Init();
+    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo);
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
-    void RegisterWindowChangeListener();
-    void DeregisterWindowChangeListener();
+    void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
+    void DeregisterWindowListener();
     void SetActiveWindow(int32_t windowId);
     void SetAccessibilityFocusedWindow(int32_t windowId);
-    void SetInputFocusedWindow(int32_t windowId);
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
     bool IsValidWindow(int32_t windowId);
@@ -49,9 +48,6 @@ public:
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
-    int32_t inputFocusedWindowId_ = 0;
-
-    bool registerFlag_ = false;
 
 private:
     class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {
@@ -70,14 +66,11 @@ private:
         AccessibilityWindowManager &windInfoMgr_;
     };
 
-    AccessibilityWindowManager();
-    void WindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo, Rosen::WindowUpdateType type);
     void WindowUpdateAdded(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
     void WindowUpdateRemoved(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
-    DISALLOW_COPY_AND_MOVE(AccessibilityWindowManager);
 };
 } // namespace Accessibility
 } // namespace OHOS
