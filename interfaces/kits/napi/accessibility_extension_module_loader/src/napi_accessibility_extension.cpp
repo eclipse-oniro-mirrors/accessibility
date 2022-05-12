@@ -224,11 +224,11 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             napi_value napiEventInfo = nullptr;
             if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
+                data->syncPromise_.set_value(false);
                 delete data;
                 data = nullptr;
                 delete work;
                 work = nullptr;
-                data->syncPromise_.set_value(false);
                 return;
             }
             ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
@@ -240,11 +240,11 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             bool result = false;
             if (!ConvertFromJsValue(*data->engine_, nativeResult, result)) {
                 HILOG_ERROR("ConvertFromJsValue failed");
+                data->syncPromise_.set_value(false);
                 delete data;
                 data = nullptr;
                 delete work;
                 work = nullptr;
-                data->syncPromise_.set_value(false);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
