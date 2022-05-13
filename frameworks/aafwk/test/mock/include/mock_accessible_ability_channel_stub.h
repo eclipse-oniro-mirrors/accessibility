@@ -39,24 +39,16 @@ public:
     MOCK_METHOD5(
         FocusMoveSearch, bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
                              const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
-
     MOCK_METHOD6(ExecuteAction, bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
                                     std::map<std::string, std::string>& actionArguments, const int32_t requestId,
                                     const sptr<IAccessibilityElementOperatorCallback>& callback));
-
-    MOCK_METHOD0(GetWindows, std::vector<AccessibilityWindowInfo>());
+    MOCK_METHOD1(GetWindows, std::vector<AccessibilityWindowInfo>(const uint64_t displayId));
     MOCK_METHOD1(ExecuteCommonAction, bool(const int32_t action));
-
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
-    MOCK_METHOD1(GetDisplayResizeScale, float(const int32_t displayId));
-    MOCK_METHOD1(GetDisplayResizeCenterX, float(const int32_t displayId));
-    MOCK_METHOD1(GetDisplayResizeCenterY, float(const int32_t displayId));
-    MOCK_METHOD1(GetDisplayResizeRect, Rect(const int32_t displayId));
-    MOCK_METHOD2(ResetDisplayResize, bool(const int32_t displayId, const bool animate));
-    MOCK_METHOD5(SetDisplayResizeScaleAndCenter,
-        bool(const int32_t displayId, const float scale, const float centerX, const float centerY, const bool animate));
-    MOCK_METHOD2(
-        SendSimulateGesture, void(const int32_t requestId, const std::vector<AccessibilityGesturePath>& gestureSteps));
+    MOCK_METHOD2(SendSimulateGesture, void(const int32_t sequenceNum,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
+    MOCK_METHOD1(SetEventTypeFilter, bool(const uint32_t eventTypes));
+    MOCK_METHOD1(SetTargetBundleName, bool(const std::vector<std::string> targetBundleNames));
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -266,7 +266,23 @@ public:
      */
     void AddChild(const int32_t childId);
 
+    /**
+     * @brief Set the display id
+     * @param displayId the display id of the window
+     * @return -
+     * @sysCap Accessibility
+     */
+    void SetDisplayId(const uint64_t displayId);
+
+    /**
+     * @brief Get the display id
+     * @return Return the display id of the window.
+     * @sysCap Accessibility
+     */
+    uint64_t GetDisplayId() const;
+
 protected:
+    uint64_t displayId_ = 0;
     WindowType windowType_ = TYPE_WINDOW_INVALID;
     int32_t windowLayer_ = INVALID_WINDOW_ID;
     int32_t windowId_ = INVALID_WINDOW_ID;

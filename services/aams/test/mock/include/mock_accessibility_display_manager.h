@@ -29,10 +29,8 @@ public:
     MOCK_METHOD1(GetDisplay, const sptr<Rosen::Display>(int32_t id));
     MOCK_METHOD0(GetDisplays, std::vector<sptr<Rosen::Display>>());
     MOCK_METHOD0(GetDefaultDisplay, const sptr<Rosen::Display>());
-    MOCK_METHOD0(RegisterDisplayChangeListener, void());
-    MOCK_METHOD1(OnCreate, void(Rosen::DisplayId dId));
-    MOCK_METHOD1(OnDestroy, void(Rosen::DisplayId dId));
-    MOCK_METHOD1(OnChange, void(Rosen::DisplayId dId));
+    MOCK_METHOD1(RegisterDisplayListener, void(const std::shared_ptr<AppExecFwk::EventHandler> &handler));
+    MOCK_METHOD0(UnregisterDisplayListener, void());
 };
 } // namespace Accessibility
 } // namespace OHOS

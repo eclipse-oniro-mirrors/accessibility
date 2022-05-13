@@ -112,10 +112,10 @@ public:
     /**
      * @brief Obtains the list of interactive windows on the device,
      *        in the layers they are visible to users through the proxy object.
-     * @param
+     * @param displayId the id of display
      * @return The information of windows.
      */
-    virtual std::vector<AccessibilityWindowInfo> GetWindows() override;
+    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) override;
 
     /**
      * @brief Executes a specified action through the proxy object.
@@ -133,61 +133,27 @@ public:
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
     /**
-     * @brief Obtains the resizing scale of this display resizing rectangle through the proxy object.
-     * @param displayId The id of display.
-     * @return Returns the resizing scale.
-     */
-    virtual float GetDisplayResizeScale(const int32_t displayId) override;
-
-    /**
-     * @brief Obtains the X coordinate of the center in this display resizing rectangle through the proxy object.
-     * @param displayId The id of display.
-     * @return Returns the X coordinate of the center.
-     */
-    virtual float GetDisplayResizeCenterX(const int32_t displayId) override;
-
-    /**
-     * @brief Obtains the Y coordinate of the center in this display resizing rectangle through the proxy object.
-     * @param displayId The id of display.
-     * @return Returns the Y coordinate of the center.
-     */
-    virtual float GetDisplayResizeCenterY(const int32_t displayId) override;
-
-    /**
-     * @brief Obtains the display resizing rectangle through the proxy object.
-     * @param displayId The id of display.
-     * @return Returns the display resizing rectangle.
-     */
-    virtual Rect GetDisplayResizeRect(const int32_t displayId) override;
-
-    /**
-     * @brief Resets the display to its initial size through the proxy object.
-     * @param displayId The id of display.
-     * @param animate Specifies whether animation is required.
-     * @return Returns true if the display is successfully reset; returns false otherwise.
-     */
-    virtual bool ResetDisplayResize(const int32_t displayId, const bool animate) override;
-
-    /**
-     * @brief Sets the center coordinates and scale for the display resizing rectangle through the proxy object.
-     * @param displayId The id of display.
-     * @param scale Indicates the scale for resizing the display
-     * @param centerX Indicates the X coordinate of the center for resizing the display.
-     * @param centerY Indicates the Y coordinate of the center for resizing the display.
-     * @param animate Specifies whether animation is required.
-     * @return Returns true if the center coordinates and scale are successfully set; returns false otherwise.
-     */
-    virtual bool SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale, const float centerX,
-        const float centerY, const bool animate) override;
-
-    /**
      * @brief Send simulation gesture through the proxy object.
      * @param requestId The sequence of simulation gesture.
-     * @param gestureSteps The gesture to send.
+     * @param gesturePath The gesture path to send.
      * @return
      */
     virtual void SendSimulateGesture(const int32_t requestId,
-        const std::vector<AccessibilityGesturePath> &gestureSteps) override;
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+
+    /**
+     * @brief Set event types to filter.
+     * @param eventTypes The event types which you want.
+     * @return Return true if sets event types successfully, else return false.
+     */
+    virtual bool SetEventTypeFilter(const uint32_t eventTypes) override;
+
+    /**
+     * @brief Set target bundle names.
+     * @param targetBundleNames The target bundle name
+     * @return Return true if sets target bundle names successfully, else return false.
+     */
+    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) override;
 
 private:
     /**

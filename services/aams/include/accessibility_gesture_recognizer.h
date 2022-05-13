@@ -24,7 +24,6 @@
 #include "accessible_ability_manager_service.h"
 #include "event_handler.h"
 #include "event_runner.h"
-#include "hilog_wrapper.h"
 #include "pointer_event.h"
 #include "singleton.h"
 

@@ -27,18 +27,18 @@ class MockAccessibleAbilityManagerService : public AccessibleAbilityManagerServi
 public:
     MOCK_METHOD0(OnStart, void());
     MOCK_METHOD0(OnStop, void());
-    MOCK_METHOD2(SendEvent, void(const AccessibilityEventInfo& uiEvent, const int32_t accountId));
+    MOCK_METHOD1(SendEvent, void(const AccessibilityEventInfo& uiEvent));
     MOCK_METHOD2(RegisterStateCallback,
         uint32_t(const sptr<AccessibleAbilityManagerServiceStub>& callback, const int32_t accountId));
     MOCK_METHOD2(RegisterCaptionPropertyCallback,
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
     MOCK_METHOD2(
         GetAbilityList, std::vector<AccessibilityAbilityInfo>(const uint32_t abilityTypes, const int32_t stateType));
-    MOCK_METHOD3(RegisterElementOperator,
-        void(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, const int32_t accountId));
+    MOCK_METHOD2(RegisterElementOperator,
+        void(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation));
     MOCK_METHOD1(DeregisterElementOperator, void(const int32_t windowId));
-    MOCK_METHOD0(GetCaptionProperty, CaptionProperty());
-    MOCK_METHOD1(SetCaptionProperty, bool(const CaptionProperty& caption));
+    MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
+    MOCK_METHOD1(SetCaptionProperty, bool(const AccessibilityConfig::CaptionProperty& caption));
     MOCK_METHOD1(SetCaptionState, bool(const bool state));
     MOCK_METHOD1(SetEnabled, bool(const bool state));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
@@ -47,8 +47,6 @@ public:
     {
         return nullptr;
     }
-
-    MOCK_METHOD1(IsWantedKeyEvent, bool(MMI::KeyEvent& event));
 
     inline sptr<KeyEventFilter> GetKeyEventFilter()
     {
@@ -83,12 +81,12 @@ public:
 
     MOCK_METHOD0(GetCurrentAccountData, sptr<AccessibilityAccountData>());
     MOCK_METHOD0(GetBundleMgrProxy, sptr<AppExecFwk::IBundleMgr>());
+    MOCK_METHOD1(AddedUser, void(int32_t accountId));
     MOCK_METHOD1(RemovedUser, void(int32_t accountId));
-    MOCK_METHOD0(PresentUser, void());
+    MOCK_METHOD1(SwitchedUser, void(int32_t accountId));
     MOCK_METHOD1(PackageChanged, void(std::string& bundleName));
     MOCK_METHOD1(PackageRemoved, void(std::string& bundleName));
     MOCK_METHOD1(PackageAdd, void(std::string& bundleName));
-    MOCK_METHOD1(PackageUpdateFinished, void(std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
     MOCK_METHOD0(UpdateAbilities, void());
     MOCK_METHOD0(GetEnabledState, bool());

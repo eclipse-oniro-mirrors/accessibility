@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_gesture_recognizer.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -55,7 +56,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 {
     HILOG_DEBUG();
 
-    AccessibilityDisplayManager &displayMgr = AccessibilityDisplayManager::GetInstance();
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
         HILOG_ERROR("get display is nullptr");
@@ -70,12 +71,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     int32_t slop = (int32_t) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    runner_ = aams->GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;

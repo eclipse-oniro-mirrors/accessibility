@@ -16,13 +16,13 @@
 #include <gtest/gtest.h>
 #include <map>
 #include <memory>
+#include "accessibility_ability_helper.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -44,7 +44,6 @@ public:
 
     void AddConnection();
     std::shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
     sptr<AccessibleAbilityChannel> aastub_ = nullptr;
 };
 
@@ -61,15 +60,8 @@ void KeyEventFilterUnitTest::TearDownTestCase()
 void KeyEventFilterUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // Register bundleservice
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
-
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
-
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
     keyEventFilter_ = std::make_shared<KeyEventFilter>();
 }
 
@@ -77,21 +69,18 @@ void KeyEventFilterUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     keyEventFilter_ = nullptr;
-    mock_ = nullptr;
     aastub_ = nullptr;
 }
 
 void KeyEventFilterUnitTest::AddConnection()
 {
     GTEST_LOG_(INFO) << "KeyEventFilterUnitTest AddConnection";
-    std::shared_ptr<AccessibleAbilityManagerService> aams =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 
     // add an ability connection client
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-    sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(*connection);
@@ -177,8 +166,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
@@ -210,8 +198,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
@@ -243,8 +230,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 
     GTEST_LOG_(INFO) << "Set result";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
@@ -275,8 +261,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
 
     GTEST_LOG_(INFO) << "Clear service KeyEvents";
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 

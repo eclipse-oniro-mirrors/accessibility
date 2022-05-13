@@ -33,8 +33,6 @@ public:
     virtual void Disconnect(const int32_t channelId) override;
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo) override;
     virtual void OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence) override;
-    virtual void OnDisplayResized(const int32_t displayId, const Rect& rect, const float scale, const float centerX,
-        const float centerY) override;
     virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
 
 private:
@@ -42,7 +40,6 @@ private:
     ErrCode HandleDisconnect(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleOnAccessibilityEvent(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleOnKeyPressEvent(MessageParcel& data, MessageParcel& reply);
-    ErrCode HandleOnDisplayResized(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleOnGestureInjectResult(MessageParcel& data, MessageParcel& reply);
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityClientStubImpl);
 };

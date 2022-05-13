@@ -30,21 +30,13 @@ static const std::string TASK_EXECUTE_ACTION = "ExecuteAction";
 static const std::string TASK_GET_WINDOWS = "GetWindows";
 static const std::string TASK_EXECUTE_COMMON_ACTION = "ExecuteCommonAction";
 static const std::string TASK_SET_ON_KEY_PRESS_EVENT_RESULT = "SetOnKeyPressEventResult";
-static const std::string TASK_GET_DISPLAY_RESIZE_SCALE = "GetDisplayResizeScale";
-static const std::string TASK_GET_DISPLAY_RESIZE_CENTER_X = "GetDisplayResizeCenterX";
-static const std::string TASK_GET_DISPLAY_RESIZE_CENTER_Y = "GetDisplayResizeCenterY";
-static const std::string TASK_GET_DISPLAY_RESIZE_RECT = "GetDisplayResizeRect";
-static const std::string TASK_RESET_DISPLAY_RESIZE = "ResetDisplayResize";
-static const std::string TASK_SET_DISPLAY_RESIZE_SCALE_AND_CENTER = "SetDisplayResizeScaleAndCenter";
-static const std::string TASK_SEND_SIMULATE_GESTURE = "SendSimulateGesture";
+static const std::string TASK_SEND_SIMULATE_GESTURE_PATH = "SendSimulateGesturePath";
+static const std::string TASK_SET_EVENT_TYPE_FILTER = "SetEventTypeFilter";
+static const std::string TASK_SET_TARGET_BUNDLE_NAME = "SetTargetBundleName";
 AccessibleAbilityChannel::AccessibleAbilityChannel(AccessibleAbilityConnection& connection) : connection_(connection)
 {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr.");
-        return;
-    }
-    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(aams->GetMainRunner());
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
 }
 
 bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
@@ -76,9 +68,9 @@ void AccessibleAbilityChannel::InnerSearchElementInfoByAccessibilityId(const int
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    int32_t realWindowId = AccessibilityWindowManager::GetInstance().ConvertToRealWindowId(
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, FOCUS_TYPE_INVALID);
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId failed: no connection");
         return;
@@ -118,10 +110,10 @@ void AccessibleAbilityChannel::InnerSearchElementInfosByText(const int32_t acces
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    int32_t realWindowId = AccessibilityWindowManager::GetInstance().ConvertToRealWindowId(
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("SearchElementInfosByText failed");
         return;
@@ -160,10 +152,10 @@ void AccessibleAbilityChannel::InnerFindFocusedElementInfo(const int32_t accessi
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    int32_t realWindowId = AccessibilityWindowManager::GetInstance().ConvertToRealWindowId(
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, focusType);
 
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("FindFocusedElementInfo failed");
         return;
@@ -200,10 +192,10 @@ void AccessibleAbilityChannel::InnerFocusMoveSearch(const int32_t accessibilityW
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    int32_t realWindowId = AccessibilityWindowManager::GetInstance().ConvertToRealWindowId(
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("FocusMoveSearch failed");
         return;
@@ -243,10 +235,10 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
         HILOG_ERROR("accountData is nullptr");
         return;
     }
-    int32_t realWindowId = AccessibilityWindowManager::GetInstance().ConvertToRealWindowId(
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
-    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realWindowId);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
     if (!connection || !connection->GetProxy()) {
         HILOG_ERROR("ExecuteAction failed");
         return;
@@ -258,7 +250,7 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows()
+std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows(const uint64_t displayId)
 {
     HILOG_DEBUG("start");
 
@@ -271,7 +263,7 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows()
     std::promise<std::vector<AccessibilityWindowInfo>> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindows,
-        this, std::ref(syncPromise));
+        this, std::ref(syncPromise), displayId);
 
     eventHandler_->PostTask(task, TASK_GET_WINDOWS);
     ret = syncFuture.get();
@@ -279,7 +271,8 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows()
     return ret;
 }
 
-void AccessibleAbilityChannel::InnerGetWindows(std::promise<std::vector<AccessibilityWindowInfo>> &syncPromise)
+void AccessibleAbilityChannel::InnerGetWindows(std::promise<std::vector<AccessibilityWindowInfo>> &syncPromise,
+    const uint64_t displayId)
 {
     HILOG_DEBUG("start");
 
@@ -291,13 +284,16 @@ void AccessibleAbilityChannel::InnerGetWindows(std::promise<std::vector<Accessib
     }
 
     std::vector<AccessibilityWindowInfo> windowInfos =
-        AccessibilityWindowManager::GetInstance().GetAccessibilityWindows();
-    size_t size = windowInfos.size();
+        Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
     int32_t currentChannelId = connection_.GetChannelId();
-    for (size_t i = 0; i < size; i++) {
-        windowInfos[i].SetChannelId(currentChannelId);
+    std::vector<AccessibilityWindowInfo> result;
+    for (auto &window : windowInfos) {
+        if (window.GetDisplayId() == displayId) {
+            window.SetChannelId(currentChannelId);
+            result.push_back(window);
+        }
     }
-    syncPromise.set_value(windowInfos);
+    syncPromise.set_value(result);
 }
 
 bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
@@ -331,17 +327,8 @@ void AccessibleAbilityChannel::InnerExecuteCommonAction(int32_t action)
         case GlobalAction::GLOBAL_ACTION_NOTIFICATION:
             HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_NOTIFICATION");
             break;
-        case GlobalAction::GLOBAL_ACTION_POP_UP_POWER_DIALOG:
-            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_POP_UP_POWER_DIALOG");
-            break;
-        case GlobalAction::GLOBAL_ACTION_DIVIDE_SCREEN:
-            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_DIVIDE_SCREEN");
-            break;
         case GlobalAction::GLOBAL_ACTION_LOCK_SCREEN:
             HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_LOCK_SCREEN");
-            break;
-        case GlobalAction::GLOBAL_ACTION_CAPTURE_SCREEN:
-            HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_CAPTURE_SCREEN");
             break;
         default:
             HILOG_DEBUG("The action is not exist. %{public}d", action);
@@ -369,197 +356,28 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
 
 void AccessibleAbilityChannel::InnerSetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    sptr<KeyEventFilter> keyEventFilter = aams->GetKeyEventFilter();
+    sptr<KeyEventFilter> keyEventFilter = Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventFilter();
     if (!keyEventFilter) {
         return;
     }
     keyEventFilter->SetServiceOnKeyEventResult(connection_, handled, sequence);
 }
 
-float AccessibleAbilityChannel::GetDisplayResizeScale(const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return 0.0f;
-    }
-    std::promise<float> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetDisplayResizeScale,
-        this, std::ref(syncPromise), displayId);
-
-    eventHandler_->PostTask(task, TASK_GET_DISPLAY_RESIZE_SCALE);
-    float ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerGetDisplayResizeScale(std::promise<float> &syncPromise, const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    float result = AccessibilityZoomProxy::GetInstance().GetScale(displayId);
-    syncPromise.set_value(result);
-}
-
-float AccessibleAbilityChannel::GetDisplayResizeCenterX(const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return 0.0f;
-    }
-    std::promise<float> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetDisplayResizeCenterX,
-        this, std::ref(syncPromise), displayId);
-
-    eventHandler_->PostTask(task, TASK_GET_DISPLAY_RESIZE_CENTER_X);
-    float ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerGetDisplayResizeCenterX(std::promise<float> &syncPromise, const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    float result = AccessibilityZoomProxy::GetInstance().GetCenterX(displayId);
-    syncPromise.set_value(result);
-}
-
-float AccessibleAbilityChannel::GetDisplayResizeCenterY(const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return 0.0f;
-    }
-    std::promise<float> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetDisplayResizeCenterY,
-        this, std::ref(syncPromise), displayId);
-
-    eventHandler_->PostTask(task, TASK_GET_DISPLAY_RESIZE_CENTER_Y);
-    float ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerGetDisplayResizeCenterY(std::promise<float> &syncPromise, const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    float result = AccessibilityZoomProxy::GetInstance().GetCenterY(displayId);
-    syncPromise.set_value(result);
-}
-
-Rect AccessibleAbilityChannel::GetDisplayResizeRect(const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        Rect temp;
-        return temp;
-    }
-    std::promise<Rect> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetDisplayResizeRect,
-        this, std::ref(syncPromise), displayId);
-
-    eventHandler_->PostTask(task, TASK_GET_DISPLAY_RESIZE_RECT);
-    Rect ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerGetDisplayResizeRect(std::promise<Rect> &syncPromise, const int32_t displayId)
-{
-    HILOG_DEBUG("start");
-    Rect result = AccessibilityZoomProxy::GetInstance().GetDisplayResizeRect(displayId);
-    syncPromise.set_value(result);
-}
-
-bool AccessibleAbilityChannel::ResetDisplayResize(const int32_t displayId, const bool animate)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return false;
-    }
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerResetDisplayResize,
-        this, std::ref(syncPromise), displayId, animate);
-
-    eventHandler_->PostTask(task, TASK_RESET_DISPLAY_RESIZE);
-    bool ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerResetDisplayResize(std::promise<bool> &syncPromise,
-    const int32_t displayId, const bool animate)
-{
-    HILOG_DEBUG("start");
-    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM)) {
-        HILOG_ERROR("AccessibleAbilityChannel::ResetDisplayResize failed: no capability");
-        syncPromise.set_value(false);
-        return;
-    }
-    bool result = AccessibilityZoomProxy::GetInstance().Reset(displayId);
-    syncPromise.set_value(result);
-}
-
-bool AccessibleAbilityChannel::SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale,
-    const float centerX, const float centerY, const bool animate)
-{
-    HILOG_DEBUG("start");
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return false;
-    }
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetDisplayResizeScaleAndCenter,
-        this, std::ref(syncPromise), displayId, scale, centerX, centerY, animate);
-
-    eventHandler_->PostTask(task, TASK_SET_DISPLAY_RESIZE_SCALE_AND_CENTER);
-    bool ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityChannel::InnerSetDisplayResizeScaleAndCenter(std::promise<bool> &syncPromise,
-    const int32_t displayId, const float scale, const float centerX, const float centerY, const bool animate)
-{
-    HILOG_DEBUG("start");
-    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM)) {
-        HILOG_ERROR("AccessibleAbilityChannel::SetDisplayResizeScaleAndCenter failed: no capability");
-        syncPromise.set_value(false);
-        return;
-    }
-    bool result = AccessibilityZoomProxy::GetInstance().SetScaleAndCenter(displayId, scale, centerX, centerY);
-    syncPromise.set_value(result);
-}
-
 void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
-    const std::vector<AccessibilityGesturePath> &gestureSteps)
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG("start");
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return;
     }
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSendSimulateGesture,
-        this, requestId, gestureSteps);
-    eventHandler_->PostTask(task, TASK_SEND_SIMULATE_GESTURE);
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSendSimulateGesturePath,
+        this, requestId, gesturePath);
+    eventHandler_->PostTask(task, TASK_SEND_SIMULATE_GESTURE_PATH);
 }
 
-void AccessibleAbilityChannel::InnerSendSimulateGesture(const int32_t requestId,
-    const std::vector<AccessibilityGesturePath> &gestureSteps)
+void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t requestId,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG("start");
     sptr<IAccessibleAbilityClient> abilityClient = connection_.GetAbilityClient();
@@ -571,17 +389,65 @@ void AccessibleAbilityChannel::InnerSendSimulateGesture(const int32_t requestId,
         abilityClient->OnGestureInjectResult(requestId, false);
         return;
     }
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    sptr<TouchEventInjector> touchEventInjector = aams->GetTouchEventInjector();
+
+    sptr<TouchEventInjector> touchEventInjector =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
     if (!touchEventInjector) {
         abilityClient->OnGestureInjectResult(requestId, false);
         return;
     }
-    touchEventInjector->InjectEvents(gestureSteps, abilityClient, requestId);
+    touchEventInjector->InjectEvents(gesturePath, abilityClient, requestId);
+}
+
+bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start");
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr");
+        return false;
+    }
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetEventTypeFilter,
+        this, std::ref(syncPromise), eventTypes);
+
+    eventHandler_->PostTask(task, TASK_SET_EVENT_TYPE_FILTER);
+    bool ret = syncFuture.get();
+
+    return ret;
+}
+void AccessibleAbilityChannel::InnerSetEventTypeFilter(std::promise<bool> &syncPromise,
+    const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start");
+    connection_.SetAbilityInfoEventTypeFilter(eventTypes);
+    syncPromise.set_value(true);
+}
+
+bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start");
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr");
+        return false;
+    }
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetTargetBundleName,
+        this, std::ref(syncPromise), targetBundleNames);
+
+    eventHandler_->PostTask(task, TASK_SET_TARGET_BUNDLE_NAME);
+    bool ret = syncFuture.get();
+
+    return ret;
+}
+
+void AccessibleAbilityChannel::InnerSetTargetBundleName(std::promise<bool> &syncPromise,
+    const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start");
+    connection_.SetAbilityInfoTargetBundleName(targetBundleNames);
+    syncPromise.set_value(true);
 }
 } // namespace Accessibility
 } // namespace OHOS

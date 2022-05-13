@@ -34,7 +34,6 @@ config("accessibleability_public_config") {
 }
 
 aafwk_files = [
-  "${aafwk_path}/src/accessibility_display_resize_controller_impl.cpp",
   "${aafwk_path}/src/accessibility_element_operator_callback_impl.cpp",
   "${aafwk_path}/src/accessibility_ui_test_ability_impl.cpp",
   "${aafwk_path}/src/accessible_ability_channel_client.cpp",

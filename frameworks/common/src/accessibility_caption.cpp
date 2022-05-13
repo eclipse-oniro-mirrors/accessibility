@@ -17,7 +17,7 @@
 #include "hilog_wrapper.h"
 
 namespace OHOS {
-namespace Accessibility {
+namespace AccessibilityConfig {
 bool CaptionProperty::CheckProperty(const std::string &property)
 {
     bool result = true;

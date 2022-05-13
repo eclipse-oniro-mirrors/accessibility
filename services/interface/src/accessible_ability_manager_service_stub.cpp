@@ -75,6 +75,64 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
     memberFuncMap_[static_cast<uint32_t>(
         IAccessibleAbilityManagerService::Message::GET_ACTIVE_WINDOW)] =
         &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
+    memberFuncMap_[static_cast<uint32_t>(
+        IAccessibleAbilityManagerService::Message::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
+
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SCREENMAGNIFIER_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetShortKeyState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_TARGET)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_AUTOCLICK)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_INVERTCOLOR_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetInvertColorState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_HIGHCONTRASTTEXT_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_AUDIOMONO_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_ANIMATIONOFF_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_CONTENT_TIMEOUT)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetContentTimeout;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_BRIGHTNESS_DISCOUNT)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_AUDIO_BALANCE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetAudioBalance;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SCREENMAGNIFIER_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetShortKeyState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_TARGET)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_AUTOCLICK)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_INVERTCOLOR_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetInvertColorState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_HIGHCONTRASTTEXT_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_AUDIOMONO_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ANIMATIONOFF_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_DALTONIZATION_COLORFILTER)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_CONTENT_TIMEOUT)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetContentTimeout;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_BRIGHTNESS_DISCOUNT)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_AUDIO_BALANCE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAudioBalance;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::REGISTER_CONFIG_CALLBACK)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback;
 }
 
 AccessibleAbilityManagerServiceStub::~AccessibleAbilityManagerServiceStub()
@@ -115,8 +173,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data
         HILOG_DEBUG("ReadStrongParcelable<AbilityInfo> failed");
         return TRANSACTION_ERR;
     }
-    int32_t userId = data.ReadInt32();
-    SendEvent(*uiEvent, userId);
+    SendEvent(*uiEvent);
 
     return NO_ERROR;
 }
@@ -128,8 +185,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerStateObserver> client = iface_cast<IAccessibleAbilityManagerStateObserver>(obj);
-    int32_t userId = data.ReadInt32();
-    uint64_t result = RegisterStateObserver(client, userId);
+    uint64_t result = RegisterStateObserver(client);
     reply.WriteUint64(result);
 
     return NO_ERROR;
@@ -164,8 +220,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
     int32_t windowId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
-    int32_t userId = data.ReadInt32();
-    RegisterElementOperator(windowId, operation, userId);
+    RegisterElementOperator(windowId, operation);
 
     return NO_ERROR;
 }
@@ -185,7 +240,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty(MessagePar
 {
     HILOG_DEBUG("start");
 
-    CaptionProperty caption = GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = GetCaptionProperty();
     CaptionPropertyParcel captionParcel(caption);
 
     reply.WriteParcelable(&captionParcel);
@@ -202,7 +257,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
         HILOG_DEBUG("ReadStrongParcelable<CaptionProperty> failed");
         return TRANSACTION_ERR;
     }
-    SetCaptionProperty(*caption);
+    bool result = SetCaptionProperty(*caption);
+    reply.WriteBool(result);
 
     return NO_ERROR;
 }
@@ -212,8 +268,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel
     HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
-
-    SetCaptionState(state);
+    bool result = SetCaptionState(state);
+    reply.WriteBool(result);
 
     return NO_ERROR;
 }
@@ -226,8 +282,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallba
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerCaptionObserver> observer =
         iface_cast<IAccessibleAbilityManagerCaptionObserver>(remote);
-    int32_t userId = data.ReadInt32();
-    uint64_t result = RegisterCaptionObserver(observer, userId);
+    uint64_t result = RegisterCaptionObserver(observer);
     reply.WriteUint64(result);
 
     return NO_ERROR;
@@ -284,12 +339,10 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
 ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbilities(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-    std::vector<std::string> abilities {};
-    int32_t dev_num = data.ReadInt32();
-    for (int32_t i = 0; i < dev_num; i++) {
-        abilities.push_back(data.ReadString());
-    }
-    EnableAbilities(abilities);
+    std::string name = data.ReadString();
+    uint32_t capabilities = data.ReadUint32();
+    bool result = EnableAbilities(name, capabilities);
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
@@ -319,8 +372,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
     reply.WriteInt32(num);
     for (int32_t i = 0; i < num; i++) {
         sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(it[i]);
-        bool ret = reply.WriteStrongParcelable(info);
-        if (!ret) {
+        bool result = reply.WriteStrongParcelable(info);
+        if (!result) {
             HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return TRANSACTION_ERR;
         }
@@ -331,12 +384,9 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
 ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbilities(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
-    std::vector<std::string> abilities {};
-    int32_t dev_num = data.ReadInt32();
-    for (int32_t i = 0; i < dev_num; i++) {
-        abilities.push_back(data.ReadString());
-    }
-    DisableAbilities(abilities);
+    std::string name = data.ReadString();
+    bool result = DisableAbilities(name);
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
@@ -372,6 +422,296 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
         HILOG_ERROR("WriteBool failed");
         return TRANSACTION_ERR;
     }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetScreenMagnificationState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetShortKeyState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetMouseKeyState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    std::string name = data.ReadString();
+
+    SetShortkeyTarget(name);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t time = data.ReadInt32();
+
+    SetMouseAutoClick(time);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetInvertColorState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetHighContrastTextState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetAudioMonoState(state);
+
+    return NO_ERROR;
+}
+
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool state = data.ReadBool();
+
+    SetAnimationOffState(state);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("start");
+
+    uint32_t filter = data.ReadUint32();
+
+    SetDaltonizationColorFilter(filter);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    uint32_t time = data.ReadUint32();
+
+    SetContentTimeout(time);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    float discount = data.ReadFloat();
+
+    SetBrightnessDiscount(discount);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    float balance = data.ReadFloat();
+
+    SetAudioBalance(balance);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetScreenMagnificationState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortKeyState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetShortKeyState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetMouseKeyState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    std::string result = GetShortkeyTarget();
+    reply.WriteString(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t result = GetMouseAutoClick();
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetInvertColorState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetHighContrastTextState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetAudioMonoState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    bool result = GetAnimationOffState();
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t result = GetDaltonizationColorFilter();
+    reply.WriteUint32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t result = GetContentTimeout();
+    reply.WriteUint32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t result = GetBrightnessDiscount();
+    reply.WriteFloat(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    int32_t result = GetAudioBalance();
+    reply.WriteFloat(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    sptr<IAccessibilityEnableAbilityListsObserver> observer =
+        iface_cast<IAccessibilityEnableAbilityListsObserver>(obj);
+    RegisterEnableAbilityListsObserver(observer);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start");
+
+    sptr<IRemoteObject> obj = data.ReadRemoteObject();
+    sptr<IAccessibleAbilityManagerConfigObserver> config = iface_cast<IAccessibleAbilityManagerConfigObserver>(obj);
+    uint64_t result = RegisterConfigObserver(config);
+    reply.WriteUint64(result);
+
     return NO_ERROR;
 }
 } // namespace Accessibility

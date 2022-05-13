@@ -37,7 +37,7 @@ accessibility_common_src = [
   "${accessibility_common_path}/src/accessibility_element_info.cpp",
   "${accessibility_common_path}/src/accessibility_event_info.cpp",
   "${accessibility_common_path}/src/accessibility_window_info.cpp",
-  "${accessibility_common_path}/src/accessibility_gesture_path.cpp",
+  "${accessibility_common_path}/src/accessibility_gesture_inject_path.cpp",
 ]
 
 ohos_shared_library("accessibility_common") {

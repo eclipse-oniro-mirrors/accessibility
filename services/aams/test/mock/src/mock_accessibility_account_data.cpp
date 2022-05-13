@@ -59,6 +59,7 @@ void AccessibilityAccountData::OnAccountSwitched()
     // Clear Setting State.
     isEventTouchGuideState_ = false;
     isScreenMagnification_ = false;
+    isScreenMagnificationState_ = false;
     isFilteringKeyEvents_ = false;
     isGesturesSimulation_ = false;
 }
@@ -289,7 +290,7 @@ bool AccessibilityAccountData::SetCaptionPropertyPref()
     return true;
 }
 
-bool AccessibilityAccountData::SetCaptionProperty(const CaptionProperty& caption)
+bool AccessibilityAccountData::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     (void)caption;
     return true;
@@ -361,30 +362,18 @@ bool AccessibilityAccountData::GetCaptionState()
 void AccessibilityAccountData::UpdateEnabledFromPref()
 {}
 
-bool AccessibilityAccountData::EnableAbilities(std::vector<std::string>& abilities)
+bool AccessibilityAccountData::EnableAbilities(const std::string name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
-    for (auto& ability : abilities) {
-        bool isEnabledAbility = false;
-        for (auto& enabledAbility : enabledAbilities_) {
-            if (ability == enabledAbility) {
-                HILOG_ERROR("The ability[%{public}s] is already enabled", ability.c_str());
-                isEnabledAbility = true;
-                break;
-            }
-        }
-        if (!isEnabledAbility) {
-            enabledAbilities_.push_back(ability);
+    for (auto &enabledAbility : enabledAbilities_) {
+        if (enabledAbility == name) {
+            HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
+            return false;
         }
     }
-    UpdateEnabledFromPref();
-    return true;
-}
+    enabledAbilities_.push_back(name);
 
-bool AccessibilityAccountData::ReadConfigurationForAccountData()
-{
-    HILOG_DEBUG("start.");
-    // Temp deal: read the user confige data.
+    UpdateEnabledFromPref();
     return true;
 }
 
@@ -416,26 +405,23 @@ void AccessibilityAccountData::StringToVector(std::string& stringIn, std::vector
     HILOG_DEBUG("end.");
 }
 
-void AccessibilityAccountData::init()
+void AccessibilityAccountData::Init()
 {}
 
-bool AccessibilityAccountData::DisableAbilities(const std::vector<std::string>& abilities)
+bool AccessibilityAccountData::DisableAbilities(const std::string name)
 {
-    HILOG_DEBUG("start.");
-    for (auto& ability : abilities) {
-        HILOG_ERROR("disable ability[%{public}s] start", ability.c_str());
-        for (auto iter = enabledAbilities_.begin(); iter != enabledAbilities_.end();) {
-            if (*iter == ability) {
-                enabledAbilities_.erase(iter);
-                RemoveEnabledFromPref(ability);
-                HILOG_DEBUG("Removed %{public}s and EnabledAbility size(%{public}zu)",
-                    ability.c_str(),
-                    enabledAbilities_.size());
-            } else {
-                iter++;
-            }
+    HILOG_ERROR("disable ability[%{public}s] start", name.c_str());
+    for (auto iter = enabledAbilities_.begin(); iter != enabledAbilities_.end();) {
+        if (*iter == name) {
+            enabledAbilities_.erase(iter);
+            RemoveEnabledFromPref(name);
+            HILOG_DEBUG("Removed %{public}s and EnabledAbility size(%{public}zu)",
+                name.c_str(), enabledAbilities_.size());
+        } else {
+            iter++;
         }
     }
+
     return true;
 }
 
@@ -443,6 +429,194 @@ void AccessibilityAccountData::VectorToString(std::vector<std::string>& vectorVa
 {
     (void)vectorVal;
     HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
+}
+
+bool AccessibilityAccountData::SetScreenMagnificationState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetShortKeyState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetMouseKeyState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetMouseAutoClick(const int32_t time)
+{
+    (void)time;
+    return true;
+}
+
+bool AccessibilityAccountData::SetShortkeyTarget(const std::string &name)
+{
+    (void)name;
+    return true;
+}
+
+bool AccessibilityAccountData::SetHighContrastTextState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetInvertColorState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetAnimationOffState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetAudioMonoState(const bool state)
+{
+    (void)state;
+    return true;
+}
+
+bool AccessibilityAccountData::SetDaltonizationColorFilter(const uint32_t filter)
+{
+    (void)filter;
+    return true;
+}
+
+bool AccessibilityAccountData::SetContentTimeout(const uint32_t time)
+{
+    (void)time;
+    return true;
+}
+
+bool AccessibilityAccountData::SetBrightnessDiscount(const float discount)
+{
+    (void)discount;
+    return true;
+}
+
+bool AccessibilityAccountData::SetAudioBalance(const float balance)
+{
+    (void)balance;
+    return true;
+}
+
+bool AccessibilityAccountData::GetScreenMagnificationState()
+{
+    return isScreenMagnification_;
+}
+
+bool AccessibilityAccountData::GetShortKeyState()
+{
+    return isShortKeyState_;
+}
+bool AccessibilityAccountData::GetMouseKeyState()
+{
+    return isMouseKeyState_;
+}
+
+uint32_t AccessibilityAccountData::GetConfigState()
+{
+    HILOG_DEBUG("start.");
+    uint32_t state = 0;
+    return state;
+}
+
+int32_t AccessibilityAccountData::GetMouseAutoClick()
+{
+    return mouseAutoClick_;
+}
+
+std::string AccessibilityAccountData::GetShortkeyTarget()
+{
+    return shortkeyTarget_;
+}
+
+bool AccessibilityAccountData::GetHighContrastTextState()
+{
+    return highContrastTextState_;
+}
+
+bool AccessibilityAccountData::GetInvertColorState()
+{
+    return invertColorState_;
+}
+
+bool AccessibilityAccountData::GetAnimationOffState()
+{
+    return animationOffState_;
+}
+
+bool AccessibilityAccountData::GetAudioMonoState()
+{
+    return audioMonoState_;
+}
+
+uint32_t AccessibilityAccountData::GetDaltonizationColorFilter()
+{
+    return daltonizationColorFilter_;
+}
+
+uint32_t AccessibilityAccountData::GetContentTimeout()
+{
+    return contentTimeout_;
+}
+
+float AccessibilityAccountData::GetBrightnessDiscount()
+{
+    return brightnessDiscount_;
+}
+
+float AccessibilityAccountData::GetAudioBalance()
+{
+    return audioBalance_;
+}
+
+void AccessibilityAccountData::ConfigInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
+{
+}
+
+void AccessibilityAccountData::AddEnableAbilityListsObserver(
+    const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
+{
+    (void)observer;
+}
+
+void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
+{
+    (void)observer;
+}
+
+void AccessibilityAccountData::AddConfigCallback(
+    const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
+{
+    HILOG_DEBUG("start.");
+    configCallbacks_.push_back(callback);
+}
+
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> AccessibilityAccountData::GetConfigCallbacks()
+{
+    HILOG_DEBUG("start.");
+    return configCallbacks_;
+}
+
+void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
+{
+    HILOG_DEBUG("start.");
+    for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
+        if ((*itr)->AsObject() == callback) {
+            configCallbacks_.erase(itr);
+            break;
+        }
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -30,7 +30,7 @@ public:
      * @param caption The caption properties.
      * @return
      */
-    virtual void OnPropertyChanged(const CaptionProperty &property) = 0;
+    virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) = 0;
 
     enum class Message {
         ON_PROPERTY_CHANGED,

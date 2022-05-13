@@ -113,60 +113,28 @@ private:
     ErrCode HandleSetOnKeyPressEventResult(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleGetDisplayResizeScale.
+     * @brief Handle the IPC request for the function:HandleSendSimulateGesturePath.
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleGetDisplayResizeScale(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSendSimulateGesturePath(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleGetDisplayResizeCenterX.
+     * @brief Handle the IPC request for the function:HandleSetEventTypeFilter.
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleGetDisplayResizeCenterX(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetEventTypeFilter(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleGetDisplayResizeCenterY.
+     * @brief Handle the IPC request for the function:HandleSetTargetBundleName.
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleGetDisplayResizeCenterY(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleGetDisplayResizeRect.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleGetDisplayResizeRect(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleResetDisplayResize.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleResetDisplayResize(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleSetDisplayResizeScaleAndCenter.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleSetDisplayResizeScaleAndCenter(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleSendSimulateGesture.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleSendSimulateGesture(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetTargetBundleName(MessageParcel &data, MessageParcel &reply);
 
     using AccessibleAbilityConnectionFunc =
         ErrCode (AccessibleAbilityChannelStub::*)(MessageParcel &data, MessageParcel &reply);

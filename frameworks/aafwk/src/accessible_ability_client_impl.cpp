@@ -15,7 +15,7 @@
 
 #include "accessible_ability_client_impl.h"
 #include "accessible_ability_client.h"
-#include "accessibility_display_resize_controller.h"
+#include "display_manager.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -24,7 +24,6 @@
 namespace OHOS {
 namespace Accessibility {
 static const int32_t NONE_ID = -1;
-
 static std::mutex g_Mutex;
 static sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
 sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
@@ -55,7 +54,7 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
     }
     HILOG_DEBUG("Get remote object ok");
 
-    serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceProxy>(object);
+    serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("Get aams proxy failed");
         return;
@@ -157,23 +156,6 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     }
 }
 
-void AccessibleAbilityClientImpl::OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale,
-    const float centerX, const float centerY)
-{
-    HILOG_DEBUG("start.");
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return;
-    }
-
-    std::shared_ptr<DisplayResizeController> displayResizeController = GetDisplayResizeController(displayId);
-    if (!displayResizeController) {
-        HILOG_ERROR("There is no displayResizeController.");
-        return;
-    }
-    displayResizeControllers_[displayId]->DispatchOnDisplayResized(rect, scale, centerX, centerY);
-}
-
 void AccessibleAbilityClientImpl::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
 {
     HILOG_DEBUG("start.");
@@ -219,29 +201,25 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
 }
 
 bool AccessibleAbilityClientImpl::GestureInject(const uint32_t sequence,
-    const std::vector<AccessibilityGesturePath> &gesturePathList,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
+    const std::shared_ptr<AccessibilityGestureResultListener>& listener)
 {
     HILOG_DEBUG("start.");
 
-    if (gesturePathList.size() > AccessibilityGesturePath::MAX_GESTURE_PATHS || gesturePathList.size() <= 0) {
-        HILOG_ERROR("The number of gesturePathDefine : [%{public}zu] is not allowed.", gesturePathList.size());
+    if (!gesturePath) {
+        HILOG_ERROR("The gesturePath is null.");
+        return false;
+    }
+
+    std::vector<AccessibilityGesturePosition> positions = gesturePath->GetPositions();
+
+    if (positions.size() <= 0) {
+        HILOG_ERROR("The number of gesture path position is not allowed.");
         return false;
     }
 
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
-    }
-
-    int64_t totalDurationTime = 0;
-    for (auto &gesturePath : gesturePathList) {
-        totalDurationTime += gesturePath.GetDurationTime();
-    }
-    HILOG_DEBUG("The total duration time is %{public}jd.", totalDurationTime);
-
-    if (totalDurationTime > AccessibilityGesturePath::MAX_GESTURE_DURATION) {
-        HILOG_ERROR("The total duration time : [%{public}jd] is not allowed.", totalDurationTime);
         return false;
     }
 
@@ -249,37 +227,8 @@ bool AccessibleAbilityClientImpl::GestureInject(const uint32_t sequence,
         gestureResultListenerInfos_.insert(make_pair(sequence, listener));
     }
 
-    channelClient_->SendSimulateGesture(sequence, gesturePathList);
+    channelClient_->SendSimulateGesture(sequence, gesturePath);
     return true;
-}
-
-std::shared_ptr<DisplayResizeController> AccessibleAbilityClientImpl::GetDisplayResizeController()
-{
-    HILOG_DEBUG("start.");
-
-    // this is a temp deal: To make sure the id of DEFAULT_DISPALY.
-    int32_t DEFAULT_DISPALY = 0;
-    return GetDisplayResizeController(DEFAULT_DISPALY);
-}
-
-std::shared_ptr<DisplayResizeController> AccessibleAbilityClientImpl::GetDisplayResizeController(
-    const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return nullptr;
-    }
-
-    auto iter = displayResizeControllers_.find(displayId);
-    if (iter != displayResizeControllers_.end()) {
-        return displayResizeControllers_[displayId];
-    } else {
-        HILOG_DEBUG("Have no DisplayResizeController and make a new one.");
-        displayResizeControllers_[displayId] =
-            std::make_shared<DisplayResizeControllerImpl>(displayId, channelClient_);
-        return displayResizeControllers_[displayId];
-    }
 }
 
 bool AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
@@ -334,7 +283,19 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows()
         std::vector<AccessibilityWindowInfo> temp;
         return temp;
     }
-    return channelClient_->GetWindows();
+    uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
+    return channelClient_->GetWindows(displayId);
+}
+
+std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId)
+{
+    HILOG_DEBUG("start.");
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        std::vector<AccessibilityWindowInfo> temp;
+        return temp;
+    }
+    return channelClient_->GetWindows(displayId);
 }
 
 bool AccessibleAbilityClientImpl::ExecuteCommonAction(const GlobalAction action)
@@ -344,10 +305,7 @@ bool AccessibleAbilityClientImpl::ExecuteCommonAction(const GlobalAction action)
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    if ((action != GLOBAL_ACTION_BACK) && (action != GLOBAL_ACTION_HOME) &&
-        (action != GLOBAL_ACTION_RECENT) && (action != GLOBAL_ACTION_NOTIFICATION) &&
-        (action != GLOBAL_ACTION_POP_UP_POWER_DIALOG) && (action != GLOBAL_ACTION_DIVIDE_SCREEN) &&
-        (action != GLOBAL_ACTION_LOCK_SCREEN) && (action != GLOBAL_ACTION_CAPTURE_SCREEN)) {
+    if (action >= GLOBAL_ACTION_MAX) {
         HILOG_ERROR("action is not allowed.");
         return false;
     }
@@ -377,12 +335,13 @@ bool AccessibleAbilityClientImpl::GetChildWindowInfo(const int32_t index, const 
     }
     int32_t channelId = parent.GetChannelId();
     int32_t childId = parent.GetChildIdByIndex(index);
-    HILOG_INFO("channelId[%{public}d], childId[%{public}d]", channelId, childId);
+    uint64_t displayId = parent.GetDisplayId();
+    HILOG_INFO("channelId[%{public}d], childId[%{public}d], displayId[%{public}ju]", channelId, childId, displayId);
     if (childId == -1) {
         HILOG_ERROR("index[%{public}d] is invalid", childId);
         return false;
     }
-    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows();
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows(displayId);
     for (auto &window : windows) {
         if (window.GetWindowId() == childId) {
             HILOG_DEBUG("GetWindows OK");
@@ -490,8 +449,9 @@ bool AccessibleAbilityClientImpl::GetParentWindowInfo(
     }
     int32_t channelId = child.GetChannelId();
     int32_t parentId = child.GetParentId();
+    uint64_t displayId = child.GetDisplayId();
     HILOG_INFO("channelId[%{public}d], parentId[%{public}d]", channelId, parentId);
-    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows();
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows(displayId);
     for (auto &window : windows) {
         if (window.GetWindowId() == parentId) {
             HILOG_DEBUG("GetParentWindowInfo OK");
@@ -561,6 +521,26 @@ bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &
         channelId, windowId, elementId, action);
     return channelClient_->ExecuteAction(windowId, elementId, action,
         const_cast<std::map<std::string, std::string> &>(actionArguments));
+}
+
+bool AccessibleAbilityClientImpl::SetEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start.");
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return false;
+    }
+    return channelClient_->SetEventTypeFilter(eventTypes);
+}
+
+bool AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start.");
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return false;
+    }
+    return channelClient_->SetTargetBundleName(targetBundleNames);
 }
 
 void AccessibleAbilityClientImpl::AccessibleAbilityDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)

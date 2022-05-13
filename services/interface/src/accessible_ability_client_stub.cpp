@@ -31,8 +31,6 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
         &AccessibleAbilityClientStub::HandleOnAccessibilityEvent;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnKeyPressEvent;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_DISPALYRESIZE_CHANGED)] =
-        &AccessibleAbilityClientStub::HandleOnDisplayResized;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE_INJECT_RESULT)] =
         &AccessibleAbilityClientStub::HandleOnGestureInjectResult;
 }
@@ -117,25 +115,6 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
         return ERR_INVALID_VALUE;
     }
     OnKeyPressEvent(*keyEvent, sequence);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnDisplayResized(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG("start.");
-    int32_t displayId = data.ReadInt32();
-
-    sptr<RectParcel> rect = data.ReadStrongParcelable<RectParcel>();
-    if (!rect) {
-        HILOG_ERROR("ReadStrongParcelable<Rect> failed");
-        return ERR_INVALID_VALUE;
-    }
-
-    float scale = data.ReadFloat();
-    float centerX = data.ReadFloat();
-    float centerY = data.ReadFloat();
-
-    OnDisplayResized(displayId, *rect, scale, centerX, centerY);
     return NO_ERROR;
 }
 

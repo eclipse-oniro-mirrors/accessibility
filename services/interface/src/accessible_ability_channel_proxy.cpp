@@ -15,7 +15,7 @@
 
 #include "accessible_ability_channel_proxy.h"
 #include "accessibility_element_info_parcel.h"
-#include "accessibility_gesture_path_parcel.h"
+#include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
 
@@ -63,7 +63,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -109,7 +109,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t acces
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -155,7 +155,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessi
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -199,7 +199,7 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityW
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -244,7 +244,7 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -294,19 +294,25 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return reply.ReadBool();
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows()
+std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(const uint64_t displayId)
 {
     HILOG_DEBUG("start.");
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
     std::vector<AccessibilityWindowInfo> windowsError;
     std::vector<AccessibilityWindowInfo> windows;
 
     if (!WriteInterfaceToken(data)) {
         return windowsError;
     }
+
+    if (!data.WriteUint64(displayId)) {
+        HILOG_ERROR("displayId write error: %{public}ju, ", displayId);
+        return windowsError;
+    }
+
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
         return windowsError;
@@ -331,7 +337,7 @@ bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         return false;
@@ -354,7 +360,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -373,175 +379,8 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     }
 }
 
-float AccessibleAbilityChannelProxy::GetDisplayResizeScale(const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return 0;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return 0;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_SCALE, data, reply, option)) {
-        HILOG_ERROR("fail to get displayResize scale");
-        return 0;
-    }
-    return reply.ReadFloat();
-}
-
-float AccessibleAbilityChannelProxy::GetDisplayResizeCenterX(const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return 0;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return 0;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_DISPALYRESIZE_CENTER_X, data, reply, option)) {
-        HILOG_ERROR("fail to get displayResize centerX");
-        return 0;
-    }
-    return reply.ReadFloat();
-}
-
-float AccessibleAbilityChannelProxy::GetDisplayResizeCenterY(const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return 0;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return 0;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_CENTER_Y, data, reply, option)) {
-        HILOG_ERROR("fail to get displayResize centerY");
-        return 0;
-    }
-    return reply.ReadFloat();
-}
-
-Rect AccessibleAbilityChannelProxy::GetDisplayResizeRect(const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-    Rect rect(0, 0, 0, 0);
-
-    if (!WriteInterfaceToken(data)) {
-        return rect;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return rect;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_DISPLAYRESIZE_RECT, data, reply, option)) {
-        HILOG_ERROR("fail to get displayResize rect");
-        return rect;
-    }
-
-    sptr<RectParcel> result = reply.ReadStrongParcelable<RectParcel>();
-    if (!result) {
-        HILOG_ERROR("ReadStrongParcelable<Rect> failed");
-        return rect;
-    }
-    return *result;
-}
-
-bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int32_t displayId, const bool animate)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return false;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return false;
-    }
-    if (!data.WriteBool(animate)) {
-        HILOG_ERROR("animate write error: %{public}d, ", animate);
-        return false;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::RESET_DISPALYRESIZE, data, reply, option)) {
-        HILOG_ERROR("fail to reset displayResize");
-        return false;
-    }
-    return reply.ReadBool();
-}
-
-bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale,
-    const float centerX, const float centerY, const bool animate)
-{
-    HILOG_DEBUG("start.");
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return false;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}d, ", displayId);
-        return false;
-    }
-    if (!data.WriteFloat(scale)) {
-        HILOG_ERROR("scale write error: %{public}f, ", scale);
-        return false;
-    }
-    if (!data.WriteFloat(centerX)) {
-        HILOG_ERROR("centerX write error: %{public}f, ", centerX);
-        return false;
-    }
-    if (!data.WriteFloat(centerY)) {
-        HILOG_ERROR("centerY write error: %{public}f, ", centerY);
-        return false;
-    }
-    if (!data.WriteBool(animate)) {
-        HILOG_ERROR("animate write error: %{public}d, ", animate);
-        return false;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_DISPLAYRESIZE_SCALE_AND_CENTER,
-        data, reply, option)) {
-        HILOG_ERROR("fail to set displayResize scale and center");
-        return false;
-    }
-    return reply.ReadBool();
-}
-
 void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
-    const std::vector<AccessibilityGesturePath> &gestureSteps)
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG("start.");
 
@@ -556,20 +395,68 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
         return;
     }
-    if (!data.WriteInt32(gestureSteps.size())) {
-        HILOG_ERROR("gestureSteps.size() write error: %{public}zu, ", gestureSteps.size());
+    
+    sptr<AccessibilityGestureInjectPathParcel> path = new AccessibilityGestureInjectPathParcel(*gesturePath);
+    if (!data.WriteStrongParcelable(path)) {
+        HILOG_ERROR("WriteStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
         return;
     }
-    for (auto &step : gestureSteps) {
-        sptr<AccessibilityGesturePathParcel> path = new AccessibilityGesturePathParcel(step);
-        if (!data.WriteStrongParcelable(path)) {
-            HILOG_ERROR("WriteStrongParcelable<AccessibilityGesturePathParcel> failed");
-            return;
+
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
+        HILOG_ERROR("fail to send simulation gesture path");
+    }
+}
+
+bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start.");
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        return false;
+    }
+
+    if (!data.WriteUint32(eventTypes)) {
+        HILOG_ERROR("eventTypes write error: %{public}d, ", eventTypes);
+        return false;
+    }
+
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_EVENT_TYPE_FILTER, data, reply, option)) {
+        HILOG_ERROR("fail to set event type filter");
+        return false;
+    }
+    return reply.ReadBool();
+}
+
+bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start.");
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        return false;
+    }
+    if (!data.WriteInt32(targetBundleNames.size())) {
+        HILOG_ERROR("targetBundleNames.size() write error: %{public}zu, ", targetBundleNames.size());
+        return false;
+    }
+    for (auto &targetBundleName : targetBundleNames) {
+        if (!data.WriteString(targetBundleName)) {
+            HILOG_ERROR("targetBundleName write error: %{public}s, ", targetBundleName.c_str());
+            return false;
         }
     }
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE, data, reply, option)) {
-        HILOG_ERROR("fail to send simulation gesture");
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_TARGET_BUNDLE_NAME, data, reply, option)) {
+        HILOG_ERROR("fail to set target bundle name filter");
+        return false;
     }
+    return reply.ReadBool();
 }
 } // namespace Accessibility
 } // namespace OHOS

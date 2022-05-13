@@ -114,15 +114,15 @@ public:
      * @param -
      * @return Returns the properties of the accessibility caption function.
      */
-    virtual CaptionProperty GetCaptionProperty() = 0;
+    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() = 0;
 
     /**
      * @brief Set the properties of the accessibility caption function.
      * Remained for caption.
-     * @param - The properties of the accessibility caption.
+     * @param The properties of the accessibility caption.
      * @return Returns success : true, failed : false.
      */
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) = 0;
+    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
 
     /**
      * @brief Checks whether the accessibility caption function is enabled.
@@ -182,7 +182,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if add listener successfully, else return false.
      */
-    virtual bool AddCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) = 0;
+    virtual bool AddCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) = 0;
 
     /**
      * @brief delete the listener of caption.
@@ -190,7 +191,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) = 0;
+    virtual bool DeleteCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) = 0;
 
     /**
      * @brief Get the enabled state of accessibility.
@@ -223,13 +225,6 @@ public:
     virtual bool GetKeyEventObserverState() = 0;
 
     /**
-     * @brief Enabled specified abilities
-     * @param abilities The specified abilities.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableAbilities(std::vector<std::string> &abilities) = 0;
-
-    /**
      * @brief Get installed abilities.
      * @return Return the installed accessibility ability infos.
      */
@@ -246,7 +241,7 @@ public:
      * @param caption The caption property to set.
      * @return Return true if set caption property successfully, else return false.
      */
-    virtual bool SetCaptionPropertyTojson(const CaptionProperty &caption) = 0;
+    virtual bool SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption) = 0;
 
     /**
      * @brief Set caption state
@@ -254,13 +249,6 @@ public:
      * @return Return true if set caption state successfully, else return false.
      */
     virtual bool SetCaptionStateTojson(const bool state) = 0;
-
-    /**
-     * @brief Disabled specified abilities
-     * @param abilities The specified abilities.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool DisableAbilities(std::vector<std::string> &abilities) = 0;
 
     /**
      * @brief Enable Screen Magnifier

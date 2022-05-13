@@ -29,8 +29,7 @@ std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClie
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(g_Mutex);
     if (!g_Instance) {
-        int32_t accountId = 100;    // Temp deal
-        g_Instance = std::make_shared<AccessibilitySystemAbilityClientImpl>(accountId);
+        g_Instance = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     } else {
         HILOG_DEBUG("AccessibilitySystemAbilityClient had construct instance");
     }
@@ -38,7 +37,7 @@ std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClie
     return g_Instance;
 }
 
-AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl(int32_t accountId) : accountId_(accountId)
+AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 {
     if (!ConnectToService()) {
         HILOG_ERROR("Failed to connect to aams service");
@@ -47,7 +46,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl(int32
 
     stateArray_.fill(false);
     stateObserver_ = new AccessibleAbilityManagerStateObserverImpl(*this);
-    uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_, accountId_);
+    uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
     }
@@ -65,7 +64,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl(int32
     }
 
     captionObserver_ = new AccessibleAbilityManagerCaptionObserverImpl(*this);
-    serviceProxy_->RegisterCaptionObserver(captionObserver_, accountId_);
+    serviceProxy_->RegisterCaptionObserver(captionObserver_);
 }
 
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
@@ -101,7 +100,7 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
     }
 
     HILOG_DEBUG("Get remote object ok");
-    serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceProxy>(object);
+    serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
         return false;
@@ -115,7 +114,7 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
     if (serviceProxy_) {
-        sptr<IRemoteObject> object = serviceProxy_->GetRemoteObject();
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
         if (object && (remote == object)) {
             object->RemoveDeathRecipient(deathRecipient_);
             serviceProxy_ = nullptr;
@@ -147,7 +146,7 @@ int32_t AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new AccessibilityElementOperatorImpl(windowId, operation);
     interactionOperators_[windowId] = aamsInteractionOperator;
-    serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator, accountId);
+    serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
 
     return 0;
 }
@@ -214,11 +213,11 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClientImpl::GetA
     return (serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType));
 }
 
-CaptionProperty AccessibilitySystemAbilityClientImpl::GetCaptionProperty()
+AccessibilityConfig::CaptionProperty AccessibilitySystemAbilityClientImpl::GetCaptionProperty()
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
-    CaptionProperty cp;
+    AccessibilityConfig::CaptionProperty cp;
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
         return cp;
@@ -226,7 +225,7 @@ CaptionProperty AccessibilitySystemAbilityClientImpl::GetCaptionProperty()
     return serviceProxy_->GetCaptionProperty();
 }
 
-bool AccessibilitySystemAbilityClientImpl::SetCaptionProperty(const CaptionProperty &caption)
+bool AccessibilitySystemAbilityClientImpl::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -242,7 +241,7 @@ bool AccessibilitySystemAbilityClientImpl::SetCaptionProperty(const CaptionPrope
     return true;
 }
 
-bool AccessibilitySystemAbilityClientImpl::SetCaptionPropertyTojson(const CaptionProperty &caption)
+bool AccessibilitySystemAbilityClientImpl::SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -320,7 +319,7 @@ bool AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, 
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
-    serviceProxy_->SendEvent(event, accountId_);
+    serviceProxy_->SendEvent(event);
     return true;
 }
 
@@ -335,7 +334,7 @@ bool AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInf
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
-    serviceProxy_->SendEvent(event, accountId_);
+    serviceProxy_->SendEvent(event);
     return true;
 }
 
@@ -443,17 +442,17 @@ void AccessibilitySystemAbilityClientImpl::NotifyCaptionStateChanged()
     HILOG_DEBUG("end");
 }
 
-bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(const std::shared_ptr<CaptionObserver> &ob,
-    const int32_t type)
+bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(
+    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
     bool result = true;
-    if (type == CaptionObserverType::CAPTION_ENABLE) {
+    if (type == AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE) {
         if (!observersCaptionEnable_.size()) {
             observersCaptionEnable_.push_back(ob);
         }
-    } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
+    } else if (type == AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY) {
         if (!observersCaptionProperty_.size()) {
             observersCaptionProperty_.push_back(ob);
         }
@@ -465,13 +464,13 @@ bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(const std::shared_
     return result;
 }
 
-bool AccessibilitySystemAbilityClientImpl::DeleteCaptionListener(const std::shared_ptr<CaptionObserver> &ob,
-    const int32_t type)
+bool AccessibilitySystemAbilityClientImpl::DeleteCaptionListener(
+    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
     bool result = false;
-    if (type == CaptionObserverType::CAPTION_ENABLE) {
+    if (type == AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE) {
         for (auto enable = observersCaptionEnable_.begin(); enable != observersCaptionEnable_.end(); ++enable) {
             if (*enable == ob) {
                 observersCaptionEnable_.erase(enable);
@@ -479,7 +478,7 @@ bool AccessibilitySystemAbilityClientImpl::DeleteCaptionListener(const std::shar
                 break;
             }
         }
-    } else if (type == CaptionObserverType::CAPTION_PROPERTY) {
+    } else if (type == AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY) {
         for (auto property = observersCaptionProperty_.begin(); property != observersCaptionProperty_.end();
             ++property) {
             if (*property == ob) {
@@ -569,18 +568,6 @@ bool AccessibilitySystemAbilityClientImpl::GetKeyEventObserverState()
     return serviceProxy_->GetKeyEventObserverState();
 }
 
-bool AccessibilitySystemAbilityClientImpl::EnableAbilities(std::vector<std::string> &abilities)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    serviceProxy_->EnableAbilities(abilities);
-    return true;
-}
-
 std::vector<std::string> AccessibilitySystemAbilityClientImpl::GetEnabledAbilities()
 {
     HILOG_DEBUG("start");
@@ -603,19 +590,6 @@ std::vector<AccessibilityAbilityInfo> AccessibilitySystemAbilityClientImpl::GetI
         return it;
     }
     return serviceProxy_->GetInstalledAbilities();
-}
-
-bool AccessibilitySystemAbilityClientImpl::DisableAbilities(std::vector<std::string> &abilities)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    serviceProxy_->DisableAbilities(abilities);
-
-    return true;
 }
 
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChanged(const uint32_t stateType)
@@ -654,7 +628,7 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 }
 
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerCaptionPropertyChanged(
-    const CaptionProperty &property)
+    const AccessibilityConfig::CaptionProperty &property)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);

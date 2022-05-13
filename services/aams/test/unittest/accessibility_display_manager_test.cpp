@@ -52,31 +52,62 @@ void AccessibilityDisplayManagerUnitTest::TearDown()
 {}
 
 /**
- * @tc.number: AccessibilityDisplayManager_Unittest_OnCreate_001
- * @tc.name: OnScreeOnCreatenPlugin
- * @tc.desc: Test function OnCreate
+ * @tc.number: AccessibilityDisplayManager_Unittest_RegisterDisplayListener_001
+ * @tc.name: RegisterDisplayListener
+ * @tc.desc: Test function RegisterDisplayListener
  */
-HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_OnCreate_001, TestSize.Level1)
+HWTEST_F(AccessibilityDisplayManagerUnitTest,
+    AccessibilityDisplayManager_Unittest_RegisterDisplayListener_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnCreate_001 start";
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_RegisterDisplayListener_001 start";
 
-    AccessibilityDisplayManager::GetInstance().OnCreate(0);
+    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(nullptr);
 
-    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnCreate_001 end";
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_RegisterDisplayListener_001 end";
 }
 
 /**
- * @tc.number: AccessibilityDisplayManager_Unittest_OnDestroy_001
- * @tc.name: OnDestroy
- * @tc.desc: Test function OnDestroy
+ * @tc.number: AccessibilityDisplayManager_Unittest_UnregisterDisplayListener_001
+ * @tc.name: UnregisterDisplayListener
+ * @tc.desc: Test function UnregisterDisplayListener
  */
-HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_OnDestroy_001, TestSize.Level1)
+HWTEST_F(AccessibilityDisplayManagerUnitTest,
+    AccessibilityDisplayManager_Unittest_UnregisterDisplayListener_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnDestroy_001 start";
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_UnregisterDisplayListener_001 start";
 
-    AccessibilityDisplayManager::GetInstance().OnDestroy(0);
+    Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
 
-    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_OnDestroy_001 end";
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_UnregisterDisplayListener_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetDisplay_001
+ * @tc.name: GetDisplay
+ * @tc.desc: Test function GetDisplay
+ */
+HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDisplay_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplay_001 start";
+
+    auto display = Singleton<AccessibilityDisplayManager>::GetInstance().GetDisplay(0);
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplay_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001
+ * @tc.name: GetDefaultDisplay
+ * @tc.desc: Test function GetDefaultDisplay
+ */
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001 start";
+
+    auto display = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplay();
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

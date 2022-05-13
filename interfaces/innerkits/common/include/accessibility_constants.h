@@ -91,7 +91,13 @@ extern const uint32_t STATE_EXPLORATION_ENABLED;
 extern const uint32_t STATE_CAPTION_ENABLED;
 extern const uint32_t STATE_KEYEVENT_ENABLED;
 extern const uint32_t STATE_GESTURE_ENABLED;
-
+extern const uint32_t STATE_SCREENMAGNIFIER_ENABLED;
+extern const uint32_t STATE_MOUSEKEY_ENABLED;
+extern const uint32_t STATE_SHORTKEY_ENABLED;
+extern const uint32_t STATE_HIGHCONTRAST_ENABLED;
+extern const uint32_t STATE_INVETRTCOLOR_ENABLED;
+extern const uint32_t STATE_ANIMATIONOFF_ENABLED;
+extern const uint32_t STATE_AUDIOMONO_ENABLED;
 extern const uint32_t INVALID_CHANNEL_ID;
 } // namespace Accessibility
 } // namespace OHOS

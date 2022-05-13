@@ -20,30 +20,27 @@
 #include <memory>
 #include <functional>
 #include <string>
-#include "bundlemgr/bundle_mgr_interface.h"
-#include "common_event_manager.h"
-#include "common_event_support.h"
+#include "common_event_subscriber.h"
 #include "event_handler.h"
+#include "singleton.h"
 #include "want.h"
 
 using EventHandle = std::function<void(const OHOS::AAFwk::Want&)>;
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityCommonEventRegistry {
+class AccessibilityCommonEvent {
+    DECLARE_SINGLETON(AccessibilityCommonEvent)
 public:
-    explicit AccessibilityCommonEventRegistry(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
-    ~AccessibilityCommonEventRegistry() = default;
-
-    bool StartRegister();
-    void UnRegister();
+    void SubscriberEvent(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
+    void UnSubscriberEvent();
     void OnReceiveEvent(const AAFwk::Want &want);
 
 private:
     class AccessibilityCommonEventSubscriber : public EventFwk::CommonEventSubscriber {
     public:
         explicit AccessibilityCommonEventSubscriber(const EventFwk::CommonEventSubscribeInfo &subscriberInfo,
-            AccessibilityCommonEventRegistry &registry)
+            AccessibilityCommonEvent &registry)
             : CommonEventSubscriber(subscriberInfo), registry_(registry) {}
         ~AccessibilityCommonEventSubscriber() = default;
 
@@ -53,21 +50,18 @@ private:
         }
 
     private:
-        AccessibilityCommonEventRegistry &registry_;
+        AccessibilityCommonEvent &registry_;
     };
 
-    bool RegisterSubscriber();
-
-    void HandleEvent(const AAFwk::Want &want);
-    void HandleRemovedUser(const AAFwk::Want &want) const;
-    void HandlePresentUser(const AAFwk::Want &want) const;
+    void HandleUserAdded(const AAFwk::Want &want) const;
+    void HandleUserRemoved(const AAFwk::Want &want) const;
+    void HandleUserSwitched(const AAFwk::Want &want) const;
 
     void HandlePackageRemoved(const AAFwk::Want &want) const;
-    void HandlePackageUpdateFinished(const AAFwk::Want &want) const;
     void HandlePackageChanged(const AAFwk::Want &want) const;
     void HandlePackageAdd(const AAFwk::Want &want) const;
 
-    typedef void (AccessibilityCommonEventRegistry::*HandleEventFunc)(const AAFwk::Want&) const;
+    typedef void (AccessibilityCommonEvent::*HandleEventFunc)(const AAFwk::Want&) const;
     std::map<std::string, EventHandle> eventHandles_;
     std::map<std::string, HandleEventFunc> handleEventFunc_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

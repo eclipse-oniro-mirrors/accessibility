@@ -56,7 +56,6 @@ public:
     MOCK_METHOD0(GetEnabledAbilities, const std::map<std::string, AppExecFwk::ElementName>());
     MOCK_METHOD0(GetInstalledAbilities, const std::vector<AccessibilityAbilityInfo>());
     MOCK_METHOD0(UpdateAccountCapabilities, void());
-    MOCK_METHOD0(ReadConfigurationForAccountData, bool());
     MOCK_METHOD0(GetScreenMagnificationFlag, bool());
     MOCK_METHOD0(GetEventTouchGuideStateFlag, bool());
     MOCK_METHOD0(GetFilteringKeyEventsFlag, bool());
@@ -64,8 +63,8 @@ public:
     MOCK_METHOD0(GetInstalledAbilitiesFromBMS, bool());
     MOCK_METHOD1(AddEventEnabled, void(EventType type));
     MOCK_METHOD1(DeleteEventEnabled, void(EventType type));
-    MOCK_METHOD0(GetCaptionProperty, CaptionProperty());
-    MOCK_METHOD1(SetCaptionProperty, bool(const CaptionProperty& caption));
+    MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
+    MOCK_METHOD1(SetCaptionProperty, bool(const AccessibilityConfig::CaptionProperty& caption));
     MOCK_METHOD1(SetCaptionState, bool(const bool state));
     MOCK_METHOD1(SetEnabled, bool(const bool state));
     MOCK_METHOD1(SetEnaSetTouchGuideStatebled, bool(const bool state));
@@ -77,8 +76,8 @@ public:
     MOCK_METHOD0(GetKeyEventObserverState, bool());
     MOCK_METHOD0(GetCaptionState, bool());
     MOCK_METHOD1(SetEnabledObj, bool(std::map<std::string, AppExecFwk::ElementName> it));
-    MOCK_METHOD0(init, void());
-    MOCK_METHOD1(DisableAbilities, bool(std::map<std::string, AppExecFwk::ElementName> it));
+    MOCK_METHOD0(Init, void());
+    MOCK_METHOD1(DisableAbilities, bool(const std::string name));
     MOCK_METHOD1(AddUITestConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD1(RemoveUITestConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD0(GetUITestConnectedAbilityConnection, const sptr<AccessibleAbilityConnection>());

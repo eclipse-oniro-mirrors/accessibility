@@ -99,8 +99,9 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows()
+std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows(const uint64_t displayId)
 {
+    (void)displayId;
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
         std::vector<AccessibilityWindowInfo> windows;
@@ -124,54 +125,12 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     (void)sequence;
 }
 
-float AccessibleAbilityChannel::GetDisplayResizeScale(const int32_t displayId)
-{
-    (void)displayId;
-    return 0;
-}
-
-float AccessibleAbilityChannel::GetDisplayResizeCenterX(const int32_t displayId)
-{
-    (void)displayId;
-    return 0;
-}
-
-float AccessibleAbilityChannel::GetDisplayResizeCenterY(const int32_t displayId)
-{
-    (void)displayId;
-    return 0;
-}
-
-Rect AccessibleAbilityChannel::GetDisplayResizeRect(const int32_t displayId)
-{
-    Rect temp;
-    (void)displayId;
-    return temp;
-}
-
-bool AccessibleAbilityChannel::ResetDisplayResize(const int32_t displayId, const bool animate)
-{
-    (void)displayId;
-    (void)animate;
-    return true;
-}
-
-bool AccessibleAbilityChannel::SetDisplayResizeScaleAndCenter(
-    const int32_t displayId, const float scale, const float centerX, const float centerY, const bool animate)
-{
-    (void)displayId;
-    (void)scale;
-    (void)centerX;
-    (void)centerY;
-    (void)animate;
-    return true;
-}
-
-void AccessibleAbilityChannel::SendSimulateGesture(
-    const int32_t requestId, const std::vector<AccessibilityGesturePath>& gestureSteps)
+void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     (void)requestId;
-    (void)gestureSteps;
+    (void)gesturePath;
+    return;
 }
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(
@@ -217,16 +176,6 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent,
     (void)keyEvent;
     (void)sequence;
     return false;
-}
-
-void AccessibleAbilityConnection::OnDisplayResized(
-    const int32_t displayId, const Rect& rect, const float scale, const float centerX, const float centerY)
-{
-    (void)displayId;
-    (void)rect;
-    (void)scale;
-    (void)centerX;
-    (void)centerY;
 }
 
 void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
@@ -283,6 +232,10 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     (void)element;
     (void)remoteObject;
     (void)resultCode;
+    sptr<AccessibleAbilityConnection> pointer = this;
+    if (accountData_ != nullptr) {
+        accountData_->AddConnectedAbility(pointer);
+    }
 }
 
 void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
@@ -290,6 +243,10 @@ void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk:
 {
     (void)element;
     (void)resultCode;
+    sptr<AccessibleAbilityConnection> pointer = this;
+    if (accountData_ != nullptr) {
+        accountData_->RemoveConnectedAbility(pointer);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

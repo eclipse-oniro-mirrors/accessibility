@@ -57,19 +57,6 @@ public:
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
 
     /**
-     * @brief Called when the rectangle, scale, or center coordinate for performing the resizing operations is changed
-     *        through the proxy object.
-     * @param displayId The id of display.
-     * @param rect Indicates the rectangle for resizing the display.
-     * @param scale Indicates the scale for resizing the display.
-     * @param centerX Indicates the X coordinate of the center for resizing the display.
-     * @param centerY Indicates the Y coordinate of the center for resizing the display.
-     * @return
-     */
-    virtual void OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale, const float centerX,
-        const float centerY) override;
-
-    /**
      * @brief Called when need to notify the result of simulation gesture through the proxy object.
      * @param sequence The sequence of gesture.
      * @param completedSuccessfully The result of gesture completion.

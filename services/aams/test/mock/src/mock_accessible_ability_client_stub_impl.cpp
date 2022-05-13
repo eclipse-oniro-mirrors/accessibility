@@ -66,13 +66,6 @@ ErrCode MockAccessibleAbilityClientStubImpl::HandleOnKeyPressEvent(MessageParcel
     GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl HandleOnKeyPressEvent";
     return 0;
 }
-ErrCode MockAccessibleAbilityClientStubImpl::HandleOnDisplayResized(MessageParcel& data, MessageParcel& reply)
-{
-    (void)data;
-    (void)reply;
-    GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl HandleOnDisplayResized";
-    return 0;
-}
 ErrCode MockAccessibleAbilityClientStubImpl::HandleOnGestureInjectResult(MessageParcel& data, MessageParcel& reply)
 {
     (void)data;
@@ -101,17 +94,6 @@ void MockAccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent& k
     (void)keyEvent;
     (void)sequence;
     GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl OnKeyPressEvent";
-}
-
-void MockAccessibleAbilityClientStubImpl::OnDisplayResized(
-    const int32_t displayId, const Rect& rect, const float scale, const float centerX, const float centerY)
-{
-    (void)displayId;
-    (void)rect;
-    (void)scale;
-    (void)centerX;
-    (void)centerY;
-    GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl OnDisplayResized";
 }
 void MockAccessibleAbilityClientStubImpl::OnGestureInjectResult(
     const int32_t sequence, const bool completedSuccessfully)

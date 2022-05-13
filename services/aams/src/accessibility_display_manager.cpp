@@ -16,7 +16,6 @@
 #include "accessibility_display_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "singleton.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -24,10 +23,9 @@ AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
 }
 
-AccessibilityDisplayManager &AccessibilityDisplayManager::GetInstance()
+AccessibilityDisplayManager::~AccessibilityDisplayManager()
 {
-    static AccessibilityDisplayManager displayMgr;
-    return displayMgr;
+    UnregisterDisplayListener();
 }
 
 const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int32_t id)
@@ -45,21 +43,25 @@ const sptr<Rosen::Display> AccessibilityDisplayManager::GetDefaultDisplay()
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplay();
 }
 
-void AccessibilityDisplayManager::RegisterDisplayChangeListener()
+void AccessibilityDisplayManager::RegisterDisplayListener(
+    const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {
-    Rosen::DisplayManager::GetInstance().RegisterDisplayListener(this);
+    if (listener_) {
+        HILOG_DEBUG("Display listener is already registed!");
+        return;
+    }
+    handler_ = handler;
+    listener_ = new DisplayListener();
+    Rosen::DisplayManager::GetInstance().RegisterDisplayListener(listener_);
 }
 
-void AccessibilityDisplayManager::OnCreate(Rosen::DisplayId did)
+void AccessibilityDisplayManager::UnregisterDisplayListener()
 {
-}
-
-void AccessibilityDisplayManager::OnDestroy(Rosen::DisplayId did)
-{
-}
-
-void AccessibilityDisplayManager::OnChange(Rosen::DisplayId dId)
-{
+    if (listener_) {
+        Rosen::DisplayManager::GetInstance().UnregisterDisplayListener(listener_);
+        listener_ = nullptr;
+        handler_ = nullptr;
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

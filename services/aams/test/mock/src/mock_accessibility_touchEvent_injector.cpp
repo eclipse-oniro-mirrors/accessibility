@@ -29,7 +29,7 @@ TouchInjectHandler::TouchInjectHandler(
 void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer& event)
 {
     (void)event;
-    server_.InjectEventsInner();
+    server_.InjectGesturePathInner();
 }
 
 TouchEventInjector::TouchEventInjector()
@@ -51,27 +51,6 @@ void TouchEventInjector::DestroyEvents()
     isDestroyEvent_ = true;
 }
 
-void TouchEventInjector::GetTapsEvents(int64_t startTime)
-{
-    (void)startTime;
-}
-
-void TouchEventInjector::GetMovesEvents(int64_t startTime)
-{
-    (void)startTime;
-}
-
-void TouchEventInjector::InjectEvents(const std::vector<AccessibilityGesturePath>& gesturePath,
-    const sptr<IAccessibleAbilityClient>& service, int32_t sequence)
-{
-    (void)gesturePath;
-    (void)service;
-    (void)sequence;
-}
-
-void TouchEventInjector::InjectEventsInner()
-{}
-
 void TouchEventInjector::SendPointerEvent(MMI::PointerEvent& event)
 {
     (void)event;
@@ -82,11 +61,6 @@ void TouchEventInjector::CancelGesture()
 
 void TouchEventInjector::CancelInjectedEvents()
 {}
-
-void TouchEventInjector::GetTouchEventsFromGesturePath(int64_t startTime)
-{
-    (void)startTime;
-}
 
 std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(
     int32_t action, MMI::PointerEvent::PointerItem point, int64_t actionTime)

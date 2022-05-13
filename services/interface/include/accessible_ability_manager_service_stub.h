@@ -113,6 +113,37 @@ private:
     ErrCode HandleDisableUITestAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetActiveWindow(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleSetScreenMagnificationState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetShortKeyState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetMouseKeyState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetShortkeyTarget(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetHighContrastTextState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetAudioMonoState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetAudioBalance(MessageParcel &data, MessageParcel &reply);
+
+    ErrCode HandleGetScreenMagnificationState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetShortKeyState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetMouseKeyState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetShortkeyTarget(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetHighContrastTextState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply);
+
+    ErrCode HandleRegisterEnableAbilityListsObserver(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleRegisterConfigCallback(MessageParcel &data, MessageParcel &reply);
+
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
         MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AccessibilityAbilityManagerServiceFunc> memberFuncMap_;

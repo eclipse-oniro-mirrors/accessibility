@@ -24,14 +24,8 @@
 namespace OHOS {
 namespace Accessibility {
 extern const std::string AccessibleAbility_JSON_FILE_PATH;
-extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_EVENT_TYPES;
-extern const std::string AccessibleAbility_JSON_KEY_TARGET_BUNDLE_NAMES;
 extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_ABILITY_TYPES;
-extern const std::string AccessibleAbility_JSON_KEY_NOTIFICATION_TIMEOUT;
-extern const std::string AccessibleAbility_JSON_KEY_UI_NONINTERACTIVE_TIMEOUT;
-extern const std::string AccessibleAbility_JSON_KEY_UI_INTERACTIVE_TIMEOUT;
 extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES;
-extern const std::string AccessibleAbility_JSON_KEY_DESCRIPTION;
 extern const std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY;
 extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE;
 extern const std::string AccessibleAbility_Config_JSON_FILE_PATH;

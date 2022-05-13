@@ -98,9 +98,10 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows()
+std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(const uint64_t displayId)
 {
     std::vector<AccessibilityWindowInfo> windows {};
+    (void)displayId;
     return windows;
 }
 
@@ -116,54 +117,11 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     (void)sequence;
 }
 
-float AccessibleAbilityChannelProxy::GetDisplayResizeScale(const int32_t displayId)
+void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t sequenceNum,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    (void)displayId;
-    return 0;
-}
-
-float AccessibleAbilityChannelProxy::GetDisplayResizeCenterX(const int32_t displayId)
-{
-    (void)displayId;
-    return 0;
-}
-
-float AccessibleAbilityChannelProxy::GetDisplayResizeCenterY(const int32_t displayId)
-{
-    (void)displayId;
-    return 0;
-}
-
-Rect AccessibleAbilityChannelProxy::GetDisplayResizeRect(const int32_t displayId)
-{
-    (void)displayId;
-    Rect rect(0, 0, 0, 0);
-    return rect;
-}
-
-bool AccessibleAbilityChannelProxy::ResetDisplayResize(const int32_t displayId, const bool animate)
-{
-    (void)displayId;
-    (void)animate;
-    return true;
-}
-
-bool AccessibleAbilityChannelProxy::SetDisplayResizeScaleAndCenter(
-    const int32_t displayId, const float scale, const float centerX, const float centerY, const bool animate)
-{
-    (void)displayId;
-    (void)scale;
-    (void)centerX;
-    (void)centerY;
-    (void)animate;
-    return true;
-}
-
-void AccessibleAbilityChannelProxy::SendSimulateGesture(
-    const int32_t requestId, const std::vector<AccessibilityGesturePath>& gestureSteps)
-{
-    (void)requestId;
-    (void)gestureSteps;
+    (void)sequenceNum;
+    (void)gesturePath;
 }
 
 MockAccessibleAbilityChannelProxy::MockAccessibleAbilityChannelProxy(const sptr<IRemoteObject>& object)

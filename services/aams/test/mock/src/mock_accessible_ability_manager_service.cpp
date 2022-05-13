@@ -34,9 +34,10 @@ static const std::string TASK_GET_ENABLE_ABILITIES = "GetEnableAbilities";
 static const std::string TASK_DISABLE_ABILITIES = "DisableAbilities";
 const std::string TASK_SEND_EVENT = "SendEvent";
 const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
+static const int32_t TEMP_ACCOUNT_ID = 100;
 
 const bool REGISTER_RESULT =
-    SystemAbility::MakeAndRegisterAbility(DelayedSingleton<AccessibleAbilityManagerService>::GetInstance().get());
+    SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
 
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true), bundleManager_(nullptr)
@@ -51,10 +52,23 @@ void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
 
-    if (!Init()) {
-        HILOG_ERROR("AccessibleAbilityManagerService::Init failed!");
-        return;
+    if (!runner_) {
+        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+        if (!runner_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
+            return;
+        }
     }
+
+    if (!handler_) {
+        handler_ = std::make_shared<AAMSEventHandler>(runner_);
+        if (!handler_) {
+            HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS event handler failed");
+            return;
+        }
+    }
+
+    (void)Init();
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -78,29 +92,34 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
 
 bool AccessibleAbilityManagerService::Init()
 {
-    if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
-        if (!runner_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::Init failed:create AAMS runner failed");
-            return false;
-        }
+    HILOG_DEBUG("start");
+    currentAccountId_ = GetOsAccountId();
+    HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return false;
+    }
+    accountData->Init();
+    // Get installed accessibility extension ability from BMS
+    if (accountData->GetInstalledAbilitiesFromBMS()) {
+        UpdateAbilities();
+        UpdateAccessibilityManagerService();
+    } else {
+        HILOG_ERROR("Get installed ExtensionAbility failed");
+        return false;
     }
 
-    if (!handler_) {
-        handler_ = std::make_shared<AAMSEventHandler>(runner_);
-        if (!handler_) {
-            HILOG_ERROR("AccessibleAbilityManagerService::Init failed:create AAMS event handler failed");
-            return false;
-        }
-    }
+    Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
+    Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
+    Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
+    Singleton<AccessibilityWindowManager>::GetInstance().Init();
 
-    HILOG_INFO("AccessibleAbilityManagerService::Init OK");
     return true;
 }
 
-void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& uiEvent, const int32_t accountId)
+void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& uiEvent)
 {
-    (void)accountId;
     HILOG_INFO("AccessibleAbilityManagerService::SendEvent successfully");
     EventType uTeventType = uiEvent.GetEventType();
     AccessibilityAbilityHelper::GetInstance().SetGestureId(uiEvent.GetGestureType());
@@ -112,11 +131,8 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver>& callback, const int32_t accountId)
+    const sptr<IAccessibleAbilityManagerStateObserver>& callback)
 {
-    if (accountId != currentAccountId_) {
-        return 0;
-    }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -163,9 +179,10 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilit
 }
 
 void AccessibleAbilityManagerService::RegisterElementOperator(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, int32_t accountId)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation)
 {
-    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(windowId, operation, accountId);
+    sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(
+        windowId, operation, GetOsAccountId());
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr && connection != nullptr) {
         accountData->AddAccessibilityWindowConnection(windowId, connection);
@@ -191,26 +208,6 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(currentAccountId_);
     a11yAccountsData_.insert(std::make_pair(currentAccountId_, accountData));
     return accountData;
-}
-
-bool AccessibleAbilityManagerService::IsWantedKeyEvent(MMI::KeyEvent& event)
-{
-    if (0 == static_cast<uint32_t>(event.GetKeyCode())) {
-        return true;
-    }
-    return false;
-}
-
-void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(
-    int32_t displayId, Rect& rect, float scale, float centerX, float centerY)
-{
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (accountData != nullptr) {
-        std::map<std::string, sptr<AccessibleAbilityConnection>> abilities = accountData->GetConnectedA11yAbilities();
-        for (auto& ability : abilities) {
-            ability.second->OnDisplayResized(displayId, rect, scale, centerX, centerY);
-        }
-    }
 }
 
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
@@ -242,17 +239,6 @@ void AccessibleAbilityManagerService::OutsideTouch(int32_t windowId)
     if (connection != nullptr) {
         connection->GetProxy()->OutsideTouch();
     }
-}
-
-void AccessibleAbilityManagerService::OnChanging(bool selfChange, Uri& uri)
-{
-    (void)selfChange;
-    (void)uri;
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        return;
-    }
-    UpdateAbilities();
 }
 
 void AccessibleAbilityManagerService::UpdateAbilities()
@@ -316,7 +302,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
     }
 
     accountData->UpdateAccountCapabilities();
-    UpdateMagnification();
     UpdateInputFilter();
     UpdateAccessibilityState();
 }
@@ -375,29 +360,6 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
 }
 
-void AccessibleAbilityManagerService::UpdateMagnification()
-{
-    HILOG_DEBUG("start.");
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Account data is null");
-        return;
-    }
-
-    std::vector<sptr<Rosen::Display>> displays = AccessibilityDisplayManager::GetInstance().GetDisplays();
-
-    if (accountData->GetScreenMagnificationFlag()) {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Register(display->GetId());
-        }
-    } else {
-        for (sptr<Rosen::Display> display : displays) {
-            AccessibilityZoomProxy::GetInstance().Unregister(display->GetId());
-        }
-    }
-}
-
 void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector>& touchEventInjector)
 {
     touchEventInjector_ = touchEventInjector;
@@ -410,8 +372,7 @@ void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilte
 
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Current account data is null");
         return;
@@ -423,8 +384,7 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
 {
     (void)accountId;
 }
-void AccessibleAbilityManagerService::PresentUser()
-{}
+
 void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
 {
     (void)bundleName;
@@ -433,22 +393,19 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
 {
     (void)bundleName;
 }
-void AccessibleAbilityManagerService::PackageUpdateFinished(std::string& bundleName)
-{
-    (void)bundleName;
-}
-CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
+
+AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
 {
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
         return accountData->GetCaptionProperty();
     }
-    CaptionProperty cp;
+    AccessibilityConfig::CaptionProperty cp;
     return cp;
 }
 
-bool AccessibleAbilityManagerService::SetCaptionProperty(const CaptionProperty& caption)
+bool AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -470,7 +427,7 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
         return;
     }
 
-    CaptionProperty caption = accountData->GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = accountData->GetCaptionProperty();
     for (auto& callback : accountData->GetCaptionPropertyCallbacks()) {
         callback->OnPropertyChanged(caption);
     }
@@ -543,58 +500,56 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     return false;
 }
 
-bool AccessibleAbilityManagerService::EnableAbilities(std::vector<std::string>& abilities)
+bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task =
-        std::bind(&AccessibleAbilityManagerService::InnerEnableAbilities, this, std::ref(syncPromise), abilities);
-
-    handler_->PostTask(task, TASK_ENABLE_ABILITIES);
-    bool ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityManagerService::InnerEnableAbilities(
-    std::promise<bool>& syncPromise, std::vector<std::string>& abilities)
-{
-    HILOG_DEBUG("start");
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return;
-    }
-    bool result = accountData->EnableAbilities(abilities);
-    UpdateAbilities();
-    syncPromise.set_value(result);
+    handler_->PostTask(std::bind([this, &syncPromise, &name, &capabilities]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->EnableAbilities(name, capabilities);
+        UpdateAbilities();
+        syncPromise.set_value(result);
+        }), "TASK_ENABLE_ABILITIES");
+    return syncFuture.get();
 }
 
 std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
 {
     HILOG_DEBUG("start");
-    std::promise<std::vector<std::string>> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task =
-        std::bind(&AccessibleAbilityManagerService::InnerGetEnabledAbilities, this, std::ref(syncPromise));
-
-    handler_->PostTask(task, TASK_GET_ENABLE_ABILITIES);
-    std::vector<std::string> ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityManagerService::InnerGetEnabledAbilities(std::promise<std::vector<std::string>>& syncPromise)
-{
-    HILOG_DEBUG("start");
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return;
+    std::vector<std::string> abilities;
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return abilities;
     }
-    std::vector<std::string> abilities = accountData->GetEnabledAbilities();
-    syncPromise.set_value(abilities);
+
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &abilities]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value();
+            return;
+        }
+        abilities = accountData->GetEnabledAbilities();
+        syncPromise.set_value();
+        }), "TASK_GET_ENABLE_ABILITIES");
+    syncFuture.get();
+
+    return abilities;
 }
 
 std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstalledAbilities()
@@ -611,13 +566,9 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId)
+    const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
     HILOG_DEBUG("start");
-    if (accountId != currentAccountId_) {
-        HILOG_ERROR("accountId[%{public}d] is not matched", accountId);
-        return ERR_INVALID_VALUE;
-    }
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -646,8 +597,7 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
         return;
     }
     remote->RemoveDeathRecipient(this);
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    sptr<AccessibilityAccountData> accountData = aams->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Current account data is null");
         return;
@@ -655,32 +605,29 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
     accountData->RemoveCaptionPropertyCallback(remote);
 }
 
-bool AccessibleAbilityManagerService::DisableAbilities(std::vector<std::string>& abilities)
+bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
 {
     HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task =
-        std::bind(&AccessibleAbilityManagerService::InnerDisableAbilities, this, std::ref(syncPromise), abilities);
-
-    handler_->PostTask(task, TASK_DISABLE_ABILITIES);
-    bool ret = syncFuture.get();
-
-    return ret;
-}
-
-void AccessibleAbilityManagerService::InnerDisableAbilities(
-    std::promise<bool>& syncPromise, std::vector<std::string>& abilities)
-{
-    HILOG_DEBUG("start");
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr");
-        return;
-    }
-    bool result = accountData->DisableAbilities(abilities);
-    UpdateAbilities();
-    syncPromise.set_value(result);
+    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->DisableAbilities(name);
+        UpdateAbilities();
+        syncPromise.set_value(result);
+        }), "TASK_DISABLE_ABILITIES");
+    return syncFuture.get();
 }
 
 bool AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj)
@@ -702,6 +649,664 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
 void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
 {
     (void)bundleName;
+}
+
+int32_t AccessibleAbilityManagerService::GetOsAccountId()
+{
+    return TEMP_ACCOUNT_ID;
+}
+
+bool AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetScreenMagnificationState(state);
+        UpdateAccessibilityState();
+        UpdateInputFilter();
+        syncPromise.set_value(result);
+        }), "TASK_SET_SCREENMAGNIFICATION_STATE");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetShortKeyState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetShortKeyState(state);
+        UpdateAccessibilityState();
+        UpdateInputFilter();
+        syncPromise.set_value(result);
+        }), "TASK_SET_SHORTKEY_STATE");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        bool result = accountData->SetMouseKeyState(state);
+        UpdateInputFilter();
+        syncPromise.set_value(result);
+        }), "TASK_SET_MOUSEKEY_STATE");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        bool result = accountData->SetMouseAutoClick(time);
+        UpdateInputFilter();
+        syncPromise.set_value(result);
+        }), "TASK_SET_MOUSE_AUTOCLICK");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, name]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetShortkeyTarget(name);
+        UpdateAccessibilityState();
+        syncPromise.set_value(result);
+        }), "TASK_SET_SHORTKEY_TARGET");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetHighContrastTextState(state);
+        syncPromise.set_value(result);
+        }), "TASK_SET_HIGHCONTRASTTEXT_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetInvertColorState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            return;
+        }
+        bool result = accountData->SetInvertColorState(state);
+        syncPromise.set_value(result);
+        }), "TASK_SET_INVERTCOLOR_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetAnimationOffState(state);
+        UpdateAccessibilityState();
+        syncPromise.set_value(result);
+        }), "TASK_SET_ANIMATIONOFF_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetAnimationOffState(state);
+        UpdateAccessibilityState();
+        syncPromise.set_value(result);
+        }), "TASK_SET_AUDIOMONO_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_t filter)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, filter]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetDaltonizationColorFilter(filter);
+        syncPromise.set_value(result);
+        }), "TASK_SET_DALTONIZATION_COLORFILTER");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetContentTimeout(time);
+        syncPromise.set_value(result);
+        }), "TASK_SET_CONTENT_TIMEOUT");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, discount]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetBrightnessDiscount(discount);
+        syncPromise.set_value(result);
+        }), "TASK_SET_BRIGHTNESS_DISCOUNT");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::SetAudioBalance(const float balance)
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, balance]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->SetAudioBalance(balance);
+        syncPromise.set_value(result);
+        }), "TASK_SET_AUDIO_BALANCE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetScreenMagnificationState()
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetScreenMagnificationState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_SCREENMAGNIFIER_STATE");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetShortKeyState()
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetShortKeyState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_SHORTKEY_STATE");
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetMouseKeyState()
+{
+    HILOG_DEBUG("start");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return false;
+    }
+
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetMouseKeyState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_MOUSEKEY_STATE");
+    return syncFuture.get();
+}
+
+int32_t AccessibleAbilityManagerService::GetMouseAutoClick()
+{
+    HILOG_DEBUG("start");
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        int32_t result = accountData->GetMouseAutoClick();
+        syncPromise.set_value(result);
+        }), "TASK_GET_MOUSE_AUTOCLICK");
+
+    return syncFuture.get();
+}
+
+std::string AccessibleAbilityManagerService::GetShortkeyTarget()
+{
+    HILOG_DEBUG("start");
+    std::promise<std::string> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value("");
+            return;
+        }
+        std::string result = accountData->GetShortkeyTarget();
+        syncPromise.set_value(result);
+        }), "TASK_GET_SHORTKEY_TARGET");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetHighContrastTextState()
+{
+    HILOG_DEBUG("start");
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetHighContrastTextState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetInvertColorState()
+{
+    HILOG_DEBUG("start");
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetInvertColorState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_INVERTCOLOR_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetAnimationOffState()
+{
+    HILOG_DEBUG("start");
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetAnimationOffState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_ANIMATIONOFF_STATE");
+
+    return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::GetAudioMonoState()
+{
+    HILOG_DEBUG("start");
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        bool result = accountData->GetAudioMonoState();
+        syncPromise.set_value(result);
+        }), "TASK_GET_AUDIOMONO_STATE");
+
+    return syncFuture.get();
+}
+
+uint32_t AccessibleAbilityManagerService::GetDaltonizationColorFilter()
+{
+    HILOG_DEBUG("start");
+    std::promise<uint32_t> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        uint32_t result = accountData->GetDaltonizationColorFilter();
+        syncPromise.set_value(result);
+        }), "TASK_GET_DALTONIZATION_COLORFILTER");
+
+    return syncFuture.get();
+}
+
+uint32_t AccessibleAbilityManagerService::GetContentTimeout()
+{
+    HILOG_DEBUG("start");
+    std::promise<uint32_t> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        uint32_t result = accountData->GetContentTimeout();
+        syncPromise.set_value(result);
+        }), "TASK_GET_CONTENT_TIMEOUT");
+
+    return syncFuture.get();
+}
+
+float AccessibleAbilityManagerService::GetBrightnessDiscount()
+{
+    HILOG_DEBUG("start");
+    std::promise<float> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        float result = accountData->GetBrightnessDiscount();
+        syncPromise.set_value(result);
+        }), "TASK_GET_BRIGHTNESS_DISCOUNT");
+
+    return syncFuture.get();
+}
+
+float AccessibleAbilityManagerService::GetAudioBalance()
+{
+    HILOG_DEBUG("start");
+    std::promise<float> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(false);
+            return;
+        }
+        float result = accountData->GetAudioBalance();
+        syncPromise.set_value(result);
+        }), "TASK_GET_AUDIO_BALANCE");
+
+    return syncFuture.get();
+}
+
+void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
+    const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
+{
+    (void)observer;
+}
+
+uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
+    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
+{
+    HILOG_DEBUG("start");
+    if (!callback || !handler_) {
+        HILOG_ERROR("Parameters check failed! callback:%{public}p, handler:%{public}p",
+            callback.GetRefPtr(), handler_.get());
+        return ERR_INVALID_VALUE;
+    }
+
+    std::promise<uint32_t> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, callback]() -> void {
+        HILOG_DEBUG("start");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromise.set_value(ERR_INVALID_VALUE);
+            return;
+        }
+        if (!configCallbackDeathRecipient_) {
+            configCallbackDeathRecipient_ = new(std::nothrow) ConfigCallbackDeathRecipient();
+            if (!configCallbackDeathRecipient_) {
+                HILOG_ERROR("configCallbackDeathRecipient_ is null");
+                syncPromise.set_value(ERR_INVALID_VALUE);
+                return;
+            }
+        }
+        if (!callback->AsObject()) {
+            HILOG_ERROR("object is null");
+            syncPromise.set_value(0);
+            return;
+        }
+        callback->AsObject()->AddDeathRecipient(configCallbackDeathRecipient_);
+        accountData->AddConfigCallback(callback);
+        HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
+            accountData->GetConfigCallbacks().size());
+        syncPromise.set_value(NO_ERROR);
+        }), "TASK_REGISTER_CONFIG_OBSERVER");
+    return syncFuture.get();
+}
+
+void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied(
+    const wptr<IRemoteObject> &remote)
+{
+    HILOG_DEBUG("start");
+    if (!remote.GetRefPtr()) {
+        HILOG_ERROR("remote is null");
+        return;
+    }
+    remote->RemoveDeathRecipient(this);
+
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("Current account data is null");
+        return;
+    }
+    accountData->RemoveConfigCallback(remote);
 }
 } // namespace Accessibility
 } // namespace OHOS

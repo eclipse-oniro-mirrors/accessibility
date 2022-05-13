@@ -133,7 +133,31 @@ void NAccessibilityExtension::OnAbilityConnected()
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = (ExtensionCallbackInfo *)work->data;
-            data->extension_->CallObjectMethod("onAbilityConnected");
+            data->extension_->CallObjectMethod("onConnect");
+            delete data;
+            data = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    HILOG_INFO("end.");
+}
+
+void NAccessibilityExtension::OnAbilityDisconnected()
+{
+    HILOG_INFO("called.");
+    uv_loop_t *loop = engine_->GetUVLoop();
+    uv_work_t *work = new uv_work_t;
+    ExtensionCallbackInfo *callbackInfo = new ExtensionCallbackInfo();
+    callbackInfo->extension_ = this;
+    work->data = callbackInfo;
+
+    uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            ExtensionCallbackInfo *data = (ExtensionCallbackInfo *)work->data;
+            data->extension_->CallObjectMethod("onDisconnect");
             delete data;
             data = nullptr;
             delete work;
@@ -200,27 +224,27 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             napi_value napiEventInfo = nullptr;
             if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
+                data->syncPromise_.set_value(false);
                 delete data;
                 data = nullptr;
                 delete work;
                 work = nullptr;
-                data->syncPromise_.set_value(false);
                 return;
             }
             ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
             NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
             NativeValue* argv[] = {nativeEventInfo};
-            NativeValue* nativeResult = data->extension_->CallObjectMethod("onKeyPressEvent", argv, 1);
+            NativeValue* nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
 
             // Unwrap result
             bool result = false;
             if (!ConvertFromJsValue(*data->engine_, nativeResult, result)) {
                 HILOG_ERROR("ConvertFromJsValue failed");
+                data->syncPromise_.set_value(false);
                 delete data;
                 data = nullptr;
                 delete work;
                 work = nullptr;
-                data->syncPromise_.set_value(false);
                 return;
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);

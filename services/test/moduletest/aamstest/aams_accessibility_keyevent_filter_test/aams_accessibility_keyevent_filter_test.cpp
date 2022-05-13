@@ -24,10 +24,7 @@
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
-#include "json.h"
-#include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -36,7 +33,6 @@ namespace OHOS {
 namespace Accessibility {
 static constexpr uint8_t TEST_NUM_2 = 2;
 static constexpr uint8_t TEST_NUM_3 = 3;
-static constexpr uint16_t TEST_TIME_OUT = 10000;
 static constexpr uint16_t TEST_NUM_THOUSAND = 1000;
 
 static void WaitUntilTaskFinished()
@@ -44,7 +40,7 @@ static void WaitUntilTaskFinished()
     const uint32_t maxRetryCount = TEST_NUM_THOUSAND;
     const uint32_t sleepTime = TEST_NUM_THOUSAND;
     uint32_t count = 0;
-    auto handler = OHOS::DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetMainHandler();
+    auto handler = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler();
     std::atomic<bool> taskCalled(false);
     auto f = [&taskCalled]() { taskCalled.store(true); };
     if (handler->PostTask(f)) {
@@ -66,7 +62,6 @@ public:
     {}
 
     std::shared_ptr<MMI::IInputEventConsumer> interceptorId_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
     sptr<AccessibleAbilityChannel> aastub_ =  nullptr;
     sptr<AccessibleAbilityChannel> aacs_ = nullptr;
 
@@ -76,12 +71,9 @@ public:
     void SetUp();
     void AddConnection();
     void TearDown();
-    void CreateAccessibilityConfigForKeyEvent();
     void WritefileAll(const char* fname, const char* data) const;
     std::shared_ptr<MMI::KeyEvent> CreateOnKeyEvent(int32_t keycode) const;
 };
-
-static std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> ins_;
 
 void AamsKeyEventFilterTest::SetUpTestCase(void)
 {}
@@ -91,26 +83,20 @@ void AamsKeyEventFilterTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest ModuleTest SetUp";
 
-    CreateAccessibilityConfigForKeyEvent();
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
-
-    ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    ins_->OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     // Add an ability connection client
     AccessibilityAbilityInitParams initParams;
+    initParams.capabilities = CAPABILITY_KEY_EVENT_OBSERVER;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-    sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(*connection);
-    connection->OnAbilityConnectDone(elementName, aastub_, 0);
-    sleep(TEST_NUM_3);
+    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
     MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);
 }
@@ -119,7 +105,6 @@ void AamsKeyEventFilterTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest ModuleTest TearDown";
     interceptorId_ = nullptr;
-    mock_ = nullptr;
     aastub_ = nullptr;
 }
 
@@ -133,44 +118,6 @@ void AamsKeyEventFilterTest::WritefileAll(const char* fname, const char* data) c
 
     (void)fprintf(fp, "%s", data);
     (void)fclose(fp);
-}
-
-void AamsKeyEventFilterTest::CreateAccessibilityConfigForKeyEvent()
-{
-    std::ostringstream os;
-    Json::Value object1, targetBundleNames, accessibilityAbilityTypes, accessibilityEventTypes,
-        accessibilityCapabilities;
-    string jsonStr;
-
-    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
-        GTEST_LOG_(INFO) << "remove successful";
-    } else {
-        GTEST_LOG_(INFO) << "remove failed";
-    }
-
-    accessibilityEventTypes[0] = "all";
-    object1["accessibilityEventTypes"] = accessibilityEventTypes;
-    targetBundleNames[0] = "com.example.ohos.api1";
-    targetBundleNames[1] = "com.example.ohos.api2";
-    object1["targetBundleNames"] = targetBundleNames;
-    accessibilityAbilityTypes[0] = "spoken";
-    accessibilityAbilityTypes[1] = "haptic";
-    accessibilityAbilityTypes[TEST_NUM_2] = "audible";
-    object1["accessibilityAbilityTypes"] = accessibilityAbilityTypes;
-    object1["notificationTimeout"] = 0;
-    object1["uiNoninteractiveTimeout"] = 0;
-    object1["uiInteractiveTimeout"] = TEST_TIME_OUT;
-    accessibilityCapabilities[0] = "keyEventObserver";
-    object1["accessibilityCapabilities"] = accessibilityCapabilities;
-    object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
-    Json::StreamWriterBuilder writerBuilder;
-
-    std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
-    jsonWriter->write(object1, &os);
-    jsonStr = os.str();
-
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
 }
 
 std::shared_ptr<MMI::KeyEvent> AamsKeyEventFilterTest::CreateOnKeyEvent(int32_t keycode) const
@@ -197,8 +144,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     std::shared_ptr<MMI::KeyEvent> keyEvent = CreateOnKeyEvent(MMI::KeyEvent::KEYCODE_VOLUME_UP);
     sleep(TEST_NUM_3);
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
@@ -234,8 +180,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     std::shared_ptr<MMI::KeyEvent> keyEvent = CreateOnKeyEvent(MMI::KeyEvent::KEYCODE_VOLUME_UP);
     sleep(TEST_NUM_3);
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 
@@ -273,8 +218,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     std::shared_ptr<MMI::KeyEvent> keyEvent = CreateOnKeyEvent(MMI::KeyEvent::KEYCODE_VOLUME_UP);
     sleep(TEST_NUM_3);
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()
-            ->GetCurrentAccountData()
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
     EXPECT_EQ((int)connectionMaps.size(), 1);
 

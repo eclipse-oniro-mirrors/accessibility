@@ -20,8 +20,7 @@
 #include "accessible_ability_channel_client.h"
 #include "accessible_ability_client.h"
 #include "accessible_ability_client_stub.h"
-#include "accessible_ability_manager_service_proxy.h"
-#include "accessibility_display_resize_controller_impl.h"
+#include "i_accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -82,18 +81,6 @@ public:
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
 
     /**
-     * @brief Called when the rectangle, scale, or center coordinate for performing the resizing operations is changed.
-     * @param displayId The id of display.
-     * @param rect Indicates the rectangle for resizing the display.
-     * @param scale Indicates the scale for resizing the display.
-     * @param centerX Indicates the X coordinate of the center for resizing the display.
-     * @param centerY Indicates the Y coordinate of the center for resizing the display.
-     * @return
-     */
-    virtual void OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale, const float centerX,
-        const float centerY) override;
-
-    /**
      * @brief Called when need to notify the result of simulation gesture.
      * @param sequence The sequence of gesture.
      * @param completedSuccessfully The result of gesture completion.
@@ -122,26 +109,13 @@ public:
     /**
      * @brief Sends simulate gestures to the screen.
      * @param sequence The sequence of gesture.
-     * @param gesturePathList The gesture which need to send.
+     * @param gesturePath The gesture which need to send.
      * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    virtual bool GestureInject(const uint32_t sequence, const std::vector<AccessibilityGesturePath>& gesturePathList,
+    virtual bool GestureInject(const uint32_t sequence,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
         const std::shared_ptr<AccessibilityGestureResultListener>& listener) override;
-
-    /**
-     * @brief Obtains the default displayResize controller.
-     * @param
-     * @return Return the default displayResize controller.
-     */
-    virtual std::shared_ptr<DisplayResizeController> GetDisplayResizeController() override;
-
-    /**
-     * @brief Obtains the specified displayResize controller by displayId.
-     * @param displayId The id of display.
-     * @return Return the specified displayResize controller.
-     */
-    virtual std::shared_ptr<DisplayResizeController> GetDisplayResizeController(const int32_t displayId) override;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -165,6 +139,13 @@ public:
      * @return The information of windows.
      */
     virtual std::vector<AccessibilityWindowInfo> GetWindows() override;
+
+    /**
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
+     * @param displayId the id of display
+     * @return The information of windows.
+     */
+    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) override;
 
     /**
      * @brief Executes a specified action.
@@ -278,20 +259,27 @@ public:
         const std::map<std::string, std::string> &actionArguments) override;
 
     /**
+     * @brief Set event types to filter.
+     * @param eventTypes The event types which you want.
+     * @return Return true if sets event types successfully, else return false.
+     */
+    virtual bool SetEventTypeFilter(const uint32_t eventTypes) override;
+
+    /**
+     * @brief Set target bundle names.
+     * @param targetBundleNames The target bundle name
+     * @return Return true if sets target bundle names successfully, else return false.
+     */
+    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) override;
+
+    /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
      * @return
      */
     void ResetAAClient(const wptr<IRemoteObject> &remote);
-private:
-    /**
-     * @brief Dispatch the result of simulate gesture.
-     * @param sequence The sequence of gesture.
-     * @param result The result of gesture completion.
-     * @return
-     */
-    void DispatchGestureInjectResult(uint32_t sequence, bool result);
 
+private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         AccessibleAbilityDeathRecipient(AccessibleAbilityClientImpl &client) : client_(client) {}
@@ -303,12 +291,18 @@ private:
         AccessibleAbilityClientImpl &client_;
     };
 
+    /**
+     * @brief Dispatch the result of simulate gesture.
+     * @param sequence The sequence of gesture.
+     * @param result The result of gesture completion.
+     * @return
+     */
+    void DispatchGestureInjectResult(uint32_t sequence, bool result);
+
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
-    sptr<AccessibleAbilityManagerServiceProxy> serviceProxy_ = nullptr;
+    sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
-
-    std::map<uint32_t, std::shared_ptr<DisplayResizeControllerImpl>> displayResizeControllers_;
     std::map<uint32_t, std::shared_ptr<AccessibilityGestureResultListener>> gestureResultListenerInfos_;
 };
 } // namespace Accessibility

@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_GESTURE_PATH_PARCEL_H
-#define ACCESSIBILITY_GESTURE_PATH_PARCEL_H
+#ifndef ACCESSIBILITY_GESTURE_INJECT_PATH_PARCEL_H
+#define ACCESSIBILITY_GESTURE_INJECT_PATH_PARCEL_H
 
-#include "accessibility_gesture_path.h"
+#include "accessibility_gesture_inject_path.h"
 #include "parcel.h"
 
 namespace OHOS {
 namespace Accessibility {
-class AccessibilityGesturePathParcel : public AccessibilityGesturePath, public Parcelable {
+class AccessibilityGestureInjectPathParcel : public AccessibilityGestureInjectPath, public Parcelable {
 public:
-    AccessibilityGesturePathParcel() = default;
-    AccessibilityGesturePathParcel(const AccessibilityGesturePath &gesturePath);
+    AccessibilityGestureInjectPathParcel() = default;
+    AccessibilityGestureInjectPathParcel(const AccessibilityGestureInjectPath &gesturePath);
 
     /**
      * @brief read this sequenceable object from a Parcel.
@@ -43,10 +43,10 @@ public:
     /**
      * @brief Unmarshals this sequenceable object from a Parcel.
      * @param parcel Indicates the Parcel object into which the sequenceable object has been marshaled.
-     * @return Return a sequenceable object of AccessibilityGesturePathParcel.
+     * @return Return a sequenceable object of AccessibilityGestureInjectPathParcel.
      */
-    static sptr<AccessibilityGesturePathParcel> Unmarshalling(Parcel &parcel);
+    static sptr<AccessibilityGestureInjectPathParcel> Unmarshalling(Parcel &parcel);
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_GESTURE_PATH_PARCEL_H
+#endif // ACCESSIBILITY_GESTURE_INJECT_PATH_PARCEL_H

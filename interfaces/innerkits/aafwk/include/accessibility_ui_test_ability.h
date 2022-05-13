@@ -18,8 +18,7 @@
 
 #include <map>
 #include <memory>
-#include "accessibility_display_resize_controller.h"
-#include "accessibility_gesture_path.h"
+#include "accessibility_gesture_inject_path.h"
 #include "accessibility_gesture_result_listener.h"
 #include "accessibility_window_info.h"
 #include "accessible_ability_listener.h"
@@ -82,26 +81,13 @@ public:
     /**
      * @brief Sends simulate gestures to the screen.
      * @param sequence The sequence of gesture.
-     * @param gesturePathList The gesture which need to send.
+     * @param gesturePath The gesture which need to send.
      * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    virtual bool GestureInject(const uint32_t sequence, const std::vector<AccessibilityGesturePath>& gesturePathList,
+    virtual bool GestureInject(const uint32_t sequence,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
         const std::shared_ptr<AccessibilityGestureResultListener>& listener) = 0;
-
-    /**
-     * @brief Obtains the default displayResize controller.
-     * @param
-     * @return Return the default displayResize controller.
-     */
-    virtual std::shared_ptr<DisplayResizeController> GetDisplayResizeController() = 0;
-
-    /**
-     * @brief Obtains the specified displayResize controller by displayId.
-     * @param displayId The id of display.
-     * @return Return the specified displayResize controller.
-     */
-    virtual std::shared_ptr<DisplayResizeController> GetDisplayResizeController(const int32_t displayId) = 0;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -125,6 +111,13 @@ public:
      * @return The information of windows.
      */
     virtual std::vector<AccessibilityWindowInfo> GetWindows() = 0;
+
+    /**
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
+     * @param displayId the id of display
+     * @return The information of windows.
+     */
+    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) = 0;
 
     /**
      * @brief Executes a specified action.
@@ -236,6 +229,20 @@ public:
      */
     virtual bool ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments) = 0;
+
+    /**
+     * @brief Set event types to filter.
+     * @param eventTypes The event types which you want.
+     * @return Return true if sets event types successfully, else return false.
+     */
+    virtual bool SetEventTypeFilter(const uint32_t eventTypes) = 0;
+
+    /**
+     * @brief Set target bundle names.
+     * @param targetBundleNames The target bundle name
+     * @return Return true if sets target bundle names successfully, else return false.
+     */
+    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -36,14 +36,15 @@ bool AccessibleAbilityManagerCaptionObserverProxy::WriteInterfaceToken(MessagePa
     return true;
 }
 
-void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(const CaptionProperty &property)
+void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
+    const AccessibilityConfig::CaptionProperty& property)
 {
     HILOG_DEBUG("start");
 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     CaptionPropertyParcel captionParcel(property);
 
     if (!WriteInterfaceToken(data)) {

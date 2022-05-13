@@ -14,16 +14,20 @@
  */
 
 class AccessibilityExtension {
-    onAbilityConnected() {
-        console.log('onAbilityConnected');
+    onConnect() {
+        console.log('onConnect');
+    }
+
+    onDisconnect() {
+        console.log('onDisconnect');
     }
 
     onAccessibilityEvent(accessibilityEvent) {
         console.log('onAccessibilityEvent');
     }
 
-    onKeyPressEvent(keyEvent) {
-        console.log('onKeyPressEvent');
+    onKeyEvent(keyEvent) {
+        console.log('onKeyEvent');
         return false;
     }
 }

@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "accessible_ability_channel_client.h"
+#include "display_manager.h"
 #include "mock_accessible_ability_channel_proxy.h"
 #include "mock_accessible_ability_channel_stub.h"
 
@@ -29,10 +30,6 @@ const static int32_t ELEMENT_ID = 1;
 const static int32_t ACTION = 1;
 const static std::string TEST = "test";
 const static int32_t DIRECTION = 1;
-const static int32_t DISPLAY_ID = 1;
-const static float SCALE = 1.0;
-const static float CENTER_X = 1.0;
-const static float CENTER_Y = 1.0;
 const static int32_t MODE = 1;
 
 namespace OHOS {
@@ -120,8 +117,8 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SendSimulateGesture_001, TestSize.L
         return;
     }
 
-    std::vector<AccessibilityGesturePath> gestureSteps {};
-    instance_->SendSimulateGesture(SEQUENCE_NUM, gestureSteps);
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    instance_->SendSimulateGesture(SEQUENCE_NUM, gesturePath);
     GTEST_LOG_(INFO) << "SendSimulateGesture_001 end";
 }
 
@@ -155,7 +152,8 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_001, TestSize.Level1)
         return;
     }
     std::vector<AccessibilityWindowInfo> res {};
-    res = instance_->GetWindows();
+    uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
+    res = instance_->GetWindows(displayId);
     EXPECT_EQ(0, res.size());
     GTEST_LOG_(INFO) << "GetWindows_001 end";
 }
@@ -210,62 +208,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, ExecuteCommonAction_001, TestSize.L
     }
     EXPECT_FALSE(instance_->ExecuteCommonAction(ACTION));
     GTEST_LOG_(INFO) << "ExecuteCommonAction_001 end";
-}
-
-/**
- * @tc.number: GetDisplayResize_001
- * @tc.name: GetDisplayResize
- * @tc.desc: Test function GetDisplayResizeRect
- */
-HWTEST_F(AccessibleAbilityChannelClientTest, GetDisplayResize_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDisplayResize_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityChannelClient instance_";
-        return;
-    }
-    EXPECT_EQ(0, instance_->GetDisplayResizeCenterX(DISPLAY_ID));
-    EXPECT_EQ(0, instance_->GetDisplayResizeCenterY(DISPLAY_ID));
-    EXPECT_EQ(0, instance_->GetDisplayResizeScale(DISPLAY_ID));
-    Rect res {};
-    res = instance_->GetDisplayResizeRect(DISPLAY_ID);
-    EXPECT_EQ(0, res.GetRightBottomXScreenPostion());
-    EXPECT_EQ(0, res.GetRightBottomYScreenPostion());
-    GTEST_LOG_(INFO) << "GetDisplayResize_001 end";
-}
-
-/**
- * @tc.number: ResetDisplayResize_001
- * @tc.name: ResetDisplayResize
- * @tc.desc: Test function ResetDisplayResize
- */
-HWTEST_F(AccessibleAbilityChannelClientTest, ResetDisplayResize_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "ResetDisplayResize_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityChannelClient instance_";
-        return;
-    }
-    EXPECT_FALSE(instance_->ResetDisplayResize(DISPLAY_ID, true));
-
-    GTEST_LOG_(INFO) << "ResetDisplayResize_001 end";
-}
-
-/**
- * @tc.number: SetDisplayResizeScaleAndCenter_001
- * @tc.name: SetDisplayResizeScaleAndCenter
- * @tc.desc: Test function SetDisplayResizeScaleAndCenter
- */
-HWTEST_F(AccessibleAbilityChannelClientTest, SetDisplayResizeScaleAndCenter_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetDisplayResizeScaleAndCenter_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityChannelClient instance_";
-        return;
-    }
-    EXPECT_FALSE(instance_->SetDisplayResizeScaleAndCenter(DISPLAY_ID, SCALE, CENTER_X, CENTER_Y, true));
-
-    GTEST_LOG_(INFO) << "SetDisplayResizeScaleAndCenter_001 end";
 }
 
 /**

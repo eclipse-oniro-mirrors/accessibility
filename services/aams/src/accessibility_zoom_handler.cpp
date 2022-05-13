@@ -18,188 +18,84 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t POINTER_COUNT_1 = 1;
+const float DEFAULT_SCALE = 2.0f;
+const float HALF = 0.5f;
 
-AccessibilityZoomHandler::AccessibilityZoomHandler(int32_t displayId)
+AccessibilityZoomHandler::AccessibilityZoomHandler(Rosen::DisplayId displayId)
 {
-    displayId_ = displayId;
+    HILOG_DEBUG();
 
-    readyState_.Register(*this);
-    zoomInState_.Register(*this);
-    slidingState_.Register(*this);
-    currentState_ = readyState_;
-}
-
-AccessibilityZoomHandler::~AccessibilityZoomHandler()
-{
-    readyState_.UnRegisterAll();
-    zoomInState_.UnRegisterAll();
-    slidingState_.UnRegisterAll();
-    EventTransmission::DestroyEvents();
-}
-
-void AccessibilityZoomHandler::Initialize()
-{
-}
-
-void AccessibilityZoomHandler::OnPointerEvent(MMI::PointerEvent &event)
-{
-    currentState_.OnPointerEvent(event);
-}
-
-void AccessibilityZoomHandler::OnTransitionTo(const int32_t state)
-{
-    currentState_.Exit();
-    {
-        switch (state) {
-            case READY_STATE:
-                currentState_ = readyState_;
-                break;
-            case ZOOMIN_STATE:
-                currentState_ = zoomInState_;
-                break;
-            case SLIDING_STATE:
-                currentState_ = slidingState_;
-                break;
-            default:
-                HILOG_ERROR("State input error");
-                break;
-        }
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    auto display = displayMgr.GetDefaultDisplay();
+    if (!display) {
+        HILOG_ERROR("get display is nullptr");
+        return;
     }
-    currentState_.Enter();
+    int32_t displayWith = display->GetWidth();
+    int32_t displayHeight = display->GetHeight();
+    displayCenterX_ = displayWith * HALF;
+    displayCenterY_ = displayHeight * HALF;
 }
 
-void AccessibilityZoomHandler::OnZoomIn()
+void AccessibilityZoomHandler::OnZoomIn(int32_t centerX, int32_t centerY)
 {
+    HILOG_DEBUG("centerX:%{public}d, centerY:%{public}d.", centerX, centerY);
+
+    // Temp deal:set default scale and centerXY to WMS.
+    // Update the following information based on the return value of wms.
+    currentCenterX_ = centerX; // Temp deal
+    currentCenterY_ = centerY; // Temp deal
+    currentScale_ = DEFAULT_SCALE; // Temp deal
 }
 
 void AccessibilityZoomHandler::OnZoomOut()
 {
+    HILOG_DEBUG();
+
+    // Temp deal:reset scale and centerXY to WMS.
+    // Update the following information based on the return value of wms.
+    currentCenterX_ = displayCenterX_; // Temp deal
+    currentCenterY_ = displayCenterY_; // Temp deal
+    currentScale_ = 1.0f; // Temp deal
 }
 
-void AccessibilityZoomHandler::OnBack(MMI::PointerEvent &event)
+void AccessibilityZoomHandler::OnScroll(float offsetX, float offsetY)
 {
-    EventTransmission::OnPointerEvent(event);
+    HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
+
+    float newCenterX = (currentCenterX_ * currentScale_ - offsetX) / currentScale_;
+    float newCenterY = (currentCenterY_ * currentScale_ - offsetY) / currentScale_;
+
+    // Temp deal:set scale and centerXY to WMS.
+    // Update the following information based on the return value of wms.
+    currentCenterX_ = newCenterX; // Temp deal
+    currentCenterY_ = newCenterY; // Temp deal
 }
 
-void AccessibilityZoomHandler::ReadyState::Enter()
+void AccessibilityZoomHandler::OnScale(float scaleRatio, float focusX, float focusY)
 {
-    HILOG_DEBUG("AccessibilityZoomHandler READY_STATE Enter.");
-    gesture_.Clear();
-}
+    HILOG_DEBUG("scaleRatio:%{public}f, focusX:%{public}f, focusY:%{public}f.", scaleRatio, focusX, focusY);
 
-void AccessibilityZoomHandler::ReadyState::Exit()
-{
-    HILOG_DEBUG("AccessibilityZoomHandler READY_STATE Exit.");
-    gesture_.Clear();
-}
-
-void AccessibilityZoomHandler::ReadyState::OnPointerEvent(MMI::PointerEvent &event)
-{
-    switch (event.GetPointerAction()) {
-        case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
-                gesture_.Up();
-                observer_[0].OnBack(event);
-            }
-            break;
-        case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
-                if (gesture_.Triple(event)) {
-                    observer_[0].OnTransitionTo(ZOOMIN_STATE);
-                } else {
-                    observer_[0].OnBack(event);
-                }
-            }
-            break;
-        default:
-            observer_[0].OnBack(event);
-            break;
+    if ((currentScale_ <= 0) || (scaleRatio <= 0)) {
+        HILOG_ERROR("scale or scale ratio is wrong.");
+        return;
     }
-}
+    float offsetX = displayCenterX_ - currentCenterX_ * currentScale_;
+    float offsetY = displayCenterY_ - currentCenterY_ * currentScale_;
 
-void AccessibilityZoomHandler::ZoomInState::Enter()
-{
-    HILOG_DEBUG("AccessibilityZoomHandler ZOOMIN_STATE Enter.");
-    gesture_.Clear();
-    observer_[0].OnZoomIn();
-}
+    float originalFocusX = (focusX - offsetX) / currentScale_;
+    float originalFocusY = (focusY - offsetY) / currentScale_;
 
-void AccessibilityZoomHandler::ZoomInState::Exit()
-{
-    HILOG_DEBUG("AccessibilityZoomHandler ZOOMIN_STATE Exit.");
-    gesture_.Clear();
-    observer_[0].OnZoomOut();
-}
-
-void AccessibilityZoomHandler::ZoomInState::OnPointerEvent(MMI::PointerEvent &event)
-{
-    switch (event.GetPointerAction()) {
-        case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
-                gesture_.Up();
-                observer_[0].OnBack(event);
-            }
-            break;
-        case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
-                if (gesture_.Triple(event)) {
-                    observer_[0].OnTransitionTo(READY_STATE);
-                } else {
-                    observer_[0].OnBack(event);
-                }
-            } else {
-                observer_[0].OnTransitionTo(SLIDING_STATE);
-            }
-            break;
-        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
-            observer_[0].OnTransitionTo(READY_STATE);
-            break;
-        default:
-            observer_[0].OnBack(event);
-            break;
-    }
-}
-
-void AccessibilityZoomHandler::SlidingState::Enter()
-{
-    HILOG_DEBUG("AccessibilityZoomHandler SLIDING_STATE Enter.");
-}
-
-void AccessibilityZoomHandler::SlidingState::Exit()
-{
-    HILOG_DEBUG("AccessibilityZoomHandler SLIDING_STATE Exit.");
-}
-
-void AccessibilityZoomHandler::SlidingState::OnPointerEvent(MMI::PointerEvent &event)
-{
-    switch (event.GetPointerAction()) {
-        case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() > POINTER_COUNT_1) {
-                observer_[0].OnTransitionTo(ZOOMIN_STATE);
-            }
-            break;
-        case MMI::PointerEvent::POINTER_ACTION_MOVE:
-            OnScroll();
-            break;
-        case MMI::PointerEvent::POINTER_ACTION_CANCEL:
-            observer_[0].OnTransitionTo(READY_STATE);
-            observer_[0].OnZoomOut();
-            break;
-        default:
-            observer_[0].OnBack(event);
-            break;
-    }
-}
-
-bool AccessibilityZoomHandler::SlidingState::OnScroll()
-{
-    return true;
-}
-
-bool AccessibilityZoomHandler::SlidingState::OnScale()
-{
-    return true;
+    float centerOffsetX = (currentCenterX_ - originalFocusX) / scaleRatio;
+    float centerOffsetY = (currentCenterY_ - originalFocusY) / scaleRatio;
+    float newCenterX = originalFocusX + centerOffsetX;
+    float newCenterY = originalFocusY + centerOffsetY;
+    float newScale = currentScale_ * scaleRatio;
+    // Temp deal:set scale and centerXY to WMS.
+    // Update the following information based on the return value of wms.
+    currentCenterX_ = newCenterX; // Temp deal
+    currentCenterY_ = newCenterY; // Temp deal
+    currentScale_ = newScale; // Temp deal
 }
 } // namespace Accessibility
 } // namespace OHOS

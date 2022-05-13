@@ -46,27 +46,18 @@ public:
         std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    std::vector<AccessibilityWindowInfo> GetWindows() override;
+    std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) override;
 
     bool ExecuteCommonAction(const int32_t action) override;
 
     void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
-    float GetDisplayResizeScale(const int32_t displayId) override;
-
-    float GetDisplayResizeCenterX(const int32_t displayId) override;
-
-    float GetDisplayResizeCenterY(const int32_t displayId) override;
-
-    Rect GetDisplayResizeRect(const int32_t displayId) override;
-
-    bool ResetDisplayResize(const int32_t displayId, bool animate) override;
-
-    bool SetDisplayResizeScaleAndCenter(const int32_t displayId, const float scale, const float centerX,
-        const float centerY, const bool animate) override;
-
     void SendSimulateGesture(const int32_t requestId,
-        const std::vector<AccessibilityGesturePath> &gestureSteps) override;
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+
+    bool SetEventTypeFilter(const uint32_t eventTypes) override;
+
+    bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) override;
 
 private:
     void InnerSearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
@@ -82,18 +73,13 @@ private:
     void InnerExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
         std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback);
-    void InnerGetWindows(std::promise<std::vector<AccessibilityWindowInfo>> &syncPromise);
+    void InnerGetWindows(std::promise<std::vector<AccessibilityWindowInfo>> &syncPromise, const uint64_t displayId);
     void InnerExecuteCommonAction(const int32_t action);
     void InnerSetOnKeyPressEventResult(const bool handled, const int32_t sequence);
-    void InnerGetDisplayResizeScale(std::promise<float> &syncPromise, const int32_t displayId);
-    void InnerGetDisplayResizeCenterX(std::promise<float> &syncPromise, const int32_t displayId);
-    void InnerGetDisplayResizeCenterY(std::promise<float> &syncPromise, const int32_t displayId);
-    void InnerGetDisplayResizeRect(std::promise<Rect> &syncPromise, const int32_t displayId);
-    void InnerResetDisplayResize(std::promise<bool> &syncPromise,
-        const int32_t displayId, const bool animate);
-    void InnerSetDisplayResizeScaleAndCenter(std::promise<bool> &syncPromise,
-        const int32_t displayId, const float scale, const float centerX, const float centerY, const bool animate);
-    void InnerSendSimulateGesture(const int32_t requestId, const std::vector<AccessibilityGesturePath> &gestureSteps);
+    void InnerSendSimulateGesturePath(const int32_t requestId,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
+    void InnerSetEventTypeFilter(std::promise<bool> &syncPromise, const uint32_t eventTypes);
+    void InnerSetTargetBundleName(std::promise<bool> &syncPromise, const std::vector<std::string> targetBundleNames);
 
     AccessibleAbilityConnection &connection_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

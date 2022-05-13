@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_gesture_recognizer.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -26,8 +27,6 @@ GestureHandler::GestureHandler(
     const std::shared_ptr<AppExecFwk::EventRunner>& runner, AccessibilityGestureRecognizer& server)
     : AppExecFwk::EventHandler(runner), server_(server)
 {
-    (void)runner;
-    (void)server;
 }
 
 void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer& event)
@@ -54,7 +53,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 {
     HILOG_DEBUG();
 
-    AccessibilityDisplayManager& displayMgr = AccessibilityDisplayManager::GetInstance();
+    AccessibilityDisplayManager& displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
         HILOG_ERROR("get display is nullptr");
@@ -69,7 +68,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     int slop = (int)(densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
-    runner_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;

@@ -21,6 +21,7 @@
 #include "accessible_ability_client_proxy.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
+#include "hilog_wrapper.h"
 #include "parcel.h"
 
 namespace OHOS {
@@ -28,7 +29,6 @@ namespace Accessibility {
 AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject>& object)
     : IRemoteProxy<IAccessibleAbilityClient>(object)
 {
-    (void)object;
 }
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel& data)
@@ -68,17 +68,6 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent& keyEvent
     HILOG_DEBUG("start.-----sequence--%{public}d ----------mock Proxy Start ", sequence);
     AccessibilityAbilityHelper::GetInstance().SetTestKeyPressEvent(sequence);
     HILOG_DEBUG("start.-----------------------------mock Proxy end ");
-}
-
-void AccessibleAbilityClientProxy::OnDisplayResized(
-    const int32_t displayId, const Rect& rect, const float scale, const float centerX, const float centerY)
-{
-    (void)rect;
-    (void)displayId;
-    (void)scale;
-    (void)centerX;
-    (void)centerY;
-    AccessibilityAbilityHelper::GetInstance().SetTestDisplayId(1);
 }
 
 void AccessibleAbilityClientProxy::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)

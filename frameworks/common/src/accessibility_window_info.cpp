@@ -180,5 +180,17 @@ void AccessibilityWindowInfo::AddChild(const int32_t childId)
 AccessibilityWindowInfo::AccessibilityWindowInfo()
 {
 }
+
+void AccessibilityWindowInfo::SetDisplayId(const uint64_t displayId)
+{
+    HILOG_DEBUG("displayId[%{public}ju]", displayId);
+    displayId_ = displayId;
+}
+
+uint64_t AccessibilityWindowInfo::GetDisplayId() const
+{
+    HILOG_DEBUG("displayId[%{public}ju]", displayId_);
+    return displayId_;
+}
 } // namespace Accessibility
 } // namespace OHOS

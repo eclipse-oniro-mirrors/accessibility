@@ -21,8 +21,8 @@
 #include "accessibility_element_operator_impl.h"
 #include "accessibility_system_ability_client.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
-#include "accessible_ability_manager_service_proxy.h"
 #include "accessible_ability_manager_state_observer_stub.h"
+#include "i_accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -33,10 +33,8 @@ class AccessibilitySystemAbilityClientImpl : public AccessibilitySystemAbilityCl
 public:
     /**
      * @brief Construct.
-     * @param context Indicates the context of the associated ability.
-     * @param accountId User Id
      */
-    explicit AccessibilitySystemAbilityClientImpl(int32_t accountId);
+    AccessibilitySystemAbilityClientImpl();
 
     /**
      * @brief Desconstruct.
@@ -99,14 +97,14 @@ public:
      * @param -
      * @return Returns the properties of the accessibility caption.
      */
-    virtual CaptionProperty GetCaptionProperty() override;
+    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
 
     /**
      * @brief Sets the properties of the accessibility caption.
      * @param caption The properties of the accessibility caption.
      * @return Returns true if sets properties successfully, else return false.
      */
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) override;
+    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
 
     /**
      * @brief Checks whether the accessibility caption function is enabled.
@@ -168,7 +166,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if add listener successfully, else return false.
      */
-    virtual bool AddCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) override;
+    virtual bool AddCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
      * @brief delete the listener of caption.
@@ -176,7 +175,8 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(const std::shared_ptr<CaptionObserver> &ob, const int32_t type) override;
+    virtual bool DeleteCaptionListener(
+        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
      * @brief Get the enabled state of accessibility.
@@ -209,13 +209,6 @@ public:
     virtual bool GetKeyEventObserverState() override;
 
     /**
-     * @brief Enabled specified abilities
-     * @param abilities The specified abilities.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableAbilities(std::vector<std::string> &abilities) override;
-
-    /**
      * @brief Get installed abilities.
      * @return Return the installed accessibility ability infos.
      */
@@ -232,7 +225,7 @@ public:
      * @param caption The caption property to set.
      * @return Return true if set caption property successfully, else return false.
      */
-    virtual bool SetCaptionPropertyTojson(const CaptionProperty &caption) override;
+    virtual bool SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption) override;
 
     /**
      * @brief Set caption state
@@ -240,13 +233,6 @@ public:
      * @return Return true if set caption state successfully, else return false.
      */
     virtual bool SetCaptionStateTojson(const bool state) override;
-
-    /**
-     * @brief Disabled specified abilities
-     * @param abilities The specified abilities.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool DisableAbilities(std::vector<std::string> &abilities) override;
 
     /**
      * @brief Clean the AAMS object data.
@@ -270,7 +256,7 @@ public:
      * @param caption The caption property.
      * @return
      */
-    void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
+    void OnAccessibleAbilityManagerCaptionPropertyChanged(const AccessibilityConfig::CaptionProperty &property);
 
     /**
      * @brief Enable Screen Magnifier
@@ -382,7 +368,7 @@ private:
             : client_(client) {}
         ~AccessibleAbilityManagerCaptionObserverImpl() = default;
 
-        virtual void OnPropertyChanged(const CaptionProperty &property) override
+        virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override
         {
             client_.OnAccessibleAbilityManagerCaptionPropertyChanged(property);
         }
@@ -459,11 +445,10 @@ private:
     std::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionProperty_;
-    std::vector<std::shared_ptr<CaptionObserver>> observersCaptionEnable_;
+    std::vector<std::shared_ptr<AccessibilityConfig::CaptionObserver>> observersCaptionProperty_;
+    std::vector<std::shared_ptr<AccessibilityConfig::CaptionObserver>> observersCaptionEnable_;
 
-    CaptionProperty captionProperty_ {};
-    int32_t accountId_ = 0;
+    AccessibilityConfig::CaptionProperty captionProperty_ {};
     bool isScreenMagnifierEnabled_ = false;
     bool isAutoClickEnabled_ = false;
     bool isShortKeyEnabled_ = false;
@@ -474,7 +459,7 @@ private:
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
-    sptr<AccessibleAbilityManagerServiceProxy> serviceProxy_ = nullptr;
+    sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
 };

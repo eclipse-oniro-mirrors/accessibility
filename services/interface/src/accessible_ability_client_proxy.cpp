@@ -156,46 +156,6 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     }
 }
 
-void AccessibleAbilityClientProxy::OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale,
-    const float centerX, const float centerY)
-{
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-    RectParcel rectParcel(rect);
-
-    HILOG_DEBUG("start.");
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteInt32(displayId)) {
-        HILOG_ERROR("fail, displayId write int32 error");
-        return;
-    }
-    if (!data.WriteParcelable(&rectParcel)) {
-        HILOG_ERROR("fail, rect write parcelable error");
-        return;
-    }
-    if (!data.WriteFloat(scale)) {
-        HILOG_ERROR("fail, scale write float error");
-        return;
-    }
-    if (!data.WriteFloat(centerX)) {
-        HILOG_ERROR("fail, centerX write float error");
-        return;
-    }
-    if (!data.WriteFloat(centerY)) {
-        HILOG_ERROR("fail, centerY write float error");
-        return;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::ON_DISPALYRESIZE_CHANGED, data, reply, option)) {
-        HILOG_ERROR("OnDisplayResized fail");
-        return;
-    }
-}
-
 void AccessibleAbilityClientProxy::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
 {
     MessageParcel data;

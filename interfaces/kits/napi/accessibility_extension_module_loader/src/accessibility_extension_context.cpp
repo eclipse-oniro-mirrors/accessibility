@@ -45,7 +45,7 @@ bool AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityEle
 }
 
 bool AccessibilityExtensionContext::GestureInject(const uint32_t sequence,
-    const std::vector<AccessibilityGesturePath>& gesturePathList,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
     const std::shared_ptr<AccessibilityGestureResultListener>& listener)
 {
     HILOG_DEBUG("start.");
@@ -54,30 +54,15 @@ bool AccessibilityExtensionContext::GestureInject(const uint32_t sequence,
         HILOG_ERROR("instance is nullptr");
         return false;
     }
-    return instance->GestureInject(sequence, gesturePathList, listener);
+    return instance->GestureInject(sequence, gesturePath, listener);
 }
 
-std::shared_ptr<DisplayResizeController> AccessibilityExtensionContext::GetDisplayResizeController()
+bool AccessibilityExtensionContext::GestureInject(const uint32_t sequence,
+    const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePaths,
+    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
 {
-    HILOG_DEBUG("start.");
-    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
-    if (!instance) {
-        HILOG_ERROR("instance is nullptr");
-        return nullptr;
-    }
-    return instance->GetDisplayResizeController();
-}
-
-std::shared_ptr<DisplayResizeController> AccessibilityExtensionContext::GetDisplayResizeController(
-    const int32_t displayId)
-{
-    HILOG_DEBUG("start.");
-    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
-    if (!instance) {
-        HILOG_ERROR("instance is nullptr");
-        return nullptr;
-    }
-    return instance->GetDisplayResizeController(displayId);
+    HILOG_DEBUG("This method is temporarily not implemented!");
+    return false;
 }
 
 bool AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
@@ -113,6 +98,18 @@ std::vector<AccessibilityWindowInfo> AccessibilityExtensionContext::GetWindows()
         return temp;
     }
     return instance->GetWindows();
+}
+
+std::vector<AccessibilityWindowInfo> AccessibilityExtensionContext::GetWindows(const uint64_t displayId)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        std::vector<AccessibilityWindowInfo> temp;
+        return temp;
+    }
+    return instance->GetWindows(displayId);
 }
 
 bool AccessibilityExtensionContext::ExecuteCommonAction(const GlobalAction action)
@@ -244,6 +241,27 @@ bool AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo
         return false;
     }
     return instance->ExecuteAction(elementInfo, action, actionArguments);
+}
+bool AccessibilityExtensionContext::SetEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return false;
+    }
+    return instance->SetEventTypeFilter(eventTypes);
+}
+
+bool AccessibilityExtensionContext::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start.");
+    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
+    if (!instance) {
+        HILOG_ERROR("instance is nullptr");
+        return false;
+    }
+    return instance->SetTargetBundleName(targetBundleNames);
 }
 } // namespace Accessibility
 } // namespace OHOS

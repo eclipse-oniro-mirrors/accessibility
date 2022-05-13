@@ -25,22 +25,16 @@
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
-#include "json.h"
 #include "mock_accessibility_element_operator_impl.h"
 #include "mock_accessibility_element_operator_proxy.h"
-#include "mock_bundle_manager.h"
 #include "mock_input_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
-using namespace Json;
 
 namespace OHOS {
 namespace Accessibility {
-const static int32_t timeout = 10000;
 const static int32_t sleepTime = 3;
-const static int32_t testNum_2 = 2;
 
 class AamsTouchGuideTest : public testing::Test {
 public:
@@ -61,10 +55,7 @@ protected:
         int32_t pointId);
 
     sptr<AccessibleAbilityChannel> aastub_ = nullptr;
-    std::shared_ptr<AccessibleAbilityManagerService> ins_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
     std::shared_ptr<MMI::IInputEventConsumer> interceptorId_ = nullptr;
-    void CreateAccessibilityConfigForTouchGuide();
     void WritefileAll(const char* fname, const char* data);
     void AddAccessibilityWindowConnection();
 };
@@ -81,44 +72,6 @@ void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
     (void)fclose(fp);
 }
 
-void AamsTouchGuideTest::CreateAccessibilityConfigForTouchGuide()
-{
-    std::ostringstream os;
-    Json::Value object1, targetBundleNames;
-    Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
-    string jsonStr;
-
-    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
-        GTEST_LOG_(INFO) << "remove successful";
-    } else {
-        GTEST_LOG_(INFO) << "remove failed";
-    }
-
-    accessibilityEventTypes[0] = "all";
-    object1["accessibilityEventTypes"] = accessibilityEventTypes;
-    targetBundleNames[0] = "com.example.ohos.api1";
-    targetBundleNames[1] = "com.example.ohos.api2";
-    object1["targetBundleNames"] = targetBundleNames;
-    accessibilityAbilityTypes[0] = "spoken";
-    accessibilityAbilityTypes[1] = "haptic";
-    accessibilityAbilityTypes[testNum_2] = "audible";
-    object1["accessibilityAbilityTypes"] = accessibilityAbilityTypes;
-    object1["notificationTimeout"] = 0;
-    object1["uiNoninteractiveTimeout"] = 0;
-    object1["uiInteractiveTimeout"] = timeout;
-    accessibilityCapabilities[0] = "touchGuide";
-    object1["accessibilityCapabilities"] = accessibilityCapabilities;
-    object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
-
-    Json::StreamWriterBuilder writerBuilder;
-
-    std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
-    jsonWriter->write(object1, &os);
-    jsonStr = os.str();
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
-}
-
 void AamsTouchGuideTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUpTestCase";
@@ -132,19 +85,13 @@ void AamsTouchGuideTest::TearDownTestCase()
 void AamsTouchGuideTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUp";
-    CreateAccessibilityConfigForTouchGuide();
-    // register bundleservice
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
+
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
     MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);
-
-    ins_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    ins_->OnStart();
 
     // add an ability connection client
     AccessibilityAbilityInitParams initParams;
@@ -152,11 +99,11 @@ void AamsTouchGuideTest::SetUp()
     abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
     abilityInfo->SetCapabilityValues(Capability::CAPABILITY_TOUCH_GUIDE);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-    sptr<AccessibilityAccountData> accountData = ins_->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(*connection);
-    connection->OnAbilityConnectDone(elementName, aastub_, 0);
+    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
 
     AddAccessibilityWindowConnection();
 }
@@ -165,12 +112,9 @@ void AamsTouchGuideTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest TearDown";
 
-    ins_->DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(sleepTime);
-    ins_.reset();
-    ins_ = nullptr;
     aastub_ = nullptr;
-    mock_ = nullptr;
     interceptorId_ = nullptr;
     AccessibilityHelper::GetInstance().GetEventType().clear();
     MMI::MockInputManager::ClearTouchActions();
@@ -230,11 +174,10 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
     // accessibility interaction connection
     int32_t windowId = 0;
     std::shared_ptr<AccessibilityElementOperator> operation = nullptr;
-    int32_t accountId = 0;
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorImpl(windowId, operation);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
-    ins_->RegisterElementOperator(windowId, proxy, accountId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy);
 }
 
 /**

@@ -70,6 +70,13 @@ public:
     void OnAbilityConnected();
 
     /**
+     * @brief Called when your accessibility service is successfully disconnected to the OS.
+     * @param
+     * @return
+     */
+    void OnAbilityDisconnected();
+
+    /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
      * @return
@@ -104,7 +111,10 @@ private:
          * @param
          * @return
          */
-        void OnAbilityDisconnected() override {}
+        void OnAbilityDisconnected() override
+        {
+            extension_.OnAbilityDisconnected();
+        }
 
         /**
          * @brief Called when an accessibility event occurs.

@@ -42,13 +42,10 @@ public:
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
 
 protected:
-    void CreateGesturePath(
-        AccessibilityGesturePathPosition startpoint, AccessibilityGesturePathPosition endpoint, int64_t durationTime);
     sptr<IAccessibleAbilityClient> service = nullptr;
     MMI::PointerEvent CreateTouchEvent(int32_t action);
     int32_t pointId_ = -1;
     std::vector<int32_t> touchAction;
-    std::vector<AccessibilityGesturePath> getGesturePath;
     bool isClearEvents_ = false;
     bool isDestroyEvents_ = false;
 };
@@ -56,13 +53,14 @@ protected:
 void TouchEventInjectorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUpTestCase";
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
 }
 
 void TouchEventInjectorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDownTestCase";
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStop();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void TouchEventInjectorTest::SetUp()
@@ -80,19 +78,8 @@ void TouchEventInjectorTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDown";
     service = nullptr;
-    getGesturePath.clear();
     inputInterceptor_ = nullptr;
     touchAction.clear();
-}
-
-void TouchEventInjectorTest::CreateGesturePath(
-    AccessibilityGesturePathPosition startpoint, AccessibilityGesturePathPosition endpoint, int64_t durationTime)
-{
-    AccessibilityGesturePath gesturePathDefine = AccessibilityGesturePath(startpoint, endpoint, durationTime);
-    gesturePathDefine.SetStartPosition(startpoint);
-    gesturePathDefine.SetEndPosition(endpoint);
-    gesturePathDefine.SetDurationTime(durationTime);
-    getGesturePath.push_back(gesturePathDefine);
 }
 
 MMI::PointerEvent TouchEventInjectorTest::CreateTouchEvent(int32_t action)
@@ -117,13 +104,12 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_001 start";
     touchEventInjector_->SetNext(inputInterceptor_);
 
-    AccessibilityGesturePathPosition startpoint = {10.0f, 10.0f};
+    AccessibilityGesturePosition point {10.0f, 10.0f};
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    gesturePath->AddPosition(point);
+    gesturePath->SetDurationTime(100);
 
-    AccessibilityGesturePathPosition endpoint = {10.0f, 10.0f};
-
-    CreateGesturePath(startpoint, endpoint, 100);
-
-    touchEventInjector_->InjectEvents(getGesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath, service, 1);
 
     sleep(SLEEP_TIME_2);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
@@ -181,12 +167,12 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 
     touchEventInjector_->SetNext(inputInterceptor_);
 
-    AccessibilityGesturePathPosition startpoint = {10.0f, 10.0f};
-    AccessibilityGesturePathPosition endpoint = {10.0f, 10.0f};
+    AccessibilityGesturePosition point {10.0f, 10.0f};
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    gesturePath->AddPosition(point);
+    gesturePath->SetDurationTime(100000);
 
-    CreateGesturePath(startpoint, endpoint, 100000);
-
-    touchEventInjector_->InjectEvents(getGesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath, service, 1);
     sleep(SLEEP_TIME_1);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -210,15 +196,16 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 
     touchEventInjector_->SetNext(inputInterceptor_);
 
-    AccessibilityGesturePathPosition startpoint1 = {10.0f, 10.0f};
-    AccessibilityGesturePathPosition endpoint1 = {10.0f, 20.0f};
-    AccessibilityGesturePathPosition startpoint2 = {10.0f, 20.0f};
-    AccessibilityGesturePathPosition endpoint2 = {20.0f, 20.0f};
+    AccessibilityGesturePosition point1 {10.0f, 10.0f};
+    AccessibilityGesturePosition point2 {10.0f, 20.0f};
+    AccessibilityGesturePosition point3 {20.0f, 20.0f};
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    gesturePath->AddPosition(point1);
+    gesturePath->AddPosition(point2);
+    gesturePath->AddPosition(point3);
+    gesturePath->SetDurationTime(200);
 
-    CreateGesturePath(startpoint1, endpoint1, 100);
-    CreateGesturePath(startpoint2, endpoint2, 100);
-
-    touchEventInjector_->InjectEvents(getGesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath, service, 1);
     sleep(SLEEP_TIME_2);
     touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();

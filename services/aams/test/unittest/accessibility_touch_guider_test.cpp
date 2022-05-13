@@ -50,7 +50,7 @@ protected:
 void TouchGuiderTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "TouchGuiderTest SetUpTestCase";
-    DelayedSingleton<AccessibleAbilityManagerService>::GetInstance()->OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void TouchGuiderTest::TearDownTestCase()

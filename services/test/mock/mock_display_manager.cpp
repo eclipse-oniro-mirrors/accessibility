@@ -95,6 +95,11 @@ bool DisplayManager::RegisterDisplayListener(sptr<IDisplayListener> listener)
     return true;
 }
 
+bool DisplayManager::UnregisterDisplayListener(sptr<IDisplayListener> listener)
+{
+    return true;
+}
+
 bool DisplayManager::RegisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
 {
     return true;

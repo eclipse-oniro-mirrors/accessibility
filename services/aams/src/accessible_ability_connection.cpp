@@ -28,12 +28,8 @@ AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<Accessibilit
     int32_t connectionId, AccessibilityAbilityInfo &abilityInfo)
     : connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
 {
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr.");
-        return;
-    }
-    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(aams->GetMainRunner());
+    eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
 }
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
@@ -66,18 +62,12 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
         HILOG_ERROR("accountData_ is nullptr.");
         return;
     }
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr.");
-        return;
-    }
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
-        accountData_->RemoveEnabledAbility(elementName_.GetBundleName());
-        accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName());
-        aams->UpdateAbilities();
-        // temp deal: Notify setting
+        accountData_->RemoveEnabledAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
+        accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAbilities();
         return;
     }
 
@@ -108,8 +98,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->AddConnectedAbility(pointer);
-    accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName());
-    aams->UpdateAccessibilityManagerService();
+    accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
 
     channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
     if (!channel_) {
@@ -146,17 +136,10 @@ void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk:
     }
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->RemoveConnectedAbility(pointer);
-    accountData_->RemoveEnabledAbility(element.GetBundleName());
 
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    aams->UpdateAbilities();
-
-    if (accountData_->GetAccountId() == aams->GetCurrentAccountId()) {
-        aams->UpdateAccessibilityManagerService();
+    if (accountData_->GetAccountId() ==
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId()) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
     }
 
     if (!abilityClient_) {
@@ -237,26 +220,8 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
         return false;
     }
 
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return false;
-    }
-    if (aams->IsWantedKeyEvent(const_cast<MMI::KeyEvent&>(keyEvent))) {
-        abilityClient_->OnKeyPressEvent(keyEvent, sequence);
-        return true;
-    }
-    return false;
-}
-
-void AccessibleAbilityConnection::OnDisplayResized(const int32_t displayId, const Rect &rect, const float scale,
-    const float centerX, const float centerY)
-{
-    if (!abilityClient_) {
-        HILOG_ERROR("OnDisplayResized​ failed");
-        return;
-    }
-    abilityClient_->OnDisplayResized(displayId, rect, scale, centerX, centerY);
+    abilityClient_->OnKeyPressEvent(keyEvent, sequence);
+    return true;
 }
 
 void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
@@ -266,6 +231,18 @@ void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, 
         return;
     }
     abilityClient_->OnGestureInjectResult(sequence, completedSuccessfully);
+}
+
+void AccessibleAbilityConnection::SetAbilityInfoEventTypeFilter(const uint32_t eventTypes)
+{
+    HILOG_DEBUG("start");
+    abilityInfo_.SetEventTypes(eventTypes);
+}
+
+void AccessibleAbilityConnection::SetAbilityInfoTargetBundleName(const std::vector<std::string> targetBundleNames)
+{
+    HILOG_DEBUG("start");
+    abilityInfo_.SetFilterBundleNames(targetBundleNames);
 }
 
 bool AccessibleAbilityConnection::IsWantedEvent(int32_t eventType)
@@ -315,12 +292,12 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
     HILOG_DEBUG("bundleName[%{public}s], abilityName [%{public}s], accountId [%{public}d]",
         bundleName.c_str(), abilitName.c_str(), accountId);
 
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams || !aams->GetBundleMgrProxy()) {
+    auto bundleMgr = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
+    if (!bundleMgr) {
         HILOG_ERROR("get bundleMgr failed");
         return;
     }
-    int uid = aams->GetBundleMgrProxy()->GetUidByBundleName(bundleName, accountId);
+    int uid = bundleMgr->GetUidByBundleName(bundleName, accountId);
     HILOG_DEBUG("uid is %{public}d ", uid);
 
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
@@ -333,7 +310,7 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
         HILOG_ERROR("ConnectAbility failed!");
         return;
     }
-    accountData_->AddConnectingA11yAbility(bundleName);
+    accountData_->AddConnectingA11yAbility(bundleName + "/" + abilitName);
 }
 
 int32_t AccessibleAbilityConnection::GetChannelId()
@@ -359,20 +336,17 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         return;
     }
     recipientAccountData_->RemoveConnectedAbility(connection);
-    recipientAccountData_->RemoveEnabledAbility(recipientElementName_.GetBundleName());
+    recipientAccountData_->RemoveEnabledAbility(recipientElementName_.GetBundleName() + "/" +
+        recipientElementName_.GetAbilityName());
 
     std::string uiTestUri = "/ohos.uitest/uitestability";
     if (recipientElementName_.GetURI() == uiTestUri) {
         recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
     }
 
-    auto aams = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    if (!aams) {
-        HILOG_ERROR("aams is nullptr");
-        return;
-    }
-    aams->UpdateAbilities();
-    aams->UpdateAccessibilityManagerService();
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    aams.UpdateAbilities();
+    aams.UpdateAccessibilityManagerService();
     // Temp deal: notify setting
 }
 } // namespace Accessibility

@@ -15,6 +15,7 @@
 
 #include "accessibility_window_manager.h"
 #include "accessible_ability_manager_service.h"
+#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -24,28 +25,30 @@ static const int32_t BOTTOM_X = 800;
 static const int32_t BOTTOM_Y = 400;
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
-    windowListener_ = new AccessibilityWindowListener(*this);
-    eventHandler_ = nullptr;
 }
 
-AccessibilityWindowManager& AccessibilityWindowManager::GetInstance()
+AccessibilityWindowManager::~AccessibilityWindowManager()
 {
-    static AccessibilityWindowManager windowManager;
-    return windowManager;
+}
+
+bool AccessibilityWindowManager::Init()
+{
+    return true;
+}
+
+void AccessibilityWindowManager::RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
+{
+    (void)handler;
+}
+
+void AccessibilityWindowManager::DeregisterWindowListener()
+{
 }
 
 void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
     Rosen::WindowUpdateType type)
 {
     HILOG_DEBUG("start");
-    (void)windowInfo;
-    (void)type;
-}
-
-void AccessibilityWindowManager::WindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
-    Rosen::WindowUpdateType type)
-{
-    HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", windowInfo->currentWindowInfo_->wid_, type);
     (void)windowInfo;
     (void)type;
 }
@@ -72,8 +75,7 @@ WindowType ConvertWindowType(Rosen::WindowType type)
     return winType;
 }
 
-AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
-    Rosen::AccessibilityWindowInfo& windowInfo)
+AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo)
 {
     (void)windowInfo;
     AccessibilityWindowInfo info;
@@ -85,23 +87,12 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     return info;
 }
 
-void AccessibilityWindowManager::RegisterWindowChangeListener()
-{}
-
-void AccessibilityWindowManager::DeregisterWindowChangeListener()
-{}
-
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
 {
     (void)windowId;
 }
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
-{
-    (void)windowId;
-}
-
-void AccessibilityWindowManager::SetInputFocusedWindow(int32_t windowId)
 {
     (void)windowId;
 }

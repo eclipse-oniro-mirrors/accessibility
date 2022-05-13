@@ -55,16 +55,16 @@ private:
     std::string description_ = "";
 };
 
-class CaptionListener : public OHOS::Accessibility::CaptionObserver {
+class CaptionListener : public OHOS::AccessibilityConfig::CaptionObserver {
 public:
     CaptionListener();
     static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
     static void NotifyPropertyChangedJS(
-        napi_env env, OHOS::Accessibility::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
+        napi_env env, OHOS::AccessibilityConfig::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
     void OnStateChanged(const bool& enable) override;
-    void OnPropertyChanged(const OHOS::Accessibility::CaptionProperty& caption) override;
-    OHOS::Accessibility::CaptionObserverType GetStateType();
+    void OnPropertyChanged(const OHOS::AccessibilityConfig::CaptionProperty& caption) override;
+    OHOS::AccessibilityConfig::CaptionObserverType GetStateType();
 
     std::string GetEventType() const
     {
@@ -100,7 +100,7 @@ struct NAccessibilitySystemAbilityClient {
     uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
     std::vector<std::string> enabledAbilities_ {};
-    OHOS::Accessibility::CaptionProperty captionProperty_ {};
+    OHOS::AccessibilityConfig::CaptionProperty captionProperty_ {};
     bool setCaptionPropertyReturn_ = false;
     bool captionState_ = false;
     bool setCaptionStateReturn_ = false;
@@ -112,7 +112,6 @@ struct NAccessibilitySystemAbilityClient {
     bool setGestureStateReturn_ = false;
     bool keyEventObserverState_ = false;
     bool setKeyEvenReturn_ = false;
-    bool setExtensionReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     bool result_ = false;
     std::string eventType_ = "";
@@ -139,8 +138,6 @@ public:
     static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value GetInstalled(napi_env env, napi_callback_info info);
     static napi_value GetExtensionEnabled(napi_env env, napi_callback_info info);
-    static napi_value ExtensionEnabled(napi_env env, napi_callback_info info);
-    static napi_value ExtensionDisabled(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);

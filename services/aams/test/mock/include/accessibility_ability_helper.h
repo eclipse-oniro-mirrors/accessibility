@@ -16,12 +16,16 @@
 #ifndef ACCESSIBILITY_ABILILTY_HELPER_H
 #define ACCESSIBILITY_ABILILTY_HELPER_H
 
+#include <chrono>
+#include <thread>
 #include "accessibility_event_info.h"
 #include "hilog/log.h"
 #include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {
+static const int32_t SLEEP_TIME = 10;
+
 class AccessibilityAbilityHelper {
 public:
     static AccessibilityAbilityHelper& GetInstance()
@@ -230,6 +234,26 @@ public:
         testKeyEvent_ = true;
     }
 
+    bool GetIsServicePublished()
+    {
+        return isServicePublished_;
+    }
+
+    void SetIsServicePublished(bool publish)
+    {
+        isServicePublished_ = publish;
+    }
+
+    void WaitForServicePublish()
+    {
+        while (1) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+            if (isServicePublished_) {
+                return;
+            }
+        }
+    }
+
 private:
     std::vector<int> touchAction_;
     bool isDestroyEvents_ = false;
@@ -250,6 +274,7 @@ private:
     int testGestureSimulateResult_ = -1;
     int testStateType_ = -1;
     bool testKeyEvent_ = false;
+    bool isServicePublished_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

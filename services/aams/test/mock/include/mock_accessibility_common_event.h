@@ -17,7 +17,7 @@
 #define MOCK_ACCESSIBILITY_COMMON_EVENT_REGISTRY_H
 
 #include <gmock/gmock.h>
-#include "accessibility_common_event_registry.h"
+#include "accessibility_common_event.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -29,10 +29,10 @@ public:
     MOCK_METHOD1(OnReceiveEvent, void(const EventFwk::CommonEventData& data));
 };
 
-class MockAccessibilityCommonEventRegistry : public AccessibilityCommonEventRegistry {
+class MockAccessibilityCommonEvent : public AccessibilityCommonEvent {
 public:
-    MockAccessibilityCommonEventRegistry();
-    ~MockAccessibilityCommonEventRegistry();
+    MockAccessibilityCommonEvent();
+    ~MockAccessibilityCommonEvent();
     MOCK_METHOD0(StartRegister, bool());
     MOCK_METHOD0(UnRegister, void());
 } // namespace Accessibility

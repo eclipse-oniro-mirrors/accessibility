@@ -16,6 +16,8 @@
 #ifndef ACCESSIBILITY_HELPER_H
 #define ACCESSIBILITY_HELPER_H
 
+#include <chrono>
+#include <thread>
 #include <vector>
 #include "accessibility_def.h"
 #include "hilog/log.h"
@@ -145,6 +147,25 @@ public:
         testGestureSimulateResult_ = testGestureSimulateResult;
     }
 
+    bool GetIsServicePublished()
+    {
+        return isServicePublished_;
+    }
+    void SetIsServicePublished(bool publish)
+    {
+        isServicePublished_ = publish;
+    }
+    void WaitForServicePublish()
+    {
+        int32_t sleepTime = 10;
+        while (1) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+            if (isServicePublished_) {
+                return;
+            }
+        }
+    }
+
 private:
     int32_t testGestureSimulate_ = -1;
     OHOS::sptr<OHOS::Accessibility::IAccessibleAbilityChannel> testStub_ = nullptr;
@@ -160,6 +181,8 @@ private:
     int32_t testKeyPressEvent_ = -1;
     int32_t testDisplayId_ = -1;
     int32_t testGestureSimulateResult_ = -1;
+
+    bool isServicePublished_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

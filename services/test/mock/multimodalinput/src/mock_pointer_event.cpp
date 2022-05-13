@@ -231,5 +231,26 @@ std::vector<int32_t> PointerEvent::GetPointersIdList() const
 void PointerEvent::Reset()
 {
 }
+
+void PointerEvent::SetButtonId(int32_t buttonId)
+{
+    buttonId_ = buttonId;
+}
+
+void PointerEvent::SetButtonPressed(int32_t buttonId)
+{
+    pressedButtons_.insert(buttonId);
+}
+
+void PointerEvent::UpdatePointerItem(int32_t pointerId, PointerItem &pointerItem)
+{
+    for (auto &item : pointers_) {
+        if (item.GetPointerId() == pointerId) {
+            item = pointerItem;
+            return;
+        }
+    }
+    pointers_.push_back(pointerItem);
+}
 } // namespace MMI
 } // namespace OHOS

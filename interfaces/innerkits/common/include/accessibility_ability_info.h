@@ -29,6 +29,7 @@ struct AccessibilityAbilityInitParams {
     std::string rationale;
     std::string settingsAbility;
     uint32_t capabilities;
+    uint32_t abilityTypes;
 };
 
 class AccessibilityAbilityInfo {
@@ -120,6 +121,16 @@ public:
     std::string GetSettingsAbility();
 
     /**
+     * @brief Set the target bundles's name that you want to listening on.
+     * @param targetBundleNames the target bundle name to set.
+     * @return
+     */
+    inline void SetFilterBundleNames(std::vector<std::string> targetBundleNames)
+    {
+        targetBundleNames_ = targetBundleNames;
+    }
+
+    /**
      * @brief Set the types of the capabilities.
      * @param capabilities the capabilities to set.
      * @return
@@ -160,7 +171,7 @@ protected:
     std::string settingsAbility_;
 
     uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_INVALID;
-    uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
+    uint32_t eventTypes_ = EventType::TYPES_ALL_MASK;
 
     std::vector<std::string> targetBundleNames_;
 };

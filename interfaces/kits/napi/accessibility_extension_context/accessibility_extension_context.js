@@ -20,19 +20,29 @@ class AccessibilityExtensionContext extends ExtensionContext {
         super(obj);
     }
 
-    getFocusElementInfo(focusType, callback) {
-        console.log('getFocusElementInfo');
-        return this.__context_impl__.getFocusElementInfo(focusType, callback);
+    setEventTypeFilter(type, callback) {
+        console.log('setEventTypeFilter');
+        return this.__context_impl__.setEventTypeFilter(type, callback);
     }
 
-    getRootElementInfo(callback) {
-        console.log('getRootElementInfo');
-        return this.__context_impl__.getRootElementInfo(callback);
+    setTargetBundleName(targetNames, callback) {
+        console.log('setTargetBundleName');
+        return this.__context_impl__.setTargetBundleName(targetNames, callback);
     }
 
-    getWindows(callback) {
+    getFocusElement(isAccessibilityFocus, callback) {
+        console.log('getFocusElement');
+        return this.__context_impl__.getFocusElement(isAccessibilityFocus, callback);
+    }
+
+    getWindowRootElement(windowId, callback) {
+        console.log('getWindowRootElement');
+        return this.__context_impl__.getWindowRootElement(windowId, callback);
+    }
+
+    getWindows(displayId, callback) {
         console.log('getWindows');
-        return this.__context_impl__.getWindows(callback);
+        return this.__context_impl__.getWindows(displayId, callback);
     }
 
     executeCommonAction(action, callback) {

@@ -22,20 +22,12 @@
 #include "accessible_ability_manager_state_observer_proxy.h"
 #include "accessible_ability_manager_state_observer_stub.h"
 #include "iservice_registry.h"
-#include "json.h"
-#include "mock_bundle_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
-using namespace Json;
 
 namespace OHOS {
 namespace Accessibility {
-const static int32_t timeout = 10000;
-const static int32_t testNum_2 = 2;
-const static int32_t testNum_3 = 3;
-
 class AAMSServerTest : public testing::Test {
 public:
     AAMSServerTest()
@@ -49,10 +41,7 @@ public:
     void SetUp() override;
     void TearDown() override;
     void AddAccessibleAbilityConnection();
-    void CreateAccessibilityConfigForTouchGuide();
     void WritefileAll(const char* fname, const char* data);
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
-    std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     sptr<AccessibleAbilityChannel> aastub_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
@@ -72,18 +61,11 @@ void AAMSServerTest::TearDownTestCase()
 void AAMSServerTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AAMSServerTest SetUp";
-    // register bundleservice
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
 
     // Start AAMS
-    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    aams_->OnStart();
-
-    EXPECT_CALL(*mock_, GetUidByBundleName(_, _)).WillRepeatedly(Return(0));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
 void AAMSServerTest::TearDown()
@@ -94,13 +76,11 @@ void AAMSServerTest::TearDown()
     AccessibilityHelper::GetInstance().SetTestEventType(-1);
     AccessibilityHelper::GetInstance().SetTestWindowChangeTypes(-1);
     AccessibilityHelper::GetInstance().SetTestWindowId(-1);
-    aams_->OnStop();
-    mock_ = nullptr;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     accountData_ = nullptr;
     aastub_ = nullptr;
     elementName_ = nullptr;
     AAConnection_ = nullptr;
-    aams_ = nullptr;
 }
 
 void AAMSServerTest::WritefileAll(const char* fname, const char* data)
@@ -113,45 +93,6 @@ void AAMSServerTest::WritefileAll(const char* fname, const char* data)
 
     (void)fprintf(fp, "%s", data);
     (void)fclose(fp);
-}
-
-void AAMSServerTest::CreateAccessibilityConfigForTouchGuide()
-{
-    std::ostringstream os;
-    Json::Value object1, targetBundleNames;
-    Json::Value accessibilityAbilityTypes, accessibilityEventTypes, accessibilityCapabilities;
-    string jsonStr;
-
-    if (!remove("/system/app/dummy_accessibility_ability_config.json")) {
-        GTEST_LOG_(INFO) << "remove successful";
-    }
-
-    accessibilityEventTypes[0] = "all";
-    object1["accessibilityEventTypes"] = accessibilityEventTypes;
-    targetBundleNames[0] = "com.example.aalisttest";
-    targetBundleNames[1] = "com.example.aalisttest2";
-    object1["targetBundleNames"] = targetBundleNames;
-    accessibilityAbilityTypes[0] = "spoken";
-    accessibilityAbilityTypes[1] = "spoken";
-    accessibilityAbilityTypes[testNum_2] = "audible";
-    object1["accessibilityAbilityTypes"] = accessibilityAbilityTypes;
-    object1["notificationTimeout"] = 0;
-    object1["uiNoninteractiveTimeout"] = 0;
-    object1["uiInteractiveTimeout"] = timeout;
-    accessibilityCapabilities[0] = "retrieve";
-    accessibilityCapabilities[1] = "touchGuide";
-    accessibilityCapabilities[testNum_2] = "keyEventObserver";
-    accessibilityCapabilities[testNum_3] = "gesture";
-    object1["accessibilityCapabilities"] = accessibilityCapabilities;
-    object1["description"] = "$string:accessibility_service_description";
-    object1["settingsAbility"] = "com.example.ohos.accessibility.ServiceSettingsAbility";
-
-    Json::StreamWriterBuilder writerBuilder;
-
-    std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
-    jsonWriter->write(object1, &os);
-    jsonStr = os.str();
-    WritefileAll("/system/app/dummy_accessibility_ability_config.json", jsonStr.c_str());
 }
 
 void AAMSServerTest::AddAccessibleAbilityConnection()
@@ -168,11 +109,11 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
-    accountData_ = aams_->GetCurrentAccountData();
+    accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName(deviceId, initParams.bundleName, initParams.name);
     aastub_ = new AccessibleAbilityChannel(*AAConnection_);
-    AAConnection_->OnAbilityConnectDone(*elementName_, aastub_, 0);
+    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_, 0);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
 
@@ -191,7 +132,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     AccessibilityEventInfo eventInfo;
     eventInfo.SetEventType(EventType::TYPE_WINDOW_UPDATE);
     // aams send event
-    aams_->SendEvent(eventInfo, 100);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
     sleep(1);
     // check aa proxy
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetTestEventType(), int(EventType::TYPE_WINDOW_UPDATE));
@@ -211,7 +152,8 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 start";
-    auto ret = aams_->GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE);
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    auto ret = aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE);
     EXPECT_EQ(int(ret.size()), 0);
 
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 end";
@@ -228,7 +170,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_002 start";
     AddAccessibleAbilityConnection();
 
-    auto ret = aams_->GetAbilityList(
+    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_ENABLE);
     EXPECT_EQ(int(ret.size()), 1);
 
@@ -246,7 +188,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_003 start";
-    CreateAccessibilityConfigForTouchGuide();
+
     AddAccessibleAbilityConnection();
 
     AccessibilityAbilityInitParams initParams;
@@ -254,7 +196,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
         std::make_shared<AccessibilityAbilityInfo>(initParams);
     installAbilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
     installAbilityInfo->SetPackageName("123");
-    auto accountData = aams_->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
 
     // add install ability dummy
     EXPECT_EQ(1, (int)accountData->GetInstalledAbilities().size());
@@ -263,7 +205,8 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 
     // ABILITY_STATE_DISABLE
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
+    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 1);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -283,7 +226,8 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 
     AddAccessibleAbilityConnection();
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    auto ret = aams_->GetAbilityList(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
+    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
     EXPECT_EQ(int(ret.size()), 0);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
@@ -303,7 +247,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_005, TestSize.Level1)
 
     AddAccessibleAbilityConnection();
 
-    auto ret = aams_->GetAbilityList(
+    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_INSTALLED);
     EXPECT_EQ(int(ret.size()), 1);
 
@@ -322,16 +266,16 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterElementOperator_001 start";
     AddAccessibleAbilityConnection();
-    sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    aams_->RegisterElementOperator(0, nullptr, 100);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
     sleep(1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    aams_->DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(1);
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();
@@ -347,25 +291,25 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest DeregisterElementOperator_001 start";
-    sptr<AccessibilityAccountData> accountData = aams_->GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
 
     AddAccessibleAbilityConnection();
     sleep(1);
-    aams_->RegisterElementOperator(0, nullptr, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // wrong windowId
-    aams_->DeregisterElementOperator(1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(1);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // true windowId
-    aams_->DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);

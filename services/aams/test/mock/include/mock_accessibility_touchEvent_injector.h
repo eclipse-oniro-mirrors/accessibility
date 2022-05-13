@@ -38,10 +38,10 @@ public:
     MOCK_METHOD1(OnPointerEvent, void(MMI::PointerEvent& event));
     MOCK_METHOD1(ClearEvents, void(uint32_t inputSource));
     MOCK_METHOD0(DestroyEvents, void());
-    MOCK_METHOD3(InjectEvents, void(const std::vector<GesturePathDefine>& gesturePath,
-                                    const sptr<IAccessibleAbilityClient>& service, int32_t sequence));
+    MOCK_METHOD3(InjectEvents, void(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
+                                    const sptr<IAccessibleAbilityClient> &service, int32_t sequence));
     MOCK_METHOD1(SendPointerEvent, void(MMI::PointerEvent& event));
-    MOCK_METHOD0(InjectEventsInner, void());
+    MOCK_METHOD0(InjectGesturePathInner, void());
     MOCK_METHOD0(GetCurrentGestureService, sptr<IAccessibleAbilityClient>());
     MOCK_METHOD0(GetSequence, int32_t());
 };

@@ -15,6 +15,7 @@
 
 #include "accessibility_touch_guider.h"
 #include "accessibility_window_manager.h"
+#include "hilog_wrapper.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -24,15 +25,12 @@ static const int32_t POINTER_COUNT_2 = 2;
 TGEventHandler::TGEventHandler(const std::shared_ptr<AppExecFwk::EventRunner>& runner, TouchGuider& tgServer)
     : AppExecFwk::EventHandler(runner), tgServer_(tgServer)
 {
-    (void)runner;
-    (void)tgServer;
 }
 
 TouchGuider::TouchGuider()
 {
     HILOG_DEBUG();
     currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
-    pAams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
 }
 
 void TouchGuider::StartUp()
@@ -40,7 +38,7 @@ void TouchGuider::StartUp()
     HILOG_DEBUG();
     touchGuideListener_ = std::make_unique<TouchGuideListener>(*this);
     gestureRecognizer_.RegisterListener(*touchGuideListener_.get());
-    runner_ = pAams_->GetMainRunner();
+    runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
         return;
@@ -154,9 +152,9 @@ void TouchGuider::SendAccessibilityEventToAA(EventType eventType)
 
     AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(eventType);
-    int32_t windowsId = AccessibilityWindowManager::GetInstance().activeWindowId_;
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_;
     eventInfo.SetWindowId(windowsId);
-    pAams_->SendEvent(eventInfo, pAams_->GetCurrentAccountId());
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
     if (eventType == EventType::TYPE_TOUCH_GUIDE_BEGIN) {
         isTouchGuiding_ = true;
     } else if (eventType == EventType::TYPE_TOUCH_GUIDE_END) {
@@ -277,8 +275,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     AccessibilityEventInfo eventInfo {};
     eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
     eventInfo.SetGestureType(gestureId);
-    server_.pAams_->SendEvent(eventInfo, server_.pAams_->GetCurrentAccountId());
-
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
     return true;
 }
 
@@ -530,7 +527,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent& event)
         HILOG_INFO("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
         /* get densityPixels from WMS */
-        AccessibilityDisplayManager& displayMgr = AccessibilityDisplayManager::GetInstance();
+        AccessibilityDisplayManager& displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
         auto display = displayMgr.GetDefaultDisplay();
         float densityPixels = display->GetVirtualPixelRatio();
         int miniZoomPointerDistance = (int)MINI_POINTER_DISTANCE_DIP * densityPixels;

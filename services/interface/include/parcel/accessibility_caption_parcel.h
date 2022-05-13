@@ -21,10 +21,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-class CaptionPropertyParcel : public CaptionProperty, public Parcelable {
+class CaptionPropertyParcel : public AccessibilityConfig::CaptionProperty, public Parcelable {
 public:
     CaptionPropertyParcel() = default;
-    CaptionPropertyParcel(const CaptionProperty &property);
+    CaptionPropertyParcel(const AccessibilityConfig::CaptionProperty &property);
     /**
      * @brief read this sequenceable object from a Parcel.
      * @param parcel Indicates the Parcel object into which the sequenceable

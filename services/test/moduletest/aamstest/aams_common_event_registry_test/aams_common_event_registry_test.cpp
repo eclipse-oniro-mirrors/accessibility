@@ -14,13 +14,12 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "common_event_manager.h"
 #include "iservice_registry.h"
-#include "mock_bundle_manager.h"
-#include "system_ability_definition.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -41,12 +40,10 @@ public:
     void TearDown() override;
     void AddAccessibleAbilityConnection();
 
-    std::shared_ptr<OHOS::Accessibility::AccessibleAbilityManagerService> aams_ = nullptr;
     sptr<AccessibilityAccountData> accountData_ = nullptr;
     sptr<AccessibleAbilityChannel> aastub_ = nullptr;
     sptr<AppExecFwk::ElementName> elementName_ = nullptr;
     sptr<AccessibleAbilityConnection> AAConnection_ = nullptr;
-    sptr<OHOS::AppExecFwk::BundleMgrService> mock_ = nullptr;
 };
 
 void AccessibilityCommonEventRegistryTest::SetUpTestCase()
@@ -62,25 +59,17 @@ void AccessibilityCommonEventRegistryTest::TearDownTestCase()
 void AccessibilityCommonEventRegistryTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // Register bundleservice
-    mock_ = new OHOS::AppExecFwk::BundleMgrService();
-    sptr<ISystemAbilityManager> systemAbilityManager =
-        SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    OHOS::ISystemAbilityManager::SAExtraProp saExtraProp;
-    systemAbilityManager->AddSystemAbility(OHOS::BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, mock_, saExtraProp);
 
     // Start AAMS
-    aams_ = DelayedSingleton<AccessibleAbilityManagerService>::GetInstance();
-    aams_->OnStart();
-    EXPECT_CALL(*mock_, GetUidByBundleName(_, _)).WillRepeatedly(Return(0));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
 void AccessibilityCommonEventRegistryTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
-    aams_->OnStop();
-    mock_ = nullptr;
-    aams_ = nullptr;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     accountData_ = nullptr;
     aastub_ = nullptr;
     elementName_ = nullptr;
@@ -98,7 +87,7 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
 
-    accountData_ = aams_->GetCurrentAccountData();
+    accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("name", "bundleName", "id");
     aastub_ = new AccessibleAbilityChannel(*AAConnection_);
@@ -107,77 +96,24 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
 }
 
 /**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001
- * @tc.name: PackageUpdateFinished
- * @tc.desc: There is a connected ability. The package is added to the connecting ability during the update.
- *           After the package update. Remove connecting ability.
- */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 start";
-    AddAccessibleAbilityConnection();
-    sleep(2);
-    std::string bundleName = "bundleName";
-    accountData_->AddConnectingA11yAbility(bundleName);
-    EXPECT_EQ(1, int(accountData_->GetConnectingA11yAbilities().size()));
-
-    // PackageUpdateFinished
-    aams_->PackageUpdateFinished(bundleName);
-    EXPECT_EQ(0, int(accountData_->GetConnectingA11yAbilities().size()));
-
-    accountData_->ClearInstalledAbility();
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageUpdateFinished_001 end";
-}
-
-/**
  * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001
  * @tc.name: PackageChanged
  * @tc.desc: There is a connected ability. The package has changed. Empty all install ability.
  */
-HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001,
+HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEvent_ModuleTest_PackageChanged_001,
     TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 start";
+    GTEST_LOG_(INFO) << "AccessibilityCommonEvent_ModuleTest_PackageChanged_001 start";
     AddAccessibleAbilityConnection();
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
     // PackageChanged
     std::string bundleName = "bundleName";
-    aams_->PackageChanged(bundleName);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
 
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PackageChanged_001 end";
-}
-
-/**
- * @tc.number: AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001
- * @tc.name: PresentUser
- * @tc.desc: After presenting user, the ability which is connected before is still connected.
- */
-HWTEST_F(
-    AccessibilityCommonEventRegistryTest, AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 start";
-    ASSERT_TRUE(aams_);
-
-    GTEST_LOG_(INFO) << "Add an account.";
-    AddAccessibleAbilityConnection();
-    sleep(2);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);
-
-    GTEST_LOG_(INFO) << "Present account";
-    aams_->PresentUser();
-    sleep(2);
-    GTEST_LOG_(INFO) << "Check account data";
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetInstalledAbilities().size(), 1);
-    EXPECT_EQ((int)aams_->GetCurrentAccountData()->GetConnectedA11yAbilities().size(), 1);
-
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistry_ModuleTest_PresentUser_001 end";
+    GTEST_LOG_(INFO) << "AccessibilityCommonEvent_ModuleTest_PackageChanged_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
