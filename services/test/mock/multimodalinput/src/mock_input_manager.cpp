@@ -47,8 +47,6 @@ std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
     return mockInputEventConsumer;
 }
 
-InputManager* InputManager::instance_ = nullptr;
-
 InputManager* InputManager::GetInstance()
 {
     if (!instance_) {
@@ -71,12 +69,6 @@ void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent
 int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interceptorId)
 {
     mockInputEventConsumer = interceptorId;
-    return 0;
-}
-
-int32_t InputManager::AddInterceptor(int32_t sourceType, std::function<void(std::shared_ptr<PointerEvent>)> interceptor)
-{
-    mockPointerCallback = interceptor;
     return 0;
 }
 
