@@ -23,7 +23,7 @@
 #include "bundlemgr/bundle_mgr_interface.h"
 #include "iremote_proxy.h"
 #include "iremote_stub.h"
-#include "ohos/aafwk/content/want.h"
+#include "want.h"
 
 namespace OHOS {
 namespace AppExecFwk {

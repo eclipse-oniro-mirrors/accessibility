@@ -35,7 +35,6 @@ config("module_private_config") {
     "//base/accessibility/services/test/mock/include/extern",
     "//base/accessibility/util/include",
     "//base/hiviewdfx/hiview/adapter/utility/include/extra/singleton.h",
-    "//foundation/aafwk/standard/interfaces/innerkits/uri/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//base/accessibility/frameworks/asacfwk/test/mock/include",
@@ -81,15 +80,11 @@ ohos_unittest("asac_unit_test") {
     "//base/accessibility/services/interface/src/parcel/accessibility_caption_parcel.cpp",
     "//base/accessibility/services/interface/src/parcel/accessibility_element_info_parcel.cpp",
     "//base/accessibility/services/interface/src/parcel/accessibility_event_info_parcel.cpp",
-    "//foundation/aafwk/standard/interfaces/innerkits/uri/src/uri.cpp",
     "unittest/accessibility_element_operator_impl_test.cpp",
     "unittest/accessibility_system_ability_client_impl_test.cpp",
   ]
 
-  configs = [
-    ":module_private_config",
-    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
-  ]
+  configs = [ ":module_private_config" ]
 
   deps = [
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -104,6 +99,7 @@ ohos_unittest("asac_unit_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
     "ability_runtime:abilitykit_native",
     "bundle_framework:appexecfwk_base",
