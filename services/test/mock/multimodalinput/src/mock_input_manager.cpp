@@ -47,11 +47,10 @@ std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
     return mockInputEventConsumer;
 }
 
+InputManager *InputManager::instance_ = new (std::nothrow) InputManager();
 InputManager* InputManager::GetInstance()
 {
-    if (!instance_) {
-        instance_ = new InputManager();
-    }
+
     return instance_;
 }
 
