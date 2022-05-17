@@ -120,7 +120,7 @@ ohos_unittest("accessible_ability_test") {
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
-    "native_appdatamgr:native_preferences",
+    "preferences:native_preferences",
     "os_account:os_account_innerkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
