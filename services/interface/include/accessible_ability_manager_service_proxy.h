@@ -103,7 +103,7 @@ public:
     virtual bool DisableAbilities(const std::string name) override;
     virtual int32_t GetActiveWindow() override;
 
-    virtual bool EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
+    virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
     virtual bool DisableUITestAbility() override;
 
     virtual bool SetScreenMagnificationState(const bool state) override;

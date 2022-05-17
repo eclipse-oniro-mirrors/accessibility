@@ -85,7 +85,7 @@ public:
     std::vector<std::string> GetEnabledAbilities() override;
     std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
     bool DisableAbilities(const std::string name) override;
-    bool EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
+    RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     bool DisableUITestAbility() override;
     int32_t GetActiveWindow() override;
 

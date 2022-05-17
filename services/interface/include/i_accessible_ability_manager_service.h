@@ -101,7 +101,7 @@ public:
     virtual bool DisableAbilities(const std::string name) = 0;
     virtual int32_t GetActiveWindow() = 0;
 
-    virtual bool EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;
+    virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;
     virtual bool DisableUITestAbility() = 0;
 
     virtual bool SetScreenMagnificationState(const bool state) = 0;

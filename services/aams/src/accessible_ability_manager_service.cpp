@@ -757,36 +757,36 @@ bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
     return syncFuture.get();
 }
 
-bool AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
+RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     HILOG_DEBUG("start");
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
-        return false;
+        return RET_ERR_NULLPTR;
     }
 
-    std::promise<bool> syncPromise;
+    std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, obj]() -> void {
         HILOG_DEBUG("start");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
+            syncPromise.set_value(RET_ERR_NULLPTR);
             return;
         }
         std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (connection) {
             HILOG_ERROR("connection is existed!!");
-            syncPromise.set_value(false);
+            syncPromise.set_value(RET_ERR_CONNECTION_EXIST);
             return;
         }
 
         std::function<void()> addUITestClientFunc =
             std::bind(&AccessibleAbilityManagerService::AddUITestClient, this, obj);
         handler_->PostTask(addUITestClientFunc, "AddUITestClient");
-        syncPromise.set_value(true);
+        syncPromise.set_value(RET_OK);
         }), "TASK_ENABLE_UI_TEST_ABILITIES");
     return syncFuture.get();
 }

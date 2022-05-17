@@ -537,7 +537,7 @@ int32_t AccessibleAbilityManagerServiceProxy::GetActiveWindow()
     return reply.ReadInt32();
 }
 
-bool AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IRemoteObject> &obj)
+RetError AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
@@ -546,20 +546,22 @@ bool AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IRemot
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteRemoteObject(obj)) {
         HILOG_ERROR("fail, connection write obj");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::ENABLE_UI_TEST_ABILITY,
         data, reply, option)) {
         HILOG_ERROR("EnableUITestAbility fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError result = static_cast<RetError>(reply.ReadInt32());
+    HILOG_DEBUG("enable result is %{public}d", result);
+    return result;
 }
 
 bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()

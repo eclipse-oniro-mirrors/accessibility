@@ -78,18 +78,18 @@ bool AccessibilityUITestAbilityImpl::RegisterAbilityListener(const std::shared_p
     return instance->RegisterAbilityListener(listener);
 }
 
-bool AccessibilityUITestAbilityImpl::Connect()
+RetError AccessibilityUITestAbilityImpl::Connect()
 {
     HILOG_DEBUG("start.");
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return false;
+        return RET_ERR_SAMGR;
     }
 
     sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
     if (!instance) {
         HILOG_ERROR("instance is nullptr");
-        return false;
+        return RET_ERR_NULLPTR;
     }
 
     return serviceProxy_->EnableUITestAbility(instance->GetRemoteObject());

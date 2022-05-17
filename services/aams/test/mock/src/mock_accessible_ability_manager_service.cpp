@@ -630,10 +630,10 @@ bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
     return syncFuture.get();
 }
 
-bool AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj)
+RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj)
 {
     (void)obj;
-    return true;
+    return RET_OK;
 }
 
 bool AccessibleAbilityManagerService::DisableUITestAbility()
