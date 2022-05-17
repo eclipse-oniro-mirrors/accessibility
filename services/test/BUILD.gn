@@ -48,9 +48,6 @@ config("module_private_config") {
     "//foundation/aafwk/standard/frameworks/kits/appkit/native/app/include/",
     "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
     "//foundation/aafwk/standard/interfaces/innerkits/app_manager/include/appmgr",
-    "//foundation/aafwk/standard/interfaces/innerkits/base/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/want/include/ohos/aafwk/content",
     "//foundation/aafwk/standard/services/abilitymgr/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
@@ -136,6 +133,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
@@ -212,6 +210,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
@@ -294,6 +293,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
@@ -374,6 +374,7 @@ ohos_moduletest("aams_server_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
@@ -448,6 +449,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
@@ -527,6 +529,7 @@ ohos_moduletest("aams_common_event_registry_test") {
   ]
 
   external_deps = [
+    "ability_base:configuration",
     "ability_base:want",
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",

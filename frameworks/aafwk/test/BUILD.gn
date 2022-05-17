@@ -93,10 +93,7 @@ ohos_unittest("accessible_ability_test") {
   ]
   sources += aams_mock_multimodalinput_src
 
-  configs = [
-    ":module_private_config",
-    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
-  ]
+  configs = [ ":module_private_config" ]
 
   deps = [
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -109,7 +106,6 @@ ohos_unittest("accessible_ability_test") {
   ]
 
   external_deps = [
-    "ability_base:want",
     "ability_base:want",
     "ability_runtime:ability_manager",
     "ability_runtime:abilitykit_native",

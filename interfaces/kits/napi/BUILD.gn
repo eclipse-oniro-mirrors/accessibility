@@ -45,9 +45,7 @@ ohos_shared_library("accessibility") {
     "./src/native_module.cpp",
   ]
 
-  configs = [
-    "//foundation/aafwk/standard/interfaces/innerkits/base:base_public_config",
-  ]
+  configs = []
 
   deps = [
     "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
