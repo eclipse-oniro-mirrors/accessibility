@@ -22,6 +22,7 @@
 #include <mutex>
 #include <string>
 
+#include "accessibility_dumper.h"
 #include "accessible_ability_manager_service_stub.h"
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
@@ -51,6 +52,7 @@ public:
     void OnStop() override;
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     void OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
+    int Dump(int fd, const std::vector<std::u16string>& args) override;
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
@@ -260,6 +262,7 @@ private:
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
     sptr<TouchEventInjector> touchEventInjector_ = nullptr;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
+    sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
