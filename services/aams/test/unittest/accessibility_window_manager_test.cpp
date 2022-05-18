@@ -28,6 +28,10 @@
 using namespace testing;
 using namespace testing::ext;
 
+static const int RETRY_TIMES = 10;
+static const int WINDOW_ID = 2;
+static const int WINDOWS_SIZE = 2;
+
 namespace OHOS {
 namespace Accessibility {
 class AccessibilityWindowManagerTest : public testing::Test {
@@ -239,16 +243,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Der
 HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange001 start";
-
-    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
-    sptr<IAccessibilityElementOperator> proxy = new AccessibilityElementOperatorProxy(stub);
-    /* add asacConnections */
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    ASSERT_TRUE(accountData);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(1, proxy);
-    auto map = accountData->GetAsacConnections();
-    GTEST_LOG_(INFO) << "RegisterElementOperator OK";
-
     Rosen::WindowInfo rosen_winInfo;
     rosen_winInfo.type_ = Rosen::WindowType::APP_WINDOW_BASE;
     rosen_winInfo.wid_ = 1;
@@ -256,26 +250,32 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     rosen_winInfo.windowRect_.height_ = 1;
     rosen_winInfo.windowRect_.posX_ = 1;
     rosen_winInfo.windowRect_.posY_ = 1;
-    rosen_winInfo.focused_ = true;
+    rosen_winInfo.focused_ = false;
 
     sptr<Rosen::AccessibilityWindowInfo> winInfo = new Rosen::AccessibilityWindowInfo();
     winInfo->currentWindowInfo_ = &rosen_winInfo;
+    winInfo->windowList_.push_back(&rosen_winInfo);
 
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
-
-    if (!windowInfoManager.a11yWindows_.empty()) {
-        GTEST_LOG_(INFO) << "a11yWindows_ is empty";
-        windowInfoManager.a11yWindows_.clear();
-    }
-    /* OnWindowChange */
+    windowInfoManager.a11yWindows_.clear();
     EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
 
-    AccessibilityWindowInfo info = windowInfoManager.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    windowInfoManager.a11yWindows_.insert(std::make_pair(rosen_winInfo.wid_, info));
     windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    int retryCount = 0;
+    while (retryCount < RETRY_TIMES) {
+        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
+        auto it = windowInfoManager.a11yWindows_.find(rosen_winInfo.wid_);
+        if (it != windowInfoManager.a11yWindows_.end()) {
+            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
+            if (it->second.GetWindowLayer() != -1) {
+                break;
+            }
+        }
+        sleep(1);
+        retryCount++;
+    }
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
     EXPECT_TRUE(windowInfoManager.a11yWindows_.count(rosen_winInfo.wid_));
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange001 end";
 }
@@ -288,39 +288,38 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange002 start";
-
     Rosen::WindowInfo rosen_winInfo;
-    rosen_winInfo.type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
+    rosen_winInfo.type_ = Rosen::WindowType::APP_WINDOW_BASE;
     rosen_winInfo.wid_ = 1;
-    rosen_winInfo.windowRect_.width_ = 1;
-    rosen_winInfo.windowRect_.height_ = 1;
-    rosen_winInfo.windowRect_.posX_ = 1;
-    rosen_winInfo.windowRect_.posY_ = 1;
     rosen_winInfo.focused_ = true;
 
     sptr<Rosen::AccessibilityWindowInfo> winInfo = new Rosen::AccessibilityWindowInfo();
     winInfo->currentWindowInfo_ = &rosen_winInfo;
+    winInfo->windowList_.push_back(&rosen_winInfo);
 
-    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
-    mgr.activeWindowId_ = INVALID_WINDOW_ID;
-    mgr.a11yWindows_.clear();
-    AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    int id = 2;
-    EXPECT_EQ(0, mgr.a11yWindows_.size());
-    mgr.a11yWindows_.insert(std::make_pair(id, info));
-    EXPECT_EQ(1, mgr.a11yWindows_.size());
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
+    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
 
-    std::map<int32_t, AccessibilityWindowInfo> map = mgr.a11yWindows_;
-    for (auto it = map.begin(); it != map.end(); it++) {
-        EXPECT_EQ(2, it->second.GetWindowType());
+    windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
+    int retryCount = 0;
+    while (retryCount < RETRY_TIMES) {
+        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
+        auto it = windowInfoManager.a11yWindows_.find(rosen_winInfo.wid_);
+        if (it != windowInfoManager.a11yWindows_.end()) {
+            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
+            if (it->second.GetWindowLayer() != -1) {
+                break;
+            }
+        }
+        sleep(1);
+        retryCount++;
     }
-
-    /* id == wid */
-    rosen_winInfo.wid_ = 2;
-    mgr.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
-
-    EXPECT_TRUE(mgr.activeWindowId_ == INVALID_WINDOW_ID);
-    mgr.a11yWindows_.clear();
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.count(rosen_winInfo.wid_));
+    EXPECT_EQ(windowInfoManager.activeWindowId_, rosen_winInfo.wid_);
+    windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange002 end";
 }
 
@@ -331,39 +330,55 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
  */
 HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange003, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy003 start";
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange003 start";
+    // Clear window data
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
 
-    Rosen::WindowInfo rosen_winInfo;
-    rosen_winInfo.type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
-    rosen_winInfo.wid_ = 1;
-    rosen_winInfo.windowRect_.width_ = 1;
-    rosen_winInfo.windowRect_.height_ = 1;
-    rosen_winInfo.windowRect_.posX_ = 1;
-    rosen_winInfo.windowRect_.posY_ = 1;
-    rosen_winInfo.focused_ = true;
+    // Add a window
+    Rosen::WindowInfo rosenWinInfoFirst;
+    rosenWinInfoFirst.type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
+    rosenWinInfoFirst.wid_ = 1;
+    rosenWinInfoFirst.focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoFirst.wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(&rosenWinInfoFirst)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
 
+    // Add another window
+    Rosen::WindowInfo rosenWinInfoSecond;
+    rosenWinInfoSecond.type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    rosenWinInfoSecond.wid_ = WINDOW_ID;
+    rosenWinInfoSecond.focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond.wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(&rosenWinInfoSecond)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
+
+    // Remove the first window
     sptr<Rosen::AccessibilityWindowInfo> winInfo = new Rosen::AccessibilityWindowInfo();
-    winInfo->currentWindowInfo_ = &rosen_winInfo;
+    winInfo->currentWindowInfo_ = &rosenWinInfoFirst;
+    winInfo->windowList_.push_back(&rosenWinInfoFirst);
+    winInfo->windowList_.push_back(&rosenWinInfoSecond);
+    windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
 
-    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
-    AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    int id = 2;
-    EXPECT_TRUE(!mgr.a11yWindows_.size());
-    mgr.a11yWindows_.insert(std::make_pair(id, info));
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
-
-    std::map<int32_t, AccessibilityWindowInfo> map = mgr.a11yWindows_;
-    for (auto it = map.begin(); it != map.end(); it++) {
-        EXPECT_EQ(2, it->second.GetWindowType());
+    int retryCount = 0;
+    while (retryCount < RETRY_TIMES) {
+        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
+        auto it = windowInfoManager.a11yWindows_.find(rosenWinInfoSecond.wid_);
+        if (it != windowInfoManager.a11yWindows_.end()) {
+            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
+            if (it->second.GetWindowLayer() != -1) {
+                break;
+            }
+        }
+        sleep(1);
+        retryCount++;
     }
-
-    /* id != wid != INVALID_WINDOW_ID */
-    rosen_winInfo.wid_ = 1;
-    mgr.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
-
-    mgr.a11yWindows_.clear();
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy002 end";
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
+    EXPECT_FALSE(windowInfoManager.a11yWindows_.count(rosenWinInfoFirst.wid_));
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.count(rosenWinInfoSecond.wid_));
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange003 end";
 }
 
 /**
@@ -374,37 +389,57 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy003 start";
+    // Clear window data
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
+    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
 
-    Rosen::WindowInfo rosen_winInfo;
-    rosen_winInfo.type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
-    rosen_winInfo.wid_ = 1;
-    rosen_winInfo.windowRect_.width_ = 1;
-    rosen_winInfo.windowRect_.height_ = 1;
-    rosen_winInfo.windowRect_.posX_ = 1;
-    rosen_winInfo.windowRect_.posY_ = 1;
-    rosen_winInfo.focused_ = true;
+    // Add an active window
+    Rosen::WindowInfo rosenWinInfoFirst;
+    rosenWinInfoFirst.type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
+    rosenWinInfoFirst.wid_ = 1;
+    rosenWinInfoFirst.focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoFirst.wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(&rosenWinInfoFirst)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
+    windowInfoManager.SetActiveWindow(rosenWinInfoFirst.wid_);
+    EXPECT_EQ(windowInfoManager.activeWindowId_, rosenWinInfoFirst.wid_);
 
+    // Add another normal window
+    Rosen::WindowInfo rosenWinInfoSecond;
+    rosenWinInfoSecond.type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    rosenWinInfoSecond.wid_ = WINDOW_ID;
+    rosenWinInfoSecond.focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond.wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(&rosenWinInfoSecond)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
+
+    // Remove the active window
     sptr<Rosen::AccessibilityWindowInfo> winInfo = new Rosen::AccessibilityWindowInfo();
-    winInfo->currentWindowInfo_ = &rosen_winInfo;
+    winInfo->currentWindowInfo_ = &rosenWinInfoFirst;
+    winInfo->windowList_.push_back(&rosenWinInfoFirst);
+    winInfo->windowList_.push_back(&rosenWinInfoSecond);
+    windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
 
-    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
-    mgr.activeWindowId_ = INVALID_WINDOW_ID;
-    AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    int id = -1;
-    EXPECT_TRUE(!mgr.a11yWindows_.size());
-    mgr.a11yWindows_.insert(std::make_pair(id, info));
-    EXPECT_TRUE(mgr.a11yWindows_.size() == 1);
-
-    std::map<int32_t, AccessibilityWindowInfo> map = mgr.a11yWindows_;
-    for (auto it = map.begin(); it != map.end(); it++) {
-        EXPECT_EQ(2, it->second.GetWindowType());
+    int retryCount = 0;
+    while (retryCount < RETRY_TIMES) {
+        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
+        auto it = windowInfoManager.a11yWindows_.find(rosenWinInfoSecond.wid_);
+        if (it != windowInfoManager.a11yWindows_.end()) {
+            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
+            if (it->second.GetWindowLayer() != -1) {
+                break;
+            }
+        }
+        sleep(1);
+        retryCount++;
     }
-
-    /* id == wid == INVALID_WINDOW_ID */
-    rosen_winInfo.wid_ = -1;
-    mgr.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
-    EXPECT_TRUE(mgr.activeWindowId_ == INVALID_WINDOW_ID);
-    mgr.a11yWindows_.clear();
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
+    EXPECT_FALSE(windowInfoManager.a11yWindows_.count(rosenWinInfoFirst.wid_));
+    EXPECT_TRUE(windowInfoManager.a11yWindows_.count(rosenWinInfoSecond.wid_));
+    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
+    windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy003 end";
 }
 
