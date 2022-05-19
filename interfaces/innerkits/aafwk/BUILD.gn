@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//base/accessibility/accessibility_aafwk.gni")
 import("//build/ohos.gni")
 
 aafwk_path = "//base/accessibility/frameworks/aafwk"
@@ -48,8 +49,8 @@ ohos_shared_library("accessibleability") {
   public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/services/interface:aams_interface",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
   ]
 
   external_deps = [
