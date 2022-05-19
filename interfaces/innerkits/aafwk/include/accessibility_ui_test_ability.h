@@ -50,9 +50,9 @@ public:
 
     /**
      * @brief Connect to AAMS. For UI test.
-     * @return Return true if the command of connection is sent successfully, else return false.
+     * @return Return RET_OK if the command of connection is sent successfully.
      */
-    virtual bool Connect() = 0;
+    virtual RetError Connect() = 0;
 
     /**
      * @brief disconnect to AAMS. For UI test.

@@ -94,7 +94,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, Connect_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
         return;
     }
-    EXPECT_TRUE(instance_->Connect());
+    EXPECT_EQ(instance_->Connect(), RET_OK);
 
     GTEST_LOG_(INFO) << "Connect_001 end";
 }

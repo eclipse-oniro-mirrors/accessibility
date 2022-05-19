@@ -20,6 +20,15 @@
 
 namespace OHOS {
 namespace Accessibility {
+enum RetError : int32_t {
+    RET_OK = 0,
+    RET_ERR_INVALID_PARAM = 1,
+    RET_ERR_NULLPTR = 2,
+    RET_ERR_CONNECTION_EXIST = 3,
+    RET_ERR_IPC_FAILED = 4,
+    RET_ERR_SAMGR = 5,
+};
+
 enum GlobalAction : uint32_t {
     GLOBAL_ACTION_BACK = 0,
     GLOBAL_ACTION_HOME = 1,

@@ -395,8 +395,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility(
 {
     HILOG_DEBUG("start");
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
-    bool result = EnableUITestAbility(obj);
-    if (!reply.WriteBool(result)) {
+    int32_t result = EnableUITestAbility(obj);
+    if (!reply.WriteInt32(result)) {
         HILOG_ERROR("WriteBool failed");
         return TRANSACTION_ERR;
     }
