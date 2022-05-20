@@ -348,7 +348,7 @@ private:
             return engine.CreateUndefined();
         }
 
-        int64_t displayId = OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
+        int64_t displayId = static_cast<int64_t>(OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId());
         HILOG_DEBUG("Get default display id from dms[%{public}ju]", displayId);
         NativeValue* lastParam = nullptr;
         switch (info.argc) {

@@ -51,7 +51,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
         return;
     }
     handler_ = handler;
-    listener_ = new DisplayListener();
+    listener_ = new(std::nothrow) DisplayListener();
     Rosen::DisplayManager::GetInstance().RegisterDisplayListener(listener_);
 }
 
