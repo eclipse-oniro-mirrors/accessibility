@@ -658,7 +658,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
 {
     HILOG_DEBUG("start");
 
-    int32_t result = GetDaltonizationColorFilter();
+    uint32_t result = GetDaltonizationColorFilter();
     reply.WriteUint32(result);
     return NO_ERROR;
 }
@@ -667,7 +667,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParc
 {
     HILOG_DEBUG("start");
 
-    int32_t result = GetContentTimeout();
+    uint32_t result = GetContentTimeout();
     reply.WriteUint32(result);
     return NO_ERROR;
 }
@@ -676,7 +676,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(Message
 {
     HILOG_DEBUG("start");
 
-    int32_t result = GetBrightnessDiscount();
+    float result = GetBrightnessDiscount();
     reply.WriteFloat(result);
     return NO_ERROR;
 }
@@ -685,7 +685,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel
 {
     HILOG_DEBUG("start");
 
-    int32_t result = GetAudioBalance();
+    float result = GetAudioBalance();
     reply.WriteFloat(result);
     return NO_ERROR;
 }

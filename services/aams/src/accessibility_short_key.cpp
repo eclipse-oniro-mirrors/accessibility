@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t KEY_ITEM_COUNT_1 = 1;
+static const size_t KEY_ITEM_COUNT_1 = 1;
 static const uint32_t SHORT_KEY_TIMEOUT_MSG = 1;
 static const int32_t MULTI_PRESS_TIMER = 300; // ms
 static const int32_t TRIPLE_PRESS_COUNT = 3;
@@ -55,10 +55,10 @@ void AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
     HILOG_DEBUG();
 
     int32_t keycode = event.GetKeyCode();
-    int32_t pressedKeyCount = event.GetPressedKeys().size();
+    size_t pressedKeyCount = event.GetPressedKeys().size();
     if ((keycode != MMI::KeyEvent::KEYCODE_POWER) ||
         (pressedKeyCount > KEY_ITEM_COUNT_1)) {
-        HILOG_DEBUG("key[%{public}d] is not power key, or the number[%{public}d]\
+        HILOG_DEBUG("key[%{public}d] is not power key, or the number[%{public}zu]\
             of keys pressed is greater than 1.", keycode, pressedKeyCount);
         EventTransmission::OnKeyEvent(event);
         return;
@@ -90,7 +90,7 @@ void AccessibilityShortKey::RecognizeShortKey(MMI::KeyEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetKeyAction();
-    int32_t pressedKeyCount = event.GetPressedKeys().size();
+    size_t pressedKeyCount = event.GetPressedKeys().size();
     std::shared_ptr<MMI::KeyEvent> keyEvent = std::make_shared<MMI::KeyEvent>(event);
     AddCachedKeyEvent(keyEvent);
 
