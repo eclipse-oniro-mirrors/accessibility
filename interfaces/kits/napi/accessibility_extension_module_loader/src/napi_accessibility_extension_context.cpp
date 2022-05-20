@@ -348,9 +348,10 @@ private:
             return engine.CreateUndefined();
         }
 
-        int64_t displayId = static_cast<int64_t>(OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId());
+        uint64_t displayId = OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
         HILOG_DEBUG("Get default display id from dms[%{public}ju]", displayId);
         NativeValue* lastParam = nullptr;
+        bool lossless = false;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
                 HILOG_DEBUG("The size of args is %{public}zu", info.argc);
@@ -361,8 +362,11 @@ private:
                     lastParam = info.argv[PARAM0];
                 }
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                    if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                        HILOG_ERROR("Convert displayId failed. displayId[%{public}ju]", displayId);
+                    if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
+                        reinterpret_cast<napi_value>(info.argv[PARAM0]),
+                        &displayId, &lossless) != napi_status::napi_ok) {
+                        HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
+                            displayId, lossless);
                         return engine.CreateUndefined();
                     }
                 }
@@ -373,8 +377,11 @@ private:
                 break;
             case ARGS_SIZE_TWO:
                 HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                    HILOG_ERROR("Convert displayId failed");
+                if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
+                    reinterpret_cast<napi_value>(info.argv[PARAM0]),
+                    &displayId, &lossless) != napi_status::napi_ok) {
+                    HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
+                        displayId, lossless);
                     return engine.CreateUndefined();
                 }
                 lastParam = info.argv[PARAM1];
@@ -394,7 +401,7 @@ private:
                 }
 
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                accessibilityWindows = context->GetWindows((uint64_t)displayId);
+                accessibilityWindows = context->GetWindows(displayId);
                 if (!accessibilityWindows.empty()) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);

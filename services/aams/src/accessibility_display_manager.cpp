@@ -52,6 +52,10 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
     }
     handler_ = handler;
     listener_ = new(std::nothrow) DisplayListener();
+    if (!listener_) {
+        HILOG_ERROR("Create display listener fail!");
+        return;
+    }
     Rosen::DisplayManager::GetInstance().RegisterDisplayListener(listener_);
 }
 

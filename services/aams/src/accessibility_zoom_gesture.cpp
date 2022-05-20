@@ -355,8 +355,8 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
 {
     HILOG_DEBUG();
 
-    float sumX = 0;
-    float sumY = 0;
+    float sumX = 0.0f;
+    float sumY = 0.0f;
     int32_t upPointerId = -1;
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointerIdList = event.GetPointersIdList();
@@ -389,9 +389,9 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
 {
     HILOG_DEBUG();
 
-    float span = 0;
-    float sumSpanX = 0;
-    float sumSpanY = 0;
+    float span = 0.0f;
+    float sumSpanX = 0.0f;
+    float sumSpanY = 0.0f;
     int32_t upPointerId = -1;
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointerIdList = event.GetPointersIdList();

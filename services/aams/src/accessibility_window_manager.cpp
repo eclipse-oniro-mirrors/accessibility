@@ -27,6 +27,10 @@ bool AccessibilityWindowManager::Init()
 {
     HILOG_DEBUG("start");
     sptr<Rosen::AccessibilityWindowInfo> windowInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    if (!windowInfo) {
+        HILOG_ERROR("Create window info failed.");
+        return false;
+    }
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfo);
     if (err != Rosen::WMError::WM_OK || !windowInfo) {
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
@@ -65,6 +69,10 @@ void AccessibilityWindowManager::RegisterWindowListener(const std::shared_ptr<Ap
 
     eventHandler_ = handler;
     windowListener_ = new(std::nothrow) AccessibilityWindowListener(*this);
+    if (!windowListener_) {
+        HILOG_ERROR("Create window listener fail!");
+        return;
+    }
     OHOS::Rosen::WindowManager::GetInstance().RegisterWindowUpdateListener(windowListener_);
 }
 
