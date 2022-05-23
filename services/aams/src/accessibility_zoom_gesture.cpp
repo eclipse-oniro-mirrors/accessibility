@@ -361,6 +361,9 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointerIdList = event.GetPointersIdList();
     size_t count = pointerIdList.size();
+    if (!count) {
+        return;
+    }
 
     if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
         upPointerId = event.GetPointerId();
@@ -396,6 +399,9 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointerIdList = event.GetPointersIdList();
     size_t count = pointerIdList.size();
+    if (!count) {
+        return;
+    }
 
     if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
         upPointerId = event.GetPointerId();
