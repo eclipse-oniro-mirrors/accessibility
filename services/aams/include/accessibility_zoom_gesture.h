@@ -74,7 +74,7 @@ private:
     void OnTripleTaps(MMI::PointerEvent &event);
     int64_t CalcIntervalTime(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
-    int32_t CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
+    float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
 
     bool startScaling_ = false;
@@ -82,8 +82,8 @@ private:
     float lastSpan_ = 0;
     float lastScrollFocusX_ = 0.0f;
     float lastScrollFocusY_ = 0.0f;
-    int32_t tapDistance_ = 0;
-    int32_t multiTapDistance_ = 0;
+    float tapDistance_ = 0.0f;
+    float multiTapDistance_ = 0.0f;
     ACCESSIBILITY_ZOOM_STATE state_ = READY_STATE;
     std::shared_ptr<MMI::PointerEvent> preLastDownEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> lastDownEvent_ = nullptr;
