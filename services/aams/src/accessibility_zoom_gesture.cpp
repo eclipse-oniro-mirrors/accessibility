@@ -400,7 +400,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
     std::vector<int32_t> pointerIdList = event.GetPointersIdList();
     size_t count = pointerIdList.size();
     if (!count) {
-        return;
+        return span;
     }
 
     if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
