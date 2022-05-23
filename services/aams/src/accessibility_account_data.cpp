@@ -887,7 +887,7 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
         HILOG_DEBUG("BundleName/AbilityName/Capabilities = %{public}s", value.c_str());
         std::string name = value.substr(0, value.find_last_of("/"));
         std::string capabilities = value.substr(value.find_last_of("/") + 1);
-        uint32_t abilityCapabilities = std::atoi(capabilities.c_str());
+        uint32_t abilityCapabilities = static_cast<uint32_t>(std::atoi(capabilities.c_str()));
         HILOG_DEBUG("name[%{public}s] abilityCapabilities[%{public}d]", name.c_str(), abilityCapabilities);
         if (abilityCapabilities == 0) {
             HILOG_ERROR("abilityCapabilities is wrong!");

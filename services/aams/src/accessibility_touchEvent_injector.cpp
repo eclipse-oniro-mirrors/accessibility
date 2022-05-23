@@ -200,7 +200,7 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
     HILOG_INFO("TouchEventInjector::ParseTapsEvents: start");
 
     std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
-    int32_t positionSize = positions.size();
+    size_t positionSize = positions.size();
     if (!positionSize) {
         HILOG_ERROR("positionSize is zero.");
         return;
@@ -237,7 +237,7 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime)
     HILOG_INFO("TouchEventInjector::ParseMovesEvents: start");
 
     std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
-    int32_t positionSize = positions.size();
+    size_t positionSize = positions.size();
     if (positionSize < MOVE_GESTURE_MIN_PATH_COUNT) {
         HILOG_ERROR("positionSize is zero.");
         return;

@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t POINTER_COUNT_1 = 1;
+static const size_t POINTER_COUNT_1 = 1;
 static const uint32_t AUTOCLICK_TIMEOUT_MSG = 1;
 
 AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
@@ -54,7 +54,7 @@ void AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
     int32_t source = event.GetSourceType();
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointers = event.GetPointersIdList();
-    int32_t pointerCount = pointers.size();
+    size_t pointerCount = pointers.size();
     if ((source != MMI::PointerEvent::SOURCE_TYPE_MOUSE) ||
         (action != MMI::PointerEvent::POINTER_ACTION_MOVE) ||
         (pointerCount != POINTER_COUNT_1)) {
