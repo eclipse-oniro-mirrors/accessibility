@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-namespace{
+namespace {
     constexpr uint32_t TIME_OUT_OPERATOR = 500;
     constexpr int32_t REQUEST_ID_MAX = 0x7FFFFFFF;
 } // namespace

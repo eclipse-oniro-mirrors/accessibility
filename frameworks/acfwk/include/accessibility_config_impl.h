@@ -233,7 +233,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
 
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
-    std::map<CONFIG_ID,std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
     std::mutex mutex_;
 };
 } // namespace AccessibilityConfig

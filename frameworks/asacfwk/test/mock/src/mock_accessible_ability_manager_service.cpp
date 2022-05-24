@@ -13,10 +13,7 @@
  * limitations under the License.
  */
 
-#include <ctime>
-#include <functional>
 #include <gtest/gtest.h>
-#include <unistd.h>
 #include "ability_info.h"
 #include "accessibility_ability_helper.h"
 #include "accessibility_display_manager.h"

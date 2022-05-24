@@ -206,9 +206,9 @@ void AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
-    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
-    if (it != configObservers_.end()){   
+    if (it != configObservers_.end()) {   
         it->second.push_back(observer);
         HILOG_INFO("configObservers->second.size%{public}zu  configTest", it->second.size());
     } else {
@@ -229,7 +229,7 @@ void AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
     if (it != configObservers_.end()) {
         configObservers_.erase(it);
     } else {
-        HILOG_DEBUG("%{public}d has not subscribed ",id);
+        HILOG_DEBUG("%{public}d has not subscribed ", id);
     }
 }
 
@@ -248,7 +248,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged
             return;
         }
         captionProperty_ = property;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_CAPTION_STYLE);
         if (it == configObservers_.end()) {
             return;
@@ -349,7 +349,7 @@ void AccessibilityConfig::Impl::UpdateCaptionEnabled(const bool enabled)
             return;
         }
         captionState_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_CAPTION_STATE);
         if (it == configObservers_.end()) {
             return;
@@ -370,7 +370,7 @@ void AccessibilityConfig::Impl::UpdateScreenMagnificationEnabled(const bool enab
             return;
         }
         screenMagnifier_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_SCREEN_MAGNIFICATION);
         if (it == configObservers_.end()) {
             return;
@@ -391,7 +391,7 @@ void AccessibilityConfig::Impl::UpdateShortKeyEnabled(const bool enabled)
             return;
         }
         shortkey_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_SHORT_KEY);
         if (it == configObservers_.end()) {
             return;
@@ -412,7 +412,7 @@ void AccessibilityConfig::Impl::UpdateMouseKeyEnabled(const bool enabled)
             return;
         }
         mouseKey_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_MOUSE_KEY);
         if (it == configObservers_.end()) {
             return;
@@ -433,7 +433,7 @@ void AccessibilityConfig::Impl::UpdateAudioMonoEnabled(const bool enabled)
             return;
         }
         audioMono_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_AUDIO_MONO);
         if (it == configObservers_.end()) {
             return;
@@ -454,7 +454,7 @@ void AccessibilityConfig::Impl::UpdateAnimationOffEnabled(const bool enabled)
             return;
         }
         animationOff_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_ANIMATION_OFF);
         if (it == configObservers_.end()) {
             return;
@@ -476,7 +476,7 @@ void AccessibilityConfig::Impl::UpdateInvertColorEnabled(const bool enabled)
             return;
         }
         invertColor_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_INVERT_COLOR);
         if (it == configObservers_.end()) {
             return;
@@ -497,7 +497,7 @@ void AccessibilityConfig::Impl::UpdateHighContrastTextEnabled(const bool enabled
             return;
         }
         highContrastText_ = enabled;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_HIGH_CONTRASTE_TEXT);
         if (it == configObservers_.end()) {
             return;
@@ -1145,7 +1145,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerAudioBalanceChanged(co
             return;
         }
         audioBalance_ = audioBalance;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_AUDIO_BALANCE);
         if (it == configObservers_.end()) {
             return;
@@ -1168,7 +1168,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerBrightnessDiscountChan
             return;
         }
         brightnessDiscount_ = brightnessDiscount;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_BRIGHTNESS_DISCOUNT);
         if (it == configObservers_.end()) {
             return;
@@ -1190,7 +1190,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerContentTimeoutChanged(
             return;
         }
         contentTimeout_ = contentTimeout;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_CONTENT_TIMEOUT);
         if (it == configObservers_.end()) {
             return;
@@ -1213,7 +1213,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerDaltonizationColorFilt
             return;
         }
         daltonizationColorFilter_ = filterType;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER);
         if (it == configObservers_.end()) {
             HILOG_INFO("it == configObservers_.end()   configTest");
@@ -1236,13 +1236,12 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerMouseAutoClickChanged(
             return;
         }
         mouseAutoClick_ = mouseAutoClick;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_MOUSE_AUTOCLICK);
         if (it == configObservers_.end()) {
             return;
         }
         observers = it->second;
-
     }
 
     NotifyMouseAutoClickChanged(observers, mouseAutoClick);
@@ -1259,7 +1258,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
             return;
         }
         shortkeyTarget_ = shortkeyTarget;
-        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it = 
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_SHORT_KEY_TARGET);
         if (it == configObservers_.end()) {
             return;
