@@ -124,7 +124,7 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
 }
 
 int32_t AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
-    const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation, int32_t accountId)
+    const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);

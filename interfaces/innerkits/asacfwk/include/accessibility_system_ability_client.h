@@ -61,11 +61,10 @@ public:
      * @brief Register the interaction operation, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
     virtual int32_t RegisterElementOperator(const int32_t windowId,
-        const std::shared_ptr<AccessibilityElementOperator> &operation, int32_t accountId) = 0;
+        const std::shared_ptr<AccessibilityElementOperator> &operation) = 0;
 
     /**
      * @brief Deregister the interaction operation.

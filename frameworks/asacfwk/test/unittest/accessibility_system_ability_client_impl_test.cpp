@@ -27,7 +27,6 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int32_t WINDOW_ID = 1;
-    constexpr int32_t ACCOUNT_ID = 1;
     constexpr uint32_t ACCESSIBILITY_ABILITY_TYPES = 1;
     constexpr int32_t COMPONENT_ID = 1;
     constexpr uint32_t EVENT_TYPE = 1;
@@ -95,7 +94,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_001, 
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID));
+    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, operator_));
     impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "RegisterElementOperator_001 end";
 }
@@ -113,7 +112,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
-    impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID);
+    impl_->RegisterElementOperator(WINDOW_ID, operator_);
     impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
