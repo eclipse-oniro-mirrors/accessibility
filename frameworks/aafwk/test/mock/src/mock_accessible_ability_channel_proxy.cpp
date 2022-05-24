@@ -86,7 +86,7 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityW
 }
 
 bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t action, std::map<std::string, std::string>& actionArguments, const int32_t requestId,
+    const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
@@ -98,11 +98,12 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
-    std::vector<AccessibilityWindowInfo> windows {};
     (void)displayId;
-    return windows;
+    (void)windows;
+    return true;
 }
 
 bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)

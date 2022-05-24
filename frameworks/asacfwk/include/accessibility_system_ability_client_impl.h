@@ -89,8 +89,8 @@ public:
      *                  4 indicates that the ability has been installed.
      * @return Return accessibility ability infos by specified types.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType) override;
+    virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) override;
 
     /**
      * @brief Obtains the properties of the accessibility caption.
@@ -175,7 +175,7 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(
+    virtual bool RemoveCaptionListener(
         const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
@@ -212,13 +212,13 @@ public:
      * @brief Get installed abilities.
      * @return Return the installed accessibility ability infos.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
 
     /**
      * @brief Get enabled abilities.
      * @return Return the info of enabled abilities.
      */
-    virtual std::vector<std::string> GetEnabledAbilities() override;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
 
     /**
      * @brief Set caption property

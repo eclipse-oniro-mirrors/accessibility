@@ -32,7 +32,6 @@ config("aams_interface_public_config") {
   include_dirs = [
     "include",
     "include/parcel",
-    "//base/accessibility/interfaces/innerkits/acfwk/include",
   ]
 }
 

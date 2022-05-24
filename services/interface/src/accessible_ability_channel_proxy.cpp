@@ -237,7 +237,7 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityW
 }
 
 bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t action, std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start.");
@@ -294,28 +294,27 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return reply.ReadBool();
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("start.");
 
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<AccessibilityWindowInfo> windowsError;
-    std::vector<AccessibilityWindowInfo> windows;
 
     if (!WriteInterfaceToken(data)) {
-        return windowsError;
+        return false;
     }
 
     if (!data.WriteUint64(displayId)) {
         HILOG_ERROR("displayId write error: %{public}ju, ", displayId);
-        return windowsError;
+        return false;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS, data, reply, option)) {
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
-        return windowsError;
+        return false;
     }
 
     int32_t windowsSize = reply.ReadInt32();
@@ -323,12 +322,12 @@ std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelProxy::GetWindows(c
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
         if (!window) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
-            return windowsError;
+            return false;
         }
         windows.emplace_back(*window);
     }
 
-    return windows;
+    return reply.ReadBool();
 }
 
 bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
@@ -407,7 +406,7 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
     }
 }
 
-bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t eventTypes)
+bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)
 {
     HILOG_DEBUG("start.");
 
@@ -419,8 +418,8 @@ bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t eventTypes
         return false;
     }
 
-    if (!data.WriteUint32(eventTypes)) {
-        HILOG_ERROR("eventTypes write error: %{public}d, ", eventTypes);
+    if (!data.WriteUint32(filter)) {
+        HILOG_ERROR("filter write error: %{public}d, ", filter);
         return false;
     }
 
@@ -431,7 +430,7 @@ bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t eventTypes
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("start.");
 

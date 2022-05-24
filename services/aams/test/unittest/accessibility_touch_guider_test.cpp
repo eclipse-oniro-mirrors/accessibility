@@ -22,7 +22,10 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static uint32_t SLEEP_TIME_3 = 3;
+namespace {
+    constexpr uint32_t SLEEP_TIME_3 = 3;
+} // namespace
+
 class TouchGuiderTest : public testing::Test {
 public:
     TouchGuiderTest()
@@ -38,7 +41,7 @@ public:
 protected:
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int32_t action);
     std::shared_ptr<MMI::PointerEvent> CreateTouchEvent(int32_t action,
-        std::vector<MMI::PointerEvent::PointerItem> points, int32_t pointerCount, int64_t occurredTime,
+        std::vector<MMI::PointerEvent::PointerItem> &points, int32_t pointerCount, int64_t occurredTime,
         int64_t startTime);
     std::shared_ptr<MMI::PointerEvent> CreateMoveEvent(int32_t pointerCount);
     std::unique_ptr<TouchGuider> touchGuider_ = nullptr;
@@ -94,12 +97,12 @@ std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int32_t act
 }
 
 std::shared_ptr<MMI::PointerEvent> TouchGuiderTest::CreateTouchEvent(int32_t action,
-    std::vector<MMI::PointerEvent::PointerItem> points, int32_t pointerId, int64_t occurredTime,
+    std::vector<MMI::PointerEvent::PointerItem> &points, int32_t pointerId, int64_t occurredTime,
     int64_t startTime)
 {
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
 
-    for (auto point : points) {
+    for (auto &point : points) {
         pointerEvent->AddPointerItem(point);
     }
     pointerEvent->SetPointerId(pointerId);

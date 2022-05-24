@@ -161,34 +161,33 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
     return reply.ReadUint32();
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceProxy::GetAbilityList(
-    const uint32_t abilityTypes, const int32_t stateType)
+bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    std::vector<AccessibilityAbilityInfo> &infos)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<AccessibilityAbilityInfo> errorList {};
-    std::vector<AccessibilityAbilityInfo> abilityInfos {};
+
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token error");
-        return errorList;
+        return false;
     }
 
     if (!data.WriteUint32(abilityTypes)) {
         HILOG_ERROR("fail, connection write abilityTypes error");
-        return errorList;
+        return false;
     }
 
     if (!data.WriteInt32(stateType)) {
         HILOG_ERROR("fail, connection write stateType error");
-        return errorList;
+        return false;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ABILITYLIST,
         data, reply, option)) {
         HILOG_ERROR("GetAbilityList fail");
-        return errorList;
+        return false;
     }
     // read result
     int32_t abilityInfoSize = reply.ReadInt32();
@@ -196,11 +195,11 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceProxy::GetA
         sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
         if (!info) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityAbilityInfoParcel> failed");
-            return errorList;
+            return false;
         }
-        abilityInfos.emplace_back(*info);
+        infos.emplace_back(*info);
     }
-    return abilityInfos;
+    return reply.ReadBool();
 }
 
 void AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
@@ -409,7 +408,7 @@ bool AccessibleAbilityManagerServiceProxy::GetKeyEventObserverState()
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::EnableAbilities(const std::string name, const uint32_t capabilities)
+bool AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
@@ -433,67 +432,66 @@ bool AccessibleAbilityManagerServiceProxy::EnableAbilities(const std::string nam
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES,
         data, reply, option)) {
-        HILOG_ERROR("EnableAbilities fail");
+        HILOG_ERROR("EnableAbility fail");
         return false;
     }
     return reply.ReadBool();
 }
 
-std::vector<std::string> AccessibleAbilityManagerServiceProxy::GetEnabledAbilities()
+bool AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<std::string> abilities {};
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token error");
-        return abilities;
+        return false;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT,
         data, reply, option)) {
         HILOG_ERROR("GetEnabledAbilities fail");
-        return abilities;
+        return false;
     }
 
     int32_t dev_num = reply.ReadInt32();
     for (int32_t i = 0; i < dev_num; i++) {
-        abilities.push_back(reply.ReadString());
+        enabledAbilities.push_back(reply.ReadString());
     }
-    return abilities;
+    return reply.ReadBool();
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerServiceProxy::GetInstalledAbilities()
+bool AccessibleAbilityManagerServiceProxy::GetInstalledAbilities(
+    std::vector<AccessibilityAbilityInfo> &installedAbilities)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::vector<AccessibilityAbilityInfo> it {};
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token error");
-        return it;
+        return false;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_INSTALLED,
         data, reply, option)) {
         HILOG_ERROR("GetInstalledAbilities fail");
-        return it;
+        return false;
     }
     int32_t dev_num = reply.ReadInt32();
     for (int32_t i = dev_num; i > 0; i--) {
         sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
         if (!info) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityAbilityInfoParcel> failed");
-            return it;
+            return false;
         }
-        it.push_back(*info);
+        installedAbilities.push_back(*info);
     }
-    return it;
+    return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::DisableAbilities(const std::string name)
+bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
@@ -511,7 +509,7 @@ bool AccessibleAbilityManagerServiceProxy::DisableAbilities(const std::string na
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES,
         data, reply, option)) {
-        HILOG_ERROR("DisableAbilities fail");
+        HILOG_ERROR("DisableAbility fail");
         return false;
     }
     return reply.ReadBool();

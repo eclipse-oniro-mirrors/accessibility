@@ -24,7 +24,7 @@ std::string AccessibilityWindowInfo::GetWindowTitle() const
     return windowTitle_;
 }
 
-void AccessibilityWindowInfo::SetWindowTitle(std::string &title)
+void AccessibilityWindowInfo::SetWindowTitle(const std::string &title)
 {
     windowTitle_ = title;
     HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
@@ -72,7 +72,7 @@ int32_t AccessibilityWindowInfo::GetParentId() const
     return parentId_;
 }
 
-std::vector<int32_t>  AccessibilityWindowInfo::GetChildIds() const
+const std::vector<int32_t> &AccessibilityWindowInfo::GetChildIds() const
 {
     return childIds_;
 }

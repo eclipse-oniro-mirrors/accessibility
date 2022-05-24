@@ -19,15 +19,17 @@
 
 namespace OHOS {
 namespace Accessibility {
-const size_t POINTER_COUNT_1 = 1;
-const float TAP_MIN_DISTANCE = 8.0f;
-const int32_t MULTI_TAP_TIMER = 300; // ms
-const int32_t LONG_PRESS_TIMER = 500; // ms
-const int64_t US_TO_MS = 1000;
-const float MIN_SCALE_SPAN = 27.0f; // 27mm
-const float DOUBLE_TAP_SLOP = 100.0f;
-const float HALF = 0.5f;
-const uint32_t TRIPLE_TAP_COUNT = 3;
+namespace {
+    constexpr size_t POINTER_COUNT_1 = 1;
+    constexpr float TAP_MIN_DISTANCE = 8.0f;
+    constexpr int32_t MULTI_TAP_TIMER = 300; // ms
+    constexpr int32_t LONG_PRESS_TIMER = 500; // ms
+    constexpr int64_t US_TO_MS = 1000;
+    constexpr float MIN_SCALE_SPAN = 27.0f; // 27mm
+    constexpr float DOUBLE_TAP_SLOP = 100.0f;
+    constexpr float HALF = 0.5f;
+    constexpr uint32_t TRIPLE_TAP_COUNT = 3;
+} // namespace
 
 AccessibilityZoomGesture::AccessibilityZoomGesture(Rosen::DisplayId displayId)
 {
@@ -118,7 +120,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
     bool isStartNewAction = false;
     int32_t action = MMI::PointerEvent::POINTER_ACTION_UNKNOWN;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEventsTmp;
-    for (std::shared_ptr<MMI::PointerEvent> pointerEvent : cacheEvents_) {
+    for (auto &pointerEvent : cacheEvents_) {
         cacheEventsTmp.emplace_back(pointerEvent);
     }
 
@@ -126,7 +128,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
 
     size_t cacheEventsNum = 0;
     size_t cacheEventsTotalNum = cacheEventsTmp.size();
-    for (std::shared_ptr<MMI::PointerEvent> pointerEvent : cacheEventsTmp) {
+    for (auto &pointerEvent : cacheEventsTmp) {
         cacheEventsNum++;
         action = pointerEvent->GetPointerAction();
         if ((cacheEventsNum > 1) &&
@@ -466,7 +468,7 @@ bool AccessibilityZoomGesture::IsTripleTaps()
 
     uint32_t upEventCount = 0;
     int32_t action = MMI::PointerEvent::POINTER_ACTION_UNKNOWN;
-    for (std::shared_ptr<MMI::PointerEvent> pointerEvent : cacheEvents_) {
+    for (auto &pointerEvent : cacheEvents_) {
         action = pointerEvent->GetPointerAction();
         if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
             upEventCount++;

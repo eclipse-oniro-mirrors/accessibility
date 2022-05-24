@@ -35,7 +35,9 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static int32_t sleepTime = 2;
+namespace {
+    const int32_t SLEEP_TIME_2 = 2;
+} // namespace
 
 class AamsInjectorTest : public testing::Test {
 public:
@@ -103,7 +105,7 @@ void AamsInjectorTest::TearDown()
     aacs_ = nullptr;
     aastub_ = nullptr;
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
-    sleep(sleepTime);
+    sleep(SLEEP_TIME_2);
     MMI::MockInputManager::ClearTouchActions();
     AccessibilityHelper::GetInstance().GetEventType().clear();
 }

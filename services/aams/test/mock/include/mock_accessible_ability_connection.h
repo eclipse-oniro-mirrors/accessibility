@@ -40,11 +40,11 @@ public:
     MOCK_METHOD5(
         FocusMoveSearch, bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
                              const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
-    MOCK_METHOD6(ExecuteAction, bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
-                                    std::map<std::string, std::string>& actionArguments, const int32_t requestId,
-                                    const sptr<IAccessibilityElementOperatorCallback>& callback));
+    MOCK_METHOD6(ExecuteAction, bool(const int32_t accessibilityWindowId, const int32_t elementId,
+        const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback));
 
-    MOCK_METHOD1(GetWindows, std::vector<AccessibilityWindowInfo>(const uint64_t displayId));
+    MOCK_METHOD2(GetWindowsByDisplayId, bool(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD1(ExecuteCommonAction, bool(const int32_t action));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
     MOCK_METHOD2(

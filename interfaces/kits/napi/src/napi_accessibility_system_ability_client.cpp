@@ -54,7 +54,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->enabled_ = instance->IsEnabled();
@@ -63,7 +63,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -113,7 +113,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->touchEnabled_ = instance->IsTouchExplorationEnabled();
@@ -122,7 +122,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -178,23 +178,23 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
-                callbackInfo->abilityList_ = instance->GetAbilityList(
-                    callbackInfo->abilityTypes_, callbackInfo->stateTypes_);
+                callbackInfo->result_ = instance->GetAbilityList(callbackInfo->abilityTypes_,
+                    callbackInfo->stateTypes_, callbackInfo->abilityList_);
             }
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
             ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
-            if (callbackInfo->callback_) {
+            if (callbackInfo->callback_ && callbackInfo->result_) {
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
@@ -237,7 +237,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
 
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (callbackInfo->result_ && instance) {
                 callbackInfo->result_ = instance->SendEvent(callbackInfo->eventInfo_);
@@ -245,7 +245,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             HILOG_INFO("SendEvent result[%{public}d]", callbackInfo->result_);
         },
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -395,14 +395,14 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = (StateCallbackInfo *)callbackInfo;
+    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
 
     uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_value handler = nullptr;
             napi_value callResult = nullptr;
             napi_value jsEvent = nullptr;
@@ -422,7 +422,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 void StateListener::OnStateChanged(const bool state)
 {
     HILOG_INFO("start");
-    for (auto observer : NAccessibilityClient::stateListeners_[GetEventType()]) {
+    for (auto &observer : NAccessibilityClient::stateListeners_[GetEventType()]) {
         if (observer.get() == this) {
             HILOG_INFO("observer found");
             observer->NotifyJS(GetEnv(), state, GetHandler());
@@ -457,7 +457,7 @@ napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->captionProperty_ = instance->GetCaptionProperty();
@@ -465,7 +465,7 @@ napi_value NAccessibilityClient::GetCaptionProperty(napi_env env, napi_callback_
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -516,7 +516,7 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->setCaptionPropertyReturn_ = instance->SetCaptionPropertyTojson(
@@ -525,7 +525,7 @@ napi_value NAccessibilityClient::SetCaptionProperty(napi_env env, napi_callback_
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -577,7 +577,7 @@ napi_value NAccessibilityClient::GetCaptionState(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->captionState_ = instance->GetCaptionState();
@@ -585,7 +585,7 @@ napi_value NAccessibilityClient::GetCaptionState(napi_env env, napi_callback_inf
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -636,7 +636,7 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->setCaptionStateReturn_ = instance->SetCaptionStateTojson(callbackInfo->captionState_);
@@ -644,7 +644,7 @@ napi_value NAccessibilityClient::SetCaptionState(napi_env env, napi_callback_inf
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -697,7 +697,7 @@ napi_value NAccessibilityClient::GetEnabled(napi_env env, napi_callback_info inf
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->enabledState_ = instance->GetEnabledState();
@@ -705,7 +705,7 @@ napi_value NAccessibilityClient::GetEnabled(napi_env env, napi_callback_info inf
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -757,7 +757,7 @@ napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->touchGuideState_ = instance->GetTouchGuideState();
@@ -765,7 +765,7 @@ napi_value NAccessibilityClient::GetTouchGuideState(napi_env env, napi_callback_
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -817,7 +817,7 @@ napi_value NAccessibilityClient::GetGestureState(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->gestureState_ = instance->GetGestureState();
@@ -825,7 +825,7 @@ napi_value NAccessibilityClient::GetGestureState(napi_env env, napi_callback_inf
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -877,7 +877,7 @@ napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_cal
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
                 callbackInfo->keyEventObserverState_ = instance->GetKeyEventObserverState();
@@ -885,7 +885,7 @@ napi_value NAccessibilityClient::GetKeyEventObserverState(napi_env env, napi_cal
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
@@ -937,23 +937,23 @@ napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info i
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
-                callbackInfo->abilityList_ = instance->GetInstalledAbilities();
+                callbackInfo->result_ = instance->GetInstalledAbilities(callbackInfo->abilityList_);
             }
             HILOG_INFO("GetInstalled Executing GetInstalled[%{public}zu]", callbackInfo->abilityList_.size());
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
             ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
-            if (callbackInfo->callback_) {
+            if (callbackInfo->callback_ && callbackInfo->result_) {
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
@@ -995,24 +995,24 @@ napi_value NAccessibilityClient::GetExtensionEnabled(napi_env env, napi_callback
     napi_create_async_work(env, nullptr, resource,
         // Execute async to call c++ function
         [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto instance = AccessibilitySystemAbilityClient::GetInstance();
             if (instance) {
-                callbackInfo->enabledAbilities_ = instance->GetEnabledAbilities();
+                callbackInfo->result_ = instance->GetEnabledAbilities(callbackInfo->enabledAbilities_);
             }
             HILOG_INFO("GetExtensionEnabled Executing GetExtensionEnabled[%{public}zu]",
                 callbackInfo->enabledAbilities_.size());
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = (NAccessibilitySystemAbilityClient*)data;
+            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
             HILOG_INFO("GetExtensionEnabled ENTER ConvertAccessibleAbilityInfosToJS");
             ConvertStringVecToJS(env, result[PARAM1], callbackInfo->enabledAbilities_);
-            if (callbackInfo->callback_) {
+            if (callbackInfo->callback_ && callbackInfo->result_) {
                 napi_value callback = 0;
                 result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
@@ -1244,7 +1244,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         std::shared_ptr<CaptionListener> observer= *it;
         auto instance = AccessibilitySystemAbilityClient::GetInstance();
         if (instance && observer->GetEnv() == env && !strcmp(observer->GetEventType().c_str(), eventType.c_str())) {
-            retValue = retValue && instance->DeleteCaptionListener(observer, type);
+            retValue = retValue && instance->RemoveCaptionListener(observer, type);
             it = NAccessibilityClient::captionListeners_.erase(it);
             HILOG_INFO("unregister result%{public}d", retValue);
         } else {
@@ -1296,14 +1296,14 @@ void CaptionListener::NotifyStateChangedJS(napi_env env, bool enabled, std::stri
         uv_loop_s *loop = nullptr;
         napi_get_uv_event_loop(env, &loop);
         uv_work_t *work = new uv_work_t;
-        work->data = (StateCallbackInfo *)callbackInfo;
+        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
 
         uv_queue_work(
             loop,
             work,
             [](uv_work_t *work) {},
             [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
+                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
                 napi_value jsEvent;
                 napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
 
@@ -1329,7 +1329,7 @@ void CaptionListener::NotifyStateChangedJS(napi_env env, bool enabled, std::stri
 void CaptionListener::OnStateChanged(const bool& enable)
 {
     HILOG_INFO("start");
-    for (auto observer : NAccessibilityClient::captionListeners_) {
+    for (auto &observer : NAccessibilityClient::captionListeners_) {
         if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE &&
             observer.get() == this) {
             observer->NotifyStateChangedJS(
@@ -1339,7 +1339,7 @@ void CaptionListener::OnStateChanged(const bool& enable)
 }
 
 void CaptionListener::NotifyPropertyChangedJS(napi_env env,
-    AccessibilityConfig::CaptionProperty caption, std::string eventType, napi_ref handlerRef)
+    const AccessibilityConfig::CaptionProperty &caption, const std::string &eventType, napi_ref handlerRef)
 {
     HILOG_INFO("start");
 
@@ -1351,14 +1351,14 @@ void CaptionListener::NotifyPropertyChangedJS(napi_env env,
         uv_loop_s *loop = nullptr;
         napi_get_uv_event_loop(env, &loop);
         uv_work_t *work = new uv_work_t;
-        work->data = (CaptionCallbackInfo *)callbackInfo;
+        work->data = static_cast<CaptionCallbackInfo*>(callbackInfo);
 
         uv_queue_work(
             loop,
             work,
             [](uv_work_t *work) {},
             [](uv_work_t *work, int status) {
-                CaptionCallbackInfo *callbackInfo = (CaptionCallbackInfo *)work->data;
+                CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
                 napi_value jsEvent;
                 napi_create_object(callbackInfo->env_, &jsEvent);
                 ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
@@ -1385,7 +1385,7 @@ void CaptionListener::NotifyPropertyChangedJS(napi_env env,
 void CaptionListener::OnPropertyChanged(const OHOS::AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_INFO("start");
-    for (auto observer : NAccessibilityClient::captionListeners_) {
+    for (auto &observer : NAccessibilityClient::captionListeners_) {
         if (observer->GetStateType() == OHOS::AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY &&
             observer.get() == this) {
             observer->NotifyPropertyChangedJS(

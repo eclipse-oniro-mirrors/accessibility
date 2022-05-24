@@ -31,9 +31,11 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-static constexpr uint8_t TEST_NUM_2 = 2;
-static constexpr uint8_t TEST_NUM_3 = 3;
-static constexpr uint16_t TEST_NUM_THOUSAND = 1000;
+namespace {
+    constexpr uint8_t TEST_NUM_2 = 2;
+    constexpr uint8_t TEST_NUM_3 = 3;
+    constexpr uint16_t TEST_NUM_THOUSAND = 1000;
+} // namespace
 
 static void WaitUntilTaskFinished()
 {
@@ -146,7 +148,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (inputEventConsumer != nullptr) {
@@ -182,7 +184,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (inputEventConsumer != nullptr) {
@@ -220,7 +222,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (inputEventConsumer != nullptr) {

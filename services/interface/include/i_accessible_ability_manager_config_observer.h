@@ -16,7 +16,6 @@
 #ifndef INTERFACE_ACCESSIBLE_ABILITY_MANAGER_CONFIG_OBSERVER_H
 #define INTERFACE_ACCESSIBLE_ABILITY_MANAGER_CONFIG_OBSERVER_H
 
-#include "accessibility_config.h"
 #include "iremote_broker.h"
 
 namespace OHOS {
@@ -29,7 +28,7 @@ public:
     virtual void OnAudioBalanceChanged(const float audioBalance) = 0;
     virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) = 0;
     virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) = 0;
-    virtual void OnDaltonizationColorFilterChanged(const AccessibilityConfig::DALTONIZATION_TYPE filterType) = 0;
+    virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) = 0;
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) = 0;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) = 0;
 

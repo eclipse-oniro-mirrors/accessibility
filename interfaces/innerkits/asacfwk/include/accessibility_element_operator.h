@@ -38,8 +38,8 @@ public:
      *             otherwise: Make the node information by elementId only.
      * @return -
      */
-    virtual void SearchElementInfoByAccessibilityId(const long elementId,
-        const int requestId, AccessibilityElementOperatorCallback &callback, const int mode) = 0;
+    virtual void SearchElementInfoByAccessibilityId(const int32_t elementId,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback, const int32_t mode) = 0;
 
     /**
      * @brief Make the child node information by accessibility ID and filtered by text and set the result by callback.
@@ -49,8 +49,8 @@ public:
      * @param text  Filter for the child components to matched with the text
      * @return
      */
-    virtual void SearchElementInfosByText(const long elementId, const std::string &text,
-        const int requestId, AccessibilityElementOperatorCallback &callback) = 0;
+    virtual void SearchElementInfosByText(const int32_t elementId, const std::string &text,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
 
     /**
      * @brief Make the node information of the component focused by the focus type specified.
@@ -61,7 +61,7 @@ public:
      *                  FOCUS_TYPE_INPUT: text input focus
      * @return
      */
-    virtual void FindFocusedElementInfo(const long elementId, const int focusType, const int requestId,
+    virtual void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
         AccessibilityElementOperatorCallback &callback) = 0;
 
     /**
@@ -72,7 +72,7 @@ public:
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      * @return -
      */
-    virtual void FocusMoveSearch(const long elementId, const int direction, const int requestId,
+    virtual void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
         AccessibilityElementOperatorCallback &callback) = 0;
 
     /**
@@ -97,9 +97,9 @@ public:
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      * @return
      */
-    virtual void ExecuteAction(const long elementId, const int action,
-        const std::map<std::string, std::string> actionArguments,
-        const int requestId, AccessibilityElementOperatorCallback &callback) = 0;
+    virtual void ExecuteAction(const int32_t elementId, const int32_t action,
+        const std::map<std::string, std::string> &actionArguments,
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) = 0;
 
     /**
     * @brief The function is called while accessibility System check the id of window is not equal

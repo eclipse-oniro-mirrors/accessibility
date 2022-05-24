@@ -19,7 +19,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-int64_t g_taskTime = 500;
+namespace {
+    int64_t g_taskTime = 500;
+} // namespace
 
 static bool IsWantedKeyEvent(MMI::KeyEvent &event)
 {
@@ -99,7 +101,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
             continue;
         }
 
-        for (auto val : iter->second) {
+        for (auto &val : iter->second) {
             val->usedCount_--;
             if (!val->usedCount_) {
                 EventTransmission::OnKeyEvent(*val->event_);

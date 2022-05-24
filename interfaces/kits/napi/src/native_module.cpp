@@ -61,8 +61,6 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityElement::DefineJSAccessibilityElement(env);
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
-    // NElementInfo::DefineJSElementInfo(env);
-    // NAccessibilityWindowInfo::DefineJSAccessibilityWindowInfo(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
     NGesturePos::DefineJSGesturePos(env);
     NGesturePath::DefineJSGesturePath(env);

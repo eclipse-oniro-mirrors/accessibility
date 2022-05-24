@@ -152,9 +152,10 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 start";
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto ret = aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE);
-    EXPECT_EQ(int(ret.size()), 0);
+    aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE, infos);
+    EXPECT_EQ(infos.size(), 0);
 
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 end";
 }
@@ -170,9 +171,10 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_002 start";
     AddAccessibleAbilityConnection();
 
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
-        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_ENABLE);
-    EXPECT_EQ(int(ret.size()), 1);
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_ENABLE, infos);
+    EXPECT_EQ(infos.size(), 1);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();
@@ -205,9 +207,10 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 
     // ABILITY_STATE_DISABLE
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
-        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
-    EXPECT_EQ(int(ret.size()), 1);
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
+    EXPECT_EQ(infos.size(), 1);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();
@@ -226,9 +229,10 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 
     AddAccessibleAbilityConnection();
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
-        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType);
-    EXPECT_EQ(int(ret.size()), 0);
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
+    EXPECT_EQ(infos.size(), 0);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();
@@ -247,9 +251,11 @@ HWTEST_F(AAMSServerTest, GetAbilityList_005, TestSize.Level1)
 
     AddAccessibleAbilityConnection();
 
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
-        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_INSTALLED);
-    EXPECT_EQ(int(ret.size()), 1);
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN,
+        AbilityStateType::ABILITY_STATE_INSTALLED, infos);
+    EXPECT_EQ(infos.size(), 1);
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     accountData_->ClearInstalledAbility();

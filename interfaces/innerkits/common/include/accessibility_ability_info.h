@@ -104,14 +104,14 @@ public:
      * @param bundleName the package name of the accessible ability
      * @return -
      */
-    void SetPackageName(std::string bundleName);
+    void SetPackageName(const std::string &bundleName);
 
     /**
      * @brief Obtains the target bundles's name that you are listening on.
      * @param
      * @return Return the target bundles's name that you are listening on.
      */
-    std::vector<std::string> GetFilterBundleNames();
+    const std::vector<std::string> &GetFilterBundleNames() const;
 
     /**
      * @brief Obtains the setting ability of the accessible ability.
@@ -125,7 +125,7 @@ public:
      * @param targetBundleNames the target bundle name to set.
      * @return
      */
-    inline void SetFilterBundleNames(std::vector<std::string> targetBundleNames)
+    inline void SetFilterBundleNames(const std::vector<std::string> &targetBundleNames)
     {
         targetBundleNames_ = targetBundleNames;
     }

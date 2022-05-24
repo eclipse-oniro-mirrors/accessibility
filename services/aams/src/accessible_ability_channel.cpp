@@ -22,17 +22,20 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const std::string TASK_SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID = "SendEvent";
-static const std::string TASK_SEARCH_ELEMENTINFOS_BY_TEXT = "SearchElementInfosByText";
-static const std::string TASK_FIND_FOCUSED_ELEMENTINFO = "FindFocusedElementInfo";
-static const std::string TASK_FOCUS_MOVE_SEARCH = "FocusMoveSearch";
-static const std::string TASK_EXECUTE_ACTION = "ExecuteAction";
-static const std::string TASK_GET_WINDOWS = "GetWindows";
-static const std::string TASK_EXECUTE_COMMON_ACTION = "ExecuteCommonAction";
-static const std::string TASK_SET_ON_KEY_PRESS_EVENT_RESULT = "SetOnKeyPressEventResult";
-static const std::string TASK_SEND_SIMULATE_GESTURE_PATH = "SendSimulateGesturePath";
-static const std::string TASK_SET_EVENT_TYPE_FILTER = "SetEventTypeFilter";
-static const std::string TASK_SET_TARGET_BUNDLE_NAME = "SetTargetBundleName";
+namespace {
+    const std::string TASK_SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID = "SendEvent";
+    const std::string TASK_SEARCH_ELEMENTINFOS_BY_TEXT = "SearchElementInfosByText";
+    const std::string TASK_FIND_FOCUSED_ELEMENTINFO = "FindFocusedElementInfo";
+    const std::string TASK_FOCUS_MOVE_SEARCH = "FocusMoveSearch";
+    const std::string TASK_EXECUTE_ACTION = "ExecuteAction";
+    const std::string TASK_GET_WINDOWS_BY_DISPLAY_ID = "GetWindowsByDisplayId";
+    const std::string TASK_EXECUTE_COMMON_ACTION = "ExecuteCommonAction";
+    const std::string TASK_SET_ON_KEY_PRESS_EVENT_RESULT = "SetOnKeyPressEventResult";
+    const std::string TASK_SEND_SIMULATE_GESTURE_PATH = "SendSimulateGesturePath";
+    const std::string TASK_SET_EVENT_TYPE_FILTER = "SetEventTypeFilter";
+    const std::string TASK_SET_TARGET_BUNDLE_NAME = "SetTargetBundleName";
+} // namespace
+
 AccessibleAbilityChannel::AccessibleAbilityChannel(AccessibleAbilityConnection& connection) : connection_(connection)
 {
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
@@ -208,7 +211,7 @@ void AccessibleAbilityChannel::InnerFocusMoveSearch(const int32_t accessibilityW
 }
 
 bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t action, std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");
@@ -226,7 +229,7 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
 }
 
 void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t action, std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("ExecuteAction accessibilityWindowId = %{public}d", accessibilityWindowId);
@@ -250,50 +253,47 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("start");
-
-    std::vector<AccessibilityWindowInfo> ret;
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
-        return ret;
+        return false;
     }
  
-    std::promise<std::vector<AccessibilityWindowInfo>> syncPromise;
+    std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindows,
-        this, std::ref(syncPromise), displayId);
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindowsByDisplayId,
+        this, std::ref(syncPromise), displayId, std::ref(windows));
 
-    eventHandler_->PostTask(task, TASK_GET_WINDOWS);
-    ret = syncFuture.get();
+    eventHandler_->PostTask(task, TASK_GET_WINDOWS_BY_DISPLAY_ID);
+    bool ret = syncFuture.get();
 
     return ret;
 }
 
-void AccessibleAbilityChannel::InnerGetWindows(std::promise<std::vector<AccessibilityWindowInfo>> &syncPromise,
-    const uint64_t displayId)
+void AccessibleAbilityChannel::InnerGetWindowsByDisplayId(std::promise<bool> &syncPromise,
+    const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("start");
 
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
-        std::vector<AccessibilityWindowInfo> windows;
-        syncPromise.set_value(windows);
+        syncPromise.set_value(false);
         return;
     }
 
     std::vector<AccessibilityWindowInfo> windowInfos =
         Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
     int32_t currentChannelId = connection_.GetChannelId();
-    std::vector<AccessibilityWindowInfo> result;
     for (auto &window : windowInfos) {
         if (window.GetDisplayId() == displayId) {
             window.SetChannelId(currentChannelId);
-            result.push_back(window);
+            windows.push_back(window);
         }
     }
-    syncPromise.set_value(result);
+    syncPromise.set_value(true);
 }
 
 bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
@@ -399,7 +399,7 @@ void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t reques
     touchEventInjector->InjectEvents(gesturePath, abilityClient, requestId);
 }
 
-bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t eventTypes)
+bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
 {
     HILOG_DEBUG("start");
     if (!eventHandler_) {
@@ -409,22 +409,23 @@ bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t eventTypes)
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetEventTypeFilter,
-        this, std::ref(syncPromise), eventTypes);
+        this, std::ref(syncPromise), filter);
 
     eventHandler_->PostTask(task, TASK_SET_EVENT_TYPE_FILTER);
     bool ret = syncFuture.get();
 
     return ret;
 }
+
 void AccessibleAbilityChannel::InnerSetEventTypeFilter(std::promise<bool> &syncPromise,
-    const uint32_t eventTypes)
+    const uint32_t filter)
 {
     HILOG_DEBUG("start");
-    connection_.SetAbilityInfoEventTypeFilter(eventTypes);
+    connection_.SetAbilityInfoEventTypeFilter(filter);
     syncPromise.set_value(true);
 }
 
-bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("start");
     if (!eventHandler_) {
@@ -443,7 +444,7 @@ bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string
 }
 
 void AccessibleAbilityChannel::InnerSetTargetBundleName(std::promise<bool> &syncPromise,
-    const std::vector<std::string> targetBundleNames)
+    const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("start");
     connection_.SetAbilityInfoTargetBundleName(targetBundleNames);

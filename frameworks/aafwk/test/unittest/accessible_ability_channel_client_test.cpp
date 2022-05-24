@@ -22,18 +22,20 @@
 using namespace testing;
 using namespace testing::ext;
 
-const static int32_t SEQUENCE = 1;
-const static int32_t ACCESSIBILITY_WINDOW_ID = 1;
-const static int32_t FOCUS_TYPE = 1;
-const static int32_t SEQUENCE_NUM = 1;
-const static int32_t ELEMENT_ID = 1;
-const static int32_t ACTION = 1;
-const static std::string TEST = "test";
-const static int32_t DIRECTION = 1;
-const static int32_t MODE = 1;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string TEST = "test";
+    constexpr int32_t SEQUENCE = 1;
+    constexpr int32_t ACCESSIBILITY_WINDOW_ID = 1;
+    constexpr int32_t FOCUS_TYPE = 1;
+    constexpr int32_t SEQUENCE_NUM = 1;
+    constexpr int32_t ELEMENT_ID = 1;
+    constexpr int32_t ACTION = 1;
+    constexpr int32_t DIRECTION = 1;
+    constexpr int32_t MODE = 1;
+} // namespace
+
 class AccessibleAbilityChannelClientTest : public ::testing::Test {
 public:
     AccessibleAbilityChannelClientTest()
@@ -153,7 +155,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_001, TestSize.Level1)
     }
     std::vector<AccessibilityWindowInfo> res {};
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    res = instance_->GetWindows(displayId);
+    instance_->GetWindows(displayId, res);
     EXPECT_EQ(0, res.size());
     GTEST_LOG_(INFO) << "GetWindows_001 end";
 }

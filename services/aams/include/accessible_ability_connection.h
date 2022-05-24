@@ -51,7 +51,7 @@ public:
 
     void SetAbilityInfoEventTypeFilter(const uint32_t eventTypes);
 
-    void SetAbilityInfoTargetBundleName(const std::vector<std::string> targetBundleNames);
+    void SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames);
 
     // Get Attribution
     inline AccessibilityAbilityInfo& GetAbilityInfo()

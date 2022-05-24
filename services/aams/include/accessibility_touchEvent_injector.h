@@ -52,6 +52,9 @@ private:
 
 class TouchEventInjector : public EventTransmission, public AppExecFwk::EventHandler {
 public:
+    static constexpr uint32_t SEND_TOUCH_EVENT_MSG = 1;
+    static constexpr uint32_t GESTURE_INJECT_EVENT_MSG = 2;
+
     /**
      * @brief A constructor used to create a TouchEventInjector instance.
      * @param
@@ -130,9 +133,6 @@ public:
      * @return
      */
     void InjectGesturePathInner();
-
-    static constexpr uint32_t SEND_TOUCH_EVENT_MSG = 1;
-    static constexpr uint32_t GESTURE_INJECT_EVENT_MSG = 2;
 
 private:
     /**

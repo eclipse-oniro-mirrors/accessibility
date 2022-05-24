@@ -57,7 +57,7 @@ public:
      * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    bool GestureInject(const uint32_t sequence, const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
+    bool InjectGesture(const uint32_t sequence, const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
         const std::shared_ptr<AccessibilityGestureResultListener> &listener);
 
     /**
@@ -67,8 +67,8 @@ public:
      * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    bool GestureInject(const uint32_t sequence,
-        const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePaths,
+    bool InjectGesture(const uint32_t sequence,
+        const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths,
         const std::shared_ptr<AccessibilityGestureResultListener> &listener);
 
     /**
@@ -89,17 +89,18 @@ public:
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
-     * @param
-     * @return The information of windows.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
      */
-    std::vector<AccessibilityWindowInfo> GetWindows();
+    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
-     * @return The information of windows.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
      */
-    std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId);
+    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Executes a specified action.
@@ -213,17 +214,17 @@ public:
 
     /**
      * @brief Set event types to filter.
-     * @param eventTypes The event types which you want.
+     * @param filter The event types which you want.
      * @return Return true if sets event types successfully, else return false.
      */
-    bool SetEventTypeFilter(const uint32_t eventTypes);
+    bool SetEventTypeFilter(const uint32_t filter);
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.
      */
-    bool SetTargetBundleName(const std::vector<std::string> targetBundleNames);
+    bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -27,9 +27,6 @@ struct AccessibilityGesturePosition {
 
 class AccessibilityGestureInjectPath {
 public:
-    // const static int64_t MAX_GESTURE_DURATION = 60 * 1000;
-    // const static uint32_t MAX_GESTURE_PATHS = 10;
-
     AccessibilityGestureInjectPath() {}
     ~AccessibilityGestureInjectPath() {}
 
@@ -45,7 +42,7 @@ public:
      * @param
      * @return Return all positions of this gesture path.
      */
-    std::vector<AccessibilityGesturePosition> GetPositions();
+    const std::vector<AccessibilityGesturePosition> &GetPositions();
 
     /**
      * @brief Sets the duration for this gesture path to continue.

@@ -99,15 +99,17 @@ public:
      * @return Return true if perform action successfully, else return false.
      */
     virtual bool ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
-        std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+        const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
-     * @return The information of windows.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
      */
-    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) = 0;
+    virtual bool GetWindowsByDisplayId(const uint64_t displayId,
+        std::vector<AccessibilityWindowInfo> &windows) = 0;
 
     /**
      * @brief Executes a specified action.
@@ -135,17 +137,17 @@ public:
 
     /**
      * @brief Set event types to filter.
-     * @param eventTypes The event types which you want.
+     * @param filter The event types which you want.
      * @return Return true if sets event types successfully, else return false.
      */
-    virtual bool SetEventTypeFilter(const uint32_t eventTypes) = 0;
+    virtual bool SetEventTypeFilter(const uint32_t filter) = 0;
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.
      */
-    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) = 0;
+    virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) = 0;
 
     enum class Message {
         SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID = 0,
@@ -153,7 +155,7 @@ public:
         FIND_FOCUSED_ELEMENTINFO,
         FOCUS_MOVE_SEARCH,
         PERFORM_ACTION,
-        GET_WINDOWS,
+        GET_WINDOWS_BY_DISPLAY_ID,
         EXECUTE_COMMON_ACTION,
         DISABLE_ABILITY,
         SET_ON_KEY_PRESS_EVENT_RESULT,

@@ -18,8 +18,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-const float DEFAULT_SCALE = 2.0f;
-const float HALF = 0.5f;
+namespace {
+    constexpr float DEFAULT_SCALE = 2.0f;
+    constexpr float HALF = 0.5f;
+} // namespace
 
 AccessibilityZoomHandler::AccessibilityZoomHandler(Rosen::DisplayId displayId)
 {

@@ -24,7 +24,7 @@ int64_t AccessibilityGestureInjectPath::GetDurationTime() const
     return durationTime_;
 }
 
-std::vector<AccessibilityGesturePosition> AccessibilityGestureInjectPath::GetPositions()
+const std::vector<AccessibilityGesturePosition> &AccessibilityGestureInjectPath::GetPositions()
 {
     HILOG_DEBUG("start.");
 

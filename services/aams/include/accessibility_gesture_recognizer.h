@@ -109,6 +109,9 @@ public:
 
 class AccessibilityGestureRecognizer : public AppExecFwk::EventHandler {
 public:
+    static constexpr uint32_t LONG_PRESS_MSG = 1;
+    static constexpr uint32_t SINGLE_TAP_MSG = 2;
+
     /**
      * @brief A constructor used to create a accessibilityGestureRecognizer instance.
      * @param
@@ -206,9 +209,6 @@ public:
     {
         return continueDown_;
     }
-
-    static constexpr uint32_t LONG_PRESS_MSG = 1;
-    static constexpr uint32_t SINGLE_TAP_MSG = 2;
 
 private:
     /**

@@ -87,7 +87,7 @@ bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindow
 }
 
 bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t action, std::map<std::string, std::string>& actionArguments, const int32_t requestId,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
@@ -99,17 +99,16 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannel::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)displayId;
+    (void)windows;
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
-        std::vector<AccessibilityWindowInfo> windows;
-        return windows;
+        return false;
     }
-
-    std::vector<AccessibilityWindowInfo> windows;
-    return windows;
+    return true;
 }
 
 bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)

@@ -25,7 +25,10 @@
 
 using namespace OHOS::AAFwk;
 namespace OHOS {
-const static std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
+namespace {
+    const std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
+} // namespace
+
 namespace AppExecFwk {
 int BundleMgrStub::OnRemoteRequest(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
@@ -271,6 +274,7 @@ BundleMgrClient::BundleMgrClient()
 
 BundleMgrClient::~BundleMgrClient()
 {}
+
 bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo& extensionInfo, const std::string& metadataName,
     std::vector<std::string>& profileInfos) const
 {

@@ -96,7 +96,7 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         [](napi_env env, napi_status status, void* data) { // Execute the complete function
             HILOG_DEBUG("execute back");
-            NAccessibilityElementData* callbackInfo = (NAccessibilityElementData*)data;
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result[ARGS_SIZE_ONE] = {0};
 
             // Promise mode
@@ -247,7 +247,7 @@ napi_value NAccessibilityElement::GetElementInfoWindowId(napi_env env, NAccessib
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoWindowId execute back");
-            NAccessibilityElementData* callbackInfo = (NAccessibilityElementData*)data;
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
             int32_t windowId = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
             HILOG_DEBUG("windowId: [%{public}d]", windowId);

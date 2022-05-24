@@ -40,7 +40,7 @@ int32_t AccessibilityElementInfo::GetChildCount() const
     return childCount_;
 }
 
-std::vector<int32_t> AccessibilityElementInfo::GetChildIds() const
+const std::vector<int32_t> &AccessibilityElementInfo::GetChildIds() const
 {
     HILOG_DEBUG("childCount_[%{public}d]", childCount_);
     return childNodeIds_;
@@ -74,7 +74,7 @@ bool AccessibilityElementInfo::RemoveChild(const int32_t childId)
     return false;
 }
 
-std::vector<AccessibleAction> AccessibilityElementInfo::GetActionList() const
+const std::vector<AccessibleAction> &AccessibilityElementInfo::GetActionList() const
 {
     HILOG_DEBUG("start");
     return operations_;
@@ -367,7 +367,7 @@ void AccessibilityElementInfo::SetValidElement(const bool valid)
     validElement_ = valid;
 }
 
-void AccessibilityElementInfo::SetInspectorKey(const std::string key)
+void AccessibilityElementInfo::SetInspectorKey(const std::string &key)
 {
     HILOG_DEBUG("inspector key [%{public}s]", key.c_str());
     inspectorKey_ = key;
@@ -570,7 +570,7 @@ std::string AccessibilityElementInfo::GetDescriptionInfo() const
     return contentDescription_;
 }
 
-void AccessibilityElementInfo::SetDescriptionInfo(const std::string contentDescription)
+void AccessibilityElementInfo::SetDescriptionInfo(const std::string &contentDescription)
 {
     contentDescription_ = contentDescription;
     HILOG_DEBUG("contentDescription_[%{public}s]", contentDescription_.c_str());
@@ -703,7 +703,7 @@ AccessibilityElementInfo::AccessibilityElementInfo()
     HILOG_DEBUG("start");
 }
 
-AccessibleAction::AccessibleAction(ActionType actionType, std::string description)
+AccessibleAction::AccessibleAction(ActionType actionType, const std::string &description)
 {
     HILOG_DEBUG("start");
     actionType_ = actionType;

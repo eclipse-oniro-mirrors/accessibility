@@ -28,12 +28,14 @@
 using namespace testing;
 using namespace testing::ext;
 
-static const int RETRY_TIMES = 10;
-static const int WINDOW_ID = 2;
-static const int WINDOWS_SIZE = 2;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int RETRY_TIMES = 10;
+    constexpr int WINDOW_ID = 2;
+    constexpr int WINDOWS_SIZE = 2;
+} // namespace
+
 class AccessibilityWindowManagerTest : public testing::Test {
 public:
     AccessibilityWindowManagerTest()
@@ -187,7 +189,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo003 start";
 
     Rosen::WindowInfo rosen_winInfo;
-    rosen_winInfo.type_ = (OHOS::Rosen::WindowType)0xFFFFFFFF;
+    rosen_winInfo.type_ = static_cast<OHOS::Rosen::WindowType>(0xFFFFFFFF);
     rosen_winInfo.wid_ = 1;
     rosen_winInfo.windowRect_.width_ = 1;
     rosen_winInfo.windowRect_.height_ = 1;

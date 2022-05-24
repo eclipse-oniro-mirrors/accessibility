@@ -54,7 +54,7 @@ public:
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    void SendEvent(const AccessibilityEventInfo& uiEvent) override;
+    void SendEvent(const AccessibilityEventInfo &uiEvent) override;
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -63,8 +63,8 @@ public:
     void RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
-    std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes,
-        const int32_t stateType) override;
+    bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) override;
 
     void RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation) override;
@@ -81,10 +81,10 @@ public:
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
 
-    bool EnableAbilities(const std::string name, const uint32_t capabilities) override;
-    std::vector<std::string> GetEnabledAbilities() override;
-    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
-    bool DisableAbilities(const std::string name) override;
+    bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
+    bool DisableAbility(const std::string &name) override;
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     bool DisableUITestAbility() override;
     int32_t GetActiveWindow() override;
@@ -138,9 +138,9 @@ public:
     void AddedUser(int32_t accountId);
     void RemovedUser(int32_t accountId);
     void SwitchedUser(int32_t accountId);
-    void PackageChanged(std::string &bundleName);
-    void PackageRemoved(std::string &bundleName);
-    void PackageAdd(std::string &bundleName);
+    void PackageChanged(const std::string &bundleName);
+    void PackageRemoved(const std::string &bundleName);
+    void PackageAdd(const std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
     void UpdateAbilities();

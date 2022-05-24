@@ -273,7 +273,7 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
     size_t idx = 0;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &filterBundleNames));
     std::vector<std::string> strFilterBundleNames = info.GetFilterBundleNames();
-    for (auto filterBundleName : strFilterBundleNames) {
+    for (auto &filterBundleName : strFilterBundleNames) {
         napi_value bundleName;
         NAPI_CALL_RETURN_VOID(
             env, napi_create_string_utf8(env, filterBundleName.c_str(), NAPI_AUTO_LENGTH, &bundleName));
@@ -349,7 +349,7 @@ void ConvertAccessibilityWindowInfoToJS(
         result,
         pAccessibilityElement,
         [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = (AccessibilityElement*)data;
+            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
             delete info;
         },
         nullptr,
@@ -492,7 +492,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
         nTargetObject,
         pAccessibilityElement,
         [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = (AccessibilityElement*)data;
+            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
             delete info;
         },
         nullptr,
@@ -839,7 +839,7 @@ void ConvertElementInfoToJS(napi_env env, napi_value result, const Accessibility
         result,
         pAccessibilityElement,
         [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = (AccessibilityElement*)data;
+            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
             delete info;
         },
         nullptr,
@@ -925,7 +925,7 @@ static uint32_t ConvertStringToCapability(std::string type)
     return capabilitiesTable.at(type);
 }
 
-ActionType ConvertStringToAccessibleOperationType(std::string type)
+ActionType ConvertStringToAccessibleOperationType(const std::string &type)
 {
     std::map<const std::string, ActionType> accessibleOperationTypeTable = {
         {"focus", ActionType::ACCESSIBILITY_ACTION_FOCUS},
@@ -959,7 +959,7 @@ ActionType ConvertStringToAccessibleOperationType(std::string type)
     return accessibleOperationTypeTable.at(type);
 }
 
-AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(std::string type)
+AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type)
 {
     std::map<const std::string, AccessibilityAbilityTypes> accessibilityAbilityTypesTable = {
         {"spoken", AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN},
@@ -978,7 +978,7 @@ AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(std::string t
     return accessibilityAbilityTypesTable.at(type);
 }
 
-AbilityStateType ConvertStringToAbilityStateTypes(std::string type)
+AbilityStateType ConvertStringToAbilityStateTypes(const std::string &type)
 {
     std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
         {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
@@ -993,7 +993,7 @@ AbilityStateType ConvertStringToAbilityStateTypes(std::string type)
     return abilityStateTypeTable.at(type);
 }
 
-GlobalAction ConvertStringToGlobalAction(std::string type)
+GlobalAction ConvertStringToGlobalAction(const std::string &type)
 {
     std::map<const std::string, GlobalAction> globalActionTable = {
         {"back", GlobalAction::GLOBAL_ACTION_BACK},
@@ -1010,7 +1010,7 @@ GlobalAction ConvertStringToGlobalAction(std::string type)
     return globalActionTable.at(type);
 }
 
-static TextMoveUnit ConvertStringToTextMoveStep(std::string type)
+static TextMoveUnit ConvertStringToTextMoveStep(const std::string &type)
 {
     static const std::map<const std::string, TextMoveUnit> textMoveStepTable = {{"char", TextMoveUnit::STEP_CHARACTER},
         {"word", TextMoveUnit::STEP_WORD},
@@ -1026,7 +1026,7 @@ static TextMoveUnit ConvertStringToTextMoveStep(std::string type)
     return textMoveStepTable.at(type);
 }
 
-static NotificationCategory ConvertStringToNotificationCategory(std::string type)
+static NotificationCategory ConvertStringToNotificationCategory(const std::string &type)
 {
     static const std::map<const std::string, NotificationCategory> notificationCategoryTable = {
         {"call", NotificationCategory::CATEGORY_CALL},
@@ -1050,7 +1050,7 @@ static NotificationCategory ConvertStringToNotificationCategory(std::string type
     return notificationCategoryTable.at(type);
 }
 
-static GestureType ConvertStringToGestureType(std::string type)
+static GestureType ConvertStringToGestureType(const std::string &type)
 {
     static const std::map<const std::string, GestureType> gestureTypesTable = {
         {"left", GestureType::GESTURE_SWIPE_LEFT},
@@ -1353,7 +1353,7 @@ static void ConvertGesturePathPositionJSToNAPI(
         napi_value valueX = nullptr;
         napi_get_property(env, object, propertyNameValue, &valueX);
         napi_get_value_double(env, valueX, &position);
-        gesturePathPosition.positionX_ = (float)position;
+        gesturePathPosition.positionX_ = static_cast<float>(position);
     }
 
     napi_create_string_utf8(env, "posY", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1362,7 +1362,7 @@ static void ConvertGesturePathPositionJSToNAPI(
         napi_value valueY = nullptr;
         napi_get_property(env, object, propertyNameValue, &valueY);
         napi_get_value_double(env, valueY, &position);
-        gesturePathPosition.positionY_ = (float)position;
+        gesturePathPosition.positionY_ = static_cast<float>(position);
     }
 }
 
@@ -1414,18 +1414,15 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
 void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
     std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePathArray,
-    bool* isParameterArray)
+    bool &isParameterArray)
 {
-    bool isArray = false;
-    uint32_t dataLen = 0;
-
-    if (napi_is_array(env, object, &isArray) != napi_ok) {
+    if (napi_is_array(env, object, &isParameterArray) != napi_ok) {
         HILOG_ERROR("judge array error.");
         return;
     }
 
-    *isParameterArray = isArray;
-    if (isArray) {
+    if (isParameterArray) {
+        uint32_t dataLen = 0;
         if (napi_get_array_length(env, object, &dataLen) != napi_ok) {
             HILOG_ERROR("get array length failed.");
             return;
@@ -1460,7 +1457,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     uint32_t idx = 0;
     std::vector<OHOS::MMI::KeyEvent::KeyItem> keyItems = keyEvent->GetKeyItems();
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keys));
-    for (auto key : keyItems) {
+    for (auto &key : keyItems) {
         napi_value keyItem = nullptr;
         NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyItem));
 

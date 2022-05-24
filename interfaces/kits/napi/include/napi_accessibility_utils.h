@@ -64,17 +64,17 @@ void ConvertElementInfoToJS(
 bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 void ConvertElementInfosToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
-OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(std::string type);
-OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(std::string type);
-OHOS::Accessibility::AbilityStateType ConvertStringToAbilityStateTypes(std::string type);
-OHOS::Accessibility::GlobalAction ConvertStringToGlobalAction(std::string type);
+OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
+OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
+OHOS::Accessibility::AbilityStateType ConvertStringToAbilityStateTypes(const std::string &type);
+OHOS::Accessibility::GlobalAction ConvertStringToGlobalAction(const std::string &type);
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 
 void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath,
     std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>>& gesturePathArray,
-    bool* isParameterArray);
+    bool &isParameterArray);
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);

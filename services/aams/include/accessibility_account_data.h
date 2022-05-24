@@ -159,7 +159,7 @@ public:
      * @param abilityInfo Accessibility ability info.
      * @return
      */
-    void RemoveInstalledAbility(std::string bundleName);
+    void RemoveInstalledAbility(const std::string &bundleName);
 
     /**
      * @brief The real procedure for add connecting ability.
@@ -180,7 +180,7 @@ public:
      * @param
      * @return Store vector of accessibility listening connection.
      */
-    const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> GetStateCallbacks();
+    const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> &GetStateCallbacks() const;
 
     const CaptionPropertyCallbacks GetCaptionPropertyCallbacks();
 
@@ -196,7 +196,7 @@ public:
      * @param elementName Accessibility elementName URI
      * @return Accessible ability connection corresponding to elementName URI.
      */
-    const sptr<AccessibleAbilityConnection> GetAccessibleAbilityConnection(const std::string elementName);
+    const sptr<AccessibleAbilityConnection> GetAccessibleAbilityConnection(const std::string &elementName);
 
     /**
      * @brief Query interface operation interactive connection through window id.
@@ -218,13 +218,13 @@ public:
      * @param state Ability state type.
      * @return
      */
-    const std::vector<AccessibilityAbilityInfo> GetAbilitiesByState(AbilityStateType state);
+    void GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities) const;
 
     /**
      * @brief Get the accessibility ability info of the disabled ability.
      * @return
      */
-    const std::vector<AccessibilityAbilityInfo> GetDisableAbilities();
+    void GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities) const;
 
     /**
      * @brief Get enable accessibility list.
@@ -238,7 +238,7 @@ public:
      * @param
      * @return Store vector of install accessibility abilities.
      */
-    const std::vector<AccessibilityAbilityInfo> GetInstalledAbilities();
+    const std::vector<AccessibilityAbilityInfo> &GetInstalledAbilities() const;
 
     /**
      * @brief Update user enabled accessibility capabilities.
@@ -383,17 +383,17 @@ public:
 
     float GetAudioBalance();
 
-    bool EnableAbilities(const std::string name, const uint32_t capabilities);
+    bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
 
-    bool DisableAbilities(const std::string name);
+    bool DisableAbility(const std::string &name);
 
     void ClearData();
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
-    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> GetConfigCallbacks();
+    const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks() const;
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -437,17 +437,17 @@ private:
     void CapabilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
     void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
     void ConfigInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult);
-    void VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut);
-    void RemoveEnabledFromPref(const std::string name);
+    void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
+    void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
+    void RemoveEnabledFromPref(const std::string &name);
     void UpdateEnabledFromPref();
     bool SetStatePref(int32_t type);
     bool SetCaptionPropertyPref();
     std::string StateChange(bool state);
 
-    uint32_t GetConfigCapabilitiesFromBms(std::string bundleName, std::string abilityName);
-    bool SetAbilityCapabilities(const std::string name, const uint32_t capabilities);
-    uint32_t GetAbilityCapabilities(const std::string name);
+    uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName);
+    bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
+    uint32_t GetAbilityCapabilities(const std::string &name);
 
     int32_t id_;
     bool isEnabled_ = false;

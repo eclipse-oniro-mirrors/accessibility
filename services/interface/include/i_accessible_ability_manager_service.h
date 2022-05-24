@@ -20,7 +20,6 @@
 #include <vector>
 #include "accessibility_ability_info.h"
 #include "accessibility_caption.h"
-#include "accessibility_config.h"
 #include "accessibility_event_info.h"
 #include "i_accessibility_element_operator.h"
 #include "i_accessibility_enable_ability_lists_observer.h"
@@ -65,8 +64,8 @@ public:
      *                  2 indicates that the ability is disabled; 4 indicates that the ability has been installed.
      * @return
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(const uint32_t abilityTypes,
-        const int32_t stateType) = 0;
+    virtual bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) = 0;
 
     /**
      * @brief Register the interaction operation, so the AA can get node info from ACE.
@@ -94,11 +93,11 @@ public:
     virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
     virtual bool SetCaptionState(const bool state) = 0;
 
-    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) = 0;
-    virtual std::vector<std::string> GetEnabledAbilities() = 0;
-    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
+    virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) = 0;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
+    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) = 0;
 
-    virtual bool DisableAbilities(const std::string name) = 0;
+    virtual bool DisableAbility(const std::string &name) = 0;
     virtual int32_t GetActiveWindow() = 0;
 
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;

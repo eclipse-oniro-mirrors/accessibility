@@ -33,7 +33,10 @@ config("accessibilityconfig_public_config") {
   include_dirs = [ "include" ]
 }
 
-acfwk_src = [ "${acfwk_path}/src/accessibility_config_impl.cpp" ]
+acfwk_src = [ 
+  "${acfwk_path}/src/accessibility_config_impl.cpp",
+  "${acfwk_path}/src/accessibility_config.cpp",
+]
 
 ohos_shared_library("accessibilityconfig") {
   sources = acfwk_src

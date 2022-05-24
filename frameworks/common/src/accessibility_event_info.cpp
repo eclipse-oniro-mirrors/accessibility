@@ -127,7 +127,7 @@ void AccessibilityMemo::AddContent(const std::string &content)
     HILOG_DEBUG("content[%{public}s]", content.c_str());
 }
 
-std::vector<std::string> AccessibilityMemo::GetContentList() const
+const std::vector<std::string> &AccessibilityMemo::GetContentList() const
 {
     return contents_;
 }
@@ -197,7 +197,7 @@ AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int32_t index)
     return records_[index];
 }
 
-std::vector<AccessibilityEventInfo> AccessibilityEventInfo::GetRecords()
+const std::vector<AccessibilityEventInfo> &AccessibilityEventInfo::GetRecords() const
 {
     HILOG_DEBUG("start");
     return records_;

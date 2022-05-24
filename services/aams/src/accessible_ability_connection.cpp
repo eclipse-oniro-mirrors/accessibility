@@ -20,8 +20,11 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const std::string TASK_ON_ABILITY_CONNECT_DONE = "OnAbilityConnectDone";
-static const std::string TASK_ON_ABILITY_DISCONNECT_DONE = "OnAbilityDisconnectDone";
+namespace {
+    const std::string TASK_ON_ABILITY_CONNECT_DONE = "OnAbilityConnectDone";
+    const std::string TASK_ON_ABILITY_DISCONNECT_DONE = "OnAbilityDisconnectDone";
+} // namespace
+
 std::mutex AccessibleAbilityConnection::mutex_;
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData,
@@ -239,7 +242,7 @@ void AccessibleAbilityConnection::SetAbilityInfoEventTypeFilter(const uint32_t e
     abilityInfo_.SetEventTypes(eventTypes);
 }
 
-void AccessibleAbilityConnection::SetAbilityInfoTargetBundleName(const std::vector<std::string> targetBundleNames)
+void AccessibleAbilityConnection::SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("start");
     abilityInfo_.SetFilterBundleNames(targetBundleNames);

@@ -41,7 +41,7 @@ enum AccessibilityControlType : int32_t {
  */
 class AccessibilitySystemAbilityClient {
 public:
-    static const int32_t NUM_INT32 = 32;
+    static constexpr int32_t NUM_INT32 = 32;
 
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.
@@ -105,8 +105,8 @@ public:
      *                  4 indicates that the ability has been installed.
      * @return Return accessibility ability infos by specified types.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType) = 0;
+    virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) = 0;
 
     /**
      * @brief Obtains the properties of the accessibility caption function.
@@ -191,7 +191,7 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(
+    virtual bool RemoveCaptionListener(
         const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) = 0;
 
     /**
@@ -228,13 +228,13 @@ public:
      * @brief Get installed abilities.
      * @return Return the installed accessibility ability infos.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() = 0;
+    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) = 0;
 
     /**
      * @brief Get enabled abilities.
      * @return Return the info of enabled abilities.
      */
-    virtual std::vector<std::string> GetEnabledAbilities() = 0;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
 
     /**
      * @brief Set caption property

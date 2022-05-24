@@ -19,10 +19,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const size_t KEY_ITEM_COUNT_1 = 1;
-static const uint32_t SHORT_KEY_TIMEOUT_MSG = 1;
-static const int32_t MULTI_PRESS_TIMER = 300; // ms
-static const int32_t TRIPLE_PRESS_COUNT = 3;
+namespace {
+    constexpr size_t KEY_ITEM_COUNT_1 = 1;
+    constexpr uint32_t SHORT_KEY_TIMEOUT_MSG = 1;
+    constexpr int32_t MULTI_PRESS_TIMER = 300; // ms
+    constexpr int32_t TRIPLE_PRESS_COUNT = 3;
+} // namespace
 
 AccessibilityShortKey::AccessibilityShortKey()
 {
@@ -71,7 +73,7 @@ void AccessibilityShortKey::SendKeyEventToNext()
 {
     HILOG_DEBUG();
 
-    for (std::shared_ptr<MMI::KeyEvent> keyEvent : cachedKeyEvents_) {
+    for (auto &keyEvent : cachedKeyEvents_) {
         EventTransmission::OnKeyEvent(*keyEvent);
     }
 
@@ -139,7 +141,7 @@ bool AccessibilityShortKey::IsTriplePress()
 
     uint32_t upEventCount = 0;
     int32_t action = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
-    for (std::shared_ptr<MMI::KeyEvent> keyEvent : cachedKeyEvents_) {
+    for (auto &keyEvent : cachedKeyEvents_) {
         action = keyEvent->GetKeyAction();
         if (action == MMI::KeyEvent::KEY_ACTION_UP) {
             upEventCount++;

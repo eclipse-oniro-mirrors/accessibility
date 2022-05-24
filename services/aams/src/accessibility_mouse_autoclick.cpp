@@ -19,8 +19,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const size_t POINTER_COUNT_1 = 1;
-static const uint32_t AUTOCLICK_TIMEOUT_MSG = 1;
+namespace {
+    constexpr size_t POINTER_COUNT_1 = 1;
+    constexpr uint32_t AUTOCLICK_TIMEOUT_MSG = 1;
+} // namespace
 
 AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
 {
@@ -173,7 +175,7 @@ int64_t AccessibilityMouseAutoclick::GetSystemTime()
 
     struct timespec times = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t microsecond = (int64_t)(times.tv_sec * 1000000 + times.tv_nsec / 1000);
+    int64_t microsecond = static_cast<int64_t>(times.tv_sec * 1000000 + times.tv_nsec / 1000);
 
     return microsecond;
 }

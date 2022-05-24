@@ -22,7 +22,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-static int32_t RETRY_SUBSCRIBER = 3;
+namespace {
+    constexpr int32_t RETRY_SUBSCRIBER = 3;
+} // namespace
+
 AccessibilityCommonEvent::AccessibilityCommonEvent()
 {
     HILOG_DEBUG("AccessibilityCommonEvent AccessibilityCommonEvent");

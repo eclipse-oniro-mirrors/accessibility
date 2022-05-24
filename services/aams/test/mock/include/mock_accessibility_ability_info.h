@@ -34,8 +34,8 @@ public:
     MOCK_METHOD0(GetId, std::string());
     MOCK_METHOD0(GetName, std::string());
     MOCK_METHOD0(GetPackageName, std::string());
-    MOCK_METHOD1(SetPackageName, void(std::string bundleName));
-    MOCK_METHOD0(GetFilterBundleNames, std::vector<std::string>());
+    MOCK_METHOD1(SetPackageName, void(const std::string &bundleName));
+    MOCK_METHOD0(GetFilterBundleNames, const std::vector<std::string> &());
     MOCK_METHOD0(GetSettingsAbility, std::string());
     MOCK_METHOD1(ReadFromParcel, bool(Parcel& parcel));
     MOCK_CONST_METHOD1(Marshalling, bool(Parcel& parcel));

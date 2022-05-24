@@ -32,8 +32,8 @@ public:
         uint32_t(const sptr<AccessibleAbilityManagerServiceStub>& callback, const int32_t accountId));
     MOCK_METHOD2(RegisterCaptionPropertyCallback,
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
-    MOCK_METHOD2(
-        GetAbilityList, std::vector<AccessibilityAbilityInfo>(const uint32_t abilityTypes, const int32_t stateType));
+    MOCK_METHOD3(GetAbilityList, bool(const uint32_t abilityTypes, const int32_t stateType,
+        std::vector<AccessibilityAbilityInfo> &infos));
     MOCK_METHOD2(RegisterElementOperator,
         void(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation));
     MOCK_METHOD1(DeregisterElementOperator, void(const int32_t windowId));
@@ -84,9 +84,9 @@ public:
     MOCK_METHOD1(AddedUser, void(int32_t accountId));
     MOCK_METHOD1(RemovedUser, void(int32_t accountId));
     MOCK_METHOD1(SwitchedUser, void(int32_t accountId));
-    MOCK_METHOD1(PackageChanged, void(std::string& bundleName));
-    MOCK_METHOD1(PackageRemoved, void(std::string& bundleName));
-    MOCK_METHOD1(PackageAdd, void(std::string& bundleName));
+    MOCK_METHOD1(PackageChanged, void(const std::string& bundleName));
+    MOCK_METHOD1(PackageRemoved, void(const std::string& bundleName));
+    MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
     MOCK_METHOD0(UpdateAbilities, void());
     MOCK_METHOD0(GetEnabledState, bool());
@@ -98,8 +98,8 @@ public:
     MOCK_METHOD1(SetGestureState, bool(const bool state));
     MOCK_METHOD1(SetKeyEventObserverState, bool(const bool state));
     MOCK_METHOD1(SetEnabledObj, bool(std::map<std::string, AppExecFwk::ElementName> it));
-    MOCK_METHOD0(GetEnabledAbilities, std::vector<std::string>());
-    MOCK_METHOD0(GetInstalledAbilities, std::vector<AccessibilityAbilityInfo>());
+    MOCK_METHOD1(GetEnabledAbilities, bool(std::vector<std::string> &enabledAbilities));
+    MOCK_METHOD1(GetInstalledAbilities, bool(std::vector<AccessibilityAbilityInfo> &installedAbilities));
     MOCK_METHOD1(RegisterUITestAbilityConnectionClient, bool(const sptr<IRemoteObject>& obj));
     MOCK_METHOD0(DeregisterUITestAbilityConnectionClient, bool());
     MOCK_METHOD0(GetActiveWindow, int32_t());

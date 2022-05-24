@@ -81,7 +81,7 @@ void MockAccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elemen
 }
 
 void MockAccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, const int32_t action,
-    const std::map<std::string, std::string> arguments, const int32_t requestId,
+    const std::map<std::string, std::string> &arguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy ExecuteAction";

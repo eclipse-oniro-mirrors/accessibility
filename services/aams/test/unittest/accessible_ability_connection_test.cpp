@@ -33,8 +33,11 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static uint32_t SLEEP_TIME_2 = 2;
-const static uint32_t SLEEP_TIME_3 = 3;
+namespace {
+    constexpr uint32_t SLEEP_TIME_2 = 2;
+    constexpr uint32_t SLEEP_TIME_3 = 3;
+} // namespace
+
 class AccessibleAbilityConnectionUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityConnectionUnitTest()

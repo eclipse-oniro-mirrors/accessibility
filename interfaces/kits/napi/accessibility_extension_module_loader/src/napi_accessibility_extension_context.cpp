@@ -78,7 +78,7 @@ public:
         return (me != nullptr) ? me->OnExecuteCommonAction(*engine, *info) : nullptr;
     }
 
-    static NativeValue* GestureInject(NativeEngine* engine, NativeCallbackInfo* info)
+    static NativeValue* InjectGesture(NativeEngine* engine, NativeCallbackInfo* info)
     {
         NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
         return (me != nullptr) ? me->OnGestureInject(*engine, *info) : nullptr;
@@ -97,17 +97,17 @@ private:
         }
 
         // Unwrap event types
-        uint32_t eventTypes = TYPE_VIEW_INVALID;
+        uint32_t filter = TYPE_VIEW_INVALID;
         ConvertJSToEventTypes(reinterpret_cast<napi_env>(&engine),
-            reinterpret_cast<napi_value>(info.argv[PARAM0]), eventTypes);
-        if (eventTypes == TYPE_VIEW_INVALID) {
+            reinterpret_cast<napi_value>(info.argv[PARAM0]), filter);
+        if (filter == TYPE_VIEW_INVALID) {
             HILOG_ERROR("ConvertJSToEventTypes failed");
             return engine.CreateUndefined();
         }
-        HILOG_INFO("eventTypes = %{public}d", eventTypes);
+        HILOG_INFO("filter = %{public}d", filter);
 
         AsyncTask::CompleteCallback complete =
-            [weak = context_, eventTypes](NativeEngine& engine, AsyncTask& task, int32_t status) {
+            [weak = context_, filter](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("SetEventTypeFilter begin");
                 auto context = weak.lock();
                 if (!context) {
@@ -116,7 +116,7 @@ private:
                     return;
                 }
 
-                bool ret = context->SetEventTypeFilter(eventTypes);
+                bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
@@ -401,8 +401,8 @@ private:
                 }
 
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                accessibilityWindows = context->GetWindows(displayId);
-                if (!accessibilityWindows.empty()) {
+                bool ret = context->GetWindows(displayId, accessibilityWindows);
+                if (ret) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
                     ConvertAccessibilityWindowInfosToJS(
@@ -483,7 +483,7 @@ private:
             std::make_shared<AccessibilityGestureInjectPath>();
         std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> gesturePathArray;
         ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths,
-            gesturePath, gesturePathArray, &isParameterArray);
+            gesturePath, gesturePathArray, isParameterArray);
 
         // Unwrap callback
         if (info.argv[PARAM1]->TypeOf() != NATIVE_FUNCTION) {
@@ -505,7 +505,7 @@ private:
             [weak = context_, sequence = gestureInjectSequence, gesturePath, gesturePathArray,
                 isParameterArray, listener = pCallbackInfo->listener_](
             NativeEngine& engine, AsyncTask& task, int32_t status) {
-                HILOG_INFO("GestureInject begin");
+                HILOG_INFO("InjectGesture begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
@@ -514,9 +514,9 @@ private:
                 }
                 bool ret = false;
                 if (isParameterArray) {
-                    ret = context->GestureInject(sequence, gesturePathArray, listener);
+                    ret = context->InjectGesture(sequence, gesturePathArray, listener);
                 } else {
-                    ret = context->GestureInject(sequence, gesturePath, listener);
+                    ret = context->InjectGesture(sequence, gesturePath, listener);
                 }
                 if (ret) {
                     task.Resolve(engine, engine.CreateBoolean(ret));
@@ -556,7 +556,7 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     BindNativeFunction(engine, *object, "getWindowRootElement", NAccessibilityExtensionContext::GetWindowRootElement);
     BindNativeFunction(engine, *object, "getWindows", NAccessibilityExtensionContext::GetWindows);
     BindNativeFunction(engine, *object, "executeCommonAction", NAccessibilityExtensionContext::ExecuteCommonAction);
-    BindNativeFunction(engine, *object, "gestureInject", NAccessibilityExtensionContext::GestureInject);
+    BindNativeFunction(engine, *object, "gestureInject", NAccessibilityExtensionContext::InjectGesture);
 
     HILOG_INFO("called end.");
     return objValue;
@@ -597,7 +597,7 @@ void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequenc
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            StateCallbackInfo *callbackInfo = (StateCallbackInfo *)work->data;
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_value napiResult = 0;

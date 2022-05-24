@@ -16,9 +16,7 @@
 #ifndef ACCESSIBILITY_CONFIG_IMPL_H
 #define ACCESSIBILITY_CONFIG_IMPL_H
 
-#include <cstdint>
 #include <mutex>
-#include "singleton.h"
 #include "accessibility_config.h"
 #include "accessibility_enable_ability_lists_observer_stub.h"
 #include "accessible_ability_manager_caption_observer_stub.h"
@@ -27,111 +25,69 @@
 
 namespace OHOS {
 namespace AccessibilityConfig {
-class AccessibilityConfigImpl : public AccessibilityConfig {
+class AccessibilityConfig::Impl {
 public:
-    explicit AccessibilityConfigImpl();
-    ~AccessibilityConfigImpl();
+    Impl();
+    ~Impl() = default;
 
-    /**
-     * @brief Subscribes to accessibility config value.
-     * @param ids  the ids which are observed.
-     * @param observer Indicates the observer for listening to accessibility
-     * config.
-     * @return true: send ok; otherwise is refused.
-     */
-    virtual void SubscribeConfigObserver(const std::shared_ptr<AccessibilityConfigObserver>& observer) override;
-    /**
-     * @brief Unsubscribe the accessibility config value observer.
-     * @param ids  the ids which are observed
-     * @param observer Indicates the registered accessibility config observer.
-     * @return true is succeed otherwise is failed.
-     */
-    virtual void UnsubscribeConfigObserver(const std::shared_ptr<AccessibilityConfigObserver>& observer) override;
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
+    void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
-    /**
-     * @brief Subscribes the observer of enable Ability lists
-     * @param observer Indicates the observer for listening to enable Ability lists
-     */
-    virtual void SubscribeEnableAbilityListsObserver(
-        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer) override;
+    void SubscribeEnableAbilityListsObserver(const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
+    void UnsubscribeEnableAbilityListsObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
 
-    /**
-     * @brief Unsubscribe the observer of enable Ability lists
-     * @param observer Indicates the observer for listening to enable Ability lists
-     */
-    virtual void UnsubscribeEnableAbilityListsObserver(
-        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer) override;
+    bool EnableAbility(const std::string &name, const uint32_t capabilities);
+    bool DisableAbility(const std::string &name);
+
+    bool SetScreenMagnificationState(const bool state);
+    bool SetShortKeyState(const bool state);
+    bool SetMouseKeyState(const bool state);
+    bool SetCaptionState(const bool state);
+    bool SetCaptionProperty(const CaptionProperty &caption);
+    bool SetMouseAutoClick(const int32_t time);
+    bool SetShortkeyTarget(const std::string &name);
+    bool SetHighContrastTextState(bool state);
+    bool SetInvertColorState(const bool state);
+    bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
+    bool SetContentTimeout(const uint32_t timer);
+    bool SetAnimationOffState(const bool state);
+    bool SetBrightnessDiscount(const float brightness);
+    bool SetAudioMonoState(const bool state);
+    bool SetAudioBalance(const float balance);
+
+    bool GetScreenMagnificationState(bool &value);
+    bool GetShortKeyState(bool &value);
+    bool GetMouseKeyState(bool &value);
+    bool GetCaptionState(bool &value);
+    bool GetCaptionProperty(CaptionProperty &value);
+    bool GetMouseAutoClick(int32_t &value);
+    bool GetShortkeyTarget(std::string &value);
+    bool GetInvertColorState(bool &value);
+    bool GetHighContrastTextState(bool &value);
+    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &value);
+    bool GetContentTimeout(uint32_t &value);
+    bool GetAnimationOffState(bool &value);
+    bool GetBrightnessDiscount(float &value);
+    bool GetAudioMonoState(bool &value);
+    bool GetAudioBalance(float &value);
 
     void ResetService(const wptr<IRemoteObject> &remote);
-
-    /**
-     * @brief Enabled specified abilities
-     * @param name The strings formated by 'bundleName/abilityName'.
-     * @param capabilities The capabilities you permit.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) override;
-
-    /**
-     * @brief Disabled specified abilities
-     * @param name The strings formated by 'bundleName/abilityName'.
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool DisableAbilities(const std::string name) override;
-
-    virtual bool SetScreenMagnificationState(const bool state) override;
-    virtual bool SetShortKeyState(const bool state) override;
-    virtual bool SetMouseKeyState(const bool state) override;
-    virtual bool SetCaptionState(const bool state) override;
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) override;
-    virtual bool SetMouseAutoClick(const int32_t time) override;
-    virtual bool SetShortkeyTarget(const std::string &name) override;
-    virtual bool SetHighContrastTextState(bool state) override;
-    virtual bool SetInvertColorState(const bool state) override;
-    virtual bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type) override;
-    virtual bool SetContentTimeout(const uint32_t timer) override;
-    virtual bool SetAnimationOffState(const bool state) override;
-    virtual bool SetBrightnessDiscount(const float brightness) override;
-    virtual bool SetAudioMonoState(const bool state) override;
-    virtual bool SetAudioBalance(const float balance) override;
-
-    virtual bool GetScreenMagnificationState(bool &value) override;
-    virtual bool GetShortKeyState(bool &value) override;
-    virtual bool GetMouseKeyState(bool &value) override;
-    virtual bool GetCaptionState(bool &value) override;
-    virtual bool GetCaptionProperty(CaptionProperty &value) override;
-    virtual bool GetMouseAutoClick(int32_t &value) override;
-    virtual bool GetShortkeyTarget(std::string &value) override;
-    virtual bool GetInvertColorState(bool &value) override;
-    virtual bool GetHighContrastTextState(bool &value) override;
-    virtual bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &value) override;
-    virtual bool GetContentTimeout(uint32_t &value)override;
-    virtual bool GetAnimationOffState(bool &value) override;
-    virtual bool GetBrightnessDiscount(float &value) override;
-    virtual bool GetAudioMonoState(bool &value)override;
-    virtual bool GetAudioBalance(float &value) override;
-
-    virtual void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
-    virtual void OnAccessibleAbilityManagerCongfigStateChanged(const uint32_t stateType);
-    virtual void OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance);
-    virtual void OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount);
-    virtual void OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout);
-    virtual void OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const DALTONIZATION_TYPE filterType);
-    virtual void OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick);
-    virtual void OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget);
-
-    virtual void UpdateScreenMagnificationEnabled(const bool enabled) override;
-    virtual void UpdateShortKeyEnabled(const bool enabled) override;
-    virtual void UpdateMouseKeyEnabled(const bool enabled) override;
-    virtual void UpdateCaptionEnabled(const bool enabled) override;
-
+    void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
+    void OnAccessibleAbilityManagerCongfigStateChanged(const uint32_t stateType);
+    void OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance);
+    void OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount);
+    void OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout);
+    void OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const uint32_t filterType);
+    void OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick);
+    void OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget);
     void OnAccessibilityEnableAbilityListsChanged();
 
 private:
     class AccessibilityEnableAbilityListsObserverStubImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
     public:
-        explicit AccessibilityEnableAbilityListsObserverStubImpl(AccessibilityConfigImpl &client)
+        explicit AccessibilityEnableAbilityListsObserverStubImpl(Impl &client)
             : client_(client) {}
         ~AccessibilityEnableAbilityListsObserverStubImpl() = default;
 
@@ -140,13 +96,13 @@ private:
             client_.OnAccessibilityEnableAbilityListsChanged();
         }
     private:
-        AccessibilityConfigImpl &client_;
+        Impl &client_;
     };
 
     class AccessibleAbilityManagerCaptionObserverImpl
         : public Accessibility::AccessibleAbilityManagerCaptionObserverStub {
     public:
-        explicit AccessibleAbilityManagerCaptionObserverImpl(AccessibilityConfigImpl &config_)
+        explicit AccessibleAbilityManagerCaptionObserverImpl(Impl &config_)
             : config_(config_) {}
         ~AccessibleAbilityManagerCaptionObserverImpl() = default;
 
@@ -155,14 +111,13 @@ private:
             config_.OnAccessibleAbilityManagerCaptionPropertyChanged(property);
         }
     private:
-        AccessibilityConfigImpl &config_;
+        Impl &config_;
     };
 
     class AccessibleAbilityManagerConfigObserverImpl
         : public Accessibility::AccessibleAbilityManagerConfigObserverStub {
     public:
-        explicit AccessibleAbilityManagerConfigObserverImpl(AccessibilityConfigImpl &config_)
-            : config_(config_) {}
+        explicit AccessibleAbilityManagerConfigObserverImpl(Impl &config) : config_(config) {}
         ~AccessibleAbilityManagerConfigObserverImpl() = default;
 
         virtual void OnConfigStateChanged(const uint32_t stateType) override
@@ -181,7 +136,7 @@ private:
         {
             config_.OnAccessibleAbilityManagerContentTimeoutChanged(contentTimeout);
         }
-        virtual void OnDaltonizationColorFilterChanged(const DALTONIZATION_TYPE filterType) override
+        virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override
         {
             config_.OnAccessibleAbilityManagerDaltonizationColorFilterChanged(filterType);
         }
@@ -195,12 +150,12 @@ private:
         }
 
     private:
-        AccessibilityConfigImpl &config_;
+        Impl &config_;
     };
 
     class DeathRecipient : public IRemoteObject::DeathRecipient {
     public:
-        explicit DeathRecipient(AccessibilityConfigImpl &config_) : config_(config_) {}
+        explicit DeathRecipient(Impl &config_) : config_(config_) {}
         ~DeathRecipient() = default;
         DISALLOW_COPY_AND_MOVE(DeathRecipient);
 
@@ -209,27 +164,60 @@ private:
             config_.ResetService(remote);
         }
     private:
-        AccessibilityConfigImpl &config_;
+        Impl &config_;
     };
 
     bool ConnectToService();
-    void NotifyCaptionStateChanged();
-    void NotifyCaptionChanged();
-    void NotifyScreenMagnificationChanged();
-    void NotifyShortKeyChanged();
-    void NotifyMouseKeyChanged();
-    void NotifyShortkeyTargetChanged();
-    void NotifyMouseAutoClickChanged();
-    void NotifyAudioBalanceChanged();
-    void NotifyBrightnessDiscountChanged();
-    void NotifyContentTimeoutChanged();
-    void NotifyDaltonizationColorFilterChanged();
+    void NotifyCaptionStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyCaptionChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const CaptionProperty &captionProperty);
+    void NotifyScreenMagnificationChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyShortKeyChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyMouseKeyChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyShortkeyTargetChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const std::string &shortkey_target);
+    void NotifyMouseAutoClickChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const uint32_t mouseAutoClick);
+    void NotifyAudioBalanceChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const float audioBalance);
+    void NotifyBrightnessDiscountChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const float brightnessDiscount);
+    void NotifyContentTimeoutChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const uint32_t contentTimeout);
+    void NotifyDaltonizationColorFilterChanged(
+        const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const uint32_t daltonizationColorFilter);
+    void NotifyAudioMonoChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyAnimationOffChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyInvertColorChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+    void NotifyHighContrastTextChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
+
+    void UpdateScreenMagnificationEnabled(const bool enabled);
+    void UpdateShortKeyEnabled(const bool enabled);
+    void UpdateMouseKeyEnabled(const bool enabled);
+    void UpdateCaptionEnabled(const bool enabled);
+    void UpdateAudioMonoEnabled(const bool enabled);
+    void UpdateAnimationOffEnabled(const bool enabled);
+    void UpdateInvertColorEnabled(const bool enabled);
+    void UpdateHighContrastTextEnabled(const bool enabled);
 
     sptr<AccessibilityEnableAbilityListsObserverStubImpl> enableAbilityListsObserverStub_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
     sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_;
 
+    bool highContrastText_ = false;
+    bool invertColor_ = false;
+    bool animationOff_ = false;
+    bool audioMono_ = false;
     bool mouseKey_ = false;
     bool captionState_ = false;
     CaptionProperty captionProperty_;
@@ -242,12 +230,11 @@ private:
     float brightnessDiscount_ = 0.0;
     float audioBalance_ = 0.0;
 
-    std::recursive_mutex acProxyLock_;
-
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
-    
-    std::vector<std::shared_ptr<AccessibilityConfigObserver>> configObservers_;
+
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
+    std::map<CONFIG_ID,std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
+    std::mutex mutex_;
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS

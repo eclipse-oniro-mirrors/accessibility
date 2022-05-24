@@ -18,10 +18,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t LIMIT_SIZE_TWO = 2;
-static const int32_t LIMIT_SIZE_THREE = 3;
-static const int32_t POINTER_COUNT_1 = 1;
-static const float EPSINON = 0.0001f;
+namespace {
+    constexpr int32_t LIMIT_SIZE_TWO = 2;
+    constexpr int32_t LIMIT_SIZE_THREE = 3;
+    constexpr int32_t POINTER_COUNT_1 = 1;
+    constexpr float EPSINON = 0.0001f;
+} // namespace
 
 GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityGestureRecognizer &server) : AppExecFwk::EventHandler(runner), server_(server)
@@ -68,7 +70,7 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     yMinPixels_ = MIN_PIXELS(display->GetHeight());
 
     float densityPixels = display->GetVirtualPixelRatio();
-    int32_t slop = (int32_t) (densityPixels * DOUBLE_TAP_SLOP + 0.5f);
+    int32_t slop = static_cast<int32_t>(densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
 
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
@@ -427,8 +429,8 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem firstPI;
     pCurDown_->GetPointerItem(pCurDown_->GetPointerId(), firstPI);
-    int32_t durationX = (int32_t)firstPI.GetGlobalX() - (int32_t)curPI.GetGlobalX();
-    int32_t durationY = (int32_t)firstPI.GetGlobalY() - (int32_t)curPI.GetGlobalY();
+    int32_t durationX = firstPI.GetGlobalX() - curPI.GetGlobalX();
+    int32_t durationY = firstPI.GetGlobalY() - curPI.GetGlobalY();
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }

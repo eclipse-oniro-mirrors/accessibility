@@ -22,7 +22,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-const static std::string PREF_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+namespace {
+    const std::string PREF_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+} // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
 {
@@ -234,7 +236,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveEnabledFromPref(const std::string name)
+void AccessibilityAccountData::RemoveEnabledFromPref(const std::string &name)
 {
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -297,7 +299,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
         installedAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveInstalledAbility(std::string bundleName)
+void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
@@ -317,7 +319,7 @@ void AccessibilityAccountData::ClearInstalledAbility()
 }
 
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
-    const std::string elementName)
+    const std::string &elementName)
 {
     HILOG_DEBUG("URI is %{public}s", elementName.c_str());
     for (auto& connected : connectedA11yAbilities_) {
@@ -350,7 +352,7 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
     return connectedA11yAbilities_;
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> AccessibilityAccountData::GetStateCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> &AccessibilityAccountData::GetStateCallbacks() const
 {
     HILOG_DEBUG("start.");
     return stateCallbacks_;
@@ -383,46 +385,45 @@ const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
     return enabledAbilities_;
 }
 
-const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities()
+const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
     HILOG_DEBUG("start.");
     return installedAbilities_;
 }
 
-const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state)
+void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
+    std::vector<AccessibilityAbilityInfo> &abilities) const
 {
     HILOG_DEBUG("state(%{public}d) start.", state);
     if (state == ABILITY_STATE_ENABLE) {
-        std::vector<AccessibilityAbilityInfo> enabledAbilities;
-        for (auto ability : connectedA11yAbilities_) {
-            enabledAbilities.push_back(ability.second->GetAbilityInfo());
+        for (auto &ability : connectedA11yAbilities_) {
+            if (ability.second) {
+                abilities.push_back(ability.second->GetAbilityInfo());
+            }
         }
         HILOG_DEBUG("connectedA11yAbilities_ is (%{public}zu) enabledAbilities is (%{public}zu).",
-            connectedA11yAbilities_.size(), enabledAbilities.size());
-        return enabledAbilities;
+            connectedA11yAbilities_.size(), abilities.size());
     } else if (state == ABILITY_STATE_DISABLE) {
-        std::vector<AccessibilityAbilityInfo> disabledAbilities = GetDisableAbilities();
-        HILOG_DEBUG("the size of disable abilities is %{public}zu", disabledAbilities.size());
-        return disabledAbilities;
+        GetDisableAbilities(abilities);
+        HILOG_DEBUG("the size of disable abilities is %{public}zu", abilities.size());
     } else {
-        return installedAbilities_;
+        abilities = installedAbilities_;
     }
 }
 
-const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetDisableAbilities()
+void AccessibilityAccountData::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities) const
 {
     HILOG_DEBUG("start.");
-    std::vector<AccessibilityAbilityInfo> disabledAbilities = installedAbilities_;
-    for (auto enabledAbility : connectedA11yAbilities_) {
+    disabledAbilities = installedAbilities_;
+    for (auto &enabledAbility : connectedA11yAbilities_) {
         for (auto itr = disabledAbilities.begin(); itr != disabledAbilities.end();) {
-            if (itr->GetId() == enabledAbility.second->GetAbilityInfo().GetId()) {
+            if (enabledAbility.second && (itr->GetId() == enabledAbility.second->GetAbilityInfo().GetId())) {
                 disabledAbilities.erase(itr);
             } else {
                 itr++;
             }
         }
     }
-    return disabledAbilities;
 }
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
@@ -683,7 +684,7 @@ void AccessibilityAccountData::UpdateEnabledFromPref()
     pref_->FlushSync();
 }
 
-bool AccessibilityAccountData::EnableAbilities(const std::string name, const uint32_t capabilities)
+bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
@@ -723,7 +724,8 @@ bool AccessibilityAccountData::EnableAbilities(const std::string name, const uin
     return true;
 }
 
-uint32_t AccessibilityAccountData::GetConfigCapabilitiesFromBms(std::string bundleName, std::string abilityName)
+uint32_t AccessibilityAccountData::GetConfigCapabilitiesFromBms(const std::string &bundleName,
+    const std::string &abilityName)
 {
     HILOG_DEBUG("start");
     sptr<AppExecFwk::IBundleMgr> bmsMgr =
@@ -802,19 +804,19 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     std::string FONTFAMILY = pref->GetString("fontFamily", "default");
     HILOG_DEBUG(" pref->GetString() = %{public}s.", FONTFAMILY.c_str());
 
-    int32_t FONTSCALE = (int32_t)pref->GetInt("fontScale", 0);
+    int32_t FONTSCALE = static_cast<int32_t>(pref->GetInt("fontScale", 0));
     HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
 
-    uint32_t FONTCOLOR = (uint32_t)pref->GetInt("fontColor", 0xff000000);
+    uint32_t FONTCOLOR = static_cast<uint32_t>(pref->GetInt("fontColor", 0xff000000));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", FONTCOLOR);
 
     std::string FONTEDGETYPE = pref->GetString("fontEdgeType", "none");
     HILOG_DEBUG(" pref->GetString() = 0x%{public}s.", FONTEDGETYPE.c_str());
 
-    uint32_t BACKGROUNDCOLOR = (uint32_t)pref->GetInt("backgroundColor", 0xff000000);
+    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref->GetInt("backgroundColor", 0xff000000));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", BACKGROUNDCOLOR);
 
-    uint32_t WINDOWCOLOR = (uint32_t)pref->GetInt("windowColor", 0xff000000);
+    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref->GetInt("windowColor", 0xff000000));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
@@ -897,10 +899,10 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
     }
 }
 
-void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector<std::string> &vectorResult)
+void AccessibilityAccountData::StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult)
 {
     HILOG_DEBUG("start.");
-    int32_t strLength = (int32_t)stringIn.size();
+    int32_t strLength = static_cast<int32_t>(stringIn.size());
     std::vector<int32_t> position;
 
     if (strLength == 0) {
@@ -913,7 +915,7 @@ void AccessibilityAccountData::StringToVector(std::string &stringIn, std::vector
         }
     }
 
-    int32_t wrodCount = (int32_t)position.size();
+    int32_t wrodCount = static_cast<int32_t>(position.size());
     if ((wrodCount == 0) && (strLength > 0)) {
         vectorResult.push_back(stringIn);
     } else {
@@ -965,7 +967,7 @@ void AccessibilityAccountData::ClearData()
     }
 }
 
-void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVal, std::string &stringOut)
+void AccessibilityAccountData::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
 {
     HILOG_DEBUG("start.");
     int32_t i = 0;
@@ -979,7 +981,7 @@ void AccessibilityAccountData::VectorToString(std::vector<std::string> &vectorVa
     HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
 }
 
-bool AccessibilityAccountData::SetAbilityCapabilities(const std::string name, const uint32_t capabilities)
+bool AccessibilityAccountData::SetAbilityCapabilities(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start. name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
     for (auto &installedAbility : installedAbilities_) {
@@ -993,7 +995,7 @@ bool AccessibilityAccountData::SetAbilityCapabilities(const std::string name, co
     return false;
 }
 
-uint32_t AccessibilityAccountData::GetAbilityCapabilities(const std::string name)
+uint32_t AccessibilityAccountData::GetAbilityCapabilities(const std::string &name)
 {
     HILOG_DEBUG("start. name[%{public}s]", name.c_str());
     for (auto &installedAbility : installedAbilities_) {
@@ -1288,13 +1290,13 @@ void AccessibilityAccountData::ConfigInit(const std::shared_ptr<NativePreference
     shortkeyTarget_ = pref->GetString("ShortkeyTarget", "none");
     HILOG_DEBUG(" pref->GetString() = 0x%{public}s.", shortkeyTarget_.c_str());
 
-    mouseAutoClick_ = (int32_t)pref->GetInt("MouseAutoClick", -1);
+    mouseAutoClick_ = static_cast<int32_t>(pref->GetInt("MouseAutoClick", -1));
     HILOG_DEBUG(" pref->GetInt() = 0x%{public}x.", mouseAutoClick_);
 
-    daltonizationColorFilter_ = (uint32_t)pref->GetInt("daltonizationColorFilter", 0);
-    contentTimeout_ = (uint32_t)pref->GetInt("contentTimeout", 0);
-    brightnessDiscount_ = (uint32_t)pref->GetFloat("brightnessDiscount", 0);
-    audioBalance_ = (uint32_t)pref->GetFloat("audioBalance", 0);
+    daltonizationColorFilter_ = static_cast<uint32_t>(pref->GetInt("daltonizationColorFilter", 0));
+    contentTimeout_ = static_cast<uint32_t>(pref->GetInt("contentTimeout", 0));
+    brightnessDiscount_ = static_cast<float>(pref->GetFloat("brightnessDiscount", 0));
+    audioBalance_ = static_cast<float>(pref->GetFloat("audioBalance", 0));
 }
 
 void AccessibilityAccountData::AddConfigCallback(
@@ -1304,7 +1306,7 @@ void AccessibilityAccountData::AddConfigCallback(
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> AccessibilityAccountData::GetConfigCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
 {
     HILOG_DEBUG("start.");
     return configCallbacks_;

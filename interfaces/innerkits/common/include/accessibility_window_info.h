@@ -48,7 +48,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetWindowTitle(std::string &title);
+    void SetWindowTitle(const std::string &title);
 
     /**
      * @brief Get the window type.
@@ -129,7 +129,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<int32_t>  GetChildIds() const;
+    const std::vector<int32_t> &GetChildIds() const;
 
     /**
      * @brief Get the widnow id of current window.

@@ -60,7 +60,8 @@ public:
     CaptionListener();
     static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
     static void NotifyPropertyChangedJS(
-        napi_env env, OHOS::AccessibilityConfig::CaptionProperty caption, std::string eventType, napi_ref handlerRef);
+        napi_env env, const OHOS::AccessibilityConfig::CaptionProperty &caption, const std::string &eventType,
+        napi_ref handlerRef);
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
     void OnStateChanged(const bool& enable) override;
     void OnPropertyChanged(const OHOS::AccessibilityConfig::CaptionProperty& caption) override;

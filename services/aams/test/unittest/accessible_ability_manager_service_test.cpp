@@ -30,7 +30,10 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static uint32_t SLEEP_TIME_1 = 1;
+namespace {
+    constexpr uint32_t SLEEP_TIME_1 = 1;
+} // namespace
+
 class AccessibleAbilityManagerServiceUnitTest : public ::testing::Test {
 public:
     AccessibleAbilityManagerServiceUnitTest()
@@ -130,8 +133,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterStateCallback_001, Tes
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_001 start";
-    auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(0xFFFFFFFF, 3);
-    EXPECT_EQ(int(ret.size()), 0);
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(0xFFFFFFFF, 3, infos);
+    EXPECT_EQ(infos.size(), 0);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_001 end";
 }

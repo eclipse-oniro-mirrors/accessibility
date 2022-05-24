@@ -68,7 +68,7 @@ public:
      * @param gesturePath The path of gesture.
      */
     void SendSimulateGesture(const int32_t sequenceNum,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
+        const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
     /**
      * @brief execute the action on the component.
@@ -93,7 +93,7 @@ public:
      * @return true: execute action successfully; otherwise is not.
      */
     bool ExecuteAction(int32_t accessibilityWindowId,
-        int32_t elementId, int32_t action,  std::map<std::string, std::string> &actionArguments);
+        int32_t elementId, int32_t action,  const std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Find the node information by accessibility ID.
@@ -110,11 +110,12 @@ public:
         int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos);
 
     /**
-     * @brief Get all windows of accessibility.
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
-     * @return All windows information of accessibility.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
      */
-    std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId);
+    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Find the node information filtered by text.
@@ -148,17 +149,18 @@ public:
 
     /**
      * @brief Set event types to filter.
-     * @param eventTypes The event types which you want.
+     * @param filter The event types which you want.
      * @return Return true if sets event types successfully, else return false.
      */
-    bool SetEventTypeFilter(const uint32_t eventTypes);
+    bool SetEventTypeFilter(const uint32_t filter);
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.
      */
-    bool SetTargetBundleName(const std::vector<std::string> targetBundleNames);
+    bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
+
 private:
     int32_t GenrateRequestId();
 

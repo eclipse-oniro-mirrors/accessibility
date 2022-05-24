@@ -106,16 +106,17 @@ public:
      * @return Return true if perform action successfully, else return false.
      */
     virtual bool ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
-        std::map<std::string, std::string> &actionArguments, const int32_t requestId,
+        const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
-     * @brief Obtains the list of interactive windows on the device,
-     *        in the layers they are visible to users through the proxy object.
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
-     * @return The information of windows.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
      */
-    virtual std::vector<AccessibilityWindowInfo> GetWindows(const uint64_t displayId) override;
+    virtual bool GetWindowsByDisplayId(const uint64_t displayId,
+        std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
      * @brief Executes a specified action through the proxy object.
@@ -143,17 +144,17 @@ public:
 
     /**
      * @brief Set event types to filter.
-     * @param eventTypes The event types which you want.
+     * @param filter The event types which you want.
      * @return Return true if sets event types successfully, else return false.
      */
-    virtual bool SetEventTypeFilter(const uint32_t eventTypes) override;
+    virtual bool SetEventTypeFilter(const uint32_t filter) override;
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.
      */
-    virtual bool SetTargetBundleName(const std::vector<std::string> targetBundleNames) override;
+    virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
 private:
     /**
