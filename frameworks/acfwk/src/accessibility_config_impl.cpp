@@ -208,7 +208,7 @@ void AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
     std::lock_guard<std::mutex> lock(mutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
-    if (it != configObservers_.end()) {   
+    if (it != configObservers_.end()) {
         it->second.push_back(observer);
         HILOG_INFO("configObservers->second.size%{public}zu  configTest", it->second.size());
     } else {
