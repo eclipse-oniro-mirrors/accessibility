@@ -28,12 +28,15 @@
 using namespace testing;
 using namespace testing::ext;
 
-static const int RETRY_TIMES = 10;
-static const int WINDOW_ID = 2;
-static const int WINDOWS_SIZE = 2;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int RETRY_TIMES = 10;
+    constexpr int WINDOW_ID = 2;
+    constexpr int WINDOWS_SIZE = 2;
+	constexpr int SEND_EVENT_TIMES = 2;
+} // namespace
+
 class AccessibilityWindowManagerTest : public testing::Test {
 public:
     AccessibilityWindowManagerTest()
@@ -62,6 +65,7 @@ void AccessibilityWindowManagerTest::SetUp()
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityAbilityHelper::GetInstance().ClearSendEventTimes();
 }
 
 void AccessibilityWindowManagerTest::TearDown()
@@ -263,15 +267,13 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
     int retryCount = 0;
     while (retryCount < RETRY_TIMES) {
-        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
-        auto it = windowInfoManager.a11yWindows_.find(rosen_winInfo.wid_);
-        if (it != windowInfoManager.a11yWindows_.end()) {
-            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
-            if (it->second.GetWindowLayer() != -1) {
-                break;
-            }
-        }
         sleep(1);
+        int counts = AccessibilityAbilityHelper::GetInstance().GetSendEventTimes();
+        GTEST_LOG_(INFO) << "The counts of send event is : " << counts;
+        if (counts == 1) {
+            GTEST_LOG_(INFO) << "update window successful";
+            break;
+        }
         retryCount++;
     }
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
@@ -305,15 +307,13 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     windowInfoManager.OnWindowUpdate(winInfo, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
     int retryCount = 0;
     while (retryCount < RETRY_TIMES) {
-        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
-        auto it = windowInfoManager.a11yWindows_.find(rosen_winInfo.wid_);
-        if (it != windowInfoManager.a11yWindows_.end()) {
-            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
-            if (it->second.GetWindowLayer() != -1) {
-                break;
-            }
-        }
         sleep(1);
+        int counts = AccessibilityAbilityHelper::GetInstance().GetSendEventTimes();
+        GTEST_LOG_(INFO) << "The counts of send event is : " << counts;
+        if (counts == 1) {
+            GTEST_LOG_(INFO) << "update window successful";
+            break;
+        }
         retryCount++;
     }
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
@@ -363,15 +363,13 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 
     int retryCount = 0;
     while (retryCount < RETRY_TIMES) {
-        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
-        auto it = windowInfoManager.a11yWindows_.find(rosenWinInfoSecond.wid_);
-        if (it != windowInfoManager.a11yWindows_.end()) {
-            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
-            if (it->second.GetWindowLayer() != -1) {
-                break;
-            }
-        }
         sleep(1);
+        int counts = AccessibilityAbilityHelper::GetInstance().GetSendEventTimes();
+        GTEST_LOG_(INFO) << "The counts of send event is : " << counts;
+        if (counts == 1) {
+            GTEST_LOG_(INFO) << "update window successful";
+            break;
+        }
         retryCount++;
     }
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
@@ -424,15 +422,13 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 
     int retryCount = 0;
     while (retryCount < RETRY_TIMES) {
-        GTEST_LOG_(INFO) << "a11yWindows_ size " << windowInfoManager.a11yWindows_.size();
-        auto it = windowInfoManager.a11yWindows_.find(rosenWinInfoSecond.wid_);
-        if (it != windowInfoManager.a11yWindows_.end()) {
-            GTEST_LOG_(INFO) << "window layer " << it->second.GetWindowLayer();
-            if (it->second.GetWindowLayer() != -1) {
-                break;
-            }
-        }
         sleep(1);
+        int counts = AccessibilityAbilityHelper::GetInstance().GetSendEventTimes();
+        GTEST_LOG_(INFO) << "The counts of send event is : " << counts;
+        if (counts == SEND_EVENT_TIMES) {
+            GTEST_LOG_(INFO) << "update window successful";
+            break;
+        }
         retryCount++;
     }
     EXPECT_TRUE(windowInfoManager.a11yWindows_.size() == 1);
