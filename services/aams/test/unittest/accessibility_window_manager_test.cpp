@@ -34,7 +34,7 @@ namespace {
     constexpr int RETRY_TIMES = 10;
     constexpr int WINDOW_ID = 2;
     constexpr int WINDOWS_SIZE = 2;
-	constexpr int SEND_EVENT_TIMES = 2;
+    constexpr int SEND_EVENT_TIMES = 2;
 } // namespace
 
 class AccessibilityWindowManagerTest : public testing::Test {
