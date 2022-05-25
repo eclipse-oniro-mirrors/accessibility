@@ -16,6 +16,7 @@
 #ifndef ACCESSIBILITY_ABILILTY_HELPER_H
 #define ACCESSIBILITY_ABILILTY_HELPER_H
 
+#include <atomic>
 #include <chrono>
 #include <thread>
 #include "accessibility_event_info.h"
@@ -254,6 +255,21 @@ public:
         }
     }
 
+    int GetSendEventTimes()
+    {
+        return sendEventTimes_;
+    }
+
+    void AddSendEventTimes()
+    {
+        sendEventTimes_++;
+    }
+
+    void ClearSendEventTimes()
+    {
+        sendEventTimes_ = 0;
+    }
+
 private:
     std::vector<int> touchAction_;
     bool isDestroyEvents_ = false;
@@ -275,6 +291,7 @@ private:
     int testStateType_ = -1;
     bool testKeyEvent_ = false;
     bool isServicePublished_ = false;
+    std::atomic<int> sendEventTimes_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
