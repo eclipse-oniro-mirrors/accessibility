@@ -61,7 +61,7 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 void AccessibilityInputInterceptor::CreateTransmitters()
 {}
 
-void AccessibilityInputInterceptor::CreateInterceptor()
+void AccessibilityInputInterceptor::UpdateInterceptor()
 {
     inputManager_ = nullptr;
     interceptorId_ = 0;

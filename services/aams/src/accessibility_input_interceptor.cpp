@@ -106,6 +106,7 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
     availableFunctions_ = availableFunctions;
     DestroyTransmitters();
     CreateTransmitters();
+    UpdateInterceptor();
 }
 
 void AccessibilityInputInterceptor::CreateTransmitters()
@@ -113,13 +114,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     HILOG_DEBUG("function[%{public}u].", availableFunctions_);
 
     if (!availableFunctions_) {
-        DestroyInterceptor();
         return;
     }
 
     CreatePointerEventTransmitters();
     CreateKeyEventTransmitters();
-    CreateInterceptor();
 }
 
 void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
@@ -201,30 +200,41 @@ void AccessibilityInputInterceptor::CreateKeyEventTransmitters()
     keyEventTransmitters_ = header;
 }
 
-void AccessibilityInputInterceptor::CreateInterceptor()
+void AccessibilityInputInterceptor::UpdateInterceptor()
 {
     HILOG_DEBUG();
-
     if (!inputManager_) {
         HILOG_DEBUG("inputManger is null.");
         return;
     }
 
-    if (interceptorId_ == -1) {
-        inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
-        if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
-            (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
-            (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
+    HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
+    if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
+        (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
+        (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
+        if (interceptorId_ == -1) {
+            inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
             HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
         }
+    } else {
+        if (interceptorId_ != -1) {
+            inputManager_->RemoveInterceptor(interceptorId_);
+            interceptorId_ = -1;
+        }
     }
 
-    if (keyEventInterceptorId_ == -1) {
-        if ((availableFunctions_ & FEATURE_SHORT_KEY) ||
-            (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS)) {
+    HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+    if ((availableFunctions_ & FEATURE_SHORT_KEY) ||
+        (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS)) {
+        if (keyEventInterceptorId_ == -1) {
             keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
             HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+        }
+    } else {
+        if (keyEventInterceptorId_ != -1) {
+            inputManager_->RemoveInterceptor(keyEventInterceptorId_);
+            keyEventInterceptorId_ = -1;
         }
     }
 }
