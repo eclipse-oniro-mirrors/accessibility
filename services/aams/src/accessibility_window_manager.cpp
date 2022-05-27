@@ -248,7 +248,7 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
     HILOG_DEBUG("a11yWindows_ size[%{public}zu]", a11yWindows_.size());
     std::vector<AccessibilityWindowInfo> windows;
     for (auto &window : a11yWindows_) {
-        windows.push_back(window.second);
+        windows.emplace_back(window.second);
     }
     HILOG_DEBUG("window size[%{public}zu]", windows.size());
     for (auto &logWindow : windows) {

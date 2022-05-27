@@ -24,6 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string PREF_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+    constexpr uint32_t DEFAULT_COLOR = 0xff000000;
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -807,16 +808,16 @@ void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferenc
     int32_t FONTSCALE = static_cast<int32_t>(pref->GetInt("fontScale", 0));
     HILOG_DEBUG(" pref->GetString() = %{public}d.", FONTSCALE);
 
-    uint32_t FONTCOLOR = static_cast<uint32_t>(pref->GetInt("fontColor", 0xff000000));
+    uint32_t FONTCOLOR = static_cast<uint32_t>(pref->GetInt("fontColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", FONTCOLOR);
 
     std::string FONTEDGETYPE = pref->GetString("fontEdgeType", "none");
     HILOG_DEBUG(" pref->GetString() = 0x%{public}s.", FONTEDGETYPE.c_str());
 
-    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref->GetInt("backgroundColor", 0xff000000));
+    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref->GetInt("backgroundColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", BACKGROUNDCOLOR);
 
-    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref->GetInt("windowColor", 0xff000000));
+    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref->GetInt("windowColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref->GetString() = 0x%{public}x.", WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);

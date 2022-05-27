@@ -290,7 +290,7 @@ void AccessibleAbilityChannel::InnerGetWindowsByDisplayId(std::promise<bool> &sy
     for (auto &window : windowInfos) {
         if (window.GetDisplayId() == displayId) {
             window.SetChannelId(currentChannelId);
-            windows.push_back(window);
+            windows.emplace_back(window);
         }
     }
     syncPromise.set_value(true);
