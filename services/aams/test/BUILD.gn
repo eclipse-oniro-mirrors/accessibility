@@ -43,18 +43,18 @@ config("module_private_config") {
     "//base/notification/common_event_service/interfaces/inner_api",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native/include/",
-    "//foundation/aafwk/standard/frameworks/kits/appkit/native/app/include/",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager/include",
-    "//foundation/aafwk/standard/interfaces/innerkits/app_manager/include/appmgr/",
-    "//foundation/aafwk/standard/services/abilitymgr/include",
+    "${aafwk_kits_path}/ability/native/include/",
+    "${aafwk_kits_path}/appkit/native/app/include/",
+    "${aafwk_inner_api_path}/ability_manager/include",
+    "${aafwk_inner_api_path}/app_manager/include/appmgr/",
+    "${aafwk_services_path}/abilitymgr/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/distributedschedule/samgr/services/samgr/native/include",
-    "//foundation/graphic/graphic/rosen/modules/render_service_base/include",
+    "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
     "//foundation/multimedia/image_standard/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
     "//foundation/windowmanager/dm/include",
@@ -92,13 +92,13 @@ ohos_unittest("accessibility_account_data_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_inner_api_path}/ability_manager:ability_manager",
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -143,12 +143,12 @@ ohos_unittest("accessible_ability_manager_service_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -206,10 +206,10 @@ ohos_unittest("accessibility_touch_guider_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -258,12 +258,12 @@ ohos_unittest("accessibility_common_event_registry_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -324,13 +324,13 @@ ohos_unittest("accessibility_input_interceptor_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_inner_api_path}/ability_manager:ability_manager",
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -361,14 +361,14 @@ ohos_unittest("accessibility_window_manager_test") {
     "../src/accessibility_window_manager.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/json_utils.cpp",
-    "//base/accessibility/services/aams/src/accessibility_account_data.cpp",
-    "//base/accessibility/services/aams/src/accessibility_common_event.cpp",
-    "//base/accessibility/services/aams/src/accessible_ability_manager_service.cpp",
     "//base/accessibility/services/interface/src/accessibility_element_operator_callback_proxy.cpp",
     "//base/accessibility/services/interface/src/accessibility_element_operator_proxy.cpp",
     "//base/accessibility/services/interface/src/accessible_ability_channel_proxy.cpp",
     "//base/accessibility/services/interface/src/accessible_ability_client_proxy.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
+    "mock/src/mock_accessibility_account_data.cpp",
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_rosen_window_info.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_window_manager_test.cpp",
@@ -378,13 +378,13 @@ ohos_unittest("accessibility_window_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_inner_api_path}/ability_manager:ability_manager",
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/interfaces/innerkits/ability_manager:ability_manager",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -439,12 +439,12 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -513,11 +513,11 @@ ohos_unittest("accessible_ability_connection_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -555,10 +555,10 @@ ohos_unittest("accessibility_display_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -601,12 +601,12 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "${aafwk_kits_path}/ability/native:abilitykit_native",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/services/aams:accessibleabilityms",
     "//base/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",

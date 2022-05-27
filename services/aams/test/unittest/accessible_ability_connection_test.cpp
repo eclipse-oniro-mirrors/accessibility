@@ -35,7 +35,6 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t SLEEP_TIME_2 = 2;
-    constexpr uint32_t SLEEP_TIME_3 = 3;
 } // namespace
 
 class AccessibleAbilityConnectionUnitTest : public ::testing::Test {
@@ -92,7 +91,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new MockAccessibleAbilityClientStubImpl();
     if (obj_ != nullptr && connection_ != nullptr) {
-        connection_->OnAbilityConnectDone(*elementName_, obj_, 0);
+        connection_->OnAbilityConnectDoneSync(*elementName_, obj_, 0);
     }
 }
 
@@ -102,7 +101,7 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
     // Deregister ElementOperator
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     if (connection_ != nullptr) {
-        connection_->OnAbilityDisconnectDone(*elementName_, 0);
+        connection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     } else {
         return;
     }
@@ -253,7 +252,6 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
     if (connection_ != nullptr) {
         AppExecFwk::ElementName element;
         connection_->Connect(element);
-        sleep(SLEEP_TIME_3);
         auto accountData = connection_->GetAccountData();
         EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
     }

@@ -30,17 +30,34 @@ const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
 
 AccessibleAbilityManagerService::AccessibleAbilityManagerService()
-    : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true), bundleManager_(nullptr)
+    : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true)
 {
     HILOG_INFO("AccessibleAbilityManagerService is constructed");
+    dependentServicesStatus_[ABILITY_MGR_SERVICE_ID] = false;
+    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
+    dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
+    dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
+    dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
+    dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
-{}
+{
+    HILOG_INFO("AccessibleAbilityManagerService::~AccessibleAbilityManagerService");
+
+    inputInterceptor_ = nullptr;
+    touchEventInjector_ = nullptr;
+    keyEventFilter_ = nullptr;
+}
 
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
+
+    if (isRunning_) {
+        HILOG_DEBUG("AccessibleAbilityManagerService is already start.");
+        return;
+    }
 
     if (!runner_) {
         const std::string serviceName = "AccessibleAbilityManagerService";
@@ -59,19 +76,76 @@ void AccessibleAbilityManagerService::OnStart()
         }
     }
 
-    (void)Init();
+    HILOG_INFO("AddAbilityListener!");
+    AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
+    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
+    AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
+    AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
+    AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
+
+    isRunning_ = true;
 }
 
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+
+    if (!isRunning_) {
+        HILOG_DEBUG("AccessibleAbilityManagerService is already stop.");
+        return;
+    }
+
+    a11yAccountsData_.clear();
+    bundleManager_ = nullptr;
+    inputInterceptor_ = nullptr;
+    touchEventInjector_ = nullptr;
+    keyEventFilter_ = nullptr;
+    stateCallbackDeathRecipient_ = nullptr;
+    runner_.reset();
+    handler_.reset();
+    for (auto &iter : dependentServicesStatus_) {
+        iter.second = false;
+    }
+
+    HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
+    isRunning_ = false;
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    (void)systemAbilityId;
-    (void)deviceId;
-    HILOG_INFO("OnAddSystemAbility AccessibleAbilityManagerService");
+    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    if (!handler_) {
+        HILOG_DEBUG("Event handler is nullptr.");
+        return;
+    }
+
+    handler_->PostTask(std::bind([=]() -> void {
+        auto iter = dependentServicesStatus_.find(systemAbilityId);
+        if (iter == dependentServicesStatus_.end()) {
+            HILOG_ERROR("SystemAbilityId is not found!");
+            return;
+        }
+
+        dependentServicesStatus_[systemAbilityId] = true;
+        for (auto &iter : dependentServicesStatus_) {
+            if (iter.second == false) {
+                HILOG_DEBUG("Not all the dependence is ready!");
+                return;
+            }
+        }
+
+        if (Init() == false) {
+            HILOG_ERROR("AccessibleAbilityManagerService::Init failed!");
+            return;
+        }
+
+        if (Publish(this) == false) {
+            HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
+            return;
+        }
+        HILOG_DEBUG("AAMS is ready!");
+        }), "OnAddSystemAbility");
 }
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
@@ -119,6 +193,11 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
                      << (int32_t)uiEvent.GetGestureType();
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::SendEvent uTeventType=0x" << std::hex
                      << (int32_t)uTeventType;
+
+    handler_->PostTask(std::bind([=]() -> void {
+        HILOG_DEBUG("start");
+        AccessibilityAbilityHelper::GetInstance().AddSendEventTimes();
+        }), "TASK_SEND_EVENT");
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
@@ -611,9 +690,9 @@ bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->DisableAbility(name);
+        accountData->RemoveEnabledAbility(name);
         UpdateAbilities();
-        syncPromise.set_value(result);
+        syncPromise.set_value(true);
         }), "TASK_DISABLE_ABILITIES");
     return syncFuture.get();
 }
