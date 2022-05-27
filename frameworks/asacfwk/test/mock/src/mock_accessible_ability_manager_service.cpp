@@ -167,7 +167,7 @@ bool AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes
     accountData->GetAbilitiesByState(state, abilities);
     for (auto& ability : abilities) {
         if (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes)) {
-            infos.push_back(ability);
+            infos.emplace_back(ability);
         }
     }
     return true;

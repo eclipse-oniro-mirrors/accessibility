@@ -106,18 +106,17 @@ class AccessibilityConfig {
 public:
     /**
      * @brief Subscribes to accessibility config value.
-     * @param ids  the config ids which are observed.
+     * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility
-     * config.
-     * @return true: send ok; otherwise is refused.
+     * @return -
      */
     void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
 
     /**
      * @brief Unsubscribe the accessibility config value observer.
-     * @param ids  the ids which are observed.
+     * @param id  the id which is observed.
      * @param observer Indicates the registered accessibility config observer.
-     * @return true is succeed otherwise is failed.
+     * @return -
      */
     void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
 
@@ -166,21 +165,21 @@ public:
     bool SetAudioMonoState(const bool state);
     bool SetAudioBalance(const float balance);
 
-    bool GetScreenMagnificationState(bool &value);
-    bool GetShortKeyState(bool &value);
-    bool GetMouseKeyState(bool &value);
-    bool GetCaptionState(bool &value);
-    bool GetCaptionProperty(CaptionProperty &value);
-    bool GetMouseAutoClick(int32_t &value);
-    bool GetShortkeyTarget(std::string &value);
-    bool GetInvertColorState(bool &value);
-    bool GetHighContrastTextState(bool &value);
-    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &value);
-    bool GetContentTimeout(uint32_t &value);
-    bool GetAnimationOffState(bool &value);
-    bool GetBrightnessDiscount(float &value);
-    bool GetAudioMonoState(bool &value);
-    bool GetAudioBalance(float &value);
+    bool GetScreenMagnificationState(bool &state);
+    bool GetShortKeyState(bool &state);
+    bool GetMouseKeyState(bool &state);
+    bool GetCaptionState(bool &state);
+    bool GetCaptionProperty(CaptionProperty &caption);
+    bool GetMouseAutoClick(int32_t &time);
+    bool GetShortkeyTarget(std::string &name);
+    bool GetInvertColorState(bool &state);
+    bool GetHighContrastTextState(bool &state);
+    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
+    bool GetContentTimeout(uint32_t &timer);
+    bool GetAnimationOffState(bool &state);
+    bool GetBrightnessDiscount(float &brightness);
+    bool GetAudioMonoState(bool &state);
+    bool GetAudioBalance(float &balance);
 
 private:
     class Impl;

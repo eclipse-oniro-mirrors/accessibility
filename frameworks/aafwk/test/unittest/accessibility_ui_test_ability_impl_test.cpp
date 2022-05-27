@@ -159,13 +159,13 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_001, TestSize
 }
 
 /**
- * @tc.number: GestureInject_001
+ * @tc.number: InjectGesture_001
  * @tc.name: InjectGesture
  * @tc.desc: Test function InjectGesture
  */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GestureInject_001, TestSize.Level1)
+HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "GestureInject_001 start";
+    GTEST_LOG_(INFO) << "InjectGesture_001 start";
 
     if (!instance_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
@@ -175,7 +175,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GestureInject_001, TestSize.Level1)
     std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
     EXPECT_FALSE(instance_->InjectGesture(SEQUENCE, gesturePath, listener));
 
-    GTEST_LOG_(INFO) << "GestureInject_001 end";
+    GTEST_LOG_(INFO) << "InjectGesture_001 end";
 }
 
 /**

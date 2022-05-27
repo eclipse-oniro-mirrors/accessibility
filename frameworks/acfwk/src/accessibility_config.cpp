@@ -166,94 +166,94 @@ bool AccessibilityConfig::SetAudioBalance(const float balance)
     return pImpl_->SetAudioBalance(balance);
 }
 
-bool AccessibilityConfig::GetScreenMagnificationState(bool &value)
+bool AccessibilityConfig::GetScreenMagnificationState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetScreenMagnificationState(value);
+    return pImpl_->GetScreenMagnificationState(state);
 }
 
-bool AccessibilityConfig::GetShortKeyState(bool &value)
+bool AccessibilityConfig::GetShortKeyState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetShortKeyState(value);
+    return pImpl_->GetShortKeyState(state);
 }
 
-bool AccessibilityConfig::GetMouseKeyState(bool &value)
+bool AccessibilityConfig::GetMouseKeyState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetMouseKeyState(value);
+    return pImpl_->GetMouseKeyState(state);
 }
 
-bool AccessibilityConfig::GetCaptionState(bool &value)
+bool AccessibilityConfig::GetCaptionState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetCaptionState(value);
+    return pImpl_->GetCaptionState(state);
 }
 
-bool AccessibilityConfig::GetCaptionProperty(CaptionProperty &value)
+bool AccessibilityConfig::GetCaptionProperty(CaptionProperty &caption)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetCaptionProperty(value);
+    return pImpl_->GetCaptionProperty(caption);
 }
 
-bool AccessibilityConfig::GetMouseAutoClick(int32_t &value)
+bool AccessibilityConfig::GetMouseAutoClick(int32_t &time)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetMouseAutoClick(value);
+    return pImpl_->GetMouseAutoClick(time);
 }
 
-bool AccessibilityConfig::GetShortkeyTarget(std::string &value)
+bool AccessibilityConfig::GetShortkeyTarget(std::string &name)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetShortkeyTarget(value);
+    return pImpl_->GetShortkeyTarget(name);
 }
 
-bool AccessibilityConfig::GetInvertColorState(bool &value)
+bool AccessibilityConfig::GetInvertColorState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetInvertColorState(value);
+    return pImpl_->GetInvertColorState(state);
 }
 
-bool AccessibilityConfig::GetHighContrastTextState(bool &value)
+bool AccessibilityConfig::GetHighContrastTextState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetHighContrastTextState(value);
+    return pImpl_->GetHighContrastTextState(state);
 }
 
-bool AccessibilityConfig::GetDaltonizationColorFilter(DALTONIZATION_TYPE &value)
+bool AccessibilityConfig::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetDaltonizationColorFilter(value);
+    return pImpl_->GetDaltonizationColorFilter(type);
 }
 
-bool AccessibilityConfig::GetContentTimeout(uint32_t &value)
+bool AccessibilityConfig::GetContentTimeout(uint32_t &timer)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetContentTimeout(value);
+    return pImpl_->GetContentTimeout(timer);
 }
 
-bool AccessibilityConfig::GetAnimationOffState(bool &value)
+bool AccessibilityConfig::GetAnimationOffState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetAnimationOffState(value);
+    return pImpl_->GetAnimationOffState(state);
 }
 
-bool AccessibilityConfig::GetBrightnessDiscount(float &value)
+bool AccessibilityConfig::GetBrightnessDiscount(float &brightness)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetBrightnessDiscount(value);
+    return pImpl_->GetBrightnessDiscount(brightness);
 }
 
-bool AccessibilityConfig::GetAudioMonoState(bool &value)
+bool AccessibilityConfig::GetAudioMonoState(bool &state)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetAudioMonoState(value);
+    return pImpl_->GetAudioMonoState(state);
 }
 
-bool AccessibilityConfig::GetAudioBalance(float &value)
+bool AccessibilityConfig::GetAudioBalance(float &balance)
 {
     CHECK_IMPL_PTR(false)
-    return pImpl_->GetAudioBalance(value);
+    return pImpl_->GetAudioBalance(balance);
 }
 } // Accessibility
 } // OHOS

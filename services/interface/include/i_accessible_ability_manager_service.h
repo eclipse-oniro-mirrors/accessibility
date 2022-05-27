@@ -60,9 +60,12 @@ public:
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
-     * @param stateType Indicates the accessibility ability status. 1 indicates that the ability is enabled;
-     *                  2 indicates that the ability is disabled; 4 indicates that the ability has been installed.
-     * @return
+     * @param stateType Indicates the accessibility ability status.
+     *                  1 indicates that the ability is enabled;
+     *                  2 indicates that the ability is disabled;
+     *                  4 indicates that the ability has been installed.
+     * @param infos accessibility ability infos by specified types.
+     * @return Return true if get ability lists successfully, else return false.
      */
     virtual bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfo> &infos) = 0;

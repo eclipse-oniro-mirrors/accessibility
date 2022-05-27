@@ -29,12 +29,12 @@ AccessibilityConfig::Impl::Impl()
         HILOG_ERROR("Failed to connect to aams service");
         return;
     }
-    captionObserver_ = new AccessibleAbilityManagerCaptionObserverImpl(*this);
+    captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
     serviceProxy_->RegisterCaptionObserver(captionObserver_);
 
-    enableAbilityListsObserverStub_ = new AccessibilityEnableAbilityListsObserverStubImpl(*this);
+    enableAbilityListsObserverStub_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverStubImpl(*this);
     serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserverStub_);
-    configObserver_ = new AccessibleAbilityManagerConfigObserverImpl(*this);
+    configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
     serviceProxy_->RegisterConfigObserver(configObserver_);
 }
 
@@ -58,7 +58,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
     }
 
     if (!deathRecipient_) {
-        deathRecipient_ = new DeathRecipient(*this);
+        deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
     }
 
     if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
@@ -111,7 +111,7 @@ bool AccessibilityConfig::Impl::DisableAbility(const std::string &name)
     return serviceProxy_->DisableAbility(name);
 }
 
-bool AccessibilityConfig::Impl::GetCaptionState(bool &value)
+bool AccessibilityConfig::Impl::GetCaptionState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -120,11 +120,11 @@ bool AccessibilityConfig::Impl::GetCaptionState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetCaptionState();
+    state = serviceProxy_->GetCaptionState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &value)
+bool AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &caption)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -132,7 +132,7 @@ bool AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &value)
         HILOG_ERROR("Failed to get aams service");
         return false;
     }
-    value = serviceProxy_->GetCaptionProperty();
+    caption = serviceProxy_->GetCaptionProperty();
     return true;
 }
 
@@ -299,7 +299,7 @@ bool AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
     return ret;
 }
 
-bool AccessibilityConfig::Impl::GetScreenMagnificationState(bool &value)
+bool AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -308,11 +308,11 @@ bool AccessibilityConfig::Impl::GetScreenMagnificationState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetScreenMagnificationState();
+    state = serviceProxy_->GetScreenMagnificationState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetShortKeyState(bool &value)
+bool AccessibilityConfig::Impl::GetShortKeyState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -321,11 +321,11 @@ bool AccessibilityConfig::Impl::GetShortKeyState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetShortKeyState();
+    state = serviceProxy_->GetShortKeyState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetMouseKeyState(bool &value)
+bool AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -334,7 +334,7 @@ bool AccessibilityConfig::Impl::GetMouseKeyState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetMouseKeyState();
+    state = serviceProxy_->GetMouseKeyState();
     return true;
 }
 
@@ -680,7 +680,7 @@ bool AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
     return ret;
 }
 
-bool AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &value)
+bool AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -689,11 +689,11 @@ bool AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &value)
         return 0;
     }
 
-    value = serviceProxy_->GetMouseAutoClick();
+    time = serviceProxy_->GetMouseAutoClick();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetShortkeyTarget(std::string &value)
+bool AccessibilityConfig::Impl::GetShortkeyTarget(std::string &name)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -702,7 +702,7 @@ bool AccessibilityConfig::Impl::GetShortkeyTarget(std::string &value)
         return false;
     }
 
-    value = serviceProxy_->GetShortkeyTarget();
+    name = serviceProxy_->GetShortkeyTarget();
     return true;
 }
 
@@ -936,7 +936,7 @@ bool AccessibilityConfig::Impl::SetAudioBalance(const float balance)
     return ret;
 }
 
-bool AccessibilityConfig::Impl::GetInvertColorState(bool &value)
+bool AccessibilityConfig::Impl::GetInvertColorState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -945,11 +945,11 @@ bool AccessibilityConfig::Impl::GetInvertColorState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetInvertColorState();
+    state = serviceProxy_->GetInvertColorState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetHighContrastTextState(bool &value)
+bool AccessibilityConfig::Impl::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -958,11 +958,11 @@ bool AccessibilityConfig::Impl::GetHighContrastTextState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetHighContrastTextState();
+    state = serviceProxy_->GetHighContrastTextState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &value)
+bool AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -971,11 +971,11 @@ bool AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &
         return false;
     }
 
-    value = static_cast<DALTONIZATION_TYPE>(serviceProxy_->GetDaltonizationColorFilter());
+    type = static_cast<DALTONIZATION_TYPE>(serviceProxy_->GetDaltonizationColorFilter());
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetContentTimeout(uint32_t &value)
+bool AccessibilityConfig::Impl::GetContentTimeout(uint32_t &timer)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -984,11 +984,11 @@ bool AccessibilityConfig::Impl::GetContentTimeout(uint32_t &value)
         return false;
     }
 
-    value = serviceProxy_->GetContentTimeout();
+    timer = serviceProxy_->GetContentTimeout();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetAnimationOffState(bool &value)
+bool AccessibilityConfig::Impl::GetAnimationOffState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -997,11 +997,11 @@ bool AccessibilityConfig::Impl::GetAnimationOffState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetAnimationOffState();
+    state = serviceProxy_->GetAnimationOffState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetBrightnessDiscount(float &value)
+bool AccessibilityConfig::Impl::GetBrightnessDiscount(float &brightness)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -1010,11 +1010,11 @@ bool AccessibilityConfig::Impl::GetBrightnessDiscount(float &value)
         return false;
     }
 
-    value = serviceProxy_->GetBrightnessDiscount();
+    brightness = serviceProxy_->GetBrightnessDiscount();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetAudioMonoState(bool &value)
+bool AccessibilityConfig::Impl::GetAudioMonoState(bool &state)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -1023,11 +1023,11 @@ bool AccessibilityConfig::Impl::GetAudioMonoState(bool &value)
         return false;
     }
 
-    value = serviceProxy_->GetAudioMonoState();
+    state = serviceProxy_->GetAudioMonoState();
     return true;
 }
 
-bool AccessibilityConfig::Impl::GetAudioBalance(float &value)
+bool AccessibilityConfig::Impl::GetAudioBalance(float &balance)
 {
     HILOG_DEBUG("start");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -1036,7 +1036,7 @@ bool AccessibilityConfig::Impl::GetAudioBalance(float &value)
         return false;
     }
 
-    value = serviceProxy_->GetAudioBalance();
+    balance = serviceProxy_->GetAudioBalance();
     return true;
 }
 

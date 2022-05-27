@@ -86,7 +86,8 @@ public:
      *                  1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled;
      *                  4 indicates that the ability has been installed.
-     * @return Return accessibility ability infos by specified types.
+     * @param infos accessibility ability infos by specified types.
+     * @return Return true if get ability lists successfully, else return false.
      */
     virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
         std::vector<AccessibilityAbilityInfo> &infos) override;
@@ -209,13 +210,15 @@ public:
 
     /**
      * @brief Get installed abilities.
-     * @return Return the installed accessibility ability infos.
+     * @param installedAbilities The installed accessibility ability infos.
+     * @return Return true if get installed abilities successfully, else return false.
      */
     virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
 
     /**
      * @brief Get enabled abilities.
-     * @return Return the info of enabled abilities.
+     * @param enabledAbilities The infos of enabled abilities.
+     * @return Return true if get enabled abilities successfully, else return false.
      */
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
 
