@@ -98,15 +98,17 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChange
 
     return NO_ERROR;
 }
+
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFilterChanged(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG("start");
     uint32_t filterType = data.ReadUint32();
-    OnDaltonizationColorFilterChanged((AccessibilityConfig::DALTONIZATION_TYPE)filterType);
+    OnDaltonizationColorFilterChanged(filterType);
 
     return NO_ERROR;
 }
+
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChanged(
     MessageParcel& data, MessageParcel& reply)
 {
@@ -116,6 +118,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChange
 
     return NO_ERROR;
 }
+
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChanged(
     MessageParcel& data, MessageParcel& reply)
 {

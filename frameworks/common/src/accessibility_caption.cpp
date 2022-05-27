@@ -59,7 +59,7 @@ std::string  CaptionProperty::GetFontEdgeType() const
     return fontEdgeType_;
 }
 
-void CaptionProperty::SetFontEdgeType(std::string type)
+void CaptionProperty::SetFontEdgeType(const std::string &type)
 {
     fontEdgeType_ = type;
 }
@@ -75,7 +75,7 @@ void CaptionProperty::SetWindowColor(uint32_t color)
 }
 
 
-void CaptionProperty::SetFontFamily(std::string family)
+void CaptionProperty::SetFontFamily(const std::string &family)
 {
     fontFamily_ = family;
 }

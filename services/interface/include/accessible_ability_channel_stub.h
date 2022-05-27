@@ -94,7 +94,7 @@ private:
      * @param reply The response of IPC request
      * @return NO_ERROR: successful; otherwise is failed.
      */
-    ErrCode HandleGetWindows(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetWindowsByDisplayId(MessageParcel &data, MessageParcel &reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleExecuteCommonAction.

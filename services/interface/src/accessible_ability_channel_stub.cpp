@@ -35,8 +35,8 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
         &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_ACTION)] =
         &AccessibleAbilityChannelStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS)] =
-        &AccessibleAbilityChannelStub::HandleGetWindows;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID)] =
+        &AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION)] =
         &AccessibleAbilityChannelStub::HandleExecuteCommonAction;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT)] =
@@ -206,13 +206,14 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start.");
 
     uint64_t displayId = data.ReadUint64();
-    std::vector<AccessibilityWindowInfo> windows = GetWindows(displayId);
-    if (!reply.WriteInt32((int32_t)windows.size())) {
+    std::vector<AccessibilityWindowInfo> windows;
+    bool result = GetWindowsByDisplayId(displayId, windows);
+    if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
         HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;
     }
@@ -223,6 +224,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
             return ERR_INVALID_VALUE;
         }
     }
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
@@ -271,8 +273,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
 ErrCode AccessibleAbilityChannelStub::HandleSetEventTypeFilter(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start.");
-    uint32_t eventTypes = data.ReadUint32();
-    bool result = SetEventTypeFilter(eventTypes);
+    uint32_t filter = data.ReadUint32();
+    bool result = SetEventTypeFilter(filter);
     reply.WriteBool(result);
     return NO_ERROR;
 }

@@ -20,8 +20,11 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t POINTER_COUNT_1 = 1;
-static const int32_t POINTER_COUNT_2 = 2;
+namespace {
+    constexpr int32_t POINTER_COUNT_1 = 1;
+    constexpr int32_t POINTER_COUNT_2 = 2;
+} // namespace
+
 TGEventHandler::TGEventHandler(const std::shared_ptr<AppExecFwk::EventRunner>& runner, TouchGuider& tgServer)
     : AppExecFwk::EventHandler(runner), tgServer_(tgServer)
 {
@@ -530,7 +533,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent& event)
         AccessibilityDisplayManager& displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
         auto display = displayMgr.GetDefaultDisplay();
         float densityPixels = display->GetVirtualPixelRatio();
-        int miniZoomPointerDistance = (int)MINI_POINTER_DISTANCE_DIP * densityPixels;
+        int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * densityPixels);
         MMI::PointerEvent::PointerItem pointerF = {};
         MMI::PointerEvent::PointerItem pointerS = {};
         event.GetPointerItem(pIds[INDEX_0], pointerF);

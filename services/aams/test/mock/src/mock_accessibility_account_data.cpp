@@ -19,7 +19,9 @@
 
 namespace OHOS {
 namespace Accessibility {
-const static std::string PREF_TEST_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+namespace {
+    const std::string PREF_TEST_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+} // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
 {
@@ -160,9 +162,9 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveEnabledFromPref(const std::string bundleName)
+void AccessibilityAccountData::RemoveEnabledFromPref(const std::string &name)
 {
-    (void)bundleName;
+    (void)name;
 }
 
 void AccessibilityAccountData::RemoveEnabledAbility(const std::string& bundleName)
@@ -186,7 +188,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
     (void)abilityInfo;
 }
 
-void AccessibilityAccountData::RemoveInstalledAbility(std::string bundleName)
+void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleName)
 {
     (void)bundleName;
 }
@@ -195,7 +197,7 @@ void AccessibilityAccountData::ClearInstalledAbility()
 {}
 
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
-    const std::string elementName)
+    const std::string &elementName)
 {
     (void)elementName;
     return nullptr;
@@ -214,7 +216,7 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
     return connectedA11yAbilities_;
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> AccessibilityAccountData::GetStateCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> &AccessibilityAccountData::GetStateCallbacks() const
 {
     HILOG_DEBUG("start.");
     return stateCallbacks_;
@@ -247,17 +249,17 @@ const std::vector<std::string>& AccessibilityAccountData::GetEnabledAbilities()
     return enabledAbilities_;
 }
 
-const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities()
+const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
     HILOG_DEBUG("start.");
     return installedAbilities_;
 }
 
-const std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state)
+void AccessibilityAccountData::GetAbilitiesByState(
+    AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities) const
 {
     (void)state;
-    std::vector<AccessibilityAbilityInfo> enabledAbilities;
-    return enabledAbilities;
+    (void)abilities;
 }
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
@@ -362,7 +364,7 @@ bool AccessibilityAccountData::GetCaptionState()
 void AccessibilityAccountData::UpdateEnabledFromPref()
 {}
 
-bool AccessibilityAccountData::EnableAbilities(const std::string name, const uint32_t capabilities)
+bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
     for (auto &enabledAbility : enabledAbilities_) {
@@ -398,7 +400,7 @@ void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePrefe
     (void)pref;
 }
 
-void AccessibilityAccountData::StringToVector(std::string& stringIn, std::vector<std::string>& vectorResult)
+void AccessibilityAccountData::StringToVector(const std::string &stringIn, std::vector<std::string>& vectorResult)
 {
     (void)stringIn;
     (void)vectorResult;
@@ -408,7 +410,7 @@ void AccessibilityAccountData::StringToVector(std::string& stringIn, std::vector
 void AccessibilityAccountData::Init()
 {}
 
-bool AccessibilityAccountData::DisableAbilities(const std::string name)
+bool AccessibilityAccountData::DisableAbility(const std::string &name)
 {
     HILOG_ERROR("disable ability[%{public}s] start", name.c_str());
     for (auto iter = enabledAbilities_.begin(); iter != enabledAbilities_.end();) {
@@ -425,7 +427,7 @@ bool AccessibilityAccountData::DisableAbilities(const std::string name)
     return true;
 }
 
-void AccessibilityAccountData::VectorToString(std::vector<std::string>& vectorVal, std::string& stringOut)
+void AccessibilityAccountData::VectorToString(const std::vector<std::string>& vectorVal, std::string& stringOut)
 {
     (void)vectorVal;
     HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
@@ -602,7 +604,7 @@ void AccessibilityAccountData::AddConfigCallback(
     configCallbacks_.push_back(callback);
 }
 
-const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> AccessibilityAccountData::GetConfigCallbacks()
+const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
 {
     HILOG_DEBUG("start.");
     return configCallbacks_;

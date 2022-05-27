@@ -20,10 +20,12 @@
 using namespace testing;
 using namespace testing::ext;
 
-const static int32_t SEQUENCE_NUM = 1;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t SEQUENCE_NUM = 1;
+} // namespace
+
 class AccessibilityElementOperatorCallbackImplTest : public ::testing::Test {
 public:
     AccessibilityElementOperatorCallbackImplTest()

@@ -63,12 +63,15 @@ public:
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
-     * @param stateType Indicates the accessibility ability status. 1 indicates that the ability is enabled;
-     *                  2 indicates that the ability is disabled; 4 indicates that the ability has been installed.
-     * @return
+     * @param stateType Indicates the accessibility ability status.
+     *                  1 indicates that the ability is enabled;
+     *                  2 indicates that the ability is disabled;
+     *                  4 indicates that the ability has been installed.
+     * @param infos accessibility ability infos by specified types.
+     * @return Return true if get ability lists successfully, else return false.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const uint32_t abilityTypes, const int32_t stateType) override;
+    virtual bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) override;
 
     /**
      * @brief Register the interaction operation, so the AA can get node info from ACE.
@@ -96,11 +99,11 @@ public:
     virtual bool GetGestureState() override;
     virtual bool GetKeyEventObserverState() override;
 
-    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) override;
-    virtual std::vector<std::string> GetEnabledAbilities() override;
-    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+    virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
 
-    virtual bool DisableAbilities(const std::string name) override;
+    virtual bool DisableAbility(const std::string &name) override;
     virtual int32_t GetActiveWindow() override;
 
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;

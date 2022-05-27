@@ -45,22 +45,22 @@ private:
 class AccessibilityInputInterceptor : public EventTransmission {
 public:
     // Feature flag for screen magnification.
-    const static uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
+    static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
 
     // Feature flag for touch exploration.
-    const static uint32_t FEATURE_TOUCH_EXPLORATION = 0x00000002;
+    static constexpr uint32_t FEATURE_TOUCH_EXPLORATION = 0x00000002;
 
     // Feature flag for filtering key events.
-    const static uint32_t FEATURE_FILTER_KEY_EVENTS = 0x00000004;
+    static constexpr uint32_t FEATURE_FILTER_KEY_EVENTS = 0x00000004;
 
     // Feature flag for inject touch events.
-    const static uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
+    static constexpr uint32_t FEATURE_INJECT_TOUCH_EVENTS = 0x00000008;
 
     // Feature flag for mouse autoclick.
-    const static uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
+    static constexpr uint32_t FEATURE_MOUSE_AUTOCLICK = 0x00000010;
 
     // Feature flag for short key.
-    const static uint32_t FEATURE_SHORT_KEY = 0x00000020;
+    static constexpr uint32_t FEATURE_SHORT_KEY = 0x00000020;
 
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();

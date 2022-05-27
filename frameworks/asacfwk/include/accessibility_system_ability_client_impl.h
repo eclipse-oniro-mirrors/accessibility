@@ -45,11 +45,10 @@ public:
      * @brief Register the interaction operation, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @param accountId User ID
      * @return 0: Succeed ; otherwise is failed.
      */
     virtual int32_t RegisterElementOperator(const int32_t windowId,
-        const std::shared_ptr<AccessibilityElementOperator> &operation, int32_t accountId) override;
+        const std::shared_ptr<AccessibilityElementOperator> &operation) override;
 
     /**
      * @brief Deregister the interaction operation.
@@ -87,10 +86,11 @@ public:
      *                  1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled;
      *                  4 indicates that the ability has been installed.
-     * @return Return accessibility ability infos by specified types.
+     * @param infos accessibility ability infos by specified types.
+     * @return Return true if get ability lists successfully, else return false.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetAbilityList(
-        const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType) override;
+    virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
+        std::vector<AccessibilityAbilityInfo> &infos) override;
 
     /**
      * @brief Obtains the properties of the accessibility caption.
@@ -175,7 +175,7 @@ public:
      * @param type The type of caption observer.
      * @return Return true if delete listener successfully, else return false.
      */
-    virtual bool DeleteCaptionListener(
+    virtual bool RemoveCaptionListener(
         const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
 
     /**
@@ -210,15 +210,17 @@ public:
 
     /**
      * @brief Get installed abilities.
-     * @return Return the installed accessibility ability infos.
+     * @param installedAbilities The installed accessibility ability infos.
+     * @return Return true if get installed abilities successfully, else return false.
      */
-    virtual std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() override;
+    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
 
     /**
      * @brief Get enabled abilities.
-     * @return Return the info of enabled abilities.
+     * @param enabledAbilities The infos of enabled abilities.
+     * @return Return true if get enabled abilities successfully, else return false.
      */
-    virtual std::vector<std::string> GetEnabledAbilities() override;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
 
     /**
      * @brief Set caption property

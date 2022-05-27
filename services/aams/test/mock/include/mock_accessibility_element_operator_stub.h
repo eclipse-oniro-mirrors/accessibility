@@ -38,7 +38,7 @@ public:
     MOCK_METHOD4(FocusMoveSearch, void(const int32_t elementId, const int32_t direction, const int32_t requestId,
                                       const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD5(ExecuteAction,
-        void(const int32_t elementId, const int32_t action, const std::map<std::string, std::string> actionArguments,
+        void(const int32_t elementId, const int32_t action, const std::map<std::string, std::string> &actionArguments,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD0(ClearFocus, void());
     MOCK_METHOD0(OutsideTouch, void());

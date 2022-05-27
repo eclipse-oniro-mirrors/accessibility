@@ -25,8 +25,11 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static uint32_t SLEEP_TIME_2 = 2;
-const static uint32_t SLEEP_TIME_1 = 1;
+namespace {
+    constexpr uint32_t SLEEP_TIME_1 = 1;
+    constexpr uint32_t SLEEP_TIME_2 = 2;
+} // namespace
+
 class TouchEventInjectorTest : public testing::Test {
 public:
     TouchEventInjectorTest()

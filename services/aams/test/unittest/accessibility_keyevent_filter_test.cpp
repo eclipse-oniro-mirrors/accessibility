@@ -29,7 +29,10 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-const static uint32_t SLEEP_TIME_3 = 3;
+namespace {
+    constexpr uint32_t SLEEP_TIME_3 = 3;
+} // namespace
+
 class KeyEventFilterUnitTest : public ::testing::Test {
 public:
     KeyEventFilterUnitTest()
@@ -168,7 +171,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
         auto iter = connectionMaps.begin();
@@ -200,7 +203,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
         auto iter = connectionMaps.begin();
@@ -232,7 +235,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
         auto iter = connectionMaps.begin();
@@ -263,7 +266,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
             ->GetConnectedA11yAbilities();
-    EXPECT_EQ((int)connectionMaps.size(), 1);
+    EXPECT_EQ(connectionMaps.size(), 1);
 
     if (connectionMaps.size() == 1) {
         auto iter = connectionMaps.begin();

@@ -19,10 +19,13 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t TOP_X  = 0;
-static const int32_t TOP_Y = 100;
-static const int32_t BOTTOM_X = 800;
-static const int32_t BOTTOM_Y = 400;
+namespace {
+    constexpr int32_t TOP_X  = 0;
+    constexpr int32_t TOP_Y = 100;
+    constexpr int32_t BOTTOM_X = 800;
+    constexpr int32_t BOTTOM_Y = 400;
+} // namespace
+
 AccessibilityWindowManager::AccessibilityWindowManager()
 {
 }

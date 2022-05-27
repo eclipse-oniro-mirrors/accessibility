@@ -19,8 +19,11 @@
 
 namespace OHOS {
 namespace Accessibility {
-constexpr int32_t MS_TO_US = 1000;
-constexpr int32_t MOVE_GESTURE_MIN_PATH_COUNT = 2;
+namespace {
+    constexpr int32_t MS_TO_US = 1000;
+    constexpr int32_t MOVE_GESTURE_MIN_PATH_COUNT = 2;
+} // namespace
+
 TouchInjectHandler::TouchInjectHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     TouchEventInjector &server) : AppExecFwk::EventHandler(runner), server_(server)
 {
@@ -147,7 +150,7 @@ int64_t TouchEventInjector::getSystemTime()
     HILOG_INFO("TouchEventInjector::getSystemTime: start");
     struct timespec times = {0, 0};
     clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t microsecond = (int64_t)(times.tv_sec * 1000000 + times.tv_nsec / 1000);
+    int64_t microsecond = static_cast<int64_t>(times.tv_sec * 1000000 + times.tv_nsec / 1000);
 
     return microsecond;
 }
@@ -199,7 +202,7 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
 {
     HILOG_INFO("TouchEventInjector::ParseTapsEvents: start");
 
-    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
+    const std::vector<AccessibilityGesturePosition> &positions = gesturePositions_->GetPositions();
     size_t positionSize = positions.size();
     if (!positionSize) {
         HILOG_ERROR("positionSize is zero.");
@@ -283,7 +286,7 @@ void TouchEventInjector::ParseTouchEventsFromGesturePath(int64_t startTime)
         HILOG_ERROR("gesturePositions_ is null.");
         return;
     }
-    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
+    const std::vector<AccessibilityGesturePosition> &positions = gesturePositions_->GetPositions();
     if (positions.size() == 0) {
         HILOG_ERROR("position size is 0.");
         return;

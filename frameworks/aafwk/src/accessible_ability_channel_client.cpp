@@ -19,8 +19,10 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const uint32_t TIME_OUT_OPERATOR = 500;
-static const int32_t REQUEST_ID_MAX = 0x7FFFFFFF;
+namespace {
+    constexpr uint32_t TIME_OUT_OPERATOR = 500;
+    constexpr int32_t REQUEST_ID_MAX = 0x7FFFFFFF;
+} // namespace
 
 int32_t AccessibleAbilityChannelClient::GenrateRequestId()
 {
@@ -78,7 +80,7 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
 }
 
 void AccessibleAbilityChannelClient::SendSimulateGesture(const int32_t sequenceNum,
-    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
@@ -89,7 +91,7 @@ void AccessibleAbilityChannelClient::SendSimulateGesture(const int32_t sequenceN
 }
 
 bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
-    int32_t elementId, int32_t action,  std::map<std::string, std::string> &actionArguments)
+    int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     if (!proxy_) {
@@ -146,19 +148,19 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     return true;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}ju]", channelId_, displayId);
     if (proxy_) {
-        auto windows = proxy_->GetWindows(displayId);
+        bool ret = proxy_->GetWindowsByDisplayId(displayId, windows);
         for (auto &window : windows) {
             window.SetChannelId(channelId_);
         }
-        return windows;
+        return ret;
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        std::vector<AccessibilityWindowInfo> temp;
-        return temp;
+        return false;
     }
 }
 
@@ -232,18 +234,18 @@ bool AccessibleAbilityChannelClient::ExecuteCommonAction(const int32_t action)
     }
 }
 
-bool AccessibleAbilityChannelClient::SetEventTypeFilter(const uint32_t eventTypes)
+bool AccessibleAbilityChannelClient::SetEventTypeFilter(const uint32_t filter)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
-        return proxy_->SetEventTypeFilter(eventTypes);
+        return proxy_->SetEventTypeFilter(filter);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
     }
 }
 
-bool AccessibleAbilityChannelClient::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+bool AccessibleAbilityChannelClient::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {

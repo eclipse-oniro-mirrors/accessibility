@@ -56,13 +56,13 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         IAccessibleAbilityManagerService::Message::GET_KEY_EVENT_OBSERVE_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleEnableAbilities;
+        &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT)] =
         &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_INSTALLED)] =
         &AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleDisableAbilities;
+        &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
     memberFuncMap_[static_cast<uint32_t>(
         IAccessibleAbilityManagerService::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
@@ -198,9 +198,9 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
     uint32_t abilityTypes = data.ReadUint32();
     int32_t stateType = data.ReadInt32();
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
-    abilityInfos = GetAbilityList(abilityTypes, stateType);
+    bool result = GetAbilityList(abilityTypes, stateType, abilityInfos);
 
-    int32_t abilityInfoSize = (int32_t)abilityInfos.size();
+    int32_t abilityInfoSize = static_cast<int32_t>(abilityInfos.size());
     reply.WriteInt32(abilityInfoSize);
     for (auto& abilityInfo : abilityInfos) {
         sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(abilityInfo);
@@ -209,6 +209,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
             return TRANSACTION_ERR;
         }
     }
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
@@ -336,12 +337,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbilities(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
     std::string name = data.ReadString();
     uint32_t capabilities = data.ReadUint32();
-    bool result = EnableAbilities(name, capabilities);
+    bool result = EnableAbility(name, capabilities);
     reply.WriteBool(result);
     return NO_ERROR;
 }
@@ -350,14 +351,16 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessagePa
 {
     HILOG_DEBUG("start");
 
-    std::vector<std::string> abilities = GetEnabledAbilities();
-    reply.WriteInt32(abilities.size());
-    for (auto &ability : abilities) {
+    std::vector<std::string> enabledAbilities;
+    bool result = GetEnabledAbilities(enabledAbilities);
+    reply.WriteInt32(enabledAbilities.size());
+    for (auto &ability : enabledAbilities) {
         if (!reply.WriteString(ability)) {
             HILOG_ERROR("ability write error: %{public}s, ", ability.c_str());
             return TRANSACTION_ERR;
         }
     }
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
@@ -366,26 +369,28 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
 {
     HILOG_DEBUG("start");
 
-    std::vector<AccessibilityAbilityInfo> it = GetInstalledAbilities();
-    int32_t num = (int32_t)it.size();
+    std::vector<AccessibilityAbilityInfo> installedAbilities;
+    bool result = GetInstalledAbilities(installedAbilities);
+    int32_t num = static_cast<int32_t>(installedAbilities.size());
 
     reply.WriteInt32(num);
     for (int32_t i = 0; i < num; i++) {
-        sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(it[i]);
+        sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(installedAbilities[i]);
         bool result = reply.WriteStrongParcelable(info);
         if (!result) {
             HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return TRANSACTION_ERR;
         }
     }
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 
-ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbilities(MessageParcel &data, MessageParcel &reply)
+ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG("start");
     std::string name = data.ReadString();
-    bool result = DisableAbilities(name);
+    bool result = DisableAbility(name);
     reply.WriteBool(result);
     return NO_ERROR;
 }

@@ -104,11 +104,11 @@ private:
     ErrCode HandleGetGestureState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetKeyEventObserverState(MessageParcel &data, MessageParcel &reply);
 
-    ErrCode HandleEnableAbilities(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleEnableAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetEnabledAbilities(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetInstalledAbilities(MessageParcel &data, MessageParcel &reply);
 
-    ErrCode HandleDisableAbilities(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleDisableAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleEnableUITestAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleDisableUITestAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetActiveWindow(MessageParcel &data, MessageParcel &reply);

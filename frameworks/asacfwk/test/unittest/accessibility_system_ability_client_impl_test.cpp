@@ -23,16 +23,17 @@
 using namespace testing;
 using namespace testing::ext;
 
-const static int32_t WINDOW_ID = 1;
-const static int32_t ACCOUNT_ID = 1;
-const static uint32_t ACCESSIBILITY_ABILITY_TYPES = 1;
-const static int32_t COMPONENT_ID = 1;
-const static uint32_t EVENT_TYPE = 1;
-const static int32_t TYPE = 1;
-const static uint32_t STATE_TYPE = 1;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t WINDOW_ID = 1;
+    constexpr uint32_t ACCESSIBILITY_ABILITY_TYPES = 1;
+    constexpr int32_t COMPONENT_ID = 1;
+    constexpr uint32_t EVENT_TYPE = 1;
+    constexpr uint32_t STATE_TYPE = 1;
+    constexpr int32_t TYPE = 1;
+} // namespace
+
 class AccessibilitySystemAbilityClientImplTest : public ::testing::Test {
 public:
     AccessibilitySystemAbilityClientImplTest()
@@ -93,7 +94,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_001, 
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
-    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID));
+    EXPECT_EQ(0, impl_->RegisterElementOperator(WINDOW_ID, operator_));
     impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "RegisterElementOperator_001 end";
 }
@@ -111,7 +112,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeregisterElementOperator_001
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> operator_ = std::make_shared<MockAccessibilityElementOperator>();
-    impl_->RegisterElementOperator(WINDOW_ID, operator_, ACCOUNT_ID);
+    impl_->RegisterElementOperator(WINDOW_ID, operator_);
     impl_->DeregisterElementOperator(WINDOW_ID);
     GTEST_LOG_(INFO) << "DeregisterElementOperator_001 end";
 }
@@ -131,7 +132,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetAbilityList_001, TestSize.
     }
 
     std::vector<AccessibilityAbilityInfo> infos {};
-    infos = impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPES, stateType);
+    impl_->GetAbilityList(ACCESSIBILITY_ABILITY_TYPES, stateType, infos);
     EXPECT_EQ(0, infos.size());
     GTEST_LOG_(INFO) << "GetAbilityList_001 end";
 }
@@ -321,26 +322,26 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, AddCaptionListener_001, TestS
     }
     std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
     EXPECT_TRUE(impl_->AddCaptionListener(ob, TYPE));
-    impl_->DeleteCaptionListener(ob, TYPE);
+    impl_->RemoveCaptionListener(ob, TYPE);
     GTEST_LOG_(INFO) << "AddCaptionListener_001 end";
 }
 
 /**
- * @tc.number: DeleteCaptionListener_001
- * @tc.name: DeleteCaptionListener
- * @tc.desc: Test DeleteCaptionListener
+ * @tc.number: RemoveCaptionListener_001
+ * @tc.name: RemoveCaptionListener
+ * @tc.desc: Test RemoveCaptionListener
  */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, DeleteCaptionListener_001, TestSize.Level1)
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, RemoveCaptionListener_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "DeleteCaptionListener_001 start";
+    GTEST_LOG_(INFO) << "RemoveCaptionListener_001 start";
     if (!impl_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
     std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
     impl_->AddCaptionListener(ob, TYPE);
-    EXPECT_TRUE(impl_->DeleteCaptionListener(ob, TYPE));
-    GTEST_LOG_(INFO) << "DeleteCaptionListener_001 end";
+    EXPECT_TRUE(impl_->RemoveCaptionListener(ob, TYPE));
+    GTEST_LOG_(INFO) << "RemoveCaptionListener_001 end";
 }
 
 /**
@@ -459,7 +460,8 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetInstalledAbilities_001, Te
         GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
-    impl_->GetInstalledAbilities();
+    std::vector<AccessibilityAbilityInfo> installedAbilities;
+    impl_->GetInstalledAbilities(installedAbilities);
     GTEST_LOG_(INFO) << "GetInstalledAbilities_001 end";
 }
 } // namespace Accessibility

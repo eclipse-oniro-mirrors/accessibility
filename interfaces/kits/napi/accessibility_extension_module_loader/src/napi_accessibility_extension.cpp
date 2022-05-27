@@ -132,7 +132,7 @@ void NAccessibilityExtension::OnAbilityConnected()
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            ExtensionCallbackInfo *data = (ExtensionCallbackInfo *)work->data;
+            ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
             data->extension_->CallObjectMethod("onConnect");
             delete data;
             data = nullptr;
@@ -156,7 +156,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            ExtensionCallbackInfo *data = (ExtensionCallbackInfo *)work->data;
+            ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
             data->extension_->CallObjectMethod("onDisconnect");
             delete data;
             data = nullptr;
@@ -220,7 +220,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            KeyEventCallbackInfo *data = (KeyEventCallbackInfo *)work->data;
+            KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
             napi_value napiEventInfo = nullptr;
             if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");

@@ -226,7 +226,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<std::string> GetContentList() const;
+    const std::vector<std::string> &GetContentList() const;
 
     /**
      * @brief Gets the last content of the component(The text of changed after).
@@ -364,7 +364,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<AccessibilityEventInfo> GetRecords();
+    const std::vector<AccessibilityEventInfo> &GetRecords() const;
 
     /**
      * @brief Gets the type of an accessibility event.

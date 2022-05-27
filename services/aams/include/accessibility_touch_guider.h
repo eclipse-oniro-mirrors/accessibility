@@ -115,6 +115,12 @@ private:
 
 class TouchGuider : public EventTransmission {
 public:
+    static constexpr uint32_t EXIT_GESTURE_REC_MSG = 0;
+    static constexpr uint32_t SEND_HOVER_ENTER_MOVE_MSG = 1;
+    static constexpr uint32_t SEND_HOVER_EXIT_MSG = 2;
+    static constexpr uint32_t SEND_TOUCH_INTERACTION_END_MSG = 3;
+    static constexpr uint32_t SEND_TOUCH_GUIDE_END_MSG = 4;
+
     /**
      * @brief A constructor used to create a touchGuide instance.
      * @param
@@ -201,12 +207,6 @@ public:
      * @return Returns last event ptr.
      */
     std::shared_ptr<MMI::PointerEvent> getLastReceivedEvent();
-
-    static constexpr uint32_t EXIT_GESTURE_REC_MSG = 0;
-    static constexpr uint32_t SEND_HOVER_ENTER_MOVE_MSG = 1;
-    static constexpr uint32_t SEND_HOVER_EXIT_MSG = 2;
-    static constexpr uint32_t SEND_TOUCH_INTERACTION_END_MSG = 3;
-    static constexpr uint32_t SEND_TOUCH_GUIDE_END_MSG = 4;
 
      /* For TouchGuide */
     inline void OnTouchInteractionStart()

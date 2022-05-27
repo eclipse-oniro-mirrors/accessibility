@@ -34,12 +34,14 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-static const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
-static const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
-static const std::string UI_TEST_ABILITY_NAME = "uitestability";
-static const int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
-static const int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
-static const int32_t OS_ACCOUNT_ID = 100;
+namespace {
+    const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
+    const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
+    const std::string UI_TEST_ABILITY_NAME = "uitestability";
+    constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
+    constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    constexpr int32_t OS_ACCOUNT_ID = 100;
+} // namespace
 
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
@@ -329,20 +331,19 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     return syncFuture.get();
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
-    const uint32_t abilityTypes, const int32_t stateType)
+bool AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    std::vector<AccessibilityAbilityInfo> &infos)
 {
     HILOG_DEBUG("start");
     HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
-    vector<AccessibilityAbilityInfo> infoList;
     if (!handler_ || (stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("Parameters check failed! stateType:%{public}d, handler:%{public}p", stateType, handler_.get());
-        return infoList;
+        return false;
     }
 
     std::promise<void> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, abilityTypes, stateType, &infoList]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, &infos, abilityTypes, stateType]() -> void {
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Get current account data failed!!");
@@ -350,21 +351,21 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilit
             return;
         }
 
-        vector<AccessibilityAbilityInfo> abilities =
-            accountData->GetAbilitiesByState(static_cast<AbilityStateType>(stateType));
+        vector<AccessibilityAbilityInfo> abilities;
+        accountData->GetAbilitiesByState(static_cast<AbilityStateType>(stateType), abilities);
         HILOG_DEBUG("abilityes count is %{public}zu", abilities.size());
         for (auto &ability : abilities) {
             if (abilityTypes == AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL ||
                 (ability.GetAccessibilityAbilityType() & abilityTypes)) {
-                infoList.push_back(ability);
+                infos.push_back(ability);
             }
         }
-        HILOG_DEBUG("infoList count is %{public}zu", infoList.size());
+        HILOG_DEBUG("infos count is %{public}zu", infos.size());
         syncPromise.set_value();
         }), "TASK_GET_ABILITY_LIST");
     syncFuture.get();
 
-    return infoList;
+    return true;
 }
 
 void AccessibleAbilityManagerService::RegisterElementOperator(
@@ -653,7 +654,7 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     return syncFuture.get();
 }
 
-bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, const uint32_t capabilities)
+bool AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start");
     if (!handler_) {
@@ -671,25 +672,24 @@ bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, co
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->EnableAbilities(name, capabilities);
+        bool result = accountData->EnableAbility(name, capabilities);
         UpdateAbilities();
         syncPromise.set_value(result);
         }), "TASK_ENABLE_ABILITIES");
     return syncFuture.get();
 }
 
-std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
+bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG("start");
-    std::vector<std::string> abilities;
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
-        return abilities;
+        return false;
     }
 
     std::promise<void> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &abilities]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, &enabledAbilities]() -> void {
         HILOG_DEBUG("start");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -697,26 +697,25 @@ std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
             syncPromise.set_value();
             return;
         }
-        abilities = accountData->GetEnabledAbilities();
+        enabledAbilities = accountData->GetEnabledAbilities();
         syncPromise.set_value();
         }), "TASK_GET_ENABLE_ABILITIES");
     syncFuture.get();
 
-    return abilities;
+    return true;
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstalledAbilities()
+bool AccessibleAbilityManagerService::GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities)
 {
     HILOG_DEBUG("start");
-    std::vector<AccessibilityAbilityInfo> abilities;
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
-        return abilities;
+        return false;
     }
 
     std::promise<void> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &abilities]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, &installedAbilities]() -> void {
         HILOG_DEBUG("start");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -724,15 +723,15 @@ std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstal
             syncPromise.set_value();
             return;
         }
-        abilities = accountData->GetInstalledAbilities();
+        installedAbilities = accountData->GetInstalledAbilities();
         syncPromise.set_value();
         }), "TASK_GET_INSTALLED_ABILITIES");
     syncFuture.get();
 
-    return abilities;
+    return true;
 }
 
-bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
+bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     if (!handler_) {
@@ -1101,7 +1100,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     UpdateAbilities();
 }
 
-void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName)
+void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
@@ -1159,7 +1158,7 @@ void AccessibleAbilityManagerService::PackageRemoved(std::string &bundleName)
     }
 }
 
-void AccessibleAbilityManagerService::PackageAdd(std::string &bundleName)
+void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
     sptr<AccessibilityAccountData> packageAccount = GetCurrentAccountData();
@@ -1203,7 +1202,7 @@ void AccessibleAbilityManagerService::PackageAdd(std::string &bundleName)
     }
 }
 
-void AccessibleAbilityManagerService::PackageChanged(std::string &bundleName)
+void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
 
@@ -1690,7 +1689,7 @@ bool AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->SetAnimationOffState(state);
+        bool result = accountData->SetAudioMonoState(state);
         UpdateConfigState();
         syncPromise.set_value(result);
         }), "TASK_SET_AUDIOMONO_STATE");
@@ -1872,7 +1871,7 @@ bool AccessibleAbilityManagerService::GetMouseKeyState()
 int32_t AccessibleAbilityManagerService::GetMouseAutoClick()
 {
     HILOG_DEBUG("start");
-    std::promise<bool> syncPromise;
+    std::promise<int32_t> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise]() -> void {
         HILOG_DEBUG("start");
@@ -2086,7 +2085,7 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
     }
     uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
         CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-    bool result = EnableAbilities(targetAbility, capabilities);
+    bool result = EnableAbility(targetAbility, capabilities);
     HILOG_DEBUG("result is %{public}d", result);
     return result;
 }
@@ -2106,7 +2105,7 @@ bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
         HILOG_ERROR("target ability is null");
         return false;
     }
-    bool result = DisableAbilities(targetAbility);
+    bool result = DisableAbility(targetAbility);
     HILOG_DEBUG("result is %{public}d", result);
     return result;
 }
@@ -2253,8 +2252,7 @@ void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter()
     uint32_t daltonizationColorFilter = accountData->GetDaltonizationColorFilter();
     for (auto &callback : accountData->GetConfigCallbacks()) {
         if (callback) {
-            callback->OnDaltonizationColorFilterChanged(
-                (AccessibilityConfig::DALTONIZATION_TYPE)daltonizationColorFilter);
+            callback->OnDaltonizationColorFilterChanged(daltonizationColorFilter);
         }
     }
 }

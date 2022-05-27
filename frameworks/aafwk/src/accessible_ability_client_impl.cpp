@@ -23,9 +23,12 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const int32_t NONE_ID = -1;
-static std::mutex g_Mutex;
-static sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
+namespace {
+    constexpr int32_t NONE_ID = -1;
+    std::mutex g_Mutex;
+    sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
+} // namespace
+
 sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
 {
     HILOG_DEBUG("start.");
@@ -200,9 +203,9 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GestureInject(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener>& listener)
+bool AccessibleAbilityClientImpl::InjectGesture(const uint32_t sequence,
+    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
+    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
 {
     HILOG_DEBUG("start.");
 
@@ -275,27 +278,26 @@ bool AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo 
     return result;
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows()
+bool AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("start.");
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        std::vector<AccessibilityWindowInfo> temp;
-        return temp;
+        return false;
     }
+
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    return channelClient_->GetWindows(displayId);
+    return channelClient_->GetWindows(displayId, windows);
 }
 
-std::vector<AccessibilityWindowInfo> AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId)
+bool AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("start.");
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        std::vector<AccessibilityWindowInfo> temp;
-        return temp;
+        return false;
     }
-    return channelClient_->GetWindows(displayId);
+    return channelClient_->GetWindows(displayId, windows);
 }
 
 bool AccessibleAbilityClientImpl::ExecuteCommonAction(const GlobalAction action)
@@ -341,7 +343,11 @@ bool AccessibleAbilityClientImpl::GetChildWindowInfo(const int32_t index, const 
         HILOG_ERROR("index[%{public}d] is invalid", childId);
         return false;
     }
-    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows(displayId);
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows;
+    if (!channelClient_->GetWindows(displayId, windows)) {
+        HILOG_ERROR("get windows failed");
+        return false;
+    }
     for (auto &window : windows) {
         if (window.GetWindowId() == childId) {
             HILOG_DEBUG("GetWindows OK");
@@ -451,7 +457,11 @@ bool AccessibleAbilityClientImpl::GetParentWindowInfo(
     int32_t parentId = child.GetParentId();
     uint64_t displayId = child.GetDisplayId();
     HILOG_INFO("channelId[%{public}d], parentId[%{public}d]", channelId, parentId);
-    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows = channelClient_->GetWindows(displayId);
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> windows;
+    if (!channelClient_->GetWindows(displayId, windows)) {
+        HILOG_ERROR("get windows failed");
+        return false;
+    }
     for (auto &window : windows) {
         if (window.GetWindowId() == parentId) {
             HILOG_DEBUG("GetParentWindowInfo OK");
@@ -523,17 +533,17 @@ bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &
         const_cast<std::map<std::string, std::string> &>(actionArguments));
 }
 
-bool AccessibleAbilityClientImpl::SetEventTypeFilter(const uint32_t eventTypes)
+bool AccessibleAbilityClientImpl::SetEventTypeFilter(const uint32_t filter)
 {
     HILOG_DEBUG("start.");
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    return channelClient_->SetEventTypeFilter(eventTypes);
+    return channelClient_->SetEventTypeFilter(filter);
 }
 
-bool AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> targetBundleNames)
+bool AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG("start.");
     if (!channelClient_) {
@@ -583,7 +593,7 @@ void AccessibleAbilityClientImpl::DispatchGestureInjectResult(uint32_t sequence,
         return;
     }
 
-    HILOG_DEBUG("GestureInject result is %{public}d", result);
+    HILOG_DEBUG("InjectGesture result is %{public}d", result);
     gestureResultListener->OnGestureInjectResult(sequence, result);
 }
 } // namespace Accessibility

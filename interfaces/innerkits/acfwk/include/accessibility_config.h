@@ -16,8 +16,7 @@
 #ifndef ACCESSIBILITY_CONFIG_H
 #define ACCESSIBILITY_CONFIG_H
 
-#include <cstdint>
-#include <string>
+#include <memory>
 #include "accessibility_caption.h"
 #include "singleton.h"
 
@@ -103,39 +102,37 @@ public:
 };
 
 class AccessibilityConfig {
+    DECLARE_SINGLETON(AccessibilityConfig)
 public:
-    static std::shared_ptr<AccessibilityConfig> GetInstance();
-    virtual ~AccessibilityConfig() = default;
     /**
      * @brief Subscribes to accessibility config value.
-     * @param ids  the config ids which are observed.
+     * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility
-     * config.
-     * @return true: send ok; otherwise is refused.
+     * @return -
      */
-    virtual void SubscribeConfigObserver(const std::shared_ptr<AccessibilityConfigObserver>& observer) = 0;
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
 
     /**
      * @brief Unsubscribe the accessibility config value observer.
-     * @param ids  the ids which are observed.
+     * @param id  the id which is observed.
      * @param observer Indicates the registered accessibility config observer.
-     * @return true is succeed otherwise is failed.
+     * @return -
      */
-    virtual void UnsubscribeConfigObserver(const std::shared_ptr<AccessibilityConfigObserver>& observer) = 0;
+    void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
 
     /**
      * @brief Subscribes the observer of enable Ability lists
      * @param observer Indicates the observer for listening to enable Ability lists
      */
-    virtual void SubscribeEnableAbilityListsObserver(
-        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer) = 0;
+    void SubscribeEnableAbilityListsObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
 
     /**
      * @brief Unsubscribe the observer of enable Ability lists
      * @param observer Indicates the observer for listening to enable Ability lists
      */
-    virtual void UnsubscribeEnableAbilityListsObserver(
-        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer) = 0;
+    void UnsubscribeEnableAbilityListsObserver(
+        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
 
     /**
      * @brief Enabled specified abilities
@@ -143,51 +140,50 @@ public:
      * @param capabilities The capabilities you permit.
      * @return Return true if the command is sent successfully, else return false.
      */
-    virtual bool EnableAbilities(const std::string name, const uint32_t capabilities) = 0;
+    bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     /**
-     * @brief Disabled specified abilities
+     * @brief Disabled specified ability
      * @param name The strings formated by 'bundleName/abilityName'.
      * @return Return true if the command is sent successfully, else return false.
      */
-    virtual bool DisableAbilities(const std::string name) = 0;
+    bool DisableAbility(const std::string &name);
 
-    virtual bool SetScreenMagnificationState(const bool state) = 0;
-    virtual bool SetShortKeyState(const bool state) = 0;
-    virtual bool SetMouseKeyState(const bool state) = 0;
-    virtual bool SetCaptionState(const bool state) = 0;
-    virtual bool SetCaptionProperty(const CaptionProperty &caption) = 0;
-    virtual bool SetMouseAutoClick(const int32_t time) = 0;
-    virtual bool SetShortkeyTarget(const std::string &name) = 0;
-    virtual bool SetHighContrastTextState(bool state) = 0;
-    virtual bool SetInvertColorState(const bool state) = 0;
-    virtual bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type) = 0;
-    virtual bool SetContentTimeout(const uint32_t timer) = 0;
-    virtual bool SetAnimationOffState(const bool state) = 0;
-    virtual bool SetBrightnessDiscount(const float brightness) = 0;
-    virtual bool SetAudioMonoState(const bool state) = 0;
-    virtual bool SetAudioBalance(const float balance) = 0;
+    bool SetScreenMagnificationState(const bool state);
+    bool SetShortKeyState(const bool state);
+    bool SetMouseKeyState(const bool state);
+    bool SetCaptionState(const bool state);
+    bool SetCaptionProperty(const CaptionProperty &caption);
+    bool SetMouseAutoClick(const int32_t time);
+    bool SetShortkeyTarget(const std::string &name);
+    bool SetHighContrastTextState(bool state);
+    bool SetInvertColorState(const bool state);
+    bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
+    bool SetContentTimeout(const uint32_t timer);
+    bool SetAnimationOffState(const bool state);
+    bool SetBrightnessDiscount(const float brightness);
+    bool SetAudioMonoState(const bool state);
+    bool SetAudioBalance(const float balance);
 
-    virtual bool GetScreenMagnificationState(bool &value) = 0;
-    virtual bool GetShortKeyState(bool &value) = 0;
-    virtual bool GetMouseKeyState(bool &value) = 0;
-    virtual bool GetCaptionState(bool &value) = 0;
-    virtual bool GetCaptionProperty(CaptionProperty &value) = 0;
-    virtual bool GetMouseAutoClick(int32_t &value) = 0;
-    virtual bool GetShortkeyTarget(std::string &value) = 0;
-    virtual bool GetInvertColorState(bool &value) = 0;
-    virtual bool GetHighContrastTextState(bool &value) = 0;
-    virtual bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &value) = 0;
-    virtual bool GetContentTimeout(uint32_t &value)= 0;
-    virtual bool GetAnimationOffState(bool &value) = 0;
-    virtual bool GetBrightnessDiscount(float &value) = 0;
-    virtual bool GetAudioMonoState(bool &value)= 0;
-    virtual bool GetAudioBalance(float &value) = 0;
+    bool GetScreenMagnificationState(bool &state);
+    bool GetShortKeyState(bool &state);
+    bool GetMouseKeyState(bool &state);
+    bool GetCaptionState(bool &state);
+    bool GetCaptionProperty(CaptionProperty &caption);
+    bool GetMouseAutoClick(int32_t &time);
+    bool GetShortkeyTarget(std::string &name);
+    bool GetInvertColorState(bool &state);
+    bool GetHighContrastTextState(bool &state);
+    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
+    bool GetContentTimeout(uint32_t &timer);
+    bool GetAnimationOffState(bool &state);
+    bool GetBrightnessDiscount(float &brightness);
+    bool GetAudioMonoState(bool &state);
+    bool GetAudioBalance(float &balance);
 
-    virtual void UpdateScreenMagnificationEnabled(const bool enabled) = 0;
-    virtual void UpdateShortKeyEnabled(const bool enabled) = 0;
-    virtual void UpdateMouseKeyEnabled(const bool enabled) = 0;
-    virtual void UpdateCaptionEnabled(const bool enabled) = 0;
+private:
+    class Impl;
+    std::unique_ptr<Impl> pImpl_;
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS

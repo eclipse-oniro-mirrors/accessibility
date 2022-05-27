@@ -466,10 +466,11 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
     sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    auto result = AccessibilityHelper::GetInstance().GetTestStub()->GetWindows(displayId);
+    std::vector<AccessibilityWindowInfo> windows;
+    AccessibilityHelper::GetInstance().GetTestStub()->GetWindowsByDisplayId(displayId, windows);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, int(result.size()));
+    EXPECT_EQ(0, windows.size());
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_002 end";
@@ -665,10 +666,11 @@ HWTEST_F(
     sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-    auto result = AccessibilityHelper::GetInstance().GetTestStub()->GetWindows(displayId);
+    std::vector<AccessibilityWindowInfo> windows;
+    AccessibilityHelper::GetInstance().GetTestStub()->GetWindowsByDisplayId(displayId, windows);
 
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, int(result.size()));
+    EXPECT_EQ(0, windows.size());
 
     AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 end";

@@ -13,10 +13,7 @@
  * limitations under the License.
  */
 
-#include <ctime>
-#include <functional>
 #include <gtest/gtest.h>
-#include <unistd.h>
 #include "ability_info.h"
 #include "accessibility_ability_helper.h"
 #include "accessibility_display_manager.h"
@@ -29,13 +26,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-static const std::string TASK_ENABLE_ABILITIES = "EnableAbilities";
-static const std::string TASK_GET_ENABLE_ABILITIES = "GetEnableAbilities";
-static const std::string TASK_DISABLE_ABILITIES = "DisableAbilities";
-const std::string TASK_SEND_EVENT = "SendEvent";
-const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
-static const int32_t TEMP_ACCOUNT_ID = 100;
-
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
 
@@ -70,7 +60,8 @@ void AccessibleAbilityManagerService::OnStart()
     }
 
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
+        const std::string serviceName = "AccessibleAbilityManagerService";
+        runner_ = AppExecFwk::EventRunner::Create(serviceName);
         if (!runner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
             return;
@@ -231,30 +222,30 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     return accountData->GetAccessibilityState();
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetAbilityList(
-    const uint32_t abilityTypes, const int32_t stateType)
+bool AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    std::vector<AccessibilityAbilityInfo> &infos)
 {
-    std::vector<AccessibilityAbilityInfo> infoList;
     if ((stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
         HILOG_ERROR("stateType is out of range!!");
-        return infoList;
+        return false;
     }
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
 
     if (!accountData) {
         HILOG_ERROR("Get current account data failed!!");
-        return infoList;
+        return false;
     }
 
     AbilityStateType state = static_cast<AbilityStateType>(stateType);
-    std::vector<AccessibilityAbilityInfo> abilities = accountData->GetAbilitiesByState(state);
+    std::vector<AccessibilityAbilityInfo> abilities;
+    accountData->GetAbilitiesByState(state, abilities);
     for (auto& ability : abilities) {
         if (ability.GetAccessibilityAbilityType() & static_cast<uint32_t>(abilityTypes)) {
-            infoList.push_back(ability);
+            infos.push_back(ability);
         }
     }
-    return infoList;
+    return true;
 }
 
 void AccessibleAbilityManagerService::RegisterElementOperator(
@@ -464,11 +455,11 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
     (void)accountId;
 }
 
-void AccessibleAbilityManagerService::PackageChanged(std::string& bundleName)
+void AccessibleAbilityManagerService::PackageChanged(const std::string& bundleName)
 {
     (void)bundleName;
 }
-void AccessibleAbilityManagerService::PackageRemoved(std::string& bundleName)
+void AccessibleAbilityManagerService::PackageRemoved(const std::string& bundleName)
 {
     (void)bundleName;
 }
@@ -579,7 +570,7 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     return false;
 }
 
-bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, const uint32_t capabilities)
+bool AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start");
     if (!handler_) {
@@ -597,25 +588,24 @@ bool AccessibleAbilityManagerService::EnableAbilities(const std::string name, co
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->EnableAbilities(name, capabilities);
+        bool result = accountData->EnableAbility(name, capabilities);
         UpdateAbilities();
         syncPromise.set_value(result);
         }), "TASK_ENABLE_ABILITIES");
     return syncFuture.get();
 }
 
-std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
+bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG("start");
-    std::vector<std::string> abilities;
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
-        return abilities;
+        return false;
     }
 
     std::promise<void> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &abilities]() -> void {
+    handler_->PostTask(std::bind([this, &syncPromise, &enabledAbilities]() -> void {
         HILOG_DEBUG("start");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
@@ -623,25 +613,23 @@ std::vector<std::string> AccessibleAbilityManagerService::GetEnabledAbilities()
             syncPromise.set_value();
             return;
         }
-        abilities = accountData->GetEnabledAbilities();
+        enabledAbilities = accountData->GetEnabledAbilities();
         syncPromise.set_value();
         }), "TASK_GET_ENABLE_ABILITIES");
     syncFuture.get();
 
-    return abilities;
+    return true;
 }
 
-std::vector<AccessibilityAbilityInfo> AccessibleAbilityManagerService::GetInstalledAbilities()
+bool AccessibleAbilityManagerService::GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities)
 {
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        std::vector<AccessibilityAbilityInfo> it {};
-        it = accountData->GetInstalledAbilities();
-        return it;
+        installedAbilities = accountData->GetInstalledAbilities();
+        return true;
     }
-    std::vector<AccessibilityAbilityInfo> ret {};
-    return ret;
+    return false;
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
@@ -684,7 +672,7 @@ void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnR
     accountData->RemoveCaptionPropertyCallback(remote);
 }
 
-bool AccessibleAbilityManagerService::DisableAbilities(const std::string name)
+bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     if (!handler_) {
@@ -725,13 +713,14 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
     return 0;
 }
 
-void AccessibleAbilityManagerService::PackageAdd(std::string& bundleName)
+void AccessibleAbilityManagerService::PackageAdd(const std::string& bundleName)
 {
     (void)bundleName;
 }
 
 int32_t AccessibleAbilityManagerService::GetOsAccountId()
 {
+    constexpr int32_t TEMP_ACCOUNT_ID = 100;
     return TEMP_ACCOUNT_ID;
 }
 

@@ -81,7 +81,7 @@ void AccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId,
 }
 
 void AccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId,
-    const int32_t action, const std::map<std::string, std::string> actionArguments,
+    const int32_t action, const std::map<std::string, std::string> &actionArguments,
     int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("start");

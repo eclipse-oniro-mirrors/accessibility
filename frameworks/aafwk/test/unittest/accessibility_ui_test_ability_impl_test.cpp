@@ -24,13 +24,15 @@
 using namespace testing;
 using namespace testing::ext;
 
-const static int32_t FOCUS_TYPE = 1;
-const static int32_t INDEX = 1;
-const static std::string TEST = "test";
-const static uint32_t SEQUENCE = 1;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string TEST = "test";
+    constexpr int32_t FOCUS_TYPE = 1;
+    constexpr int32_t INDEX = 1;
+    constexpr uint32_t SEQUENCE = 1;
+} // namespace
+
 class AccessibilityUITestAbilityImplTest : public ::testing::Test {
 public:
     AccessibilityUITestAbilityImplTest()
@@ -157,13 +159,13 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_001, TestSize
 }
 
 /**
- * @tc.number: GestureInject_001
- * @tc.name: GestureInject
- * @tc.desc: Test function GestureInject
+ * @tc.number: InjectGesture_001
+ * @tc.name: InjectGesture
+ * @tc.desc: Test function InjectGesture
  */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GestureInject_001, TestSize.Level1)
+HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "GestureInject_001 start";
+    GTEST_LOG_(INFO) << "InjectGesture_001 start";
 
     if (!instance_) {
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
@@ -171,9 +173,9 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GestureInject_001, TestSize.Level1)
     }
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
-    EXPECT_FALSE(instance_->GestureInject(SEQUENCE, gesturePath, listener));
+    EXPECT_FALSE(instance_->InjectGesture(SEQUENCE, gesturePath, listener));
 
-    GTEST_LOG_(INFO) << "GestureInject_001 end";
+    GTEST_LOG_(INFO) << "InjectGesture_001 end";
 }
 
 /**
@@ -229,7 +231,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_001, TestSize.Level1)
         return;
     }
     std::vector<AccessibilityWindowInfo> res {};
-    res = instance_->GetWindows();
+    instance_->GetWindows(res);
     EXPECT_EQ(0, res.size());
     GTEST_LOG_(INFO) << "GetWindows_001 end";
 }

@@ -77,14 +77,14 @@ napi_value NAccessibilityEventInfo::GetSource(napi_env env, napi_callback_info i
     napi_create_async_work(
         env, nullptr, resource,
         [](napi_env env, void* data) {
-            NAccessibilityEventInfoData *callbackInfo = (NAccessibilityEventInfoData*)data;
+            NAccessibilityEventInfoData *callbackInfo = static_cast<NAccessibilityEventInfoData*>(data);
             sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
             if (abilityClient) {
                 callbackInfo->result_ = abilityClient->GetSource(callbackInfo->eventInfo_, callbackInfo->nodeInfo_);
             }
         },
         [](napi_env env, napi_status status, void* data) {
-            NAccessibilityEventInfoData* callbackInfo = (NAccessibilityEventInfoData*)data;
+            NAccessibilityEventInfoData* callbackInfo = static_cast<NAccessibilityEventInfoData*>(data);
             napi_value jsReturnValue = 0;
             napi_value argv[ARGS_SIZE_TWO] = {0};
             napi_value callback = 0;

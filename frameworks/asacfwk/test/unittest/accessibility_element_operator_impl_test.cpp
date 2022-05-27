@@ -21,16 +21,18 @@
 using namespace testing;
 using namespace testing::ext;
 
-const static int32_t ELEMENT_ID = 1;
-const static int32_t REQUEST_ID = 1;
-const static int32_t MODE = 0;
-const static std::string TEST = "test";
-const static int32_t FOCUS_TYPE = 1;
-const static int32_t DIRECTION = 1;
-const static int32_t ACTION = 1;
-
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string TEST = "test";
+    constexpr int32_t ELEMENT_ID = 1;
+    constexpr int32_t REQUEST_ID = 1;
+    constexpr int32_t MODE = 0;
+    constexpr int32_t FOCUS_TYPE = 1;
+    constexpr int32_t DIRECTION = 1;
+    constexpr int32_t ACTION = 1;
+} // namespace
+
 class AccessibilityElementOperatorImplUnitTest : public ::testing::Test {
 public:
     sptr<AccessibilityElementOperatorImpl> mockStub_ = nullptr;

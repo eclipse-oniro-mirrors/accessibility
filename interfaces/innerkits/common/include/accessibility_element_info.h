@@ -40,7 +40,7 @@ public:
      * @param description The description message of action.
      * @return
      */
-    AccessibleAction(ActionType actionType, std::string description);
+    AccessibleAction(ActionType actionType, const std::string &description);
 
     /**
      * @brief Gets the action type.
@@ -450,8 +450,8 @@ protected:
 */
 class AccessibilityElementInfo {
 public:
-    static const int32_t UNDEFINED_ACCESSIBILITY_ID = -1;
-    static const int32_t MAX_SIZE = 50;
+    static constexpr int32_t UNDEFINED_ACCESSIBILITY_ID = -1;
+    static constexpr int32_t MAX_SIZE = 50;
 
     /**
      * @brief Construct
@@ -496,7 +496,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<int32_t> GetChildIds() const;
+    const std::vector<int32_t> &GetChildIds() const;
 
     /**
      * @brief Add child node information
@@ -523,7 +523,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::vector<AccessibleAction> GetActionList() const;
+    const std::vector<AccessibleAction> &GetActionList() const;
 
     /**
      * @brief Add action on the component
@@ -1099,7 +1099,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetDescriptionInfo(const std::string contentDescription);
+    void SetDescriptionInfo(const std::string &contentDescription);
 
     /**
      * @brief Set the resource name of the component.
@@ -1415,7 +1415,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetInspectorKey(const std::string key);
+    void SetInspectorKey(const std::string &key);
 
     /**
      * @brief Get InspectorKey

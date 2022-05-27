@@ -105,7 +105,7 @@ public:
      * @return
      */
     virtual void ExecuteAction(const int32_t elementId, const int32_t action,
-        const std::map<std::string, std::string> actionArguments,
+        const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**

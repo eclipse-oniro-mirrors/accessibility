@@ -42,7 +42,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uin
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -76,7 +76,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -102,6 +102,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
         return;
     }
 }
+
 void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(const float brightnessDiscount)
 {
     HILOG_DEBUG("start");
@@ -109,7 +110,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -135,6 +136,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
         return;
     }
 }
+
 void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const uint32_t contentTimeout)
 {
     HILOG_DEBUG("start");
@@ -142,7 +144,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -168,15 +170,15 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
         return;
     }
 }
-void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChanged(
-    const AccessibilityConfig::DALTONIZATION_TYPE filterType)
+
+void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChanged(const uint32_t filterType)
 {
     HILOG_DEBUG("start");
 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -202,6 +204,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
         return;
     }
 }
+
 void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const int32_t mouseAutoClick)
 {
     HILOG_DEBUG("start");
@@ -209,7 +212,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -235,6 +238,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
         return;
     }
 }
+
 void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const std::string &shortkeyTarget)
 {
     HILOG_DEBUG("start");
@@ -242,7 +246,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     int32_t error = NO_ERROR;
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");

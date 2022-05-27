@@ -23,56 +23,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-extern const std::string AccessibleAbility_JSON_FILE_PATH;
-extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_ABILITY_TYPES;
-extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES;
-extern const std::string AccessibleAbility_JSON_KEY_SETTINGS_ABILITY;
-extern const std::string AccessibleAbility_JSON_KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE;
-extern const std::string AccessibleAbility_Config_JSON_FILE_PATH;
-
-// The json value of event types
-extern const std::string EVENT_TYPES_JSON_VALUE_CLICK;
-extern const std::string EVENT_TYPES_JSON_VALUE_LONG_CLICK;
-extern const std::string EVENT_TYPES_JSON_VALUE_SELECT;
-extern const std::string EVENT_TYPES_JSON_VALUE_FOCUS;
-extern const std::string EVENT_TYPES_JSON_VALUE_TEXT_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_PAGE_STATE_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_NOTIFICATION_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_HOVER_ENTER;
-extern const std::string EVENT_TYPES_JSON_VALUE_HOVER_EXIT;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_BEGIN;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_END;
-extern const std::string EVENT_TYPES_JSON_VALUE_PAGE_CONTENT_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_SCROLL;
-extern const std::string EVENT_TYPES_JSON_VALUE_TEXT_SELECTION_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_PUBLIC_NOTICE;
-extern const std::string EVENT_TYPES_JSON_VALUE_ACCESSIBILITY_FOCUS;
-extern const std::string EVENT_TYPES_JSON_VALUE_ACCESSIBILITY_FOCUS_CLEAR;
-extern const std::string EVENT_TYPES_JSON_VALUE_TEXT_MOVE_UNIT;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_GESTURE_BEGIN;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_GUIDE_GESTURE_END;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_BEGIN;
-extern const std::string EVENT_TYPES_JSON_VALUE_TOUCH_END;
-extern const std::string EVENT_TYPES_JSON_VALUE_WINDOW_UPDATE;
-extern const std::string EVENT_TYPES_JSON_VALUE_INTERRUPT;
-extern const std::string EVENT_TYPES_JSON_VALUE_GESTURE_EVENT;
-extern const std::string EVENT_TYPES_JSON_VALUE_ALL;
-
-// The json value of accessibilityAbility type
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN;
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_HAPIC;
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_AUDIBLE;
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_VISUAL;
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_GENERIC;
-extern const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_ALL;
-
-// The json value of capabilities
-extern const std::string CAPABILITIES_JSON_VALUE_RETRIEVE;
-extern const std::string CAPABILITIES_JSON_VALUE_TOUCH_GUIDE;
-extern const std::string CAPABILITIES_JSON_VALUE_KEY_EVENT_OBSERVER;
-extern const std::string CAPABILITIES_JSON_VALUE_ZOOM;
-extern const std::string CAPABILITIES_JSON_VALUE_GESTURE;
-
 class AccessibilityConfigParse {
 public:
     static void Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, AccessibilityAbilityInitParams &initParams);

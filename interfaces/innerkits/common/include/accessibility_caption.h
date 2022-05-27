@@ -25,9 +25,9 @@ public:
     CaptionProperty() = default;
     ~CaptionProperty() = default;
 
-    bool CheckProperty(const std::string& property);
+    bool CheckProperty(const std::string &property);
 
-    void SetFontFamily(std::string family);
+    void SetFontFamily(const std::string &family);
     std::string GetFontFamily() const;
 
     int32_t GetFontScale() const;
@@ -36,8 +36,8 @@ public:
     void SetFontColor(uint32_t color);
     uint32_t GetFontColor() const;
 
-    void SetFontEdgeType(std::string type);
-    std::string  GetFontEdgeType() const;
+    void SetFontEdgeType(const std::string &type);
+    std::string GetFontEdgeType() const;
 
     void SetWindowColor(uint32_t color);
     uint32_t GetWindowColor() const;

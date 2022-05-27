@@ -41,7 +41,7 @@ public:
     virtual void OnAudioBalanceChanged(const float audioBalance) override;
     virtual void OnBrightnessDiscountChanged(const float brightnessDiscount) override;
     virtual void OnContentTimeoutChanged(const uint32_t contentTimeout) override;
-    virtual void OnDaltonizationColorFilterChanged(const AccessibilityConfig::DALTONIZATION_TYPE filterType) override;
+    virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override;
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override;
 

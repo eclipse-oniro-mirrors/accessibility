@@ -82,13 +82,13 @@ std::string AccessibilityAbilityInfo::GetPackageName()
     return bundleName_;
 }
 
-void AccessibilityAbilityInfo::SetPackageName(std::string bundleName)
+void AccessibilityAbilityInfo::SetPackageName(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
     bundleName_ = bundleName;
 }
 
-std::vector<std::string> AccessibilityAbilityInfo::GetFilterBundleNames()
+const std::vector<std::string> &AccessibilityAbilityInfo::GetFilterBundleNames() const
 {
     HILOG_DEBUG("start.");
     return targetBundleNames_;
