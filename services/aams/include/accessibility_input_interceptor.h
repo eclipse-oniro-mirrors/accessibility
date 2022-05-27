@@ -81,7 +81,7 @@ private:
     void CreateKeyEventTransmitters();
     void SetNextEventTransmitter(sptr<EventTransmission> &header, sptr<EventTransmission> &current,
         const sptr<EventTransmission> &next);
-    void CreateInterceptor();
+    void UpdateInterceptor();
     void DestroyInterceptor();
 
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
