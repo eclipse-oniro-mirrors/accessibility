@@ -30,12 +30,17 @@ AccessibilityConfig::Impl::Impl()
         return;
     }
     captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
-    serviceProxy_->RegisterCaptionObserver(captionObserver_);
-
+    if (captionObserver_) {
+        serviceProxy_->RegisterCaptionObserver(captionObserver_);
+    }
     enableAbilityListsObserverStub_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverStubImpl(*this);
-    serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserverStub_);
+    if (enableAbilityListsObserverStub_) {
+        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserverStub_);
+    }
     configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
-    serviceProxy_->RegisterConfigObserver(configObserver_);
+    if (configObserver_) {
+        serviceProxy_->RegisterConfigObserver(configObserver_);
+    }
 }
 
 bool AccessibilityConfig::Impl::ConnectToService()
