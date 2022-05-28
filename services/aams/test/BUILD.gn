@@ -236,6 +236,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
   module_out_path = module_output_path
   sources = [
     "../src/accessibility_common_event.cpp",
+    "../src/accessibility_dumper.cpp",
     "../src/accessible_ability_manager_service.cpp",
     "../src/json_utils.cpp",
     "//base/accessibility/frameworks/common/src/accessibility_caption.cpp",
@@ -303,6 +304,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "//base/accessibility/frameworks/common/src/accessibility_event_info.cpp",
     "//base/accessibility/frameworks/common/src/accessibility_window_info.cpp",
     "//base/accessibility/services/aams/src/accessibility_common_event.cpp",
+    "//base/accessibility/services/aams/src/accessibility_dumper.cpp",
     "//base/accessibility/services/aams/src/accessibility_event_transmission.cpp",
     "//base/accessibility/services/aams/src/accessible_ability_manager_service.cpp",
     "//base/accessibility/services/interface/src/accessible_ability_channel_proxy.cpp",
@@ -416,6 +418,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "../src/json_utils.cpp",
     "//base/accessibility/services/aams/src/accessibility_account_data.cpp",
     "//base/accessibility/services/aams/src/accessibility_common_event.cpp",
+    "//base/accessibility/services/aams/src/accessibility_dumper.cpp",
     "//base/accessibility/services/aams/src/accessibility_event_transmission.cpp",
     "//base/accessibility/services/aams/src/accessible_ability_channel.cpp",
     "//base/accessibility/services/aams/src/accessible_ability_connection.cpp",
@@ -474,6 +477,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_account_data.cpp",
     "../src/accessibility_common_event.cpp",
     "../src/accessibility_display_manager.cpp",
+    "../src/accessibility_dumper.cpp",
     "../src/accessibility_event_transmission.cpp",
     "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_input_interceptor.cpp",

@@ -176,7 +176,7 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 {
     HILOG_DEBUG("dump AccessibilityManagerServiceInfo");
     if (!accessibilityDumper_) {
-        accessibilityDumper_ = new (std::nothrow)AccessibilityDumper();
+        accessibilityDumper_ = new(std::nothrow) AccessibilityDumper();
         if (!accessibilityDumper_) {
             HILOG_ERROR("accessibilityDumper_ is nullptr");
             return -1;

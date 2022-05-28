@@ -68,6 +68,7 @@ ohos_unittest("accessible_ability_test") {
     "//base/accessibility/frameworks/common/src/accessibility_gesture_inject_path.cpp",
     "//base/accessibility/frameworks/common/src/accessibility_window_info.cpp",
     "//base/accessibility/services/aams/src/accessibility_display_manager.cpp",
+    "//base/accessibility/services/aams/src/accessibility_dumper.cpp",
     "//base/accessibility/services/aams/src/accessible_ability_manager_service.cpp",
     "//base/accessibility/services/aams/src/accessible_ability_manager_service_event_handler.cpp",
     "//base/accessibility/services/aams/test/mock/src/mock_accessibility_account_data.cpp",

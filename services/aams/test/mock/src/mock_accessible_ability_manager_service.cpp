@@ -155,6 +155,13 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
     HILOG_INFO("OnRemoveSystemAbility AccessibleAbilityManagerService");
 }
 
+int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
+{
+    HILOG_DEBUG("dump AccessibilityManagerServiceInfo");
+    return 0;
+}
+
+
 bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG("start");
