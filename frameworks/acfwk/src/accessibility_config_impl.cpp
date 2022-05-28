@@ -66,7 +66,9 @@ bool AccessibilityConfig::Impl::ConnectToService()
         deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
     }
 
-    if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
+    if (!deathRecipient_) {
+        HILOG_ERROR("deathRecipient_ is null");
+    } else if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
         HILOG_ERROR("Failed to add death recipient");
     }
 

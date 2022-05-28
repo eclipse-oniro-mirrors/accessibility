@@ -126,8 +126,8 @@ class NAccessibilityConfig {
 public:
     static napi_value EnableAbility(napi_env env, napi_callback_info info);
     static napi_value DisableAbility(napi_env env, napi_callback_info info);
-    static napi_value SubscribeEnableAbilityListsObserver(napi_env env, napi_value (&args)[ARGS_SIZE_TWO]);
-    static napi_value UnsubscribeEnableAbilityListsObserver(napi_env env);
+    static napi_value SubscribeState(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
     static std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_;
     static std::vector<std::shared_ptr<ConfigListener>> configListeners_;
 private:

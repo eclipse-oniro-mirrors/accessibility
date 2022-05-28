@@ -19,7 +19,6 @@
 #include <unistd.h>
 
 #include "hilog_wrapper.h"
-#include "napi_accessibility_config.h"
 #include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
 #include "napi_accessibility_gesture_path.h"
@@ -51,8 +50,6 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getTouchGuideState", NAccessibilityClient::GetTouchGuideState),
         DECLARE_NAPI_FUNCTION("getGestureState", NAccessibilityClient::GetGestureState),
         DECLARE_NAPI_FUNCTION("getKeyEventObserverState", NAccessibilityClient::GetKeyEventObserverState),
-        DECLARE_NAPI_FUNCTION("enableAbility", NAccessibilityConfig::EnableAbility),
-        DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 

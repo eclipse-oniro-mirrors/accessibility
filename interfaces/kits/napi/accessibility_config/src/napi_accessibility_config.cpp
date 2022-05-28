@@ -156,12 +156,24 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     return promise;
 }
 
-napi_value NAccessibilityConfig::SubscribeEnableAbilityListsObserver(napi_env env, napi_value (&args)[ARGS_SIZE_TWO])
+napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value args[ARGS_SIZE_TWO] = {0};
+    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    NAPI_ASSERT(env, status == napi_ok, "Failed to get callback info");
+
+    std::string observerType = "";
+    ParseString(env, observerType, args[PARAM0]);
+    if (std::strcmp(observerType.c_str(), "enableAbilityListsStateChanged")) {
+        HILOG_ERROR("args[PARAM0] is wrong[%{public}s]", observerType.c_str());
+        return nullptr;
+    }
+
     std::shared_ptr<EnableAbilityListsObserver> observer = std::make_shared<EnableAbilityListsObserver>();
     napi_ref callback = nullptr;
-    napi_create_reference(env, args[1], 1, &callback);
+    napi_create_reference(env, args[PARAM1], 1, &callback);
     observer->SetCallBack(callback);
     observer->SetEnv(env);
     enableAbilityListsObservers_.push_back(observer);
@@ -172,9 +184,20 @@ napi_value NAccessibilityConfig::SubscribeEnableAbilityListsObserver(napi_env en
     return nullptr;
 }
 
-napi_value NAccessibilityConfig::UnsubscribeEnableAbilityListsObserver(napi_env env)
+napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start and observer size%{public}zu", enableAbilityListsObservers_.size());
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value args[ARGS_SIZE_TWO] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+
+    std::string observerType = "";
+    ParseString(env, observerType, args[PARAM0]);
+    if (std::strcmp(observerType.c_str(), "enableAbilityListsStateChanged")) {
+        HILOG_ERROR("args[PARAM0] is wrong[%{public}s]", observerType.c_str());
+        return nullptr;
+    }
+
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if ((*iter)->GetEnv() == env) {
             auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();

@@ -16,10 +16,8 @@
 #include "napi_accessibility_system_ability_client.h"
 
 #include <uv.h>
-#include "accessibility_config.h"
 #include "accessibility_state_event.h"
 #include "hilog_wrapper.h"
-#include "napi_accessibility_config.h"
 #include "napi_accessibility_utils.h"
 
 using namespace OHOS;
@@ -290,11 +288,6 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     NAPI_ASSERT(env, status == napi_ok, "Failed to get event type");
 
     std::string eventType = GetStringFromNAPI(env, args[0]);
-    if (!std::strcmp(eventType.c_str(), "enableAbilityListsStateChanged")) {
-        NAccessibilityConfig::SubscribeEnableAbilityListsObserver(env, args);
-        return nullptr;
-    }
-
     uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
@@ -323,11 +316,6 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
-    if (!std::strcmp(eventType.c_str(), "enableAbilityListsStateChanged")) {
-        NAccessibilityConfig::UnsubscribeEnableAbilityListsObserver(env);
-        return nullptr;
-    }
-
     uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
     if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
         type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
