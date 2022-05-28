@@ -22,14 +22,14 @@
 namespace OHOS {
 namespace Accessibility {
 struct AccessibilityAbilityInitParams {
-    std::string bundleName = "";
-    std::string description = "";
-    std::string moduleName = "";
-    std::string name = "";
-    std::string rationale = "";
-    std::string settingsAbility = "";
-    uint32_t capabilities = 0;
-    uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
+    std::string bundleName;
+    std::string description;
+    std::string moduleName;
+    std::string name;
+    std::string rationale;
+    std::string settingsAbility;
+    uint32_t capabilities;
+    uint32_t abilityTypes;
 };
 
 class AccessibilityAbilityInfo {
