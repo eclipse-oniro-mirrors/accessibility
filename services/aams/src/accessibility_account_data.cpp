@@ -259,12 +259,10 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string name)
     int errCode = pref_->PutString("BundleName/AbilityName/Capabilities", stringOut);
     if (errCode) {
         HILOG_ERROR("pref_->PutString() error(%{public}d).", errCode);
+        return;
     }
 
-    errCode = pref_->FlushSync();
-    if (errCode) {
-        HILOG_ERROR("pref_->FlushSync() error(%{public}d).", errCode);
-    }
+    pref_->Flush();
 }
 
 void AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
@@ -514,7 +512,7 @@ bool AccessibilityAccountData::SetCaptionPropertyPref()
     pref_->PutInt("backgroundColor", (int)BACKGROUNDCOLOR);
     pref_->PutInt("windowColor", (int)WINDOWCOLOR);
     pref_->PutInt("fontScale", FONTSCALE);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -598,7 +596,7 @@ bool AccessibilityAccountData::SetStatePref(int32_t type)
             break;
     }
 
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -680,7 +678,7 @@ void AccessibilityAccountData::UpdateEnabledFromPref()
     std::string stringOut = "";
     VectorToString(vecvalue, stringOut);
     pref_->PutString("BundleName/AbilityName/Capabilities", stringOut);
-    pref_->FlushSync();
+    pref_->Flush();
 }
 
 bool AccessibilityAccountData::EnableAbilities(const std::string name, const uint32_t capabilities)
@@ -1042,7 +1040,7 @@ bool AccessibilityAccountData::SetMouseAutoClick(const int32_t time)
     }
 
     pref_->PutInt("MouseAutoClick", mouseAutoClick_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -1057,7 +1055,7 @@ bool AccessibilityAccountData::SetShortkeyTarget(const std::string &name)
     }
 
     pref_->PutString("ShortkeyTarget", shortkeyTarget_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -1107,7 +1105,7 @@ bool AccessibilityAccountData::SetDaltonizationColorFilter(const uint32_t filter
     }
 
     pref_->PutInt("daltonizationColorFilter", (int)daltonizationColorFilter_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -1121,7 +1119,7 @@ bool AccessibilityAccountData::SetContentTimeout(const uint32_t time)
     }
 
     pref_->PutInt("contentTimeout", (int)contentTimeout_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -1135,7 +1133,7 @@ bool AccessibilityAccountData::SetBrightnessDiscount(const float discount)
     }
 
     pref_->PutFloat("brightnessDiscount", brightnessDiscount_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
@@ -1149,7 +1147,7 @@ bool AccessibilityAccountData::SetAudioBalance(const float balance)
     }
 
     pref_->PutFloat("audioBalance", audioBalance_);
-    pref_->FlushSync();
+    pref_->Flush();
     return true;
 }
 
