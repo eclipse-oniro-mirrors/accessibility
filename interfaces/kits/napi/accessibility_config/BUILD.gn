@@ -11,21 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/accessibility/accessibility_aafwk.gni")
 import("//build/ohos.gni")
 
-ohos_shared_library("accessibility") {
+ohos_shared_library("config_napi") {
   include_dirs = [
-    "//foundation/arkui/napi/interfaces/kits",
-    "//third_party/node/src",
-    "//utils/system/safwk/native/include",
     "//base/accessibility/common/log/include",
-    "//base/accessibility/frameworks/aafwk/include",
-    "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//base/accessibility/frameworks/asacfwk/include",
-    "//base/accessibility/util/include",
+    "//base/accessibility/interfaces/kits/napi/include",
     "./include",
-    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [
@@ -34,27 +26,21 @@ ohos_shared_library("accessibility") {
   ]
 
   sources = [
-    "./src/napi_accessibility_element.cpp",
-    "./src/napi_accessibility_event_info.cpp",
-    "./src/napi_accessibility_gesture_path.cpp",
-    "./src/napi_accessibility_gesture_pos.cpp",
-    "./src/napi_accessibility_info.cpp",
-    "./src/napi_accessibility_system_ability_client.cpp",
-    "./src/napi_accessibility_utils.cpp",
-    "./src/napi_accessibility_window_info.cpp",
+    "./src/napi_accessibility_config.cpp",
     "./src/native_module.cpp",
   ]
 
   configs = []
 
   deps = [
-    "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "${aafwk_kits_path}/appkit:appkit_native",
     "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
     "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//base/accessibility/interfaces/kits/napi:accessibility",
     "//base/accessibility/services/interface:aams_interface",
+    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",
     "//utils/native/base:utils",
   ]
@@ -70,17 +56,7 @@ ohos_shared_library("accessibility") {
     "ipc:ipc_core",
   ]
 
-  relative_install_dir = "module"
+  relative_install_dir = "module/accessibility"
   subsystem_name = "barrierfree"
   part_name = "accessibility"
-}
-
-group("napi_packages") {
-  deps = [
-    ":accessibility",
-    "//base/accessibility/interfaces/kits/napi/accessibility_config:config_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextension_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
-  ]
 }

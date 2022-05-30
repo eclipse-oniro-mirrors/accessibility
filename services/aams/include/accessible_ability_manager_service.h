@@ -240,6 +240,8 @@ private:
     void InitCommonEventDependence();
     void InitDisplayDependence();
     void InitWindowDependence();
+    bool InnerEnableAbility(const std::string &name, const uint32_t capabilities);
+    bool InnerDisableAbility(const std::string &name);
 
     sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);
     void ClearFocus(int32_t windowId);

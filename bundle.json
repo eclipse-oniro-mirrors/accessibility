@@ -44,8 +44,7 @@
         "//base/accessibility/interfaces/innerkits/common:accessibility_common",
         "//base/accessibility/interfaces/kits/napi:napi_packages",
         "//base/accessibility/sa_profile:aams_sa_profile",
-        "//base/accessibility/sa_profile:accessibility_cfg",
-        "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig"
+        "//base/accessibility/sa_profile:accessibility_cfg"
       ],
       "inner_kits": [
         {
@@ -102,7 +101,8 @@
         "//base/accessibility/services/test:moduletest",
         "//base/accessibility/services/aams/test:unittest",
         "//base/accessibility/frameworks/aafwk/test:unittest",
-        "//base/accessibility/frameworks/asacfwk/test:unittest"
+        "//base/accessibility/frameworks/asacfwk/test:unittest",
+        "//base/accessibility/interfaces/innerkits/test/fuzztest:fuzztest"
       ]
     }
   }

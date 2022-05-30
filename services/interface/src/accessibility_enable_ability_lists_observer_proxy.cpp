@@ -41,7 +41,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write interface token failed");

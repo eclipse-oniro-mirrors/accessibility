@@ -30,17 +30,25 @@ AccessibilityConfig::Impl::Impl()
         return;
     }
     captionObserver_ = new(std::nothrow) AccessibleAbilityManagerCaptionObserverImpl(*this);
-    if (captionObserver_) {
-        serviceProxy_->RegisterCaptionObserver(captionObserver_);
+    if (!captionObserver_) {
+        HILOG_ERROR("Create captionObserver_ fail.");
+        return;
     }
+    serviceProxy_->RegisterCaptionObserver(captionObserver_);
+
     enableAbilityListsObserverStub_ = new(std::nothrow) AccessibilityEnableAbilityListsObserverStubImpl(*this);
-    if (enableAbilityListsObserverStub_) {
-        serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserverStub_);
+    if (!enableAbilityListsObserverStub_) {
+        HILOG_ERROR("Create enableAbilityListsObserverStub_ fail.");
+        return;
     }
+    serviceProxy_->RegisterEnableAbilityListsObserver(enableAbilityListsObserverStub_);
+
     configObserver_ = new(std::nothrow) AccessibleAbilityManagerConfigObserverImpl(*this);
-    if (configObserver_) {
-        serviceProxy_->RegisterConfigObserver(configObserver_);
+    if (!configObserver_) {
+        HILOG_ERROR("Create configObserver_ fail.");
+        return;
     }
+    serviceProxy_->RegisterConfigObserver(configObserver_);
 }
 
 bool AccessibilityConfig::Impl::ConnectToService()
@@ -64,6 +72,10 @@ bool AccessibilityConfig::Impl::ConnectToService()
 
     if (!deathRecipient_) {
         deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+        if (!deathRecipient_) {
+            HILOG_ERROR("Create deathRecipient_ fail.");
+            return false;
+        }
     }
 
     if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {

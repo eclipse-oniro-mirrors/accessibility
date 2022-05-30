@@ -666,17 +666,23 @@ bool AccessibleAbilityManagerService::EnableAbility(const std::string &name, con
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, &name, &capabilities]() -> void {
         HILOG_DEBUG("start");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        bool result = accountData->EnableAbility(name, capabilities);
-        UpdateAbilities();
+        bool result = InnerEnableAbility(name, capabilities);
         syncPromise.set_value(result);
         }), "TASK_ENABLE_ABILITIES");
     return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::InnerEnableAbility(const std::string &name, const uint32_t capabilities)
+{
+    HILOG_DEBUG("start");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    bool result = accountData->EnableAbility(name, capabilities);
+    UpdateAbilities();
+    return result;
 }
 
 bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
@@ -743,17 +749,23 @@ bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
         HILOG_DEBUG("start");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(false);
-            return;
-        }
-        accountData->RemoveEnabledAbility(name);
-        UpdateAbilities();
-        syncPromise.set_value(true);
+        bool result = InnerDisableAbility(name);
+        syncPromise.set_value(result);
         }), "TASK_DISABLE_ABILITIES");
     return syncFuture.get();
+}
+
+bool AccessibleAbilityManagerService::InnerDisableAbility(const std::string &name)
+{
+    HILOG_DEBUG("start");
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return false;
+    }
+    accountData->RemoveEnabledAbility(name);
+    UpdateAbilities();
+    return true;
 }
 
 RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject> &obj)
@@ -2085,7 +2097,7 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
     }
     uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
         CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-    bool result = EnableAbility(targetAbility, capabilities);
+    bool result = InnerEnableAbility(targetAbility, capabilities);
     HILOG_DEBUG("result is %{public}d", result);
     return result;
 }
@@ -2105,7 +2117,7 @@ bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
         HILOG_ERROR("target ability is null");
         return false;
     }
-    bool result = DisableAbility(targetAbility);
+    bool result = InnerDisableAbility(targetAbility);
     HILOG_DEBUG("result is %{public}d", result);
     return result;
 }
