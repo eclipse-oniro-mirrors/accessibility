@@ -162,7 +162,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if(status != napi_ok) {
+    if (status != napi_ok) {
         HILOG_ERROR("Failed to get callback info");
         return nullptr;
     }
@@ -193,7 +193,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if(status != napi_ok) {
+    if (status != napi_ok) {
         HILOG_ERROR("Failed to get callback info");
         return nullptr;
     }
