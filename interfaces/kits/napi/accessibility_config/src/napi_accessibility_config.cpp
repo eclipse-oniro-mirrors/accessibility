@@ -162,7 +162,10 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    NAPI_ASSERT(env, status == napi_ok, "Failed to get callback info");
+    if(status != napi_ok) {
+        HILOG_ERROR("Failed to get callback info");
+        return nullptr;
+    }
 
     std::string observerType = "";
     ParseString(env, observerType, args[PARAM0]);
@@ -189,7 +192,11 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     HILOG_INFO("start and observer size%{public}zu", enableAbilityListsObservers_.size());
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if(status != napi_ok) {
+        HILOG_ERROR("Failed to get callback info");
+        return nullptr;
+    }
 
     std::string observerType = "";
     ParseString(env, observerType, args[PARAM0]);
