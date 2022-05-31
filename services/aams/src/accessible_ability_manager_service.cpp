@@ -172,6 +172,19 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
     HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
 
+int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
+{
+    HILOG_DEBUG("dump AccessibilityManagerServiceInfo");
+    if (!accessibilityDumper_) {
+        accessibilityDumper_ = new(std::nothrow) AccessibilityDumper();
+        if (!accessibilityDumper_) {
+            HILOG_ERROR("accessibilityDumper_ is nullptr");
+            return -1;
+        }
+    }
+    return accessibilityDumper_->Dump(fd, args);
+}
+
 void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &uiEvent)
 {
     HILOG_DEBUG("start");
