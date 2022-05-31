@@ -165,21 +165,21 @@ public:
     bool SetAudioMonoState(const bool state);
     bool SetAudioBalance(const float balance);
 
-    bool GetScreenMagnificationState(bool &state);
-    bool GetShortKeyState(bool &state);
-    bool GetMouseKeyState(bool &state);
-    bool GetCaptionState(bool &state);
-    bool GetCaptionProperty(CaptionProperty &caption);
-    bool GetMouseAutoClick(int32_t &time);
-    bool GetShortkeyTarget(std::string &name);
-    bool GetInvertColorState(bool &state);
-    bool GetHighContrastTextState(bool &state);
-    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
-    bool GetContentTimeout(uint32_t &timer);
-    bool GetAnimationOffState(bool &state);
-    bool GetBrightnessDiscount(float &brightness);
-    bool GetAudioMonoState(bool &state);
-    bool GetAudioBalance(float &balance);
+    bool GetScreenMagnificationState(bool &state) const;
+    bool GetShortKeyState(bool &state) const;
+    bool GetMouseKeyState(bool &state) const;
+    bool GetCaptionState(bool &state) const;
+    bool GetCaptionProperty(CaptionProperty &caption) const;
+    bool GetMouseAutoClick(int32_t &time) const;
+    bool GetShortkeyTarget(std::string &name) const;
+    bool GetInvertColorState(bool &state) const;
+    bool GetHighContrastTextState(bool &state) const;
+    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const;
+    bool GetContentTimeout(uint32_t &timer) const;
+    bool GetAnimationOffState(bool &state) const;
+    bool GetBrightnessDiscount(float &brightness) const;
+    bool GetAudioMonoState(bool &state) const;
+    bool GetAudioBalance(float &balance) const;
 
 private:
     class Impl;

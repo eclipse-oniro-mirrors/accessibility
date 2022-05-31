@@ -42,7 +42,7 @@ public:
      * @param
      * @return Return all positions of this gesture path.
      */
-    const std::vector<AccessibilityGesturePosition> &GetPositions();
+    const std::vector<AccessibilityGesturePosition> &GetPositions() const;
 
     /**
      * @brief Sets the duration for this gesture path to continue.

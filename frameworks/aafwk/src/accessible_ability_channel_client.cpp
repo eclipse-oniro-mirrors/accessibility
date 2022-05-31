@@ -149,7 +149,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
 }
 
 bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+    std::vector<AccessibilityWindowInfo> &windows) const
 {
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}ju]", channelId_, displayId);
     if (proxy_) {

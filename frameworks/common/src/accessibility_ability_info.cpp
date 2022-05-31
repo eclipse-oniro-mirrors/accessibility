@@ -46,7 +46,7 @@ uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
     return abilityTypes_;
 }
 
-uint32_t AccessibilityAbilityInfo::GetCapabilityValues()
+uint32_t AccessibilityAbilityInfo::GetCapabilityValues() const
 {
     HILOG_DEBUG("start.");
     return capabilities_;
@@ -64,7 +64,7 @@ uint32_t AccessibilityAbilityInfo::GetEventTypes()
     return eventTypes_;
 }
 
-std::string AccessibilityAbilityInfo::GetId()
+std::string AccessibilityAbilityInfo::GetId() const
 {
     HILOG_DEBUG("start.");
     return bundleName_ + "/" + name_;
