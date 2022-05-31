@@ -726,7 +726,7 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
 }
 
 uint32_t AccessibilityAccountData::GetConfigCapabilitiesFromBms(const std::string &bundleName,
-    const std::string &abilityName)
+    const std::string &abilityName) const
 {
     HILOG_DEBUG("start");
     sptr<AppExecFwk::IBundleMgr> bmsMgr =
@@ -996,7 +996,7 @@ bool AccessibilityAccountData::SetAbilityCapabilities(const std::string &name, c
     return false;
 }
 
-uint32_t AccessibilityAccountData::GetAbilityCapabilities(const std::string &name)
+uint32_t AccessibilityAccountData::GetAbilityCapabilities(const std::string &name) const
 {
     HILOG_DEBUG("start. name[%{public}s]", name.c_str());
     for (auto &installedAbility : installedAbilities_) {

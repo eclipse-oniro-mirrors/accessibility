@@ -445,9 +445,9 @@ private:
     bool SetCaptionPropertyPref();
     std::string StateChange(bool state);
 
-    uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName);
+    uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
-    uint32_t GetAbilityCapabilities(const std::string &name);
+    uint32_t GetAbilityCapabilities(const std::string &name) const;
 
     int32_t id_;
     bool isEnabled_ = false;

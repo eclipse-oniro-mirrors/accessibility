@@ -62,7 +62,7 @@ public:
      * @param
      * @return Return the types of the capabilities.
      */
-    uint32_t GetCapabilityValues();
+    uint32_t GetCapabilityValues() const;
 
     /**
      * @brief Obtains the description of the accessible ability.
@@ -83,7 +83,7 @@ public:
      * @param
      * @return Return the id of the accessible ability.
      */
-    std::string GetId();
+    std::string GetId() const;
 
     /**
      * @brief Obtains the name of the accessible ability.

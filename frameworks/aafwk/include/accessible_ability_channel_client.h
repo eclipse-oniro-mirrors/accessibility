@@ -115,7 +115,7 @@ public:
      * @param windows The information of windows.
      * @return Return true if obtains windowInfo successfully, else return false.
      */
-    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
+    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
 
     /**
      * @brief Find the node information filtered by text.
