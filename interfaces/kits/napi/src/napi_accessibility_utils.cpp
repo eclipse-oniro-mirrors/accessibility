@@ -60,7 +60,12 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
         HILOG_INFO("napi_typeof error and status is %{public}d", status);
         return false;
     }
-    NAPI_ASSERT(env, valuetype == napi_string, "Wrong argument type. String expected.");
+
+    if (valuetype != napi_string) {
+        HILOG_ERROR("Wrong argument type. String expected.");
+        return false;
+    }
+
     param = GetStringFromNAPI(env, args);
     HILOG_INFO("param=%{public}s.", param.c_str());
     return true;
@@ -76,7 +81,12 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
         return false;
     }
     HILOG_INFO("param=%{public}d.", valuetype);
-    NAPI_ASSERT(env, valuetype == napi_number, "Wrong argument type. uint32 expected.");
+
+    if (valuetype != napi_number) {
+        HILOG_ERROR("Wrong argument type. uint32 expected.");
+        return false;
+    }
+
     napi_get_value_uint32(env, args, &param);
     return true;
 }
