@@ -83,7 +83,7 @@ static size_t GenerateGridInfo(OHOS::Accessibility::GridInfo &grid, const uint8_
 static size_t GenerateGridItemInfo(OHOS::Accessibility::GridItemInfo &gridItem, const uint8_t* data, size_t size)
 {
     size_t position = 0;
-    int32_t columnIndex_= 0;
+    int32_t columnIndex_ = 0;
     int32_t rowIndex = 0;
     int32_t columnSpan = 0;
     int32_t rowSpan = 0;
