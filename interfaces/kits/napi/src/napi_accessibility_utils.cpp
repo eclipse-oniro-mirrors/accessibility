@@ -61,8 +61,8 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
         return false;
     }
 
-    if(valuetype != napi_string) {
-        HILOG_ERROR( "Wrong argument type. String expected.");
+    if (valuetype != napi_string) {
+        HILOG_ERROR("Wrong argument type. String expected.");
         return false;
     }
 
@@ -82,8 +82,8 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
     }
     HILOG_INFO("param=%{public}d.", valuetype);
 
-    if(valuetype != napi_number) {
-        HILOG_ERROR( "Wrong argument type. uint32 expected.");
+    if (valuetype != napi_number) {
+        HILOG_ERROR("Wrong argument type. uint32 expected.");
         return false;
     }
 
