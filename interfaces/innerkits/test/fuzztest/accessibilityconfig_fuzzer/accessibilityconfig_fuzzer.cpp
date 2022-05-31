@@ -18,7 +18,7 @@
 
 namespace OHOS {
 namespace {
-    constexpr size_t DATA_MIN_SIZE = 46;
+    constexpr size_t DATA_MIN_SIZE = 98;
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
 } // namespace
@@ -76,19 +76,51 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
+    abConfig.SetMouseKeyState(data[startPos++] & 0x01);
     abConfig.SetCaptionState(data[startPos++] & 0x01);
+    abConfig.SetHighContrastTextState(data[startPos++] & 0x01);
+    abConfig.SetInvertColorState(data[startPos++] & 0x01);
+    abConfig.SetAnimationOffState(data[startPos++] & 0x01);
+    abConfig.SetAudioMonoState(data[startPos++] & 0x01);
 
     uint32_t temp = 0;
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
     abConfig.SetContentTimeout(temp);
 
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.SetDaltonizationColorFilter(static_cast<OHOS::AccessibilityConfig::DALTONIZATION_TYPE>(temp));
+
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.SetMouseAutoClick(static_cast<int32_t>(temp));
+
     float tempFloat = 0;
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.SetBrightnessDiscount(tempFloat);
 
+    startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
+    abConfig.SetAudioBalance(tempFloat);
+
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    std::memcpy(&name, &data[startPos], LEN);
+    std::string nameStr(name);
+    abConfig.SetShortkeyTarget(nameStr);
+    startPos += LEN;
+
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
     abConfig.SetCaptionProperty(property);
+
+    std::memcpy(&name, &data[startPos], LEN);
+    std::string abilityName1(name);
+    startPos += LEN;
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.EnableAbility(abilityName1, temp);
+
+    std::memcpy(&name, &data[startPos], LEN);
+    std::string abilityName2(name);
+    startPos += LEN;
+    abConfig.DisableAbility(abilityName2);
 
     return true;
 }
