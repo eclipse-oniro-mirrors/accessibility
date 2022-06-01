@@ -17,6 +17,7 @@
 #include "ability_manager_client.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "json_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -68,8 +69,9 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
-        accountData_->RemoveEnabledAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
-        accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
+        accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
+        accountData_->RemoveConnectingA11yAbility(
+            Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAbilities();
         return;
     }
@@ -101,7 +103,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->AddConnectedAbility(pointer);
-    accountData_->RemoveConnectingA11yAbility(elementName_.GetBundleName() + "/" + elementName_.GetAbilityName());
+    accountData_->RemoveConnectingA11yAbility(
+        Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
 
     channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
@@ -313,7 +316,7 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
         HILOG_ERROR("ConnectAbility failed!");
         return;
     }
-    accountData_->AddConnectingA11yAbility(bundleName + "/" + abilitName);
+    accountData_->AddConnectingA11yAbility(Utils::GetUri(bundleName, abilitName));
 }
 
 int32_t AccessibleAbilityConnection::GetChannelId()
@@ -332,18 +335,18 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         return;
     }
 
-    sptr<AccessibleAbilityConnection> connection =
-        recipientAccountData_->GetAccessibleAbilityConnection(recipientElementName_.GetURI());
+    std::string uri = Utils::GetUri(recipientElementName_);
+    sptr<AccessibleAbilityConnection> connection = recipientAccountData_->GetAccessibleAbilityConnection(uri);
     if (!connection) {
-        HILOG_ERROR("There is no connection for %{public}s.", recipientElementName_.GetURI().c_str());
+        HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
         return;
     }
     recipientAccountData_->RemoveConnectedAbility(connection);
-    recipientAccountData_->RemoveEnabledAbility(recipientElementName_.GetBundleName() + "/" +
-        recipientElementName_.GetAbilityName());
+    recipientAccountData_->RemoveEnabledAbility(
+        Utils::GetUri(recipientElementName_.GetBundleName(), recipientElementName_.GetAbilityName()));
 
-    std::string uiTestUri = "/ohos.uitest/uitestability";
-    if (recipientElementName_.GetURI() == uiTestUri) {
+    std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
+    if (uri == uiTestUri) {
         recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
     }
 

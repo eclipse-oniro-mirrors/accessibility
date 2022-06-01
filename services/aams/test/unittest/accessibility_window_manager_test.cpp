@@ -148,7 +148,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = windowInfoManager.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
 
-    EXPECT_EQ(TYPE_APPLICATION, info.GetWindowType());
+    EXPECT_EQ(TYPE_APPLICATION, info.GetAccessibilityWindowType());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo001 end";
 }
 
@@ -176,7 +176,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = windowInfoManager.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
 
-    EXPECT_EQ(TYPE_SYSTEM, info.GetWindowType());
+    EXPECT_EQ(TYPE_SYSTEM, info.GetAccessibilityWindowType());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo002 end";
 }
 
@@ -205,7 +205,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cre
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = windowInfoManager.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
 
-    EXPECT_EQ(TYPE_WINDOW_INVALID, info.GetWindowType());
+    EXPECT_EQ(TYPE_WINDOW_INVALID, info.GetAccessibilityWindowType());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_CreateAccessibilityWindowInfo003 end";
 }
 
@@ -725,7 +725,7 @@ HWTEST_F(
 
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    info.SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
     EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
@@ -736,8 +736,8 @@ HWTEST_F(
     /* GetAccessibilityWindows */
     std::vector<AccessibilityWindowInfo> windows = mgr.GetAccessibilityWindows();
     EXPECT_EQ(1, (int)windows.size());
-    static Accessibility::WindowType type = windows.begin()->GetWindowType();
-    EXPECT_EQ(WindowType::TYPE_APPLICATION, type);
+    static Accessibility::AccessibilityWindowType type = windows.begin()->GetAccessibilityWindowType();
+    EXPECT_EQ(AccessibilityWindowType::TYPE_APPLICATION, type);
 
     mgr.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetAccessibilityWindows001 end";
@@ -768,7 +768,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
 
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    info.SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
     EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
@@ -806,7 +806,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
 
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    info.SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
     EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
@@ -844,7 +844,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_IsV
 
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    info.SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
     EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
@@ -882,7 +882,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_IsV
 
     AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
     AccessibilityWindowInfo info = mgr.CreateAccessibilityWindowInfo(winInfo->currentWindowInfo_);
-    info.SetWindowType(WindowType::TYPE_APPLICATION);
+    info.SetAccessibilityWindowType(AccessibilityWindowType::TYPE_APPLICATION);
     EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
     mgr.a11yWindows_.insert(std::make_pair(windowId, info));
     EXPECT_EQ(1, (int)mgr.a11yWindows_.size());

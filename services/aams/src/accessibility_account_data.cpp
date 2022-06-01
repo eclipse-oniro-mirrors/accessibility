@@ -86,9 +86,10 @@ void AccessibilityAccountData::OnAccountSwitched()
 
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
-    if (!connectedA11yAbilities_.count(connection->GetElementName().GetURI())) {
-        connectedA11yAbilities_.insert(make_pair(connection->GetElementName().GetURI(), connection));
+    std::string uri = Utils::GetUri(connection->GetElementName());
+    HILOG_DEBUG("URI is %{public}s", uri.c_str());
+    if (!connectedA11yAbilities_.count(uri)) {
+        connectedA11yAbilities_.insert(make_pair(uri, connection));
     }
 
     HILOG_DEBUG("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
@@ -96,9 +97,9 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
-    std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it =
-        connectedA11yAbilities_.find(connection->GetElementName().GetURI());
+    std::string uri = Utils::GetUri(connection->GetElementName());
+    HILOG_DEBUG("URI is %{public}s", uri.c_str());
+    std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it = connectedA11yAbilities_.find(uri);
     if (it != connectedA11yAbilities_.end()) {
         connectedA11yAbilities_.erase(it);
     }

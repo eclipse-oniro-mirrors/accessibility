@@ -30,16 +30,16 @@ void AccessibilityWindowInfo::SetWindowTitle(const std::string &title)
     HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
 }
 
-WindowType AccessibilityWindowInfo::GetWindowType() const
+AccessibilityWindowType AccessibilityWindowInfo::GetAccessibilityWindowType() const
 {
-    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
-    return windowType_;
+    HILOG_DEBUG("accessibilityWindowType_[%{public}d]", accessibilityWindowType_);
+    return accessibilityWindowType_;
 }
 
-void AccessibilityWindowInfo::SetWindowType(const WindowType type)
+void AccessibilityWindowInfo::SetAccessibilityWindowType(const AccessibilityWindowType type)
 {
-    windowType_ = type;
-    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
+    accessibilityWindowType_ = type;
+    HILOG_DEBUG("accessibilityWindowType_[%{public}d]", accessibilityWindowType_);
 }
 
 int32_t AccessibilityWindowInfo::GetWindowLayer() const
@@ -191,6 +191,42 @@ uint64_t AccessibilityWindowInfo::GetDisplayId() const
 {
     HILOG_DEBUG("displayId[%{public}ju]", displayId_);
     return displayId_;
+}
+
+uint32_t AccessibilityWindowInfo::GetWindowType() const
+{
+    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
+    return windowType_;
+}
+
+void AccessibilityWindowInfo::SetWindowType(const uint32_t type)
+{
+    windowType_ = type;
+    HILOG_DEBUG("windowType_[%{public}d]", windowType_);
+}
+
+uint32_t AccessibilityWindowInfo::GetWindowMode() const
+{
+    HILOG_DEBUG("windowMode_[%{public}d]", windowMode_);
+    return windowMode_;
+}
+
+void AccessibilityWindowInfo::SetWindowMode(const uint32_t mode)
+{
+    windowMode_ = mode;
+    HILOG_DEBUG("windowMode_[%{public}d]", windowMode_);
+}
+
+bool AccessibilityWindowInfo::IsDecorEnable() const
+{
+    HILOG_DEBUG("isDecorEnable_[%{public}d]", isDecorEnable_);
+    return isDecorEnable_;
+}
+
+void AccessibilityWindowInfo::SetDecorEnable(const bool isDecorEnable)
+{
+    isDecorEnable_ = isDecorEnable;
+    HILOG_DEBUG("isDecorEnable_[%{public}d]", isDecorEnable_);
 }
 } // namespace Accessibility
 } // namespace OHOS

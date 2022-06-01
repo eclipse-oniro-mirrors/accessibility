@@ -231,7 +231,7 @@ enum GestureType : uint32_t {
     GESTURE_GESTURE_ALL = 0xFFFFFFFF
 };
 
-enum WindowType : int32_t {
+enum AccessibilityWindowType : int32_t {
     TYPE_WINDOW_INVALID = 0,
     TYPE_ACCESSIBILITY_OVERLAY = 0x00000001,
     TYPE_APPLICATION = 0x00000002,

@@ -53,20 +53,20 @@ public:
     /**
      * @brief Get the window type.
      * @param -
-     * @return The window type. Refer to [WindowType].
+     * @return The accessibility window type. Refer to [AccessibilityWindowType].
      * @since 3
      * @sysCap Accessibility
      */
-    WindowType GetWindowType() const;
+    AccessibilityWindowType GetAccessibilityWindowType() const;
 
     /**
      * @brief Set the window type.
-     * @param type The window type. Refer to [WindowType].
+     * @param type The accessibility window type. Refer to [AccessibilityWindowType].
      * @return -
      * @since 3
      * @sysCap Accessibility
      */
-    void SetWindowType(const WindowType type);
+    void SetAccessibilityWindowType(const AccessibilityWindowType type);
 
     /**
      * @brief Get The window layer
@@ -281,9 +281,23 @@ public:
      */
     uint64_t GetDisplayId() const;
 
+    uint32_t GetWindowType() const;
+
+    void SetWindowType(const uint32_t type);
+
+    uint32_t GetWindowMode() const;
+
+    void SetWindowMode(const uint32_t mode);
+
+    bool IsDecorEnable() const;
+
+    void SetDecorEnable(const bool isDecorEnable);
+
 protected:
     uint64_t displayId_ = 0;
-    WindowType windowType_ = TYPE_WINDOW_INVALID;
+    uint32_t windowMode_ = 0;
+    uint32_t windowType_ = 0;
+    AccessibilityWindowType accessibilityWindowType_ = TYPE_WINDOW_INVALID;
     int32_t windowLayer_ = INVALID_WINDOW_ID;
     int32_t windowId_ = INVALID_WINDOW_ID;
     int32_t parentId_ = INVALID_WINDOW_ID;
@@ -294,6 +308,7 @@ protected:
     int32_t channelId_ = INVALID_WINDOW_ID;
     bool active_ = false;
     bool focused_ = false;
+    bool isDecorEnable_ = false;
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
 };

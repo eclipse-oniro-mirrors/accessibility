@@ -16,6 +16,7 @@
 #include "accessibility_account_data.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "json_utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -69,10 +70,12 @@ void AccessibilityAccountData::OnAccountSwitched()
 // add connect ability.
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
-    if (!connectedA11yAbilities_.count(connection->GetElementName().GetURI())) {
-        connectedA11yAbilities_.insert(std::make_pair(connection->GetElementName().GetURI(), connection));
+    std::string uri = Utils::GetUri(connection->GetElementName());
+    HILOG_DEBUG("URI is %{public}s", uri.c_str());
+    if (!connectedA11yAbilities_.count(uri)) {
+        connectedA11yAbilities_.insert(make_pair(uri, connection));
     }
+
     HILOG_DEBUG("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 

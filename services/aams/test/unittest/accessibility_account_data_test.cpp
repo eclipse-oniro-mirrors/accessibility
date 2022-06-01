@@ -19,6 +19,7 @@
 #include "accessibility_constants.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
+#include "json_utils.h"
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_accessibility_element_operator_stub.h"
 #include "mock_accessible_ability_client_stub_impl.h"
@@ -105,7 +106,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     /* add connected ability */
     accountData->AddConnectedAbility(connection);
-    const std::string elementName = connection->GetElementName().GetURI();
+    const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
 
@@ -208,7 +209,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     /* add connected ability */
     accountData->AddConnectedAbility(connection);
-    const std::string elementName = connection->GetElementName().GetURI();
+    const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
 
@@ -234,7 +235,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     /* add */
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    const std::string elementName = connection->GetElementName().GetURI();
+    const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     /* remove */
     accountData->RemoveConnectedAbility(connection);
@@ -261,7 +262,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     /* add */
     accountData->AddConnectedAbility(connection);
-    const std::string elementNameURI = connection->GetElementName().GetURI();
+    const std::string elementNameURI = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementNameURI));
 
@@ -432,7 +433,7 @@ HWTEST_F(
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    const std::string elementName = connection->GetElementName().GetURI();
+    const std::string elementName = Utils::GetUri(connection->GetElementName());
     /* get */
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 end";

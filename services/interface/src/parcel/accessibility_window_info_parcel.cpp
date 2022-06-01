@@ -29,9 +29,11 @@ AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const Accessibility
 
 bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    int32_t windowType = TYPE_WINDOW_INVALID;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowType);
-    windowType_ = static_cast<WindowType>(windowType);
+    int32_t accessibilityWindowType = TYPE_WINDOW_INVALID;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, accessibilityWindowType);
+    accessibilityWindowType_ = static_cast<AccessibilityWindowType>(accessibilityWindowType);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowType_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowMode_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowLayer_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -43,6 +45,7 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isDecorEnable_);
     sptr<RectParcel> boundsInScreen = parcel.ReadStrongParcelable<RectParcel>();
     if (!boundsInScreen) {
         HILOG_ERROR("ReadStrongParcelable boundsInScreen failed.");
@@ -55,7 +58,9 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
 {
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(windowType_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(accessibilityWindowType_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowType_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowMode_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowLayer_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -67,6 +72,7 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, isDecorEnable_);
     RectParcel rectParcel(boundsInScreen_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &rectParcel);
 

@@ -458,7 +458,7 @@ private:
     bool isGesturesSimulation_ = false;
     bool isCaptionState_ = false;
     AccessibilityConfig::CaptionProperty captionProperty_;
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: The URI of ElementName.
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
