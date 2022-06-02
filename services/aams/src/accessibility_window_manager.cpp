@@ -93,6 +93,10 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
+    if (!windowInfo || !windowInfo->currentWindowInfo_) {
+        HILOG_ERROR("window info is err");
+        return;
+    }
     eventHandler_->PostTask(std::bind([=]() -> void {
         HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", windowInfo->currentWindowInfo_->wid_, type);
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
