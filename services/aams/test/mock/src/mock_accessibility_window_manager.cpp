@@ -63,10 +63,10 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
     return 0;
 }
 
-WindowType ConvertWindowType(Rosen::WindowType type)
+AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
 {
     (void)type;
-    WindowType winType = TYPE_WINDOW_INVALID;
+    AccessibilityWindowType winType = TYPE_WINDOW_INVALID;
 
     if (type < Rosen::WindowType::SYSTEM_WINDOW_BASE) {
         winType = TYPE_APPLICATION;
@@ -83,7 +83,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     (void)windowInfo;
     AccessibilityWindowInfo info;
     info.SetWindowId(0);
-    info.SetWindowType(ConvertWindowType(Rosen::WindowType::SYSTEM_WINDOW_BASE));
+    info.SetAccessibilityWindowType(ConvertWindowType(Rosen::WindowType::SYSTEM_WINDOW_BASE));
     info.SetFocused(true);
     Rect bound(TOP_X, TOP_Y, BOTTOM_X, BOTTOM_Y);
     info.SetRectInScreen(bound);

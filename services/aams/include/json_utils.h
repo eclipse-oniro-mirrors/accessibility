@@ -18,6 +18,7 @@
 
 #include <vector>
 #include "accessibility_ability_info.h"
+#include "element_name.h"
 #include "extension_ability_info.h"
 #include "nlohmann/json.hpp"
 
@@ -44,6 +45,12 @@ public:
     static void ParseEventTypesFromVec(const std::vector<std::string>& events, uint32_t& eventTypes);
     static void ParseAbilityTypesFromVec(const std::vector<std::string>& abilities, uint32_t& abilityTypes);
     static void ParseCapabilitiesFromVec(const std::vector<std::string>& capabilities, uint32_t& capabilitiesValue);
+};
+
+class Utils {
+public:
+    static std::string GetUri(const OHOS::AppExecFwk::ElementName &elementName);
+    static std::string GetUri(const std::string &bundleName, const std::string &abilityName);
 };
 } // namespace Accessibility
 } // namespace OHOS

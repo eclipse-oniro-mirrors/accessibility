@@ -20,6 +20,7 @@
 #include "accessibility_event_info.h"
 #include "accessibility_window_manager.h"
 #include "accessible_ability_manager_service.h"
+#include "json_utils.h"
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
@@ -346,9 +347,8 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             continue;
         }
 
-        AppExecFwk::ElementName connectionElement("", bundleName, "");
         sptr<AccessibleAbilityConnection> connection =
-            accountData->GetAccessibleAbilityConnection(connectionElement.GetURI());
+            accountData->GetAccessibleAbilityConnection(Utils::GetUri(bundleName, abilityName));
 
         auto enabledAbilities = accountData->GetEnabledAbilities();
         iter = std::find(enabledAbilities.begin(), enabledAbilities.end(), bundleName);

@@ -93,6 +93,10 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
+    if (!windowInfo || !windowInfo->currentWindowInfo_) {
+        HILOG_ERROR("window info is err");
+        return;
+    }
     eventHandler_->PostTask(std::bind([=]() -> void {
         HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", windowInfo->currentWindowInfo_->wid_, type);
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
@@ -154,9 +158,9 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
     return windowId;
 }
 
-WindowType ConvertWindowType(Rosen::WindowType type)
+AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
 {
-    WindowType winType = TYPE_WINDOW_INVALID;
+    AccessibilityWindowType winType = TYPE_WINDOW_INVALID;
 
     if (type < Rosen::WindowType::SYSTEM_WINDOW_BASE) {
         winType = TYPE_APPLICATION;
@@ -172,7 +176,9 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
 {
     AccessibilityWindowInfo info;
     info.SetWindowId(windowInfo->wid_);
-    info.SetWindowType(ConvertWindowType(windowInfo->type_));
+    info.SetWindowType(static_cast<uint32_t>(windowInfo->type_));
+    info.SetWindowMode(static_cast<uint32_t>(windowInfo->mode_));
+    info.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));
     info.SetFocused(windowInfo->focused_);
     Rect bound;
     bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
@@ -181,10 +187,12 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
         windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
     info.SetRectInScreen(bound);
     info.SetDisplayId(windowInfo->displayId_);
+    info.SetDecorEnable(windowInfo->isDecorEnable_);
     HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
-        "witdth(%{public}d) height(%{public}d) display id(%{public}ju)",
+        "width(%{public}d) height(%{public}d) display id(%{public}ju) isDecorEnable(%{public}d)",
         windowInfo->wid_, windowInfo->type_, windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_,
-        windowInfo->windowRect_.width_, windowInfo->windowRect_.height_, windowInfo->displayId_);
+        windowInfo->windowRect_.width_, windowInfo->windowRect_.height_,
+        windowInfo->displayId_, windowInfo->isDecorEnable_);
     return info;
 }
 

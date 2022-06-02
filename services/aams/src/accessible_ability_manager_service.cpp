@@ -799,7 +799,7 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
             syncPromise.set_value(RET_ERR_NULLPTR);
             return;
         }
-        std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
+        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (connection) {
             HILOG_ERROR("connection is existed!!");
@@ -833,7 +833,7 @@ bool AccessibleAbilityManagerService::DisableUITestAbility()
             syncPromise.set_value(false);
             return;
         }
-        std::string uiTestUri = "/" + UI_TEST_BUNDLE_NAME + "/" + UI_TEST_ABILITY_NAME;
+        std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (!connection) {
             HILOG_ERROR("connection is not existed!!");
@@ -1326,19 +1326,18 @@ void AccessibleAbilityManagerService::UpdateAbilities()
 
         auto connectingAbilities = accountData->GetConnectingA11yAbilities();
         vector<string>::iterator iter = std::find(connectingAbilities.begin(),
-            connectingAbilities.end(), bundleName + "/" + abilityName);
+            connectingAbilities.end(), Utils::GetUri(bundleName, abilityName));
         if (iter != connectingAbilities.end()) {
             HILOG_DEBUG("The ability(bundleName[%{public}s] abilityName[%{public}s]) is connecting.",
                 bundleName.c_str(), abilityName.c_str());
             continue;
         }
 
-        AppExecFwk::ElementName connectionElement(deviceId, bundleName, abilityName);
         sptr<AccessibleAbilityConnection> connection =
-            accountData->GetAccessibleAbilityConnection(connectionElement.GetURI());
+            accountData->GetAccessibleAbilityConnection(Utils::GetUri(bundleName, abilityName));
 
         auto enabledAbilities = accountData->GetEnabledAbilities();
-        iter = std::find(enabledAbilities.begin(), enabledAbilities.end(), bundleName + "/" + abilityName);
+        iter = std::find(enabledAbilities.begin(), enabledAbilities.end(), Utils::GetUri(bundleName, abilityName));
         if (iter != enabledAbilities.end()) {
             if (!connection) {
                 AppExecFwk::ElementName element(deviceId, bundleName, abilityName);

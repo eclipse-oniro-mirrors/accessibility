@@ -328,5 +328,18 @@ void PraseVecUtils::ParseCapabilitiesFromVec(const vector<string>& capabilities,
         }
     }
 }
+
+std::string Utils::GetUri(const OHOS::AppExecFwk::ElementName &elementName)
+{
+    HILOG_DEBUG("bundle name(%{public}s) ability name(%{public}s)",
+        elementName.GetBundleName().c_str(), elementName.GetAbilityName().c_str());
+    return elementName.GetBundleName() + "/" + elementName.GetAbilityName();
+}
+
+std::string Utils::GetUri(const std::string &bundleName, const std::string &abilityName)
+{
+    HILOG_DEBUG("bundle name(%{public}s) ability name(%{public}s)", bundleName.c_str(), abilityName.c_str());
+    return bundleName + "/" + abilityName;
+}
 } // namespace Accessibility
 } // namespace OHOS

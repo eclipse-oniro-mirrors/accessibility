@@ -123,14 +123,14 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rightBottomY", nRightBottomY));
 }
 
-static std::string ConvertWindowTypeToString(WindowType type)
+std::string ConvertWindowTypeToString(AccessibilityWindowType type)
 {
-    static const std::map<WindowType, const std::string> windowTypeTable = {
-        {WindowType::TYPE_ACCESSIBILITY_OVERLAY, "accessibilityOverlay"},
-        {WindowType::TYPE_APPLICATION, "application"},
-        {WindowType::TYPE_INPUT_METHOD, "inputMethod"},
-        {WindowType::TYPE_SPLIT_SCREEN_DIVIDER, "screenDivider"},
-        {WindowType::TYPE_SYSTEM, "system"}};
+    static const std::map<AccessibilityWindowType, const std::string> windowTypeTable = {
+        {AccessibilityWindowType::TYPE_ACCESSIBILITY_OVERLAY, "accessibilityOverlay"},
+        {AccessibilityWindowType::TYPE_APPLICATION, "application"},
+        {AccessibilityWindowType::TYPE_INPUT_METHOD, "inputMethod"},
+        {AccessibilityWindowType::TYPE_SPLIT_SCREEN_DIVIDER, "screenDivider"},
+        {AccessibilityWindowType::TYPE_SYSTEM, "system"}};
 
     if (windowTypeTable.find(type) == windowTypeTable.end()) {
         return "";
@@ -316,7 +316,7 @@ void ConvertAccessibilityWindowInfoToJS(
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "title", nTitle));
 
     napi_value nWindowType;
-    std::string strWindowType = ConvertWindowTypeToString(accessibilityWindowInfo.GetWindowType());
+    std::string strWindowType = ConvertWindowTypeToString(accessibilityWindowInfo.GetAccessibilityWindowType());
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strWindowType.c_str(), NAPI_AUTO_LENGTH, &nWindowType));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", nWindowType));
 
