@@ -22,34 +22,19 @@
 
 #include "accessibility_caption.h"
 #include "i_accessibility_enable_ability_lists_observer.h"
+#include "accessibility_settings_config.h"
 #include "accessibility_window_connection.h"
 #include "accessible_ability_connection.h"
 #include "i_accessible_ability_manager_caption_observer.h"
 #include "i_accessible_ability_manager_config_observer.h"
 #include "i_accessible_ability_manager_state_observer.h"
 #include "element_name.h"
-#include "preferences_helper.h"
 
 namespace OHOS {
 namespace Accessibility {
 using CaptionPropertyCallbacks = std::vector<sptr<IAccessibleAbilityManagerCaptionObserver>>;
 class AccessibleAbilityConnection;
 class AccessibilityWindowConnection;
-
-enum STATE : int32_t {
-    ACCESSIBILITY,
-    TOUCHGUIDE,
-    GESTURE,
-    KEYEVENT,
-    CAPTION,
-    SCREENMAGNIFIER,
-    SHORTKEY,
-    MOUSEKEY,
-    HIGHCONTRASTTEXT,
-    INVERTCOLORSTATE,
-    ANIMATIONOFF,
-    AUDIOMONO
-};
 
 class AccessibilityAccountData final : public RefBase {
 public:
@@ -302,94 +287,14 @@ public:
      */
     void DeleteEventEnabled(EventType type);
 
-    AccessibilityConfig::CaptionProperty GetCaptionProperty()
-    {
-        return captionProperty_;
-    };
+    std::shared_ptr<AccessibilitySettingsConfig> GetCurrentConfig();
 
-    bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption);
-
-    bool SetCaptionState(const bool state);
-
-    bool SetEnabled(const bool state);
-
-    bool SetTouchGuideState(const bool state);
-
-    bool SetGestureState(const bool state);
-
-    bool SetKeyEventObserverState(const bool state);
-
-    bool GetEnabledState();
-
-    bool GetTouchGuideState();
-
-    bool GetGestureState();
-
-    bool GetKeyEventObserverState();
-
-    bool GetCaptionState();
-
-    bool SetScreenMagnificationState(const bool state);
-
-    bool SetShortKeyState(const bool state);
-
-    bool SetMouseKeyState(const bool state);
-
-    bool SetMouseAutoClick(const int32_t time);
-
-    bool SetShortkeyTarget(const std::string &name);
-
-    bool SetHighContrastTextState(const bool state);
-
-    bool SetInvertColorState(const bool state);
-
-    bool SetAnimationOffState(const bool state);
-
-    bool SetAudioMonoState(const bool state);
-
-    bool SetDaltonizationColorFilter(const uint32_t filter);
-
-    bool SetContentTimeout(const uint32_t time);
-
-    bool SetBrightnessDiscount(const float discount);
-
-    bool SetAudioBalance(const float balance);
-
-    bool GetScreenMagnificationState();
-
-    bool GetShortKeyState();
-
-    bool GetMouseKeyState();
-
-    uint32_t GetConfigState();
-
-    int32_t GetMouseAutoClick();
-
-    std::string GetShortkeyTarget();
-
-    bool GetHighContrastTextState();
-
-    bool GetInvertColorState();
-
-    bool GetAnimationOffState();
-
-    bool GetAudioMonoState();
-
-    uint32_t GetDaltonizationColorFilter();
-
-    uint32_t GetContentTimeout();
-
-    float GetBrightnessDiscount();
-
-    float GetAudioBalance();
 
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
 
     bool DisableAbility(const std::string &name);
-
-    void ClearData();
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
@@ -433,31 +338,18 @@ private:
 
     void UpdateEnableAbilityListsState();
 
-    void CaptionInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void CapabilityInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void EnabledListInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void ConfigInit(const std::shared_ptr<NativePreferences::Preferences> &pref);
-    void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
-    void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
     void RemoveEnabledFromPref(const std::string &name);
     void UpdateEnabledFromPref();
-    bool SetStatePref(int32_t type);
-    bool SetCaptionPropertyPref();
-    std::string StateChange(bool state);
 
     uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
     uint32_t GetAbilityCapabilities(const std::string &name) const;
-
+    const std::map<std::string, uint32_t> &GetCapabilitiesFromConfig();
     int32_t id_;
-    bool isEnabled_ = false;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
-    bool isScreenMagnificationState_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
-    bool isCaptionState_ = false;
-    AccessibilityConfig::CaptionProperty captionProperty_;
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
@@ -466,21 +358,9 @@ private:
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
     std::vector<std::string> connectingA11yAbilities_; // bundleName/abilityName
-    std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;
-    std::map<std::string, uint32_t> abilityCapabilities_; // used for init
-    bool isMouseKeyState_ = false;
-    bool isShortKeyState_ = false;
-    int32_t mouseAutoClick_ = -1;
-    std::string shortkeyTarget_ = "";
-    bool highContrastTextState_ = false;
-    bool invertColorState_ = false;
-    bool animationOffState_ = false;
-    bool audioMonoState_ = false;
-    uint32_t daltonizationColorFilter_ = 0;
-    uint32_t contentTimeout_ = 0;
-    float brightnessDiscount_ = 0.0;
-    float audioBalance_ = 0.0;
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
+    std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
+    
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -217,6 +217,380 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     return nullptr;
 }
 
+void NAccessibilityConfig::SetConfigComplete(napi_env env, napi_status status, void* data)
+{
+    HILOG_INFO("start");
+    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    napi_value result[ARGS_SIZE_TWO] = {0};
+    napi_value callback = 0;
+    napi_value undefined = 0;
+    napi_value ret = 0;
+    napi_get_undefined(env, &undefined);
+    napi_get_undefined(env, &ret);
+    if (callbackInfo->callback_) {
+        result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+        result[PARAM1] = ret;
+        napi_get_reference_value(env, callbackInfo->callback_, &callback);
+        napi_value returnVal;
+        napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+        napi_delete_reference(env, callbackInfo->callback_);
+        HILOG_DEBUG("complete function callback mode");
+    } else {
+        napi_resolve_deferred(env, callbackInfo->deferred_, undefined);
+        HILOG_DEBUG("complete function promise mode");
+    }
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
+}
+
+void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data) {
+    HILOG_INFO("start");
+    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    switch (callbackInfo->id_)
+    {
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        instance.SetHighContrastTextState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+        instance.SetInvertColorState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+        instance.SetAnimationOffState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+        instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+        instance.SetAudioMonoState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+        instance.SetMouseKeyState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+        instance.SetShortKeyState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        instance.SetCaptionState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+        instance.SetContentTimeout(callbackInfo->uint32Config_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+        instance.SetMouseAutoClick(callbackInfo->int32Config_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+        instance.SetAudioBalance(callbackInfo->floatConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+        instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+        {
+            auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
+            instance.SetDaltonizationColorFilter(filter);
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        instance.SetShortkeyTarget(callbackInfo->stringConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+        instance.SetCaptionProperty(callbackInfo->captionProperty_);
+        break;
+    default:
+        break;
+    }
+}
+
+void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, void* data)
+{
+    HILOG_INFO("start");
+    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    napi_value result[ARGS_SIZE_TWO] = {0};
+    napi_value callback = 0;
+    napi_value undefined = 0;
+    napi_get_undefined(env, &undefined);
+    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    switch (callbackInfo->id_)
+    {
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        napi_get_boolean(env, callbackInfo->boolConfig_, &result[PARAM1]);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+        napi_create_uint32(env, callbackInfo->uint32Config_, &result[PARAM1]);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+        napi_create_int32(env, callbackInfo->int32Config_, &result[PARAM1]);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+        napi_create_double(env, static_cast<double>(callbackInfo->floatConfig_), &result[PARAM1]);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+        napi_create_object(env, &result[PARAM1]);
+        ConvertCaptionPropertyToJS(env, result[PARAM1], callbackInfo->captionProperty_);
+        break;
+    default:
+        break;
+    }
+    if (callbackInfo->callback_) {
+        result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+        napi_get_reference_value(env, callbackInfo->callback_, &callback);
+        napi_value returnVal;
+        napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+        napi_delete_reference(env, callbackInfo->callback_);
+        HILOG_INFO("complete function callback mode");
+    } else {
+        napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+        HILOG_INFO("napi_resolve_deferred return: %{public}d", retStatus);
+    }
+    napi_delete_async_work(env, callbackInfo->work_);
+    delete callbackInfo;
+    callbackInfo = nullptr;
+}
+
+void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data) {
+    HILOG_INFO("start");
+    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    switch (callbackInfo->id_)
+    {
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+        callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+        callbackInfo->ret_ = instance.GetAnimationOffState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+        callbackInfo->ret_ = instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+        callbackInfo->ret_ = instance.GetAudioMonoState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+        callbackInfo->ret_ = instance.GetMouseKeyState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+        callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        callbackInfo->ret_ = instance.GetCaptionState(callbackInfo->boolConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+        callbackInfo->ret_ = instance.GetContentTimeout(callbackInfo->uint32Config_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+        callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+        callbackInfo->ret_ = instance.GetAudioBalance(callbackInfo->floatConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+        callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+        {
+            OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
+            callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
+            callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+        callbackInfo->ret_ = instance.GetCaptionProperty(callbackInfo->captionProperty_);
+        break;
+    default:
+        break;
+    }
+}
+
+napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO("start");
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_value jsthis;
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
+
+    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigClass* obj;
+    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+
+    switch (obj->GetConfigId())
+    {
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        {
+            bool state = false;
+            ParseBool(env, state, parameters[PARAM0]);
+            callbackInfo->boolConfig_ = state;
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+        {
+            uint32_t timeout = 0;
+            ParseUint32(env, timeout, parameters[PARAM0]);
+            callbackInfo->uint32Config_ = timeout;
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+        {
+            int32_t time = 0;
+            ParseInt32(env, time, parameters[PARAM0]);
+            callbackInfo->int32Config_ = time;
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+        {
+            double doubleTemp = 0;
+            napi_get_value_double(env, parameters[PARAM0], &doubleTemp);
+            callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        {
+            std::string target = "";
+            ParseString(env, target, parameters[PARAM0]);
+            callbackInfo->stringConfig_ = target;
+        }
+        break;
+    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+        ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
+        break;
+    default:
+        break;
+    }
+    callbackInfo->id_ = obj->GetConfigId();
+
+    // parse function if it needs
+    napi_value promise = nullptr;
+    if (argc >= ARGS_SIZE_TWO) {
+        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
+    } else {
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    }
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "SetConfig", NAPI_AUTO_LENGTH, &resource);
+
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
+        NAccessibilityConfig::SetConfigExecute,
+        // Execute the complete function
+        NAccessibilityConfig::SetConfigComplete,
+        (void*)callbackInfo,
+        &callbackInfo->work_);
+    napi_queue_async_work(env, callbackInfo->work_);
+    return promise;
+}
+
+
+napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO("start");
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value parameters[ARGS_SIZE_ONE] = {0};
+    napi_value jsthis;
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
+
+    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigClass* obj;
+    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+    callbackInfo->id_ = obj->GetConfigId();
+
+    // parse function if it needs
+    napi_value promise = nullptr;
+    if (argc >= ARGS_SIZE_ONE) {
+        napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
+    } else {
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    }
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetConfig", NAPI_AUTO_LENGTH, &resource);
+
+    napi_create_async_work(env, nullptr, resource,
+        // Execute async to call c++ function
+        NAccessibilityConfig::GetConfigExecute,
+        // Execute the complete function
+        NAccessibilityConfig::GetConfigComplete,
+        (void*)callbackInfo,
+        &callbackInfo->work_);
+    napi_queue_async_work(env, callbackInfo->work_);
+    return promise;
+}
+
+napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO("start");
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value parameters[ARGS_SIZE_ONE] = {0};
+    napi_value jsthis;
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
+    NAccessibilityConfigClass* obj;
+    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+
+    std::shared_ptr<ConfigListener> observer = std::make_shared<ConfigListener>();
+    napi_ref handler = nullptr;
+    napi_create_reference(env, parameters[PARAM0], 1, &handler);
+    observer->SetHandler(handler);
+    observer->SetEnv(env);
+    observer->SetConfigId(obj->GetConfigId());
+    configListeners_.push_back(observer);
+    HILOG_INFO("observer size%{public}zu", configListeners_.size());
+
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SubscribeConfigObserver(obj->GetConfigId(), observer);
+    return nullptr;
+}
+
+napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO("start and observer size%{public}zu", configListeners_.size());
+    napi_value jsthis;
+    napi_get_cb_info(env, info, 0, nullptr, &jsthis, nullptr);
+    NAccessibilityConfigClass* obj;
+    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    for (auto iter = configListeners_.begin(); iter != configListeners_.end();) {
+        if ((*iter)->GetEnv() == env &&
+            (*iter)->GetConfigId() == obj->GetConfigId()) {
+            auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+            instance.UnsubscribeConfigObserver(obj->GetConfigId(), *iter);
+            configListeners_.erase(iter);
+        } else {
+            iter ++;
+        }
+    }
+    return nullptr;
+}
+
 void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 {
     HILOG_INFO("start");
@@ -247,380 +621,4 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
             delete work;
             work = nullptr;
         });
-}
-OHOS::AccessibilityConfig::CONFIG_ID ConfigListener::GetStateType()
-{
-    HILOG_INFO("start");
-    OHOS::AccessibilityConfig::CONFIG_ID type = CONFIG_CAPTION_STATE;
-    if (!std::strcmp(eventType_.c_str(), "enableChange")) {
-        type = CONFIG_CAPTION_STATE;
-    } else if (!std::strcmp(eventType_.c_str(), "styleChange")) {
-        type = CONFIG_CAPTION_STYLE;
-    } else {
-        HILOG_ERROR("GetStateType eventType[%s] is error", eventType_.c_str());
-    }
-    return type;
-}
-
-napi_value ConfigListener::StartWork(
-    napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE])
-{
-    HILOG_INFO("start");
-    eventType_ = GetStringFromNAPI(env, args[0]);
-    napi_create_reference(env, args[functionIndex], 1, &handlerRef_);
-    env_ = env;
-    napi_value result = {0};
-    return result;
-}
-
-void ConfigListener::NotifyStateChangedJS(napi_env env, bool enabled,
-    const std::string &eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "enableChange")) {
-        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
-        callbackInfo->state_ = enabled;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                int32_t result;
-                napi_get_value_int32(callbackInfo->env_, callResult, &result);
-                HILOG_INFO("NotifyStateChangedJS napi_call_function result[%{public}d]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyStateChangedJS eventType[%s] is error", eventType.c_str());
-    }
-}
-
-void ConfigListener::OnConfigChanged(const CONFIG_ID id, const ConfigValue &value)
-{
-    HILOG_INFO("start");
-    switch (id) {
-        case CONFIG_CAPTION_STATE:
-            NotifyStateChanged2JS(id, value.captionState);
-            break;
-        case CONFIG_CAPTION_STYLE:
-            NotifyPropertyChanged2JS(id, value.captionStyle);
-            break;
-        case CONFIG_SCREEN_MAGNIFICATION:
-            NotifyStateChanged2JS(id, value.screenMagnifier);
-            break;
-        case CONFIG_MOUSE_KEY:
-            NotifyStateChanged2JS(id, value.mouseKey);
-            break;
-        case CONFIG_SHORT_KEY:
-            NotifyStateChanged2JS(id, value.shortkey);
-            break;
-        case CONFIG_SHORT_KEY_TARGET:
-            NotifyStringChanged2JS(id, value.shortkey_target);
-            break;
-        case CONFIG_MOUSE_AUTOCLICK:
-            NotifyIntChanged2JS(id, value.mouseAutoClick);
-            break;
-        case CONFIG_DALTONIZATION_COLOR_FILTER:
-            NotifyUintChanged2JS(id, value.daltonizationColorFilter);
-            break;
-        case CONFIG_CONTENT_TIMEOUT:
-            NotifyUintChanged2JS(id, value.contentTimeout);
-            break;
-        case CONFIG_BRIGHTNESS_DISCOUNT:
-            NotifyFloatChanged2JS(id, value.brightnessDiscount);
-            break;
-        case CONFIG_AUDIO_BALANCE:
-            NotifyFloatChanged2JS(id, value.audioBalance);
-            break;
-        default:
-            break;
-    }
-}
-
-void ConfigListener::NotifyPropertyChangedJS(napi_env env,
-    const OHOS::AccessibilityConfig::CaptionProperty &caption, const std::string &eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        CaptionCallbackInfo *callbackInfo = new CaptionCallbackInfo();
-        callbackInfo->caption_ = caption;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<CaptionCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_create_object(callbackInfo->env_, &jsEvent);
-                ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                int32_t result;
-                napi_get_value_int32(callbackInfo->env_, callResult, &result);
-                HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyPropertyChangedJS eventType[%s] is error", eventType.c_str());
-    }
-}
-
-void ConfigListener::NotifyStateChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, bool enabled)
-{
-    if (GetStateType() == id) {
-        NotifyStateChangedJS(GetEnv(),
-            enabled, GetEventType(), GetHandler());
-    }
-}
-void ConfigListener::NotifyPropertyChanged2JS(
-    const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption)
-{
-    if (GetStateType() == id) {
-        NotifyPropertyChangedJS(GetEnv(),
-            caption, GetEventType(), GetHandler());
-    }
-}
-
-void ConfigListener::NotifyStringChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, const std::string &value)
-{
-    if (GetStateType() == id) {
-        NotifyStringChanged2JSInner(GetEnv(),
-            value, GetEventType(), GetHandler());
-    }
-}
-void ConfigListener::NotifyUintChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, uint32_t value)
-{
-    if (GetStateType() == id) {
-        NotifyUintChanged2JSInner(GetEnv(),
-            value, GetEventType(), GetHandler());
-    }
-}
-void ConfigListener::NotifyIntChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, int32_t value)
-{
-    if (GetStateType() == id) {
-        NotifyIntChanged2JSInner(GetEnv(),
-            value, GetEventType(), GetHandler());
-    }
-}
-
-void ConfigListener::NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, float value)
-{
-    if (GetStateType() == id) {
-        NotifyFloatChanged2JSInner(GetEnv(),
-            value, GetEventType(), GetHandler());
-    }
-}
-
-void ConfigListener::NotifyStringChanged2JSInner(
-    napi_env env, const std::string& value, const std::string& eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
-        callbackInfo->stringValue_ = value;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_create_string_utf8(callbackInfo->env_,
-                    callbackInfo->stringValue_.c_str(),
-                    callbackInfo->stringValue_.length(),
-                    &jsEvent);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                size_t result;
-                const uint32_t BUF_SIZE = 1024;
-                char buf[BUF_SIZE] = {0};
-                napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
-                HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyStringChanged2JSInner eventType[%s] is error", eventType.c_str());
-    }
-}
-
-void ConfigListener::NotifyIntChanged2JSInner(
-    napi_env env, int32_t value, const std::string& eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
-        callbackInfo->int32Value_ = value;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_create_int32(callbackInfo->env_, callbackInfo->int32Value_, &jsEvent);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                int32_t result;
-                napi_get_value_int32(callbackInfo->env_, callResult, &result);
-                HILOG_INFO("NotifyIntChanged2JSInner napi_call_function result[%{public}d]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyIntChanged2JSInner eventType[%s] is error", eventType.c_str());
-    }
-}
-
-void ConfigListener::NotifyUintChanged2JSInner(
-    napi_env env, uint32_t value, const std::string& eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
-        callbackInfo->uint32Value_ = value;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_create_uint32(callbackInfo->env_, callbackInfo->uint32Value_, &jsEvent);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                uint32_t result;
-                napi_get_value_uint32(callbackInfo->env_, callResult, &result);
-                HILOG_INFO("NotifyUintChanged2JSInner napi_call_function result[%{public}d]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyUintChanged2JSInner eventType[%s] is error", eventType.c_str());
-    }
-}
-
-void ConfigListener::NotifyFloatChanged2JSInner(
-    napi_env env, float value, const std::string& eventType, napi_ref handlerRef)
-{
-    HILOG_INFO("start");
-
-    if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        StateCallbackInfo *callbackInfo = new StateCallbackInfo();
-        callbackInfo->floatValue_ = value;
-        callbackInfo->env_ = env;
-        callbackInfo->ref_ = handlerRef;
-        uv_loop_s *loop = nullptr;
-        napi_get_uv_event_loop(env, &loop);
-        uv_work_t *work = new uv_work_t;
-        work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
-        uv_queue_work(
-            loop,
-            work,
-            [](uv_work_t *work) {},
-            [](uv_work_t *work, int status) {
-                StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-                napi_value jsEvent;
-                napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
-
-                napi_value handler = nullptr;
-                napi_value callResult = nullptr;
-                napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
-                napi_value undefined = nullptr;
-                napi_get_undefined(callbackInfo->env_, &undefined);
-                napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
-                int32_t result;
-                napi_get_value_int32(callbackInfo->env_, callResult, &result);
-                HILOG_INFO("NotifyFloatChanged2JSInner napi_call_function result[%{public}d]", result);
-                delete callbackInfo;
-                callbackInfo = nullptr;
-                delete work;
-                work = nullptr;
-            });
-    } else {
-        HILOG_ERROR("NotifyFloatChanged2JSInner eventType[%s] is error", eventType.c_str());
-    }
 }

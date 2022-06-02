@@ -23,6 +23,13 @@ namespace Accessibility {
 class AccessibilityGestureResultListener {
 public:
     /**
+     * @brief Destruct
+     * @param
+     * @return
+     */
+    virtual ~AccessibilityGestureResultListener() = default;
+
+    /**
      * @brief Called when the gesture is finished.
      * @param sequence
      * @param result Return true if the gesture which is listened is injected successfully, else return false.

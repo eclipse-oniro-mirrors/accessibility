@@ -97,6 +97,14 @@ public:
         AccessibilityElementInfo &elementInfo) = 0;
 
     /**
+     * @brief Get the window information related with the event
+     * @param windowId The window id.
+     * @param windowInfo The window information.
+     * @return Return true if obtains windowInfo successfully, else return false.
+     */
+    virtual bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) = 0;
+
+    /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
      * @return Return true if obtains windowInfo successfully, else return false.
@@ -129,16 +137,6 @@ public:
         AccessibilityElementInfo &nextElementInfo) = 0;
 
     /**
-     * @brief Obtains information about the accessibility child window at a specified index.
-     * @param index The index of the child.
-     * @param parent The parent info to get child.
-     * @param child The window info of child.
-     * @return Return true if gets child windowInfo successfully, else return false.
-     */
-    virtual bool GetChildWindowInfo(const int32_t index, const AccessibilityWindowInfo &parent,
-        AccessibilityWindowInfo &child) = 0;
-
-    /**
      * @brief Get the child node information by childId
      * @param index The index of the child.
      * @param parent The parent info to get child.
@@ -147,6 +145,14 @@ public:
      */
     virtual bool GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
         AccessibilityElementInfo &child) = 0;
+
+    /**
+     * @brief Get the child node informations
+     * @param parent The parent info to get child.
+     * @param childs The element info of childs.
+     * @return Return true if gets child elementInfo successfully, else return false.
+     */
+    virtual bool GetChilds(const AccessibilityElementInfo &parent, std::vector<AccessibilityElementInfo> &childs) = 0;
 
     /**
      * @brief Searches for node information based on the specified content.
@@ -175,29 +181,12 @@ public:
     virtual bool GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo) = 0;
 
     /**
-     * @brief Get the parent window
-     * @param child The child window info to get parent.
-     * @param parent The parent window info.
-     * @return Return true if gets info successfully, else return false.
-     */
-    virtual bool GetParentWindowInfo(const AccessibilityWindowInfo &child, AccessibilityWindowInfo &parent) = 0;
-
-    /**
      * @brief Get Parent node information
      * @param child The child element info to get parent.
      * @param parent The parent element info.
      * @return Return true if gets info successfully, else return false.
      */
     virtual bool GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) = 0;
-
-    /**
-     * @brief Get the node information labeled component
-     * @param elementInfo The source info to get labeled.
-     * @param labeledElementInfo The labeled element info.
-     * @return Return true if gets infos successfully, else return false.
-     */
-    virtual bool GetLabeled(const AccessibilityElementInfo &elementInfo,
-        AccessibilityElementInfo &labeledElementInfo) = 0;
 
     /**
      * @brief Executes a specified action.

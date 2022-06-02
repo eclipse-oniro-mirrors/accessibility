@@ -70,7 +70,7 @@ declare interface AccessibilityEvent {
     eventType: accessibility.EventType | GestureType | NotificationType | WindowUpdateType;
     target?: AccessibilityElement;
     timeStamp?: number;
-    notificationDisplayString?: string;
+    notificationContent?: string;
 }
 
 /**

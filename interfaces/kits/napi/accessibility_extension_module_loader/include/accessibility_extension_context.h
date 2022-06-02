@@ -120,16 +120,6 @@ public:
         AccessibilityElementInfo &nextElementInfo);
 
     /**
-     * @brief Obtains information about the accessibility child window at a specified index.
-     * @param index
-     * @param parent
-     * @param child
-     * @return Return true if gets child windowInfo successfully, else return false.
-     */
-    bool GetChildWindowInfo(const int32_t index, const AccessibilityWindowInfo &parent,
-        AccessibilityWindowInfo &child);
-
-    /**
      * @brief Get the child node information by childId
      * @param index
      * @param parent
@@ -158,36 +148,12 @@ public:
     bool GetAnchor(const AccessibilityWindowInfo &windowInfo, AccessibilityElementInfo &elementInfo);
 
     /**
-     * @brief Get the node information related with the event
-     * @param eventInfo
-     * @param elementInfo
-     * @return Return true if gets elementInfos successfully, else return false.
-     */
-    bool GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo);
-
-    /**
-     * @brief Get the parent window
-     * @param child
-     * @param parent
-     * @return Return true if gets info successfully, else return false.
-     */
-    bool GetParentWindowInfo(const AccessibilityWindowInfo &child, AccessibilityWindowInfo &parent);
-
-    /**
      * @brief Get Parent node information
      * @param child
      * @param parent
      * @return Return true if gets info successfully, else return false.
      */
     bool GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent);
-
-    /**
-     * @brief Get the node information labeled component
-     * @param elementInfo
-     * @param labeledElementInfo
-     * @return Return true if gets infos successfully, else return false.
-     */
-    bool GetLabeled(const AccessibilityElementInfo &elementInfo, AccessibilityElementInfo &labeledElementInfo);
 
     /**
      * @brief Executes a specified action.

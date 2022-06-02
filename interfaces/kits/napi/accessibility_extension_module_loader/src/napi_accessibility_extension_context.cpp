@@ -20,9 +20,8 @@
 #include "js_extension_context.h"
 #include "js_runtime_utils.h"
 #include "hilog_wrapper.h"
-#include "napi_accessibility_info.h"
+#include "napi_accessibility_element.h"
 #include "napi_accessibility_utils.h"
-#include "napi_accessibility_window_info.h"
 
 using namespace OHOS::AbilityRuntime;
 
@@ -233,7 +232,8 @@ private:
                 bool ret = context->GetFocus(focus, elementInfo);
                 if (ret) {
                     napi_value constructor = nullptr;
-                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NElementInfo::consRef_, &constructor);
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
+                        &constructor);
                     napi_value napiElementInfo = nullptr;
                     napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr, &napiElementInfo);
                     ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine), napiElementInfo, elementInfo);
@@ -319,7 +319,8 @@ private:
                 }
                 if (ret) {
                     napi_value constructor = nullptr;
-                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NElementInfo::consRef_, &constructor);
+                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
+                        &constructor);
                     napi_value napiElementInfo = nullptr;
                     napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr,
                         &napiElementInfo);
@@ -348,20 +349,23 @@ private:
             return engine.CreateUndefined();
         }
 
-        uint64_t displayId = OHOS::Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
-        HILOG_DEBUG("Get default display id from dms[%{public}ju]", displayId);
+        uint64_t displayId = 0;
+        bool hasDisplayId = false;
         NativeValue* lastParam = nullptr;
         bool lossless = false;
         switch (info.argc) {
             case ARGS_SIZE_ZERO:
                 HILOG_DEBUG("The size of args is %{public}zu", info.argc);
+                hasDisplayId = false;
                 break;
             case ARGS_SIZE_ONE:
                 HILOG_DEBUG("The size of args is %{public}zu", info.argc);
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                    hasDisplayId = false;
                     lastParam = info.argv[PARAM0];
                 }
                 if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                    hasDisplayId = true;
                     if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
                         reinterpret_cast<napi_value>(info.argv[PARAM0]),
                         &displayId, &lossless) != napi_status::napi_ok) {
@@ -377,6 +381,7 @@ private:
                 break;
             case ARGS_SIZE_TWO:
                 HILOG_DEBUG("The size of args is %{public}zu", info.argc);
+                hasDisplayId = true;
                 if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
                     reinterpret_cast<napi_value>(info.argv[PARAM0]),
                     &displayId, &lossless) != napi_status::napi_ok) {
@@ -390,6 +395,45 @@ private:
                 break;
         }
 
+        return hasDisplayId ? GetWindowsByDisplayIdAsync(engine, lastParam, displayId) :
+            GetWindowsAsync(engine, lastParam);
+    }
+
+    NativeValue* GetWindowsAsync(NativeEngine& engine, NativeValue* lastParam) {
+        HILOG_INFO("called.");
+        AsyncTask::CompleteCallback complete =
+            [weak = context_](NativeEngine& engine, AsyncTask& task, int32_t status) {
+                HILOG_INFO("GetWindows begin");
+                auto context = weak.lock();
+                if (!context) {
+                    HILOG_ERROR("context is released");
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    return;
+                }
+
+                std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
+                bool ret = context->GetWindows(accessibilityWindows);
+                if (ret) {
+                    napi_value napiWindowInfos = nullptr;
+                    napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
+                    ConvertAccessibilityWindowInfosToJS(
+                        reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);
+                    NativeValue* nativeWindowInfos = reinterpret_cast<NativeValue*>(napiWindowInfos);
+                    task.Resolve(engine, nativeWindowInfos);
+                } else {
+                    HILOG_ERROR("Get windowInfos failed.");
+                    task.Reject(engine, CreateJsError(engine, false, "Get windowInfos failed."));
+                }
+            };
+
+        NativeValue* result = nullptr;
+        AsyncTask::Schedule(
+            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        return result;
+    }
+
+    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, uint64_t displayId) {
+        HILOG_INFO("called.");
         AsyncTask::CompleteCallback complete =
             [weak = context_, displayId](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindows begin");
@@ -576,6 +620,7 @@ void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequenc
     if (it != jsGestureResultListenerInfos.end()) {
         HILOG_DEBUG("callbackInfo has been found.");
         callbackInfo = jsGestureResultListenerInfos[sequence];
+        jsGestureResultListenerInfos.erase(it);
     }
 
     if (!callbackInfo) {

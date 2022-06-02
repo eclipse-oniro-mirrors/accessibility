@@ -28,9 +28,9 @@ AccessibilityDisplayManager::~AccessibilityDisplayManager()
     UnregisterDisplayListener();
 }
 
-const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(int32_t id)
+const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(uint64_t id)
 {
-    return Rosen::DisplayManager::GetInstance().GetDisplayById((Rosen::DisplayId)id);
+    return Rosen::DisplayManager::GetInstance().GetDisplayById(id);
 }
 
 std::vector<sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
@@ -41,6 +41,11 @@ std::vector<sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
 const sptr<Rosen::Display> AccessibilityDisplayManager::GetDefaultDisplay()
 {
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplay();
+}
+
+uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
+{
+    return Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(

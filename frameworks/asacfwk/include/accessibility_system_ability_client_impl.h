@@ -20,7 +20,6 @@
 #include <mutex>
 #include "accessibility_element_operator_impl.h"
 #include "accessibility_system_ability_client.h"
-#include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_state_observer_stub.h"
 #include "i_accessible_ability_manager_service.h"
 
@@ -72,13 +71,6 @@ public:
     virtual bool IsTouchExplorationEnabled() override;
 
     /**
-     * @brief Checks whether Caption ability is enabled.
-     * @param -
-     * @return true: enabled; false: disabled
-     */
-    virtual bool IsCaptionEnabled() override;
-
-    /**
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
@@ -91,27 +83,6 @@ public:
      */
     virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
         std::vector<AccessibilityAbilityInfo> &infos) override;
-
-    /**
-     * @brief Obtains the properties of the accessibility caption.
-     * @param -
-     * @return Returns the properties of the accessibility caption.
-     */
-    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
-
-    /**
-     * @brief Sets the properties of the accessibility caption.
-     * @param caption The properties of the accessibility caption.
-     * @return Returns true if sets properties successfully, else return false.
-     */
-    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
-
-    /**
-     * @brief Checks whether the accessibility caption function is enabled.
-     * @param -
-     * @return True if the caption function is enabled; returns False otherwise.
-     */
-    virtual bool IsAccessibilityCaptionEnabled() const override;
 
     /**
      * @brief Sends an accessibility event.
@@ -152,63 +123,6 @@ public:
         const uint32_t eventType) override;
 
     /**
-     * @brief Get eventlist that accessibility abilities are needed.
-     * @return enabled eventlist mask.
-     */
-    virtual int32_t GetEnabledEventMask() override
-    {
-        return 0;
-    }
-
-    /**
-     * @brief Add the listener of caption.
-     * @param ob The listener of caption.
-     * @param type The type of caption observer.
-     * @return Return true if add listener successfully, else return false.
-     */
-    virtual bool AddCaptionListener(
-        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
-
-    /**
-     * @brief delete the listener of caption.
-     * @param ob The listener of caption.
-     * @param type The type of caption observer.
-     * @return Return true if delete listener successfully, else return false.
-     */
-    virtual bool RemoveCaptionListener(
-        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) override;
-
-    /**
-     * @brief Get the enabled state of accessibility.
-     * @return Return true if accessibility is enabled, else return false.
-     */
-    virtual bool GetEnabledState() override;
-
-    /**
-     * @brief Get the enabled state of caption.
-     * @return Return true if caption is enabled, else return false.
-     */
-    virtual bool GetCaptionState() override;
-
-    /**
-     * @brief Get the enabled state of touch guide.
-     * @return Return true if touch guide is enabled, else return false.
-     */
-    virtual bool GetTouchGuideState() override;
-
-    /**
-     * @brief Get the enabled state of gesture.
-     * @return Return true if gesture is enabled, else return false.
-     */
-    virtual bool GetGestureState() override;
-
-    /**
-     * @brief Get the enabled state of key event observer.
-     * @return Return true if key event observer is enabled, else return false.
-     */
-    virtual bool GetKeyEventObserverState() override;
-
-    /**
      * @brief Get installed abilities.
      * @param installedAbilities The installed accessibility ability infos.
      * @return Return true if get installed abilities successfully, else return false.
@@ -221,20 +135,6 @@ public:
      * @return Return true if get enabled abilities successfully, else return false.
      */
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
-
-    /**
-     * @brief Set caption property
-     * @param caption The caption property to set.
-     * @return Return true if set caption property successfully, else return false.
-     */
-    virtual bool SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption) override;
-
-    /**
-     * @brief Set caption state
-     * @param state The caption state to set.
-     * @return Return true if set caption state successfully, else return false.
-     */
-    virtual bool SetCaptionStateTojson(const bool state) override;
 
     /**
      * @brief Clean the AAMS object data.
@@ -253,101 +153,6 @@ public:
      */
     void OnAccessibleAbilityManagerStateChanged(const uint32_t stateType);
 
-    /**
-     * @brief Receive the caption property notify from AAMS and send it to the observer registered.
-     * @param caption The caption property.
-     * @return
-     */
-    void OnAccessibleAbilityManagerCaptionPropertyChanged(const AccessibilityConfig::CaptionProperty &property);
-
-    /**
-     * @brief Enable Screen Magnifier
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableScreenMagnifier() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Disable Screen Magnifier
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableScreenMagnifier() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Get Screen Magnifier feather state
-     * @return Return the open state of screen magnifier.
-     * false.
-     */
-    virtual bool GetScreenMagnifierState() override
-    {
-        return isScreenMagnifierEnabled_;
-    }
-
-    /**
-     * @brief Enable AutoClick
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool EnableAutoClick() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Disable Auto Click
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableAutoClick() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Get AutoClick feather state
-     * @return Return the open state of AutoClick.
-     * false.
-     */
-    virtual bool GetAutoClickState() override
-    {
-        return isAutoClickEnabled_;
-    }
-
-    /**
-     * @brief Enable Short Key
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool EnableShortKey() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Disable Short Key
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableShortKey() override
-    {
-        return false;
-    }
-
-    /**
-     * @brief Get Short Key feather state
-     * @return Return the open state of AutoClick.
-     * false.
-     */
-    virtual bool GetShortKeyState() override
-    {
-        return isShortKeyEnabled_;
-    }
 
 private:
     class AccessibleAbilityManagerStateObserverImpl : public AccessibleAbilityManagerStateObserverStub {
@@ -359,20 +164,6 @@ private:
         virtual void OnStateChanged(const uint32_t stateType) override
         {
             client_.OnAccessibleAbilityManagerStateChanged(stateType);
-        }
-    private:
-        AccessibilitySystemAbilityClientImpl &client_;
-    };
-
-    class AccessibleAbilityManagerCaptionObserverImpl : public AccessibleAbilityManagerCaptionObserverStub {
-    public:
-        explicit AccessibleAbilityManagerCaptionObserverImpl(AccessibilitySystemAbilityClientImpl &client)
-            : client_(client) {}
-        ~AccessibleAbilityManagerCaptionObserverImpl() = default;
-
-        virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override
-        {
-            client_.OnAccessibleAbilityManagerCaptionPropertyChanged(property);
         }
     private:
         AccessibilitySystemAbilityClientImpl &client_;
@@ -400,14 +191,6 @@ private:
     bool ConnectToService();
 
     /**
-     * @brief Inner function for aams status update;
-     *        Set whether caption is enabled.
-     * @param enabled true is enabled otherwise is disabled.
-     * @return -
-     */
-    void UpdateCaptionEnabled(const bool enabled);
-
-    /**
      * @brief Notify the state is changed.
      * @param stateType The state type and value.
      *                  state type: Refer to AccessibilityStateEventType.
@@ -415,20 +198,6 @@ private:
      * @return
      */
     void NotifyStateChanged(uint32_t eventType, bool value);
-
-    /**
-     * @brief Notify the state of caption is changed.
-     * @param
-     * @return
-     */
-    void NotifyCaptionStateChanged();
-
-    /**
-     * @brief Notify the properties of caption is changed.
-     * @param
-     * @return
-     */
-    void NotifyCaptionChanged();
 
     /**
      * @brief Check the event type is valid or not.
@@ -447,14 +216,6 @@ private:
     std::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;
-    std::vector<std::shared_ptr<AccessibilityConfig::CaptionObserver>> observersCaptionProperty_;
-    std::vector<std::shared_ptr<AccessibilityConfig::CaptionObserver>> observersCaptionEnable_;
-
-    AccessibilityConfig::CaptionProperty captionProperty_ {};
-    bool isScreenMagnifierEnabled_ = false;
-    bool isAutoClickEnabled_ = false;
-    bool isShortKeyEnabled_ = false;
-    bool isCaptionEnabled_ = false;
 
     std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> interactionOperators_;
 
@@ -463,7 +224,6 @@ private:
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;
-    sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

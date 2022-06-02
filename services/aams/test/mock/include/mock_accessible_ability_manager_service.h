@@ -38,8 +38,8 @@ public:
         void(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation));
     MOCK_METHOD1(DeregisterElementOperator, void(const int32_t windowId));
     MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
-    MOCK_METHOD1(SetCaptionProperty, bool(const AccessibilityConfig::CaptionProperty& caption));
-    MOCK_METHOD1(SetCaptionState, bool(const bool state));
+    MOCK_METHOD1(SetCaptionProperty, void(const AccessibilityConfig::CaptionProperty& caption));
+    MOCK_METHOD1(SetCaptionState, void(const bool state));
     MOCK_METHOD1(SetEnabled, bool(const bool state));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 

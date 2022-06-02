@@ -35,6 +35,10 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
         &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_ACTION)] =
         &AccessibleAbilityChannelStub::HandleExecuteAction;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOW)] =
+        &AccessibleAbilityChannelStub::HandleGetWindow;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS)] =
+        &AccessibleAbilityChannelStub::HandleGetWindows;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID)] =
         &AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION)] =
@@ -202,6 +206,43 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
 
     bool result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start.");
+
+    int32_t windowId = data.ReadInt32();
+    sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new AccessibilityWindowInfoParcel();
+
+    bool result = GetWindow(windowId, *windowInfoParcel);
+    if (!reply.WriteStrongParcelable(windowInfoParcel)) {
+        HILOG_ERROR("WriteStrongParcelable windows failed");
+        return ERR_INVALID_VALUE;
+    }
+
+    reply.WriteBool(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG("start.");
+    std::vector<AccessibilityWindowInfo> windows;
+    bool result = GetWindows(windows);
+    if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
+        HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
+        return ERR_INVALID_VALUE;
+    }
+    for (auto &window : windows) {
+        sptr<AccessibilityWindowInfoParcel> windowInfo = new AccessibilityWindowInfoParcel(window);
+        if (!reply.WriteStrongParcelable(windowInfo)) {
+            HILOG_ERROR("WriteStrongParcelable windows failed");
+            return ERR_INVALID_VALUE;
+        }
+    }
     reply.WriteBool(result);
     return NO_ERROR;
 }

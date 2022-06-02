@@ -97,7 +97,7 @@ void AccessibilityMemo::SetEndIndex(const int32_t index)
     HILOG_DEBUG("endIndex_[%{public}d]", endIndex_);
 }
 
-std::string AccessibilityMemo::GetComponentType() const
+const std::string &AccessibilityMemo::GetComponentType() const
 {
     HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
     return componentType_;
@@ -109,7 +109,7 @@ void AccessibilityMemo::SetComponentType(const std::string &className)
     HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
 }
 
-std::string AccessibilityMemo::GetBeforeText() const
+const std::string &AccessibilityMemo::GetBeforeText() const
 {
     HILOG_DEBUG("beforeText_[%{public}s]", beforeText_.c_str());
     return beforeText_;
@@ -132,7 +132,7 @@ const std::vector<std::string> &AccessibilityMemo::GetContentList() const
     return contents_;
 }
 
-std::string AccessibilityMemo::GetLatestContent() const
+const std::string &AccessibilityMemo::GetLatestContent() const
 {
     HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
     return latestConent_;
@@ -144,7 +144,7 @@ void AccessibilityMemo::SetLatestContent(const std::string &content)
     HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
 }
 
-std::string AccessibilityMemo::GetDescription() const
+const std::string &AccessibilityMemo::GetDescription() const
 {
     HILOG_DEBUG("description_[%{public}s]", description_.c_str());
     return description_;
@@ -186,7 +186,7 @@ void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
     records_.push_back(record);
 }
 
-AccessibilityEventInfo AccessibilityEventInfo::GetRecord(const int32_t index)
+const AccessibilityEventInfo &AccessibilityEventInfo::GetRecord(const int32_t index) const
 {
     HILOG_DEBUG("start");
     if (index >= recordsCount_ || index < 0) {
@@ -241,17 +241,18 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
 
 int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
     return timeStamp_;
 }
 
-void AccessibilityEventInfo::SetTimeStamp(const int64_t eventTime)
+void AccessibilityEventInfo::SetTimeStamp(int64_t timeStamp)
 {
     HILOG_DEBUG("start");
-    timeStamp_ = eventTime;
+    timeStamp_ = timeStamp;
+    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
 }
 
-std::string AccessibilityEventInfo::GetBundleName() const
+const std::string &AccessibilityEventInfo::GetBundleName() const
 {
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
     return bundleName_;
@@ -261,6 +262,18 @@ void AccessibilityEventInfo::SetBundleName(const std::string &bundleName)
 {
     bundleName_ = bundleName;
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
+}
+
+const std::string &AccessibilityEventInfo::GetNotificationContent() const
+{
+    HILOG_DEBUG("notificationContent_[%{public}s]", notificationContent_.c_str());
+    return notificationContent_;
+}
+
+void AccessibilityEventInfo::SetNotificationContent(const std::string &notificationContent)
+{
+    notificationContent_ = notificationContent;
+    HILOG_DEBUG("notificationContent_[%{public}s]", notificationContent_.c_str());
 }
 
 void AccessibilityEventInfo::SetTextMovementStep(const TextMoveUnit granularity)

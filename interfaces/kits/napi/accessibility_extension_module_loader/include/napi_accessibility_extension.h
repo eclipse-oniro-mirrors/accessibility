@@ -20,6 +20,7 @@
 #include "accessibility_extension.h"
 #include "accessible_ability_listener.h"
 #include "js_runtime.h"
+#include "napi_accessibility_element.h"
 #include "native_engine/native_reference.h"
 #include "native_engine/native_value.h"
 
@@ -143,6 +144,8 @@ private:
 
     NativeValue* CallObjectMethod(const char* name, NativeValue * const * argv = nullptr, size_t argc = 0);
 
+    std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& eventInfo);
+
     void GetSrcPath(std::string &srcPath);
 
     NativeEngine *engine_ = nullptr;
@@ -163,6 +166,7 @@ struct KeyEventCallbackInfo : public ExtensionCallbackInfo {
 
 struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_;
+    std::shared_ptr<AccessibilityElement> element_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

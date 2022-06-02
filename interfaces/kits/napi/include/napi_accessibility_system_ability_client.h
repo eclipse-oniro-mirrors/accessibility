@@ -20,9 +20,11 @@
 #include <map>
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "accessibility_config.h"
 #include "accessibility_system_ability_client.h"
 #include "accessibility_state_event.h"
 #include "accessibility_ability_info.h"
+#include "napi_accessibility_utils.h"
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
 class StateListener : public OHOS::Accessibility::AccessibilityStateObserver {
@@ -32,40 +34,6 @@ public:
     napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
     void OnStateChanged(const bool state) override;
     OHOS::Accessibility::AccessibilityStateEventType GetStateType();
-
-    std::string GetEventType() const
-    {
-        return eventType_;
-    }
-
-    napi_env GetEnv() const
-    {
-        return env_;
-    }
-
-    napi_ref GetHandler() const
-    {
-        return handlerRef_;
-    }
-
-private:
-    napi_ref handlerRef_ = nullptr;
-    napi_env env_ = nullptr;
-    std::string eventType_ = "";
-    std::string description_ = "";
-};
-
-class CaptionListener : public OHOS::AccessibilityConfig::CaptionObserver {
-public:
-    CaptionListener();
-    static void NotifyStateChangedJS(napi_env env, bool enabled, std::string eventType, napi_ref handlerRef);
-    static void NotifyPropertyChangedJS(
-        napi_env env, const OHOS::AccessibilityConfig::CaptionProperty &caption, const std::string &eventType,
-        napi_ref handlerRef);
-    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
-    void OnStateChanged(const bool& enable) override;
-    void OnPropertyChanged(const OHOS::AccessibilityConfig::CaptionProperty& caption) override;
-    OHOS::AccessibilityConfig::CaptionObserverType GetStateType();
 
     std::string GetEventType() const
     {
@@ -100,7 +68,6 @@ struct NAccessibilitySystemAbilityClient {
     OHOS::Accessibility::AbilityStateType stateTypes_ = OHOS::Accessibility::ABILITY_STATE_INVALID;
     uint32_t abilityTypes_ = 0;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList_ {};
-    std::vector<std::string> enabledAbilities_ {};
     OHOS::AccessibilityConfig::CaptionProperty captionProperty_ {};
     bool setCaptionPropertyReturn_ = false;
     bool captionState_ = false;
@@ -118,7 +85,7 @@ struct NAccessibilitySystemAbilityClient {
     std::string eventType_ = "";
 
     std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
-    std::vector<std::shared_ptr<CaptionListener>> captionListener_;
+    std::vector<std::shared_ptr<ConfigListener>> captionListener_;
 };
 
 class NAccessibilityClient {
@@ -129,16 +96,7 @@ public:
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
     static napi_value SendEvent(napi_env env, napi_callback_info info);
-    static napi_value GetCaptionProperty(napi_env env, napi_callback_info info);
-    static napi_value SetCaptionProperty(napi_env env, napi_callback_info info);
-    static napi_value GetCaptionState(napi_env env, napi_callback_info info);
-    static napi_value SetCaptionState(napi_env env, napi_callback_info info);
-    static napi_value GetEnabled(napi_env env, napi_callback_info info);
-    static napi_value GetTouchGuideState(napi_env env, napi_callback_info info);
-    static napi_value GetGestureState(napi_env env, napi_callback_info info);
-    static napi_value GetKeyEventObserverState(napi_env env, napi_callback_info info);
     static napi_value GetInstalled(napi_env env, napi_callback_info info);
-    static napi_value GetExtensionEnabled(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);
@@ -169,7 +127,7 @@ public:
     static thread_local napi_ref aaStyleConsRef_;
 
     static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
-    static std::vector<std::shared_ptr<CaptionListener>> captionListeners_;
+    static std::vector<std::shared_ptr<ConfigListener>> captionListeners_;
 
 private:
     NAccessibilityClient() = default;

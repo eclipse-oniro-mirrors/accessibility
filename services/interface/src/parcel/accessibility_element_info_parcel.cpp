@@ -32,6 +32,11 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG("start");
 
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
+    int32_t textMoveStep = STEP_CHARACTER;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textMoveStep);
+    textMoveStep_ = static_cast<TextMoveUnit>(textMoveStep);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -39,8 +44,6 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityText_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityDescription_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32Vector, parcel, &childNodeIds_);
@@ -62,7 +65,6 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
         return false;
     }
     bounds_ = *rect;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityGroup_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checkable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checked_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focusable_);
@@ -116,6 +118,9 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 {
     HILOG_DEBUG("start");
 
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(textMoveStep_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
@@ -123,8 +128,6 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityText_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, accessibilityDescription_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32Vector, parcel, childNodeIds_);
@@ -138,7 +141,6 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
     RectParcel boundsParcel(bounds_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &boundsParcel);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityGroup_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checkable_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checked_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focusable_);

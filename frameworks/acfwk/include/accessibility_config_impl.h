@@ -40,21 +40,21 @@ public:
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
     bool DisableAbility(const std::string &name);
 
-    bool SetScreenMagnificationState(const bool state);
-    bool SetShortKeyState(const bool state);
-    bool SetMouseKeyState(const bool state);
-    bool SetCaptionState(const bool state);
-    bool SetCaptionProperty(const CaptionProperty &caption);
-    bool SetMouseAutoClick(const int32_t time);
-    bool SetShortkeyTarget(const std::string &name);
-    bool SetHighContrastTextState(bool state);
-    bool SetInvertColorState(const bool state);
-    bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
-    bool SetContentTimeout(const uint32_t timer);
-    bool SetAnimationOffState(const bool state);
-    bool SetBrightnessDiscount(const float brightness);
-    bool SetAudioMonoState(const bool state);
-    bool SetAudioBalance(const float balance);
+    void SetScreenMagnificationState(const bool state);
+    void SetShortKeyState(const bool state);
+    void SetMouseKeyState(const bool state);
+    void SetCaptionState(const bool state);
+    void SetCaptionProperty(const CaptionProperty &caption);
+    void SetMouseAutoClick(const int32_t time);
+    void SetShortkeyTarget(const std::string &name);
+    void SetHighContrastTextState(bool state);
+    void SetInvertColorState(const bool state);
+    void SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
+    void SetContentTimeout(const uint32_t timer);
+    void SetAnimationOffState(const bool state);
+    void SetBrightnessDiscount(const float brightness);
+    void SetAudioMonoState(const bool state);
+    void SetAudioBalance(const float balance);
 
     bool GetScreenMagnificationState(bool &state);
     bool GetShortKeyState(bool &state);
@@ -220,15 +220,15 @@ private:
     bool audioMono_ = false;
     bool mouseKey_ = false;
     bool captionState_ = false;
-    CaptionProperty captionProperty_;
-    int32_t mouseAutoClick_;
     bool screenMagnifier_ = false;
     bool shortkey_ = false;
-    std::string shortkeyTarget_ = "";
+    int32_t mouseAutoClick_ = 0;
     uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;
     float brightnessDiscount_ = 0.0;
     float audioBalance_ = 0.0;
+    std::string shortkeyTarget_ = "";
+    CaptionProperty captionProperty_ = {};
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
 

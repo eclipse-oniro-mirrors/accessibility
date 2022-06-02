@@ -258,8 +258,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
         HILOG_DEBUG("ReadStrongParcelable<CaptionProperty> failed");
         return TRANSACTION_ERR;
     }
-    bool result = SetCaptionProperty(*caption);
-    reply.WriteBool(result);
+    SetCaptionProperty(*caption);
 
     return NO_ERROR;
 }
@@ -269,8 +268,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel
     HILOG_DEBUG("start");
 
     bool state = data.ReadBool();
-    bool result = SetCaptionState(state);
-    reply.WriteBool(result);
+    SetCaptionState(state);
 
     return NO_ERROR;
 }

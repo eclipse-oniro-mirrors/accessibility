@@ -17,7 +17,7 @@
 #include "ability_manager_client.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "json_utils.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -69,9 +69,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     elementName_ = element;
 
     if (resultCode != NO_ERROR) {
-        accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
-        accountData_->RemoveConnectingA11yAbility(
-            Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
+        accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_));
+        accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAbilities();
         return;
     }
@@ -103,8 +102,7 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
 
     sptr<AccessibleAbilityConnection> pointer = this;
     accountData_->AddConnectedAbility(pointer);
-    accountData_->RemoveConnectingA11yAbility(
-        Utils::GetUri(elementName_.GetBundleName(), elementName_.GetAbilityName()));
+    accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
 
     channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
@@ -342,8 +340,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         return;
     }
     recipientAccountData_->RemoveConnectedAbility(connection);
-    recipientAccountData_->RemoveEnabledAbility(
-        Utils::GetUri(recipientElementName_.GetBundleName(), recipientElementName_.GetAbilityName()));
+    recipientAccountData_->RemoveEnabledAbility(Utils::GetUri(recipientElementName_));
 
     std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
     if (uri == uiTestUri) {

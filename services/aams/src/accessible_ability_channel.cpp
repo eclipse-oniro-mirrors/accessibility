@@ -28,6 +28,8 @@ namespace {
     const std::string TASK_FIND_FOCUSED_ELEMENTINFO = "FindFocusedElementInfo";
     const std::string TASK_FOCUS_MOVE_SEARCH = "FocusMoveSearch";
     const std::string TASK_EXECUTE_ACTION = "ExecuteAction";
+    const std::string TASK_GET_WINDOW = "GetWindow";
+    const std::string TASK_GET_WINDOWS = "GetWindows";
     const std::string TASK_GET_WINDOWS_BY_DISPLAY_ID = "GetWindowsByDisplayId";
     const std::string TASK_EXECUTE_COMMON_ACTION = "ExecuteCommonAction";
     const std::string TASK_SET_ON_KEY_PRESS_EVENT_RESULT = "SetOnKeyPressEventResult";
@@ -251,6 +253,63 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
         return;
     }
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
+}
+
+bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    HILOG_DEBUG("windowId:%{public}d", windowId);
+
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return false;
+    }
+ 
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindow,
+        this, std::ref(syncPromise), windowId, std::ref(windowInfo));
+
+    eventHandler_->PostTask(task, TASK_GET_WINDOW);
+    return syncFuture.get();
+}
+
+void AccessibleAbilityChannel::InnerGetWindow(std::promise<bool> &syncPromise,
+    const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    HILOG_DEBUG("windowId:%{public}d", windowId);
+
+    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
+        HILOG_ERROR("AccessibleAbilityChannel::GetWindow failed: no capability");
+        syncPromise.set_value(false);
+        return;
+    }
+
+    if (Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindow(windowId, windowInfo)) {
+        syncPromise.set_value(true);
+    } else {
+        syncPromise.set_value(false);
+    }
+}
+
+bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    HILOG_DEBUG("start");
+    if (!eventHandler_) {
+        HILOG_ERROR("eventHandler_ is nullptr.");
+        return false;
+    }
+
+    uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
+    HILOG_DEBUG("default display id is %{public}ju", displayId);
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindowsByDisplayId,
+        this, std::ref(syncPromise), displayId, std::ref(windows));
+
+    eventHandler_->PostTask(task, TASK_GET_WINDOWS);
+    bool ret = syncFuture.get();
+
+    return ret;
 }
 
 bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,

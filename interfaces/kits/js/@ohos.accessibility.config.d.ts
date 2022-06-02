@@ -26,8 +26,9 @@ declare namespace config {
    * Enabled the accessibility abilities by names.
    * @since 9
    * @sysCap Accessibility
-   * @param name The strings formated by 'bundleName/abilityName'.
-   * @return Returns {@code true} if set extension disabled successed; returns {@code false} otherwise.
+   * @param name The strings formatted by 'bundleName/abilityName'.
+   * @param capability The capabilities allowed. 
+   * @return Returns {@code true} if set extension enabled succeeded; returns {@code false} otherwise.
    */
   function enableAbility(name: string, capability: Array<accessibility.Capability>, callback: AsyncCallback<boolean>): void;
   function enableAbility(name: string, capability: Array<accessibility.Capability>): Promise<boolean>;
@@ -36,8 +37,8 @@ declare namespace config {
    * Disabled the accessibility abilities by names.
    * @since 9
    * @sysCap Accessibility
-   * @param name The strings formated by 'bundleName/abilityName'.
-   * @return Returns {@code true} if set extension disabled successed; returns {@code false} otherwise.
+   * @param name The strings formatted by 'bundleName/abilityName'.
+   * @return Returns {@code true} if set extension disabled succeeded; returns {@code false} otherwise.
    */
   function disableAbility(name: string, callback: AsyncCallback<boolean>): void;
   function disableAbility(name: string): Promise<boolean>;

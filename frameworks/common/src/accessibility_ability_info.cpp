@@ -52,7 +52,7 @@ uint32_t AccessibilityAbilityInfo::GetCapabilityValues() const
     return capabilities_;
 }
 
-std::string AccessibilityAbilityInfo::GetDescription()
+const std::string &AccessibilityAbilityInfo::GetDescription() const
 {
     HILOG_DEBUG("start.");
     return description_;
@@ -70,13 +70,13 @@ std::string AccessibilityAbilityInfo::GetId() const
     return bundleName_ + "/" + name_;
 }
 
-std::string AccessibilityAbilityInfo::GetName()
+const std::string &AccessibilityAbilityInfo::GetName() const
 {
     HILOG_DEBUG("start.");
     return name_;
 }
 
-std::string AccessibilityAbilityInfo::GetPackageName()
+const std::string &AccessibilityAbilityInfo::GetPackageName() const
 {
     HILOG_DEBUG("start.");
     return bundleName_;
@@ -94,7 +94,7 @@ const std::vector<std::string> &AccessibilityAbilityInfo::GetFilterBundleNames()
     return targetBundleNames_;
 }
 
-std::string AccessibilityAbilityInfo::GetSettingsAbility()
+const std::string &AccessibilityAbilityInfo::GetSettingsAbility() const
 {
     HILOG_DEBUG("start.");
     return settingsAbility_;

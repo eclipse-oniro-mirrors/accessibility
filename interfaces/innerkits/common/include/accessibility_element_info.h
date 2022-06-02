@@ -54,7 +54,7 @@ public:
      * @param -
      * @return he description message of action.
      */
-    std::string GetDescriptionInfo() const;
+    const std::string &GetDescriptionInfo() const;
 
 protected:
     ActionType actionType_ = ACCESSIBILITY_ACTION_INVALID;
@@ -622,7 +622,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    Rect GetRectInScreen() const;
+    const Rect &GetRectInScreen() const;
 
     /**
      * @brief Set the rectangular area of this accessibility node control in the screen.
@@ -964,7 +964,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetBundleName() const;
+    const std::string &GetBundleName() const;
 
     /**
      * @brief Set the bundle name of application target.
@@ -982,7 +982,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetComponentType() const;
+    const std::string &GetComponentType() const;
 
     /**
      * @brief Sets the class name.
@@ -1000,7 +1000,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetContent() const;
+    const std::string &GetContent() const;
 
     /**
      * @brief Set the text of node.
@@ -1012,67 +1012,13 @@ public:
     void SetContent(const std::string &text);
 
     /**
-     * @brief Gets the accessibility text of node.
-     * @param
-     * @return the accessibility text of node
-     * @since 3
-     * @sysCap Accessibility
-     */
-    std::string GetAccessibilityContent() const;
-
-    /**
-     * @brief Set the accessibility text of node.
-     * @param text The accessibility text of node.
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetAccessibilityContent(const std::string &text);
-
-    /**
-     * @brief Gets  the accessibility description of node.
-     * @param
-     * @return The accessibility description of node.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    std::string GetAccessibilityDescription() const;
-
-    /**
-     * @brief Set the accessibility description of node.
-     * @param text The accessibility description of node.
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetAccessibilityDescription(const std::string &text);
-
-    /**
-     * @brief Checks whether this node is accessibility group.
-     * @param
-     * @return true Accessibility group, otherwise is not.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    bool GetAccessibilityGroup() const;
-
-    /**
-     * @brief Set  whether this node is accessibility group
-     * @param group true Accessibility group, otherwise is not.
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetAccessibilityGroup(const bool group);
-
-    /**
      * @brief Gets the hint information.
      * @param
      * @return the hint information.
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetHint() const;
+    const std::string &GetHint() const;
 
     /**
      * @brief Sets the hint information.
@@ -1090,7 +1036,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetDescriptionInfo() const;
+    const std::string &GetDescriptionInfo() const;
 
     /**
      * @brief Set the description of the accessibility node.
@@ -1117,7 +1063,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetComponentResourceId() const;
+    const std::string &GetComponentResourceId() const;
 
     /**
      * @brief Set whether this node has live region
@@ -1172,7 +1118,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetError() const;
+    const std::string &GetError() const;
 
     /**
      * @brief Set the id of component labeled
@@ -1236,7 +1182,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    RangeInfo GetRange() const;
+    const RangeInfo &GetRange() const;
 
     /**
      * @brief Set the object of RangeInfo
@@ -1290,7 +1236,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    GridInfo GetGrid() const;
+    const GridInfo &GetGrid() const;
 
     /**
      * @brief Set the object of GridInfo
@@ -1308,7 +1254,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    GridItemInfo GetGridItem() const;
+    const GridItemInfo &GetGridItem() const;
 
     /**
      * @brief Set the object of GridItemInfo
@@ -1423,9 +1369,22 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetInspectorKey() const;
+    const std::string &GetInspectorKey() const;
+
+    int32_t GetPageId() const;
+
+    void SetPageId(const int32_t pageId);
+
+    void SetTextMovementStep(const TextMoveUnit granularity);
+
+    TextMoveUnit GetTextMovementStep() const;
+
+    void SetItemCounts(const int32_t itemCounts);
+
+    int32_t GetItemCounts() const;
 
 protected:
+    int32_t pageId_ = -1;
     int32_t windowId_ = -1;
     int32_t elementId_ = UNDEFINED_ACCESSIBILITY_ID;
     int32_t parentId_ = UNDEFINED_ACCESSIBILITY_ID;
@@ -1433,8 +1392,6 @@ protected:
     std::string componentType_ = "";
     std::string text_ = "";
     std::string hintText_ = "";
-    std::string accessibilityText_ = "";
-    std::string accessibilityDescription_ = "";
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
     std::string inspectorKey_ = "";
@@ -1444,7 +1401,6 @@ protected:
     int32_t textLengthLimit_ = -1;
     int32_t channelId_ = UNDEFINED_CHANNEL_ID; // rename
     Rect bounds_ {};
-    bool accessibilityGroup_ = false;
     bool checkable_ = false;
     bool checked_ = false;
     bool focusable_ = false;
@@ -1477,6 +1433,8 @@ protected:
     int32_t endSelected_ = 0;
     int32_t inputType_ = 0; // text input type added
     bool validElement_ = true;
+    TextMoveUnit textMoveStep_ = STEP_CHARACTER;
+    int32_t itemCounts_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

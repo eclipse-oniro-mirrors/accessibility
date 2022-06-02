@@ -39,22 +39,22 @@ class ElementOperatorForFuzzTest : public AccessibilityElementOperator {
 public:
     virtual ~ElementOperatorForFuzzTest() = default;
     void SearchElementInfoByAccessibilityId(const int32_t elementId,
-        const int32_t requestId, AccessibilityElementOperatorCallback &callback, const int32_t mode) {}
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback, const int32_t mode) override {}
 
     void SearchElementInfosByText(const int32_t elementId, const std::string &text,
-        const int32_t requestId, AccessibilityElementOperatorCallback &callback) {}
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) override {}
 
     void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
-        AccessibilityElementOperatorCallback &callback) {}
+        AccessibilityElementOperatorCallback &callback) override {}
 
     void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
-        AccessibilityElementOperatorCallback &callback) {}
+        AccessibilityElementOperatorCallback &callback) override {}
 
     void ExecuteAction(const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
-        const int32_t requestId, AccessibilityElementOperatorCallback &callback) {}
-    void ClearFocus() {}
-    void OutsideTouch() {}
+        const int32_t requestId, AccessibilityElementOperatorCallback &callback) override {}
+    void ClearFocus() override {}
+    void OutsideTouch() override {}
 };
 
 class StateObserverForFuzzTest : public AccessibilityStateObserver {
@@ -146,6 +146,11 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
     std::memcpy(&name, &data[position], LEN);
     std::string bundleName(name);
     eventInfo.SetBundleName(bundleName);
+    position += LEN;
+
+    std::memcpy(&name, &data[position], LEN);
+    std::string notificationContent(name);
+    eventInfo.SetNotificationContent(notificationContent);
     position += LEN;
 
     return position;

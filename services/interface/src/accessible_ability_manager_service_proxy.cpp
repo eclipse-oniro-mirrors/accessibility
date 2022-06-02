@@ -80,53 +80,49 @@ void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInf
     }
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
+void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
     CaptionPropertyParcel captionParcel(caption);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteParcelable(&captionParcel)) {
         HILOG_ERROR("fail, connection write parcelable Caption Property ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CAPTION_PROPERTY, data, reply, option)) {
         HILOG_ERROR("SetCaptionProperty fail");
-        return false;
     }
-    return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CAPTION_STATE, data, reply, option)) {
         HILOG_ERROR("SetCaptionState fail");
-        return false;
     }
-    return reply.ReadBool();
 }
 
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
@@ -582,317 +578,291 @@ bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SCREENMAGNIFIER_STATE, data, reply, option)) {
         HILOG_ERROR("SetScreenMagnificationState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_STATE, data, reply, option)) {
         HILOG_ERROR("SetShortKeyState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_STATE, data, reply, option)) {
         HILOG_ERROR("SetMouseKeyState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
+void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteInt32(time)) {
         HILOG_ERROR("fail, connection write SetMouseAutoClick time");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_AUTOCLICK, data, reply, option)) {
         HILOG_ERROR("SetMouseAutoClick fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &name)
+void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteString(name)) {
         HILOG_ERROR("fail, connection write SetShortkeyTarget name");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_TARGET, data, reply, option)) {
         HILOG_ERROR("SetShortkeyTarget fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_HIGHCONTRASTTEXT_STATE, data, reply, option)) {
         HILOG_ERROR("SetHighContrastTextState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_INVERTCOLOR_STATE, data, reply, option)) {
         HILOG_ERROR("SetInvertColorState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_ANIMATIONOFF_STATE, data, reply, option)) {
         HILOG_ERROR("SetAnimationOffState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
+void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_AUDIOMONO_STATE, data, reply, option)) {
         HILOG_ERROR("SetAudioMonoState fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
+void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteUint32(filter)) {
         HILOG_ERROR("fail, connection write SetDaltonizationColorFilter time");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER,
         data, reply, option)) {
         HILOG_ERROR("SetDaltonizationColorFilter fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time)
+void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteUint32(time)) {
         HILOG_ERROR("fail, connection write SetContentTimeout time");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CONTENT_TIMEOUT, data, reply, option)) {
         HILOG_ERROR("SetContentTimeout fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float discount)
+void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteFloat(discount)) {
         HILOG_ERROR("fail, connection write SetBrightnessDiscount time");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_BRIGHTNESS_DISCOUNT, data, reply, option)) {
         HILOG_ERROR("SetBrightnessDiscount fail");
-        return false;
     }
-    return true;
 }
 
-bool AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
+void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return;
     }
 
     if (!data.WriteFloat(balance)) {
         HILOG_ERROR("fail, connection write SetAudioBalance time");
-        return false;
+        return;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_AUDIO_BALANCE, data, reply, option)) {
         HILOG_ERROR("SetAudioBalance fail");
-        return false;
     }
-    return true;
 }
 
 bool AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState()

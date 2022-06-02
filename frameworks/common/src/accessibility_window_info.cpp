@@ -18,18 +18,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-std::string AccessibilityWindowInfo::GetWindowTitle() const
-{
-    HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
-    return windowTitle_;
-}
-
-void AccessibilityWindowInfo::SetWindowTitle(const std::string &title)
-{
-    windowTitle_ = title;
-    HILOG_DEBUG("windowTitle_[%{public}s]", windowTitle_.c_str());
-}
-
 AccessibilityWindowType AccessibilityWindowInfo::GetAccessibilityWindowType() const
 {
     HILOG_DEBUG("accessibilityWindowType_[%{public}d]", accessibilityWindowType_);
@@ -58,23 +46,6 @@ void AccessibilityWindowInfo::SetAnchorId(const int32_t anchorId)
 {
     anchorId_ = anchorId;
     HILOG_DEBUG("anchorId_[%{public}d]", anchorId_);
-}
-
-void AccessibilityWindowInfo::SetParentId(const int32_t parentId)
-{
-    parentId_ = parentId;
-    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
-}
-
-int32_t AccessibilityWindowInfo::GetParentId() const
-{
-    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
-    return parentId_;
-}
-
-const std::vector<int32_t> &AccessibilityWindowInfo::GetChildIds() const
-{
-    return childIds_;
 }
 
 int32_t AccessibilityWindowInfo::GetAnchorId() const
@@ -106,7 +77,7 @@ int32_t AccessibilityWindowInfo::GetChannelId() const
     return channelId_;
 }
 
-Rect AccessibilityWindowInfo::GetRectInScreen() const
+const Rect &AccessibilityWindowInfo::GetRectInScreen() const
 {
     return boundsInScreen_;
 }
@@ -153,28 +124,6 @@ void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityfo
 {
     accessibilityFocused_ = accessibilityfocused;
     HILOG_DEBUG("accessibilityFocused_[%{public}d]", accessibilityFocused_);
-}
-
-int32_t AccessibilityWindowInfo::GetChildNum() const
-{
-    HILOG_DEBUG("childNum_[%{public}d]", childNum_);
-    return childNum_;
-}
-
-int32_t AccessibilityWindowInfo::GetChildIdByIndex(const int32_t index) const
-{
-    if (index >= childNum_ || index < 0) {
-        HILOG_ERROR("index[%{public}d] is invalid", index);
-        return -1;
-    }
-
-    return childIds_[index];
-}
-
-void AccessibilityWindowInfo::AddChild(const int32_t childId)
-{
-    childIds_.push_back(childId);
-    childNum_++;
 }
 
 AccessibilityWindowInfo::AccessibilityWindowInfo()

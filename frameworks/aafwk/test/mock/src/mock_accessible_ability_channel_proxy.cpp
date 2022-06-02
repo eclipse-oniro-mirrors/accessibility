@@ -98,6 +98,12 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return true;
 }
 
+bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    (void)windows;
+    return true;
+}
+
 bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {

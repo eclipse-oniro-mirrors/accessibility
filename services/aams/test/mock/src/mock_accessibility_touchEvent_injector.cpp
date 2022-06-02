@@ -71,7 +71,7 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(
     return nullptr;
 }
 
-int64_t TouchEventInjector::getSystemTime()
+int64_t TouchEventInjector::GetSystemTime()
 {
     return 0;
 }

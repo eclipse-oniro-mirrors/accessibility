@@ -16,6 +16,7 @@
 #include "accessibility_mouse_autoclick.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -173,10 +174,7 @@ int64_t AccessibilityMouseAutoclick::GetSystemTime()
 {
     HILOG_DEBUG();
 
-    struct timespec times = {0, 0};
-    clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t microsecond = static_cast<int64_t>(times.tv_sec * 1000000 + times.tv_nsec / 1000);
-
+    int64_t microsecond = Utils::GetSystemTime() * 1000;
     return microsecond;
 }
 
@@ -191,7 +189,7 @@ int64_t AccessibilityMouseAutoclick::GetDelayTime()
         return 0;
     }
 
-    int32_t delayTime = accountData->GetMouseAutoClick();
+    int32_t delayTime = accountData->GetCurrentConfig()->GetMouseAutoClick();
     return delayTime;
 }
 

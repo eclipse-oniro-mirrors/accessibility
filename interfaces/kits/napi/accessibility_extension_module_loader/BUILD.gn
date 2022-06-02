@@ -18,8 +18,8 @@ config("accessibility_extension_module_config") {
 
   include_dirs = [
     "//base/accessibility/common/log/include",
+    "//base/accessibility/interfaces/innerkits/acfwk/include",
     "//base/accessibility/interfaces/kits/napi/accessibility_extension_module_loader/include",
-    "//base/accessibility/frameworks/aafwk/include",
     "//base/accessibility/interfaces/kits/napi/include",
   ]
 

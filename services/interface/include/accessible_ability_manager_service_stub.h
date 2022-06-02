@@ -91,8 +91,6 @@ private:
      * @return NO_ERROR: successful; otherwise is failed.
      */
     ErrCode HandleDeregisterAccessibilityElementOperator(MessageParcel &data, MessageParcel &reply);
-
-    ErrCode HandleGetEnabledEventMask(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetCaptionProperty(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetCaptionProperty(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetCaptionState(MessageParcel &data, MessageParcel &reply);

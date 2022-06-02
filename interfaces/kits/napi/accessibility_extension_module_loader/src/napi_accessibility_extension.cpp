@@ -109,13 +109,13 @@ sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 {
     HILOG_INFO("called.");
     Extension::OnConnect(want);
-    sptr<AccessibleAbilityClient> instance = AccessibleAbilityClient::GetInstance();
-    if (!instance) {
-        HILOG_ERROR("instance is nullptr");
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
         return nullptr;
     }
-    instance->RegisterAbilityListener(listener_);
-    return instance->GetRemoteObject();
+    aaClient->RegisterAbilityListener(listener_);
+    return aaClient->GetRemoteObject();
 }
 
 void NAccessibilityExtension::OnAbilityConnected()
@@ -166,6 +166,31 @@ void NAccessibilityExtension::OnAbilityDisconnected()
     HILOG_INFO("end.");
 }
 
+std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const AccessibilityEventInfo& eventInfo)
+{
+    HILOG_INFO("called.");
+
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        return nullptr;
+    }
+    int32_t componentId = eventInfo.GetAccessibilityId();
+    int32_t windowId = eventInfo.GetWindowId();
+    std::shared_ptr<AccessibilityElement> element = nullptr;
+    if (componentId > 0) {
+        std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
+        if (aaClient->GetSource(eventInfo, *elementInfo)) {
+            element = std::make_shared<AccessibilityElement>(elementInfo);
+        }
+    } else if (windowId > 0) {
+        std::shared_ptr<AccessibilityWindowInfo> windowInfo = std::make_shared<AccessibilityWindowInfo>();
+        if (aaClient->GetWindow(windowId, *windowInfo)) {
+            element = std::make_shared<AccessibilityElement>(windowInfo);
+        }
+    }
+    return element;
+}
+
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
     HILOG_INFO("called.");
@@ -175,6 +200,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     callbackInfo->engine_ = engine_;
     callbackInfo->extension_ = this;
     callbackInfo->eventInfo_ = eventInfo;
+    callbackInfo->element_ = GetElement(eventInfo);
     work->data = callbackInfo;
 
     uv_queue_work(
@@ -182,7 +208,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            AccessibilityEventInfoCallbackInfo *data = (AccessibilityEventInfoCallbackInfo *)work->data;
+            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             napi_value cons = nullptr;
             napi_get_reference_value(reinterpret_cast<napi_env>(data->engine_), NAccessibilityEventInfo::consRef_,
                 &cons);
@@ -190,7 +216,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             napi_new_instance(
                 reinterpret_cast<napi_env>(data->engine_), cons, 0, nullptr, &napiEventInfo);
             ConvertAccessibilityEventInfoToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo,
-                data->eventInfo_);
+                data->eventInfo_, data->element_);
             NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
             NativeValue* argv[] = {nativeEventInfo};
             data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);

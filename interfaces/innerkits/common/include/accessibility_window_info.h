@@ -33,24 +33,6 @@ public:
     AccessibilityWindowInfo();
 
     /**
-     * @brief Get the title of window
-     * @param -
-     * @return The title of window
-     * @since 3
-     * @sysCap Accessibility
-     */
-    std::string GetWindowTitle() const;
-
-    /**
-     * @brief Set the title of window
-     * @param title The title of window
-     * @return
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetWindowTitle(const std::string &title);
-
-    /**
      * @brief Get the window type.
      * @param -
      * @return The accessibility window type. Refer to [AccessibilityWindowType].
@@ -96,24 +78,6 @@ public:
     void SetAnchorId(const int32_t anchorId);
 
     /**
-     * @brief Set the parent window
-     * @param parentId The window id of the parent.
-     * @return -
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetParentId(const int32_t parentId);
-
-    /**
-     * @brief Get the parent window
-     * @param -
-     * @return The window id of the parent.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetParentId() const;
-
-    /**
      * @brief Get the anchor window
      * @param -
      * @return The anchor id of the window.
@@ -121,15 +85,6 @@ public:
      * @sysCap Accessibility
      */
     int32_t GetAnchorId() const;
-
-    /**
-     * @brief Get the parent window
-     * @param -
-     * @return The window id of the parent.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    const std::vector<int32_t> &GetChildIds() const;
 
     /**
      * @brief Get the widnow id of current window.
@@ -174,7 +129,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    Rect GetRectInScreen() const;
+    const Rect &GetRectInScreen() const;
 
     /**
      * @brief Set the screen pixel coordinates
@@ -240,33 +195,6 @@ public:
     void SetAccessibilityFocused(const bool accessibilityfocused);
 
     /**
-     * @brief Obtains the quantity of child windows.
-     * @param -
-     * @return The quantity of child windows.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetChildNum() const;
-
-    /**
-     * @brief Obtains the ID of child windows.
-     * @param -
-     * @return The ID of child windows.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetChildIdByIndex(const int32_t index) const;
-
-    /**
-     * @brief Add the child window
-     * @param childId the window id of the child
-     * @return -
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void AddChild(const int32_t childId);
-
-    /**
      * @brief Set the display id
      * @param displayId the display id of the window
      * @return -
@@ -300,17 +228,13 @@ protected:
     AccessibilityWindowType accessibilityWindowType_ = TYPE_WINDOW_INVALID;
     int32_t windowLayer_ = INVALID_WINDOW_ID;
     int32_t windowId_ = INVALID_WINDOW_ID;
-    int32_t parentId_ = INVALID_WINDOW_ID;
-    std::string windowTitle_ = "";
-    std::vector<int32_t> childIds_;
     int32_t anchorId_ = -1;
-    int32_t childNum_ = 0;
     int32_t channelId_ = INVALID_WINDOW_ID;
     bool active_ = false;
     bool focused_ = false;
-    bool isDecorEnable_ = false;
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
+    bool isDecorEnable_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

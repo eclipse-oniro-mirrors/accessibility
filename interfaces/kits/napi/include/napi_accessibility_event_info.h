@@ -18,29 +18,11 @@
 
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "accessibility_event_info.h"
-#include "accessibility_element_info.h"
-
-struct NAccessibilityEventInfoData {
-    napi_async_work work_ {};
-    napi_deferred deferred_ {};
-    napi_ref thisRefer_ {};
-    napi_ref callback_ {};
-    napi_env env_ {};
-    bool result_ = false;
-    OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
-    OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
-    std::string content_ = "";
-    int32_t childIndex_ = 0;
-};
 
 class NAccessibilityEventInfo {
 public:
     static void DefineJSAccessibilityEventInfo(napi_env env);
     static napi_value JSConstructor(napi_env env, napi_callback_info info);
-
-    static napi_value GetSource(napi_env env, napi_callback_info info);
-
     static thread_local napi_ref consRef_;
 private:
     NAccessibilityEventInfo() = default;

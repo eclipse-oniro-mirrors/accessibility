@@ -31,7 +31,6 @@ namespace {
     constexpr int32_t COMPONENT_ID = 1;
     constexpr uint32_t EVENT_TYPE = 1;
     constexpr uint32_t STATE_TYPE = 1;
-    constexpr int32_t TYPE = 1;
 } // namespace
 
 class AccessibilitySystemAbilityClientImplTest : public ::testing::Test {
@@ -138,22 +137,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetAbilityList_001, TestSize.
 }
 
 /**
- * @tc.number: IsAccessibilityCaptionEnabled_001
- * @tc.name: IsAccessibilityCaptionEnabled
- * @tc.desc: Test function IsAccessibilityCaptionEnabled
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, IsAccessibilityCaptionEnabled_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "IsAccessibilityCaptionEnabled_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    EXPECT_TRUE(impl_->IsAccessibilityCaptionEnabled());
-    GTEST_LOG_(INFO) << "IsAccessibilityCaptionEnabled_001 end";
-}
-
-/**
  * @tc.number: IsEnabled_001
  * @tc.name: IsEnabled
  * @tc.desc: Test function IsEnabled
@@ -183,59 +166,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, IsTouchExplorationEnabled_001
     }
     EXPECT_FALSE(impl_->IsTouchExplorationEnabled());
     GTEST_LOG_(INFO) << "IsTouchExplorationEnabled_001 end";
-}
-
-/**
- * @tc.number: IsCaptionEnabled_001
- * @tc.name: IsCaptionEnabled
- * @tc.desc: Test function IsCaptionEnabled
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, IsCaptionEnabled_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "IsCaptionEnabled_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    EXPECT_FALSE(impl_->IsCaptionEnabled());
-    GTEST_LOG_(INFO) << "IsCaptionEnabled_001 end";
-}
-
-/**
- * @tc.number: GetCaptionProperty_001
- * @tc.name: GetCaptionProperty
- * @tc.desc: Test function GetCaptionProperty
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetCaptionProperty_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetCaptionProperty_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    AccessibilityConfig::CaptionProperty res;
-    res = impl_->GetCaptionProperty();
-    EXPECT_EQ(0xff000000, res.GetWindowColor());
-    EXPECT_EQ(0xff000000, res.GetFontColor());
-    EXPECT_EQ(0xff000000, res.GetBackgroundColor());
-    GTEST_LOG_(INFO) << "GetCaptionProperty_001 end";
-}
-
-/**
- * @tc.number: SetCaptionProperty_001
- * @tc.name: SetCaptionProperty
- * @tc.desc: Test function SetCaptionProperty
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaptionProperty_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetCaptionProperty_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    AccessibilityConfig::CaptionProperty caption;
-    EXPECT_TRUE(impl_->SetCaptionProperty(caption));
-    GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
 }
 
 /**
@@ -309,95 +239,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, UnsubscribeStateObserver_001,
 }
 
 /**
- * @tc.number: AddCaptionListener_001
- * @tc.name: AddCaptionListener
- * @tc.desc: Test function AddCaptionListener
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, AddCaptionListener_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AddCaptionListener_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
-    EXPECT_TRUE(impl_->AddCaptionListener(ob, TYPE));
-    impl_->RemoveCaptionListener(ob, TYPE);
-    GTEST_LOG_(INFO) << "AddCaptionListener_001 end";
-}
-
-/**
- * @tc.number: RemoveCaptionListener_001
- * @tc.name: RemoveCaptionListener
- * @tc.desc: Test RemoveCaptionListener
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, RemoveCaptionListener_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "RemoveCaptionListener_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    std::shared_ptr<AccessibilityConfig::CaptionObserver> ob = nullptr;
-    impl_->AddCaptionListener(ob, TYPE);
-    EXPECT_TRUE(impl_->RemoveCaptionListener(ob, TYPE));
-    GTEST_LOG_(INFO) << "RemoveCaptionListener_001 end";
-}
-
-/**
- * @tc.number: GetCapabilitiesState_001
- * @tc.name: GetEnabledState
- * @tc.desc: Test function GetEnabledState
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetCapabilitiesState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetCapabilitiesState_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    EXPECT_TRUE(impl_->GetEnabledState());
-    EXPECT_TRUE(impl_->GetTouchGuideState());
-    EXPECT_TRUE(impl_->GetGestureState());
-    EXPECT_TRUE(impl_->GetKeyEventObserverState());
-    GTEST_LOG_(INFO) << "GetCapabilitiesState_001 end";
-}
-
-/**
- * @tc.number: SetCaptionPropertyTojson_001
- * @tc.name: SetCaptionPropertyTojson
- * @tc.desc: Test function SetCaptionPropertyTojson
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaptionPropertyTojson_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetCaptionPropertyTojson_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    AccessibilityConfig::CaptionProperty caption;
-    caption.SetFontScale(101);
-    EXPECT_TRUE(impl_->SetCaptionPropertyTojson(caption));
-    GTEST_LOG_(INFO) << "SetCaptionPropertyTojson_001 end";
-}
-
-/**
- * @tc.number: SetCaption_001
- * @tc.name: SetCaptionStateTojson
- * @tc.desc: Test function SetCaptionStateTojson
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetCaption_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetCaption_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    EXPECT_TRUE(impl_->SetCaptionStateTojson(true));
-    GTEST_LOG_(INFO) << "SetCaption_001 end";
-}
-
-/**
  * @tc.number: ResetService_001
  * @tc.name: ResetService
  * @tc.desc: Test function ResetService
@@ -428,24 +269,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManagerSta
     }
     impl_->OnAccessibleAbilityManagerStateChanged(STATE_TYPE);
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerStateChanged_001 end";
-}
-
-/**
- * @tc.number: OnAccessibleAbilityManagerCaptionPropertyChanged_001
- * @tc.name: OnAccessibleAbilityManagerCaptionPropertyChanged_001
- * @tc.desc: Test function OnAccessibleAbilityManagerCaptionPropertyChanged_001
- */
-HWTEST_F(
-    AccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManagerCaptionPropertyChanged_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerCaptionPropertyChanged_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    AccessibilityConfig::CaptionProperty caption;
-    impl_->OnAccessibleAbilityManagerCaptionPropertyChanged(caption);
-    GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerCaptionPropertyChanged_001 end";
 }
 
 /**

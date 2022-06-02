@@ -102,6 +102,8 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 {
     size_t position = 0;
     int32_t int32Data = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetPageId(int32Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetWindowId(int32Data);
@@ -141,6 +143,12 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetInputType(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetItemCounts(int32Data);
+
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceElementInfo.SetTextMovementStep(static_cast<OHOS::Accessibility::TextMoveUnit>(int32Data));
 
     for (size_t i = 0; i < VEC_SIZE; i++) {
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
@@ -246,8 +254,18 @@ static size_t GenerateAccessibilityWindowInfo(OHOS::Accessibility::Accessibility
     uint64_t uint64Data = 0;
     position += GetObject<uint64_t>(uint64Data, &data[position], size - position);
     sourceWindowInfo.SetDisplayId(uint64Data);
+   
+    uint32_t uint32Data = 0;
+    position += GetObject<uint32_t>(uint32Data, &data[position], size - position);
+    sourceWindowInfo.SetWindowMode(uint32Data);
+
+    position += GetObject<uint32_t>(uint32Data, &data[position], size - position);
+    sourceWindowInfo.SetWindowType(uint32Data);
 
     int32_t int32Data = 0;
+    position += GetObject<int32_t>(int32Data, &data[position], size - position);
+    sourceWindowInfo.SetAccessibilityWindowType(static_cast<OHOS::Accessibility::AccessibilityWindowType>(int32Data));
+
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceWindowInfo.SetWindowLayer(int32Data);
 
@@ -286,6 +304,11 @@ static size_t GenerateAccessibilityEventInfoPartial(OHOS::Accessibility::Accessi
     std::memcpy(&name, &data[position], LEN);
     std::string bundleName(name);
     sourceEventInfo.SetBundleName(bundleName);
+    position += LEN;
+
+    std::memcpy(&name, &data[position], LEN);
+    std::string notificationContent(name);
+    sourceEventInfo.SetNotificationContent(notificationContent);
     position += LEN;
 
     int32_t int32Data = 0;
@@ -381,6 +404,21 @@ bool DoSomethingInterestingWithGetRootByWindow(const uint8_t* data, size_t size)
     return true;
 }
 
+bool DoSomethingInterestingWithGetWindow(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    int32_t windowId = 0;
+    OHOS::Accessibility::AccessibilityWindowInfo resultWindowInfo;
+    startPos += GetObject<int32_t>(windowId, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetWindow(windowId, resultWindowInfo);
+
+    return true;
+}
+
 bool DoSomethingInterestingWithGetWindows(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -443,6 +481,21 @@ bool DoSomethingInterestingWithGetChildElementInfo(const uint8_t* data, size_t s
     startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChildElementInfo(
         index, sourceElementInfo, resultElementInfo);
+    return true;
+}
+
+bool DoSomethingInterestingWithGetChilds(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
+    std::vector<OHOS::Accessibility::AccessibilityElementInfo> resultElementInfos;
+    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChilds(sourceElementInfo, resultElementInfos);
+
     return true;
 }
 
@@ -586,10 +639,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithGetFocus(data, size);
     OHOS::DoSomethingInterestingWithGetFocusByElementInfo(data, size);
     OHOS::DoSomethingInterestingWithGetRootByWindow(data, size);
+    OHOS::DoSomethingInterestingWithGetWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindows(data, size);
     OHOS::DoSomethingInterestingWithExecuteCommonAction(data, size);
     OHOS::DoSomethingInterestingWithGetNext(data, size);
     OHOS::DoSomethingInterestingWithGetChildElementInfo(data, size);
+    OHOS::DoSomethingInterestingWithGetChilds(data, size);
     OHOS::DoSomethingInterestingWithGetByContent(data, size);
     OHOS::DoSomethingInterestingWithGetAnchor(data, size);
     OHOS::DoSomethingInterestingWithGetSource(data, size);

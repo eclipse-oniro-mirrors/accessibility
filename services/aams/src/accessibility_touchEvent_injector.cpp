@@ -16,6 +16,7 @@
 #include "accessibility_touchEvent_injector.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -111,7 +112,7 @@ void TouchEventInjector::CancelGesture()
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
     pointer.SetPointerId(1);
-    int64_t time = getSystemTime();
+    int64_t time = GetSystemTime();
     pointer.SetDownTime(time);
     pointer.SetPointerId(1);
     if (GetNext() != nullptr && isGestureUnderway_) {
@@ -145,13 +146,11 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int32_t 
     return pointerEvent;
 }
 
-int64_t TouchEventInjector::getSystemTime()
+int64_t TouchEventInjector::GetSystemTime()
 {
-    HILOG_INFO("TouchEventInjector::getSystemTime: start");
-    struct timespec times = {0, 0};
-    clock_gettime(CLOCK_MONOTONIC, &times);
-    int64_t microsecond = static_cast<int64_t>(times.tv_sec * 1000000 + times.tv_nsec / 1000);
+    HILOG_INFO("TouchEventInjector::GetSystemTime: start");
 
+    int64_t microsecond = Utils::GetSystemTime() * 1000;
     return microsecond;
 }
 
@@ -168,7 +167,7 @@ void TouchEventInjector::InjectGesturePathInner()
 {
     HILOG_INFO("TouchEventInjector::InjectGesturePathInner: start");
 
-    int64_t curTime = getSystemTime();
+    int64_t curTime = GetSystemTime();
     if (isDestroyEvent_ || !GetNext()) {
         currentGestureService_->OnGestureInjectResult(sequence_, false);
         return;

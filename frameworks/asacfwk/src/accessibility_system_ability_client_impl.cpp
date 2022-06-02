@@ -59,12 +59,6 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     if (stateType & STATE_GESTURE_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED] = true;
     }
-    if (stateType & STATE_CAPTION_ENABLED) {
-        isCaptionEnabled_ = true;
-    }
-
-    captionObserver_ = new AccessibleAbilityManagerCaptionObserverImpl(*this);
-    serviceProxy_->RegisterCaptionObserver(captionObserver_);
 }
 
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
@@ -182,13 +176,6 @@ bool AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled()
     return stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
 }
 
-bool AccessibilitySystemAbilityClientImpl::IsCaptionEnabled()
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    HILOG_DEBUG("IsCaptionEnabled[%{public}d]", isCaptionEnabled_);
-    return isCaptionEnabled_;
-}
-
 bool AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t accessibilityAbilityTypes,
     const AbilityStateType stateType, std::vector<AccessibilityAbilityInfo> &infos)
 {
@@ -210,75 +197,6 @@ bool AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t accessi
         return false;
     }
     return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
-}
-
-AccessibilityConfig::CaptionProperty AccessibilitySystemAbilityClientImpl::GetCaptionProperty()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    AccessibilityConfig::CaptionProperty cp;
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return cp;
-    }
-    return serviceProxy_->GetCaptionProperty();
-}
-
-bool AccessibilitySystemAbilityClientImpl::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        captionProperty_.GetFontColor() != caption.GetFontColor() ||
-        strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
-        strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
-        captionProperty_.GetBackgroundColor() != caption.GetBackgroundColor() ||
-        captionProperty_.GetWindowColor() != caption.GetWindowColor()) {
-        captionProperty_ = caption;
-        NotifyCaptionChanged();
-    }
-    return true;
-}
-
-bool AccessibilitySystemAbilityClientImpl::SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (captionProperty_.GetFontScale() != caption.GetFontScale() ||
-        captionProperty_.GetFontColor() != caption.GetFontColor() ||
-        strcmp(captionProperty_.GetFontFamily().c_str(), caption.GetFontFamily().c_str()) ||
-        strcmp(captionProperty_.GetFontEdgeType().c_str(), caption.GetFontEdgeType().c_str()) ||
-        captionProperty_.GetBackgroundColor() != caption.GetBackgroundColor() ||
-        captionProperty_.GetWindowColor() != caption.GetWindowColor()) {
-        if (!serviceProxy_) {
-            HILOG_ERROR("Failed to get aams service");
-            return false;
-        }
-        serviceProxy_->SetCaptionProperty(caption);
-    }
-    return true;
-}
-
-bool AccessibilitySystemAbilityClientImpl::SetCaptionStateTojson(const bool state)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    bool ret = false;
-    if (isCaptionEnabled_ != state) {
-        if (!serviceProxy_) {
-            HILOG_ERROR("Failed to get aams service");
-            return false;
-        }
-        ret = serviceProxy_->SetCaptionState(state);
-    }
-
-    return ret;
-}
-
-bool AccessibilitySystemAbilityClientImpl::IsAccessibilityCaptionEnabled() const
-{
-    HILOG_DEBUG("start");
-    return true;
 }
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
@@ -388,16 +306,6 @@ bool AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
     return false;
 }
 
-void AccessibilitySystemAbilityClientImpl::UpdateCaptionEnabled(const bool enabled)
-{
-    HILOG_DEBUG("start");
-    if (isCaptionEnabled_ != enabled) {
-        isCaptionEnabled_ = enabled;
-        NotifyCaptionStateChanged();
-    }
-    HILOG_DEBUG("end");
-}
-
 void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType, bool value)
 {
     HILOG_DEBUG("EventType is %{public}d, value is %{public}d", eventType, value);
@@ -421,150 +329,6 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
         }
     }
     HILOG_DEBUG("end");
-}
-
-void AccessibilitySystemAbilityClientImpl::NotifyCaptionStateChanged()
-{
-    HILOG_DEBUG("start");
-    if (!observersCaptionEnable_.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
-    for (auto &observer : observersCaptionEnable_) {
-        if (observer) {
-            observer->OnStateChanged(isCaptionEnabled_);
-        } else {
-            HILOG_ERROR("end observersCaptionEnable_ is null");
-        }
-    }
-    HILOG_DEBUG("end");
-}
-
-bool AccessibilitySystemAbilityClientImpl::AddCaptionListener(
-    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    bool result = true;
-    if (type == AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE) {
-        if (!observersCaptionEnable_.size()) {
-            observersCaptionEnable_.push_back(ob);
-        }
-    } else if (type == AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY) {
-        if (!observersCaptionProperty_.size()) {
-            observersCaptionProperty_.push_back(ob);
-        }
-    } else {
-        result = false;
-        HILOG_ERROR("Type Error ");
-    }
-
-    return result;
-}
-
-bool AccessibilitySystemAbilityClientImpl::RemoveCaptionListener(
-    const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    bool result = false;
-    if (type == AccessibilityConfig::CaptionObserverType::CAPTION_ENABLE) {
-        for (auto enable = observersCaptionEnable_.begin(); enable != observersCaptionEnable_.end(); ++enable) {
-            if (*enable == ob) {
-                observersCaptionEnable_.erase(enable);
-                result = true;
-                break;
-            }
-        }
-    } else if (type == AccessibilityConfig::CaptionObserverType::CAPTION_PROPERTY) {
-        for (auto property = observersCaptionProperty_.begin(); property != observersCaptionProperty_.end();
-            ++property) {
-            if (*property == ob) {
-                observersCaptionProperty_.erase(property);
-                result = true;
-                break;
-            }
-        }
-    } else {
-        HILOG_ERROR("Type Error ");
-    }
-
-    return result;
-}
-
-void AccessibilitySystemAbilityClientImpl::NotifyCaptionChanged()
-{
-    HILOG_DEBUG("start");
-    if (!observersCaptionProperty_.size()) {
-        HILOG_DEBUG("observersCaptionProperty_ is null");
-        return;
-    }
-    for (auto it = observersCaptionProperty_.begin(); it != observersCaptionProperty_.end(); ++it) {
-        if (*it != nullptr && it->get() != nullptr) {
-            it->get()->OnPropertyChanged(captionProperty_);
-        } else {
-            HILOG_ERROR("end observersCaptionProperty_ is null");
-        }
-    }
-    HILOG_DEBUG("end");
-}
-
-bool AccessibilitySystemAbilityClientImpl::GetEnabledState()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->GetEnabledState();
-}
-
-bool AccessibilitySystemAbilityClientImpl::GetCaptionState()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-
-    isCaptionEnabled_ = serviceProxy_->GetCaptionState();
-    return isCaptionEnabled_;
-}
-
-bool AccessibilitySystemAbilityClientImpl::GetTouchGuideState()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->GetTouchGuideState();
-}
-
-bool AccessibilitySystemAbilityClientImpl::GetGestureState()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->GetGestureState();
-}
-
-bool AccessibilitySystemAbilityClientImpl::GetKeyEventObserverState()
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->GetKeyEventObserverState();
 }
 
 bool AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
@@ -617,22 +381,6 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
     } else {
         NotifyStateChanged(AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED, false);
     }
-
-    if (stateType & STATE_CAPTION_ENABLED) {
-        UpdateCaptionEnabled(true);
-    } else {
-        UpdateCaptionEnabled(false);
-    }
-}
-
-void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerCaptionPropertyChanged(
-    const AccessibilityConfig::CaptionProperty &property)
-{
-    HILOG_DEBUG("start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    captionProperty_ = property;
-    NotifyCaptionChanged();
-    HILOG_DEBUG("end");
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -294,6 +294,67 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     return reply.ReadBool();
 }
 
+bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    HILOG_DEBUG("start.");
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return false;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("windowId write error: %{public}d, ", windowId);
+        return false;
+    }
+
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOW, data, reply, option)) {
+        HILOG_ERROR("fail to get window");
+        return false;
+    }
+
+    sptr<AccessibilityWindowInfoParcel> windowInfoParcel = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
+    if (!windowInfoParcel) {
+        HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
+        return false;
+    }
+    windowInfo = *windowInfoParcel;
+
+    return reply.ReadBool();
+}
+
+bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    HILOG_DEBUG("start.");
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        return false;
+    }
+
+    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS, data, reply, option)) {
+        HILOG_ERROR("fail to get windows");
+        return false;
+    }
+
+    int32_t windowsSize = reply.ReadInt32();
+    for (int32_t i = 0; i < windowsSize; i++) {
+        sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
+        if (!window) {
+            HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
+            return false;
+        }
+        windows.emplace_back(*window);
+    }
+
+    return reply.ReadBool();
+}
+
 bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {

@@ -28,6 +28,13 @@ namespace Accessibility {
 class AccessibilityElementOperator {
 public:
     /**
+     * @brief Destruct
+     * @param
+     * @return
+     */
+    virtual ~AccessibilityElementOperator() = default;
+
+    /**
      * @brief Make the node information by accessibility ID and set the result by callback.
      * @param elementId: The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.

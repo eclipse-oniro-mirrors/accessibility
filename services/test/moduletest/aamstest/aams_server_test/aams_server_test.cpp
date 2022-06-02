@@ -137,7 +137,7 @@ HWTEST_F(AAMSServerTest, SendEvent_001, TestSize.Level1)
     // check aa proxy
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetTestEventType(), int(EventType::TYPE_WINDOW_UPDATE));
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
 
     GTEST_LOG_(INFO) << "AAMSServerTest SendEvent_001 end";
@@ -176,7 +176,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, AbilityStateType::ABILITY_STATE_ENABLE, infos);
     EXPECT_EQ(infos.size(), 1);
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_002 end";
 }
@@ -212,7 +212,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
     EXPECT_EQ(infos.size(), 1);
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_003 end";
 }
@@ -234,7 +234,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
         AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN, stateType, infos);
     EXPECT_EQ(infos.size(), 0);
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_004 end";
 }
@@ -257,7 +257,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_005, TestSize.Level1)
         AbilityStateType::ABILITY_STATE_INSTALLED, infos);
     EXPECT_EQ(infos.size(), 1);
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_005 end";
 }
@@ -283,7 +283,7 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(1);
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterElementOperator_001 end";
 }
@@ -320,7 +320,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
 
-    AAConnection_->OnAbilityDisconnectDone(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     accountData_->ClearInstalledAbility();
     GTEST_LOG_(INFO) << "AAMSServerTest DeregisterElementOperator_001 end";
 }

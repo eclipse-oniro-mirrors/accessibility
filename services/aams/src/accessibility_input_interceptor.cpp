@@ -212,30 +212,30 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
-        if (interceptorId_ == -1) {
+        if (interceptorId_ < 0) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
             HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
         }
     } else {
-        if (interceptorId_ != -1) {
+        if (interceptorId_ >= 0) {
             inputManager_->RemoveInterceptor(interceptorId_);
-            interceptorId_ = -1;
         }
+        interceptorId_ = -1;
     }
 
     HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
     if ((availableFunctions_ & FEATURE_SHORT_KEY) ||
         (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS)) {
-        if (keyEventInterceptorId_ == -1) {
+        if (keyEventInterceptorId_ < 0) {
             keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
             HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
         }
     } else {
-        if (keyEventInterceptorId_ != -1) {
+        if (keyEventInterceptorId_ >= 0) {
             inputManager_->RemoveInterceptor(keyEventInterceptorId_);
-            keyEventInterceptorId_ = -1;
         }
+        keyEventInterceptorId_ = -1;
     }
 }
 
@@ -260,15 +260,15 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
         HILOG_DEBUG("inputManager_ is null.");
         return;
     }
-    if (keyEventInterceptorId_ != -1) {
+    if (keyEventInterceptorId_ >= 0) {
         inputManager_->RemoveInterceptor(keyEventInterceptorId_);
-        keyEventInterceptorId_ = -1;
     }
 
-    if (interceptorId_ != -1) {
+    if (interceptorId_ >= 0) {
         inputManager_->RemoveInterceptor(interceptorId_);
-        interceptorId_ = -1;
     }
+    keyEventInterceptorId_ = -1;
+    interceptorId_ = -1;
 }
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
@@ -305,6 +305,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 
     if (!pointerEventTransmitters_) {
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
+        const_cast<AccessibilityInputInterceptor*>(this)->OnPointerEvent(*event);
         return;
     }
 
@@ -317,6 +318,7 @@ void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEven
 
     if (!keyEventTransmitters_) {
         HILOG_DEBUG("keyEventTransmitters_ is empty.");
+        const_cast<AccessibilityInputInterceptor*>(this)->OnKeyEvent(*event);
         return;
     }
 
