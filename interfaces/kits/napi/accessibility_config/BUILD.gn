@@ -39,8 +39,8 @@ ohos_shared_library("config_napi") {
     "//base/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/accessibility/interfaces/kits/napi:accessibility",
     "//base/accessibility/services/interface:aams_interface",
-    "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
+    "//foundation/ability/ability_runtime/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/ability/ability_runtime/frameworks/kits/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",
     "//utils/native/base:utils",
   ]
