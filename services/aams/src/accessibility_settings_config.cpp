@@ -477,25 +477,25 @@ void AccessibilitySettingsConfig::SettingInit()
     }
 
     std::string strValue = pref_->GetString("ScreenMagnification", "");
-    isScreenMagnificationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;    
+    isScreenMagnificationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("MouseKey", "");
-    isMouseKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    isMouseKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("ShortKey", "");
-    isShortKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    isShortKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("animationOff", "");
-    animationOffState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    animationOffState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("invertColor", "");
-    invertColorState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    invertColorState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("highContrastText", "");
-    highContrastTextState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    highContrastTextState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("audioMono", "");
-    audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
+    audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));

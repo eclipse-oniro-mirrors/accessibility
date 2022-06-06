@@ -16,7 +16,6 @@
 #include "napi_accessibility_utils.h"
 #include "napi_accessibility_config_observer.h"
 
-#include <vector>
 #include <uv.h>
 
 #include "hilog_wrapper.h"
