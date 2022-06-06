@@ -27,7 +27,7 @@ EXTERN_C_START
 /*
  * function for module exports
  */
-napi_property_descriptor configDesc[] = {
+static napi_property_descriptor configDesc[] = {
     DECLARE_NAPI_FUNCTION("set", NAccessibilityConfig::SetConfig),
     DECLARE_NAPI_FUNCTION("get", NAccessibilityConfig::GetConfig),
     DECLARE_NAPI_FUNCTION("on", NAccessibilityConfig::SubscribeConfigObserver),

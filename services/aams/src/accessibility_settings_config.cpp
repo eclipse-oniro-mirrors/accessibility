@@ -164,7 +164,7 @@ void AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
     pref_->Flush();
 }
 
-void AccessibilitySettingsConfig:: SetBrightnessDiscount(const float discount)
+void AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("start.");
     brightnessDiscount_ = discount;
@@ -199,25 +199,20 @@ void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::
         HILOG_ERROR("pref_ is null!");
         return;
     }
-    HILOG_DEBUG("GetFontFamily.");
     const std::string FONTFAMILY = captionProperty_.GetFontFamily();
-    HILOG_DEBUG("GetFontScale.");
     int32_t FONTSCALE = captionProperty_.GetFontScale();
     uint32_t FONTCOLOR = captionProperty_.GetFontColor();
     const std::string FONTEDGETYPE = captionProperty_.GetFontEdgeType();
     uint32_t BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
     uint32_t WINDOWCOLOR = captionProperty_.GetWindowColor();
-HILOG_DEBUG("PutString.");
+
     pref_->PutString("fontFamily", FONTFAMILY);
-    HILOG_DEBUG("PutInt.");
     pref_->PutInt("fontColor", static_cast<int32_t>(FONTCOLOR));
     pref_->PutString("fontEdgeType", FONTEDGETYPE);
     pref_->PutInt("backgroundColor", static_cast<int32_t>(BACKGROUNDCOLOR));
     pref_->PutInt("windowColor", static_cast<int32_t>(WINDOWCOLOR));
     pref_->PutInt("fontScale", FONTSCALE);
-    HILOG_DEBUG("fontScale.");
     pref_->Flush();
-    HILOG_DEBUG("Flush.");
 }
 
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
@@ -265,19 +260,19 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
         case STATE::HIGHCONTRASTTEXT:
             strValue = StateChange(highContrastTextState_);
             pref_->PutString("highContrastText", strValue);
-            break;  
+            break;
         case STATE::INVERTCOLORSTATE:
             strValue = StateChange(invertColorState_);
             pref_->PutString("invertColor", strValue);
-            break;  
+            break;
         case STATE::ANIMATIONOFF:
             strValue = StateChange(animationOffState_);
             pref_->PutString("animationOff", strValue);
-            break;  
+            break;
         case STATE::AUDIOMONO:
             strValue = StateChange(audioMonoState_);
             pref_->PutString("audioMono", strValue);
-            break;    
+            break;
         default:
             HILOG_ERROR("Invalid parameter.");
             return false;
@@ -482,61 +477,28 @@ void AccessibilitySettingsConfig::SettingInit()
     }
 
     std::string strValue = pref_->GetString("ScreenMagnification", "");
-    HILOG_DEBUG(" pref_->GetString() = %{public}s.", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        isScreenMagnificationState_ = true;
-    } else {
-        isScreenMagnificationState_ = false;
-    }
+    isScreenMagnificationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;    
 
     strValue = pref_->GetString("MouseKey", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        isMouseKeyState_ = true;
-    } else {
-        isMouseKeyState_ = false;
-    }
+    isMouseKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     strValue = pref_->GetString("ShortKey", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        isShortKeyState_ = true;
-    } else {
-        isShortKeyState_ = false;
-    }
+    isShortKeyState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     strValue = pref_->GetString("animationOff", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        animationOffState_ = true;
-    } else {
-        animationOffState_ = false;
-    }
+    animationOffState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     strValue = pref_->GetString("invertColor", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        invertColorState_ = true;
-    } else {
-        invertColorState_ = false;
-    }
+    invertColorState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     strValue = pref_->GetString("highContrastText", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        highContrastTextState_ = true;
-    } else {
-        highContrastTextState_ = false;
-    }
+    highContrastTextState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     strValue = pref_->GetString("audioMono", "");
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        audioMonoState_ = true;
-    } else {
-        audioMonoState_ = false;
-    }
+    audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true; 
 
     shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
-    HILOG_DEBUG(" pref_->GetString() = 0x%{public}s.", shortkeyTarget_.c_str());
-
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
-    HILOG_DEBUG(" pref_->GetInt() = 0x%{public}x.", mouseAutoClick_);
-
     daltonizationColorFilter_ = static_cast<uint32_t>(pref_->GetInt("daltonizationColorFilter", 0));
     contentTimeout_ = static_cast<uint32_t>(pref_->GetInt("contentTimeout", 0));
     brightnessDiscount_ = static_cast<uint32_t>(pref_->GetFloat("brightnessDiscount", 0));
@@ -605,7 +567,8 @@ void AccessibilitySettingsConfig::Init()
     HILOG_DEBUG("start.");
     int errCode = -1;
 
-    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + std::to_string(accountId_) + ".xml", errCode);
+    pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + std::to_string(accountId_) + ".xml",
+                                                                 errCode);
     if (errCode) {
         HILOG_ERROR("GetPreferences failed! account id (%{public}d), errCode(%{public}d).", accountId_, errCode);
         return;

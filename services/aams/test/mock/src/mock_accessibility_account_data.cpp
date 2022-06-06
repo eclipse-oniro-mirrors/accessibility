@@ -314,8 +314,6 @@ void AccessibilityAccountData::Init()
     if (!config_) {
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
     }
-
-    
 }
 
 bool AccessibilityAccountData::DisableAbility(const std::string &name)

@@ -27,7 +27,7 @@ thread_local napi_ref NAccessibilityClient::aaConsRef_;
 thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
 
 std::map<std::string, std::vector<std::shared_ptr<StateListener>>> NAccessibilityClient::stateListeners_ = {};
-std::vector<std::shared_ptr<ConfigListener>> NAccessibilityClient::captionListeners_ = {};
+std::vector<std::shared_ptr<NAccessibilityConfigObserver>> NAccessibilityClient::captionListeners_ = {};
 
 napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback_info info)
 {
@@ -648,7 +648,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         return nullptr;
     }
 
-    std::shared_ptr<ConfigListener> captionListener = std::make_shared<ConfigListener>();
+    std::shared_ptr<NAccessibilityConfigObserver> captionListener = std::make_shared<NAccessibilityConfigObserver>();
     captionListener->StartWork(env, 1, args);
     captionListener->SetConfigId(type);
     NAccessibilityClient::captionListeners_.push_back(captionListener);
@@ -679,7 +679,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     }
     for (auto it = NAccessibilityClient::captionListeners_.begin();
         it != NAccessibilityClient::captionListeners_.end();) {
-        std::shared_ptr<ConfigListener> observer= *it;
+        std::shared_ptr<NAccessibilityConfigObserver> observer= *it;
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         if (observer->GetEnv() == env && observer->GetConfigId() == type) {
             instance.UnsubscribeConfigObserver(type, observer);

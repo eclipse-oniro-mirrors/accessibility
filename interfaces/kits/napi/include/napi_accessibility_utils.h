@@ -45,7 +45,6 @@ constexpr int32_t PARAM2 = 2;
 constexpr int32_t CODE_SUCCESS = 0;
 constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
-const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
@@ -127,69 +126,5 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
 
 struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
     OHOS::AccessibilityConfig::CaptionProperty caption_;
-};
-
-class ConfigListener : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
-public:
-    ConfigListener() = default;
-    void NotifyStateChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, bool enabled);
-    void NotifyStringChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, const std::string &value);
-    void NotifyIntChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, int32_t value);
-    void NotifyUintChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, uint32_t value);
-    void NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, float value);
-    void NotifyPropertyChanged2JS(
-        const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption);
-
-    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE]);
-    virtual void OnConfigChanged(
-        const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override;
-
-    void SetEnv(const napi_env env)
-    {
-        env_ = env;
-    }
-
-    napi_env GetEnv() const
-    {
-        return env_;
-    }
-
-    void SetHandler(const napi_ref handler)
-    {
-        handlerRef_ = handler;
-    }
-
-    napi_ref GetHandler() const
-    {
-        return handlerRef_;
-    }
-
-    void SetConfigId(const OHOS::AccessibilityConfig::CONFIG_ID id)
-    {
-        configId_ = id;
-    }
-
-    OHOS::AccessibilityConfig::CONFIG_ID GetConfigId() const
-    {
-        return configId_;
-    }
-private:
-    static void NotifyStateChangedJS(napi_env env, bool enabled, const OHOS::AccessibilityConfig::CONFIG_ID id,
-                                     napi_ref handlerRef);
-    static void NotifyPropertyChangedJS(napi_env env, OHOS::AccessibilityConfig::CaptionProperty caption,
-                                        const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyStringChanged2JSInner(napi_env env, const std::string& value,
-                                            const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyIntChanged2JSInner(
-        napi_env env, int32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyUintChanged2JSInner(
-        napi_env env, uint32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyFloatChanged2JSInner(
-        napi_env env, float value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-
-private:
-    napi_ref handlerRef_ = nullptr;
-    napi_env env_ = nullptr;
-    OHOS::AccessibilityConfig::CONFIG_ID configId_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
 };
 #endif  // NAPI_ACCESSIBILITY_UTILS_H

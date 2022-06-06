@@ -162,7 +162,6 @@ void AccessibilityConfig::Impl::SetCaptionProperty(const CaptionProperty& captio
         return;
     }
     serviceProxy_->SetCaptionProperty(caption);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetCaptionState(const bool state)
@@ -174,7 +173,6 @@ void AccessibilityConfig::Impl::SetCaptionState(const bool state)
         return;
     }
     serviceProxy_->SetCaptionState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::NotifyCaptionStateChanged(
@@ -296,7 +294,6 @@ void AccessibilityConfig::Impl::SetShortKeyState(const bool state)
         return;
     }
     serviceProxy_->SetShortKeyState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
@@ -308,7 +305,6 @@ void AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
         return;
     }
     serviceProxy_->SetMouseKeyState(state);
-    return;
 }
 
 bool AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
@@ -675,7 +671,6 @@ void AccessibilityConfig::Impl::SetMouseAutoClick(const int32_t time)
         return;
     }
     serviceProxy_->SetMouseAutoClick(time);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
@@ -687,7 +682,6 @@ void AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
         return;
     }
     serviceProxy_->SetShortkeyTarget(name);
-    return;
 }
 
 bool AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
@@ -851,7 +845,6 @@ void AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
         return;
     }
     serviceProxy_->SetHighContrastTextState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetInvertColorState(const bool state)
@@ -863,7 +856,6 @@ void AccessibilityConfig::Impl::SetInvertColorState(const bool state)
         return;
     }
     serviceProxy_->SetInvertColorState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
@@ -875,7 +867,6 @@ void AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_
         return;
     }
     serviceProxy_->SetDaltonizationColorFilter(type);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
@@ -887,7 +878,6 @@ void AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
         return;
     }
     serviceProxy_->SetContentTimeout(timer);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
@@ -899,7 +889,6 @@ void AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
         return;
     }
     serviceProxy_->SetAnimationOffState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
@@ -911,7 +900,6 @@ void AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
         return;
     }
     serviceProxy_->SetBrightnessDiscount(brightness);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
@@ -923,7 +911,6 @@ void AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
         return;
     }
     serviceProxy_->SetAudioMonoState(state);
-    return;
 }
 
 void AccessibilityConfig::Impl::SetAudioBalance(const float balance)
@@ -935,7 +922,6 @@ void AccessibilityConfig::Impl::SetAudioBalance(const float balance)
         return;
     }
     serviceProxy_->SetAudioBalance(balance);
-    return;
 }
 
 bool AccessibilityConfig::Impl::GetInvertColorState(bool &state)

@@ -399,7 +399,8 @@ private:
             GetWindowsAsync(engine, lastParam);
     }
 
-    NativeValue* GetWindowsAsync(NativeEngine& engine, NativeValue* lastParam) {
+    NativeValue* GetWindowsAsync(NativeEngine& engine, NativeValue* lastParam)
+    {
         HILOG_INFO("called.");
         AsyncTask::CompleteCallback complete =
             [weak = context_](NativeEngine& engine, AsyncTask& task, int32_t status) {
@@ -432,7 +433,8 @@ private:
         return result;
     }
 
-    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, uint64_t displayId) {
+    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, uint64_t displayId)
+    {
         HILOG_INFO("called.");
         AsyncTask::CompleteCallback complete =
             [weak = context_, displayId](NativeEngine& engine, AsyncTask& task, int32_t status) {

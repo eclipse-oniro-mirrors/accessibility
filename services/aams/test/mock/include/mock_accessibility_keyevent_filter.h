@@ -27,7 +27,7 @@ public:
     virtual ~MockKeyEventFilter();
 
     MOCK_METHOD1(OnKeyEvent, void(MMI::KeyEvent& event));
-    MOCK_METHOD1(SendEventToParent, void(MMI::KeyEvent& event));
+    MOCK_METHOD1(SendEventToNext, void(MMI::KeyEvent& event));
     MOCK_METHOD3(SetServiceOnKeyEventResult,
         void(AccessibleAbilityConnection& connection, bool isHandled, uint32_t sequenceNum));
     MOCK_METHOD1(ClearServiceKeyEvents, void(AccessibleAbilityConnection& connection));

@@ -326,8 +326,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     /* add */
     AccessibilityAbilityInitParams initParams;
     initParams.name = "bbb";
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams); 
-    abilityInfo->SetCapabilityValues(1);   
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(1);
     accountData->AddInstalledAbility(*abilityInfo);
     accountData->AddEnabledAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetCurrentConfig()->GetEnabledAbilityInfos().size());
@@ -350,8 +350,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     /* add */
     AccessibilityAbilityInitParams initParams;
     initParams.name = "bbb";
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams); 
-    abilityInfo->SetCapabilityValues(1);   
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(1);
     accountData->AddInstalledAbility(*abilityInfo);
 
     accountData->AddEnabledAbility(bundleName);

@@ -19,6 +19,7 @@
 #include <vector>
 #include <map>
 #include "napi_accessibility_utils.h"
+#include "napi_accessibility_config_observer.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_config.h"
@@ -35,7 +36,7 @@ struct NAccessibilityConfigStruct {
     bool setCaptionStateReturn_ = false;
     bool result_ = false;
 
-    std::vector<std::shared_ptr<ConfigListener>> configListener_;
+    std::vector<std::shared_ptr<NAccessibilityConfigObserver>> configListener_;
 };
 class EnableAbilityListsObserver : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
 public:
@@ -128,7 +129,7 @@ public:
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
     static std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_;
-    static std::vector<std::shared_ptr<ConfigListener>> configListeners_;
+    static std::vector<std::shared_ptr<NAccessibilityConfigObserver>> configListeners_;
 private:
     static void SetConfigComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);

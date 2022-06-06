@@ -23,7 +23,7 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
 
-std::vector<std::shared_ptr<ConfigListener>> NAccessibilityConfig::configListeners_ = {};
+std::vector<std::shared_ptr<NAccessibilityConfigObserver>> NAccessibilityConfig::configListeners_ = {};
 std::vector<std::shared_ptr<EnableAbilityListsObserver>> NAccessibilityConfig::enableAbilityListsObservers_ = {};
 
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
@@ -220,7 +220,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
 void NAccessibilityConfig::SetConfigComplete(napi_env env, napi_status status, void* data)
 {
     HILOG_INFO("start");
-    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     napi_value result[ARGS_SIZE_TWO] = {0};
     napi_value callback = 0;
     napi_value undefined = 0;
@@ -244,106 +244,105 @@ void NAccessibilityConfig::SetConfigComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
-void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data) {
+void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
+{
     HILOG_INFO("start");
-    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    switch (callbackInfo->id_)
-    {
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
-        instance.SetHighContrastTextState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-        instance.SetInvertColorState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-        instance.SetAnimationOffState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-        instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-        instance.SetAudioMonoState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-        instance.SetMouseKeyState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-        instance.SetShortKeyState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-        instance.SetCaptionState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-        instance.SetContentTimeout(callbackInfo->uint32Config_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-        instance.SetMouseAutoClick(callbackInfo->int32Config_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-        instance.SetAudioBalance(callbackInfo->floatConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-        instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-        {
-            auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
-            instance.SetDaltonizationColorFilter(filter);
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        instance.SetShortkeyTarget(callbackInfo->stringConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-        instance.SetCaptionProperty(callbackInfo->captionProperty_);
-        break;
-    default:
-        break;
+    switch (callbackInfo->id_) {
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+            instance.SetHighContrastTextState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+            instance.SetInvertColorState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+            instance.SetAnimationOffState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+            instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+            instance.SetAudioMonoState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+            instance.SetMouseKeyState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+            instance.SetShortKeyState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+            instance.SetCaptionState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+            instance.SetContentTimeout(callbackInfo->uint32Config_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+            instance.SetMouseAutoClick(callbackInfo->int32Config_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+            instance.SetAudioBalance(callbackInfo->floatConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+            instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+            {
+                auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
+                instance.SetDaltonizationColorFilter(filter);
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+            instance.SetShortkeyTarget(callbackInfo->stringConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+            instance.SetCaptionProperty(callbackInfo->captionProperty_);
+            break;
+        default:
+            break;
     }
 }
 
 void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, void* data)
 {
     HILOG_INFO("start");
-    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     napi_value result[ARGS_SIZE_TWO] = {0};
     napi_value callback = 0;
     napi_value undefined = 0;
     napi_get_undefined(env, &undefined);
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
-    switch (callbackInfo->id_)
-    {
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-        napi_get_boolean(env, callbackInfo->boolConfig_, &result[PARAM1]);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-        napi_create_uint32(env, callbackInfo->uint32Config_, &result[PARAM1]);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-        napi_create_int32(env, callbackInfo->int32Config_, &result[PARAM1]);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-        napi_create_double(env, static_cast<double>(callbackInfo->floatConfig_), &result[PARAM1]);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-        napi_create_object(env, &result[PARAM1]);
-        ConvertCaptionPropertyToJS(env, result[PARAM1], callbackInfo->captionProperty_);
-        break;
-    default:
-        break;
+    switch (callbackInfo->id_) {
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+            napi_get_boolean(env, callbackInfo->boolConfig_, &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+            napi_create_uint32(env, callbackInfo->uint32Config_, &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+            napi_create_int32(env, callbackInfo->int32Config_, &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+            napi_create_double(env, static_cast<double>(callbackInfo->floatConfig_), &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+            napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+            napi_create_object(env, &result[PARAM1]);
+            ConvertCaptionPropertyToJS(env, result[PARAM1], callbackInfo->captionProperty_);
+            break;
+        default:
+            break;
     }
     if (callbackInfo->callback_) {
         result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
@@ -361,63 +360,63 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
-void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data) {
+void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
+{
     HILOG_INFO("start");
-    NAccessibilityConfigData* callbackInfo = (NAccessibilityConfigData*)data;
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    switch (callbackInfo->id_)
-    {
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
-        callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-        callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-        callbackInfo->ret_ = instance.GetAnimationOffState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-        callbackInfo->ret_ = instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-        callbackInfo->ret_ = instance.GetAudioMonoState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-        callbackInfo->ret_ = instance.GetMouseKeyState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-        callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-        callbackInfo->ret_ = instance.GetCaptionState(callbackInfo->boolConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-        callbackInfo->ret_ = instance.GetContentTimeout(callbackInfo->uint32Config_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-        callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-        callbackInfo->ret_ = instance.GetAudioBalance(callbackInfo->floatConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-        callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-        {
-            OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
-            callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
-            callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-        callbackInfo->ret_ = instance.GetCaptionProperty(callbackInfo->captionProperty_);
-        break;
-    default:
-        break;
+    switch (callbackInfo->id_) {
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+            callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+            callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+            callbackInfo->ret_ = instance.GetAnimationOffState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+            callbackInfo->ret_ = instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+            callbackInfo->ret_ = instance.GetAudioMonoState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+            callbackInfo->ret_ = instance.GetMouseKeyState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+            callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+            callbackInfo->ret_ = instance.GetCaptionState(callbackInfo->boolConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+            callbackInfo->ret_ = instance.GetContentTimeout(callbackInfo->uint32Config_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+            callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+            callbackInfo->ret_ = instance.GetAudioBalance(callbackInfo->floatConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+            callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+            {
+                OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
+                callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
+                callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+            callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+            callbackInfo->ret_ = instance.GetCaptionProperty(callbackInfo->captionProperty_);
+            break;
+        default:
+            break;
     }
 }
 
@@ -434,57 +433,56 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
 
-    switch (obj->GetConfigId())
-    {
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-        {
-            bool state = false;
-            ParseBool(env, state, parameters[PARAM0]);
-            callbackInfo->boolConfig_ = state;
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-        {
-            uint32_t timeout = 0;
-            ParseUint32(env, timeout, parameters[PARAM0]);
-            callbackInfo->uint32Config_ = timeout;
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-        {
-            int32_t time = 0;
-            ParseInt32(env, time, parameters[PARAM0]);
-            callbackInfo->int32Config_ = time;
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-        {
-            double doubleTemp = 0;
-            napi_get_value_double(env, parameters[PARAM0], &doubleTemp);
-            callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-        {
-            std::string target = "";
-            ParseString(env, target, parameters[PARAM0]);
-            callbackInfo->stringConfig_ = target;
-        }
-        break;
-    case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-        ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
-        break;
-    default:
-        break;
+    switch (obj->GetConfigId()) {
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+            {
+                bool state = false;
+                ParseBool(env, state, parameters[PARAM0]);
+                callbackInfo->boolConfig_ = state;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+            {
+                uint32_t timeout = 0;
+                ParseUint32(env, timeout, parameters[PARAM0]);
+                callbackInfo->uint32Config_ = timeout;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+            {
+                int32_t time = 0;
+                ParseInt32(env, time, parameters[PARAM0]);
+                callbackInfo->int32Config_ = time;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+            {
+                double doubleTemp = 0;
+                napi_get_value_double(env, parameters[PARAM0], &doubleTemp);
+                callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+            {
+                std::string target = "";
+                ParseString(env, target, parameters[PARAM0]);
+                callbackInfo->stringConfig_ = target;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+            ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
+            break;
+        default:
+            break;
     }
     callbackInfo->id_ = obj->GetConfigId();
 
@@ -557,7 +555,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
 
-    std::shared_ptr<ConfigListener> observer = std::make_shared<ConfigListener>();
+    std::shared_ptr<NAccessibilityConfigObserver> observer = std::make_shared<NAccessibilityConfigObserver>();
     napi_ref handler = nullptr;
     napi_create_reference(env, parameters[PARAM0], 1, &handler);
     observer->SetHandler(handler);

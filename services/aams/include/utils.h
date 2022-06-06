@@ -26,9 +26,8 @@ class Utils {
 public:
     static void Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, AccessibilityAbilityInitParams &initParams);
     static int64_t GetSystemTime();
-	
     static std::string GetUri(const OHOS::AppExecFwk::ElementName &elementName);
-    static std::string GetUri(const std::string &bundleName, const std::string &abilityName);	
+    static std::string GetUri(const std::string &bundleName, const std::string &abilityName);
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1605,7 +1605,6 @@ void AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
         accountData->GetCurrentConfig()->SetHighContrastTextState(state);
         UpdateConfigState();
         }), "TASK_SET_HIGHCONTRASTTEXT_STATE");
-
 }
 
 void AccessibleAbilityManagerService::SetInvertColorState(const bool state)

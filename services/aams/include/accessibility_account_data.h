@@ -289,7 +289,6 @@ public:
 
     std::shared_ptr<AccessibilitySettingsConfig> GetCurrentConfig();
 
-
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
@@ -360,7 +359,6 @@ private:
     std::vector<std::string> connectingA11yAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
-    
 };
 } // namespace Accessibility
 } // namespace OHOS

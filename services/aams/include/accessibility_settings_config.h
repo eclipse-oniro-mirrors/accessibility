@@ -25,7 +25,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 enum STATE : int32_t {
     ACCESSIBILITY,
     TOUCHGUIDE,

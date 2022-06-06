@@ -25,6 +25,7 @@
 #include "accessibility_state_event.h"
 #include "accessibility_ability_info.h"
 #include "napi_accessibility_utils.h"
+#include "napi_accessibility_config_observer.h"
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
 class StateListener : public OHOS::Accessibility::AccessibilityStateObserver {
@@ -85,7 +86,7 @@ struct NAccessibilitySystemAbilityClient {
     std::string eventType_ = "";
 
     std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
-    std::vector<std::shared_ptr<ConfigListener>> captionListener_;
+    std::vector<std::shared_ptr<NAccessibilityConfigObserver>> captionListener_;
 };
 
 class NAccessibilityClient {
@@ -127,7 +128,7 @@ public:
     static thread_local napi_ref aaStyleConsRef_;
 
     static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
-    static std::vector<std::shared_ptr<ConfigListener>> captionListeners_;
+    static std::vector<std::shared_ptr<NAccessibilityConfigObserver>> captionListeners_;
 
 private:
     NAccessibilityClient() = default;

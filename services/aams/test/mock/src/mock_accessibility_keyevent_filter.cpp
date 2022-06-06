@@ -66,7 +66,7 @@ std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingE
 void KeyEventFilter::DestroyEvents()
 {}
 
-void KeyEventFilter::SendEventToParent(MMI::KeyEvent& event)
+void KeyEventFilter::SendEventToNext(MMI::KeyEvent& event)
 {
     (void)event;
 }

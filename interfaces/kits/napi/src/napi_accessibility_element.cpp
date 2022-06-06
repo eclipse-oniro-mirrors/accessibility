@@ -372,7 +372,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
             }
             callbackInfo->stringData_ = queryData;
             return GetElementInfoByContent(callbackInfo);
-        case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:  
+        case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             if (!ParseString(env, queryData, argv[PARAM1])) {
                 HILOG_ERROR("ParseString for argv[1] failed");
                 return ErrorOperation(callbackInfo);
@@ -1045,7 +1045,7 @@ napi_value NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoCheckable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1087,7 +1087,7 @@ napi_value NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementDat
             HILOG_DEBUG("GetElementInfoChecked execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1129,7 +1129,7 @@ napi_value NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoFocusable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1171,7 +1171,7 @@ napi_value NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoIsVisible execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1213,7 +1213,7 @@ napi_value NAccessibilityElement::GetElementInfoAccessibilityFocused(NAccessibil
             HILOG_DEBUG("GetElementInfoAccessibilityFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1255,7 +1255,7 @@ napi_value NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1297,7 +1297,7 @@ napi_value NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoClickable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1339,7 +1339,7 @@ napi_value NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElem
             HILOG_DEBUG("GetElementInfoLongClickable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1381,7 +1381,7 @@ napi_value NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoIsEnable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1423,7 +1423,7 @@ napi_value NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoIsPassword execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1465,7 +1465,7 @@ napi_value NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoScrollable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1507,7 +1507,7 @@ napi_value NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoEditable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1549,7 +1549,7 @@ napi_value NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityEle
             HILOG_DEBUG("GetElementInfoPopupSupported execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1591,7 +1591,7 @@ napi_value NAccessibilityElement::GetElementInfoPluralLineSupported(NAccessibili
             HILOG_DEBUG("GetElementInfoPluralLineSupported execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1633,7 +1633,7 @@ napi_value NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoDeleteable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1675,7 +1675,7 @@ napi_value NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoIsHint execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) {    
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1717,7 +1717,7 @@ napi_value NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoIsEssential execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1759,7 +1759,7 @@ napi_value NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoItemCount execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1801,7 +1801,7 @@ napi_value NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoCurrentIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1843,7 +1843,7 @@ napi_value NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoStartIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1885,7 +1885,7 @@ napi_value NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoEndIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -1926,7 +1926,7 @@ napi_value NAccessibilityElement::GetElementInfoRangeInfo(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoRangeInfo execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertRangeInfoToJS(callbackInfo->env_, result, callbackInfo->rangeInfo_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1968,7 +1968,7 @@ napi_value NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *
             HILOG_DEBUG("GetElementInfoGrid execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertGridInfoToJS(callbackInfo->env_, result, callbackInfo->gridInfo_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2010,7 +2010,7 @@ napi_value NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoGridItem execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertGridItemToJS(callbackInfo->env_, result, callbackInfo->gridItemInfo_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2053,7 +2053,7 @@ napi_value NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoActiveRegion execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2095,7 +2095,7 @@ napi_value NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityE
             HILOG_DEBUG("GetElementInfoIsContentInvalid execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2137,7 +2137,7 @@ napi_value NAccessibilityElement::GetElementInfoError(NAccessibilityElementData 
             HILOG_DEBUG("GetElementInfoError execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH,
                     &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2168,7 +2168,7 @@ napi_value NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData 
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
-                callbackInfo->int32Data_ = 
+                callbackInfo->int32Data_ =
                     callbackInfo->accessibilityElement_.elementInfo_->GetLabeledAccessibilityId();
                 HILOG_DEBUG("GetElementInfoLabel: [%{public}d]", callbackInfo->int32Data_);
             } else {
@@ -2181,7 +2181,7 @@ napi_value NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData 
             HILOG_DEBUG("GetElementInfoLabel execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2223,7 +2223,7 @@ napi_value NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElem
             HILOG_DEBUG("GetElementInfoBeginSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2265,7 +2265,7 @@ napi_value NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoEndSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2312,7 +2312,7 @@ napi_value NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoTextMoveUnit execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH,
                     &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2361,7 +2361,7 @@ napi_value NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoParent execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
                 napi_new_instance(env, constructor, 0, nullptr, &result);
@@ -2412,7 +2412,7 @@ napi_value NAccessibilityElement::GetElementInfoChilds(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoChilds execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2455,7 +2455,7 @@ napi_value NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoIsFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2497,7 +2497,7 @@ napi_value NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoComponentId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2539,7 +2539,7 @@ napi_value NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementDat
             HILOG_DEBUG("GetWindowInfoIsActive execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2580,7 +2580,7 @@ napi_value NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementD
             HILOG_DEBUG("GetWindowInfoScreenRect execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_object(env, &result);
                 ConvertRectToJS(env, result, callbackInfo->screenRect_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2623,7 +2623,7 @@ napi_value NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *
             HILOG_DEBUG("GetWindowInfoLayer execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2666,7 +2666,7 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
             HILOG_DEBUG("GetWindowInfoType execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2714,7 +2714,7 @@ napi_value NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData 
             HILOG_DEBUG("GetWindowInfoAnchor execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
                 napi_new_instance(env, constructor, 0, nullptr, &result);
@@ -2765,7 +2765,7 @@ napi_value NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElement
             HILOG_DEBUG("GetWindowInfoRootElement execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
                 napi_new_instance(env, constructor, 0, nullptr, &result);
@@ -2810,7 +2810,7 @@ napi_value NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementDa
             HILOG_DEBUG("GetWindowInfoIsFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2852,7 +2852,7 @@ napi_value NAccessibilityElement::GetWindowInfoComponentId(NAccessibilityElement
             HILOG_DEBUG("GetWindowInfoComponentId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
@@ -2883,7 +2883,7 @@ napi_value NAccessibilityElement::GetElementInfoByContent(NAccessibilityElementD
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient != nullptr && callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->ret_ = aaClient->GetByContent(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), callbackInfo->stringData_, 
+                    *(callbackInfo->accessibilityElement_.elementInfo_), callbackInfo->stringData_,
                     callbackInfo->nodeInfos_);
             } else {
                 HILOG_ERROR("no client or element info!");
@@ -2896,7 +2896,7 @@ napi_value NAccessibilityElement::GetElementInfoByContent(NAccessibilityElementD
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2946,7 +2946,7 @@ napi_value NAccessibilityElement::GetElementInfoByFocusType(NAccessibilityElemen
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2980,7 +2980,7 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
             FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient != nullptr && callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
-                callbackInfo->ret_ = aaClient->GetNext(*(callbackInfo->accessibilityElement_.elementInfo_), 
+                callbackInfo->ret_ = aaClient->GetNext(*(callbackInfo->accessibilityElement_.elementInfo_),
                     direction, nodeInfo);
                 if (callbackInfo->ret_) {
                     callbackInfo->nodeInfos_.push_back(nodeInfo);
@@ -2993,10 +2993,10 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoByFocusDirection execute back");
-            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);           
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
 
             napi_value result = nullptr;
-            if (callbackInfo->ret_) { 
+            if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);

@@ -58,7 +58,8 @@ public:
         return true;
     }
 
-    static bool GetStringVecFromJson(const nlohmann::json &json, const std::string &key, std::vector<std::string> &value)
+    static bool GetStringVecFromJson(const nlohmann::json &json, const std::string &key,
+        std::vector<std::string> &value)
     {
         HILOG_DEBUG("start.");
         if (!json.is_object()) {

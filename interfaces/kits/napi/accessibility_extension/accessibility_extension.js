@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-class AccessibilityExtension {
+class AccessibilityExtensionAbility {
     onConnect() {
         console.log('onConnect');
     }
@@ -32,4 +32,4 @@ class AccessibilityExtension {
     }
 }
 
-export default AccessibilityExtension
+export default AccessibilityExtensionAbility

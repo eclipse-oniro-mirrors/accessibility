@@ -152,8 +152,6 @@ public:
      * @return
      */
     void OnAccessibleAbilityManagerStateChanged(const uint32_t stateType);
-
-
 private:
     class AccessibleAbilityManagerStateObserverImpl : public AccessibleAbilityManagerStateObserverStub {
     public:

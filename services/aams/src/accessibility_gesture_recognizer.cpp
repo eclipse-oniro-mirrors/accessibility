@@ -32,7 +32,7 @@ GestureHandler::GestureHandler(const std::shared_ptr<AppExecFwk::EventRunner> &r
 
 void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (!event) {
         HILOG_ERROR("event is null");
         return;
@@ -56,7 +56,7 @@ void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 
 AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
@@ -101,7 +101,7 @@ void AccessibilityGestureRecognizer::UnregisterListener()
 
 bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
@@ -147,7 +147,7 @@ void AccessibilityGestureRecognizer::Clear()
 
 void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
@@ -168,7 +168,7 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
 
 bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
@@ -217,7 +217,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
 
 bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     Pointer mp;
     MMI::PointerEvent::PointerItem pointerIterm;
@@ -245,7 +245,7 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event
 
 bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
@@ -325,7 +325,7 @@ bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent &even
 
 bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (!listener_) {
         HILOG_ERROR("listener_ is nullptr.");
         return false;
@@ -363,7 +363,7 @@ int32_t AccessibilityGestureRecognizer::GetSwipeDirection(Pointer firstP, Pointe
 
 std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<Pointer> &route)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     std::vector<Pointer> pointerPath;
     Pointer firstSeparation = route[0];
