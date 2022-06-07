@@ -142,8 +142,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
+        (void*)callbackInfo, &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
