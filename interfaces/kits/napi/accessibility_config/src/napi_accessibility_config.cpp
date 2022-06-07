@@ -367,53 +367,53 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
-            callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+            instance.GetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
+            instance.GetInvertColorState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            callbackInfo->ret_ = instance.GetAnimationOffState(callbackInfo->boolConfig_);
+            instance.GetAnimationOffState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            callbackInfo->ret_ = instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
+            instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            callbackInfo->ret_ = instance.GetAudioMonoState(callbackInfo->boolConfig_);
+            instance.GetAudioMonoState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            callbackInfo->ret_ = instance.GetMouseKeyState(callbackInfo->boolConfig_);
+            instance.GetMouseKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
+            instance.GetShortKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            callbackInfo->ret_ = instance.GetCaptionState(callbackInfo->boolConfig_);
+            instance.GetCaptionState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            callbackInfo->ret_ = instance.GetContentTimeout(callbackInfo->uint32Config_);
+            instance.GetContentTimeout(callbackInfo->uint32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
+            instance.GetMouseAutoClick(callbackInfo->int32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            callbackInfo->ret_ = instance.GetAudioBalance(callbackInfo->floatConfig_);
+            instance.GetAudioBalance(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
+            instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
             {
                 OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
-                callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
+                instance.GetDaltonizationColorFilter(type);
                 callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+            instance.GetShortkeyTarget(callbackInfo->stringConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            callbackInfo->ret_ = instance.GetCaptionProperty(callbackInfo->captionProperty_);
+            instance.GetCaptionProperty(callbackInfo->captionProperty_);
             break;
         default:
             break;

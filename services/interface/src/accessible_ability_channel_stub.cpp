@@ -47,6 +47,10 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
         &AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH)] =
         &AccessibleAbilityChannelStub::HandleSendSimulateGesturePath;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_EVENT_TYPE_FILTER)] =
+        &AccessibleAbilityChannelStub::HandleSetEventTypeFilter;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_TARGET_BUNDLE_NAME)] =
+        &AccessibleAbilityChannelStub::HandleSetTargetBundleName;
 }
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()

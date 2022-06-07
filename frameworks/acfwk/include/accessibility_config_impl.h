@@ -56,21 +56,21 @@ public:
     void SetAudioMonoState(const bool state);
     void SetAudioBalance(const float balance);
 
-    bool GetScreenMagnificationState(bool &state);
-    bool GetShortKeyState(bool &state);
-    bool GetMouseKeyState(bool &state);
-    bool GetCaptionState(bool &state);
-    bool GetCaptionProperty(CaptionProperty &caption);
-    bool GetMouseAutoClick(int32_t &time);
-    bool GetShortkeyTarget(std::string &name);
-    bool GetInvertColorState(bool &state);
-    bool GetHighContrastTextState(bool &state);
-    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
-    bool GetContentTimeout(uint32_t &timer);
-    bool GetAnimationOffState(bool &state);
-    bool GetBrightnessDiscount(float &brightness);
-    bool GetAudioMonoState(bool &state);
-    bool GetAudioBalance(float &balance);
+    void GetScreenMagnificationState(bool &state);
+    void GetShortKeyState(bool &state);
+    void GetMouseKeyState(bool &state);
+    void GetCaptionState(bool &state);
+    void GetCaptionProperty(CaptionProperty &caption);
+    void GetMouseAutoClick(int32_t &time);
+    void GetShortkeyTarget(std::string &name);
+    void GetInvertColorState(bool &state);
+    void GetHighContrastTextState(bool &state);
+    void GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
+    void GetContentTimeout(uint32_t &timer);
+    void GetAnimationOffState(bool &state);
+    void GetBrightnessDiscount(float &brightness);
+    void GetAudioMonoState(bool &state);
+    void GetAudioBalance(float &balance);
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
