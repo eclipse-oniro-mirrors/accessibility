@@ -82,6 +82,96 @@ namespace {
     }
 
     /**
+     * @tc.name: BenchmarkTestForSetShortkeyTarget
+     * @tc.desc: Testcase for testing 'SetShortkeyTarget' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number
+     */
+    static void BenchmarkTestForSetShortkeyTarget(benchmark::State &state)
+    {
+        std::string nameStr = "aaa";
+        std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
+            std::make_shared<AccessibilityConfigObserverImpl>();
+        auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+
+        config.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, configObserver);
+
+        for (auto _ : state) {
+            /* @tc.steps: step1.call SetShortkeyTarget in loop */
+            std::promise<void> complete;
+            std::future syncFuture = complete.get_future();
+            configObserver->SetCompletePromise(complete);
+            config.SetShortkeyTarget(nameStr);
+            syncFuture.wait();
+            if (!strcmp(nameStr.c_str(),"aaa")) {
+                nameStr = "bbb";
+            } else {
+                nameStr = "aaa";
+            }
+            
+        }
+    }
+
+    /**
+     * @tc.name: BenchmarkTestForGetShortkeyTarget
+     * @tc.desc: Testcase for testing 'GetShortkeyTarget' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number
+     */
+    static void BenchmarkTestForGetShortkeyTarget(benchmark::State &state)
+    {
+        std::string value = "";
+        auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        for (auto _ : state) {
+            /* @tc.steps: step1.call GetShortkeyTarget in loop */
+            (void)config.GetShortkeyTarget(value);
+        }
+    }
+
+        /**
+     * @tc.name: BenchmarkTestForSetContentTimeout
+     * @tc.desc: Testcase for testing 'SetContentTimeout' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number
+     */
+    static void BenchmarkTestForSetContentTimeout(benchmark::State &state)
+    {
+        uint32_t value = 0;
+        std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
+            std::make_shared<AccessibilityConfigObserverImpl>();
+        auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+
+        config.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, configObserver);
+        config.GetContentTimeout(value);
+        for (auto _ : state) {
+            /* @tc.steps: step1.call SetContentTimeout in loop */
+            value++;
+            std::promise<void> complete;
+            std::future syncFuture = complete.get_future();
+            configObserver->SetCompletePromise(complete);
+
+            config.SetContentTimeout(value);
+            syncFuture.wait();
+        }
+    }
+
+    /**
+     * @tc.name: BenchmarkTestForGetContentTimeout
+     * @tc.desc: Testcase for testing 'GetContentTimeout' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number
+     */
+    static void BenchmarkTestForGetContentTimeout(benchmark::State &state)
+    {
+        uint32_t value = 0;
+        auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        for (auto _ : state) {
+            /* @tc.steps: step1.call GetContentTimeout in loop */
+            (void)config.GetContentTimeout(value);
+        }
+    }
+
+    /**
      * @tc.name: BenchmarkTestForSubscribeConfigObserver
      * @tc.desc: Testcase for testing 'SubscribeConfigObserver' and 'UnsubscribeConfigObserver' function.
      * @tc.type: FUNC
@@ -102,6 +192,10 @@ namespace {
 
     BENCHMARK(BenchmarkTestForSetScreenMagnificationState)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForGetScreenMagnificationState)->Iterations(1000)->ReportAggregatesOnly();
+    BENCHMARK(BenchmarkTestForSetShortkeyTarget)->Iterations(1000)->ReportAggregatesOnly();
+    BENCHMARK(BenchmarkTestForGetShortkeyTarget)->Iterations(1000)->ReportAggregatesOnly();
+    BENCHMARK(BenchmarkTestForSetContentTimeout)->Iterations(1000)->ReportAggregatesOnly();
+    BENCHMARK(BenchmarkTestForGetContentTimeout)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForSubscribeConfigObserver)->Iterations(1000)->ReportAggregatesOnly();
 }
 

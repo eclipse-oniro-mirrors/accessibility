@@ -20,6 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string PREF_PATH = "/data/service/el1/public/barrierfree/accessibility_ability_manager_service/";
+    constexpr uint32_t DEFAULT_COLOR = 0xff000000;
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
@@ -426,7 +427,7 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-void AccessibilitySettingsConfig::CaptionInit()
+void AccessibilitySettingsConfig::InitCaption()
 {
     HILOG_DEBUG("start.");
     if (!pref_) {
@@ -448,16 +449,16 @@ void AccessibilitySettingsConfig::CaptionInit()
     int32_t FONTSCALE =  static_cast<int32_t>(pref_->GetInt("fontScale", 0));
     HILOG_DEBUG(" pref_->GetString() = %{public}d.", FONTSCALE);
 
-    uint32_t FONTCOLOR = static_cast<uint32_t>(pref_->GetInt("fontColor", 0xff000000));
+    uint32_t FONTCOLOR = static_cast<uint32_t>(pref_->GetInt("fontColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", FONTCOLOR);
 
     std::string FONTEDGETYPE = pref_->GetString("fontEdgeType", "none");
     HILOG_DEBUG(" pref_->GetString() = 0x%{public}s.", FONTEDGETYPE.c_str());
 
-    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref_->GetInt("backgroundColor", 0xff000000));
+    uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref_->GetInt("backgroundColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", BACKGROUNDCOLOR);
 
-    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref_->GetInt("windowColor", 0xff000000));
+    uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref_->GetInt("windowColor", DEFAULT_COLOR));
     HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
@@ -468,7 +469,7 @@ void AccessibilitySettingsConfig::CaptionInit()
     captionProperty_.SetWindowColor(WINDOWCOLOR);
 }
 
-void AccessibilitySettingsConfig::SettingInit()
+void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG("start.");
     if (!pref_) {
@@ -505,7 +506,7 @@ void AccessibilitySettingsConfig::SettingInit()
     audioBalance_ = static_cast<uint32_t>(pref_->GetFloat("audioBalance", 0));
 }
 
-void AccessibilitySettingsConfig::CapabilityInit()
+void AccessibilitySettingsConfig::InitCapability()
 {
     HILOG_DEBUG("start.");
     if (!pref_) {
@@ -548,7 +549,7 @@ void AccessibilitySettingsConfig::CapabilityInit()
     }
 }
 
-void AccessibilitySettingsConfig::EnabledListInit()
+void AccessibilitySettingsConfig::InitEnabledList()
 {
     HILOG_DEBUG("start.");
     if (!pref_) {
@@ -574,10 +575,10 @@ void AccessibilitySettingsConfig::Init()
         return;
     }
 
-    CaptionInit();
-    SettingInit();
-    CapabilityInit();
-    EnabledListInit();
+    InitCaption();
+    InitSetting();
+    InitCapability();
+    InitEnabledList();
 }
 
 void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)

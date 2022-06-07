@@ -260,22 +260,22 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
     return state;
 }
 
-void AccessibilitySettingsConfig::CaptionInit()
+void AccessibilitySettingsConfig::InitCaption()
 {
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::SettingInit()
+void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::CapabilityInit()
+void AccessibilitySettingsConfig::InitCapability()
 {
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::EnabledListInit()
+void AccessibilitySettingsConfig::InitEnabledList()
 {
     HILOG_DEBUG("start.");
 }

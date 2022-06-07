@@ -92,10 +92,10 @@ public:
     void Init();
     void ClearData();
 private:
-    void CaptionInit();
-    void SettingInit();
-    void CapabilityInit();
-    void EnabledListInit();
+    void InitCaption();
+    void InitSetting();
+    void InitCapability();
+    void InitEnabledList();
     bool SetStatePref(int32_t type);
     std::string StateChange(bool state);
     void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);

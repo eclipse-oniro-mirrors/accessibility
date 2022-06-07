@@ -21,7 +21,7 @@
 using namespace OHOS::Accessibility;
 
 namespace {
-    const std::string text = "计算器";
+    const std::string APP_NAME = "计算器";
 
     class AccessibleAbilityListenerImpl : public AccessibleAbilityListener {
     public:
@@ -281,7 +281,7 @@ namespace {
 
         for (auto _ : state) {
             std::vector<AccessibilityElementInfo> resultElementInfos;
-            AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, text, resultElementInfos);
+            AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
         }
 
         // Disconnect
@@ -314,7 +314,7 @@ namespace {
         AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
 
         std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, text, resultElementInfos);
+        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
         if (resultElementInfos.empty()) {
             return;
         }
@@ -359,7 +359,7 @@ namespace {
         AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
 
         std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, text, resultElementInfos);
+        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
         if (resultElementInfos.empty()) {
             return;
         }
@@ -407,7 +407,7 @@ namespace {
         AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
 
         std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, text, resultElementInfos);
+        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
         if (resultElementInfos.empty()) {
             return;
         }
