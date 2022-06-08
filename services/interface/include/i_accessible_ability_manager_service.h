@@ -93,8 +93,8 @@ public:
     virtual bool GetGestureState() = 0;
     virtual bool GetKeyEventObserverState() = 0;
 
-    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
-    virtual bool SetCaptionState(const bool state) = 0;
+    virtual void SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
+    virtual void SetCaptionState(const bool state) = 0;
 
     virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) = 0;
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
@@ -106,19 +106,19 @@ public:
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;
     virtual bool DisableUITestAbility() = 0;
 
-    virtual bool SetScreenMagnificationState(const bool state) = 0;
-    virtual bool SetShortKeyState(const bool state) = 0;
-    virtual bool SetMouseKeyState(const bool state) = 0;
-    virtual bool SetMouseAutoClick(const int32_t time) = 0;
-    virtual bool SetShortkeyTarget(const std::string &name) = 0;
-    virtual bool SetHighContrastTextState(const bool state) = 0;
-    virtual bool SetInvertColorState(const bool state) = 0;
-    virtual bool SetAnimationOffState(const bool state) = 0;
-    virtual bool SetAudioMonoState(const bool state) = 0;
-    virtual bool SetDaltonizationColorFilter(const uint32_t filter) = 0;
-    virtual bool SetContentTimeout(const uint32_t time) = 0;
-    virtual bool SetBrightnessDiscount(const float discount) = 0;
-    virtual bool SetAudioBalance(const float balance) = 0;
+    virtual void SetScreenMagnificationState(const bool state) = 0;
+    virtual void SetShortKeyState(const bool state) = 0;
+    virtual void SetMouseKeyState(const bool state) = 0;
+    virtual void SetMouseAutoClick(const int32_t time) = 0;
+    virtual void SetShortkeyTarget(const std::string &name) = 0;
+    virtual void SetHighContrastTextState(const bool state) = 0;
+    virtual void SetInvertColorState(const bool state) = 0;
+    virtual void SetAnimationOffState(const bool state) = 0;
+    virtual void SetAudioMonoState(const bool state) = 0;
+    virtual void SetDaltonizationColorFilter(const uint32_t filter) = 0;
+    virtual void SetContentTimeout(const uint32_t time) = 0;
+    virtual void SetBrightnessDiscount(const float discount) = 0;
+    virtual void SetAudioBalance(const float balance) = 0;
 
     virtual bool GetScreenMagnificationState() = 0;
     virtual bool GetShortKeyState() = 0;

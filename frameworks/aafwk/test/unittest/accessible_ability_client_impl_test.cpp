@@ -30,7 +30,6 @@ namespace {
     constexpr int32_t CHANNEL_ID = 1;
     constexpr int32_t SEQUENCE = 1;
     constexpr int32_t FOCUS_TYPE = 1;
-    constexpr int32_t INDEX = 1;
 } // namespace
 
 class AccessibleAbilityClientImplTest : public ::testing::Test {
@@ -369,60 +368,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetNext_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetChildWindowInfo_001
- * @tc.name: GetChildWindowInfo
- * @tc.desc: Test function GetChildWindowInfo
- */
-HWTEST_F(AccessibleAbilityClientImplTest, GetChildWindowInfo_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetChildWindowInfo_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    AccessibilityWindowInfo parent {};
-    AccessibilityWindowInfo child {};
-    EXPECT_FALSE(instance_->GetChildWindowInfo(INDEX, parent, child));
-
-    GTEST_LOG_(INFO) << "GetChildWindowInfo_001 end";
-}
-
-/**
- * @tc.number: GetChildElementInfo_001
- * @tc.name: GetChildElementInfo
- * @tc.desc: Test function GetChildElementInfo
- */
-HWTEST_F(AccessibleAbilityClientImplTest, GetChildElementInfo_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetChildElementInfo_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    AccessibilityElementInfo parent {};
-    AccessibilityElementInfo child {};
-    EXPECT_FALSE(instance_->GetChildElementInfo(INDEX, parent, child));
-
-    GTEST_LOG_(INFO) << "GetChildElementInfo_001 end";
-}
-
-/**
  * @tc.number: GetByContent_001
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent
@@ -528,33 +473,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_001, TestSize.Lev
     EXPECT_FALSE(instance_->GetParentElementInfo(child, parent));
 
     GTEST_LOG_(INFO) << "GetParentElementInfo_001 end";
-}
-
-/**
- * @tc.number: GetLabeled_001
- * @tc.name: GetLabeled
- * @tc.desc: Test function GetLabeled
- */
-HWTEST_F(AccessibleAbilityClientImplTest, GetLabeled_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetLabeled_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    AccessibilityElementInfo elementInfo {};
-    AccessibilityElementInfo labeledElementInfo {};
-    EXPECT_FALSE(instance_->GetLabeled(elementInfo, labeledElementInfo));
-
-    GTEST_LOG_(INFO) << "GetLabeled_001 end";
 }
 
 /**

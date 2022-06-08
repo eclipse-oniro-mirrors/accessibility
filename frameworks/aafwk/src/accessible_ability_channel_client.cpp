@@ -148,6 +148,32 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     return true;
 }
 
+bool AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, windowId);
+    if (!proxy_) {
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return false;
+    }
+
+    return proxy_->GetWindow(windowId, windowInfo);
+}
+
+bool AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    if (proxy_) {
+        bool ret = proxy_->GetWindows(windows);
+        for (auto &window : windows) {
+            window.SetChannelId(channelId_);
+        }
+        return ret;
+    } else {
+        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return false;
+    }
+}
+
 bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows) const
 {

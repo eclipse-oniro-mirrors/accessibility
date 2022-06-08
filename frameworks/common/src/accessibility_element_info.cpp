@@ -156,7 +156,7 @@ void AccessibilityElementInfo::SetParent(const int32_t parentId)
     HILOG_DEBUG("parentId_[%{public}d]", parentId_);
 }
 
-Rect AccessibilityElementInfo::GetRectInScreen() const
+const Rect &AccessibilityElementInfo::GetRectInScreen() const
 {
     HILOG_DEBUG("start");
     return bounds_;
@@ -373,7 +373,7 @@ void AccessibilityElementInfo::SetInspectorKey(const std::string &key)
     inspectorKey_ = key;
 }
 
-std::string AccessibilityElementInfo::GetInspectorKey() const
+const std::string &AccessibilityElementInfo::GetInspectorKey() const
 {
     HILOG_DEBUG("inspector key [%{public}s]", inspectorKey_.c_str());
     return inspectorKey_;
@@ -456,7 +456,7 @@ void AccessibilityElementInfo::SetHinting(const bool hinting)
     HILOG_DEBUG("hint_[%{public}d]", hint_);
 }
 
-std::string AccessibilityElementInfo::GetBundleName() const
+const std::string &AccessibilityElementInfo::GetBundleName() const
 {
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
     return bundleName_;
@@ -468,7 +468,7 @@ void AccessibilityElementInfo::SetBundleName(const std::string &bundleName)
     HILOG_DEBUG("bundleName_[%{public}s]", bundleName_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetComponentType() const
+const std::string &AccessibilityElementInfo::GetComponentType() const
 {
     HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
     return componentType_;
@@ -480,7 +480,7 @@ void AccessibilityElementInfo::SetComponentType(const std::string &className)
     HILOG_DEBUG("componentType_[%{public}s]", componentType_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetContent() const
+const std::string &AccessibilityElementInfo::GetContent() const
 {
     HILOG_DEBUG("text_[%{public}s]", text_.c_str());
     return text_;
@@ -490,18 +490,6 @@ void AccessibilityElementInfo::SetContent(const std::string &text)
 {
     text_ = text;
     HILOG_DEBUG("text_[%{public}s]", text_.c_str());
-}
-
-std::string AccessibilityElementInfo::GetAccessibilityContent() const
-{
-    HILOG_DEBUG("accessibilityText_[%{public}s]", accessibilityText_.c_str());
-    return accessibilityText_;
-}
-
-void AccessibilityElementInfo::SetAccessibilityContent(const std::string &text)
-{
-    accessibilityText_ = text;
-    HILOG_DEBUG("accessibilityText_[%{public}s]", accessibilityText_.c_str());
 }
 
 void AccessibilityElementInfo::SetSelectedBegin(const int32_t start)
@@ -528,31 +516,7 @@ int32_t AccessibilityElementInfo::GetSelectedEnd() const
     return endSelected_;
 }
 
-std::string AccessibilityElementInfo::GetAccessibilityDescription() const
-{
-    HILOG_DEBUG("endSelected_[%{public}s]", accessibilityDescription_.c_str());
-    return accessibilityDescription_;
-}
-
-void AccessibilityElementInfo::SetAccessibilityDescription(const std::string &text)
-{
-    accessibilityDescription_ = text;
-    HILOG_DEBUG("endSelected_[%{public}s]", accessibilityDescription_.c_str());
-}
-
-bool AccessibilityElementInfo::GetAccessibilityGroup() const
-{
-    HILOG_DEBUG("accessibilityGroup_[%{public}d]", accessibilityGroup_);
-    return accessibilityGroup_;
-}
-
-void AccessibilityElementInfo::SetAccessibilityGroup(const bool group)
-{
-    accessibilityGroup_ = group;
-    HILOG_DEBUG("accessibilityGroup_[%{public}d]", accessibilityGroup_);
-}
-
-std::string AccessibilityElementInfo::GetHint() const
+const std::string &AccessibilityElementInfo::GetHint() const
 {
     HILOG_DEBUG("hintText_[%{public}s]", hintText_.c_str());
     return hintText_;
@@ -564,7 +528,7 @@ void AccessibilityElementInfo::SetHint(const std::string &hintText)
     HILOG_DEBUG("hintText_[%{public}s]", hintText_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetDescriptionInfo() const
+const std::string &AccessibilityElementInfo::GetDescriptionInfo() const
 {
     HILOG_DEBUG("contentDescription_[%{public}s]", contentDescription_.c_str());
     return contentDescription_;
@@ -582,7 +546,7 @@ void AccessibilityElementInfo::SetComponentResourceId(const std::string &viewIdR
     HILOG_DEBUG("resourceName_[%{public}s]", resourceName_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetComponentResourceId() const
+const std::string &AccessibilityElementInfo::GetComponentResourceId() const
 {
     HILOG_DEBUG("resourceName_[%{public}s]", resourceName_.c_str());
     return resourceName_;
@@ -618,7 +582,7 @@ void AccessibilityElementInfo::SetError(const std::string &error)
     HILOG_DEBUG("error_[%{public}s]", error_.c_str());
 }
 
-std::string AccessibilityElementInfo::GetError() const
+const std::string &AccessibilityElementInfo::GetError() const
 {
     HILOG_DEBUG("error_[%{public}s]", error_.c_str());
     return error_;
@@ -660,7 +624,7 @@ int32_t AccessibilityElementInfo::GetAccessibilityId() const
     return elementId_;
 }
 
-RangeInfo AccessibilityElementInfo::GetRange() const
+const RangeInfo &AccessibilityElementInfo::GetRange() const
 {
     HILOG_DEBUG("start");
     return rangeInfo_;
@@ -674,7 +638,7 @@ void AccessibilityElementInfo::SetRange(RangeInfo &rangeInfo)
     rangeInfo_.SetCurrent(rangeInfo.GetCurrent());
 }
 
-GridInfo AccessibilityElementInfo::GetGrid() const
+const GridInfo &AccessibilityElementInfo::GetGrid() const
 {
     HILOG_DEBUG("start");
     return grid_;
@@ -686,7 +650,7 @@ void AccessibilityElementInfo::SetGrid(const GridInfo &grid)
     grid_ = grid;
 }
 
-GridItemInfo AccessibilityElementInfo::GetGridItem() const
+const GridItemInfo &AccessibilityElementInfo::GetGridItem() const
 {
     HILOG_DEBUG("start");
     return gridItem_;
@@ -716,7 +680,7 @@ ActionType AccessibleAction::GetActionType() const
     return actionType_;
 }
 
-std::string AccessibleAction::GetDescriptionInfo() const
+const std::string &AccessibleAction::GetDescriptionInfo() const
 {
     HILOG_DEBUG("description_[%{public}s]", description_.c_str());
     return description_;
@@ -914,6 +878,42 @@ bool GridItemInfo::IsSelected() const
 {
     HILOG_DEBUG("selected_[%{public}d]", selected_);
     return selected_;
+}
+
+int32_t AccessibilityElementInfo::GetPageId() const
+{
+    HILOG_DEBUG("pageId_[%{public}d]", pageId_);
+    return pageId_;
+}
+
+void AccessibilityElementInfo::SetPageId(const int32_t pageId)
+{
+    pageId_ = pageId;
+    HILOG_DEBUG("pageId_[%{public}d]", pageId_);
+}
+
+void AccessibilityElementInfo::SetTextMovementStep(const TextMoveUnit granularity)
+{
+    textMoveStep_ = granularity;
+    HILOG_DEBUG("textMoveStep_[%{public}d]", textMoveStep_);
+}
+
+TextMoveUnit AccessibilityElementInfo::GetTextMovementStep() const
+{
+    HILOG_DEBUG("textMoveStep_[%{public}d]", textMoveStep_);
+    return textMoveStep_;
+}
+
+void AccessibilityElementInfo::SetItemCounts(const int32_t itemCounts)
+{
+    itemCounts_ = itemCounts;
+    HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
+}
+
+int32_t AccessibilityElementInfo::GetItemCounts() const
+{
+    HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
+    return itemCounts_;
 }
 } // namespace Accessibility
 } // namespace OHOS

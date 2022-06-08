@@ -16,16 +16,8 @@ import("//build/ohos.gni")
 
 ohos_shared_library("accessibility") {
   include_dirs = [
-    "//foundation/arkui/napi/interfaces/kits",
-    "//third_party/node/src",
-    "//utils/system/safwk/native/include",
     "//base/accessibility/common/log/include",
-    "//base/accessibility/frameworks/aafwk/include",
-    "//base/accessibility/interfaces/innerkits/asacfwk/include",
-    "//base/accessibility/frameworks/asacfwk/include",
-    "//base/accessibility/util/include",
     "./include",
-    "//base/accessibility/interfaces/innerkits/aafwk/include",
   ]
 
   defines = [
@@ -34,14 +26,12 @@ ohos_shared_library("accessibility") {
   ]
 
   sources = [
-    "./src/napi_accessibility_element.cpp",
+    "./src/napi_accessibility_config_observer.cpp",
     "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_gesture_path.cpp",
     "./src/napi_accessibility_gesture_pos.cpp",
-    "./src/napi_accessibility_info.cpp",
     "./src/napi_accessibility_system_ability_client.cpp",
     "./src/napi_accessibility_utils.cpp",
-    "./src/napi_accessibility_window_info.cpp",
     "./src/native_module.cpp",
   ]
 
@@ -79,7 +69,7 @@ group("napi_packages") {
   deps = [
     ":accessibility",
     "//base/accessibility/interfaces/kits/napi/accessibility_config:config_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextension_napi",
+    "//base/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextensionability_napi",
     "//base/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
     "//base/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
   ]

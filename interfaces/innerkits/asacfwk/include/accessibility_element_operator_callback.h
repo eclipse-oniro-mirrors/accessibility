@@ -27,6 +27,13 @@ namespace Accessibility {
 class AccessibilityElementOperatorCallback {
 public:
     /**
+     * @brief Destruct
+     * @param
+     * @return
+     */
+    virtual ~AccessibilityElementOperatorCallback() = default;
+
+    /**
      * @brief Set the element information by accessibility id to AA.
      * @param infos The element info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.

@@ -93,7 +93,7 @@ public:
      * @return true: execute action successfully; otherwise is not.
      */
     bool ExecuteAction(int32_t accessibilityWindowId,
-        int32_t elementId, int32_t action,  const std::map<std::string, std::string> &actionArguments);
+        int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Find the node information by accessibility ID.
@@ -108,6 +108,21 @@ public:
      */
     bool SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int32_t elementId,
         int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos);
+
+    /**
+     * @brief Get the window information related with the event
+     * @param windowId The window id.
+     * @param windowInfo The window information.
+     * @return Return true if obtains windowInfo successfully, else return false.
+     */
+    bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo);
+
+    /**
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
+     */
+    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.

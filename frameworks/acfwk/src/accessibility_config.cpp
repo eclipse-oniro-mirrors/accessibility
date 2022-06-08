@@ -76,184 +76,184 @@ bool AccessibilityConfig::DisableAbility(const std::string &name)
     return pImpl_->DisableAbility(name);
 }
 
-bool AccessibilityConfig::SetScreenMagnificationState(const bool state)
+void AccessibilityConfig::SetScreenMagnificationState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetScreenMagnificationState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetScreenMagnificationState(state);
 }
 
-bool AccessibilityConfig::SetShortKeyState(const bool state)
+void AccessibilityConfig::SetShortKeyState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetShortKeyState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetShortKeyState(state);
 }
 
-bool AccessibilityConfig::SetMouseKeyState(const bool state)
+void AccessibilityConfig::SetMouseKeyState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetMouseKeyState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetMouseKeyState(state);
 }
 
-bool AccessibilityConfig::SetCaptionState(const bool state)
+void AccessibilityConfig::SetCaptionState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetCaptionState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetCaptionState(state);
 }
 
-bool AccessibilityConfig::SetCaptionProperty(const CaptionProperty &caption)
+void AccessibilityConfig::SetCaptionProperty(const CaptionProperty &caption)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetCaptionProperty(caption);
+    CHECK_IMPL_PTR()
+    pImpl_->SetCaptionProperty(caption);
 }
 
-bool AccessibilityConfig::SetMouseAutoClick(const int32_t time)
+void AccessibilityConfig::SetMouseAutoClick(const int32_t time)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetMouseAutoClick(time);
+    CHECK_IMPL_PTR()
+    pImpl_->SetMouseAutoClick(time);
 }
 
-bool AccessibilityConfig::SetShortkeyTarget(const std::string &name)
+void AccessibilityConfig::SetShortkeyTarget(const std::string &name)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetShortkeyTarget(name);
+    CHECK_IMPL_PTR()
+    pImpl_->SetShortkeyTarget(name);
 }
 
-bool AccessibilityConfig::SetHighContrastTextState(bool state)
+void AccessibilityConfig::SetHighContrastTextState(bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetHighContrastTextState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetHighContrastTextState(state);
 }
 
-bool AccessibilityConfig::SetInvertColorState(const bool state)
+void AccessibilityConfig::SetInvertColorState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetInvertColorState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetInvertColorState(state);
 }
 
-bool AccessibilityConfig::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
+void AccessibilityConfig::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetDaltonizationColorFilter(type);
+    CHECK_IMPL_PTR()
+    pImpl_->SetDaltonizationColorFilter(type);
 }
 
-bool AccessibilityConfig::SetContentTimeout(const uint32_t timer)
+void AccessibilityConfig::SetContentTimeout(const uint32_t timer)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetContentTimeout(timer);
+    CHECK_IMPL_PTR()
+    pImpl_->SetContentTimeout(timer);
 }
 
-bool AccessibilityConfig::SetAnimationOffState(const bool state)
+void AccessibilityConfig::SetAnimationOffState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetAnimationOffState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetAnimationOffState(state);
 }
 
-bool AccessibilityConfig::SetBrightnessDiscount(const float brightness)
+void AccessibilityConfig::SetBrightnessDiscount(const float brightness)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetBrightnessDiscount(brightness);
+    CHECK_IMPL_PTR()
+    pImpl_->SetBrightnessDiscount(brightness);
 }
 
-bool AccessibilityConfig::SetAudioMonoState(const bool state)
+void AccessibilityConfig::SetAudioMonoState(const bool state)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetAudioMonoState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->SetAudioMonoState(state);
 }
 
-bool AccessibilityConfig::SetAudioBalance(const float balance)
+void AccessibilityConfig::SetAudioBalance(const float balance)
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->SetAudioBalance(balance);
+    CHECK_IMPL_PTR()
+    pImpl_->SetAudioBalance(balance);
 }
 
-bool AccessibilityConfig::GetScreenMagnificationState(bool &state) const
+void AccessibilityConfig::GetScreenMagnificationState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetScreenMagnificationState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetScreenMagnificationState(state);
 }
 
-bool AccessibilityConfig::GetShortKeyState(bool &state) const
+void AccessibilityConfig::GetShortKeyState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetShortKeyState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetShortKeyState(state);
 }
 
-bool AccessibilityConfig::GetMouseKeyState(bool &state) const
+void AccessibilityConfig::GetMouseKeyState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetMouseKeyState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetMouseKeyState(state);
 }
 
-bool AccessibilityConfig::GetCaptionState(bool &state) const
+void AccessibilityConfig::GetCaptionState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetCaptionState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetCaptionState(state);
 }
 
-bool AccessibilityConfig::GetCaptionProperty(CaptionProperty &caption) const
+void AccessibilityConfig::GetCaptionProperty(CaptionProperty &caption) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetCaptionProperty(caption);
+    CHECK_IMPL_PTR()
+    pImpl_->GetCaptionProperty(caption);
 }
 
-bool AccessibilityConfig::GetMouseAutoClick(int32_t &time) const
+void AccessibilityConfig::GetMouseAutoClick(int32_t &time) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetMouseAutoClick(time);
+    CHECK_IMPL_PTR()
+    pImpl_->GetMouseAutoClick(time);
 }
 
-bool AccessibilityConfig::GetShortkeyTarget(std::string &name) const
+void AccessibilityConfig::GetShortkeyTarget(std::string &name) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetShortkeyTarget(name);
+    CHECK_IMPL_PTR()
+    pImpl_->GetShortkeyTarget(name);
 }
 
-bool AccessibilityConfig::GetInvertColorState(bool &state) const
+void AccessibilityConfig::GetInvertColorState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetInvertColorState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetInvertColorState(state);
 }
 
-bool AccessibilityConfig::GetHighContrastTextState(bool &state) const
+void AccessibilityConfig::GetHighContrastTextState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetHighContrastTextState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetHighContrastTextState(state);
 }
 
-bool AccessibilityConfig::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const
+void AccessibilityConfig::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetDaltonizationColorFilter(type);
+    CHECK_IMPL_PTR()
+    pImpl_->GetDaltonizationColorFilter(type);
 }
 
-bool AccessibilityConfig::GetContentTimeout(uint32_t &timer) const
+void AccessibilityConfig::GetContentTimeout(uint32_t &timer) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetContentTimeout(timer);
+    CHECK_IMPL_PTR()
+    pImpl_->GetContentTimeout(timer);
 }
 
-bool AccessibilityConfig::GetAnimationOffState(bool &state) const
+void AccessibilityConfig::GetAnimationOffState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetAnimationOffState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetAnimationOffState(state);
 }
 
-bool AccessibilityConfig::GetBrightnessDiscount(float &brightness) const
+void AccessibilityConfig::GetBrightnessDiscount(float &brightness) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetBrightnessDiscount(brightness);
+    CHECK_IMPL_PTR()
+    pImpl_->GetBrightnessDiscount(brightness);
 }
 
-bool AccessibilityConfig::GetAudioMonoState(bool &state) const
+void AccessibilityConfig::GetAudioMonoState(bool &state) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetAudioMonoState(state);
+    CHECK_IMPL_PTR()
+    pImpl_->GetAudioMonoState(state);
 }
 
-bool AccessibilityConfig::GetAudioBalance(float &balance) const
+void AccessibilityConfig::GetAudioBalance(float &balance) const
 {
-    CHECK_IMPL_PTR(false)
-    return pImpl_->GetAudioBalance(balance);
+    CHECK_IMPL_PTR()
+    pImpl_->GetAudioBalance(balance);
 }
 } // Accessibility
 } // OHOS

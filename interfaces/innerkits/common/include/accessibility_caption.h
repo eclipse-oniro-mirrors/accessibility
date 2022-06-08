@@ -28,7 +28,7 @@ public:
     bool CheckProperty(const std::string &property);
 
     void SetFontFamily(const std::string &family);
-    std::string GetFontFamily() const;
+    const std::string &GetFontFamily() const;
 
     int32_t GetFontScale() const;
     void SetFontScale(int32_t scale);
@@ -37,7 +37,7 @@ public:
     uint32_t GetFontColor() const;
 
     void SetFontEdgeType(const std::string &type);
-    std::string GetFontEdgeType() const;
+    const std::string &GetFontEdgeType() const;
 
     void SetWindowColor(uint32_t color);
     uint32_t GetWindowColor() const;

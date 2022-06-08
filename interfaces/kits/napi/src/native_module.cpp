@@ -19,13 +19,10 @@
 #include <unistd.h>
 
 #include "hilog_wrapper.h"
-#include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
 #include "napi_accessibility_gesture_path.h"
 #include "napi_accessibility_gesture_pos.h"
-#include "napi_accessibility_info.h"
 #include "napi_accessibility_system_ability_client.h"
-#include "napi_accessibility_window_info.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
@@ -42,20 +39,11 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("on", NAccessibilityClient::SubscribeState),
         DECLARE_NAPI_FUNCTION("off", NAccessibilityClient::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("sendEvent", NAccessibilityClient::SendEvent),
-        DECLARE_NAPI_FUNCTION("getCaptionProperty", NAccessibilityClient::GetCaptionProperty),
-        DECLARE_NAPI_FUNCTION("setCaptionProperty", NAccessibilityClient::SetCaptionProperty),
-        DECLARE_NAPI_FUNCTION("getCaptionState", NAccessibilityClient::GetCaptionState),
-        DECLARE_NAPI_FUNCTION("setCaptionState", NAccessibilityClient::SetCaptionState),
-        DECLARE_NAPI_FUNCTION("getEnabled", NAccessibilityClient::GetEnabled),
-        DECLARE_NAPI_FUNCTION("getTouchGuideState", NAccessibilityClient::GetTouchGuideState),
-        DECLARE_NAPI_FUNCTION("getGestureState", NAccessibilityClient::GetGestureState),
-        DECLARE_NAPI_FUNCTION("getKeyEventObserverState", NAccessibilityClient::GetKeyEventObserverState),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
-    NAccessibilityElement::DefineJSAccessibilityElement(env);
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
@@ -63,12 +51,14 @@ static napi_value Init(napi_env env, napi_value exports)
     NGesturePath::DefineJSGesturePath(env);
 
     napi_value infoConstructor = nullptr;
-    napi_value posConstructor = nullptr;
-    napi_value pathConstructor = nullptr;
     NAPI_CALL(env, napi_get_reference_value(env, NAccessibilityEventInfo::consRef_, &infoConstructor));
     NAPI_CALL(env, napi_set_named_property(env, exports, "EventInfo", infoConstructor));
+
+    napi_value posConstructor = nullptr;
     NAPI_CALL(env, napi_get_reference_value(env, NGesturePos::consRef_, &posConstructor));
     NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePos", posConstructor));
+
+    napi_value pathConstructor = nullptr;
     NAPI_CALL(env, napi_get_reference_value(env, NGesturePath::consRef_, &pathConstructor));
     NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePath", pathConstructor));
 

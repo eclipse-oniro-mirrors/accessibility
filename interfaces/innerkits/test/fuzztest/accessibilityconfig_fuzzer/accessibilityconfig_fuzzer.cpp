@@ -76,6 +76,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
+    abConfig.SetShortKeyState(data[startPos++] & 0x01);
     abConfig.SetMouseKeyState(data[startPos++] & 0x01);
     abConfig.SetCaptionState(data[startPos++] & 0x01);
     abConfig.SetHighContrastTextState(data[startPos++] & 0x01);

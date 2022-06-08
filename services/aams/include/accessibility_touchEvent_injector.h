@@ -159,11 +159,11 @@ private:
         MMI::PointerEvent::PointerItem point, int64_t actionTime);
 
     /**
-     * @brief Get the number of milliseconds elapsed since the system was booted.
+     * @brief Get the number of microseconds elapsed since the system was booted.
      * @param
-     * @return the number of milliseconds elapsed since the system was booted
+     * @return the number of microseconds elapsed since the system was booted
      */
-    int64_t getSystemTime();
+    int64_t GetSystemTime();
 
     /**
      * @brief Parse taps events.

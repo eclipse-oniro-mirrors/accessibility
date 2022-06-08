@@ -47,7 +47,7 @@ enum DALTONIZATION_TYPE : uint32_t {
     Deuteranomaly,
     Tritanomaly,
 };
-#pragma pack(4)
+
 struct ConfigValue {
     bool highContrastText;
     bool invertColor;
@@ -65,7 +65,6 @@ struct ConfigValue {
     std::string shortkey_target;
     CaptionProperty captionStyle;
 };
-#pragma pack()
 
 class AccessibilityConfigObserver {
 public:
@@ -110,7 +109,7 @@ public:
      * @param observer Indicates the observer for listening to accessibility
      * @return -
      */
-    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
     /**
      * @brief Unsubscribe the accessibility config value observer.
@@ -118,7 +117,7 @@ public:
      * @param observer Indicates the registered accessibility config observer.
      * @return -
      */
-    void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver>& observer);
+    void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
     /**
      * @brief Subscribes the observer of enable Ability lists
@@ -149,37 +148,37 @@ public:
      */
     bool DisableAbility(const std::string &name);
 
-    bool SetScreenMagnificationState(const bool state);
-    bool SetShortKeyState(const bool state);
-    bool SetMouseKeyState(const bool state);
-    bool SetCaptionState(const bool state);
-    bool SetCaptionProperty(const CaptionProperty &caption);
-    bool SetMouseAutoClick(const int32_t time);
-    bool SetShortkeyTarget(const std::string &name);
-    bool SetHighContrastTextState(bool state);
-    bool SetInvertColorState(const bool state);
-    bool SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
-    bool SetContentTimeout(const uint32_t timer);
-    bool SetAnimationOffState(const bool state);
-    bool SetBrightnessDiscount(const float brightness);
-    bool SetAudioMonoState(const bool state);
-    bool SetAudioBalance(const float balance);
+    void SetScreenMagnificationState(const bool state);
+    void SetShortKeyState(const bool state);
+    void SetMouseKeyState(const bool state);
+    void SetCaptionState(const bool state);
+    void SetCaptionProperty(const CaptionProperty &caption);
+    void SetMouseAutoClick(const int32_t time);
+    void SetShortkeyTarget(const std::string &name);
+    void SetHighContrastTextState(bool state);
+    void SetInvertColorState(const bool state);
+    void SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
+    void SetContentTimeout(const uint32_t timer);
+    void SetAnimationOffState(const bool state);
+    void SetBrightnessDiscount(const float brightness);
+    void SetAudioMonoState(const bool state);
+    void SetAudioBalance(const float balance);
 
-    bool GetScreenMagnificationState(bool &state) const;
-    bool GetShortKeyState(bool &state) const;
-    bool GetMouseKeyState(bool &state) const;
-    bool GetCaptionState(bool &state) const;
-    bool GetCaptionProperty(CaptionProperty &caption) const;
-    bool GetMouseAutoClick(int32_t &time) const;
-    bool GetShortkeyTarget(std::string &name) const;
-    bool GetInvertColorState(bool &state) const;
-    bool GetHighContrastTextState(bool &state) const;
-    bool GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const;
-    bool GetContentTimeout(uint32_t &timer) const;
-    bool GetAnimationOffState(bool &state) const;
-    bool GetBrightnessDiscount(float &brightness) const;
-    bool GetAudioMonoState(bool &state) const;
-    bool GetAudioBalance(float &balance) const;
+    void GetScreenMagnificationState(bool &state) const;
+    void GetShortKeyState(bool &state) const;
+    void GetMouseKeyState(bool &state) const;
+    void GetCaptionState(bool &state) const;
+    void GetCaptionProperty(CaptionProperty &caption) const;
+    void GetMouseAutoClick(int32_t &time) const;
+    void GetShortkeyTarget(std::string &name) const;
+    void GetInvertColorState(bool &state) const;
+    void GetHighContrastTextState(bool &state) const;
+    void GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const;
+    void GetContentTimeout(uint32_t &timer) const;
+    void GetAnimationOffState(bool &state) const;
+    void GetBrightnessDiscount(float &brightness) const;
+    void GetAudioMonoState(bool &state) const;
+    void GetAudioBalance(float &balance) const;
 
 private:
     class Impl;

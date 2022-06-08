@@ -293,7 +293,7 @@ declare namespace accessibility {
      * @since 7
      */
     readonly bundleName: string;
-	
+
     /* The target bundle name of the ability.
      * @since 9
      */
@@ -417,7 +417,5 @@ declare namespace accessibility {
      */
     itemCount?: number;
   }
-
-  type EventTypeCatagory = "PropertyChanged" | "SturctureChanged" | "FocusChanged" | "Notification" | "TriggerAction"
 }
 export default accessibility;

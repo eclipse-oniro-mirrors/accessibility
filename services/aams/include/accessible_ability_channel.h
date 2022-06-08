@@ -46,6 +46,10 @@ public:
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
+    bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
+
+    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+
     bool GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
 
     bool ExecuteCommonAction(const int32_t action) override;
@@ -73,6 +77,8 @@ private:
     void InnerExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback);
+    void InnerGetWindow(std::promise<bool> &syncPromise, const int32_t windowId,
+        AccessibilityWindowInfo &windowInfo);
     void InnerGetWindowsByDisplayId(std::promise<bool> &syncPromise, const uint64_t displayId,
         std::vector<AccessibilityWindowInfo> &windows);
     void InnerExecuteCommonAction(const int32_t action);

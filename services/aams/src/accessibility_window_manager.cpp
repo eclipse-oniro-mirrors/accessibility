@@ -141,20 +141,20 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
 {
     HILOG_DEBUG("ConvertToRealWindowId called, windowId[%{public}d], focusType[%{public}d]", windowId, focusType);
     if (windowId == ACTIVE_WINDOW_ID) {
-        HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+        HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
         return activeWindowId_;
     }
 
     if (windowId == ANY_WINDOW_ID) {
         if (focusType == FOCUS_TYPE_ACCESSIBILITY) {
-            HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", a11yFocusedWindowId_);
+            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", a11yFocusedWindowId_);
             return a11yFocusedWindowId_;
         } else if (focusType == FOCUS_TYPE_INPUT) {
-            HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
             return activeWindowId_;
         }
     }
-    HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", windowId);
+    HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", windowId);
     return windowId;
 }
 
@@ -189,7 +189,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
     info.SetDisplayId(windowInfo->displayId_);
     info.SetDecorEnable(windowInfo->isDecorEnable_);
     HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
-        "width(%{public}d) height(%{public}d) display id(%{public}ju) isDecorEnable(%{public}d)",
+        "witdth(%{public}d) height(%{public}d) display id(%{public}ju) isDecorEnable(%{public}d)",
         windowInfo->wid_, windowInfo->type_, windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_,
         windowInfo->windowRect_.width_, windowInfo->windowRect_.height_,
         windowInfo->displayId_, windowInfo->isDecorEnable_);

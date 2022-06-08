@@ -96,6 +96,20 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
 }
 
 /**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetDisplays_001
+ * @tc.name: GetDisplays
+ * @tc.desc: Test function GetDisplays
+ */
+HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDisplays_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplays_001 start";
+
+    auto displays = Singleton<AccessibilityDisplayManager>::GetInstance().GetDisplays();
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplays_001 end";
+}
+
+/**
  * @tc.number: AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001
  * @tc.name: GetDefaultDisplay
  * @tc.desc: Test function GetDefaultDisplay
@@ -108,6 +122,22 @@ HWTEST_F(
     auto display = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplay();
 
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplay_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetDefaultDisplayId_001
+ * @tc.name: GetDefaultDisplayId
+ * @tc.desc: Test function GetDefaultDisplayId
+ */
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDefaultDisplayId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayId_001 start";
+
+    uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
+    GTEST_LOG_(INFO) << "DefaultDisplayId" << displayId;
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayId_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

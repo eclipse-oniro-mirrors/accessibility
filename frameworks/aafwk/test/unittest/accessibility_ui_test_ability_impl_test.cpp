@@ -29,7 +29,6 @@ namespace Accessibility {
 namespace {
     const std::string TEST = "test";
     constexpr int32_t FOCUS_TYPE = 1;
-    constexpr int32_t INDEX = 1;
     constexpr uint32_t SEQUENCE = 1;
 } // namespace
 
@@ -277,46 +276,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetChildWindowInfo_001
- * @tc.name: GetChildWindowInfo
- * @tc.desc: Test function GetChildWindowInfo
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildWindowInfo_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetChildWindowInfo_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    AccessibilityWindowInfo parent {};
-    AccessibilityWindowInfo child {};
-    EXPECT_FALSE(instance_->GetChildWindowInfo(INDEX, parent, child));
-
-    GTEST_LOG_(INFO) << "GetChildWindowInfo_001 end";
-}
-
-/**
- * @tc.number: GetChildElementInfo_001
- * @tc.name: GetChildElementInfo
- * @tc.desc: Test function GetChildElementInfo
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetChildElementInfo_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    AccessibilityElementInfo parent {};
-    AccessibilityElementInfo child {};
-    EXPECT_FALSE(instance_->GetChildElementInfo(INDEX, parent, child));
-
-    GTEST_LOG_(INFO) << "GetChildElementInfo_001 end";
-}
-
-/**
  * @tc.number: GetByContent_001
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent
@@ -377,26 +336,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetParentWindowInfo_001
- * @tc.name: GetParentWindowInfo
- * @tc.desc: Test function GetParentWindowInfo
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentWindowInfo_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetParentWindowInfo_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    AccessibilityWindowInfo child {};
-    AccessibilityWindowInfo parent {};
-    EXPECT_FALSE(instance_->GetParentWindowInfo(child, parent));
-
-    GTEST_LOG_(INFO) << "GetParentWindowInfo_001 end";
-}
-
-/**
  * @tc.number: GetParentElementInfo_001
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo
@@ -414,26 +353,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_001, TestSize.
     EXPECT_FALSE(instance_->GetParentElementInfo(child, parent));
 
     GTEST_LOG_(INFO) << "GetParentElementInfo_001 end";
-}
-
-/**
- * @tc.number: GetLabeled_001
- * @tc.name: GetLabeled
- * @tc.desc: Test function GetLabeled
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetLabeled_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetLabeled_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    AccessibilityElementInfo elementInfo {};
-    AccessibilityElementInfo labeledElementInfo {};
-    EXPECT_FALSE(instance_->GetLabeled(elementInfo, labeledElementInfo));
-
-    GTEST_LOG_(INFO) << "GetLabeled_001 end";
 }
 
 /**

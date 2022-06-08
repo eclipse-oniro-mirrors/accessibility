@@ -16,7 +16,7 @@
 #include "accessibility_account_data.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
-#include "json_utils.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -62,7 +62,6 @@ void AccessibilityAccountData::OnAccountSwitched()
     // Clear Setting State.
     isEventTouchGuideState_ = false;
     isScreenMagnification_ = false;
-    isScreenMagnificationState_ = false;
     isFilteringKeyEvents_ = false;
     isGesturesSimulation_ = false;
 }
@@ -284,88 +283,9 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
-bool AccessibilityAccountData::SetCaptionState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetCaptionPropertyPref()
-{
-    return true;
-}
-
-bool AccessibilityAccountData::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
-{
-    (void)caption;
-    return true;
-}
-
-std::string AccessibilityAccountData::StateChange(bool state)
-{
-    (void)state;
-    std::string STATE_TRUE = "on";
-    return STATE_TRUE;
-}
-
-bool AccessibilityAccountData::SetStatePref(int32_t type)
-{
-    (void)type;
-    return true;
-}
-
-bool AccessibilityAccountData::SetEnabled(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetTouchGuideState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetGestureState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetKeyEventObserverState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::GetEnabledState()
-{
-    return isEnabled_;
-}
-
-bool AccessibilityAccountData::GetTouchGuideState()
-{
-    HILOG_DEBUG("start. isEventTouchGuideState_ = %{public}s", isEventTouchGuideState_ ? "true" : "false");
-    return isEventTouchGuideState_;
-}
-
-bool AccessibilityAccountData::GetGestureState()
-{
-    return isGesturesSimulation_;
-}
-
-bool AccessibilityAccountData::GetKeyEventObserverState()
-{
-    return isFilteringKeyEvents_;
-}
-
-bool AccessibilityAccountData::GetCaptionState()
-{
-    return isCaptionState_;
-}
-
 void AccessibilityAccountData::UpdateEnabledFromPref()
-{}
+{
+}
 
 bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
@@ -388,30 +308,13 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     return true;
 }
 
-void AccessibilityAccountData::CaptionInit(const std::shared_ptr<NativePreferences::Preferences>& pref)
-{
-    (void)pref;
-}
-
-void AccessibilityAccountData::CapabilityInit(const std::shared_ptr<NativePreferences::Preferences>& pref)
-{
-    (void)pref;
-}
-
-void AccessibilityAccountData::EnabledListInit(const std::shared_ptr<NativePreferences::Preferences>& pref)
-{
-    (void)pref;
-}
-
-void AccessibilityAccountData::StringToVector(const std::string &stringIn, std::vector<std::string>& vectorResult)
-{
-    (void)stringIn;
-    (void)vectorResult;
-    HILOG_DEBUG("end.");
-}
-
 void AccessibilityAccountData::Init()
-{}
+{
+    HILOG_DEBUG("start.");
+    if (!config_) {
+        config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
+    }
+}
 
 bool AccessibilityAccountData::DisableAbility(const std::string &name)
 {
@@ -428,165 +331,6 @@ bool AccessibilityAccountData::DisableAbility(const std::string &name)
     }
 
     return true;
-}
-
-void AccessibilityAccountData::VectorToString(const std::vector<std::string>& vectorVal, std::string& stringOut)
-{
-    (void)vectorVal;
-    HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
-}
-
-bool AccessibilityAccountData::SetScreenMagnificationState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetShortKeyState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetMouseKeyState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetMouseAutoClick(const int32_t time)
-{
-    (void)time;
-    return true;
-}
-
-bool AccessibilityAccountData::SetShortkeyTarget(const std::string &name)
-{
-    (void)name;
-    return true;
-}
-
-bool AccessibilityAccountData::SetHighContrastTextState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetInvertColorState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetAnimationOffState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetAudioMonoState(const bool state)
-{
-    (void)state;
-    return true;
-}
-
-bool AccessibilityAccountData::SetDaltonizationColorFilter(const uint32_t filter)
-{
-    (void)filter;
-    return true;
-}
-
-bool AccessibilityAccountData::SetContentTimeout(const uint32_t time)
-{
-    (void)time;
-    return true;
-}
-
-bool AccessibilityAccountData::SetBrightnessDiscount(const float discount)
-{
-    (void)discount;
-    return true;
-}
-
-bool AccessibilityAccountData::SetAudioBalance(const float balance)
-{
-    (void)balance;
-    return true;
-}
-
-bool AccessibilityAccountData::GetScreenMagnificationState()
-{
-    return isScreenMagnification_;
-}
-
-bool AccessibilityAccountData::GetShortKeyState()
-{
-    return isShortKeyState_;
-}
-bool AccessibilityAccountData::GetMouseKeyState()
-{
-    return isMouseKeyState_;
-}
-
-uint32_t AccessibilityAccountData::GetConfigState()
-{
-    HILOG_DEBUG("start.");
-    uint32_t state = 0;
-    return state;
-}
-
-int32_t AccessibilityAccountData::GetMouseAutoClick()
-{
-    return mouseAutoClick_;
-}
-
-std::string AccessibilityAccountData::GetShortkeyTarget()
-{
-    return shortkeyTarget_;
-}
-
-bool AccessibilityAccountData::GetHighContrastTextState()
-{
-    return highContrastTextState_;
-}
-
-bool AccessibilityAccountData::GetInvertColorState()
-{
-    return invertColorState_;
-}
-
-bool AccessibilityAccountData::GetAnimationOffState()
-{
-    return animationOffState_;
-}
-
-bool AccessibilityAccountData::GetAudioMonoState()
-{
-    return audioMonoState_;
-}
-
-uint32_t AccessibilityAccountData::GetDaltonizationColorFilter()
-{
-    return daltonizationColorFilter_;
-}
-
-uint32_t AccessibilityAccountData::GetContentTimeout()
-{
-    return contentTimeout_;
-}
-
-float AccessibilityAccountData::GetBrightnessDiscount()
-{
-    return brightnessDiscount_;
-}
-
-float AccessibilityAccountData::GetAudioBalance()
-{
-    return audioBalance_;
-}
-
-void AccessibilityAccountData::ConfigInit(const std::shared_ptr<NativePreferences::Preferences> &pref)
-{
 }
 
 void AccessibilityAccountData::AddEnableAbilityListsObserver(
@@ -622,6 +366,12 @@ void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& c
             break;
         }
     }
+}
+
+std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetCurrentConfig()
+{
+    HILOG_DEBUG("start.");
+    return config_;
 }
 } // namespace Accessibility
 } // namespace OHOS

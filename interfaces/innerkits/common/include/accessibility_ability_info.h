@@ -69,7 +69,7 @@ public:
      * @param
      * @return Return the description of the accessible ability.
      */
-    std::string GetDescription();
+    const std::string &GetDescription() const;
 
     /**
      * @brief Obtains the type of the accessible events.
@@ -90,14 +90,14 @@ public:
      * @param
      * @return Return the name of the accessible ability.
      */
-    std::string GetName();
+    const std::string &GetName() const;
 
     /**
      * @brief Obtains the package name of the accessible ability.
      * @param
      * @return Return the package name of the accessible ability.
      */
-    std::string GetPackageName();
+    const std::string &GetPackageName() const;
 
     /**
      * @brief Obtains the package name of the accessible ability.
@@ -118,7 +118,7 @@ public:
      * @param
      * @return Return the setting ability of the accessible ability.
      */
-    std::string GetSettingsAbility();
+    const std::string &GetSettingsAbility() const;
 
     /**
      * @brief Set the target bundles's name that you want to listening on.

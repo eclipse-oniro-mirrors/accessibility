@@ -74,8 +74,8 @@ public:
     void DeregisterElementOperator(const int32_t windowId) override;
 
     AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
-    bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
-    bool SetCaptionState(const bool state) override;
+    void SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
+    void SetCaptionState(const bool state) override;
 
     bool GetEnabledState() override;
     bool GetCaptionState() override;
@@ -147,19 +147,19 @@ public:
     void UpdateAccessibilityManagerService();
     void UpdateAbilities();
 
-    bool SetScreenMagnificationState(const bool state) override;
-    bool SetShortKeyState(const bool state) override;
-    bool SetMouseKeyState(const bool state) override;
-    bool SetMouseAutoClick(const int32_t time) override;
-    bool SetShortkeyTarget(const std::string &name) override;
-    bool SetHighContrastTextState(const bool state) override;
-    bool SetInvertColorState(const bool state) override;
-    bool SetAnimationOffState(const bool state) override;
-    bool SetAudioMonoState(const bool state) override;
-    bool SetDaltonizationColorFilter(const uint32_t filter) override;
-    bool SetContentTimeout(const uint32_t time) override;
-    bool SetBrightnessDiscount(const float discount) override;
-    bool SetAudioBalance(const float balance) override;
+    void SetScreenMagnificationState(const bool state) override;
+    void SetShortKeyState(const bool state) override;
+    void SetMouseKeyState(const bool state) override;
+    void SetMouseAutoClick(const int32_t time) override;
+    void SetShortkeyTarget(const std::string &name) override;
+    void SetHighContrastTextState(const bool state) override;
+    void SetInvertColorState(const bool state) override;
+    void SetAnimationOffState(const bool state) override;
+    void SetAudioMonoState(const bool state) override;
+    void SetDaltonizationColorFilter(const uint32_t filter) override;
+    void SetContentTimeout(const uint32_t time) override;
+    void SetBrightnessDiscount(const float discount) override;
+    void SetAudioBalance(const float balance) override;
 
     bool GetScreenMagnificationState() override;
     bool GetShortKeyState() override;

@@ -26,9 +26,10 @@ namespace Accessibility {
 class AccessibilityDisplayManager {
     DECLARE_SINGLETON(AccessibilityDisplayManager)
 public:
-    const sptr<Rosen::Display> GetDisplay(int32_t id);
+    const sptr<Rosen::Display> GetDisplay(uint64_t id);
     std::vector<sptr<Rosen::Display>> GetDisplays();
     const sptr<Rosen::Display> GetDefaultDisplay();
+    uint64_t GetDefaultDisplayId();
 
     void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnregisterDisplayListener();

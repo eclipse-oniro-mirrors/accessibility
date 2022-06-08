@@ -110,6 +110,21 @@ public:
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
     /**
+     * @brief Get the window information related with the event
+     * @param windowId The window id.
+     * @param windowInfo The window information.
+     * @return Return true if obtains windowInfo successfully, else return false.
+     */
+    virtual bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
+
+    /**
+     * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
+     * @param windows The information of windows.
+     * @return Return true if obtains windowInfo successfully, else return false.
+     */
+    virtual bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+
+    /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.

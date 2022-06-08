@@ -87,7 +87,7 @@ void KeyEventFilterUnitTest::AddConnection()
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(*connection);
-    connection->OnAbilityConnectDone(elementName, aastub_, 0);
+    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
     sleep(SLEEP_TIME_3);
 }
 

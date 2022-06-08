@@ -312,11 +312,10 @@ AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaption
     return cp;
 }
 
-bool AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
+void AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG("start");
     (void)caption;
-    return true;
 }
 
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
@@ -329,17 +328,16 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
         return;
     }
 
-    AccessibilityConfig::CaptionProperty caption = accountData->GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = accountData->GetCurrentConfig()->GetCaptionProperty();
     for (auto& callback : accountData->GetCaptionPropertyCallbacks()) {
         callback->OnPropertyChanged(caption);
     }
 }
 
-bool AccessibleAbilityManagerService::SetCaptionState(const bool state)
+void AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return true;
 }
 
 bool AccessibleAbilityManagerService::GetEnabledState()
@@ -465,95 +463,82 @@ int32_t AccessibleAbilityManagerService::GetOsAccountId()
     return TEMP_ACCOUNT_ID;
 }
 
-bool AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
+void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetShortKeyState(const bool state)
+void AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
+void AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
+void AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("start");
     (void)time;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
+void AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("start");
     (void)name;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
+void AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetInvertColorState(const bool state)
+void AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
+void AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
+void AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("start");
     (void)state;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_t filter)
+void AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_t filter)
 {
     HILOG_DEBUG("start");
     (void)filter;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
+void AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("start");
     (void)time;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
+void AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("start");
     (void)discount;
-    return false;
 }
 
-bool AccessibleAbilityManagerService::SetAudioBalance(const float balance)
+void AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("start");
     (void)balance;
-    return false;
 }
 
 bool AccessibleAbilityManagerService::GetScreenMagnificationState()

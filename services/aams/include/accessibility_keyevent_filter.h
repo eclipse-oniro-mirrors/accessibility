@@ -63,7 +63,7 @@ public:
      * @param event the key event prepared to send
      * @return
      */
-    void SendEventToParent(MMI::KeyEvent &event);
+    void SendEventToNext(MMI::KeyEvent &event);
 
     /**
      * @brief Set AccessibleAbility keyevent result.

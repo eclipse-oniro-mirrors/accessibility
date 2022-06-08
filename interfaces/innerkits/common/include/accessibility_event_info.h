@@ -181,7 +181,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetComponentType() const;
+    const std::string &GetComponentType() const;
 
     /**
      * @brief Sets the class(component type) name.
@@ -199,7 +199,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetBeforeText() const;
+    const std::string &GetBeforeText() const;
 
     /**
      * @brief Set the before text changed of the component.
@@ -235,7 +235,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetLatestContent() const;
+    const std::string &GetLatestContent() const;
 
     /**
      * @brief Sets the last content of the component.
@@ -253,7 +253,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetDescription() const;
+    const std::string &GetDescription() const;
 
     /**
      * @brief Sets the accessibility event description.
@@ -355,7 +355,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    AccessibilityEventInfo GetRecord(const int32_t index);    // remained
+    const AccessibilityEventInfo &GetRecord(const int32_t index) const;    // remained
 
     /**
      * @brief Gets the accessibility record list.
@@ -433,12 +433,12 @@ public:
 
     /**
      * @brief ASAC set the time of accessibility is sent to AA
-     * @param eventTime The time of accessibility event is sent from ASAC
+     * @param The time of accessibility event is sent from ASAC
      * @return -
      * @since 3
      * @sysCap Accessibility
      */
-    void SetTimeStamp(const int64_t eventTime);  // remained:for send event timestamp
+    void SetTimeStamp(int64_t timeStamp);  // Remained:for send event timestamp
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
@@ -447,7 +447,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    std::string GetBundleName() const;
+    const std::string &GetBundleName() const;
 
     /**
      * @brief Set the bundle name of the event source, that is, the bundle name of the target application.
@@ -457,6 +457,24 @@ public:
      * @sysCap Accessibility
      */
     void SetBundleName(const std::string &bundleName);
+
+    /**
+     * @brief Get the notification content of the event source.
+     * @param -
+     * @return Return the notification content of the event source.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    const std::string &GetNotificationContent() const;
+
+    /**
+     * @brief Set the notification content of the event source.
+     * @param notificationContent The notification content of the event source.
+     * @return -
+     * @since 3
+     * @sysCap Accessibility
+     */
+    void SetNotificationContent(const std::string &notificationContent);
 
     /**
      * @brief Set the move granularity of the text
@@ -562,6 +580,7 @@ protected:
     std::vector<AccessibilityEventInfo> records_;
     NotificationCategory category_ = CATEGORY_INVALID;
     int32_t pageId_ = 0;
+    std::string notificationContent_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS

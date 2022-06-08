@@ -99,6 +99,16 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     return true;
 }
 
+bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    (void)windows;
+    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
+        HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
+        return false;
+    }
+    return true;
+}
+
 bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {

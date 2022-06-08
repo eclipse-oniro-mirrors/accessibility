@@ -20,18 +20,18 @@ extern const char _binary_accessibility_extension_js_end[];
 extern const char _binary_accessibility_extension_abc_start[];
 extern const char _binary_accessibility_extension_abc_end[];
 
-extern "C" __attribute__((constructor)) void NAPI_application_AccessibilityExtension_AutoRegister()
+extern "C" __attribute__((constructor)) void NAPI_application_AccessibilityExtensionAbility_AutoRegister()
 {
     auto moduleManager = NativeModuleManager::GetInstance();
     NativeModule newModuleInfo = {
-        .name = "application.AccessibilityExtension",
-        .fileName = "application/libaccessibilityextension_napi.so/AccessibilityExtension.js",
+        .name = "application.AccessibilityExtensionAbility",
+        .fileName = "application/libaccessibilityextensionability_napi.so/AccessibilityExtensionAbility.js",
     };
 
     moduleManager->Register(&newModuleInfo);
 }
 
-extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtension_GetJSCode(
+extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtensionAbility_GetJSCode(
     const char **buf, int *bufLen)
 {
     if (buf != nullptr) {
@@ -44,7 +44,7 @@ extern "C" __attribute__((visibility("default"))) void NAPI_application_Accessib
 }
 
 // accessibility extension JS register
-extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtension_GetABCCode(
+extern "C" __attribute__((visibility("default"))) void NAPI_application_AccessibilityExtensionAbility_GetABCCode(
     const char **buf, int *buflen)
 {
     if (buf != nullptr) {

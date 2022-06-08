@@ -89,6 +89,22 @@ private:
     ErrCode HandleExecuteAction(MessageParcel &data, MessageParcel &reply);
 
     /**
+     * @brief Handle the IPC request for the function:HandleGetWindow.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleGetWindow(MessageParcel &data, MessageParcel &reply);
+
+    /**
+     * @brief Handle the IPC request for the function:HandleGetWindows.
+     * @param data The data of process communication
+     * @param reply The response of IPC request
+     * @return NO_ERROR: successful; otherwise is failed.
+     */
+    ErrCode HandleGetWindows(MessageParcel &data, MessageParcel &reply);
+
+    /**
      * @brief Handle the IPC request for the function:HandleGetWindows.
      * @param data The data of process communication
      * @param reply The response of IPC request

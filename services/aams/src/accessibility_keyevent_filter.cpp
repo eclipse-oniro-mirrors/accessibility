@@ -25,7 +25,7 @@ namespace {
 
 static bool IsWantedKeyEvent(MMI::KeyEvent &event)
 {
-    HILOG_DEBUG("start");
+    HILOG_INFO("start");
 
     int32_t keyCode = event.GetKeyCode();
     if (keyCode == MMI::KeyEvent::KEYCODE_VOLUME_UP || keyCode == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
@@ -36,7 +36,7 @@ static bool IsWantedKeyEvent(MMI::KeyEvent &event)
 
 KeyEventFilter::KeyEventFilter()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
@@ -60,7 +60,7 @@ KeyEventFilter::~KeyEventFilter()
 
 void KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     bool whetherIntercept = IsWantedKeyEvent(event);
     if (whetherIntercept) {
@@ -73,7 +73,7 @@ void KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
 void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &connection, bool isHandled,
     uint32_t sequenceNum)
 {
-    HILOG_DEBUG("isHandled[%{public}d], sequenceNum[%{public}u].", isHandled, sequenceNum);
+    HILOG_INFO("isHandled[%{public}d], sequenceNum[%{public}u].", isHandled, sequenceNum);
 
     std::shared_ptr<ProcessingEvent> processingEvent = FindProcessingEvent(connection, sequenceNum);
     if (!processingEvent) {
@@ -94,7 +94,7 @@ void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &con
 
 void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connection)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
         if (iter->first.GetRefPtr() != &connection) {
@@ -114,7 +114,7 @@ void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection &connecti
 
 void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
@@ -153,7 +153,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
 
 bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     bool haveEvent = false;
     for (auto iter = eventMaps_.begin(); iter != eventMaps_.end(); iter++) {
@@ -174,7 +174,7 @@ bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> even
 std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingEvent(
     AccessibleAbilityConnection &connection, uint32_t sequenceNum)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     std::shared_ptr<ProcessingEvent> processingEvent = nullptr;
 
@@ -200,15 +200,15 @@ std::shared_ptr<KeyEventFilter::ProcessingEvent> KeyEventFilter::FindProcessingE
 
 void KeyEventFilter::DestroyEvents()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     timeouthandler_->RemoveAllEvents();
     eventMaps_.clear();
 }
 
-void KeyEventFilter::SendEventToParent(MMI::KeyEvent &event)
+void KeyEventFilter::SendEventToNext(MMI::KeyEvent &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     EventTransmission::OnKeyEvent(event);
 }
 
@@ -216,12 +216,12 @@ KeyEventFilterEventHandler::KeyEventFilterEventHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner, KeyEventFilter &keyEventFilter)
     : AppExecFwk::EventHandler(runner), keyEventFilter_(keyEventFilter)
 {
-    HILOG_DEBUG("KeyEventFilterEventHandler is created");
+    HILOG_INFO("KeyEventFilterEventHandler is created");
 }
 
 void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
 
     if (!event) {
         HILOG_ERROR("event is null.");
@@ -236,7 +236,7 @@ void KeyEventFilterEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Poin
 
     bool haveEvent = keyEventFilter_.RemoveProcessingEvent(processingEvent);
     if (haveEvent) {
-        keyEventFilter_.SendEventToParent(*processingEvent->event_);
+        keyEventFilter_.SendEventToNext(*processingEvent->event_);
     }
 }
 } // namespace Accessibility

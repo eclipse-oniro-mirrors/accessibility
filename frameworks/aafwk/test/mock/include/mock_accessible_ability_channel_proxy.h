@@ -42,7 +42,7 @@ public:
     MOCK_METHOD6(ExecuteAction, bool(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
-
+    MOCK_METHOD1(GetWindows, bool(std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(GetWindowsByDisplayId, bool(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD1(ExecuteCommonAction, bool(const int32_t action));
 

@@ -25,13 +25,11 @@
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
-#include "napi_accessibility_info.h"
-#include "napi_accessibility_window_info.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityConfig;
 
 std::string GetStringFromNAPI(napi_env env, napi_value value)
 {
@@ -49,6 +47,25 @@ std::string GetStringFromNAPI(napi_env env, napi_value value)
         return "";
     }
     return result;
+}
+
+bool ParseBool(napi_env env, bool& param, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_INFO("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_boolean) {
+        HILOG_ERROR("Wrong argument type. Boolean expected.");
+        return false;
+    }
+
+    napi_get_value_bool(env, args, &param);
+    return true;
 }
 
 bool ParseString(napi_env env, std::string& param, napi_value args)
@@ -88,6 +105,26 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
     }
 
     napi_get_value_uint32(env, args, &param);
+    return true;
+}
+
+bool ParseInt32(napi_env env, int32_t& param, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+    HILOG_INFO("param=%{public}d.", valuetype);
+
+    if (valuetype != napi_number) {
+        HILOG_ERROR("Wrong argument type. uint32 expected.");
+        return false;
+    }
+
+    napi_get_value_int32(env, args, &param);
     return true;
 }
 
@@ -224,6 +261,21 @@ static std::vector<std::string> ParseCapabilitiesToVec(uint32_t capabilitiesValu
     return result;
 }
 
+std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type)
+{
+    static const std::map<OHOS::AccessibilityConfig::DALTONIZATION_TYPE, const std::string> typeTable = {
+        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal, "Normal"},
+        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Protanomaly, "Protanomaly"},
+        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly, "Deuteranomaly"},
+        {OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly, "Tritanomaly"}};
+
+    if (typeTable.find(type) == typeTable.end()) {
+        return "";
+    }
+
+    return typeTable.at(type);
+}
+
 static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, AccessibilityAbilityInfo& info)
 {
     napi_value nId;
@@ -293,101 +345,6 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "TargetBundleName", filterBundleNames));
 }
 
-void ConvertAccessibilityWindowInfoToJS(
-    napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
-{
-    napi_value nRect;
-    NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nRect));
-    Accessibility::Rect rect = accessibilityWindowInfo.GetRectInScreen();
-    ConvertRectToJS(env, nRect, rect);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "screenRect", nRect));
-
-    napi_value nId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityWindowInfo.GetWindowId(), &nId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "id", nId));
-
-    napi_value nLayer;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityWindowInfo.GetWindowLayer(), &nLayer));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "layer", nLayer));
-
-    napi_value nTitle;
-    std::string strTitle = accessibilityWindowInfo.GetWindowTitle();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strTitle.c_str(), NAPI_AUTO_LENGTH, &nTitle));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "title", nTitle));
-
-    napi_value nWindowType;
-    std::string strWindowType = ConvertWindowTypeToString(accessibilityWindowInfo.GetAccessibilityWindowType());
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strWindowType.c_str(), NAPI_AUTO_LENGTH, &nWindowType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", nWindowType));
-
-    uint32_t idx = 0;
-    napi_value nChildIds;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nChildIds));
-    std::vector<int32_t> childIds = accessibilityWindowInfo.GetChildIds();
-    for (auto childId : childIds) {
-        napi_value nChildId;
-        NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, childId, &nChildId));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nChildIds, idx, nChildId));
-        idx++;
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "childIds", nChildIds));
-
-    napi_value nParentId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityWindowInfo.GetParentId(), &nParentId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "parentId", nParentId));
-
-    napi_value nAccessibilityFocused;
-    NAPI_CALL_RETURN_VOID(
-        env, napi_get_boolean(env, accessibilityWindowInfo.IsAccessibilityFocused(), &nAccessibilityFocused));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isAccessibilityFocused", nAccessibilityFocused));
-
-    napi_value nIsActive;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, accessibilityWindowInfo.IsActive(), &nIsActive));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isActive", nIsActive));
-
-    napi_value nIsFocused;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, accessibilityWindowInfo.IsFocused(), &nIsFocused));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isFocused", nIsFocused));
-
-    // Bind js object to a Native object
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement();
-    pAccessibilityElement->isElementInfo = false;
-    pAccessibilityElement->windowInfo_ = new AccessibilityWindowInfo();
-    *(pAccessibilityElement->windowInfo_) = accessibilityWindowInfo;
-    napi_status sts = napi_wrap(
-        env,
-        result,
-        pAccessibilityElement,
-        [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-            delete info;
-        },
-        nullptr,
-        nullptr);
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-}
-
-void ConvertAccessibilityWindowInfosToJS(
-    napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
-{
-    HILOG_DEBUG("Start");
-    size_t idx = 0;
-
-    if (accessibilityWindowInfos.empty()) {
-        return;
-    }
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, NAccessibilityWindowInfo::consRef_, &constructor);
-
-    for (auto& windowInfo : accessibilityWindowInfos) {
-        napi_value obj = nullptr;
-        napi_new_instance(env, constructor, 0, nullptr, &obj);
-        ConvertAccessibilityWindowInfoToJS(env, obj, windowInfo);
-        napi_set_element(env, result, idx, obj);
-        idx++;
-    }
-}
-
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos)
 {
@@ -406,7 +363,7 @@ void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     }
 }
 
-static const std::string ConvertAccessibilityEventTypeToString(EventType type)
+const std::string ConvertAccessibilityEventTypeToString(EventType type)
 {
     static const std::map<EventType, const std::string> a11yEvtTypeTable = {
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
@@ -442,7 +399,107 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type)
     return a11yEvtTypeTable.at(type);
 }
 
-static const std::string ConvertOperationTypeToString(ActionType type)
+std::string CoverGestureTypeToString(GestureType type)
+{
+    static const std::map<GestureType, const std::string> gestureTypeTable = {
+        {GestureType::GESTURE_SWIPE_LEFT, "left"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT, "leftThenRight"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_UP, "leftThenUp"},
+        {GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN, "leftThenDown"},
+        {GestureType::GESTURE_SWIPE_RIGHT, "right"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT, "rightThenLeft"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_UP, "rightThenUp"},
+        {GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN, "rightThenDown"},
+        {GestureType::GESTURE_SWIPE_UP, "up"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_LEFT, "upThenLeft"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_RIGHT, "upThenRight"},
+        {GestureType::GESTURE_SWIPE_UP_THEN_DOWN, "upThenDown"},
+        {GestureType::GESTURE_SWIPE_DOWN, "down"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT, "downThenLeft"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT, "downThenRight"},
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_UP, "downThenUp"}
+    };
+
+    if (gestureTypeTable.find(type) == gestureTypeTable.end()) {
+        return "";
+    }
+
+    return gestureTypeTable.at(type);
+}
+
+const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
+{
+    static const std::map<WindowUpdateType, const std::string> windowUpdateTypeTable = {
+        {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
+        {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"},
+        {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
+        {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
+        {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
+        {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"},
+        {WindowUpdateType::WINDOW_UPDATE_TITLE, "title"},
+        {WindowUpdateType::WINDOW_UPDATE_LAYER, "layer"},
+        {WindowUpdateType::WINDOW_UPDATE_PARENT, "parent"},
+        {WindowUpdateType::WINDOW_UPDATE_CHILDREN, "children"},
+        {WindowUpdateType::WINDOW_UPDATE_PIP, "pip"}};
+
+    if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
+        return "";
+    }
+
+    return windowUpdateTypeTable.at(type);
+}
+
+void ConvertEventTypeToString(const AccessibilityEventInfo &eventInfo, std::string &eventTypeString)
+{
+    EventType type = eventInfo.GetEventType();
+    switch (type) {
+        case TYPE_GESTURE_EVENT: {
+            GestureType gestureType = eventInfo.GetGestureType();
+            eventTypeString = CoverGestureTypeToString(gestureType);
+            break;
+        }
+        case TYPE_NOTIFICATION_UPDATE_EVENT: {
+            NotificationCategory notificationType = eventInfo.GetNotificationInfo();
+            eventTypeString = ConvertCategoryNotificationToString(notificationType);
+            break;
+        }
+        case TYPE_WINDOW_UPDATE: {
+            WindowUpdateType windowUpdateType = eventInfo.GetWindowChangeTypes();
+            eventTypeString = ConvertWindowUpdateTypeToString(windowUpdateType);
+            break;
+        }
+        default:
+            eventTypeString = ConvertAccessibilityEventTypeToString(type);
+            break;
+    }
+}
+
+const std::string ConvertCategoryNotificationToString(NotificationCategory category)
+{
+    static const std::map<NotificationCategory, const std::string> categoryTable = {
+        {NotificationCategory::CATEGORY_CALL, "call"},
+        {NotificationCategory::CATEGORY_MSG, "msg"},
+        {NotificationCategory::CATEGORY_EMAIL, "email"},
+        {NotificationCategory::CATEGORY_EVENT, "event"},
+        {NotificationCategory::CATEGORY_PROMO, "promo"},
+        {NotificationCategory::CATEGORY_ALARM, "alarm"},
+        {NotificationCategory::CATEGORY_PROGRESS, "progress"},
+        {NotificationCategory::CATEGORY_SOCIAL, "social"},
+        {NotificationCategory::CATEGORY_ERR, "err"},
+        {NotificationCategory::CATEGORY_TRANSPORT, "transport"},
+        {NotificationCategory::CATEGORY_SYS, "sys"},
+        {NotificationCategory::CATEGORY_SERVICE, "service"},
+        {NotificationCategory::CATEGORY_OTHERS, ""},
+    };
+
+    if (categoryTable.find(category) == categoryTable.end()) {
+        return "";
+    }
+
+    return categoryTable.at(category);
+}
+
+std::string ConvertOperationTypeToString(ActionType type)
 {
     static const std::map<ActionType, const std::string> triggerActionTable = {
         {ActionType::ACCESSIBILITY_ACTION_FOCUS, "focus"},
@@ -476,53 +533,7 @@ static const std::string ConvertOperationTypeToString(ActionType type)
     return triggerActionTable.at(type);
 }
 
-void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo)
-{
-    napi_value nType;
-    EventType type = eventInfo.GetEventType();
-    std::string strType = ConvertAccessibilityEventTypeToString(type);
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "type", nType));
-    HILOG_DEBUG("type[%{public}s]", strType.c_str());
-
-    napi_value nTargetObject;
-    NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nTargetObject));
-    // Bind js object to a Native object
-    bool ret = false;
-    AccessibilityElementInfo* elementInfo = new AccessibilityElementInfo();
-    sptr<AccessibleAbilityClient> abilityClient = AccessibleAbilityClient::GetInstance();
-    if (abilityClient) {
-        ret = abilityClient->GetSource(eventInfo, *elementInfo);
-    }
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement();
-    pAccessibilityElement->isElementInfo = true;
-    pAccessibilityElement->elementInfo_ = elementInfo;
-    napi_status sts = napi_wrap(
-        env,
-        nTargetObject,
-        pAccessibilityElement,
-        [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-            delete info;
-        },
-        nullptr,
-        nullptr);
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
-
-    napi_value nTimeStamp;
-    int64_t timeStamp = eventInfo.GetTimeStamp();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int64(env, timeStamp, &nTimeStamp));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "timeStamp", nTimeStamp));
-
-    napi_value nNotificationDisplayString;
-    NAPI_CALL_RETURN_VOID(env,
-        napi_create_string_utf8(env, "", NAPI_AUTO_LENGTH, &nNotificationDisplayString));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo,
-        "notificationDisplayString", nNotificationDisplayString));
-}
-
-static void ConvertOperationToJS(napi_env env, napi_value result, const AccessibleAction& operation)
+void ConvertOperationToJS(napi_env env, napi_value result, const AccessibleAction& operation)
 {
     napi_value nType;
     ActionType type = operation.GetActionType();
@@ -537,7 +548,7 @@ static void ConvertOperationToJS(napi_env env, napi_value result, const Accessib
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
 }
 
-static void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid)
+void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid)
 {
     napi_value nRowCount;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetRowCount(), &nRowCount));
@@ -552,26 +563,7 @@ static void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Acce
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "selectionMode", nSelectionMode));
 }
 
-void ConvertElementInfosToJS(
-    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
-{
-    size_t index = 0;
-    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}zu)", elementInfos.size());
-
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, NElementInfo::consRef_, &constructor);
-
-    for (auto& elementInfo : elementInfos) {
-        napi_value obj = nullptr;
-        napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
-        HILOG_INFO("status is %{public}d", status);
-        ConvertElementInfoToJS(env, obj, elementInfo);
-        napi_set_element(env, result, index, obj);
-        index++;
-    }
-}
-
-static void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo)
+void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo)
 {
     napi_value nMin;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMin(), &nMin));
@@ -586,7 +578,7 @@ static void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "current", nCurrent));
 }
 
-static void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo& gridItem)
+void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo& gridItem)
 {
     napi_value nHeading;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsHeading(), &nHeading));
@@ -611,250 +603,6 @@ static void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridIt
     napi_value nSelected;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsSelected(), &nSelected));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "selected", nSelected));
-}
-
-void ConvertElementInfoToJS(napi_env env, napi_value result, const AccessibilityElementInfo& elementInfo)
-{
-    napi_value nWindowsId;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetWindowId(), &nWindowsId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowId", nWindowsId));
-    HILOG_DEBUG("windowId[%{public}d]", elementInfo.GetWindowId());
-
-    napi_value nAccessibilityId;
-    int32_t accessibilityId = elementInfo.GetAccessibilityId();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, accessibilityId, &nAccessibilityId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "accessibilityId", nAccessibilityId));
-    HILOG_DEBUG("accessibilityId[%{public}d]", accessibilityId);
-
-    napi_value nComponentId;
-    int32_t componentId = elementInfo.GetAccessibilityId();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, componentId, &nComponentId));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentId", nComponentId));
-    HILOG_DEBUG("componentId[%{public}d]", componentId);
-
-    napi_value nBundleName;
-    std::string strBundleName = elementInfo.GetBundleName();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strBundleName.c_str(), NAPI_AUTO_LENGTH, &nBundleName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "bundleName", nBundleName));
-    HILOG_DEBUG("strBundleName[%{public}s]", strBundleName.c_str());
-
-    napi_value nComponentType;
-    std::string strComponentType = elementInfo.GetComponentType();
-    NAPI_CALL_RETURN_VOID(
-        env, napi_create_string_utf8(env, strComponentType.c_str(), NAPI_AUTO_LENGTH, &nComponentType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "componentType", nComponentType));
-    HILOG_DEBUG("componentType[%{public}s]", strComponentType.c_str());
-
-    napi_value nInputType;
-    int32_t inputType = elementInfo.GetInputType();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, inputType, &nInputType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "inputType", nInputType));
-    HILOG_DEBUG("inputType[%{public}d]", inputType);
-
-    napi_value nText;
-    std::string strText = elementInfo.GetContent();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strText.c_str(), NAPI_AUTO_LENGTH, &nText));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "text", nText));
-    HILOG_DEBUG("text[%{public}s]", strText.c_str());
-
-    napi_value nHintText;
-    std::string strHintText = elementInfo.GetHint();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strHintText.c_str(), NAPI_AUTO_LENGTH, &nHintText));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "hintText", nHintText));
-    HILOG_DEBUG("strHintText[%{public}s]", strHintText.c_str());
-
-    napi_value nDescription;
-    std::string strDescription = elementInfo.GetDescriptionInfo();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strDescription.c_str(), NAPI_AUTO_LENGTH, &nDescription));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
-    HILOG_DEBUG("strHintText[%{public}s]", strHintText.c_str());
-
-    napi_value nResourceName;
-    std::string strResourceName = elementInfo.GetComponentResourceId();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strResourceName.c_str(), NAPI_AUTO_LENGTH, &nResourceName));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "resourceName", nResourceName));
-
-    napi_value nChildNodeIds;
-    std::vector<int32_t> childIds = elementInfo.GetChildIds();
-    size_t childCount = childIds.size();
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nChildNodeIds));
-
-    for (size_t idx = 0; idx < childCount; idx++) {
-        napi_value nChildId;
-        NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, childIds[idx], &nChildId));
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nChildNodeIds, idx, nChildId));
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "childNodeIds", nChildNodeIds));
-
-    napi_value nOperations;
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nOperations));
-    std::vector<AccessibleAction> operations = elementInfo.GetActionList();
-    size_t operationCount = operations.size();
-    for (size_t i = 0; i < operationCount; i++) {
-        napi_value nOp;
-        napi_create_object(env, &nOp);
-        ConvertOperationToJS(env, nOp, operations[i]);
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nOperations, i, nOp));
-    }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "operations", nOperations));
-
-    napi_value nTextLengthLimit;
-    int32_t textLengthLimit = elementInfo.GetTextLengthLimit();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, textLengthLimit, &nTextLengthLimit));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "textLengthLimit", nTextLengthLimit));
-
-    napi_value nRect;
-    napi_create_object(env, &nRect);
-    Accessibility::Rect rect = elementInfo.GetRectInScreen();
-    ConvertRectToJS(env, nRect, rect);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rect", nRect));
-
-    napi_value nCheckable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsCheckable(), &nCheckable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "checkable", nCheckable));
-
-    napi_value nChecked;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsChecked(), &nChecked));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "checked", nChecked));
-
-    napi_value nFocusable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsFocusable(), &nFocusable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "focusable", nFocusable));
-    HILOG_DEBUG("focusable[%{public}d]", elementInfo.IsFocusable());
-
-    napi_value nFocused;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsFocused(), &nFocused));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "focused", nFocused));
-    HILOG_DEBUG("focused[%{public}d]", elementInfo.IsFocused());
-
-    napi_value nVisable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsVisible(), &nVisable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isVisible", nVisable));
-    HILOG_DEBUG("isVisible[%{public}d]", elementInfo.IsVisible());
-
-    napi_value nAccessibilityFocused;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.HasAccessibilityFocus(), &nAccessibilityFocused));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "accessibilityFocused", nAccessibilityFocused));
-    HILOG_DEBUG("accessibilityFocused[%{public}d]", elementInfo.HasAccessibilityFocus());
-
-    napi_value nSelected;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsSelected(), &nSelected));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "selected", nSelected));
-
-    napi_value nClickable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsClickable(), &nClickable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "clickable", nClickable));
-
-    napi_value nLongClickable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsLongClickable(), &nLongClickable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "longClickable", nLongClickable));
-
-    napi_value nIsEnable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsEnabled(), &nIsEnable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isEnable", nIsEnable));
-
-    napi_value nIsPassword;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsPassword(), &nIsPassword));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isPassword", nIsPassword));
-
-    napi_value nScrollable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsScrollable(), &nScrollable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "scrollable", nScrollable));
-
-    napi_value nEditable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsEditable(), &nEditable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "editable", nEditable));
-
-    napi_value nPopupSupported;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsPopupSupported(), &nPopupSupported));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "popupSupported", nPopupSupported));
-
-    napi_value nPluraLineSupported;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsPluraLineSupported(), &nPluraLineSupported));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "pluraLineSupported", nPluraLineSupported));
-
-    napi_value nDeleteable;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsDeletable(), &nDeleteable));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deleteable", nDeleteable));
-
-    napi_value nIsHint;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsGivingHint(), &nIsHint));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isHint", nIsHint));
-
-    napi_value nIsEssential;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.IsEssential(), &nIsEssential));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isEssential", nIsEssential));
-    HILOG_DEBUG("isEssential[%{public}d]", elementInfo.IsEssential());
-
-    napi_value nCurrentIndex;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetCurrentIndex(), &nCurrentIndex));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "currentIndex", nCurrentIndex));
-
-    napi_value nStartIndex;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetBeginIndex(), &nStartIndex));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "startIndex", nStartIndex));
-
-    napi_value nEndIndex;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetEndIndex(), &nEndIndex));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "endIndex", nEndIndex));
-
-    napi_value nRangeInfo;
-    napi_create_object(env, &nRangeInfo);
-    RangeInfo rangeInfo = elementInfo.GetRange();
-    ConvertRangeInfoToJS(env, nRangeInfo, rangeInfo);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rangeInfo", nRangeInfo));
-
-    napi_value nGrid;
-    napi_create_object(env, &nGrid);
-    GridInfo grid = elementInfo.GetGrid();
-    ConvertGridInfoToJS(env, nGrid, grid);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "grid", nGrid));
-
-    napi_value nGridItem;
-    napi_create_object(env, &nGridItem);
-    GridItemInfo gridItem = elementInfo.GetGridItem();
-    ConvertGridItemToJS(env, nGridItem, gridItem);
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "gridItem", nGridItem));
-
-    napi_value nActiveRegion;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetLiveRegion(), &nActiveRegion));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "activeRegion", nActiveRegion));
-
-    napi_value nIsContentInvalid;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, elementInfo.GetContentInvalid(), &nIsContentInvalid));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "isContentInvalid", nIsContentInvalid));
-
-    napi_value nError;
-    std::string strError = elementInfo.GetError();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strError.c_str(), NAPI_AUTO_LENGTH, &nError));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "error", nError));
-
-    napi_value nLabel;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetLabeledAccessibilityId(), &nLabel));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "label", nLabel));
-
-    napi_value nBeginSelected;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetSelectedBegin(), &nBeginSelected));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "beginSelected", nBeginSelected));
-
-    napi_value nEndSelected;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, elementInfo.GetSelectedEnd(), &nEndSelected));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "endSelected", nEndSelected));
-    // Bind js object to a Native object
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement();
-    pAccessibilityElement->isElementInfo = true;
-    pAccessibilityElement->elementInfo_ = new AccessibilityElementInfo(elementInfo);
-    napi_status sts = napi_wrap(
-        env,
-        result,
-        pAccessibilityElement,
-        [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-            delete info;
-        },
-        nullptr,
-        nullptr);
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 
 static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)
@@ -988,7 +736,7 @@ AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::st
     return accessibilityAbilityTypesTable.at(type);
 }
 
-AbilityStateType ConvertStringToAbilityStateTypes(const std::string &type)
+AbilityStateType ConvertStringToAbilityStateType(const std::string &type)
 {
     std::map<const std::string, AbilityStateType> abilityStateTypeTable = {
         {"enable", AbilityStateType::ABILITY_STATE_ENABLE},
@@ -1001,6 +749,23 @@ AbilityStateType ConvertStringToAbilityStateTypes(const std::string &type)
     }
 
     return abilityStateTypeTable.at(type);
+}
+
+OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type)
+{
+    std::map<const std::string, OHOS::AccessibilityConfig::DALTONIZATION_TYPE> daltonizationTTypesTable = {
+        {"Normal", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal},
+        {"Protanomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Protanomaly},
+        {"Deuteranomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly},
+        {"Tritanomaly", OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Tritanomaly},
+    };
+
+    if (daltonizationTTypesTable.find(type) == daltonizationTTypesTable.end()) {
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
+        return OHOS::AccessibilityConfig::DALTONIZATION_TYPE::Normal;
+    }
+
+    return daltonizationTTypesTable.at(type);
 }
 
 GlobalAction ConvertStringToGlobalAction(const std::string &type)
@@ -1020,23 +785,39 @@ GlobalAction ConvertStringToGlobalAction(const std::string &type)
     return globalActionTable.at(type);
 }
 
-static TextMoveUnit ConvertStringToTextMoveStep(const std::string &type)
+TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)
 {
-    static const std::map<const std::string, TextMoveUnit> textMoveStepTable = {{"char", TextMoveUnit::STEP_CHARACTER},
+    static const std::map<const std::string, TextMoveUnit> textMoveUnitTable = {{"char", TextMoveUnit::STEP_CHARACTER},
         {"word", TextMoveUnit::STEP_WORD},
         {"line", TextMoveUnit::STEP_LINE},
         {"page", TextMoveUnit::STEP_PAGE},
         {"paragraph", TextMoveUnit::STEP_PARAGRAPH}};
 
-    if (textMoveStepTable.find(type) == textMoveStepTable.end()) {
+    if (textMoveUnitTable.find(type) == textMoveUnitTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
         return STEP_INVALID;
     }
 
-    return textMoveStepTable.at(type);
+    return textMoveUnitTable.at(type);
 }
 
-static NotificationCategory ConvertStringToNotificationCategory(const std::string &type)
+std::string ConvertTextMoveUnitToString(TextMoveUnit type)
+{
+    static const std::map<TextMoveUnit, const std::string> textMoveUnitTable = {{TextMoveUnit::STEP_CHARACTER, "char"},
+        {TextMoveUnit::STEP_WORD, "word"},
+        {TextMoveUnit::STEP_LINE, "line"},
+        {TextMoveUnit::STEP_PAGE, "page"},
+        {TextMoveUnit::STEP_PARAGRAPH, "paragraph"}};
+
+    if (textMoveUnitTable.find(type) == textMoveUnitTable.end()) {
+        HILOG_WARN("invalid key[0x%{public}x]", type);
+        return "";
+    }
+
+    return textMoveUnitTable.at(type);
+}
+
+NotificationCategory ConvertStringToNotificationCategory(const std::string &type)
 {
     static const std::map<const std::string, NotificationCategory> notificationCategoryTable = {
         {"call", NotificationCategory::CATEGORY_CALL},
@@ -1060,7 +841,7 @@ static NotificationCategory ConvertStringToNotificationCategory(const std::strin
     return notificationCategoryTable.at(type);
 }
 
-static GestureType ConvertStringToGestureType(const std::string &type)
+GestureType ConvertStringToGestureType(const std::string &type)
 {
     static const std::map<const std::string, GestureType> gestureTypesTable = {
         {"left", GestureType::GESTURE_SWIPE_LEFT},
@@ -1155,14 +936,16 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     bool hasProperty = false;
     int32_t dataValue = 0;
     std::string str = "";
+    EventType eventType = TYPE_VIEW_INVALID;
     napi_create_string_utf8(env, "type", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
-        eventInfo.SetEventType(ConvertStringToEventInfoTypes(str));
-        if (eventInfo.GetEventType() == TYPE_VIEW_INVALID) {
+        eventType = ConvertStringToEventInfoTypes(str);
+        eventInfo.SetEventType(eventType);
+        if (eventType == TYPE_VIEW_INVALID) {
             return false;
         }
     } else {
@@ -1172,6 +955,9 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     napi_create_string_utf8(env, "windowUpdateType", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
+        if (eventType != TYPE_WINDOW_UPDATE) {
+            return false;
+        }
         napi_value windowUpdateTypeValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &windowUpdateTypeValue);
         str = GetStringFromNAPI(env, windowUpdateTypeValue);
@@ -1201,25 +987,6 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         eventInfo.SetComponentType(str);
     }
 
-    int64_t timestamp = 0;
-    napi_create_string_utf8(env, "timeStamp", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
-    if (hasProperty) {
-        napi_value timeStampValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &timeStampValue);
-        napi_get_value_int64(env, timeStampValue, &timestamp);
-        eventInfo.SetTimeStamp(timestamp);
-    }
-
-    napi_create_string_utf8(env, "windowId", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
-    if (hasProperty) {
-        napi_value windowIdValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &windowIdValue);
-        napi_get_value_int32(env, windowIdValue, &dataValue);
-        eventInfo.SetWindowId(dataValue);
-    }
-
     napi_create_string_utf8(env, "pageId", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
@@ -1227,15 +994,6 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_get_property(env, object, propertyNameValue, &pageIdValue);
         napi_get_value_int32(env, pageIdValue, &dataValue);
         eventInfo.SetPageId(dataValue);
-    }
-
-    napi_create_string_utf8(env, "componentId", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
-    if (hasProperty) {
-        napi_value componentIdValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &componentIdValue);
-        napi_get_value_int32(env, componentIdValue, &dataValue);
-        eventInfo.SetSource(dataValue);
     }
 
     napi_create_string_utf8(env, "description", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1267,7 +1025,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value textMoveUnitValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &textMoveUnitValue);
         str = GetStringFromNAPI(env, textMoveUnitValue);
-        eventInfo.SetTextMovementStep(ConvertStringToTextMoveStep(str));
+        eventInfo.SetTextMovementStep(ConvertStringToTextMoveUnit(str));
     }
 
     napi_create_string_utf8(env, "contents", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1328,24 +1086,6 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_get_property(env, object, propertyNameValue, &itemCountValue);
         napi_get_value_int32(env, itemCountValue, &dataValue);
         eventInfo.SetItemCounts(dataValue);
-    }
-
-    napi_create_string_utf8(env, "categoryNotification", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
-    if (hasProperty) {
-        napi_value categoryNotificationValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &categoryNotificationValue);
-        str = GetStringFromNAPI(env, categoryNotificationValue);
-        eventInfo.SetNotificationInfo(ConvertStringToNotificationCategory(str));
-    }
-
-    napi_create_string_utf8(env, "gestureType", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
-    if (hasProperty) {
-        napi_value gestureTypeValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &gestureTypeValue);
-        str = GetStringFromNAPI(env, gestureTypeValue);
-        eventInfo.SetGestureType(ConvertStringToGestureType(str));
     }
     return true;
 }

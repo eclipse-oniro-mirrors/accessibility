@@ -19,7 +19,6 @@
 #include <map>
 #include <vector>
 #include "accessibility_ability_info.h"
-#include "accessibility_caption.h"
 #include "accessibility_element_operator.h"
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
@@ -86,13 +85,6 @@ public:
     virtual bool IsTouchExplorationEnabled() = 0;
 
     /**
-     * @brief Checks whether Caption ability is enabled.
-     * @param -
-     * @return true: enabled; false: disabled
-     */
-    virtual bool IsCaptionEnabled() = 0;
-
-    /**
      * @brief Queries the list of accessibility abilities.
      * @param accessibilityAbilityTypes Indicates the accessibility type specified by
      *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
@@ -105,30 +97,6 @@ public:
      */
     virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
         std::vector<AccessibilityAbilityInfo> &infos) = 0;
-
-    /**
-     * @brief Obtains the properties of the accessibility caption function.
-     * Remained for caption.
-     * @param -
-     * @return Returns the properties of the accessibility caption function.
-     */
-    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() = 0;
-
-    /**
-     * @brief Set the properties of the accessibility caption function.
-     * Remained for caption.
-     * @param The properties of the accessibility caption.
-     * @return Returns success : true, failed : false.
-     */
-    virtual bool SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
-
-    /**
-     * @brief Checks whether the accessibility caption function is enabled.
-     * Remained for caption.
-     * @param -
-     * @return True if the caption function is enabled; returns False otherwise.
-     */
-    virtual bool IsAccessibilityCaptionEnabled() const = 0;
 
     /**
      * @brief Sends an accessibility event.
@@ -169,60 +137,6 @@ public:
         const uint32_t eventType) = 0;
 
     /**
-     * @brief Get eventlist that accessibility abilities are needed.
-     * @return enabled eventlist mask.
-     */
-    virtual int32_t GetEnabledEventMask() = 0;
-
-    /**
-     * @brief Add the listener of caption.
-     * @param ob The listener of caption.
-     * @param type The type of caption observer.
-     * @return Return true if add listener successfully, else return false.
-     */
-    virtual bool AddCaptionListener(
-        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) = 0;
-
-    /**
-     * @brief delete the listener of caption.
-     * @param ob The listener of caption.
-     * @param type The type of caption observer.
-     * @return Return true if delete listener successfully, else return false.
-     */
-    virtual bool RemoveCaptionListener(
-        const std::shared_ptr<AccessibilityConfig::CaptionObserver>& ob, const int32_t type) = 0;
-
-    /**
-     * @brief Get the enabled state of accessibility.
-     * @return Return true if accessibility is enabled, else return false.
-     */
-    virtual bool GetEnabledState() = 0;
-
-    /**
-     * @brief Get the enabled state of caption.
-     * @return Return true if caption is enabled, else return false.
-     */
-    virtual bool GetCaptionState() = 0;
-
-    /**
-     * @brief Get the enabled state of touch guide.
-     * @return Return true if touch guide is enabled, else return false.
-     */
-    virtual bool GetTouchGuideState() = 0;
-
-    /**
-     * @brief Get the enabled state of gesture.
-     * @return Return true if gesture is enabled, else return false.
-     */
-    virtual bool GetGestureState() = 0;
-
-    /**
-     * @brief Get the enabled state of key event observer.
-     * @return Return true if key event observer is enabled, else return false.
-     */
-    virtual bool GetKeyEventObserverState() = 0;
-
-    /**
      * @brief Get installed abilities.
      * @param installedAbilities The installed accessibility ability infos.
      * @return Return true if get installed abilities successfully, else return false.
@@ -235,74 +149,6 @@ public:
      * @return Return true if get enabled abilities successfully, else return false.
      */
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
-
-    /**
-     * @brief Set caption property
-     * @param caption The caption property to set.
-     * @return Return true if set caption property successfully, else return false.
-     */
-    virtual bool SetCaptionPropertyTojson(const AccessibilityConfig::CaptionProperty &caption) = 0;
-
-    /**
-     * @brief Set caption state
-     * @param state The caption state to set.
-     * @return Return true if set caption state successfully, else return false.
-     */
-    virtual bool SetCaptionStateTojson(const bool state) = 0;
-
-    /**
-     * @brief Enable Screen Magnifier
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableScreenMagnifier() = 0;
-    /**
-     * @brief Disable Screen Magnifier
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableScreenMagnifier() = 0;
-    /**
-     * @brief Get Screen Magnifier feather state
-     * @return Return the open state of screen magnifier.
-     * false.
-     */
-    virtual bool GetScreenMagnifierState() = 0;
-
-    /**
-     * @brief Enable AutoClick
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableAutoClick() = 0;
-    /**
-     * @brief Disable AutoClick
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableAutoClick() = 0;
-    /**
-     * @brief Get AutoClick feather state
-     * @return Return the open state of screen magnifier.
-     * false.
-     */
-    virtual bool GetAutoClickState() = 0;
-
-    /**
-     * @brief Enable short key
-     * @return Return true if the command is sent successfully, else return false.
-     */
-    virtual bool EnableShortKey() = 0;
-    /**
-     * @brief Disable short key
-     * @return Return true if the command is sent successfully, else return
-     * false.
-     */
-    virtual bool DisableShortKey() = 0;
-    /**
-     * @brief Get short key feather state
-     * @return Return the open state of screen magnifier.
-     * false.
-     */
-    virtual bool GetShortKeyState() = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

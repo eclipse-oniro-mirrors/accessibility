@@ -98,6 +98,44 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
 
     /**
      * Sends customized gestures to the screen.
+     * 
+     * Currently only gesture injection for a single finger is implemented.That is,
+     * the following interfaces only support the implementation with the parameter
+     * "gesturePath: GesturePath", and do not support the implementation with the
+     * parameter "gesturePath: Array<GesturePath>".
+     * 
+     * When injecting gestures of a single finger, the main usage methods are as follows:
+     * 1. Click or long press gesture:
+     *    call the gestureInject interface once, the positions in the parameter gesturePath
+     *    only contain one GesturePos position information. durationTime represents the
+     *    time of the click action.
+     *    When simulating a click gesture, please set the time to less than 500ms;
+     *    when simulating a long-press gesture, please set the time to greater than 500ms.
+     * 
+     * 2. Multiple click gestures in different positions:
+     *    The gestureInject interface needs to be called multiple times, and the positions
+     *    in the parameter gesturePath in each call only contains one GesturePos position
+     *    information.
+     * 
+     * 3. Multiple click gestures at the same position:
+     *    There are two methods. 1) Call the gestureInject interface multiple times, the
+     *    positions in the parameter gesturePath in each call only contain one GesturePos
+     *    position information; 2) Call the gestureInject interface once, and the positions in
+     *    the parameter gesturePath set multiple GesturePos with the same position information.
+     * 
+     * 4. Moving gesture:
+     *    call the gestureInject interface once, and the positions in the parameter gesturePath
+     *    set multiple GesturePos with different position information.
+     * 
+     * Note:
+     *    1) In a gestureInject interface call, if the size of positions is greater than 1,
+     *       and the first two GesturePos in positions have the same position information,
+     *       the gesture will be converted into a click action corresponding to the position
+     *       information of each GesturePos.
+     *    2) When simulating the click gesture, the time of each click is equal to
+     *       (durationTime / positions.size());
+     *       when simulating the moving gesture, the movement time between two adjacent points
+     *       is equal to (durationTime /(positions.size() - 1)).
      * @since 9
      * @note hide
      * @sysCap AccessibilityAbility
@@ -116,15 +154,17 @@ declare interface AccessibilityElement {
     attributeNames<T extends keyof ElementAttributeValues>(): Promise<Array<T>>;
     attributeValue<T extends keyof ElementAttributeValues>(attributeName: T): Promise<ElementAttributeValues[T]>;
     actionNames(): Promise<Array<string>>;
-    performAction(actionName: string, args?: object): Promise<void>;
-    findElement<T extends keyof FindElementCondition>(type: T, condition: FindElementCondition[T]): Promise<AccessibilityElement>;
+    performAction(actionName: string, args?: object): Promise<boolean>;
+    findElement(type: 'content', condition: string): Promise<Array<AccessibilityElement>>;
+    findElement(type: 'focusType', condition: FocusType): Promise<AccessibilityElement>;
+    findElement(type: 'focusDirection', condition: FocusDirection): Promise<AccessibilityElement>;
 }
 
 type ElementAttributeValues = {
     'windowId': number; //The id of the window which the node in.
     'pageId': number;
-    'accessibilityId': number; //The accessibility id of the node.
-    'componentId': number;  //The id of the view which the node in.
+    'parentId': number; 
+    'inspectorKey': string
     'bundleName': string; //The bundle name.
     'componentType': string;  //The type of the event source component,such as button, chart.
     'inputType': number;  //The type of the input text.
@@ -138,7 +178,6 @@ type ElementAttributeValues = {
     'checkable': boolean; //Whether the node can be check.
     'checked': boolean;   // Whether the node is checked.
     'focusable': boolean; //Whether the node can be focused.
-    'focused': boolean; //Whether the node is focused.
     'isVisible': boolean; //Whether the node is visible.
     'accessibilityFocused': boolean;  //Whether the node is accessibility focused.
     'selected': boolean;  //Whether the node is selected.
@@ -165,36 +204,26 @@ type ElementAttributeValues = {
     'gridItem': GridItemInfo; //collection item info.
     'activeRegion': number; //The live range of the node.
     'isContentInvalid': boolean;  //Whether the content is invalid.
-    'error': boolean; //error information.
+    'error': string; //error information.
     'label': number;  // The label of the node.
     'beginSelected': number;  //The start position of text selected.
     'endSelected': number;  //The end position of text selected.
     // text move
     'textMoveUnit': accessibility.TextMoveUnit; //The movement step used for reading texts.
+    'parent': AccessibilityElement;
+    'childs': Array<AccessibilityElement>;
     // WindowInfo
-    'screenRect': Rect;
-    'id': number;
-    'layer': number;
-    'title': string;
-    'type': WindowType;
-    'childIds': Array<number>;
-    'parentId': number;
-    'isAccessibilityFocused': boolean;
     'isActive': boolean;
-    'isFocused': boolean;
+    'screenRect': Rect;
+    'layer': number;
+    'type': WindowType;
     'anchor': AccessibilityElement;
     'rootElement': AccessibilityElement;
-    'childs': Array<AccessibilityElement>;
-
     // common
-    'parent': AccessibilityElement;
+    'isFocused': boolean;
+    'componentId': number;  //The id of the view which the node in.
 }
-type FindElementCondition = {
-    'content': string;  //Find node list information through text.
-    'focusType': FocusType; //Obtains information about the node that gains accessibility focus.
-    'focusDirection': FocusDirection;  //The information of nodes near focus is retrieved according to the input direction.
-    'child': number;  //Obtains information about the child node at a specified index.
-}
+
 type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';
 /**
  * The type of the focus.
