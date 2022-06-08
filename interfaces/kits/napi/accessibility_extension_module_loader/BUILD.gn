@@ -36,6 +36,7 @@ ohos_shared_library("accessibility_extension_module") {
     "src/accessibility_extension_module_loader.cpp",
     "src/napi_accessibility_extension.cpp",
     "src/napi_accessibility_extension_context.cpp",
+    "src/napi_accessibility_element.cpp",
   ]
 
   configs = [ ":accessibility_extension_module_config" ]

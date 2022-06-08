@@ -361,8 +361,8 @@ bool AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const
     return result;
 }
 
-bool AccessibleAbilityClientImpl::GetChilds(const AccessibilityElementInfo &parent,
-    std::vector<AccessibilityElementInfo> &childs)
+bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
+    std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG("start.");
     if (!channelClient_) {
@@ -376,7 +376,7 @@ bool AccessibleAbilityClientImpl::GetChilds(const AccessibilityElementInfo &pare
     for (auto &childId : childIds) {
         HILOG_INFO("windowId[%{public}d], childId[%{public}d]", windowId, childId);
         if (childId == -1) {
-            HILOG_ERROR("childId[%{public}d] is invalid", childId);
+            HILOG_ERROR("childId is invalid");
             return false;
         }
 
@@ -389,7 +389,7 @@ bool AccessibleAbilityClientImpl::GetChilds(const AccessibilityElementInfo &pare
         } else {
             if (!elementInfos.empty()) {
                 HILOG_DEBUG("Get child elementInfo OK. windowId[%{public}d], childId[%{public}d]", windowId, childId);
-                childs.push_back(elementInfos.front());
+                children.emplace_back(elementInfos.front());
             }
         }
     }

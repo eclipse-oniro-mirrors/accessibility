@@ -27,7 +27,6 @@ ohos_shared_library("accessibility") {
 
   sources = [
     "./src/napi_accessibility_config_observer.cpp",
-    "./src/napi_accessibility_element.cpp",
     "./src/napi_accessibility_event_info.cpp",
     "./src/napi_accessibility_gesture_path.cpp",
     "./src/napi_accessibility_gesture_pos.cpp",

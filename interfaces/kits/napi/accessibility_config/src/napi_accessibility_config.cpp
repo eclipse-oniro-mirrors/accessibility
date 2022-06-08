@@ -33,7 +33,11 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
     napi_value parameters[ARGS_SIZE_THREE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
-    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     // parse name
     std::string ability = "";
     ParseString(env, ability, parameters[PARAM0]);
@@ -100,7 +104,11 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     napi_value parameters[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
-    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     // parse name
     std::string ability = "";
     ParseString(env, ability, parameters[PARAM0]);
@@ -179,7 +187,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     napi_create_reference(env, args[PARAM1], 1, &callback);
     observer->SetCallBack(callback);
     observer->SetEnv(env);
-    enableAbilityListsObservers_.push_back(observer);
+    enableAbilityListsObservers_.emplace_back(observer);
     HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
 
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
@@ -221,6 +229,10 @@ void NAccessibilityConfig::SetConfigComplete(napi_env env, napi_status status, v
 {
     HILOG_INFO("start");
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
     napi_value result[ARGS_SIZE_TWO] = {0};
     napi_value callback = 0;
     napi_value undefined = 0;
@@ -248,6 +260,10 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 {
     HILOG_INFO("start");
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
@@ -307,6 +323,10 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
 {
     HILOG_INFO("start");
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
     napi_value result[ARGS_SIZE_TWO] = {0};
     napi_value callback = 0;
     napi_value undefined = 0;
@@ -364,6 +384,10 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 {
     HILOG_INFO("start");
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
@@ -428,9 +452,17 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     napi_value jsthis;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
-    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr");
+        return nullptr;
+    }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
 
     switch (obj->GetConfigId()) {
@@ -517,9 +549,17 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     napi_value jsthis;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
-    NAccessibilityConfigData* callbackInfo = new NAccessibilityConfigData();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr");
+        return nullptr;
+    }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
     callbackInfo->id_ = obj->GetConfigId();
 
@@ -554,6 +594,10 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr");
+        return nullptr;
+    }
 
     std::shared_ptr<NAccessibilityConfigObserver> observer = std::make_shared<NAccessibilityConfigObserver>();
     napi_ref handler = nullptr;
@@ -561,7 +605,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     observer->SetHandler(handler);
     observer->SetEnv(env);
     observer->SetConfigId(obj->GetConfigId());
-    configListeners_.push_back(observer);
+    configListeners_.emplace_back(observer);
     HILOG_INFO("observer size%{public}zu", configListeners_.size());
 
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
@@ -576,6 +620,10 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
     napi_get_cb_info(env, info, 0, nullptr, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    if (!obj) {
+        HILOG_ERROR("obj is nullptr");
+        return nullptr;
+    }
     for (auto iter = configListeners_.begin(); iter != configListeners_.end();) {
         if ((*iter)->GetEnv() == env &&
             (*iter)->GetConfigId() == obj->GetConfigId()) {
@@ -593,7 +641,11 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 {
     HILOG_INFO("start");
 
-    AccessibilityCallbackInfo *callbackInfo = new AccessibilityCallbackInfo();
+    AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = callback_;
     uv_loop_s *loop = nullptr;

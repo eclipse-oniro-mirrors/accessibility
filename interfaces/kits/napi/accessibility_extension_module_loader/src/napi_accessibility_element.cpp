@@ -70,6 +70,45 @@ napi_value NAccessibilityElement::JSConstructor(napi_env env, napi_callback_info
     return jsthis;
 }
 
+void NAccessibilityElement::ConvertElementInfoToJS(napi_env env, napi_value result,
+    const AccessibilityElementInfo& elementInfo)
+{
+    // Bind js object to a Native object
+    std::shared_ptr<AccessibilityElementInfo> elementInformation =
+        std::make_shared<AccessibilityElementInfo>(elementInfo);
+    AccessibilityElement* pAccessibilityElement = new AccessibilityElement(elementInformation);
+    napi_status sts = napi_wrap(
+        env,
+        result,
+        pAccessibilityElement,
+        [](napi_env env, void* data, void* hint) {
+            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
+            delete info;
+        },
+        nullptr,
+        nullptr);
+    HILOG_ERROR("napi_wrap status: %{public}d", (int)sts);
+}
+
+void NAccessibilityElement::ConvertElementInfosToJS(
+    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
+{
+    size_t index = 0;
+    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}zu)", elementInfos.size());
+
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+
+    for (auto& elementInfo : elementInfos) {
+        napi_value obj = nullptr;
+        napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
+        HILOG_INFO("status is %{public}d", status);
+        ConvertElementInfoToJS(env, obj, elementInfo);
+        napi_set_element(env, result, index, obj);
+        index++;
+    }
+}
+
 napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_info info)
 {
     HILOG_INFO("start");
@@ -2382,14 +2421,14 @@ napi_value NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData
     return promise;
 }
 
-napi_value NAccessibilityElement::GetElementInfoChilds(NAccessibilityElementData *callbackInfo)
+napi_value NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementData *callbackInfo)
 {
     HILOG_INFO("start");
     napi_value promise = nullptr;
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
-    napi_create_string_utf8(env, "GetElementInfoChilds", NAPI_AUTO_LENGTH, &resource);
+    napi_create_string_utf8(env, "GetElementInfoChildren", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
@@ -2399,7 +2438,7 @@ napi_value NAccessibilityElement::GetElementInfoChilds(NAccessibilityElementData
                     HILOG_ERROR("aaClient is nullptr");
                     callbackInfo->ret_ = false;
                 } else {
-                    callbackInfo->ret_ = aaClient->GetChilds(
+                    callbackInfo->ret_ = aaClient->GetChildren(
                         *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfos_);
                 }
             } else {
@@ -2409,7 +2448,7 @@ napi_value NAccessibilityElement::GetElementInfoChilds(NAccessibilityElementData
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            HILOG_DEBUG("GetElementInfoChilds execute back");
+            HILOG_DEBUG("GetElementInfoChildren execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
             if (callbackInfo->ret_) {
@@ -2417,7 +2456,7 @@ napi_value NAccessibilityElement::GetElementInfoChilds(NAccessibilityElementData
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
-                HILOG_ERROR("GetElementInfoChilds failed!");
+                HILOG_ERROR("GetElementInfoChildren failed!");
                 napi_get_undefined(env, &result);
                 napi_reject_deferred(env, callbackInfo->deferred_, result);
             }

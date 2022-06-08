@@ -316,11 +316,11 @@ bool AccessibilityUITestAbilityImpl::SetTargetBundleName(const std::vector<std::
     return aaClient->SetTargetBundleName(targetBundleNames);
 }
 
-bool AccessibilityUITestAbilityImpl::GetChilds(const AccessibilityElementInfo &parent,
-    std::vector<AccessibilityElementInfo> &childs)
+bool AccessibilityUITestAbilityImpl::GetChildren(const AccessibilityElementInfo &parent,
+    std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG("start.");
-    return AccessibleAbilityClient::GetInstance()->GetChilds(parent, childs);
+    return AccessibleAbilityClient::GetInstance()->GetChildren(parent, children);
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -26,6 +26,7 @@
 #include "napi_accessibility_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "napi_accessibility_element.h"
 
 using namespace OHOS::AbilityRuntime;
 
@@ -103,6 +104,7 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
         [](NativeEngine*, void* data, void*) {
             delete static_cast<std::weak_ptr<AbilityRuntime::Context>*>(data);
         }, nullptr);
+    NAccessibilityElement::DefineJSAccessibilityElement(reinterpret_cast<napi_env>(engine_));
 }
 
 sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
@@ -189,6 +191,50 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         }
     }
     return element;
+}
+
+void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo,
+    const std::shared_ptr<AccessibilityElement>& element)
+{
+    std::string strType = "";
+    ConvertEventTypeToString(eventInfo, strType);
+
+    napi_value nType;
+    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "eventType", nType));
+    HILOG_DEBUG("eventType[%{public}s]", strType.c_str());
+
+    if (element) {
+        AccessibilityElement* pAccessibilityElement = new AccessibilityElement(*element);
+        napi_value nTargetObject;
+        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nTargetObject));
+        // Bind js object to a Native object
+        napi_status sts = napi_wrap(
+            env,
+            nTargetObject,
+            pAccessibilityElement,
+            [](napi_env env, void* data, void* hint) {
+                AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
+                delete info;
+            },
+            nullptr,
+            nullptr);
+        HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
+    }
+
+    napi_value nTimeStamp;
+    int64_t timeStamp = eventInfo.GetTimeStamp();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int64(env, timeStamp, &nTimeStamp));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "timeStamp", nTimeStamp));
+
+    EventType type = eventInfo.GetEventType();
+    if (type == TYPE_NOTIFICATION_UPDATE_EVENT) {
+        napi_value nContent;
+        NAPI_CALL_RETURN_VOID(env,
+            napi_create_string_utf8(env, eventInfo.GetNotificationContent().c_str(), NAPI_AUTO_LENGTH, &nContent));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "notificationContent", nContent));
+    }
 }
 
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)

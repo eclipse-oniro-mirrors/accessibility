@@ -194,12 +194,12 @@ namespace {
     }
 
     /**
-     * @tc.name: BenchmarkTestForGetChilds
-     * @tc.desc: Testcase for testing 'GetChilds' function.
+     * @tc.name: BenchmarkTestForGetChildren
+     * @tc.desc: Testcase for testing 'GetChildren' function.
      * @tc.type: FUNC
      * @tc.require: Issue Number
      */
-    static void BenchmarkTestForGetChilds(benchmark::State &state)
+    static void BenchmarkTestForGetChildren(benchmark::State &state)
     {
         std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
         AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
@@ -215,8 +215,8 @@ namespace {
         AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
 
         for (auto _ : state) {
-            std::vector<AccessibilityElementInfo> childs;
-            AccessibilityUITestAbility::GetInstance()->GetChilds(elementInfo, childs);
+            std::vector<AccessibilityElementInfo> children;
+            AccessibilityUITestAbility::GetInstance()->GetChildren(elementInfo, children);
         }
 
         // Disconnect
@@ -482,7 +482,7 @@ namespace {
     BENCHMARK(BenchmarkTestForGetRoot)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForGetWindows)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForGetWindow)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetChilds)->Iterations(1000)->ReportAggregatesOnly();
+    BENCHMARK(BenchmarkTestForGetChildren)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForSetEventTypeFilter)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForGetByContent)->Iterations(1000)->ReportAggregatesOnly();
     BENCHMARK(BenchmarkTestForExecuteAction)->Iterations(1000)->ReportAggregatesOnly();

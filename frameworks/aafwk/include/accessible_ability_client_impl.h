@@ -186,11 +186,11 @@ public:
     /**
      * @brief Get the child node informations
      * @param parent The parent info to get child.
-     * @param childs The element info of childs.
+     * @param children The element info of children.
      * @return Return true if gets child elementInfo successfully, else return false.
      */
-    virtual bool GetChilds(const AccessibilityElementInfo &parent,
-        std::vector<AccessibilityElementInfo> &childs) override;
+    virtual bool GetChildren(const AccessibilityElementInfo &parent,
+        std::vector<AccessibilityElementInfo> &children) override;
 
     /**
      * @brief Searches for node information based on the specified content.

@@ -24,20 +24,6 @@
 #include "napi/native_node_api.h"
 #include "accessibility_config.h"
 
-struct NAccessibilityConfigStruct {
-    napi_async_work work_ {};
-    napi_deferred deferred_ {};
-    napi_ref thisRefer_ {};
-    napi_ref callback_ {};
-    napi_env env_ {};
-    OHOS::AccessibilityConfig::CaptionProperty captionProperty_ {};
-    bool setCaptionPropertyReturn_ = false;
-    bool captionState_ = false;
-    bool setCaptionStateReturn_ = false;
-    bool result_ = false;
-
-    std::vector<std::shared_ptr<NAccessibilityConfigObserver>> configListener_;
-};
 class EnableAbilityListsObserver : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
 public:
     EnableAbilityListsObserver() = default;

@@ -29,6 +29,48 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
 constexpr int32_t ERROR_CODE_ONE = 1;
+
+static void ConvertAccessibilityWindowInfoToJS(
+    napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
+{
+    // Bind js object to a Native object
+    std::shared_ptr<AccessibilityWindowInfo> windowInfo =
+        std::make_shared<AccessibilityWindowInfo>(accessibilityWindowInfo);
+    AccessibilityElement* pAccessibilityElement = new AccessibilityElement(windowInfo);
+    napi_status sts = napi_wrap(
+        env,
+        result,
+        pAccessibilityElement,
+        [](napi_env env, void* data, void* hint) {
+            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
+            delete info;
+        },
+        nullptr,
+        nullptr);
+    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
+}
+
+static void ConvertAccessibilityWindowInfosToJS(
+    napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
+{
+    HILOG_DEBUG("Start");
+    size_t idx = 0;
+
+    if (accessibilityWindowInfos.empty()) {
+        return;
+    }
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+
+    for (auto& windowInfo : accessibilityWindowInfos) {
+        napi_value obj = nullptr;
+        napi_new_instance(env, constructor, 0, nullptr, &obj);
+        ConvertAccessibilityWindowInfoToJS(env, obj, windowInfo);
+        napi_set_element(env, result, idx, obj);
+        idx++;
+    }
+}
+
 class NAccessibilityExtensionContext final {
 public:
     explicit NAccessibilityExtensionContext(
@@ -176,43 +218,32 @@ private:
     {
         HILOG_INFO("called.");
         // Support 0 ~ 2 params
-        if (info.argc >= ARGS_SIZE_ZERO && info.argc <= ARGS_SIZE_TWO) {
+        if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
 
         bool isAccessibilityFocus = false;
         NativeValue* lastParam = nullptr;
-        switch (info.argc) {
-            case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                break;
-            case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
-                    lastParam = info.argv[PARAM0];
-                }
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
-                    if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
-                        HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
-                        return engine.CreateUndefined();
-                    }
-                }
-                if (info.argv[PARAM0]->TypeOf() != NATIVE_FUNCTION && info.argv[PARAM0]->TypeOf() != NATIVE_BOOLEAN) {
-                    HILOG_ERROR("The type of params is %{public}d.", info.argv[PARAM0]->TypeOf());
-                    return engine.CreateUndefined();
-                }
-                break;
-            case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
-                    HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
-                    return engine.CreateUndefined();
-                }
-                lastParam = info.argv[PARAM1];
-                break;
-            default:
-                break;
+        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            lastParam = info.argv[PARAM0];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
+                HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
+                return engine.CreateUndefined();
+            }
+            lastParam = info.argv[PARAM1];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
+                HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
+                return engine.CreateUndefined();
+            }
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
+                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            // Use default value.
+        } else {
+            HILOG_ERROR("Params is wrong");
+            return engine.CreateUndefined();
         }
 
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
@@ -236,7 +267,8 @@ private:
                         &constructor);
                     napi_value napiElementInfo = nullptr;
                     napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr, &napiElementInfo);
-                    ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine), napiElementInfo, elementInfo);
+                    NAccessibilityElement::ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine),
+                        napiElementInfo, elementInfo);
                     NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
                     task.Resolve(engine, nativeElementInfo);
                 } else {
@@ -255,44 +287,33 @@ private:
     {
         HILOG_INFO("called.");
         // Support 0 ~ 2 params
-        if (info.argc >= ARGS_SIZE_ZERO && info.argc <= ARGS_SIZE_TWO) {
+        if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
 
         int32_t windowId = INVALID_WINDOW_ID;
         NativeValue* lastParam = nullptr;
-        switch (info.argc) {
-            case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                break;
-            case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
-                    lastParam = info.argv[PARAM0];
-                }
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                    bool ret = ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
-                    if (!ret || windowId == INVALID_WINDOW_ID) {
-                        HILOG_ERROR("Convert windowId failed. ret[%{public}d] windowId[%{public}d]", ret, windowId);
-                        return engine.CreateUndefined();
-                    }
-                }
-                if (info.argv[PARAM0]->TypeOf() != NATIVE_FUNCTION && info.argv[PARAM0]->TypeOf() != NATIVE_NUMBER) {
-                    HILOG_ERROR("The type of params is %{public}d.", info.argv[PARAM0]->TypeOf());
-                    return engine.CreateUndefined();
-                }
-                break;
-            case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (!ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
-                    HILOG_ERROR("Convert windowId failed");
-                    return engine.CreateUndefined();
-                }
-                lastParam = info.argv[PARAM1];
-                break;
-            default:
-                break;
+        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            lastParam = info.argv[PARAM0];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (!ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
+                HILOG_ERROR("Convert windowId failed");
+                return engine.CreateUndefined();
+            }
+            lastParam = info.argv[PARAM1];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            bool ret = ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
+            if (!ret) {
+                HILOG_ERROR("Convert windowId failed. ret[%{public}d] windowId[%{public}d]", ret, windowId);
+                return engine.CreateUndefined();
+            }
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
+                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            // Use default value.
+        } else {
+            HILOG_ERROR("Params is wrong");
+            return engine.CreateUndefined();
         }
 
         AsyncTask::CompleteCallback complete =
@@ -325,7 +346,8 @@ private:
                     napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr,
                         &napiElementInfo);
                     HILOG_DEBUG("napi_new_instance result is %{public}d", result);
-                    ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine), napiElementInfo, elementInfo);
+                    NAccessibilityElement::ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine),
+                        napiElementInfo, elementInfo);
                     NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
                     task.Resolve(engine, nativeElementInfo);
                 } else {
@@ -344,7 +366,7 @@ private:
     {
         HILOG_INFO("called.");
         // Support 0 ~ 2 params
-        if (info.argc >= ARGS_SIZE_ZERO && info.argc <= ARGS_SIZE_TWO) {
+        if (info.argc < ARGS_SIZE_ZERO && info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
@@ -353,46 +375,35 @@ private:
         bool hasDisplayId = false;
         NativeValue* lastParam = nullptr;
         bool lossless = false;
-        switch (info.argc) {
-            case ARGS_SIZE_ZERO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                hasDisplayId = false;
-                break;
-            case ARGS_SIZE_ONE:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
-                    hasDisplayId = false;
-                    lastParam = info.argv[PARAM0];
-                }
-                if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                    hasDisplayId = true;
-                    if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
-                        reinterpret_cast<napi_value>(info.argv[PARAM0]),
-                        &displayId, &lossless) != napi_status::napi_ok) {
-                        HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
-                            displayId, lossless);
-                        return engine.CreateUndefined();
-                    }
-                }
-                if (info.argv[PARAM0]->TypeOf() != NATIVE_FUNCTION && info.argv[PARAM0]->TypeOf() != NATIVE_NUMBER) {
-                    HILOG_ERROR("The type of params is %{public}d.", info.argv[PARAM0]->TypeOf());
-                    return engine.CreateUndefined();
-                }
-                break;
-            case ARGS_SIZE_TWO:
-                HILOG_DEBUG("The size of args is %{public}zu", info.argc);
-                hasDisplayId = true;
-                if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
-                    reinterpret_cast<napi_value>(info.argv[PARAM0]),
-                    &displayId, &lossless) != napi_status::napi_ok) {
-                    HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
-                        displayId, lossless);
-                    return engine.CreateUndefined();
-                }
-                lastParam = info.argv[PARAM1];
-                break;
-            default:
-                break;
+
+        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            hasDisplayId = false;
+            lastParam = info.argv[PARAM0];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            hasDisplayId = true;
+            if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
+                reinterpret_cast<napi_value>(info.argv[PARAM0]),
+                &displayId, &lossless) != napi_status::napi_ok) {
+                HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
+                    displayId, lossless);
+                return engine.CreateUndefined();
+            }
+            lastParam = info.argv[PARAM1];
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            hasDisplayId = true;
+            if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
+                reinterpret_cast<napi_value>(info.argv[PARAM0]),
+                &displayId, &lossless) != napi_status::napi_ok) {
+                HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
+                    displayId, lossless);
+                return engine.CreateUndefined();
+            }
+        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
+                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
+            hasDisplayId = false;
+        } else {
+            HILOG_ERROR("Params is wrong");
+            return engine.CreateUndefined();
         }
 
         return hasDisplayId ? GetWindowsByDisplayIdAsync(engine, lastParam, displayId) :

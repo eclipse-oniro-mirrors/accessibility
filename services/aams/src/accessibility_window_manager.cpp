@@ -141,20 +141,20 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
 {
     HILOG_DEBUG("ConvertToRealWindowId called, windowId[%{public}d], focusType[%{public}d]", windowId, focusType);
     if (windowId == ACTIVE_WINDOW_ID) {
-        HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+        HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
         return activeWindowId_;
     }
 
     if (windowId == ANY_WINDOW_ID) {
         if (focusType == FOCUS_TYPE_ACCESSIBILITY) {
-            HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", a11yFocusedWindowId_);
+            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", a11yFocusedWindowId_);
             return a11yFocusedWindowId_;
         } else if (focusType == FOCUS_TYPE_INPUT) {
-            HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
             return activeWindowId_;
         }
     }
-    HILOG_DEBUG("ConvertToRealWindowId called, after convert windowId[%{public}d]", windowId);
+    HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", windowId);
     return windowId;
 }
 

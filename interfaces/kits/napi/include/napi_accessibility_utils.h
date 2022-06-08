@@ -27,7 +27,6 @@
 #include "accessibility_gesture_inject_path.h"
 #include "element_name.h"
 #include "key_event.h"
-#include "napi_accessibility_element.h"
 #include "accessibility_config.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -60,21 +59,9 @@ void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibili
 void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo);
 void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const OHOS::Accessibility::GridItemInfo& gridItem);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
-void ConvertAccessibilityWindowInfoToJS(
-    napi_env env, napi_value result, const OHOS::Accessibility::AccessibilityWindowInfo& accessibilityWindowInfo);
-void ConvertAccessibilityWindowInfosToJS(napi_env env, napi_value result,
-    const std::vector<OHOS::Accessibility::AccessibilityWindowInfo>& accessibilityWindowInfos);
-void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo,
-    const OHOS::Accessibility::AccessibilityEventInfo& eventInfo,
-    const std::shared_ptr<AccessibilityElement>& element);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
-
-void ConvertElementInfoToJS(
-    napi_env env, napi_value result, const OHOS::Accessibility::AccessibilityElementInfo& elementInfo);
 bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
-void ConvertElementInfosToJS(
-    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
 OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type);
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
@@ -110,6 +97,12 @@ OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string 
 
 std::string ConvertTextMoveUnitToString(OHOS::Accessibility::TextMoveUnit type);
 std::string ConvertOperationTypeToString(OHOS::Accessibility::ActionType type);
+std::string CoverGestureTypeToString(OHOS::Accessibility::GestureType type);
+const std::string ConvertCategoryNotificationToString(OHOS::Accessibility::NotificationCategory category);
+const std::string ConvertWindowUpdateTypeToString(OHOS::Accessibility::WindowUpdateType type);
+const std::string ConvertAccessibilityEventTypeToString(OHOS::Accessibility::EventType type);
+void ConvertEventTypeToString(const OHOS::Accessibility::AccessibilityEventInfo &eventInfo,
+    std::string &eventTypeString);
 
 struct AccessibilityCallbackInfo {
     napi_env env_;

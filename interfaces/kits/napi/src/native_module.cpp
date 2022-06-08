@@ -19,7 +19,6 @@
 #include <unistd.h>
 
 #include "hilog_wrapper.h"
-#include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
 #include "napi_accessibility_gesture_path.h"
 #include "napi_accessibility_gesture_pos.h"
@@ -45,7 +44,6 @@ static napi_value Init(napi_env env, napi_value exports)
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
-    NAccessibilityElement::DefineJSAccessibilityElement(env);
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);

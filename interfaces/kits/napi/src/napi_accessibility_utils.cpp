@@ -25,7 +25,6 @@
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_element.h"
 #include "napi_accessibility_event_info.h"
 
 using namespace OHOS;
@@ -346,47 +345,6 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "TargetBundleName", filterBundleNames));
 }
 
-void ConvertAccessibilityWindowInfoToJS(
-    napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
-{
-    // Bind js object to a Native object
-    std::shared_ptr<AccessibilityWindowInfo> windowInfo =
-        std::make_shared<AccessibilityWindowInfo>(accessibilityWindowInfo);
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement(windowInfo);
-    napi_status sts = napi_wrap(
-        env,
-        result,
-        pAccessibilityElement,
-        [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-            delete info;
-        },
-        nullptr,
-        nullptr);
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-}
-
-void ConvertAccessibilityWindowInfosToJS(
-    napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
-{
-    HILOG_DEBUG("Start");
-    size_t idx = 0;
-
-    if (accessibilityWindowInfos.empty()) {
-        return;
-    }
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
-
-    for (auto& windowInfo : accessibilityWindowInfos) {
-        napi_value obj = nullptr;
-        napi_new_instance(env, constructor, 0, nullptr, &obj);
-        ConvertAccessibilityWindowInfoToJS(env, obj, windowInfo);
-        napi_set_element(env, result, idx, obj);
-        idx++;
-    }
-}
-
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos)
 {
@@ -405,7 +363,7 @@ void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     }
 }
 
-static const std::string ConvertAccessibilityEventTypeToString(EventType type)
+const std::string ConvertAccessibilityEventTypeToString(EventType type)
 {
     static const std::map<EventType, const std::string> a11yEvtTypeTable = {
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
@@ -441,7 +399,7 @@ static const std::string ConvertAccessibilityEventTypeToString(EventType type)
     return a11yEvtTypeTable.at(type);
 }
 
-static std::string CoverGestureTypeToString(GestureType type)
+std::string CoverGestureTypeToString(GestureType type)
 {
     static const std::map<GestureType, const std::string> gestureTypeTable = {
         {GestureType::GESTURE_SWIPE_LEFT, "left"},
@@ -469,7 +427,7 @@ static std::string CoverGestureTypeToString(GestureType type)
     return gestureTypeTable.at(type);
 }
 
-static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
+const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
 {
     static const std::map<WindowUpdateType, const std::string> windowUpdateTypeTable = {
         {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
@@ -491,7 +449,32 @@ static const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
     return windowUpdateTypeTable.at(type);
 }
 
-static const std::string ConvertCategoryNotificationToString(NotificationCategory category)
+void ConvertEventTypeToString(const AccessibilityEventInfo &eventInfo, std::string &eventTypeString)
+{
+    EventType type = eventInfo.GetEventType();
+    switch (type) {
+        case TYPE_GESTURE_EVENT: {
+            GestureType gestureType = eventInfo.GetGestureType();
+            eventTypeString = CoverGestureTypeToString(gestureType);
+            break;
+        }
+        case TYPE_NOTIFICATION_UPDATE_EVENT: {
+            NotificationCategory notificationType = eventInfo.GetNotificationInfo();
+            eventTypeString = ConvertCategoryNotificationToString(notificationType);
+            break;
+        }
+        case TYPE_WINDOW_UPDATE: {
+            WindowUpdateType windowUpdateType = eventInfo.GetWindowChangeTypes();
+            eventTypeString = ConvertWindowUpdateTypeToString(windowUpdateType);
+            break;
+        }
+        default:
+            eventTypeString = ConvertAccessibilityEventTypeToString(type);
+            break;
+    }
+}
+
+const std::string ConvertCategoryNotificationToString(NotificationCategory category)
 {
     static const std::map<NotificationCategory, const std::string> categoryTable = {
         {NotificationCategory::CATEGORY_CALL, "call"},
@@ -550,68 +533,6 @@ std::string ConvertOperationTypeToString(ActionType type)
     return triggerActionTable.at(type);
 }
 
-void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo,
-    const std::shared_ptr<AccessibilityElement>& element)
-{
-    EventType type = eventInfo.GetEventType();
-    std::string strType = "";
-    switch (type) {
-        case TYPE_GESTURE_EVENT: {
-            GestureType gestureType = eventInfo.GetGestureType();
-            strType = CoverGestureTypeToString(gestureType);
-            break;
-        }
-        case TYPE_NOTIFICATION_UPDATE_EVENT: {
-            NotificationCategory notificationType = eventInfo.GetNotificationInfo();
-            strType = ConvertCategoryNotificationToString(notificationType);
-            break;
-        }
-        case TYPE_WINDOW_UPDATE: {
-            WindowUpdateType windowUpdateType = eventInfo.GetWindowChangeTypes();
-            strType = ConvertWindowUpdateTypeToString(windowUpdateType);
-            break;
-        }
-        default:
-            strType = ConvertAccessibilityEventTypeToString(type);
-            break;
-    }
-    napi_value nType;
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "eventType", nType));
-    HILOG_DEBUG("type[%{public}s]", strType.c_str());
-
-    if (element) {
-        AccessibilityElement* pAccessibilityElement = new AccessibilityElement(*element);
-        napi_value nTargetObject;
-        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nTargetObject));
-        // Bind js object to a Native object
-        napi_status sts = napi_wrap(
-            env,
-            nTargetObject,
-            pAccessibilityElement,
-            [](napi_env env, void* data, void* hint) {
-                AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-                delete info;
-            },
-            nullptr,
-            nullptr);
-        HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
-    }
-
-    napi_value nTimeStamp;
-    int64_t timeStamp = eventInfo.GetTimeStamp();
-    NAPI_CALL_RETURN_VOID(env, napi_create_int64(env, timeStamp, &nTimeStamp));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "timeStamp", nTimeStamp));
-
-    if (type == TYPE_NOTIFICATION_UPDATE_EVENT) {
-        napi_value nContent;
-        NAPI_CALL_RETURN_VOID(env,
-            napi_create_string_utf8(env, eventInfo.GetNotificationContent().c_str(), NAPI_AUTO_LENGTH, &nContent));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "notificationContent", nContent));
-    }
-}
-
 void ConvertOperationToJS(napi_env env, napi_value result, const AccessibleAction& operation)
 {
     napi_value nType;
@@ -640,25 +561,6 @@ void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibili
     napi_value nSelectionMode;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetSelectionMode(), &nSelectionMode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "selectionMode", nSelectionMode));
-}
-
-void ConvertElementInfosToJS(
-    napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
-{
-    size_t index = 0;
-    HILOG_DEBUG("ConvertElementInfosToJS: elementInfo size(%{public}zu)", elementInfos.size());
-
-    napi_value constructor = nullptr;
-    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
-
-    for (auto& elementInfo : elementInfos) {
-        napi_value obj = nullptr;
-        napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
-        HILOG_INFO("status is %{public}d", status);
-        ConvertElementInfoToJS(env, obj, elementInfo);
-        napi_set_element(env, result, index, obj);
-        index++;
-    }
 }
 
 void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo)
@@ -701,25 +603,6 @@ void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo&
     napi_value nSelected;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsSelected(), &nSelected));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "selected", nSelected));
-}
-
-void ConvertElementInfoToJS(napi_env env, napi_value result, const AccessibilityElementInfo& elementInfo)
-{
-    // Bind js object to a Native object
-    std::shared_ptr<AccessibilityElementInfo> elementInformation =
-        std::make_shared<AccessibilityElementInfo>(elementInfo);
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement(elementInformation);
-    napi_status sts = napi_wrap(
-        env,
-        result,
-        pAccessibilityElement,
-        [](napi_env env, void* data, void* hint) {
-            AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
-            delete info;
-        },
-        nullptr,
-        nullptr);
-    HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
 }
 
 static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)

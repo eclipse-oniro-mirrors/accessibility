@@ -484,7 +484,7 @@ bool DoSomethingInterestingWithGetChildElementInfo(const uint8_t* data, size_t s
     return true;
 }
 
-bool DoSomethingInterestingWithGetChilds(const uint8_t* data, size_t size)
+bool DoSomethingInterestingWithGetChildren(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
         return false;
@@ -494,7 +494,7 @@ bool DoSomethingInterestingWithGetChilds(const uint8_t* data, size_t size)
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> resultElementInfos;
     startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
-    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChilds(sourceElementInfo, resultElementInfos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChildren(sourceElementInfo, resultElementInfos);
 
     return true;
 }
@@ -644,7 +644,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithExecuteCommonAction(data, size);
     OHOS::DoSomethingInterestingWithGetNext(data, size);
     OHOS::DoSomethingInterestingWithGetChildElementInfo(data, size);
-    OHOS::DoSomethingInterestingWithGetChilds(data, size);
+    OHOS::DoSomethingInterestingWithGetChildren(data, size);
     OHOS::DoSomethingInterestingWithGetByContent(data, size);
     OHOS::DoSomethingInterestingWithGetAnchor(data, size);
     OHOS::DoSomethingInterestingWithGetSource(data, size);

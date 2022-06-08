@@ -157,97 +157,97 @@ std::string AccessibilitySettingsConfig::StateChange(bool state)
         return STATE_TRUE;
 }
 
-bool AccessibilitySettingsConfig::GetCaptionState()
+bool AccessibilitySettingsConfig::GetCaptionState() const
 {
     return isCaptionState_;
 }
 
-bool AccessibilitySettingsConfig::GetScreenMagnificationState()
+bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
 {
     return isScreenMagnificationState_;
 }
 
-bool AccessibilitySettingsConfig::GetShortKeyState()
+bool AccessibilitySettingsConfig::GetShortKeyState() const
 {
     return isShortKeyState_;
 }
 
-bool AccessibilitySettingsConfig::GetMouseKeyState()
+bool AccessibilitySettingsConfig::GetMouseKeyState() const
 {
     return isMouseKeyState_;
 }
 
-int32_t AccessibilitySettingsConfig::GetMouseAutoClick()
+int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
 {
     return mouseAutoClick_;
 }
 
-const std::string &AccessibilitySettingsConfig::GetShortkeyTarget()
+const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
     return shortkeyTarget_;
 }
 
-bool AccessibilitySettingsConfig::GetHighContrastTextState()
+bool AccessibilitySettingsConfig::GetHighContrastTextState() const
 {
     return highContrastTextState_;
 }
 
-bool AccessibilitySettingsConfig::GetInvertColorState()
+bool AccessibilitySettingsConfig::GetInvertColorState() const
 {
     return invertColorState_;
 }
 
-bool AccessibilitySettingsConfig::GetAnimationOffState()
+bool AccessibilitySettingsConfig::GetAnimationOffState() const
 {
     return animationOffState_;
 }
 
-bool AccessibilitySettingsConfig::GetAudioMonoState()
+bool AccessibilitySettingsConfig::GetAudioMonoState() const
 {
     return audioMonoState_;
 }
 
-uint32_t AccessibilitySettingsConfig::GetDaltonizationColorFilter()
+uint32_t AccessibilitySettingsConfig::GetDaltonizationColorFilter() const
 {
     return daltonizationColorFilter_;
 }
 
-uint32_t AccessibilitySettingsConfig::GetContentTimeout()
+uint32_t AccessibilitySettingsConfig::GetContentTimeout() const
 {
     return contentTimeout_;
 }
 
-float AccessibilitySettingsConfig::GetBrightnessDiscount()
+float AccessibilitySettingsConfig::GetBrightnessDiscount() const
 {
     return brightnessDiscount_;
 }
 
-float AccessibilitySettingsConfig::GetAudioBalance()
+float AccessibilitySettingsConfig::GetAudioBalance() const
 {
     return audioBalance_;
 }
 
-bool AccessibilitySettingsConfig::GetEnabledState()
+bool AccessibilitySettingsConfig::GetEnabledState() const
 {
     return enabled_;
 }
 
-bool AccessibilitySettingsConfig::GetTouchGuideState()
+bool AccessibilitySettingsConfig::GetTouchGuideState() const
 {
     return eventTouchGuideState_;
 }
 
-bool AccessibilitySettingsConfig::GetGestureState()
+bool AccessibilitySettingsConfig::GetGestureState() const
 {
     return gesturesSimulation_;
 }
 
-bool AccessibilitySettingsConfig::GetKeyEventObserverState()
+bool AccessibilitySettingsConfig::GetKeyEventObserverState() const
 {
     return filteringKeyEvents_;
 }
 
-const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty()
+const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
 {
     return captionProperty_;
 };

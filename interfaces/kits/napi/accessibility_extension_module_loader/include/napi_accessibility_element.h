@@ -69,6 +69,11 @@ public:
     static void DefineJSAccessibilityElement(napi_env env);
     static napi_value JSConstructor(napi_env env, napi_callback_info info);
 
+    static void ConvertElementInfoToJS(napi_env env, napi_value result,
+        const OHOS::Accessibility::AccessibilityElementInfo& elementInfo);
+    static void ConvertElementInfosToJS(napi_env env, napi_value result,
+        const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos);
+
     static napi_value AttributeNames(napi_env env, napi_callback_info info);
     static napi_value AttributeValue(napi_env env, napi_callback_info info);
     static napi_value ActionNames(napi_env env, napi_callback_info info);
@@ -123,7 +128,7 @@ public:
     static napi_value GetElementInfoEndSelected(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoParent(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoChilds(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoChildren(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoComponentId(NAccessibilityElementData *callbackInfo);
 
@@ -200,7 +205,7 @@ static std::map<std::string, AttributeNamesFunc> g_elementInfoFuncMap = {
     {"endSelected", &NAccessibilityElement::GetElementInfoEndSelected},
     {"textMoveUnit", &NAccessibilityElement::GetElementInfoTextMoveUnit},
     {"parent", &NAccessibilityElement::GetElementInfoParent},
-    {"childs", &NAccessibilityElement::GetElementInfoChilds},
+    {"childs", &NAccessibilityElement::GetElementInfoChildren},
     {"isFocused", &NAccessibilityElement::GetElementInfoIsFocused},
     {"componentId", &NAccessibilityElement::GetElementInfoComponentId},
 };
