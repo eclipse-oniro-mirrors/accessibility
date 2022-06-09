@@ -13,7 +13,8 @@
 
 import("//build/ohos.gni")
 
-accessibility_common_path = "//foundation/barrierfree/accessibility/frameworks/common"
+accessibility_common_path =
+    "//foundation/barrierfree/accessibility/frameworks/common"
 
 config("accessibility_common_private_config") {
   visibility = [ ":*" ]

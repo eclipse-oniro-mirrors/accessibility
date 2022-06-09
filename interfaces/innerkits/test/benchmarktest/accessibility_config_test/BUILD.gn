@@ -22,8 +22,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilityConfig") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
 
-  deps =
-      [ "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
+  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
   external_deps = [ "utils_base:utils" ]
 }
 

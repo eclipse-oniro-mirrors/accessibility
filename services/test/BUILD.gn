@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
+import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -125,9 +125,9 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -204,9 +204,9 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -289,9 +289,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -372,9 +372,9 @@ ohos_moduletest("aams_server_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -449,9 +449,9 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
@@ -531,9 +531,9 @@ ohos_moduletest("aams_common_event_registry_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",

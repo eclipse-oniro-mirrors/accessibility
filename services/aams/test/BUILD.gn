@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
+import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -94,11 +94,11 @@ ohos_unittest("accessibility_account_data_test") {
   deps = [
     "${aafwk_inner_api_path}/ability_manager:ability_manager",
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -144,11 +144,11 @@ ohos_unittest("accessible_ability_manager_service_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -208,9 +208,9 @@ ohos_unittest("accessibility_touch_guider_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -261,11 +261,11 @@ ohos_unittest("accessibility_common_event_registry_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -329,11 +329,11 @@ ohos_unittest("accessibility_input_interceptor_test") {
   deps = [
     "${aafwk_inner_api_path}/ability_manager:ability_manager",
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -383,11 +383,11 @@ ohos_unittest("accessibility_window_manager_test") {
   deps = [
     "${aafwk_inner_api_path}/ability_manager:ability_manager",
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -444,11 +444,11 @@ ohos_unittest("accessibility_keyevent_filter_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -520,10 +520,10 @@ ohos_unittest("accessible_ability_connection_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
@@ -562,9 +562,9 @@ ohos_unittest("accessibility_display_manager_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -608,11 +608,11 @@ ohos_unittest("accessibility_touchevent_injector_test") {
 
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/utils:libwmutil",
     "//third_party/googletest:gmock_main",

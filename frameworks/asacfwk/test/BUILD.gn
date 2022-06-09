@@ -88,10 +88,10 @@ ohos_unittest("asac_unit_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/miscservices/time/services:time_service",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",

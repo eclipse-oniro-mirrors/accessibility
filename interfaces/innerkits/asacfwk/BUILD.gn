@@ -45,11 +45,11 @@ ohos_shared_library("accessibilityclient") {
 
   public_configs = [ ":accessibilityclient_public_config" ]
 
-  deps = [ "//foundation/barrierfree/accessibility/services/interface:aams_interface" ]
-
-  public_deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+  deps = [
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
   ]
+
+  public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",

@@ -21,9 +21,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilitySystemAbilityClient") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   sources = [ "accessibility_system_ability_client_test.cpp" ]
-  deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient" ]
 }
 
 group("benchmarktest") {

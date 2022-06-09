@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 import("//build/test.gni")
+import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -99,10 +99,10 @@ ohos_unittest("accessible_ability_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/arkui/napi:ace_napi",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//utils/native/base:utils",

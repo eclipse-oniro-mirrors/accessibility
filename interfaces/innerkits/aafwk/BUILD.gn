@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
 import("//build/ohos.gni")
+import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
 
 aafwk_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
 
@@ -67,9 +67,9 @@ ohos_shared_library("accessibleability") {
   ]
 
   public_deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//base/global/i18n/frameworks/intl:intl_util",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
   ]
 
   install_enable = true
