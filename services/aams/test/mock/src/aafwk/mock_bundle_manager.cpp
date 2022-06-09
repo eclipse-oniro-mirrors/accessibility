@@ -166,15 +166,5 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abi
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------5");
     return false;
 }
-
-bool BundleMgrService::NotifyAbilityLifeStatus(
-    const std::string& bundleName, const std::string& abilityName, const int64_t launchTime, const int uid)
-{
-    (void)bundleName;
-    (void)abilityName;
-    (void)launchTime;
-    (void)uid;
-    return true;
-}
 } // namespace AppExecFwk
 } // namespace OHOS

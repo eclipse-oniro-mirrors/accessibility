@@ -49,15 +49,11 @@ public:
         const std::string& appName, const ApplicationFlag flag, const int userId, ApplicationInfo& appInfo) override;
 
     bool QueryAbilityInfos(const Want& want, std::vector<AbilityInfo>& abilityInfos) override;
-    bool QueryAbilityInfosForClone(const Want& want, std::vector<AbilityInfo>& abilityInfos) override;
     bool GetAllFormsInfo(std::vector<FormInfo>& formInfos) override;
     bool GetFormsInfoByApp(const std::string& bundleName, std::vector<FormInfo>& formInfos) override;
     bool GetFormsInfoByModule(
         const std::string& bundleName, const std::string& moduleName, std::vector<FormInfo>& formInfos) override;
     bool GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos) override;
-    bool GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord>& moduleUsageRecords) override;
-    bool NotifyAbilityLifeStatus(const std::string& bundleName, const std::string& abilityName,
-        const int64_t launchTime, const int uid = 0) override;
 
     MOCK_METHOD2(QueryWantAbility, int(const AAFwk::Want& want, std::vector<AbilityInfo>& abilityInfos));
     MOCK_METHOD3(GetApplicationInfos,
@@ -73,9 +69,6 @@ public:
         int(const std::string& bundleName, const std::string& permission, const int userId));
     MOCK_METHOD2(GetAllCommonEventInfo,
         bool(const std::string& eventKey, std::vector<CommonEventInfo>& commonEventInfos));
-    MOCK_METHOD2(RemoveClonedBundle, bool(const std::string& bundleName, const int32_t uid));
-    MOCK_METHOD1(BundleClone, bool(const std::string& bundleName));
-    MOCK_METHOD1(CheckBundleNameInAllowList, bool(const std::string& bundleName));
     MOCK_METHOD0(GetBundleUserMgr, sptr<IBundleUserMgr>());
     MOCK_METHOD3(GetDistributedBundleInfo, bool(const std::string& networkId, const std::string& bundleName,
         DistributedBundleInfo& distributedBundleInfo));

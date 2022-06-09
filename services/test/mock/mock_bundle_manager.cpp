@@ -232,11 +232,6 @@ bool BundleMgrService::QueryAbilityInfos(const Want& want, std::vector<AbilityIn
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfosForClone(const Want& want, std::vector<AbilityInfo>& abilityInfos)
-{
-    return true;
-}
-
 bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
 {
     return true;
@@ -254,17 +249,6 @@ bool BundleMgrService::GetFormsInfoByModule(
 }
 
 bool BundleMgrService::GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord>& moduleUsageRecords)
-{
-    return true;
-}
-
-bool BundleMgrService::NotifyAbilityLifeStatus(
-    const std::string& bundleName, const std::string& abilityName, const int64_t launchTime, const int uid)
 {
     return true;
 }

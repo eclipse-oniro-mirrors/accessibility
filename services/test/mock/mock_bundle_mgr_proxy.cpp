@@ -155,11 +155,6 @@ bool BundleMgrProxy::QueryAllAbilityInfos(const Want& want, int32_t userId, std:
     return true;
 }
 
-bool BundleMgrProxy::QueryAbilityInfosForClone(const Want& want, std::vector<AbilityInfo>& abilityInfos)
-{
-    return true;
-}
-
 bool BundleMgrProxy::QueryAbilityInfoByUri(const std::string& abilityUri, AbilityInfo& abilityInfo)
 {
     return true;
@@ -308,32 +303,6 @@ bool BundleMgrProxy::GetShortcutInfos(const std::string& bundleName, std::vector
 }
 
 bool BundleMgrProxy::GetAllCommonEventInfo(const std::string& eventKey, std::vector<CommonEventInfo>& commonEventInfos)
-{
-    return true;
-}
-
-bool BundleMgrProxy::GetModuleUsageRecords(const int32_t number, std::vector<ModuleUsageRecord>& moduleUsageRecords)
-{
-    return true;
-}
-
-bool BundleMgrProxy::NotifyAbilityLifeStatus(
-    const std::string& bundleName, const std::string& abilityName, const int64_t launchTime, const int uid)
-{
-    return true;
-}
-
-bool BundleMgrProxy::CheckBundleNameInAllowList(const std::string& bundleName)
-{
-    return true;
-}
-
-bool BundleMgrProxy::BundleClone(const std::string& bundleName)
-{
-    return true;
-}
-
-bool BundleMgrProxy::RemoveClonedBundle(const std::string& bundleName, const int32_t uid)
 {
     return true;
 }
