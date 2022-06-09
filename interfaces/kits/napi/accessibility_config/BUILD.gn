@@ -15,8 +15,8 @@ import("//build/ohos.gni")
 
 ohos_shared_library("config_napi") {
   include_dirs = [
-    "//base/accessibility/common/log/include",
-    "//base/accessibility/interfaces/kits/napi/include",
+    "//foundation/barrierfree/accessibility/common/log/include",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/include",
     "./include",
   ]
 
@@ -33,12 +33,12 @@ ohos_shared_library("config_napi") {
   configs = []
 
   deps = [
-    "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
-    "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//base/accessibility/interfaces/kits/napi:accessibility",
-    "//base/accessibility/services/interface:aams_interface",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//foundation/ability/ability_runtime/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/ability/ability_runtime/frameworks/kits/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",

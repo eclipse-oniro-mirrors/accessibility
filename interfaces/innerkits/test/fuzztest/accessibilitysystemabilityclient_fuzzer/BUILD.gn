@@ -29,7 +29,7 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
   ]
   sources = [ "accessibilitysystemabilityclient_fuzzer.cpp" ]
   deps = [
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
   ]
 }
 

@@ -16,7 +16,7 @@ import("//build/ohos.gni")
 config("aams_interface_private_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "//base/accessibility/common/log/include" ]
+  include_dirs = [ "//foundation/barrierfree/accessibility/common/log/include" ]
 
   defines = [
     "AAMS_LOG_TAG = \"aams_interface\"",
@@ -74,7 +74,7 @@ ohos_shared_library("aams_interface") {
   public_configs = [ ":aams_interface_public_config" ]
 
   deps = [
-    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [

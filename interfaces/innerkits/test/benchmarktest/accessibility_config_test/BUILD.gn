@@ -23,7 +23,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilityConfig") {
   }
 
   deps =
-      [ "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
+      [ "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
   external_deps = [ "utils_base:utils" ]
 }
 

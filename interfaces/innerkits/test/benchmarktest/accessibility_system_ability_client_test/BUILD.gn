@@ -22,7 +22,7 @@ ohos_benchmarktest("BenchmarkTestForAccessibilitySystemAbilityClient") {
   }
   sources = [ "accessibility_system_ability_client_test.cpp" ]
   deps = [
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
   ]
 }
 

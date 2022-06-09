@@ -13,14 +13,14 @@
 
 import("//build/ohos.gni")
 
-acfwk_path = "//base/accessibility/frameworks/acfwk"
+acfwk_path = "//foundation/barrierfree/accessibility/frameworks/acfwk"
 
 config("accessibilityconfig_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
     "${acfwk_path}/include",
-    "//base/accessibility/common/log/include",
+    "//foundation/barrierfree/accessibility/common/log/include",
   ]
 
   defines = [
@@ -45,10 +45,10 @@ ohos_shared_library("accessibilityconfig") {
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 
-  deps = [ "//base/accessibility/services/interface:aams_interface" ]
+  deps = [ "//foundation/barrierfree/accessibility/services/interface:aams_interface" ]
 
   public_deps = [
-    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [

@@ -15,7 +15,7 @@
 # 目录<a name="files"></a>
 
 ```
-/base/accessibility
+/foundation/barrierfree/accessibility
 ├── frameworks
 │   ├── aafwk               # AccessibleAbility Kit实现代码
 │   └── asacfwk             # AccessibleAbilityClient Kit实现代码
