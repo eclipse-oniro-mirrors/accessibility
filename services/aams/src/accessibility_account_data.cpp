@@ -569,7 +569,8 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         AddInstalledAbility(*accessibilityInfo);
     }
 
-    const std::map<std::string, uint32_t> abilityCapabilities = GetCapabilitiesFromConfig();
+    std::map<std::string, uint32_t> abilityCapabilities;
+    GetCapabilitiesFromConfig(abilityCapabilities);
 
     for (auto &ability : abilityCapabilities) {
         bool result = SetAbilityCapabilities(ability.first, ability.second);
@@ -649,24 +650,22 @@ std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetCurren
     return config_;
 }
 
-const std::map<std::string, uint32_t> &AccessibilityAccountData::GetCapabilitiesFromConfig()
+void AccessibilityAccountData::GetCapabilitiesFromConfig(std::map<std::string, uint32_t> &abilityCapabilities)
 {
     HILOG_DEBUG("start.");
     std::vector<std::string> vecvalue = config_->GetEnabledAbilityInfos();
-    std::map<std::string, uint32_t> abilityCapabilities_;
     for (auto &value : vecvalue) {
         HILOG_DEBUG("BundleName/AbilityName/Capabilities = %{public}s", value.c_str());
         std::string name = value.substr(0, value.find_last_of("/"));
         std::string capabilities = value.substr(value.find_last_of("/") + 1);
-        uint32_t abilityCapabilities = static_cast<uint32_t>(std::atoi(capabilities.c_str()));
-        HILOG_DEBUG("name[%{public}s] abilityCapabilities[%{public}d]", name.c_str(), abilityCapabilities);
-        if (abilityCapabilities == 0) {
-            HILOG_ERROR("abilityCapabilities is wrong!");
+        uint32_t capability = static_cast<uint32_t>(std::atoi(capabilities.c_str()));
+        HILOG_DEBUG("name[%{public}s] capability[%{public}d]", name.c_str(), capability);
+        if (capability == 0) {
+            HILOG_ERROR("capability is wrong!");
             continue;
         }
-        abilityCapabilities_.insert(std::make_pair(name, abilityCapabilities));
+        abilityCapabilities.insert(std::make_pair(name, capability));
     }
-    return abilityCapabilities_;
 }
 } // namespace Accessibility
 } // namespace OHOS
