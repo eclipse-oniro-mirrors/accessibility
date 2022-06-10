@@ -85,7 +85,7 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const Accessibilit
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
     CaptionPropertyParcel captionParcel(caption);
 
     if (!WriteInterfaceToken(data)) {
@@ -108,7 +108,7 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
     HILOG_DEBUG("start");
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
