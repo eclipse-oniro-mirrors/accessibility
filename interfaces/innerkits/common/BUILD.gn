@@ -13,12 +13,13 @@
 
 import("//build/ohos.gni")
 
-accessibility_common_path = "//base/accessibility/frameworks/common"
+accessibility_common_path =
+    "//foundation/barrierfree/accessibility/frameworks/common"
 
 config("accessibility_common_private_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "//base/accessibility/common/log/include" ]
+  include_dirs = [ "//foundation/barrierfree/accessibility/common/log/include" ]
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_common\"",

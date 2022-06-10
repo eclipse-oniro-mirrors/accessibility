@@ -36,20 +36,20 @@
     },
     "build": {
       "sub_component": [
-        "//base/accessibility/services/aams:accessibleabilityms",
-        "//base/accessibility/services/interface:aams_interface",
-        "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
-        "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-        "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-        "//base/accessibility/interfaces/innerkits/common:accessibility_common",
-        "//base/accessibility/interfaces/kits/napi:napi_packages",
-        "//base/accessibility/sa_profile:aams_sa_profile",
-        "//base/accessibility/sa_profile:accessibility_cfg"
+        "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
+        "//foundation/barrierfree/accessibility/services/interface:aams_interface",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+        "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages",
+        "//foundation/barrierfree/accessibility/sa_profile:aams_sa_profile",
+        "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg"
       ],
       "inner_kits": [
         {
           "type": "so",
-          "name": "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
+          "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
           "header": {
             "header_files": [
               "accessibility_gesture_result_listener.h",
@@ -57,33 +57,33 @@
               "accessible_ability_client.h",
               "accessible_ability_listener.h"
             ],
-            "header_base": "//base/accessibility/interfaces/innerkits/aafwk/include"
+            "header_base": "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk/include"
           }
         },
         {
           "type": "so",
-          "name": "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
+          "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
           "header": {
             "header_files": [
               "accessibility_config.h"
             ],
-            "header_base": "//base/accessibility/interfaces/innerkits/acfwk/include"
+            "header_base": "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include"
           }
         },
         {
           "type": "so",
-          "name": "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+          "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
           "header": {
             "header_files": [
               "accessibility_state_event.h",
               "accessibility_system_ability_client.h"
             ],
-            "header_base": "//base/accessibility/interfaces/innerkits/asacfwk/include"
+            "header_base": "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include"
           }
         },
         {
           "type": "so",
-          "name": "//base/accessibility/interfaces/innerkits/common:accessibility_common",
+          "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
           "header": {
             "header_files": [
               "accessibility_ability_info.h",
@@ -93,17 +93,17 @@
               "accessibility_event_info.h",
               "accessibility_window_info.h"
             ],
-            "header_base": "//base/accessibility/interfaces/innerkits/common/include"
+            "header_base": "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include"
           }
         }
       ],
       "test": [
-        "//base/accessibility/services/test:moduletest",
-        "//base/accessibility/services/aams/test:unittest",
-        "//base/accessibility/frameworks/aafwk/test:unittest",
-        "//base/accessibility/frameworks/asacfwk/test:unittest",
-        "//base/accessibility/interfaces/innerkits/test/fuzztest:fuzztest",
-        "//base/accessibility/interfaces/innerkits/test/benchmarktest:benchmarktest"
+        "//foundation/barrierfree/accessibility/services/test:moduletest",
+        "//foundation/barrierfree/accessibility/services/aams/test:unittest",
+        "//foundation/barrierfree/accessibility/frameworks/aafwk/test:unittest",
+        "//foundation/barrierfree/accessibility/frameworks/asacfwk/test:unittest",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:fuzztest",
+        "//foundation/barrierfree/accessibility/interfaces/innerkits/test/benchmarktest:benchmarktest"
       ]
     }
   }

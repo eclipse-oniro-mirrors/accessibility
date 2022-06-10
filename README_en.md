@@ -12,7 +12,7 @@ The accessibility framework provides a standard mechanism for exchanging informa
 # Directory Structure<a name="files"></a>
 
 ```
-/base/accessibility
+/foundation/barrierfree/accessibility
 ├── frameworks
 │   ├── aafwk               # AccessibleAbility Kit implementation code
 │   └── asacfwk             # AccessibleAbilityClient Kit implementation code

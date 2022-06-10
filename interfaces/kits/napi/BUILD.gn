@@ -11,12 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/accessibility/accessibility_aafwk.gni")
 import("//build/ohos.gni")
+import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
 
 ohos_shared_library("accessibility") {
   include_dirs = [
-    "//base/accessibility/common/log/include",
+    "//foundation/barrierfree/accessibility/common/log/include",
     "./include",
   ]
 
@@ -40,12 +40,12 @@ ohos_shared_library("accessibility") {
   deps = [
     "${aafwk_kits_path}/ability/native:abilitykit_native",
     "${aafwk_kits_path}/appkit:appkit_native",
-    "//base/accessibility/interfaces/innerkits/aafwk:accessibleability",
-    "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-    "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-    "//base/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//base/accessibility/services/interface:aams_interface",
     "//foundation/arkui/napi:ace_napi",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//utils/native/base:utils",
   ]
 
@@ -68,9 +68,9 @@ ohos_shared_library("accessibility") {
 group("napi_packages") {
   deps = [
     ":accessibility",
-    "//base/accessibility/interfaces/kits/napi/accessibility_config:config_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextensionability_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
-    "//base/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_config:config_napi",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextensionability_napi",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
   ]
 }

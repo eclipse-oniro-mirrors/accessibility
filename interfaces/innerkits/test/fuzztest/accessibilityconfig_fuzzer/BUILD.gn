@@ -27,8 +27,7 @@ ohos_fuzztest("AccessibilityConfigFuzzTest") {
     "-fno-omit-frame-pointer",
   ]
   sources = [ "accessibilityconfig_fuzzer.cpp" ]
-  deps =
-      [ "//base/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
+  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]
   external_deps = [ "utils_base:utils" ]
 }
 

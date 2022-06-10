@@ -16,7 +16,7 @@ aafwk_inner_api_path =
 aafwk_kits_path = "//foundation/ability/ability_runtime/frameworks/kits"
 aafwk_path = "//foundation/ability/ability_runtime"
 aafwk_services_path = "//foundation/ability/ability_runtime/services"
-AAMS_MOCK_PATH = "//base/accessibility/services/test/mock"
+AAMS_MOCK_PATH = "//foundation/barrierfree/accessibility/services/test/mock"
 
 aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",
