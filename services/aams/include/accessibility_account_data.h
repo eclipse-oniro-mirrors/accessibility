@@ -343,7 +343,8 @@ private:
     uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
     uint32_t GetAbilityCapabilities(const std::string &name) const;
-    const std::map<std::string, uint32_t> &GetCapabilitiesFromConfig();
+    void GetCapabilitiesFromConfig(std::map<std::string, uint32_t> &abilityCapabilities);
+
     int32_t id_;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
