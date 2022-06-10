@@ -200,10 +200,10 @@ void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::
         HILOG_ERROR("pref_ is null!");
         return;
     }
-    const std::string FONTFAMILY = captionProperty_.GetFontFamily();
+    const std::string& FONTFAMILY = captionProperty_.GetFontFamily();
     int32_t FONTSCALE = captionProperty_.GetFontScale();
     uint32_t FONTCOLOR = captionProperty_.GetFontColor();
-    const std::string FONTEDGETYPE = captionProperty_.GetFontEdgeType();
+    const std::string& FONTEDGETYPE = captionProperty_.GetFontEdgeType();
     uint32_t BACKGROUNDCOLOR = captionProperty_.GetBackgroundColor();
     uint32_t WINDOWCOLOR = captionProperty_.GetWindowColor();
 
