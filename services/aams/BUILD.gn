@@ -82,7 +82,7 @@ ohos_shared_library("accessibleabilityms") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
-    "preferences:native_preferences",
+    "preference:native_preference",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
     "utils_base:utils",
