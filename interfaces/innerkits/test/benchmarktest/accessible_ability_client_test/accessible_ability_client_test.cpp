@@ -21,8 +21,6 @@
 using namespace OHOS::Accessibility;
 
 namespace {
-    const std::string APP_NAME = "计算器";
-
     class AccessibleAbilityListenerImpl : public AccessibleAbilityListener {
     public:
         AccessibleAbilityListenerImpl() = default;
@@ -38,12 +36,7 @@ namespace {
             complete_.set_value();
         }
 
-        virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override
-        {
-            if (eventInfo.GetEventType() == EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
-                complete_.set_value();
-            }
-        }
+        virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override {}
 
         virtual bool OnKeyPressEvent(const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent) override
         {
@@ -65,430 +58,110 @@ namespace {
         void OnGestureInjectResult(uint32_t sequence, bool result) override {}
     };
 
-    /**
-     * @tc.name: BenchmarkTestForConnect
-     * @tc.desc: Testcase for testing 'Connect' function and 'Disconnect' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForConnect(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        for (auto _ : state) {
-            // Connect
-            std::promise<void> connected;
-            std::future syncFuture = connected.get_future();
-            listener->SetCompletePromise(connected);
-            AccessibilityUITestAbility::GetInstance()->Connect();
-            syncFuture.wait();
-
-            // Disconnect
-            std::promise<void> disconnected;
-            syncFuture = disconnected.get_future();
-            listener->SetCompletePromise(disconnected);
-            AccessibilityUITestAbility::GetInstance()->Disconnect();
-            syncFuture.wait();
+    class AccessibleAbilityClientTest : public benchmark::Fixture {
+    public:
+        AccessibleAbilityClientTest()
+        {
+            Iterations(iterations);
+            Repetitions(repetitions);
+            ReportAggregatesOnly();
         }
-    }
 
-    /**
-     * @tc.name: BenchmarkTestForGetRoot
-     * @tc.desc: Testcase for testing 'GetRoot' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForGetRoot(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
+        ~AccessibleAbilityClientTest() override = default;
+
+        void SetUp(const ::benchmark::State &state) override;
+        void TearDown(const ::benchmark::State &state) override;
+
+    protected:
+        const int32_t repetitions = 3;
+        const int32_t iterations = 1000;
+        std::shared_ptr<AccessibleAbilityListenerImpl> listener_ = nullptr;
+    };
+
+    void AccessibleAbilityClientTest::SetUp(const ::benchmark::State &state) {
+        listener_ = std::make_shared<AccessibleAbilityListenerImpl>();
+        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener_);
 
         // Connect
         std::promise<void> connected;
         std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
+        listener_->SetCompletePromise(connected);
         AccessibilityUITestAbility::GetInstance()->Connect();
         syncFuture.wait();
+    }
 
-        for (auto _ : state) {
-            AccessibilityElementInfo elementInfo;
-            AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-        }
-
+    void AccessibleAbilityClientTest::TearDown(const ::benchmark::State &state) {
         // Disconnect
         std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
+        std::future syncFuture = disconnected.get_future();
+        listener_->SetCompletePromise(disconnected);
         AccessibilityUITestAbility::GetInstance()->Disconnect();
         syncFuture.wait();
     }
 
     /**
-     * @tc.name: BenchmarkTestForGetWindows
+     * @tc.name: GetRootTestCase
+     * @tc.desc: Testcase for testing 'GetRoot' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number. Set ace command first before test.
+     */
+    BENCHMARK_F(AccessibleAbilityClientTest, GetRootTestCase)(
+        benchmark::State &state)
+    {
+        while (state.KeepRunning()) {
+            AccessibilityElementInfo elementInfo;
+            bool result = AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
+            if (!result) {
+                state.SkipWithError("GetRoot failed. Maybe there is no command to set ace");
+            }
+        }
+    }
+
+    /**
+     * @tc.name: GetWindowsTestCase
      * @tc.desc: Testcase for testing 'GetWindows' function.
      * @tc.type: FUNC
      * @tc.require: Issue Number
      */
-    static void BenchmarkTestForGetWindows(benchmark::State &state)
+    BENCHMARK_F(AccessibleAbilityClientTest, GetWindowsTestCase)(
+        benchmark::State &state)
     {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        for (auto _ : state) {
+        while (state.KeepRunning()) {
             std::vector<AccessibilityWindowInfo> windows;
             AccessibilityUITestAbility::GetInstance()->GetWindows(windows);
         }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
     }
 
     /**
-     * @tc.name: BenchmarkTestForGetWindow
+     * @tc.name: GetWindowTestCase
      * @tc.desc: Testcase for testing 'GetWindow' function.
      * @tc.type: FUNC
      * @tc.require: Issue Number
      */
-    static void BenchmarkTestForGetWindow(benchmark::State &state)
+    BENCHMARK_F(AccessibleAbilityClientTest, GetWindowTestCase)(
+        benchmark::State &state)
     {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        std::vector<AccessibilityWindowInfo> windows;
-        AccessibilityUITestAbility::GetInstance()->GetWindows(windows);
-        if (windows.empty()) {
-            return;
-        }
-        int32_t windowId = windows[0].GetWindowId();
-
-        for (auto _ : state) {
+        while (state.KeepRunning()) {
+            int32_t windowId = 0;
             AccessibilityWindowInfo windowInfo;
             AccessibilityUITestAbility::GetInstance()->GetWindow(windowId, windowInfo);
         }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
     }
 
     /**
-     * @tc.name: BenchmarkTestForGetChildren
-     * @tc.desc: Testcase for testing 'GetChildren' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForGetChildren(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        AccessibilityElementInfo elementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-
-        for (auto _ : state) {
-            std::vector<AccessibilityElementInfo> children;
-            AccessibilityUITestAbility::GetInstance()->GetChildren(elementInfo, children);
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    /**
-     * @tc.name: BenchmarkTestForSetEventTypeFilter
+     * @tc.name: SetEventTypeFilterTestCase
      * @tc.desc: Testcase for testing 'SetEventTypeFilter' function.
      * @tc.type: FUNC
      * @tc.require: Issue Number
      */
-    static void BenchmarkTestForSetEventTypeFilter(benchmark::State &state)
+    BENCHMARK_F(AccessibleAbilityClientTest, SetEventTypeFilterTestCase)(
+        benchmark::State &state)
     {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        for (auto _ : state) {
+        while (state.KeepRunning()) {
             uint32_t filter = TYPES_ALL_MASK;
             AccessibilityUITestAbility::GetInstance()->SetEventTypeFilter(filter);
         }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
     }
-
-    /**
-     * @tc.name: BenchmarkTestForGetByContent
-     * @tc.desc: Testcase for testing 'GetByContent' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForGetByContent(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        AccessibilityElementInfo elementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-
-        for (auto _ : state) {
-            std::vector<AccessibilityElementInfo> resultElementInfos;
-            AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    /**
-     * @tc.name: BenchmarkTestForExecuteAction
-     * @tc.desc: Testcase for testing 'ExecuteAction' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForExecuteAction(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        AccessibilityElementInfo elementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-
-        std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
-        if (resultElementInfos.empty()) {
-            return;
-        }
-
-        for (auto _ : state) {
-            std::promise<void> event;
-            std::future syncFuture = event.get_future();
-            listener->SetCompletePromise(event);
-            std::map<std::string, std::string> actionArguments;
-            AccessibilityUITestAbility::GetInstance()->ExecuteAction(resultElementInfos[0],
-                ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS, actionArguments);
-            syncFuture.wait();
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    /**
-     * @tc.name: BenchmarkTestForGetFocus
-     * @tc.desc: Testcase for testing 'GetFocus' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForGetFocus(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        AccessibilityElementInfo elementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-
-        std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
-        if (resultElementInfos.empty()) {
-            return;
-        }
-
-        std::promise<void> event;
-        syncFuture = event.get_future();
-        listener->SetCompletePromise(event);
-        std::map<std::string, std::string> actionArguments;
-        AccessibilityUITestAbility::GetInstance()->ExecuteAction(resultElementInfos[0],
-            ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS, actionArguments);
-        syncFuture.wait();
-
-        for (auto _ : state) {
-            AccessibilityElementInfo foucsElementInfo;
-            AccessibilityUITestAbility::GetInstance()->GetFocus(FOCUS_TYPE_ACCESSIBILITY, foucsElementInfo);
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    /**
-     * @tc.name: BenchmarkTestForGetNext
-     * @tc.desc: Testcase for testing 'GetNext' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForGetNext(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        AccessibilityElementInfo elementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-
-        std::vector<AccessibilityElementInfo> resultElementInfos;
-        AccessibilityUITestAbility::GetInstance()->GetByContent(elementInfo, APP_NAME, resultElementInfos);
-        if (resultElementInfos.empty()) {
-            return;
-        }
-
-        std::promise<void> event;
-        syncFuture = event.get_future();
-        listener->SetCompletePromise(event);
-        std::map<std::string, std::string> actionArguments;
-        AccessibilityUITestAbility::GetInstance()->ExecuteAction(resultElementInfos[0],
-            ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS, actionArguments);
-        syncFuture.wait();
-
-        AccessibilityElementInfo foucsElementInfo;
-        AccessibilityUITestAbility::GetInstance()->GetFocus(FOCUS_TYPE_ACCESSIBILITY, foucsElementInfo);
-
-        for (auto _ : state) {
-            AccessibilityElementInfo nextElementInfo;
-            AccessibilityUITestAbility::GetInstance()->GetNext(foucsElementInfo,
-                FocusMoveDirection::UP, nextElementInfo);
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    /**
-     * @tc.name: BenchmarkTestForInjectGesture
-     * @tc.desc: Testcase for testing 'InjectGesture' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    static void BenchmarkTestForInjectGesture(benchmark::State &state)
-    {
-        std::shared_ptr<AccessibleAbilityListenerImpl> listener = std::make_shared<AccessibleAbilityListenerImpl>();
-        AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
-
-        // Connect
-        std::promise<void> connected;
-        std::future syncFuture = connected.get_future();
-        listener->SetCompletePromise(connected);
-        AccessibilityUITestAbility::GetInstance()->Connect();
-        syncFuture.wait();
-
-        uint32_t sequence = 0;
-        for (auto _ : state) {
-            sequence++;
-            std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
-                std::make_shared<AccessibilityGestureInjectPath>();
-            int64_t durationTime = 20;
-            gesturePath->SetDurationTime(durationTime);
-            AccessibilityGesturePosition position = {200.0f, 200.0f};
-            gesturePath->AddPosition(position);
-
-            std::shared_ptr<AccessibilityGestureResultListenerForBenchmark> listener =
-                std::make_shared<AccessibilityGestureResultListenerForBenchmark>();
-            AccessibilityUITestAbility::GetInstance()->InjectGesture(sequence, gesturePath, listener);
-        }
-
-        // Disconnect
-        std::promise<void> disconnected;
-        syncFuture = disconnected.get_future();
-        listener->SetCompletePromise(disconnected);
-        AccessibilityUITestAbility::GetInstance()->Disconnect();
-        syncFuture.wait();
-    }
-
-    BENCHMARK(BenchmarkTestForConnect)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetRoot)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetWindows)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetWindow)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetChildren)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForSetEventTypeFilter)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetByContent)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForExecuteAction)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetFocus)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForGetNext)->Iterations(1000)->ReportAggregatesOnly();
-    BENCHMARK(BenchmarkTestForInjectGesture)->Iterations(1000)->ReportAggregatesOnly();
 }
 
 BENCHMARK_MAIN();
