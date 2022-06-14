@@ -78,7 +78,8 @@ namespace {
         std::shared_ptr<AccessibleAbilityListenerImpl> listener_ = nullptr;
     };
 
-    void AccessibleAbilityClientTest::SetUp(const ::benchmark::State &state) {
+    void AccessibleAbilityClientTest::SetUp(const ::benchmark::State &state)
+    {
         listener_ = std::make_shared<AccessibleAbilityListenerImpl>();
         AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener_);
 
@@ -90,7 +91,8 @@ namespace {
         syncFuture.wait();
     }
 
-    void AccessibleAbilityClientTest::TearDown(const ::benchmark::State &state) {
+    void AccessibleAbilityClientTest::TearDown(const ::benchmark::State &state)
+    {
         // Disconnect
         std::promise<void> disconnected;
         std::future syncFuture = disconnected.get_future();
