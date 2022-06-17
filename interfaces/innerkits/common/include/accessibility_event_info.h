@@ -282,9 +282,9 @@ protected:
 
 /*
 * The class define the event types and supply the api to
-* get/set the property of event. and it triggerred by UI
+* get/set the property of event. and it triggered by UI
 * changed and sent to AA. According to the event property,
-* AA can get event properties, such as: action triggerred
+* AA can get event properties, such as: action triggered
 * the event and the source.
 */
 class AccessibilityEventInfo : public AccessibilityMemo {
