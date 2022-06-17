@@ -281,7 +281,7 @@ public:
     void AddEventEnabled(EventType type);
 
     /**
-     * @brief Delet enabled event which is needed by accessible ability.
+     * @brief Delete enabled event which is needed by accessible ability.
      * @param type EventType
      * @return null.
      */
