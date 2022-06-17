@@ -187,7 +187,6 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().Init();
-
     return true;
 }
 

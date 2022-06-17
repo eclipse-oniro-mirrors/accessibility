@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityInitParams &initParams)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     name_ = initParams.name;
     rationale_ = initParams.rationale;
@@ -48,55 +48,55 @@ uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
 
 uint32_t AccessibilityAbilityInfo::GetCapabilityValues() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return capabilities_;
 }
 
 const std::string &AccessibilityAbilityInfo::GetDescription() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return description_;
 }
 
 uint32_t AccessibilityAbilityInfo::GetEventTypes()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return eventTypes_;
 }
 
 std::string AccessibilityAbilityInfo::GetId() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return bundleName_ + "/" + name_;
 }
 
 const std::string &AccessibilityAbilityInfo::GetName() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return name_;
 }
 
 const std::string &AccessibilityAbilityInfo::GetPackageName() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return bundleName_;
 }
 
 void AccessibilityAbilityInfo::SetPackageName(const std::string &bundleName)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     bundleName_ = bundleName;
 }
 
 const std::vector<std::string> &AccessibilityAbilityInfo::GetFilterBundleNames() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return targetBundleNames_;
 }
 
 const std::string &AccessibilityAbilityInfo::GetSettingsAbility() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return settingsAbility_;
 }
 } // namespace Accessibility

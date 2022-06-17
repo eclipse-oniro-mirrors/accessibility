@@ -25,7 +25,7 @@ void AccessibilityExtension::Init(const std::shared_ptr<AbilityRuntime::AbilityL
     const sptr<IRemoteObject> &token)
 {
     ExtensionBase<AccessibilityExtensionContext>::Init(record, application, handler, token);
-    HILOG_INFO("AccessibilityExtension begin init");
+    HILOG_INFO();
 }
 
 std::shared_ptr<AccessibilityExtensionContext> AccessibilityExtension::CreateAndInitContext(

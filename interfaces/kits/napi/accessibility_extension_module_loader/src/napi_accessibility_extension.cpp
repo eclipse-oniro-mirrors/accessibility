@@ -34,7 +34,7 @@ namespace OHOS {
 namespace Accessibility {
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
-    HILOG_INFO("NAccessibilityExtension::Create runtime");
+    HILOG_INFO();
     return new NAccessibilityExtension(static_cast<AbilityRuntime::JsRuntime&>(*runtime));
 }
 
@@ -52,7 +52,7 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
     const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
     std::shared_ptr<AppExecFwk::AbilityHandler> &handler, const sptr<IRemoteObject> &token)
 {
-    HILOG_INFO("NAccessibilityExtension::Init begin.");
+    HILOG_INFO();
     AccessibilityExtension::Init(record, application, handler, token);
     std::string srcPath = "";
     GetSrcPath(srcPath);
@@ -109,7 +109,7 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
 
 sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     Extension::OnConnect(want);
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
@@ -122,7 +122,7 @@ sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
 
 void NAccessibilityExtension::OnAbilityConnected()
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     uv_loop_t *loop = engine_->GetUVLoop();
     uv_work_t *work = new uv_work_t;
     ExtensionCallbackInfo *callbackInfo = new ExtensionCallbackInfo();
@@ -146,7 +146,7 @@ void NAccessibilityExtension::OnAbilityConnected()
 
 void NAccessibilityExtension::OnAbilityDisconnected()
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     uv_loop_t *loop = engine_->GetUVLoop();
     uv_work_t *work = new uv_work_t;
     ExtensionCallbackInfo *callbackInfo = new ExtensionCallbackInfo();
@@ -170,7 +170,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
 
 std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO("called.");
+    HILOG_DEBUG();
 
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
@@ -239,7 +239,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
 
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     uv_loop_t *loop = engine_->GetUVLoop();
     uv_work_t *work = new uv_work_t;
     AccessibilityEventInfoCallbackInfo *callbackInfo = new AccessibilityEventInfoCallbackInfo();
@@ -268,12 +268,11 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             delete work;
             work = nullptr;
         });
-    HILOG_INFO("end.");
 }
 
 bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     uv_loop_t *loop = engine_->GetUVLoop();
     uv_work_t *work = new uv_work_t;
     KeyEventCallbackInfo *callbackInfo = new KeyEventCallbackInfo();
@@ -330,7 +329,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
 
 NativeValue* NAccessibilityExtension::CallObjectMethod(const char* name, NativeValue* const* argv, size_t argc)
 {
-    HILOG_INFO("NAccessibilityExtension::CallObjectMethod(%{public}s), begin", name);
+    HILOG_INFO("name:%{public}s", name);
     if (!jsObj_) {
         HILOG_ERROR("jsObj_ is nullptr");
         return nullptr;
@@ -348,7 +347,7 @@ NativeValue* NAccessibilityExtension::CallObjectMethod(const char* name, NativeV
         HILOG_ERROR("Failed to get '%{public}s' from AccessibilityExtension object", name);
         return nullptr;
     }
-    HILOG_INFO("NAccessibilityExtension::CallFunction(%{public}s), success", name);
+    HILOG_INFO("CallFunction(%{public}s), success", name);
     return engine_->CallFunction(value, method, argv, argc);
 }
 

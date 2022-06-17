@@ -22,7 +22,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityWindowInfoParcel::AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     AccessibilityWindowInfo *self = this;
     *self = accessibilityWindowInfo;
 }
@@ -73,7 +73,7 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityWindowInfoParcel> AccessibilityWindowInfoParcel::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibilityWindowInfoParcel> info = new AccessibilityWindowInfoParcel();
     if (!info->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel failed.");

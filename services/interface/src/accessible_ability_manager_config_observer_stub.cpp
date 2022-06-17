@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerConfigObserverStub::AccessibleAbilityManagerConfigObserverStub()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 }
 
 int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -63,7 +63,7 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnConfigStateChanged(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     uint32_t stateType = data.ReadUint32();
     OnConfigStateChanged(stateType);
 
@@ -73,7 +73,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnConfigStateChanged(M
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnAudioBalanceChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     float audioBalance = data.ReadFloat();
     OnAudioBalanceChanged(audioBalance);
 
@@ -82,7 +82,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnAudioBalanceChanged(
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnBrightnessDiscountChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     float brightnessDiscount = data.ReadFloat();
     OnBrightnessDiscountChanged(brightnessDiscount);
 
@@ -92,7 +92,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnBrightnessDiscountCh
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     uint32_t contentTimeout = data.ReadUint32();
     OnContentTimeoutChanged(contentTimeout);
 
@@ -102,7 +102,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnContentTimeoutChange
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFilterChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     uint32_t filterType = data.ReadUint32();
     OnDaltonizationColorFilterChanged(filterType);
 
@@ -112,7 +112,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnDaltonizationColorFi
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     int32_t mouseAutoClick = data.ReadInt32();
     OnMouseAutoClickChanged(mouseAutoClick);
 
@@ -122,7 +122,7 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnMouseAutoClickChange
 ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChanged(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::string shortkeyTarget = data.ReadString();
     OnShortkeyTargetChanged(shortkeyTarget);
 

@@ -76,20 +76,19 @@ bool AccessibilityElementInfo::RemoveChild(const int32_t childId)
 
 const std::vector<AccessibleAction> &AccessibilityElementInfo::GetActionList() const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     return operations_;
 }
 
 void AccessibilityElementInfo::AddAction(AccessibleAction &action)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("actionType[%{public}d]", action.GetActionType());
     operations_.push_back(action);
-    HILOG_DEBUG("actionType[%{public}d] end", action.GetActionType());
 }
 
 void AccessibilityElementInfo::DeleteAction(AccessibleAction &action)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     for (auto iter = operations_.begin(); iter != operations_.end(); iter++) {
         HILOG_DEBUG("actionType[%{public}d]", action.GetActionType());
         if (iter->GetActionType() == action.GetActionType()) {
@@ -102,7 +101,7 @@ void AccessibilityElementInfo::DeleteAction(AccessibleAction &action)
 
 bool AccessibilityElementInfo::DeleteAction(ActionType &actionType)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     for (auto iter = operations_.begin(); iter != operations_.end(); iter++) {
         HILOG_DEBUG("actionType[%{public}d]", actionType);
         if (iter->GetActionType() == actionType) {
@@ -116,7 +115,7 @@ bool AccessibilityElementInfo::DeleteAction(ActionType &actionType)
 
 void AccessibilityElementInfo::DeleteAllActions()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operations_.clear();
 }
 
@@ -164,7 +163,7 @@ const Rect &AccessibilityElementInfo::GetRectInScreen() const
 
 void AccessibilityElementInfo::SetRectInScreen(Rect &bounds)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     bounds_.SetLeftTopScreenPostion(bounds.GetLeftTopXScreenPostion(), bounds.GetLeftTopYScreenPostion());
     bounds_.SetRightBottomScreenPostion(bounds.GetRightBottomXScreenPostion(), bounds.GetRightBottomYScreenPostion());
 }

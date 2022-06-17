@@ -28,7 +28,7 @@ AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!data.WriteInterfaceToken(AccessibleAbilityChannelProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
@@ -40,7 +40,7 @@ bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
 bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::Message code,
     MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> remote = Remote();
     if (!remote) {
@@ -59,7 +59,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -105,7 +105,7 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t acces
     const int32_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -151,7 +151,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessi
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -195,7 +195,7 @@ bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessi
 bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -240,7 +240,7 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -296,7 +296,7 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
 
 bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -328,7 +328,7 @@ bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, Accessibil
 
 bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -358,7 +358,7 @@ bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowIn
 bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -393,7 +393,7 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
 
 bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -416,7 +416,7 @@ bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -442,7 +442,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
 void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -469,7 +469,7 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
 
 bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;
@@ -493,7 +493,7 @@ bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)
 
 bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;

@@ -27,7 +27,7 @@ AccessibleAbilityManagerStateObserverProxy::~AccessibleAbilityManagerStateObserv
 
 bool AccessibleAbilityManagerStateObserverProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(AccessibleAbilityManagerStateObserverProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -37,7 +37,7 @@ bool AccessibleAbilityManagerStateObserverProxy::WriteInterfaceToken(MessageParc
 
 void AccessibleAbilityManagerStateObserverProxy::OnStateChanged(const uint32_t stateType)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int error = NO_ERROR;
     MessageParcel data;

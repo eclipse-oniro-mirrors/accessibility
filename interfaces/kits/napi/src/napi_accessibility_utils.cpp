@@ -55,7 +55,7 @@ bool ParseBool(napi_env env, bool& param, napi_value args)
     napi_valuetype valuetype;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
-        HILOG_INFO("napi_typeof error and status is %{public}d", status);
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
         return false;
     }
 
@@ -74,7 +74,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
     napi_valuetype valuetype;
     status = napi_typeof(env, args, &valuetype);
     if (status != napi_ok) {
-        HILOG_INFO("napi_typeof error and status is %{public}d", status);
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
         return false;
     }
 
@@ -97,7 +97,6 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
         return false;
     }
-    HILOG_INFO("param=%{public}d.", valuetype);
 
     if (valuetype != napi_number) {
         HILOG_ERROR("Wrong argument type. uint32 expected.");
@@ -105,6 +104,7 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
     }
 
     napi_get_value_uint32(env, args, &param);
+    HILOG_DEBUG("param=%{public}u.", valuetype);
     return true;
 }
 
@@ -117,7 +117,6 @@ bool ParseInt32(napi_env env, int32_t& param, napi_value args)
         HILOG_ERROR("napi_typeof error and status is %{public}d", status);
         return false;
     }
-    HILOG_INFO("param=%{public}d.", valuetype);
 
     if (valuetype != napi_number) {
         HILOG_ERROR("Wrong argument type. uint32 expected.");
@@ -125,6 +124,7 @@ bool ParseInt32(napi_env env, int32_t& param, napi_value args)
     }
 
     napi_get_value_int32(env, args, &param);
+    HILOG_DEBUG("param=%{public}d.", valuetype);
     return true;
 }
 
@@ -667,7 +667,7 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
 
 static uint32_t ConvertStringToCapability(std::string type)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     static const std::map<const std::string, uint32_t> capabilitiesTable = {
         {"retrieve", Capability::CAPABILITY_RETRIEVE},
         {"touchGuide", Capability::CAPABILITY_TOUCH_GUIDE},
@@ -1093,6 +1093,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
 static void ConvertGesturePathPositionJSToNAPI(
     napi_env env, napi_value object, AccessibilityGesturePosition& gesturePathPosition)
 {
+    HILOG_DEBUG();
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     double position = 0;
@@ -1119,6 +1120,7 @@ static void ConvertGesturePathPositionJSToNAPI(
 static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
+    HILOG_DEBUG();
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
 
@@ -1130,7 +1132,7 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
         napi_value jsValue = nullptr;
         bool isArray = false;
         uint32_t dataLen = 0;
-        if (napi_is_array(env, object, &isArray) != napi_ok || isArray == false) {
+        if (napi_is_array(env, positionValue, &isArray) != napi_ok || isArray == false) {
             HILOG_ERROR("object is not an array.");
             return;
         }
@@ -1166,6 +1168,7 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePathArray,
     bool &isParameterArray)
 {
+    HILOG_DEBUG();
     if (napi_is_array(env, object, &isParameterArray) != napi_ok) {
         HILOG_ERROR("judge array error.");
         return;
@@ -1236,7 +1239,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
 void ConvertCaptionPropertyToJS(
     napi_env env, napi_value& result, OHOS::AccessibilityConfig::CaptionProperty captionProperty)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     napi_value value;
 
@@ -1265,8 +1268,6 @@ void ConvertCaptionPropertyToJS(
     colorStr = ConvertColorToString(color);
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
-
-    HILOG_DEBUG("end");
 }
 
 const uint32_t COLOR_TRANSPARENT = 0x00000000;
@@ -1473,12 +1474,11 @@ void ConvertObjToCaptionProperty(
     if (hasProperty) {
         ptrCaptionProperty->SetWindowColor(GetColorValue(env, object, propertyNameValue));
     }
-    HILOG_DEBUG("end");
 }
 
 void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string>& values)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     values.clear();
 
     bool hasElement = true;
@@ -1499,7 +1499,7 @@ void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::
 
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     eventTypes = TYPE_VIEW_INVALID;
     std::vector<std::string> values;
     ConvertJSToStringVec(env, arrayValue, values);
@@ -1517,7 +1517,7 @@ void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventT
 
 void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     capabilities = 0;
     std::vector<std::string> values;
     ConvertJSToStringVec(env, arrayValue, values);
@@ -1535,31 +1535,27 @@ void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
 
 void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     napi_value keyCode;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, value, &keyCode));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "enabled", keyCode));
-
-    HILOG_DEBUG("END.");
 }
 
 void ConvertStyleToJS(
     napi_env env, napi_value& captionsManager, OHOS::AccessibilityConfig::CaptionProperty captionProperty_)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     napi_value keyCode;
     NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyCode));
 
     ConvertCaptionPropertyToJS(env, keyCode, captionProperty_);
 
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "style", keyCode));
-
-    HILOG_DEBUG("END.");
 }
 
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     size_t index = 0;
     for (auto& value : values) {
         napi_value str = nullptr;
