@@ -644,7 +644,7 @@ void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& c
     }
 }
 
-std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetCurrentConfig()
+std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig()
 {
     HILOG_DEBUG("start.");
     return config_;

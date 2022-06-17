@@ -287,7 +287,7 @@ public:
      */
     void DeleteEventEnabled(EventType type);
 
-    std::shared_ptr<AccessibilitySettingsConfig> GetCurrentConfig();
+    std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
 

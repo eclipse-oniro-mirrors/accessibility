@@ -189,7 +189,7 @@ int64_t AccessibilityMouseAutoclick::GetDelayTime()
         return 0;
     }
 
-    int32_t delayTime = accountData->GetCurrentConfig()->GetMouseAutoClick();
+    int32_t delayTime = accountData->GetConfig()->GetMouseAutoClick();
     return delayTime;
 }
 
