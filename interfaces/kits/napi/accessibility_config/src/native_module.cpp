@@ -321,7 +321,7 @@ static napi_module _config_module = {
 /*
  * Module register function
  */
-extern "C" __attribute__((constructor)) void RegisterModule(void)
+extern "C" __attribute__((constructor)) void RegisterNapiAccessibilityConfigModule(void)
 {
     napi_module_register(&_config_module);
 }
