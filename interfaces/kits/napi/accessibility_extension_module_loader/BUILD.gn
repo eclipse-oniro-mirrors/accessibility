@@ -42,6 +42,7 @@ ohos_shared_library("accessibility_extension_module") {
   configs = [ ":accessibility_extension_module_config" ]
 
   deps = [
+    "//foundation/ability/ability_runtime/frameworks/native/appkit:app_context",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
