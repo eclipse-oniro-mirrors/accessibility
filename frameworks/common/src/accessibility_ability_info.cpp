@@ -82,6 +82,12 @@ const std::string &AccessibilityAbilityInfo::GetPackageName() const
     return bundleName_;
 }
 
+const std::string &AccessibilityAbilityInfo::GetModuleName() const
+{
+    HILOG_DEBUG();
+    return moduleName_;
+}
+
 void AccessibilityAbilityInfo::SetPackageName(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");

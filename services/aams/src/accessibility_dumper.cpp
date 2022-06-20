@@ -21,6 +21,9 @@
 #include <map>
 #include <sstream>
 
+#include "accessibility_account_data.h"
+#include "accessibility_window_manager.h"
+#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "string_ex.h"
 #include "unique_fd.h"
@@ -68,29 +71,222 @@ int AccessibilityDumper::Dump(int fd, const std::vector<std::u16string>& args) c
 
 int AccessibilityDumper::DumpAccessibilityWindowInfo(std::string& dumpInfo) const
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!currentAccount) {
+        HILOG_ERROR("currentAccount is null");
+        return -1;
+    }
+
     std::ostringstream oss;
-    // list AccessibilityWindow attributes
-    oss << "window info: "<< std::endl;
+    size_t index = 0;
+    std::map<int32_t, sptr<AccessibilityWindowConnection>> connectedWindowList = currentAccount->GetAsacConnections();
+    oss << "connected window id: ";
+    for (auto &iter : connectedWindowList) {
+        index++;
+        oss << iter.first;
+
+        if (index != connectedWindowList.size()) {
+            oss << ", ";
+        }
+    }
+
+    oss << std::endl << "active window id: " <<
+        Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_ << std::endl;
+    oss << "accessibility focused window id: " <<
+        Singleton<AccessibilityWindowManager>::GetInstance().a11yFocusedWindowId_ << std::endl;
+
     dumpInfo.append(oss.str());
     return 0;
 }
 
+void ConvertCapabilities(const uint32_t value, std::string &capabilities)
+{
+    capabilities = "";
+    if (value & Capability::CAPABILITY_RETRIEVE) {
+        capabilities += "retrieve/";
+    }
+    if (value & Capability::CAPABILITY_TOUCH_GUIDE) {
+        capabilities += "touchGuide/";
+    }
+    if (value & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
+        capabilities += "keyEventObserver/";
+    }
+    if (value & Capability::CAPABILITY_ZOOM) {
+        capabilities += "zoom/";
+    }
+    if (value & Capability::CAPABILITY_GESTURE) {
+        capabilities += "gesture/";
+    }
+}
+
+void ConvertAbilityTypes(const uint32_t value, std::string &abilityTypes)
+{
+    abilityTypes = "";
+    if (value & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN) {
+        abilityTypes += "spoken/";
+    }
+    if (value & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_HAPTIC) {
+        abilityTypes += "haptic/";
+    }
+    if (value & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_AUDIBLE) {
+        abilityTypes += "audible/";
+    }
+    if (value & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_VISUAL) {
+        abilityTypes += "visual/";
+    }
+    if (value & AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_GENERIC) {
+        abilityTypes += "generic/";
+    }
+}
+
+void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
+{
+    eventTypes = "";
+    std::map<EventType, std::string> accessibilityEventTable = {{EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
+        {EventType::TYPE_VIEW_LONG_CLICKED_EVENT, "longClick"},
+        {EventType::TYPE_VIEW_SELECTED_EVENT, "select"},
+        {EventType::TYPE_VIEW_FOCUSED_EVENT, "focus"},
+        {EventType::TYPE_VIEW_TEXT_UPDATE_EVENT, "textUpdate"},
+        {EventType::TYPE_PAGE_STATE_UPDATE, "pageStateUpdate"},
+        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
+        {EventType::TYPE_VIEW_HOVER_ENTER_EVENT, "hoverEnter"},
+        {EventType::TYPE_VIEW_HOVER_EXIT_EVENT, "hoverExit"},
+        {EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN, "touchGuideGestureBegin"},
+        {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
+        {EventType::TYPE_PAGE_CONTENT_UPDATE, "pageContentUpdate"},
+        {EventType::TYPE_VIEW_SCROLLED_EVENT, "scroll"},
+        {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
+        {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
+        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
+        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
+        {EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT, "textMoveUnit"},
+        {EventType::TYPE_TOUCH_GUIDE_BEGIN, "touchGuideBegin"},
+        {EventType::TYPE_TOUCH_GUIDE_END, "touchGuideEnd"},
+        {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
+        {EventType::TYPE_TOUCH_END, "touchEnd"},
+        {EventType::TYPE_WINDOW_UPDATE, "windowUpdate"},
+        {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
+        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
+
+    for (auto itr = accessibilityEventTable.begin(); itr != accessibilityEventTable.end(); ++itr) {
+        if (value & itr->first) {
+            eventTypes += itr->second;
+            eventTypes += "/";
+        }
+    }
+}
+
 int AccessibilityDumper::DumpAccessibilityClientInfo(std::string& dumpInfo) const
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!currentAccount) {
+        HILOG_ERROR("currentAccount is null");
+        return -1;
+    }
+
+    auto connectedAbilities = currentAccount->GetConnectedA11yAbilities();
     std::ostringstream oss;
-    oss << "client num :  "<< std::endl;
-    oss << "client name :  "<< std::endl;
+    oss << "client num:  " << connectedAbilities.size() << std::endl;
+
+    // Dump client info details
+    size_t index = 0;
+    for (auto &iter : connectedAbilities) {
+        oss << std::endl << "client[" << index++ << "] info details: " << std::endl;
+        if (!iter.second) {
+            HILOG_ERROR("The connected ability[%{public}s] is null", iter.first.c_str());
+            continue;
+        }
+        AccessibilityAbilityInfo accessibilityAbilityInfo = iter.second->GetAbilityInfo();
+        oss << "    bundleName: " << accessibilityAbilityInfo.GetPackageName() << std::endl;
+        oss << "    moduleName: " << accessibilityAbilityInfo.GetModuleName() << std::endl;
+        oss << "    abilityName: " << accessibilityAbilityInfo.GetName() << std::endl;
+        oss << "    description: " << accessibilityAbilityInfo.GetDescription() << std::endl;
+
+        std::string capabilities;
+        ConvertCapabilities(accessibilityAbilityInfo.GetCapabilityValues(), capabilities);
+        oss << "    capabilities: " << capabilities << std::endl;
+
+        std::string abilityTypes;
+        ConvertAbilityTypes(accessibilityAbilityInfo.GetAccessibilityAbilityType(), abilityTypes);
+        oss << "    abilityTypes: " << abilityTypes << std::endl;
+
+        std::string eventTypes;
+        ConvertEventTypes(accessibilityAbilityInfo.GetEventTypes(), eventTypes);
+        oss << "    eventTypes: " << eventTypes << std::endl;
+
+        std::vector<std::string> targetBundleNames = accessibilityAbilityInfo.GetFilterBundleNames();
+        if (targetBundleNames.empty()) {
+            oss << "    targetBundleNames: " << "all" << std::endl;
+        } else {
+            oss << "    targetBundleNames: " << std::endl;
+            for (auto &targetBundleName : targetBundleNames) {
+                oss << "        " << targetBundleName << std::endl;
+            }
+        }
+
+        if (index != connectedAbilities.size()) {
+            oss << std::endl << "    -------------------------------" << std::endl << std::endl;
+        }
+    }
     dumpInfo.append(oss.str());
     return 0;
 }
 
 int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
+    sptr<AccessibilityAccountData> currentAccount =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!currentAccount) {
+        HILOG_ERROR("currentAccount is null");
+        return -1;
+    }
+
     std::ostringstream oss;
-    oss << "current user info:  "<< std::endl;
+    oss << "id:  " << currentAccount->GetAccountId() << std::endl;
+
+    std::shared_ptr<AccessibilitySettingsConfig> config = currentAccount->GetConfig();
+    if (!config) {
+        HILOG_ERROR("config is null");
+        return -1;
+    }
+
+    // Dump Capabilities
+    oss << "accessible:  " << config->GetEnabledState() << std::endl;
+    oss << "touchGuide:  " << config->GetTouchGuideState() << std::endl;
+    oss << "gesture:  " << config->GetGestureState() << std::endl;
+    oss << "keyEventObserver:  " << config->GetKeyEventObserverState() << std::endl;
+
+    // Dump setting info
+    oss << "ScreenMagnification:  " << config->GetScreenMagnificationState() << std::endl;
+    oss << "MouseKey:  " << config->GetMouseKeyState() << std::endl;
+    oss << "ShortKey:  " << config->GetShortKeyState() << std::endl;
+    oss << "animationOff:  " << config->GetAnimationOffState() << std::endl;
+    oss << "invertColor:  " << config->GetInvertColorState() << std::endl;
+    oss << "highContrastText:  " << config->GetHighContrastTextState() << std::endl;
+    oss << "audioMono:  " << config->GetAudioMonoState() << std::endl;
+    oss << "ShortkeyTarget:  " << config->GetShortkeyTarget() << std::endl;
+    oss << "MouseAutoClick:  " << config->GetMouseAutoClick() << std::endl;
+    oss << "daltonizationColorFilter:  " << config->GetDaltonizationColorFilter() << std::endl;
+    oss << "contentTimeout:  " << config->GetContentTimeout() << std::endl;
+    oss << "brightnessDiscount:  " << config->GetBrightnessDiscount() << std::endl;
+    oss << "audioBalance:  " << config->GetAudioBalance() << std::endl;
+
+    // Dump caption info
+    oss << "CaptionState:  " << config->GetCaptionState() << std::endl;
+    if (config->GetCaptionState()) {
+        AccessibilityConfig::CaptionProperty captionProperty = config->GetCaptionProperty();
+        oss << "    fontFamily:  " << captionProperty.GetFontFamily() << std::endl;
+        oss << "    fontScale:  " << captionProperty.GetFontScale() << std::endl;
+        oss << "    fontColor:  " << captionProperty.GetFontColor() << std::endl;
+        oss << "    fontEdgeType:  " << captionProperty.GetFontEdgeType() << std::endl;
+        oss << "    backgroundColor:  " << captionProperty.GetBackgroundColor() << std::endl;
+        oss << "    windowColor:  " << captionProperty.GetWindowColor() << std::endl;
+    }
     dumpInfo.append(oss.str());
     return 0;
 }
@@ -137,11 +333,11 @@ void AccessibilityDumper::ShowHelpInfo(std::string& dumpInfo) const
         .append(" -h                    ")
         .append("|help text for the tool\n")
         .append(" -u                    ")
-        .append("|dump accessibility user in the system\n")
+        .append("|dump accessibility current user in the system\n")
         .append(" -c                    ")
         .append("|dump accessibility client in the system\n")
         .append(" -w                    ")
         .append("|dump accessibility window info in the system\n");
 }
-}
-}
+} // Accessibility
+} // OHOS
