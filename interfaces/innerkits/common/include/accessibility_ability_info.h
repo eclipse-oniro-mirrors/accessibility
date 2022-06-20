@@ -171,7 +171,7 @@ protected:
     std::string settingsAbility_;
 
     uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_INVALID;
-    uint32_t eventTypes_ = EventType::TYPES_ALL_MASK;
+    uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
 
     std::vector<std::string> targetBundleNames_;
 };

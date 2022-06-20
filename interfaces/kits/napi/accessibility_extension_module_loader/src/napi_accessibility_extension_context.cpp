@@ -141,10 +141,6 @@ private:
         uint32_t filter = TYPE_VIEW_INVALID;
         ConvertJSToEventTypes(reinterpret_cast<napi_env>(&engine),
             reinterpret_cast<napi_value>(info.argv[PARAM0]), filter);
-        if (filter == TYPE_VIEW_INVALID) {
-            HILOG_ERROR("ConvertJSToEventTypes failed");
-            return engine.CreateUndefined();
-        }
         HILOG_INFO("filter = %{public}d", filter);
 
         AsyncTask::CompleteCallback complete =
@@ -156,13 +152,17 @@ private:
                     task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
                     return;
                 }
-
+                if (filter == TYPE_VIEW_INVALID) {
+                    HILOG_ERROR("filter is invalid");
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "filter is invalid"));
+                    return;
+                }
                 bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "set event type failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "set event type failed."));
                 }
             };
 
@@ -203,7 +203,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "set target bundle name failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "set target bundle name failed."));
                 }
             };
 
@@ -273,7 +273,7 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Get focus elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get focus elementInfo failed."));
                 }
             };
 
@@ -513,7 +513,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Perform common action failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Perform common action failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Perform common action failed."));
                 }
             };
 
@@ -578,7 +578,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Gesture inject failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Gesture inject failed."));
                 }
             };
 
