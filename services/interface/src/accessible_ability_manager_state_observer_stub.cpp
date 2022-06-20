@@ -20,14 +20,13 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerStateObserverStub::AccessibleAbilityManagerStateObserverStub()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 }
 
 int AccessibleAbilityManagerStateObserverStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibleAbilityManagerStateObserverStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
-        code, option.GetFlags());
+    HILOG_DEBUG("cmd = %{public}d, flags= %{public}d", code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityManagerStateObserverStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
@@ -44,7 +43,7 @@ int AccessibleAbilityManagerStateObserverStub::OnRemoteRequest(uint32_t code, Me
 ErrCode AccessibleAbilityManagerStateObserverStub::HandleOnStateChanged(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     uint32_t stateType = data.ReadUint32();
     OnStateChanged(stateType);
 

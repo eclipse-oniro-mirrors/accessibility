@@ -48,7 +48,7 @@ bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t 
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -66,7 +66,7 @@ void AccessibleAbilityChannel::InnerSearchElementInfoByAccessibilityId(const int
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
@@ -76,8 +76,12 @@ void AccessibleAbilityChannel::InnerSearchElementInfoByAccessibilityId(const int
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
         accessibilityWindowId, FOCUS_TYPE_INVALID);
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId failed: no connection");
+    if (!connection) {
+        HILOG_ERROR("SearchElementInfoByAccessibilityId failed: windowId[%{public}d] has no connection", realId);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
@@ -92,7 +96,7 @@ bool AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibil
     const int32_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -119,8 +123,12 @@ void AccessibleAbilityChannel::InnerSearchElementInfosByText(const int32_t acces
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("SearchElementInfosByText failed");
+    if (!connection) {
+        HILOG_ERROR("SearchElementInfosByText failed: windowId[%{public}d] has no connection", realId);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
@@ -134,7 +142,7 @@ bool AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilit
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -161,8 +169,12 @@ void AccessibleAbilityChannel::InnerFindFocusedElementInfo(const int32_t accessi
         accessibilityWindowId, focusType);
 
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("FindFocusedElementInfo failed");
+    if (!connection) {
+        HILOG_ERROR("FindFocusedElementInfo failed: windowId[%{public}d] has no connection", realId);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
@@ -175,7 +187,7 @@ void AccessibleAbilityChannel::InnerFindFocusedElementInfo(const int32_t accessi
 bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -201,8 +213,12 @@ void AccessibleAbilityChannel::InnerFocusMoveSearch(const int32_t accessibilityW
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("FocusMoveSearch failed");
+    if (!connection) {
+        HILOG_ERROR("FocusMoveSearch failed: windowId[%{public}d] has no connection", realId);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
@@ -216,7 +232,7 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -244,8 +260,12 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
         accessibilityWindowId, FOCUS_TYPE_INVALID);
 
     sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-    if (!connection || !connection->GetProxy()) {
-        HILOG_ERROR("ExecuteAction failed");
+    if (!connection) {
+        HILOG_ERROR("ExecuteAction failed: windowId[%{public}d] has no connection", realId);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
         return;
     }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
@@ -293,7 +313,7 @@ void AccessibleAbilityChannel::InnerGetWindow(std::promise<bool> &syncPromise,
 
 bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return false;
@@ -315,7 +335,7 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
 bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return false;
@@ -335,7 +355,7 @@ bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
 void AccessibleAbilityChannel::InnerGetWindowsByDisplayId(std::promise<bool> &syncPromise,
     const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
@@ -357,7 +377,7 @@ void AccessibleAbilityChannel::InnerGetWindowsByDisplayId(std::promise<bool> &sy
 
 bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -400,7 +420,7 @@ void AccessibleAbilityChannel::InnerExecuteCommonAction(int32_t action)
 
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
@@ -425,7 +445,7 @@ void AccessibleAbilityChannel::InnerSetOnKeyPressEventResult(const bool handled,
 void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    HILOG_DEBUG("start");
+    HILOG_INFO();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return;
@@ -438,7 +458,7 @@ void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
 void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t requestId,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<IAccessibleAbilityClient> abilityClient = connection_.GetAbilityClient();
     if (!abilityClient) {
         return;
@@ -460,7 +480,7 @@ void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t reques
 
 bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return false;
@@ -479,14 +499,14 @@ bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
 void AccessibleAbilityChannel::InnerSetEventTypeFilter(std::promise<bool> &syncPromise,
     const uint32_t filter)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     connection_.SetAbilityInfoEventTypeFilter(filter);
     syncPromise.set_value(true);
 }
 
 bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
         return false;
@@ -505,7 +525,7 @@ bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string
 void AccessibleAbilityChannel::InnerSetTargetBundleName(std::promise<bool> &syncPromise,
     const std::vector<std::string> &targetBundleNames)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     connection_.SetAbilityInfoTargetBundleName(targetBundleNames);
     syncPromise.set_value(true);
 }

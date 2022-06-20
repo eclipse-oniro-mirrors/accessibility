@@ -187,7 +187,6 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().Init();
-
     return true;
 }
 
@@ -476,7 +475,7 @@ AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaption
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        return accountData->GetCurrentConfig()->GetCaptionProperty();
+        return accountData->GetConfig()->GetCaptionProperty();
     }
     AccessibilityConfig::CaptionProperty cp;
     return cp;
@@ -487,7 +486,7 @@ void AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConf
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        accountData->GetCurrentConfig()->SetCaptionProperty(caption);
+        accountData->GetConfig()->SetCaptionProperty(caption);
         UpdateCaptionProperty();
     }
 }
@@ -502,7 +501,7 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
         return;
     }
 
-    AccessibilityConfig::CaptionProperty caption = accountData->GetCurrentConfig()->GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = accountData->GetConfig()->GetCaptionProperty();
     for (auto& callback : accountData->GetCaptionPropertyCallbacks()) {
         callback->OnPropertyChanged(caption);
     }
@@ -513,7 +512,7 @@ void AccessibleAbilityManagerService::SetCaptionState(const bool state)
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        accountData->GetCurrentConfig()->SetCaptionState(state);
+        accountData->GetConfig()->SetCaptionState(state);
         UpdateAccessibilityState();
     }
 }
@@ -523,7 +522,7 @@ bool AccessibleAbilityManagerService::GetEnabledState()
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        bool result = accountData->GetCurrentConfig()->GetEnabledState();
+        bool result = accountData->GetConfig()->GetEnabledState();
         return result;
     }
     return false;
@@ -534,7 +533,7 @@ bool AccessibleAbilityManagerService::GetCaptionState()
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        bool result = accountData->GetCurrentConfig()->GetCaptionState();
+        bool result = accountData->GetConfig()->GetCaptionState();
         return result;
     }
     return false;
@@ -545,7 +544,7 @@ bool AccessibleAbilityManagerService::GetTouchGuideState()
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        bool result = accountData->GetCurrentConfig()->GetTouchGuideState();
+        bool result = accountData->GetConfig()->GetTouchGuideState();
         return result;
     }
     return false;
@@ -556,7 +555,7 @@ bool AccessibleAbilityManagerService::GetGestureState()
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        bool result = accountData->GetCurrentConfig()->GetGestureState();
+        bool result = accountData->GetConfig()->GetGestureState();
         return result;
     }
     return false;
@@ -567,7 +566,7 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     HILOG_DEBUG("start");
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr) {
-        bool result = accountData->GetCurrentConfig()->GetKeyEventObserverState();
+        bool result = accountData->GetConfig()->GetKeyEventObserverState();
         return result;
     }
     return false;
@@ -741,7 +740,7 @@ void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool sta
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetScreenMagnificationState(state);
+        accountData->GetConfig()->SetScreenMagnificationState(state);
         UpdateAccessibilityState();
         UpdateInputFilter();
         }), "TASK_SET_SCREENMAGNIFICATION_STATE");
@@ -761,7 +760,7 @@ void AccessibleAbilityManagerService::SetShortKeyState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetShortKeyState(state);
+        accountData->GetConfig()->SetShortKeyState(state);
         UpdateAccessibilityState();
         UpdateInputFilter();
         }), "TASK_SET_SHORTKEY_STATE");
@@ -781,7 +780,7 @@ void AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetMouseKeyState(state);
+        accountData->GetConfig()->SetMouseKeyState(state);
         UpdateInputFilter();
         }), "TASK_SET_MOUSEKEY_STATE");
 }
@@ -800,7 +799,7 @@ void AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetMouseAutoClick(time);
+        accountData->GetConfig()->SetMouseAutoClick(time);
         UpdateInputFilter();
         }), "TASK_SET_MOUSE_AUTOCLICK");
 }
@@ -819,7 +818,7 @@ void AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetShortkeyTarget(name);
+        accountData->GetConfig()->SetShortkeyTarget(name);
         UpdateAccessibilityState();
         }), "TASK_SET_SHORTKEY_TARGET");
 }
@@ -838,7 +837,7 @@ void AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetHighContrastTextState(state);
+        accountData->GetConfig()->SetHighContrastTextState(state);
         }), "TASK_SET_HIGHCONTRASTTEXT_STATE");
 }
 
@@ -856,7 +855,7 @@ void AccessibleAbilityManagerService::SetInvertColorState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetInvertColorState(state);
+        accountData->GetConfig()->SetInvertColorState(state);
         }), "TASK_SET_INVERTCOLOR_STATE");
 }
 
@@ -874,7 +873,7 @@ void AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetAnimationOffState(state);
+        accountData->GetConfig()->SetAnimationOffState(state);
         UpdateAccessibilityState();
         }), "TASK_SET_ANIMATIONOFF_STATE");
 }
@@ -892,7 +891,7 @@ void AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetAnimationOffState(state);
+        accountData->GetConfig()->SetAnimationOffState(state);
         UpdateAccessibilityState();
         }), "TASK_SET_AUDIOMONO_STATE");
 }
@@ -911,7 +910,7 @@ void AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetDaltonizationColorFilter(filter);
+        accountData->GetConfig()->SetDaltonizationColorFilter(filter);
         }), "TASK_SET_DALTONIZATION_COLORFILTER");
 }
 
@@ -929,7 +928,7 @@ void AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetContentTimeout(time);
+        accountData->GetConfig()->SetContentTimeout(time);
         }), "TASK_SET_CONTENT_TIMEOUT");
 }
 
@@ -947,7 +946,7 @@ void AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetBrightnessDiscount(discount);
+        accountData->GetConfig()->SetBrightnessDiscount(discount);
         }), "TASK_SET_BRIGHTNESS_DISCOUNT");
 }
 
@@ -965,7 +964,7 @@ void AccessibleAbilityManagerService::SetAudioBalance(const float balance)
             HILOG_ERROR("accountData is nullptr.");
             return;
         }
-        accountData->GetCurrentConfig()->SetAudioBalance(balance);
+        accountData->GetConfig()->SetAudioBalance(balance);
         }), "TASK_SET_AUDIO_BALANCE");
 }
 
@@ -987,7 +986,7 @@ bool AccessibleAbilityManagerService::GetScreenMagnificationState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetScreenMagnificationState();
+        bool result = accountData->GetConfig()->GetScreenMagnificationState();
         syncPromise.set_value(result);
         }), "TASK_GET_SCREENMAGNIFIER_STATE");
     return syncFuture.get();
@@ -1011,7 +1010,7 @@ bool AccessibleAbilityManagerService::GetShortKeyState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetShortKeyState();
+        bool result = accountData->GetConfig()->GetShortKeyState();
         syncPromise.set_value(result);
         }), "TASK_GET_SHORTKEY_STATE");
     return syncFuture.get();
@@ -1035,7 +1034,7 @@ bool AccessibleAbilityManagerService::GetMouseKeyState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetMouseKeyState();
+        bool result = accountData->GetConfig()->GetMouseKeyState();
         syncPromise.set_value(result);
         }), "TASK_GET_MOUSEKEY_STATE");
     return syncFuture.get();
@@ -1054,7 +1053,7 @@ int32_t AccessibleAbilityManagerService::GetMouseAutoClick()
             syncPromise.set_value(false);
             return;
         }
-        int32_t result = accountData->GetCurrentConfig()->GetMouseAutoClick();
+        int32_t result = accountData->GetConfig()->GetMouseAutoClick();
         syncPromise.set_value(result);
         }), "TASK_GET_MOUSE_AUTOCLICK");
 
@@ -1074,7 +1073,7 @@ std::string AccessibleAbilityManagerService::GetShortkeyTarget()
             syncPromise.set_value("");
             return;
         }
-        std::string result = accountData->GetCurrentConfig()->GetShortkeyTarget();
+        std::string result = accountData->GetConfig()->GetShortkeyTarget();
         syncPromise.set_value(result);
         }), "TASK_GET_SHORTKEY_TARGET");
 
@@ -1094,7 +1093,7 @@ bool AccessibleAbilityManagerService::GetHighContrastTextState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetHighContrastTextState();
+        bool result = accountData->GetConfig()->GetHighContrastTextState();
         syncPromise.set_value(result);
         }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
 
@@ -1114,7 +1113,7 @@ bool AccessibleAbilityManagerService::GetInvertColorState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetInvertColorState();
+        bool result = accountData->GetConfig()->GetInvertColorState();
         syncPromise.set_value(result);
         }), "TASK_GET_INVERTCOLOR_STATE");
 
@@ -1134,7 +1133,7 @@ bool AccessibleAbilityManagerService::GetAnimationOffState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetAnimationOffState();
+        bool result = accountData->GetConfig()->GetAnimationOffState();
         syncPromise.set_value(result);
         }), "TASK_GET_ANIMATIONOFF_STATE");
 
@@ -1154,7 +1153,7 @@ bool AccessibleAbilityManagerService::GetAudioMonoState()
             syncPromise.set_value(false);
             return;
         }
-        bool result = accountData->GetCurrentConfig()->GetAudioMonoState();
+        bool result = accountData->GetConfig()->GetAudioMonoState();
         syncPromise.set_value(result);
         }), "TASK_GET_AUDIOMONO_STATE");
 
@@ -1174,7 +1173,7 @@ uint32_t AccessibleAbilityManagerService::GetDaltonizationColorFilter()
             syncPromise.set_value(false);
             return;
         }
-        uint32_t result = accountData->GetCurrentConfig()->GetDaltonizationColorFilter();
+        uint32_t result = accountData->GetConfig()->GetDaltonizationColorFilter();
         syncPromise.set_value(result);
         }), "TASK_GET_DALTONIZATION_COLORFILTER");
 
@@ -1194,7 +1193,7 @@ uint32_t AccessibleAbilityManagerService::GetContentTimeout()
             syncPromise.set_value(false);
             return;
         }
-        uint32_t result = accountData->GetCurrentConfig()->GetContentTimeout();
+        uint32_t result = accountData->GetConfig()->GetContentTimeout();
         syncPromise.set_value(result);
         }), "TASK_GET_CONTENT_TIMEOUT");
 
@@ -1214,7 +1213,7 @@ float AccessibleAbilityManagerService::GetBrightnessDiscount()
             syncPromise.set_value(false);
             return;
         }
-        float result = accountData->GetCurrentConfig()->GetBrightnessDiscount();
+        float result = accountData->GetConfig()->GetBrightnessDiscount();
         syncPromise.set_value(result);
         }), "TASK_GET_BRIGHTNESS_DISCOUNT");
 
@@ -1234,7 +1233,7 @@ float AccessibleAbilityManagerService::GetAudioBalance()
             syncPromise.set_value(false);
             return;
         }
-        float result = accountData->GetCurrentConfig()->GetAudioBalance();
+        float result = accountData->GetConfig()->GetAudioBalance();
         syncPromise.set_value(result);
         }), "TASK_GET_AUDIO_BALANCE");
 

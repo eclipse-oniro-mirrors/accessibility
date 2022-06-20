@@ -112,7 +112,8 @@ bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId
         HILOG_ERROR("Failed to wait result");
         return false;
     }
-
+    HILOG_INFO("Get result successfully from ace. executeActionResult_[%{public}d]",
+        elementOperator->executeActionResult_);
     return elementOperator->executeActionResult_;
 }
 
@@ -143,7 +144,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     for (auto &info : elementOperator->elementInfosResult_) {
         info.SetChannelId(channelId_);
     }
-    HILOG_DEBUG("search element info End[size:%{public}zu]", elementOperator->elementInfosResult_.size());
+    HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
     return true;
 }
@@ -216,7 +217,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
     for (auto &info : elementOperator->elementInfosResult_) {
         info.SetChannelId(channelId_);
     }
-    HILOG_DEBUG("[size:%{public}zu] end", elementOperator->elementInfosResult_.size());
+    HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
     return true;
 }

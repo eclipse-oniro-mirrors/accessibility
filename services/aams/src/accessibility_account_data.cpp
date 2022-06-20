@@ -32,13 +32,13 @@ AccessibilityAccountData::~AccessibilityAccountData()
 
 int32_t AccessibilityAccountData::GetAccountId()
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO("id_ = %{public}d", id_);
     return id_;
 }
 
 uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
         state |= STATE_ACCESSIBILITY_ENABLED;
@@ -67,7 +67,7 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 
 void AccessibilityAccountData::OnAccountSwitched()
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     connectingA11yAbilities_.clear();
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         itr->second->Disconnect();
@@ -77,35 +77,35 @@ void AccessibilityAccountData::OnAccountSwitched()
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     std::string uri = Utils::GetUri(connection->GetElementName());
-    HILOG_DEBUG("URI is %{public}s", uri.c_str());
+    HILOG_INFO("URI is %{private}s", uri.c_str());
     if (!connectedA11yAbilities_.count(uri)) {
         connectedA11yAbilities_.insert(make_pair(uri, connection));
     }
 
-    HILOG_DEBUG("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
+    HILOG_INFO("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
     std::string uri = Utils::GetUri(connection->GetElementName());
-    HILOG_DEBUG("URI is %{public}s", uri.c_str());
+    HILOG_INFO("URI is %{private}s", uri.c_str());
     std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it = connectedA11yAbilities_.find(uri);
     if (it != connectedA11yAbilities_.end()) {
         connectedA11yAbilities_.erase(it);
     }
 
-    HILOG_DEBUG("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
+    HILOG_INFO("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     stateCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     for (auto itr = stateCallbacks_.begin(); itr != stateCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             stateCallbacks_.erase(itr);
@@ -117,13 +117,13 @@ void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& ca
 void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     captionPropertyCallbacks_.push_back(callback);
 }
 
 void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     for (auto itr = captionPropertyCallbacks_.begin(); itr != captionPropertyCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             captionPropertyCallbacks_.erase(itr);
@@ -135,7 +135,7 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     for (auto &enableAbilityListsObserver : enableAbilityListsObservers_) {
         if (enableAbilityListsObserver == observer) {
             HILOG_ERROR("observer is already exist");
@@ -148,7 +148,7 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
 
 void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemoteObject>& observer)
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     for (auto itr = enableAbilityListsObservers_.begin(); itr != enableAbilityListsObservers_.end(); itr++) {
         if ((*itr)->AsObject() == observer) {
             HILOG_DEBUG("erase observer");
@@ -317,7 +317,11 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int32_t windowId)
 {
-    HILOG_DEBUG("windowId(%{public}d).", windowId);
+    HILOG_DEBUG("windowId[%{public}d] interactionOperators's size[%{public}zu]", windowId, asacConnections_.size());
+    for (auto &asacConnection : asacConnections_) {
+        HILOG_DEBUG("The window id of asacConnection is %{public}d", asacConnection.first);
+    }
+
     if (asacConnections_.count(windowId) > 0) {
         return asacConnections_[windowId];
     }
@@ -644,7 +648,7 @@ void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& c
     }
 }
 
-std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetCurrentConfig()
+std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig()
 {
     HILOG_DEBUG("start.");
     return config_;

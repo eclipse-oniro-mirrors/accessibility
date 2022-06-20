@@ -281,13 +281,13 @@ public:
     void AddEventEnabled(EventType type);
 
     /**
-     * @brief Delet enabled event which is needed by accessible ability.
+     * @brief Delete enabled event which is needed by accessible ability.
      * @param type EventType
      * @return null.
      */
     void DeleteEventEnabled(EventType type);
 
-    std::shared_ptr<AccessibilitySettingsConfig> GetCurrentConfig();
+    std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
 

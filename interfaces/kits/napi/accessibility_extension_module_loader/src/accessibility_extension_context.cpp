@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 bool AccessibilityExtensionContext::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -35,7 +35,7 @@ bool AccessibilityExtensionContext::GetFocus(const int32_t focusType, Accessibil
 bool AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -48,7 +48,7 @@ bool AccessibilityExtensionContext::InjectGesture(const uint32_t sequence,
     const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
     const std::shared_ptr<AccessibilityGestureResultListener> &listener)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -67,7 +67,7 @@ bool AccessibilityExtensionContext::InjectGesture(const uint32_t sequence,
 
 bool AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -79,7 +79,7 @@ bool AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInf
 bool AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
     AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -90,7 +90,7 @@ bool AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindowInf
 
 bool AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -101,7 +101,7 @@ bool AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowIn
 
 bool AccessibilityExtensionContext::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -112,7 +112,7 @@ bool AccessibilityExtensionContext::GetWindows(const uint64_t displayId, std::ve
 
 bool AccessibilityExtensionContext::ExecuteCommonAction(const GlobalAction action)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -124,7 +124,7 @@ bool AccessibilityExtensionContext::ExecuteCommonAction(const GlobalAction actio
 bool AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -136,7 +136,7 @@ bool AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elem
 bool AccessibilityExtensionContext::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
     AccessibilityElementInfo &child)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -148,7 +148,7 @@ bool AccessibilityExtensionContext::GetChildElementInfo(const int32_t index, con
 bool AccessibilityExtensionContext::GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
     std::vector<AccessibilityElementInfo> &elementInfos)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -160,7 +160,7 @@ bool AccessibilityExtensionContext::GetByContent(const AccessibilityElementInfo 
 bool AccessibilityExtensionContext::GetAnchor(const AccessibilityWindowInfo &windowInfo,
     AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -172,7 +172,7 @@ bool AccessibilityExtensionContext::GetAnchor(const AccessibilityWindowInfo &win
 bool AccessibilityExtensionContext::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -184,7 +184,7 @@ bool AccessibilityExtensionContext::GetParentElementInfo(const AccessibilityElem
 bool AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
     const std::map<std::string, std::string> &actionArguments)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -194,7 +194,7 @@ bool AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo
 }
 bool AccessibilityExtensionContext::SetEventTypeFilter(const uint32_t filter)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
@@ -205,7 +205,7 @@ bool AccessibilityExtensionContext::SetEventTypeFilter(const uint32_t filter)
 
 bool AccessibilityExtensionContext::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");

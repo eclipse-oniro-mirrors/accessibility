@@ -21,7 +21,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerCaptionObserverStub::AccessibleAbilityManagerCaptionObserverStub()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 }
 
 int AccessibleAbilityManagerCaptionObserverStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -45,7 +45,7 @@ int AccessibleAbilityManagerCaptionObserverStub::OnRemoteRequest(uint32_t code, 
 ErrCode AccessibleAbilityManagerCaptionObserverStub::HandleOnCaptionPropertyChanged(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<CaptionPropertyParcel> property = data.ReadStrongParcelable<CaptionPropertyParcel>();
     if (!property) {
         HILOG_ERROR("ReadStrongParcelable<CaptionProperty> failed");

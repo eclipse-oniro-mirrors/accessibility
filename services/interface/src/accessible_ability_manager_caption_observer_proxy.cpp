@@ -28,7 +28,7 @@ AccessibleAbilityManagerCaptionObserverProxy::~AccessibleAbilityManagerCaptionOb
 
 bool AccessibleAbilityManagerCaptionObserverProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(AccessibleAbilityManagerCaptionObserverProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -39,7 +39,7 @@ bool AccessibleAbilityManagerCaptionObserverProxy::WriteInterfaceToken(MessagePa
 void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
     const AccessibilityConfig::CaptionProperty& property)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;

@@ -27,7 +27,7 @@ AccessibilityElementOperatorProxy::~AccessibilityElementOperatorProxy()
 
 bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     if (!data.WriteInterfaceToken(AccessibilityElementOperatorProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
@@ -39,7 +39,7 @@ bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
 bool AccessibilityElementOperatorProxy::SendTransactCmd(IAccessibilityElementOperator::Message code,
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<IRemoteObject> remote = Remote();
     if (!remote) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
@@ -56,7 +56,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(IAccessibilityElementOpe
 void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -101,7 +101,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
     const std::string &text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -143,7 +143,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
 void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -186,7 +186,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t ele
 void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -230,7 +230,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, c
     const std::map<std::string, std::string> &arguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -291,7 +291,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, c
 
 void AccessibilityElementOperatorProxy::ClearFocus()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -308,7 +308,7 @@ void AccessibilityElementOperatorProxy::ClearFocus()
 
 void AccessibilityElementOperatorProxy::OutsideTouch()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);

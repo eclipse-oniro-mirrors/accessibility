@@ -20,26 +20,26 @@ namespace OHOS {
 namespace Accessibility {
 int64_t AccessibilityGestureInjectPath::GetDurationTime() const
 {
-    HILOG_DEBUG("start and max stroke duration is %{public}jd", durationTime_);
+    HILOG_DEBUG("durationTime:%{public}jd", durationTime_);
     return durationTime_;
 }
 
 const std::vector<AccessibilityGesturePosition> &AccessibilityGestureInjectPath::GetPositions() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     return positions_;
 }
 
 void AccessibilityGestureInjectPath::SetDurationTime(int64_t durationTime)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     durationTime_ = durationTime;
 }
 
 void AccessibilityGestureInjectPath::AddPosition(AccessibilityGesturePosition &position)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     positions_.emplace_back(position);
 }

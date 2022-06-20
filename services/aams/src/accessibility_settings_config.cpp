@@ -24,34 +24,34 @@ namespace {
 } // namespace
 AccessibilitySettingsConfig::AccessibilitySettingsConfig(int32_t id)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("id = [%{public}d]", id);
     accountId_ = id;
 }
 
 bool AccessibilitySettingsConfig::SetEnabled(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     enabled_ = state;
     return SetStatePref(STATE::ACCESSIBILITY);
 }
 
 bool AccessibilitySettingsConfig::SetTouchGuideState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     eventTouchGuideState_ = state;
     return SetStatePref(STATE::TOUCHGUIDE);
 }
 
 bool AccessibilitySettingsConfig::SetGestureState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     gesturesSimulation_ = state;
     return SetStatePref(STATE::GESTURE);
 }
 
 bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     filteringKeyEvents_ = state;
     return SetStatePref(STATE::KEYEVENT);
 }
@@ -59,35 +59,35 @@ bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 
 void AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isCaptionState_ = state;
     SetStatePref(STATE::CAPTION);
 }
 
 void AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isScreenMagnificationState_ = state;
     SetStatePref(STATE::SCREENMAGNIFIER);
 }
 
 void AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isShortKeyState_ = state;
     SetStatePref(STATE::SHORTKEY);
 }
 
 void AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isMouseKeyState_ = state;
     SetStatePref(STATE::MOUSEKEY);
 }
 
 void AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("time = [%{public}d]", time);
     mouseAutoClick_ = time;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -100,7 +100,7 @@ void AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 
 void AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("name = [%{public}s]", name.c_str());
     shortkeyTarget_ = name;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -113,35 +113,35 @@ void AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 
 void AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     highContrastTextState_ = state;
     SetStatePref(STATE::HIGHCONTRASTTEXT);
 }
 
 void AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     invertColorState_ = state;
     SetStatePref(STATE::INVERTCOLORSTATE);
 }
 
 void AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     animationOffState_ = state;
     SetStatePref(STATE::ANIMATIONOFF);
 }
 
 void AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     audioMonoState_ = state;
     SetStatePref(STATE::AUDIOMONO);
 }
 
 void AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("filter = [%{public}u]", filter);
     daltonizationColorFilter_ = filter;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -154,7 +154,7 @@ void AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t fil
 
 void AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("time = [%{public}u]", time);
     contentTimeout_ = time;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -167,7 +167,7 @@ void AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 
 void AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("discount = [%{public}f]", discount);
     brightnessDiscount_ = discount;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -180,7 +180,7 @@ void AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 
 void AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("balance = [%{public}f]", balance);
     audioBalance_ = balance;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -193,7 +193,7 @@ void AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 
 void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     captionProperty_ = caption;
 
     if (!pref_) {
@@ -218,7 +218,7 @@ void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::
 
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("type = [%{public}d]", type);
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
         return false;
@@ -284,7 +284,7 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
 
 std::string AccessibilitySettingsConfig::StateChange(bool state)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     std::string STATE_TRUE = "on";
     std::string STATE_FALSE = "off";
     if (state) {
@@ -391,7 +391,7 @@ const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCapt
 
 uint32_t AccessibilitySettingsConfig::GetConfigState()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     uint32_t state = 0;
     if (isCaptionState_) {
         state |= STATE_CAPTION_ENABLED;
@@ -429,7 +429,7 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
 
 void AccessibilitySettingsConfig::InitCaption()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!pref_) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
@@ -444,22 +444,22 @@ void AccessibilitySettingsConfig::InitCaption()
     }
 
     std::string FONTFAMILY = pref_->GetString("fontFamily", "default");
-    HILOG_DEBUG(" pref_->GetString() = %{public}s.", FONTFAMILY.c_str());
+    HILOG_DEBUG("fontFamily = %{public}s.", FONTFAMILY.c_str());
 
     int32_t FONTSCALE =  static_cast<int32_t>(pref_->GetInt("fontScale", 0));
-    HILOG_DEBUG(" pref_->GetString() = %{public}d.", FONTSCALE);
+    HILOG_DEBUG("fontScale = %{public}d.", FONTSCALE);
 
     uint32_t FONTCOLOR = static_cast<uint32_t>(pref_->GetInt("fontColor", DEFAULT_COLOR));
-    HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", FONTCOLOR);
+    HILOG_DEBUG("fontColor = 0x%{public}x.", FONTCOLOR);
 
     std::string FONTEDGETYPE = pref_->GetString("fontEdgeType", "none");
-    HILOG_DEBUG(" pref_->GetString() = 0x%{public}s.", FONTEDGETYPE.c_str());
+    HILOG_DEBUG("FONTEDGETYPE = 0x%{public}s.", FONTEDGETYPE.c_str());
 
     uint32_t BACKGROUNDCOLOR = static_cast<uint32_t>(pref_->GetInt("backgroundColor", DEFAULT_COLOR));
-    HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", BACKGROUNDCOLOR);
+    HILOG_DEBUG("BACKGROUNDCOLOR = 0x%{public}x.", BACKGROUNDCOLOR);
 
     uint32_t WINDOWCOLOR = static_cast<uint32_t>(pref_->GetInt("windowColor", DEFAULT_COLOR));
-    HILOG_DEBUG(" pref_->GetString() = 0x%{public}x.", WINDOWCOLOR);
+    HILOG_DEBUG("WINDOWCOLOR = 0x%{public}x.", WINDOWCOLOR);
 
     captionProperty_.SetFontFamily(FONTFAMILY);
     captionProperty_.SetFontScale(FONTSCALE);
@@ -471,7 +471,7 @@ void AccessibilitySettingsConfig::InitCaption()
 
 void AccessibilitySettingsConfig::InitSetting()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!pref_) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
@@ -508,14 +508,14 @@ void AccessibilitySettingsConfig::InitSetting()
 
 void AccessibilitySettingsConfig::InitCapability()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!pref_) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
     }
 
     std::string strValue = pref_->GetString("accessible", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+    HILOG_DEBUG("accessible = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
         enabled_ = true;
     } else {
@@ -523,17 +523,15 @@ void AccessibilitySettingsConfig::InitCapability()
     }
 
     strValue = pref_->GetString("touchGuide", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+    HILOG_DEBUG("touchGuide = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
-        HILOG_DEBUG("eventTouchGuideState_ = true");
         eventTouchGuideState_ = true;
     } else {
-        HILOG_DEBUG("eventTouchGuideState_ = false");
         eventTouchGuideState_ = false;
     }
 
     strValue = pref_->GetString("gesture", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+    HILOG_DEBUG("gesture = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
         filteringKeyEvents_ = true;
     } else {
@@ -541,7 +539,7 @@ void AccessibilitySettingsConfig::InitCapability()
     }
 
     strValue = pref_->GetString("keyEventObserver", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+    HILOG_DEBUG("keyEventObserver = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
         gesturesSimulation_ = true;
     } else {
@@ -551,21 +549,21 @@ void AccessibilitySettingsConfig::InitCapability()
 
 void AccessibilitySettingsConfig::InitEnabledList()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!pref_) {
         HILOG_ERROR("Input Parameter is nullptr");
         return;
     }
 
     std::string strValue = pref_->GetString("BundleName/AbilityName/Capabilities", "");
-    HILOG_DEBUG("strValue = %{public}s", strValue.c_str());
+    HILOG_DEBUG("Capabilities = %{public}s", strValue.c_str());
 
     StringToVector(strValue, enabledAbilityInfos_);
 }
 
 void AccessibilitySettingsConfig::Init()
 {
-    HILOG_DEBUG("start.");
+    HILOG_INFO();
     int errCode = -1;
 
     pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + std::to_string(accountId_) + ".xml",
@@ -583,7 +581,7 @@ void AccessibilitySettingsConfig::Init()
 
 void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     int32_t i = 0;
     for (auto& var : vectorVal) {
         if (i > 0) {
@@ -592,12 +590,12 @@ void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> 
         stringOut = stringOut + var.c_str();
         i++;
     }
-    HILOG_DEBUG("end stringOUT = %{public}s .", stringOut.c_str());
+    HILOG_DEBUG("stringOUT = %{public}s .", stringOut.c_str());
 }
 
 void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     int32_t strLength = static_cast<int32_t>(stringIn.size());
     std::vector<int32_t> position;
 
@@ -637,18 +635,17 @@ void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, st
     for (auto& var : vectorResult) {
         HILOG_DEBUG("vectorResult = %{public}s ", var.c_str());
     }
-    HILOG_DEBUG("end.");
 }
 
 const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAbilityInfos()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     return enabledAbilityInfos_;
 }
 
 void AccessibilitySettingsConfig::UpdateEnabledAbilities(const std::vector<std::string> &vecvalue)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     enabledAbilityInfos_ = vecvalue;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
@@ -662,7 +659,7 @@ void AccessibilitySettingsConfig::UpdateEnabledAbilities(const std::vector<std::
 
 void AccessibilitySettingsConfig::ClearData()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     int errCode = -1;
     errCode = NativePreferences::PreferencesHelper::DeletePreferences(PREF_PATH + std::to_string(accountId_) + ".xml");
     if (errCode) {

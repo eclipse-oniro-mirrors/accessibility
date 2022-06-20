@@ -24,7 +24,7 @@ namespace OHOS {
 namespace AccessibilityConfig {
 AccessibilityConfig::Impl::Impl()
 {
-    HILOG_DEBUG("start");
+    HILOG_INFO();
     if (!ConnectToService()) {
         HILOG_ERROR("Failed to connect to aams service");
         return;
@@ -94,7 +94,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
 
 void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (serviceProxy_) {
         sptr<IRemoteObject> object = serviceProxy_->AsObject();
@@ -108,7 +108,7 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
 
 bool AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -119,7 +119,7 @@ bool AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uin
 
 bool AccessibilityConfig::Impl::DisableAbility(const std::string &name)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("name = [%{private}s]", name.c_str());
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -130,7 +130,7 @@ bool AccessibilityConfig::Impl::DisableAbility(const std::string &name)
 
 void AccessibilityConfig::Impl::GetCaptionState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -142,7 +142,7 @@ void AccessibilityConfig::Impl::GetCaptionState(bool &state)
 
 void AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &caption)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -153,7 +153,7 @@ void AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &caption)
 
 void AccessibilityConfig::Impl::SetCaptionProperty(const CaptionProperty& caption)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -164,7 +164,7 @@ void AccessibilityConfig::Impl::SetCaptionProperty(const CaptionProperty& captio
 
 void AccessibilityConfig::Impl::SetCaptionState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -176,7 +176,7 @@ void AccessibilityConfig::Impl::SetCaptionState(const bool state)
 void AccessibilityConfig::Impl::NotifyCaptionStateChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -190,13 +190,12 @@ void AccessibilityConfig::Impl::NotifyCaptionStateChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyCaptionChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const CaptionProperty &captionProperty)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     if (!observers.size()) {
         HILOG_DEBUG("observers is null");
         return;
@@ -210,13 +209,12 @@ void AccessibilityConfig::Impl::NotifyCaptionChanged(
             HILOG_ERROR("end observers is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
     std::lock_guard<std::mutex> lock(mutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
@@ -234,7 +232,7 @@ void AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
 void AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
     std::lock_guard<std::mutex> lock(mutex_);
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
@@ -247,7 +245,7 @@ void AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty& property)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -269,12 +267,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged
     }
 
     NotifyCaptionChanged(observers, property);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::SetScreenMagnificationState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -285,7 +282,7 @@ void AccessibilityConfig::Impl::SetScreenMagnificationState(const bool state)
 
 void AccessibilityConfig::Impl::SetShortKeyState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -296,7 +293,7 @@ void AccessibilityConfig::Impl::SetShortKeyState(const bool state)
 
 void AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -307,7 +304,7 @@ void AccessibilityConfig::Impl::SetMouseKeyState(const bool state)
 
 void AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -315,11 +312,12 @@ void AccessibilityConfig::Impl::GetScreenMagnificationState(bool &state)
     }
 
     state = serviceProxy_->GetScreenMagnificationState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetShortKeyState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -327,11 +325,12 @@ void AccessibilityConfig::Impl::GetShortKeyState(bool &state)
     }
 
     state = serviceProxy_->GetShortKeyState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -339,12 +338,12 @@ void AccessibilityConfig::Impl::GetMouseKeyState(bool &state)
     }
 
     state = serviceProxy_->GetMouseKeyState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
-
 
 void AccessibilityConfig::Impl::UpdateCaptionEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -360,12 +359,11 @@ void AccessibilityConfig::Impl::UpdateCaptionEnabled(const bool enabled)
         observers = it->second;
     }
     NotifyCaptionStateChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateScreenMagnificationEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -381,12 +379,11 @@ void AccessibilityConfig::Impl::UpdateScreenMagnificationEnabled(const bool enab
         observers = it->second;
     }
     NotifyScreenMagnificationChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateShortKeyEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -402,12 +399,11 @@ void AccessibilityConfig::Impl::UpdateShortKeyEnabled(const bool enabled)
         observers = it->second;
     }
     NotifyShortKeyChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateMouseKeyEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -423,12 +419,11 @@ void AccessibilityConfig::Impl::UpdateMouseKeyEnabled(const bool enabled)
         observers = it->second;
     }
     NotifyMouseKeyChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateAudioMonoEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -444,12 +439,11 @@ void AccessibilityConfig::Impl::UpdateAudioMonoEnabled(const bool enabled)
         observers = it->second;
     }
     NotifyAudioMonoChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateAnimationOffEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -466,12 +460,11 @@ void AccessibilityConfig::Impl::UpdateAnimationOffEnabled(const bool enabled)
     }
 
     NotifyAnimationOffChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateInvertColorEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -487,12 +480,11 @@ void AccessibilityConfig::Impl::UpdateInvertColorEnabled(const bool enabled)
         observers = it->second;
     }
     NotifyInvertColorChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::UpdateHighContrastTextEnabled(const bool enabled)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -508,13 +500,12 @@ void AccessibilityConfig::Impl::UpdateHighContrastTextEnabled(const bool enabled
         observers = it->second;
     }
     NotifyHighContrastTextChanged(observers, enabled);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -528,13 +519,12 @@ void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyShortKeyChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -549,13 +539,12 @@ void AccessibilityConfig::Impl::NotifyShortKeyChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyMouseKeyChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -570,13 +559,12 @@ void AccessibilityConfig::Impl::NotifyMouseKeyChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyInvertColorChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -591,13 +579,12 @@ void AccessibilityConfig::Impl::NotifyInvertColorChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyHighContrastTextChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -612,13 +599,12 @@ void AccessibilityConfig::Impl::NotifyHighContrastTextChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyAudioMonoChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -633,13 +619,12 @@ void AccessibilityConfig::Impl::NotifyAudioMonoChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyAnimationOffChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -654,12 +639,11 @@ void AccessibilityConfig::Impl::NotifyAnimationOffChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::SetMouseAutoClick(const int32_t time)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("time = [%{public}d]", time);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -670,7 +654,7 @@ void AccessibilityConfig::Impl::SetMouseAutoClick(const int32_t time)
 
 void AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("name = [%{public}s]", name.c_str());
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -681,7 +665,7 @@ void AccessibilityConfig::Impl::SetShortkeyTarget(const std::string& name)
 
 void AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -689,11 +673,12 @@ void AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
     }
 
     time = serviceProxy_->GetMouseAutoClick();
+    HILOG_INFO("time = [%{public}d]", time);
 }
 
 void AccessibilityConfig::Impl::GetShortkeyTarget(std::string &name)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -701,12 +686,13 @@ void AccessibilityConfig::Impl::GetShortkeyTarget(std::string &name)
     }
 
     name = serviceProxy_->GetShortkeyTarget();
+    HILOG_INFO("name = [%{public}s]", name.c_str());
 }
 
 void AccessibilityConfig::Impl::NotifyShortkeyTargetChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const std::string &shortkey_target)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("shortkey_target = [%{public}s]", shortkey_target.c_str());
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -721,13 +707,12 @@ void AccessibilityConfig::Impl::NotifyShortkeyTargetChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyMouseAutoClickChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t mouseAutoClick)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("mouseAutoClick = [%{public}u]", mouseAutoClick);
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -742,13 +727,12 @@ void AccessibilityConfig::Impl::NotifyMouseAutoClickChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyAudioBalanceChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const float audioBalance)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("audioBalance = [%{public}f]", audioBalance);
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -763,13 +747,12 @@ void AccessibilityConfig::Impl::NotifyAudioBalanceChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyBrightnessDiscountChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const float brightnessDiscount)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("brightnessDiscount = [%{public}f]", brightnessDiscount);
     if (!configObservers_.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -784,13 +767,12 @@ void AccessibilityConfig::Impl::NotifyBrightnessDiscountChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyContentTimeoutChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t contentTimeout)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("contentTimeout = [%{public}u]", contentTimeout);
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -805,13 +787,12 @@ void AccessibilityConfig::Impl::NotifyContentTimeoutChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t daltonizationColorFilter)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("daltonizationColorFilter = [%{public}u]", daltonizationColorFilter);
     if (!observers.size()) {
         HILOG_DEBUG("There is no observers");
         return;
@@ -826,12 +807,11 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
             HILOG_ERROR("end configObservers_ is null");
         }
     }
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -842,7 +822,7 @@ void AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
 
 void AccessibilityConfig::Impl::SetInvertColorState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -853,7 +833,7 @@ void AccessibilityConfig::Impl::SetInvertColorState(const bool state)
 
 void AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -864,7 +844,7 @@ void AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_
 
 void AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("timer = [%{public}u]", timer);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -875,7 +855,7 @@ void AccessibilityConfig::Impl::SetContentTimeout(const uint32_t timer)
 
 void AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -886,7 +866,7 @@ void AccessibilityConfig::Impl::SetAnimationOffState(const bool state)
 
 void AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("brightness = [%{public}f]", brightness);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -897,7 +877,7 @@ void AccessibilityConfig::Impl::SetBrightnessDiscount(const float brightness)
 
 void AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -908,7 +888,7 @@ void AccessibilityConfig::Impl::SetAudioMonoState(const bool state)
 
 void AccessibilityConfig::Impl::SetAudioBalance(const float balance)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("balance = [%{public}f]", balance);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -919,7 +899,7 @@ void AccessibilityConfig::Impl::SetAudioBalance(const float balance)
 
 void AccessibilityConfig::Impl::GetInvertColorState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -927,11 +907,12 @@ void AccessibilityConfig::Impl::GetInvertColorState(bool &state)
     }
 
     state = serviceProxy_->GetInvertColorState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetHighContrastTextState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -939,11 +920,12 @@ void AccessibilityConfig::Impl::GetHighContrastTextState(bool &state)
     }
 
     state = serviceProxy_->GetHighContrastTextState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -951,11 +933,12 @@ void AccessibilityConfig::Impl::GetDaltonizationColorFilter(DALTONIZATION_TYPE &
     }
 
     type = static_cast<DALTONIZATION_TYPE>(serviceProxy_->GetDaltonizationColorFilter());
+    HILOG_INFO("type = [%{public}u]", static_cast<uint32_t>(type));
 }
 
 void AccessibilityConfig::Impl::GetContentTimeout(uint32_t &timer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -963,11 +946,12 @@ void AccessibilityConfig::Impl::GetContentTimeout(uint32_t &timer)
     }
 
     timer = serviceProxy_->GetContentTimeout();
+    HILOG_INFO("timer = [%{public}u]", timer);
 }
 
 void AccessibilityConfig::Impl::GetAnimationOffState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -975,11 +959,12 @@ void AccessibilityConfig::Impl::GetAnimationOffState(bool &state)
     }
 
     state = serviceProxy_->GetAnimationOffState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetBrightnessDiscount(float &brightness)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -987,11 +972,12 @@ void AccessibilityConfig::Impl::GetBrightnessDiscount(float &brightness)
     }
 
     brightness = serviceProxy_->GetBrightnessDiscount();
+    HILOG_INFO("brightness = [%{public}f]", brightness);
 }
 
 void AccessibilityConfig::Impl::GetAudioMonoState(bool &state)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -999,11 +985,12 @@ void AccessibilityConfig::Impl::GetAudioMonoState(bool &state)
     }
 
     state = serviceProxy_->GetAudioMonoState();
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
 }
 
 void AccessibilityConfig::Impl::GetAudioBalance(float &balance)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
@@ -1011,12 +998,13 @@ void AccessibilityConfig::Impl::GetAudioBalance(float &balance)
     }
 
     balance = serviceProxy_->GetAudioBalance();
+    HILOG_INFO("balance = [%{public}f]", balance);
 }
 
 void AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto &enableAbilityListsObserver : enableAbilityListsObservers_) {
         if (enableAbilityListsObserver == observer) {
@@ -1031,7 +1019,7 @@ void AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
 void AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end(); iter++) {
         if (*iter == observer) {
@@ -1045,7 +1033,7 @@ void AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(
 
 void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
 {
-    HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
+    HILOG_INFO("observer's size is %{public}zu", enableAbilityListsObservers_.size());
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1058,7 +1046,7 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCongfigStateChanged(const uint32_t stateType)
 {
-    HILOG_INFO("start stateType[%{public}d}", stateType);
+    HILOG_INFO("stateType = [%{public}u}", stateType);
     if (stateType & Accessibility::STATE_CAPTION_ENABLED) {
         UpdateCaptionEnabled(true);
     } else {
@@ -1110,7 +1098,7 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCongfigStateChanged(co
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance)
 {
-    HILOG_INFO("start audioBalance[%{public}f}", audioBalance);
+    HILOG_INFO("audioBalance = [%{public}f}", audioBalance);
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1127,12 +1115,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerAudioBalanceChanged(co
     }
 
     NotifyAudioBalanceChanged(observers, audioBalance);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount)
 {
-    HILOG_INFO("start brightnessDiscount[%{public}f}", brightnessDiscount);
+    HILOG_INFO("brightnessDiscount = [%{public}f}", brightnessDiscount);
 
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
@@ -1150,12 +1137,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerBrightnessDiscountChan
     }
 
     NotifyBrightnessDiscountChanged(observers, brightnessDiscount);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout)
 {
-    HILOG_INFO("start contentTimeout[%{public}d}", contentTimeout);
+    HILOG_INFO("contentTimeout = [%{public}u}", contentTimeout);
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1172,12 +1158,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerContentTimeoutChanged(
     }
 
     NotifyContentTimeoutChanged(observers, contentTimeout);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const uint32_t filterType)
 {
-    HILOG_INFO("start filterType[%{public}u}", filterType);
+    HILOG_INFO("filterType = [%{public}u}", filterType);
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1189,19 +1174,17 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerDaltonizationColorFilt
         std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
             configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER);
         if (it == configObservers_.end()) {
-            HILOG_INFO("it == configObservers_.end()");
             return;
         }
         observers = it->second;
     }
 
     NotifyDaltonizationColorFilterChanged(observers, filterType);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick)
 {
-    HILOG_INFO("start mouseAutoClick[%{public}d}", mouseAutoClick);
+    HILOG_INFO("mouseAutoClick = [%{public}d}", mouseAutoClick);
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1218,12 +1201,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerMouseAutoClickChanged(
     }
 
     NotifyMouseAutoClickChanged(observers, mouseAutoClick);
-    HILOG_INFO("end");
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget)
 {
-    HILOG_INFO("start shortkeyTarget[%{public}s}", shortkeyTarget.c_str());
+    HILOG_INFO("shortkeyTarget = [%{public}s}", shortkeyTarget.c_str());
     std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
     {
         std::lock_guard<std::mutex> lock(mutex_);
@@ -1240,7 +1222,6 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
     }
 
     NotifyShortkeyTargetChanged(observers, shortkeyTarget);
-    HILOG_INFO("end");
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS

@@ -27,7 +27,7 @@ AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObj
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(AccessibleAbilityClientProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -38,7 +38,7 @@ bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
 bool AccessibleAbilityClientProxy::SendTransactCmd(IAccessibleAbilityClient::Message code, MessageParcel &data,
     MessageParcel &reply,  MessageOption &option)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> remote = Remote();
     if (!remote) {
@@ -59,7 +59,7 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -90,7 +90,7 @@ void AccessibleAbilityClientProxy::Disconnect(const int32_t channelId)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -114,7 +114,7 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
     MessageOption option(MessageOption::TF_ASYNC);
     AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
 
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -135,7 +135,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!WriteInterfaceToken(data)) {
         return;
@@ -162,7 +162,7 @@ void AccessibleAbilityClientProxy::OnGestureInjectResult(const int32_t sequence,
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
 
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     if (!WriteInterfaceToken(data)) {
         return;

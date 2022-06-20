@@ -328,7 +328,7 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
         return;
     }
 
-    AccessibilityConfig::CaptionProperty caption = accountData->GetCurrentConfig()->GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = accountData->GetConfig()->GetCaptionProperty();
     for (auto& callback : accountData->GetCaptionPropertyCallbacks()) {
         callback->OnPropertyChanged(caption);
     }
