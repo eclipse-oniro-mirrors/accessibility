@@ -206,8 +206,10 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
 
     if (element) {
         AccessibilityElement* pAccessibilityElement = new AccessibilityElement(*element);
-        napi_value nTargetObject;
-        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &nTargetObject));
+        napi_value nTargetObject = nullptr;
+        napi_value constructor = nullptr;
+        napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+        napi_new_instance(env, constructor, 0, nullptr, &nTargetObject);
         // Bind js object to a Native object
         napi_status sts = napi_wrap(
             env,
