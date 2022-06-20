@@ -22,7 +22,7 @@ namespace Accessibility {
 /* AccessibilityElementInfoParcel       Parcel struct                 */
 AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     AccessibilityElementInfo *self = this;
     *self = elementInfo;
@@ -30,7 +30,7 @@ AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const Accessibili
 
 bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
     int32_t textMoveStep = STEP_CHARACTER;
@@ -116,7 +116,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(textMoveStep_));
@@ -182,7 +182,7 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<AccessibilityElementInfoParcel> accessibilityInfo = new AccessibilityElementInfoParcel();
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
@@ -194,7 +194,7 @@ sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalli
 
 AccessibleActionParcel::AccessibleActionParcel(const AccessibleAction &action)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     AccessibleAction *self = this;
     *self = action;
@@ -202,7 +202,7 @@ AccessibleActionParcel::AccessibleActionParcel(const AccessibleAction &action)
 
 bool AccessibleActionParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     int32_t type = ActionType::ACCESSIBILITY_ACTION_INVALID;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, type);
     actionType_ = static_cast<ActionType>(type);
@@ -212,7 +212,7 @@ bool AccessibleActionParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(actionType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
 
@@ -221,7 +221,7 @@ bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<AccessibleActionParcel> accessibleOperation = new AccessibleActionParcel();
     if (!accessibleOperation->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -232,7 +232,7 @@ sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parce
 
 RangeInfoParcel::RangeInfoParcel(const RangeInfo &rangeInfo)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     RangeInfo *self = this;
     *self = rangeInfo;
@@ -240,7 +240,7 @@ RangeInfoParcel::RangeInfoParcel(const RangeInfo &rangeInfo)
 
 bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
@@ -250,7 +250,7 @@ bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
@@ -260,7 +260,7 @@ bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<RangeInfoParcel> rangeInfo = new RangeInfoParcel();
     if (!rangeInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -271,7 +271,7 @@ sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 
 GridInfoParcel::GridInfoParcel(const GridInfo &gridInfo)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     GridInfo *self = this;
     *self = gridInfo;
@@ -279,7 +279,7 @@ GridInfoParcel::GridInfoParcel(const GridInfo &gridInfo)
 
 bool GridInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowCount_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnCount_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, selectionMode_);
@@ -289,7 +289,7 @@ bool GridInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool GridInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowCount_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnCount_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, selectionMode_);
@@ -299,7 +299,7 @@ bool GridInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<GridInfoParcel> grid = new GridInfoParcel();
     if (!grid->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -310,7 +310,7 @@ sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 
 GridItemInfoParcel::GridItemInfoParcel(const GridItemInfo &itemInfo)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     GridItemInfo *self = this;
     *self = itemInfo;
@@ -318,7 +318,7 @@ GridItemInfoParcel::GridItemInfoParcel(const GridItemInfo &itemInfo)
 
 bool GridItemInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, heading_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowIndex_);
@@ -331,7 +331,7 @@ bool GridItemInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, heading_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnIndex_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowIndex_);
@@ -344,7 +344,7 @@ bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<GridItemInfoParcel> gridItem = new GridItemInfoParcel();
     if (!gridItem->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
@@ -355,7 +355,7 @@ sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 
 RectParcel::RectParcel(const Rect &rect)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     Rect *self = this;
     *self = rect;
@@ -363,7 +363,7 @@ RectParcel::RectParcel(const Rect &rect)
 
 bool RectParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopX_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopY_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rightBottomX_);
@@ -373,7 +373,7 @@ bool RectParcel::ReadFromParcel(Parcel &parcel)
 
 bool RectParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopX_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopY_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rightBottomX_);
@@ -383,7 +383,7 @@ bool RectParcel::Marshalling(Parcel &parcel) const
 
 sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<RectParcel> rect = new RectParcel();
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");

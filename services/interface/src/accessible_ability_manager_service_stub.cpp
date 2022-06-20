@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SEND_EVENT)] =
         &AccessibleAbilityManagerServiceStub::HandleSendEvent;
@@ -166,7 +166,7 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<AccessibilityEventInfoParcel> uiEvent = data.ReadStrongParcelable<AccessibilityEventInfoParcel>();
     if (!uiEvent) {
@@ -181,7 +181,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data
 ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerStateObserver> client = iface_cast<IAccessibleAbilityManagerStateObserver>(obj);
@@ -193,7 +193,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     uint32_t abilityTypes = data.ReadUint32();
     int32_t stateType = data.ReadInt32();
@@ -216,7 +216,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
 ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t windowId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
@@ -229,7 +229,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
 ErrCode AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t windowId = data.ReadInt32();
     DeregisterElementOperator(windowId);
@@ -239,7 +239,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElemen
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     AccessibilityConfig::CaptionProperty caption = GetCaptionProperty();
     CaptionPropertyParcel captionParcel(caption);
@@ -251,7 +251,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty(MessagePar
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<CaptionPropertyParcel> caption = data.ReadStrongParcelable<CaptionPropertyParcel>();
     if (!caption) {
@@ -265,7 +265,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
     SetCaptionState(state);
@@ -276,7 +276,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerCaptionObserver> observer =
@@ -289,7 +289,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallba
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabled(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetEnabledState();
     reply.WriteBool(result);
@@ -299,7 +299,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabled(MessageParcel &dat
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetCaptionState();
     reply.WriteBool(result);
@@ -308,7 +308,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionState(MessageParcel
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetTouchGuideState();
     reply.WriteBool(result);
@@ -317,7 +317,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState(MessagePar
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetGestureState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetGestureState();
     reply.WriteBool(result);
@@ -327,7 +327,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetGestureState(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetKeyEventObserverState();
     reply.WriteBool(result);
@@ -337,7 +337,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::string name = data.ReadString();
     uint32_t capabilities = data.ReadUint32();
     bool result = EnableAbility(name, capabilities);
@@ -347,7 +347,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     std::vector<std::string> enabledAbilities;
     bool result = GetEnabledAbilities(enabledAbilities);
@@ -365,7 +365,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessagePa
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     std::vector<AccessibilityAbilityInfo> installedAbilities;
     bool result = GetInstalledAbilities(installedAbilities);
@@ -386,7 +386,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::string name = data.ReadString();
     bool result = DisableAbility(name);
     reply.WriteBool(result);
@@ -396,7 +396,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel 
 ErrCode AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     int32_t result = EnableUITestAbility(obj);
     if (!reply.WriteInt32(result)) {
@@ -408,7 +408,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetActiveWindow(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t activeWindow = GetActiveWindow();
     reply.WriteInt32(activeWindow);
@@ -419,7 +419,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetActiveWindow(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     bool result = DisableUITestAbility();
     if (!reply.WriteBool(result)) {
         HILOG_ERROR("WriteBool failed");
@@ -431,7 +431,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -442,7 +442,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -453,7 +453,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParce
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -464,7 +464,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParce
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     std::string name = data.ReadString();
 
@@ -475,7 +475,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t time = data.ReadInt32();
 
@@ -486,7 +486,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -497,7 +497,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessagePa
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -508,7 +508,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(Mess
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -520,7 +520,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool state = data.ReadBool();
 
@@ -532,7 +532,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageP
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     uint32_t filter = data.ReadUint32();
 
@@ -543,7 +543,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     uint32_t time = data.ReadUint32();
 
@@ -554,7 +554,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     float discount = data.ReadFloat();
 
@@ -565,7 +565,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(Message
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     float balance = data.ReadFloat();
 
@@ -577,7 +577,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetScreenMagnificationState();
     reply.WriteBool(result);
@@ -586,7 +586,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortKeyState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetShortKeyState();
     reply.WriteBool(result);
@@ -595,7 +595,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortKeyState(MessageParce
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetMouseKeyState();
     reply.WriteBool(result);
@@ -604,7 +604,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState(MessageParce
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     std::string result = GetShortkeyTarget();
     reply.WriteString(result);
@@ -613,7 +613,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t result = GetMouseAutoClick();
     reply.WriteInt32(result);
@@ -622,7 +622,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetInvertColorState();
     reply.WriteBool(result);
@@ -631,7 +631,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInvertColorState(MessagePa
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetHighContrastTextState();
     reply.WriteBool(result);
@@ -640,7 +640,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState(Mess
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetAudioMonoState();
     reply.WriteBool(result);
@@ -649,7 +649,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     bool result = GetAnimationOffState();
     reply.WriteBool(result);
@@ -659,7 +659,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageP
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     uint32_t result = GetDaltonizationColorFilter();
     reply.WriteUint32(result);
@@ -668,7 +668,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     uint32_t result = GetContentTimeout();
     reply.WriteUint32(result);
@@ -677,7 +677,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParc
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     float result = GetBrightnessDiscount();
     reply.WriteFloat(result);
@@ -686,7 +686,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(Message
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     float result = GetAudioBalance();
     reply.WriteFloat(result);
@@ -696,7 +696,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel
 ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibilityEnableAbilityListsObserver> observer =
         iface_cast<IAccessibilityEnableAbilityListsObserver>(obj);
@@ -708,7 +708,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObs
 ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibleAbilityManagerConfigObserver> config = iface_cast<IAccessibleAbilityManagerConfigObserver>(obj);

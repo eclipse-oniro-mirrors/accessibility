@@ -21,7 +21,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     AccessibilityEventInfo *self = this;
     *self = eventInfo;
@@ -29,7 +29,7 @@ AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEv
 
 bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     uint32_t eventType = TYPE_VIEW_INVALID;
     uint32_t gestureType = GESTURE_INVALID;
     int32_t triggerAction = ACCESSIBILITY_ACTION_INVALID;
@@ -115,7 +115,7 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(eventType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(gestureType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
@@ -155,7 +155,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityEventInfoParcel> AccessibilityEventInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     sptr<AccessibilityEventInfoParcel> accessibilityEventInfo = new AccessibilityEventInfoParcel();
     if (!accessibilityEventInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");

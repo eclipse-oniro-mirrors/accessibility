@@ -386,7 +386,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
  */
 HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange004, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy003 start";
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange004 start";
     // Clear window data
     AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
     windowInfoManager.a11yWindows_.clear();
@@ -436,7 +436,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     EXPECT_TRUE(windowInfoManager.a11yWindows_.count(rosenWinInfoSecond.wid_));
     EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
     windowInfoManager.a11yWindows_.clear();
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowDestroy003 end";
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange004 end";
 }
 
 /**

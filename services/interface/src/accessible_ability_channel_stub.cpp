@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID)] =
         &AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId;
@@ -55,15 +55,14 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 
 AccessibleAbilityChannelStub::~AccessibleAbilityChannelStub()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     memberFuncMap_.clear();
 }
 
 int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
-    HILOG_DEBUG("AccessibleAbilityChannelStub::OnRemoteRequest, cmd = %{public}d, flags= %{public}d",
-        code, option.GetFlags());
+    HILOG_DEBUG("cmd = %{public}d, flags= %{public}d", code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityChannelStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
@@ -85,7 +84,7 @@ int AccessibleAbilityChannelStub::OnRemoteRequest(uint32_t code, MessageParcel &
 ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int32_t elementId = data.ReadInt32();
@@ -114,7 +113,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
 ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int32_t elementId = data.ReadInt32();
@@ -134,7 +133,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
 
 ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int32_t elementId = data.ReadInt32();
@@ -154,7 +153,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
 
 ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int32_t elementId = data.ReadInt32();
@@ -174,7 +173,7 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
 
 ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int32_t elementId = data.ReadInt32();
@@ -216,7 +215,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
 
 ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t windowId = data.ReadInt32();
     sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new AccessibilityWindowInfoParcel();
@@ -233,7 +232,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
 
 ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     std::vector<AccessibilityWindowInfo> windows;
     bool result = GetWindows(windows);
     if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
@@ -253,7 +252,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
 
 ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     uint64_t displayId = data.ReadUint64();
     std::vector<AccessibilityWindowInfo> windows;
@@ -275,7 +274,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
 
 ErrCode AccessibleAbilityChannelStub::HandleExecuteCommonAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t action = data.ReadInt32();
     bool result = ExecuteCommonAction(action);
@@ -287,7 +286,7 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteCommonAction(MessageParcel &d
 
 ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     bool handled = data.ReadBool();
     int32_t sequence = data.ReadInt32();
@@ -298,7 +297,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult(MessageParc
 
 ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     int32_t requestId = data.ReadInt32();
 
@@ -317,7 +316,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
 
 ErrCode AccessibleAbilityChannelStub::HandleSetEventTypeFilter(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     uint32_t filter = data.ReadUint32();
     bool result = SetEventTypeFilter(filter);
     reply.WriteBool(result);
@@ -326,7 +325,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetEventTypeFilter(MessageParcel &da
 
 ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
     for (int32_t i = 0; i < size; i++) {

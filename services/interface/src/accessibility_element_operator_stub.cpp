@@ -39,15 +39,14 @@ AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 
 AccessibilityElementOperatorStub::~AccessibilityElementOperatorStub()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     memberFuncMap_.clear();
 }
 
 int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     MessageParcel &reply, MessageOption &option)
 {
-    HILOG_DEBUG("AccessibilityElementOperatorStub::OnRemoteRequest,cmd = %{public}u, flags = %{public}d",
-        code, option.GetFlags());
+    HILOG_DEBUG("cmd = %{public}u, flags = %{public}d", code, option.GetFlags());
     std::u16string descriptor = AccessibilityElementOperatorStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
@@ -69,7 +68,7 @@ int AccessibilityElementOperatorStub::OnRemoteRequest(uint32_t code, MessageParc
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibilityId(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t elementId = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
@@ -85,7 +84,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
 ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t elementId = data.ReadInt32();
     std::string text = data.ReadString();
@@ -101,7 +100,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
 ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessageParcel &data,
     MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t elementId = data.ReadInt32();
     int32_t focusType = data.ReadInt32();
@@ -116,7 +115,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
 
 ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t elementId = data.ReadInt32();
     int32_t direction = data.ReadInt32();
@@ -131,7 +130,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
 
 ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::vector<std::string> argumentKey;
     std::vector<std::string> argumentValue;
     int32_t elementId = data.ReadInt32();
@@ -160,7 +159,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
 
 ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     ClearFocus();
 
@@ -169,7 +168,7 @@ ErrCode AccessibilityElementOperatorStub::HandleClearFocus(MessageParcel &data, 
 
 ErrCode AccessibilityElementOperatorStub::HandleOutsideTouch(MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     OutsideTouch();
 

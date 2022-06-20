@@ -20,7 +20,7 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityEnableAbilityListsObserverStub::AccessibilityEnableAbilityListsObserverStub()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 }
 
 int AccessibilityEnableAbilityListsObserverStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
@@ -44,7 +44,7 @@ int AccessibilityEnableAbilityListsObserverStub::OnRemoteRequest(uint32_t code, 
 ErrCode AccessibilityEnableAbilityListsObserverStub::HandleOnAccessibilityEnableAbilityListsChanged(
     MessageParcel &data, MessageParcel &reply)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     OnAccessibilityEnableAbilityListsChanged();
     return NO_ERROR;
 }
