@@ -371,31 +371,24 @@ private:
             return engine.CreateUndefined();
         }
 
-        uint64_t displayId = 0;
+        int64_t displayId = 0;
         bool hasDisplayId = false;
         NativeValue* lastParam = nullptr;
-        bool lossless = false;
 
         if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             hasDisplayId = false;
             lastParam = info.argv[PARAM0];
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
             hasDisplayId = true;
-            if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
-                reinterpret_cast<napi_value>(info.argv[PARAM0]),
-                &displayId, &lossless) != napi_status::napi_ok) {
-                HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
-                    displayId, lossless);
+            if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
+                HILOG_ERROR("Convert displayId from js value failed");
                 return engine.CreateUndefined();
             }
             lastParam = info.argv[PARAM1];
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             hasDisplayId = true;
-            if (napi_get_value_bigint_uint64(reinterpret_cast<napi_env>(&engine),
-                reinterpret_cast<napi_value>(info.argv[PARAM0]),
-                &displayId, &lossless) != napi_status::napi_ok) {
-                HILOG_ERROR("Convert displayId failed. displayId[%{public}ju], lossless[%{public}d]",
-                    displayId, lossless);
+            if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
+                HILOG_ERROR("Convert displayId from js value failed");
                 return engine.CreateUndefined();
             }
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
@@ -434,7 +427,7 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, false, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get windowInfos failed."));
                 }
             };
 
@@ -444,7 +437,7 @@ private:
         return result;
     }
 
-    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, uint64_t displayId)
+    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, int64_t displayId)
     {
         HILOG_INFO();
         AsyncTask::CompleteCallback complete =
@@ -457,8 +450,14 @@ private:
                     return;
                 }
 
+                if (displayId < 0) {
+                    HILOG_ERROR("displayId is error: %{public}ju", displayId);
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "displayId is error"));
+                    return;
+                }
+
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                bool ret = context->GetWindows(displayId, accessibilityWindows);
+                bool ret = context->GetWindows(static_cast<uint64_t>(displayId), accessibilityWindows);
                 if (ret) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
@@ -468,7 +467,7 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, false, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get windowInfos failed."));
                 }
             };
 
