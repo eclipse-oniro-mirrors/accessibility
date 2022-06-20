@@ -1383,6 +1383,17 @@ public:
 
     int32_t GetItemCounts() const;
 
+    // The following methods are only used when the target application uses
+    // the sendEvent interface to send event data.
+    void SetTriggerAction(const ActionType action);
+    ActionType GetTriggerAction() const;
+
+    void SetContentList(const std::vector<std::string> &contentList);
+    void GetContentList(std::vector<std::string> &contenList) const;
+
+    void SetLatestContent(const std::string &content);
+    const std::string &GetLatestContent() const;
+
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
@@ -1435,6 +1446,9 @@ protected:
     bool validElement_ = true;
     TextMoveUnit textMoveStep_ = STEP_CHARACTER;
     int32_t itemCounts_ = 0;
+    ActionType triggerAction_ = ACCESSIBILITY_ACTION_INVALID;
+    std::vector<std::string> contentList_ {};
+    std::string latestConent_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS

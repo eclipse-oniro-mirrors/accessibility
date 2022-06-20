@@ -145,6 +145,8 @@ private:
     NativeValue* CallObjectMethod(const char* name, NativeValue * const * argv = nullptr, size_t argc = 0);
 
     std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& eventInfo);
+    void CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,
+        const std::shared_ptr<AccessibilityElementInfo> &elementInfo);
 
     void GetSrcPath(std::string &srcPath);
 

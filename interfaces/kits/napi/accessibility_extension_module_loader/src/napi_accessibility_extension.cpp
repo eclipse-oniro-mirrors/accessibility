@@ -32,6 +32,9 @@ using namespace OHOS::AbilityRuntime;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t VIRTUAL_COMPONENT_ID = -1;
+}
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
     HILOG_INFO();
@@ -189,8 +192,34 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
         if (aaClient->GetWindow(windowId, *windowInfo)) {
             element = std::make_shared<AccessibilityElement>(windowInfo);
         }
+    } else {
+        std::shared_ptr<AccessibilityElementInfo> elementInfo = std::make_shared<AccessibilityElementInfo>();
+        CreateElementInfoByEventInfo(eventInfo, elementInfo);
+        element = std::make_shared<AccessibilityElement>(elementInfo);
     }
     return element;
+}
+
+void NAccessibilityExtension::CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,
+    const std::shared_ptr<AccessibilityElementInfo> &elementInfo)
+{
+    HILOG_DEBUG();
+    if (!elementInfo) {
+        return;
+    }
+    elementInfo->SetComponentId(VIRTUAL_COMPONENT_ID);
+    elementInfo->SetBundleName(eventInfo.GetBundleName());
+    elementInfo->SetComponentType(eventInfo.GetComponentType());
+    elementInfo->SetPageId(eventInfo.GetPageId());
+    elementInfo->SetDescriptionInfo(eventInfo.GetDescription());
+    elementInfo->SetTriggerAction(eventInfo.GetTriggerAction());
+    elementInfo->SetTextMovementStep(eventInfo.GetTextMovementStep());
+    elementInfo->SetContentList(eventInfo.GetContentList());
+    elementInfo->SetLatestContent(eventInfo.GetLatestContent());
+    elementInfo->SetBeginIndex(eventInfo.GetBeginIndex());
+    elementInfo->SetCurrentIndex(eventInfo.GetCurrentIndex());
+    elementInfo->SetEndIndex(eventInfo.GetEndIndex());
+    elementInfo->SetItemCounts(eventInfo.GetItemCounts());
 }
 
 void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, const AccessibilityEventInfo& eventInfo,
