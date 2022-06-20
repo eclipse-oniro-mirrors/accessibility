@@ -14,32 +14,36 @@
  */
 
 #include "napi_accessibility_event_info.h"
+#include "hilog_wrapper.h"
 #include "napi_accessibility_utils.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-thread_local napi_ref  NAccessibilityEventInfo::consRef_ = nullptr;
-
-void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env)
+void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env, napi_value exports)
 {
     napi_value constructor = nullptr;
 
-    NAPI_CALL_RETURN_VOID(env,
-        napi_define_class(env,
-            "EventInfo",
-            NAPI_AUTO_LENGTH,
-            NAccessibilityEventInfo::JSConstructor,
-            nullptr,
-            0,
-            nullptr,
-            &constructor));
-    napi_create_reference(env, constructor, 1, &NAccessibilityEventInfo::consRef_);
+    NAPI_CALL_RETURN_VOID(env, napi_define_class(env, "EventInfo", sizeof("EventInfo"),
+        NAccessibilityEventInfo::JSConstructor, nullptr, 0, nullptr, &constructor));
+
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, exports, "EventInfo", constructor));
 }
 
 napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)
 {
-    napi_value jsthis = nullptr;
-    NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
-    return jsthis;
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv[ARGS_SIZE_ONE] = {nullptr};
+    napi_valuetype valueType;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr));
+    if (argc != ARGS_SIZE_ONE) {
+        HILOG_ERROR("argc %{public}zu is not 1", argc);
+        return nullptr;
+    }
+    NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
+    if (valueType != napi_object) {
+        HILOG_ERROR("valueType %{public}d is not napi_object", valueType);
+        return nullptr;
+    }
+    return argv[PARAM0];
 }
