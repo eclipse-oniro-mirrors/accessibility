@@ -108,11 +108,6 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
 {}
 
-void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
-{
-    (void)keyEvent;
-}
-
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
 {
     (void)pointerEvent;

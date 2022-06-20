@@ -348,25 +348,6 @@ AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
     eventHandler_ = nullptr;
 }
 
-void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
-{
-    HILOG_DEBUG();
-
-    auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    if (!interceptor) {
-        HILOG_ERROR("interceptor is null.");
-        return;
-    }
-
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler is empty.");
-        return;
-    }
-
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
-    eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-}
-
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
 {
     HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
