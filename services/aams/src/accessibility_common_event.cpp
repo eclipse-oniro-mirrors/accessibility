@@ -101,77 +101,83 @@ void AccessibilityCommonEvent::UnSubscriberEvent()
     HILOG_DEBUG("UnSubscriberEvent end.");
 }
 
-void AccessibilityCommonEvent::OnReceiveEvent(const AAFwk::Want &want)
+void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &data)
 {
     HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
-    eventHandler_->PostTask(std::bind([this, want]() -> void {
-        HILOG_DEBUG("start.");
-        std::string action = want.GetAction();
+    eventHandler_->PostTask(std::bind([this, data]() -> void {
+        HILOG_DEBUG();
+        std::string action = data.GetWant().GetAction();
+        HILOG_INFO("Handle event: %{public}s", action.c_str());
         auto it = eventHandles_.find(action);
         if (it == eventHandles_.end()) {
             HILOG_ERROR("Ignore event: %{public}s", action.c_str());
             return;
         }
-        HILOG_DEBUG("Handle event: %{public}s", action.c_str());
-        it->second(want);
+        it->second(data);
         }), "TASK_ON_RECEIVE_EVENT");
 }
 
-void AccessibilityCommonEvent::HandleUserAdded(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    int32_t accountId = want.GetIntParam(EventFwk::CommonEventSupport::COMMON_EVENT_USER_ADDED, -1);
+    HILOG_DEBUG();
+    int32_t accountId = data.GetCode();
+    HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
-        HILOG_ERROR("GetIntParam failed.");
+        HILOG_ERROR("account id is wrong");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().AddedUser(accountId);
 }
 
-void AccessibilityCommonEvent::HandleUserRemoved(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    int32_t accountId = want.GetIntParam(EventFwk::CommonEventSupport::COMMON_EVENT_USER_REMOVED, -1);
+    HILOG_DEBUG();
+    int32_t accountId = data.GetCode();
+    HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
-        HILOG_ERROR("GetIntParam failed.");
+        HILOG_ERROR("account id is wrong");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(accountId);
 }
 
-void AccessibilityCommonEvent::HandleUserSwitched(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    int32_t accountId = want.GetIntParam(EventFwk::CommonEventSupport::COMMON_EVENT_USER_SWITCHED, -1);
+    HILOG_DEBUG();
+    int32_t accountId = data.GetCode();
+    HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
-        HILOG_ERROR("GetIntParam failed.");
+        HILOG_ERROR("account id is wrong");
         return;
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(accountId);
 }
 
-void AccessibilityCommonEvent::HandlePackageRemoved(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    std::string bundleName = want.GetBundle();
+    HILOG_DEBUG();
+    std::string bundleName = data.GetWant().GetBundle();
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
 }
 
-void AccessibilityCommonEvent::HandlePackageAdd(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    std::string bundleName = want.GetBundle();
+    HILOG_DEBUG();
+    std::string bundleName = data.GetWant().GetBundle();
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
 }
 
-void AccessibilityCommonEvent::HandlePackageChanged(const AAFwk::Want &want) const
+void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG("start.");
-    std::string bundleName = want.GetBundle();
+    HILOG_DEBUG();
+    std::string bundleName = data.GetWant().GetBundle();
+    HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
 }
 } // namespace Accessibility

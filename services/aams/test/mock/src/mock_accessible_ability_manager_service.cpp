@@ -35,7 +35,6 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
 {
     HILOG_INFO("AccessibleAbilityManagerService is constructed");
     dependentServicesStatus_[ABILITY_MGR_SERVICE_ID] = false;
-    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
     dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
@@ -79,7 +78,6 @@ void AccessibleAbilityManagerService::OnStart()
 
     HILOG_INFO("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
-    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
@@ -97,6 +95,7 @@ void AccessibleAbilityManagerService::OnStop()
         return;
     }
 
+    currentAccountId_ = -1;
     a11yAccountsData_.clear();
     bundleManager_ = nullptr;
     inputInterceptor_ = nullptr;
@@ -166,23 +165,6 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG("start");
-    currentAccountId_ = GetOsAccountId();
-    HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return false;
-    }
-    accountData->Init();
-    // Get installed accessibility extension ability from BMS
-    if (accountData->GetInstalledAbilitiesFromBMS()) {
-        UpdateAbilities();
-        UpdateAccessibilityManagerService();
-    } else {
-        HILOG_ERROR("Get installed ExtensionAbility failed");
-        return false;
-    }
-
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
@@ -259,7 +241,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
     const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation)
 {
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(
-        windowId, operation, GetOsAccountId());
+        windowId, operation, currentAccountId_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr && connection != nullptr) {
         accountData->AddAccessibilityWindowConnection(windowId, connection);
@@ -718,12 +700,6 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
 void AccessibleAbilityManagerService::PackageAdd(const std::string& bundleName)
 {
     (void)bundleName;
-}
-
-int32_t AccessibleAbilityManagerService::GetOsAccountId()
-{
-    constexpr int32_t TEMP_ACCOUNT_ID = 100;
-    return TEMP_ACCOUNT_ID;
 }
 
 void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
@@ -1286,6 +1262,43 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         syncPromise.set_value(NO_ERROR);
         }), "TASK_REGISTER_CONFIG_OBSERVER");
     return syncFuture.get();
+}
+
+void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
+{
+    HILOG_DEBUG("accountId(%{public}d)", accountId);
+
+    if (accountId == currentAccountId_) {
+        HILOG_ERROR("switch user failed, this account is current account.");
+        return;
+    }
+
+    // Clear last account's data
+    if (currentAccountId_ != -1) {
+        HILOG_DEBUG("current account id: %{public}d", currentAccountId_);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->OnAccountSwitched();
+        UpdateAccessibilityManagerService();
+    }
+
+    // Switch account id
+    currentAccountId_ = accountId;
+
+    // Initialize data for current account
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+    accountData->Init();
+    if (accountData->GetInstalledAbilitiesFromBMS()) {
+        UpdateAbilities();
+        UpdateAccessibilityManagerService();
+    }
 }
 
 void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied(

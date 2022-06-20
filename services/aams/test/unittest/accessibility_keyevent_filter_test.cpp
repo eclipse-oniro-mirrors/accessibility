@@ -65,6 +65,7 @@ void KeyEventFilterUnitTest::SetUp()
     GTEST_LOG_(INFO) << "SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     keyEventFilter_ = std::make_shared<KeyEventFilter>();
 }
 

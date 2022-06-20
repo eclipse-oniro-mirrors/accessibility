@@ -62,6 +62,7 @@ void AccessibilityInputInterceptorTest::SetUp()
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 

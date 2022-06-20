@@ -74,6 +74,7 @@ void AamsInjectorTest::SetUp()
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     // add an ability connection client
