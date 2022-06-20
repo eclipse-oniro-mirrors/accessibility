@@ -164,6 +164,31 @@ namespace {
             AccessibilityUITestAbility::GetInstance()->SetEventTypeFilter(filter);
         }
     }
+
+    /**
+     * @tc.name: InjectGestureTestCase
+     * @tc.desc: Testcase for testing 'InjectGesture' function.
+     * @tc.type: FUNC
+     * @tc.require: Issue Number
+     */
+    BENCHMARK_F(AccessibleAbilityClientTest, InjectGestureTestCase)(
+        benchmark::State &state)
+    {
+        uint32_t sequence = 0;
+        while (state.KeepRunning()) {
+            sequence++;
+            std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
+                std::make_shared<AccessibilityGestureInjectPath>();
+            int64_t durationTime = 20;
+            gesturePath->SetDurationTime(durationTime);
+            AccessibilityGesturePosition position = {200.0f, 200.0f};
+            gesturePath->AddPosition(position);
+
+            std::shared_ptr<AccessibilityGestureResultListenerForBenchmark> listener =
+                std::make_shared<AccessibilityGestureResultListenerForBenchmark>();
+            AccessibilityUITestAbility::GetInstance()->InjectGesture(sequence, gesturePath, listener);
+        }
+    }
 }
 
 BENCHMARK_MAIN();

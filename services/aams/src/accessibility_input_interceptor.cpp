@@ -30,7 +30,7 @@ namespace Accessibility {
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::instance_ = nullptr;
 sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     if (!instance_) {
         instance_ = new(std::nothrow) AccessibilityInputInterceptor();
@@ -44,7 +44,7 @@ sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
 
 AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     pointerEventTransmitters_ = nullptr;
     keyEventTransmitters_ = nullptr;
@@ -69,20 +69,20 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 
 void AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     event.AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
     std::shared_ptr<MMI::KeyEvent> keyEvent = std::make_shared<MMI::KeyEvent>(event);
     if (inputManager_ != nullptr) {
         inputManager_->SimulateInputEvent(keyEvent);
     } else {
-        HILOG_DEBUG("inputManager_ is null.");
+        HILOG_ERROR("inputManager_ is null.");
     }
 }
 
 void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
 {
-    HILOG_INFO("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
+    HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
         event.GetPointerAction(), event.GetSourceType(), event.GetPointerId());
 
     event.AddFlag(MMI::InputEvent::EVENT_FLAG_NO_INTERCEPT);
@@ -90,7 +90,7 @@ void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
     if (inputManager_ != nullptr) {
         inputManager_->SimulateInputEvent(pointerEvent);
     } else {
-        HILOG_DEBUG("inputManager_ is null.");
+        HILOG_ERROR("inputManager_ is null.");
     }
 }
 
@@ -202,18 +202,18 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
 {
     HILOG_DEBUG();
     if (!inputManager_) {
-        HILOG_DEBUG("inputManger is null.");
+        HILOG_ERROR("inputManger is null.");
         return;
     }
 
-    HILOG_INFO("interceptorId_:%{public}d, keyEventInterceptorId_:%{public}d", interceptorId_, keyEventInterceptorId_);
+    HILOG_INFO("interceptorId:%{public}d, keyEventInterceptorId:%{public}d", interceptorId_, keyEventInterceptorId_);
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
         if (interceptorId_ < 0) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);
-            HILOG_DEBUG("interceptorId_ is %{public}d.", interceptorId_);
+            HILOG_DEBUG("interceptorId:%{public}d.", interceptorId_);
         }
     } else {
         if (interceptorId_ >= 0) {
@@ -226,7 +226,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS)) {
         if (keyEventInterceptorId_ < 0) {
             keyEventInterceptorId_ = inputManager_->AddInterceptor(InterceptKeyEventCallback);
-            HILOG_DEBUG("keyEventInterceptorId_ is %{public}d.", keyEventInterceptorId_);
+            HILOG_DEBUG("keyEventInterceptorId:%{public}d.", keyEventInterceptorId_);
         }
     } else {
         if (keyEventInterceptorId_ >= 0) {
@@ -238,7 +238,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
 
 void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MMI::KeyEvent> keyEvent)
 {
-    HILOG_DEBUG(" start.");
+    HILOG_DEBUG();
 
     if (!instance_ || !instance_->eventHandler_) {
         HILOG_ERROR("eventHandler is nullptr.");
@@ -246,15 +246,14 @@ void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MM
     }
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, instance_, keyEvent);
     instance_->eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-    HILOG_DEBUG(" end.");
 }
 
 void AccessibilityInputInterceptor::DestroyInterceptor()
 {
-    HILOG_INFO("interceptorId_:%{public}d, keyEventInterceptorId_:%{public}d", interceptorId_, keyEventInterceptorId_);
+    HILOG_DEBUG("interceptorId:%{public}d, keyEventInterceptorId:%{public}d", interceptorId_, keyEventInterceptorId_);
 
     if (!inputManager_) {
-        HILOG_DEBUG("inputManager_ is null.");
+        HILOG_ERROR("inputManager_ is null.");
         return;
     }
     if (keyEventInterceptorId_ >= 0) {
@@ -270,7 +269,7 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 
 void AccessibilityInputInterceptor::DestroyTransmitters()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->DestroyEvents();
@@ -298,7 +297,7 @@ void AccessibilityInputInterceptor::NotifyAccessibilityEvent(AccessibilityEventI
 
 void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     if (!pointerEventTransmitters_) {
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
@@ -311,7 +310,7 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 
 void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     if (!keyEventTransmitters_) {
         HILOG_DEBUG("keyEventTransmitters_ is empty.");
@@ -325,7 +324,7 @@ void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEven
 void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmission> &header,
     sptr<EventTransmission> &current, const sptr<EventTransmission> &next)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     if (current != nullptr) {
         current->SetNext(next);
@@ -337,7 +336,7 @@ void AccessibilityInputInterceptor::SetNextEventTransmitter(sptr<EventTransmissi
 
 AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner());
 }
@@ -349,44 +348,23 @@ AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
     eventHandler_ = nullptr;
 }
 
-void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
-{
-    HILOG_DEBUG("OnInputEvent keyEvent start.");
-
-    auto interceptor = AccessibilityInputInterceptor::GetInstance();
-    if (!interceptor) {
-        HILOG_DEBUG("interceptor is null.");
-        return;
-    }
-
-    if (!eventHandler_) {
-        HILOG_DEBUG("eventHandler_ is empty.");
-        return;
-    }
-
-    auto task = std::bind(&AccessibilityInputInterceptor::ProcessKeyEvent, interceptor, keyEvent);
-    eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-    HILOG_DEBUG("OnInputEvent keyEvent end.");
-}
-
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
 {
-    HILOG_INFO("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
+    HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d.",
         pointerEvent->GetPointerAction(), pointerEvent->GetSourceType(), pointerEvent->GetPointerId());
 
     auto interceptor = AccessibilityInputInterceptor::GetInstance();
     if (!interceptor) {
-        HILOG_DEBUG("interceptor is null.");
+        HILOG_ERROR("interceptor is null.");
         return;
     }
 
     if (!eventHandler_) {
-        HILOG_DEBUG("eventHandler_ is empty.");
+        HILOG_ERROR("eventHandler is empty.");
         return;
     }
     auto task = std::bind(&AccessibilityInputInterceptor::ProcessPointerEvent, interceptor, pointerEvent);
     eventHandler_->PostTask(task, AppExecFwk::EventQueue::Priority::LOW);
-    HILOG_DEBUG("OnInputEvent pointerEvent end.");
 }
 } // namespace Accessibility
 } // namespace OHOS

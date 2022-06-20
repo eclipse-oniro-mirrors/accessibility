@@ -38,7 +38,7 @@ AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<Accessibilit
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (abilityClient_ && abilityClient_->AsObject()) {
         abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_);
         abilityClient_ = nullptr;
@@ -48,7 +48,7 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
@@ -61,7 +61,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
-    HILOG_DEBUG("Start. ResultCode is %{public}d", resultCode);
+    HILOG_DEBUG("ResultCode is %{public}d", resultCode);
     if (!accountData_) {
         HILOG_ERROR("accountData_ is nullptr.");
         return;
@@ -115,7 +115,7 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
 
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
@@ -128,7 +128,7 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
 void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
     int32_t resultCode)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     if (resultCode != NO_ERROR) {
         HILOG_ERROR("Disconnect failed!");
         return;
@@ -155,7 +155,7 @@ void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk:
 
 void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
 {
-    HILOG_INFO("OnAccessibilityEvent called");
+    HILOG_DEBUG();
     if (!abilityClient_) {
         HILOG_ERROR("OnAccessibilityEvent​ failed");
         return;
@@ -239,13 +239,13 @@ void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, 
 
 void AccessibleAbilityConnection::SetAbilityInfoEventTypeFilter(const uint32_t eventTypes)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     abilityInfo_.SetEventTypes(eventTypes);
 }
 
 void AccessibleAbilityConnection::SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     abilityInfo_.SetFilterBundleNames(targetBundleNames);
 }
 
@@ -269,7 +269,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 
 void AccessibleAbilityConnection::Disconnect()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
     if (!abilityManagerClient) {
         HILOG_ERROR("abilityManagerClient is nullptr");
@@ -283,7 +283,7 @@ void AccessibleAbilityConnection::Disconnect()
 
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!accountData_) {
         HILOG_ERROR("accountData_ is nullptr");
         return;
@@ -326,7 +326,7 @@ int32_t AccessibleAbilityConnection::GetChannelId()
 void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject>& remote)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!recipientAccountData_) {
         HILOG_ERROR("recipientAccountData_ is null.");

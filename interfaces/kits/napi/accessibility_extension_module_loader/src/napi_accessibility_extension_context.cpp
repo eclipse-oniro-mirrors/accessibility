@@ -53,7 +53,7 @@ static void ConvertAccessibilityWindowInfoToJS(
 static void ConvertAccessibilityWindowInfosToJS(
     napi_env env, napi_value result, const std::vector<AccessibilityWindowInfo>& accessibilityWindowInfos)
 {
-    HILOG_DEBUG("Start");
+    HILOG_DEBUG();
     size_t idx = 0;
 
     if (accessibilityWindowInfos.empty()) {
@@ -79,7 +79,7 @@ public:
 
     static void Finalizer(NativeEngine* engine, void* data, void* hint)
     {
-        HILOG_INFO("Finalizer is called");
+        HILOG_INFO();
         std::unique_ptr<NAccessibilityExtensionContext>(static_cast<NAccessibilityExtensionContext*>(data));
     }
 
@@ -130,7 +130,7 @@ private:
 
     NativeValue* OnSetEventTypeFilter(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -175,7 +175,7 @@ private:
 
     NativeValue* OnSetTargetBundleName(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -216,7 +216,7 @@ private:
 
     NativeValue* OnGetFocusElement(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Support 0 ~ 2 params
         if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -285,7 +285,7 @@ private:
 
     NativeValue* OnGetWindowRootElement(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Support 0 ~ 2 params
         if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -364,7 +364,7 @@ private:
 
     NativeValue* OnGetWindows(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Support 0 ~ 2 params
         if (info.argc < ARGS_SIZE_ZERO && info.argc > ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -412,7 +412,7 @@ private:
 
     NativeValue* GetWindowsAsync(NativeEngine& engine, NativeValue* lastParam)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         AsyncTask::CompleteCallback complete =
             [weak = context_](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindows begin");
@@ -446,7 +446,7 @@ private:
 
     NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, uint64_t displayId)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         AsyncTask::CompleteCallback complete =
             [weak = context_, displayId](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindows begin");
@@ -480,7 +480,7 @@ private:
 
     NativeValue* OnExecuteCommonAction(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Only support one or two params
         if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
@@ -526,7 +526,7 @@ private:
 
     NativeValue* OnGestureInject(NativeEngine& engine, NativeCallbackInfo& info)
     {
-        HILOG_INFO("called.");
+        HILOG_INFO();
         // Only support two or three params
         if (info.argc != ARGS_SIZE_TWO && info.argc != ARGS_SIZE_THREE) {
             HILOG_ERROR("Not enough params");
@@ -562,7 +562,6 @@ private:
             [weak = context_, sequence = gestureInjectSequence, gesturePath, gesturePathArray,
                 isParameterArray, listener = pCallbackInfo->listener_](
             NativeEngine& engine, AsyncTask& task, int32_t status) {
-                HILOG_INFO("InjectGesture begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
@@ -595,7 +594,7 @@ private:
 NativeValue* CreateJsAccessibilityExtensionContext(
     NativeEngine& engine, std::shared_ptr<AccessibilityExtensionContext> context)
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
     NativeValue* objValue = CreateJsExtensionContext(engine, context);
     NativeObject* object = ConvertNativeValueTo<NativeObject>(objValue);
 
@@ -615,13 +614,12 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     BindNativeFunction(engine, *object, "executeCommonAction", NAccessibilityExtensionContext::ExecuteCommonAction);
     BindNativeFunction(engine, *object, "gestureInject", NAccessibilityExtensionContext::InjectGesture);
 
-    HILOG_INFO("called end.");
     return objValue;
 }
 
 void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequence, bool result)
 {
-    HILOG_INFO("called.");
+    HILOG_INFO();
 
     if (jsGestureResultListenerInfos.empty()) {
         HILOG_ERROR("There is no information of jsGestureResultListenerInfos");

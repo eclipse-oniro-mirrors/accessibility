@@ -24,18 +24,18 @@ AccessibilityElementOperatorImpl::AccessibilityElementOperatorImpl(int32_t windo
     const std::shared_ptr<AccessibilityElementOperator> &operation)
     : windowId_(windowId), operator_(operation)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 }
 
 AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 }
 
 void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operatorCallback_.AddRequest(requestId, callback);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, requestId, operatorCallback_, mode);
@@ -47,7 +47,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
 void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t elementId,
     const std::string &text, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operatorCallback_.AddRequest(requestId, callback);
     if (operator_) {
         operator_->SearchElementInfosByText(elementId, text, requestId, operatorCallback_);
@@ -59,7 +59,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t el
 void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operatorCallback_.AddRequest(requestId, callback);
     if (operator_) {
         operator_->FindFocusedElementInfo(elementId, focusType, requestId, operatorCallback_);
@@ -71,7 +71,7 @@ void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elem
 void AccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operatorCallback_.AddRequest(requestId, callback);
     if (operator_) {
         operator_->FocusMoveSearch(elementId, direction, requestId, operatorCallback_);
@@ -84,7 +84,7 @@ void AccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments,
     int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     operatorCallback_.AddRequest(requestId, callback);
     if (operator_) {
         operator_->ExecuteAction(elementId, action, actionArguments, requestId, operatorCallback_);
@@ -95,7 +95,7 @@ void AccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId,
 
 void AccessibilityElementOperatorImpl::ClearFocus()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (operator_) {
         operator_->ClearFocus();
     } else {
@@ -105,7 +105,7 @@ void AccessibilityElementOperatorImpl::ClearFocus()
 
 void AccessibilityElementOperatorImpl::OutsideTouch()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (operator_ != nullptr) {
         operator_->OutsideTouch();
     } else {
@@ -131,7 +131,7 @@ void AccessibilityElementOperatorImpl::OperatorCallbackImpl::AddRequest(
 void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
@@ -148,7 +148,7 @@ void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInf
 void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
@@ -165,7 +165,7 @@ void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInf
 void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
@@ -181,7 +181,7 @@ void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFindFocusedEleme
 void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo &info, const int32_t requestId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {
@@ -197,7 +197,7 @@ void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFocusMoveSearchR
 void AccessibilityElementOperatorImpl::OperatorCallbackImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     auto iter = requests_.find(requestId);
     if (iter != requests_.end()) {

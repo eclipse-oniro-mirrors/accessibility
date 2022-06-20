@@ -27,7 +27,7 @@ AccessibleAbilityManagerConfigObserverProxy::~AccessibleAbilityManagerConfigObse
 
 bool AccessibleAbilityManagerConfigObserverProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(AccessibleAbilityManagerConfigObserverProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -37,7 +37,7 @@ bool AccessibleAbilityManagerConfigObserverProxy::WriteInterfaceToken(MessagePar
 
 void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uint32_t stateType)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -71,7 +71,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uin
 
 void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const float audioBalance)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -105,7 +105,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
 
 void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(const float brightnessDiscount)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -139,7 +139,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
 
 void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const uint32_t contentTimeout)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -173,7 +173,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
 
 void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChanged(const uint32_t filterType)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -207,7 +207,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
 
 void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const int32_t mouseAutoClick)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;
@@ -241,7 +241,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
 
 void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const std::string &shortkeyTarget)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     int32_t error = NO_ERROR;
     MessageParcel data;

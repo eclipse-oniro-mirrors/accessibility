@@ -30,7 +30,7 @@ AccessibleAbilityManagerServiceProxy::~AccessibleAbilityManagerServiceProxy()
 
 bool AccessibleAbilityManagerServiceProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(IAccessibleAbilityManagerService::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -41,7 +41,7 @@ bool AccessibleAbilityManagerServiceProxy::WriteInterfaceToken(MessageParcel &da
 bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(IAccessibleAbilityManagerService::Message code,
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     sptr<IRemoteObject> remote = Remote();
     if (!remote) {
@@ -58,7 +58,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(IAccessibleAbilityMan
 
 void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -82,7 +82,7 @@ void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInf
 
 void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -105,7 +105,7 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const Accessibilit
 
 void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -128,7 +128,7 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver> &client)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -160,7 +160,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
 bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
     std::vector<AccessibilityAbilityInfo> &infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -201,7 +201,7 @@ bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t ability
 void AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
     int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -259,7 +259,7 @@ void AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32
 
 AccessibilityConfig::CaptionProperty AccessibleAbilityManagerServiceProxy::GetCaptionProperty()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -280,7 +280,7 @@ AccessibilityConfig::CaptionProperty AccessibleAbilityManagerServiceProxy::GetCa
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &client)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -311,7 +311,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterCaptionObserver(
 
 bool AccessibleAbilityManagerServiceProxy::GetEnabledState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -330,7 +330,7 @@ bool AccessibleAbilityManagerServiceProxy::GetEnabledState()
 
 bool AccessibleAbilityManagerServiceProxy::GetCaptionState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -349,7 +349,7 @@ bool AccessibleAbilityManagerServiceProxy::GetCaptionState()
 
 bool AccessibleAbilityManagerServiceProxy::GetTouchGuideState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -368,7 +368,7 @@ bool AccessibleAbilityManagerServiceProxy::GetTouchGuideState()
 
 bool AccessibleAbilityManagerServiceProxy::GetGestureState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -387,7 +387,7 @@ bool AccessibleAbilityManagerServiceProxy::GetGestureState()
 
 bool AccessibleAbilityManagerServiceProxy::GetKeyEventObserverState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -406,7 +406,7 @@ bool AccessibleAbilityManagerServiceProxy::GetKeyEventObserverState()
 
 bool AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -436,7 +436,7 @@ bool AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name
 
 bool AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -461,7 +461,7 @@ bool AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::
 bool AccessibleAbilityManagerServiceProxy::GetInstalledAbilities(
     std::vector<AccessibilityAbilityInfo> &installedAbilities)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -489,7 +489,7 @@ bool AccessibleAbilityManagerServiceProxy::GetInstalledAbilities(
 
 bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -513,7 +513,7 @@ bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &nam
 
 int32_t AccessibleAbilityManagerServiceProxy::GetActiveWindow()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -533,7 +533,7 @@ int32_t AccessibleAbilityManagerServiceProxy::GetActiveWindow()
 
 RetError AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IRemoteObject> &obj)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -560,7 +560,7 @@ RetError AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IR
 
 bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -580,7 +580,7 @@ bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
 
 void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -602,7 +602,7 @@ void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const boo
 
 void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -624,7 +624,7 @@ void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
 
 void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -646,7 +646,7 @@ void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
 
 void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -668,7 +668,7 @@ void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
 
 void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &name)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -690,7 +690,7 @@ void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &
 
 void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -712,7 +712,7 @@ void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool s
 
 void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -734,7 +734,7 @@ void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
 
 void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -756,7 +756,7 @@ void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state
 
 void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -778,7 +778,7 @@ void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
 
 void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -801,7 +801,7 @@ void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uin
 
 void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -823,7 +823,7 @@ void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time
 
 void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float discount)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -845,7 +845,7 @@ void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float dis
 
 void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -867,7 +867,7 @@ void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
 
 bool AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -886,7 +886,7 @@ bool AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState()
 
 bool AccessibleAbilityManagerServiceProxy::GetShortKeyState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -905,7 +905,7 @@ bool AccessibleAbilityManagerServiceProxy::GetShortKeyState()
 
 bool AccessibleAbilityManagerServiceProxy::GetMouseKeyState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -924,7 +924,7 @@ bool AccessibleAbilityManagerServiceProxy::GetMouseKeyState()
 
 int32_t AccessibleAbilityManagerServiceProxy::GetMouseAutoClick()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -943,7 +943,7 @@ int32_t AccessibleAbilityManagerServiceProxy::GetMouseAutoClick()
 
 std::string AccessibleAbilityManagerServiceProxy::GetShortkeyTarget()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -963,7 +963,7 @@ std::string AccessibleAbilityManagerServiceProxy::GetShortkeyTarget()
 
 bool AccessibleAbilityManagerServiceProxy::GetHighContrastTextState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -982,7 +982,7 @@ bool AccessibleAbilityManagerServiceProxy::GetHighContrastTextState()
 
 bool AccessibleAbilityManagerServiceProxy::GetInvertColorState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1001,7 +1001,7 @@ bool AccessibleAbilityManagerServiceProxy::GetInvertColorState()
 
 bool AccessibleAbilityManagerServiceProxy::GetAnimationOffState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1020,7 +1020,7 @@ bool AccessibleAbilityManagerServiceProxy::GetAnimationOffState()
 
 bool AccessibleAbilityManagerServiceProxy::GetAudioMonoState()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1039,7 +1039,7 @@ bool AccessibleAbilityManagerServiceProxy::GetAudioMonoState()
 
 uint32_t AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1058,7 +1058,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter()
 
 uint32_t AccessibleAbilityManagerServiceProxy::GetContentTimeout()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1077,7 +1077,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::GetContentTimeout()
 
 float AccessibleAbilityManagerServiceProxy::GetBrightnessDiscount()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1096,7 +1096,7 @@ float AccessibleAbilityManagerServiceProxy::GetBrightnessDiscount()
 
 float AccessibleAbilityManagerServiceProxy::GetAudioBalance()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -1116,7 +1116,7 @@ float AccessibleAbilityManagerServiceProxy::GetAudioBalance()
 void AccessibleAbilityManagerServiceProxy::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
@@ -1146,7 +1146,7 @@ void AccessibleAbilityManagerServiceProxy::RegisterEnableAbilityListsObserver(
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &client)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option(MessageOption::TF_SYNC);

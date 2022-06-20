@@ -141,20 +141,20 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
 {
     HILOG_DEBUG("ConvertToRealWindowId called, windowId[%{public}d], focusType[%{public}d]", windowId, focusType);
     if (windowId == ACTIVE_WINDOW_ID) {
-        HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+        HILOG_INFO("After convert active windowId[%{public}d]", activeWindowId_);
         return activeWindowId_;
     }
 
     if (windowId == ANY_WINDOW_ID) {
         if (focusType == FOCUS_TYPE_ACCESSIBILITY) {
-            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", a11yFocusedWindowId_);
+            HILOG_INFO("After convert a11yFocused windowId[%{public}d] by accessibility type", a11yFocusedWindowId_);
             return a11yFocusedWindowId_;
         } else if (focusType == FOCUS_TYPE_INPUT) {
-            HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", activeWindowId_);
+            HILOG_INFO("After convert active windowId[%{public}d] by input type", activeWindowId_);
             return activeWindowId_;
         }
     }
-    HILOG_INFO("ConvertToRealWindowId called, after convert windowId[%{public}d]", windowId);
+    HILOG_INFO("After convert windowId[%{public}d]", windowId);
     return windowId;
 }
 
@@ -237,7 +237,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
     }
 
     if (!a11yWindows_.count(windowId)) {
-        HILOG_ERROR("Window id is not found");
+        HILOG_ERROR("Window id[%{public}d] is not found", windowId);
         return;
     }
 
