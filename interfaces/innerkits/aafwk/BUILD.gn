@@ -14,13 +14,13 @@
 import("//build/ohos.gni")
 import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
 
-aafwk_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
+ability_runtime_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
 
 config("accessibleability_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "${aafwk_path}/include",
+    "${ability_runtime_path}/include",
     "//foundation/barrierfree/accessibility/common/log/include",
   ]
 
@@ -35,10 +35,10 @@ config("accessibleability_public_config") {
 }
 
 aafwk_files = [
-  "${aafwk_path}/src/accessibility_element_operator_callback_impl.cpp",
-  "${aafwk_path}/src/accessibility_ui_test_ability_impl.cpp",
-  "${aafwk_path}/src/accessible_ability_channel_client.cpp",
-  "${aafwk_path}/src/accessible_ability_client_impl.cpp",
+  "${ability_runtime_path}/src/accessibility_element_operator_callback_impl.cpp",
+  "${ability_runtime_path}/src/accessibility_ui_test_ability_impl.cpp",
+  "${ability_runtime_path}/src/accessible_ability_channel_client.cpp",
+  "${ability_runtime_path}/src/accessible_ability_client_impl.cpp",
 ]
 
 ohos_shared_library("accessibleability") {
