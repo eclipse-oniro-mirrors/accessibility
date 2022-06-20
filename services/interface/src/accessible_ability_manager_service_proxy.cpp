@@ -583,7 +583,7 @@ void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const boo
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -605,7 +605,7 @@ void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -627,7 +627,7 @@ void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -649,7 +649,7 @@ void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -671,7 +671,7 @@ void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -693,7 +693,7 @@ void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool s
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -715,7 +715,7 @@ void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -737,7 +737,7 @@ void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -759,7 +759,7 @@ void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -781,7 +781,7 @@ void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uin
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -804,7 +804,7 @@ void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -826,7 +826,7 @@ void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float dis
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
@@ -848,7 +848,7 @@ void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
