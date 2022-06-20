@@ -293,6 +293,7 @@ private:
         }
 
         int32_t windowId = INVALID_WINDOW_ID;
+        bool isActiveWindow = true;
         NativeValue* lastParam = nullptr;
         if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             lastParam = info.argv[PARAM0];
@@ -302,12 +303,14 @@ private:
                 return engine.CreateUndefined();
             }
             lastParam = info.argv[PARAM1];
+            isActiveWindow = false;
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             bool ret = ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
             if (!ret) {
                 HILOG_ERROR("Convert windowId failed. ret[%{public}d] windowId[%{public}d]", ret, windowId);
                 return engine.CreateUndefined();
             }
+            isActiveWindow = false;
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
                    info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             // Use default value.
@@ -317,7 +320,7 @@ private:
         }
 
         AsyncTask::CompleteCallback complete =
-            [weak = context_, windowId](NativeEngine& engine, AsyncTask& task, int32_t status) {
+            [weak = context_, windowId, isActiveWindow](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindowRootElement begin");
                 auto context = weak.lock();
                 if (!context) {
@@ -326,9 +329,7 @@ private:
                     return;
                 }
 
-                bool isActiveWindow = (windowId == INVALID_WINDOW_ID) ? true : false;
                 HILOG_DEBUG("isActiveWindow[%{public}d] windowId[%{public}d]", isActiveWindow, windowId);
-
                 OHOS::Accessibility::AccessibilityElementInfo elementInfo;
                 bool ret = false;
                 if (isActiveWindow) {
@@ -352,7 +353,7 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Get root elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get root elementInfo failed."));
                 }
             };
 
