@@ -262,22 +262,22 @@ int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
     oss << "keyEventObserver:  " << config->GetKeyEventObserverState() << std::endl;
 
     // Dump setting info
-    oss << "ScreenMagnification:  " << config->GetScreenMagnificationState() << std::endl;
-    oss << "MouseKey:  " << config->GetMouseKeyState() << std::endl;
-    oss << "ShortKey:  " << config->GetShortKeyState() << std::endl;
+    oss << "screenMagnification:  " << config->GetScreenMagnificationState() << std::endl;
+    oss << "mouseKey:  " << config->GetMouseKeyState() << std::endl;
+    oss << "shortKey:  " << config->GetShortKeyState() << std::endl;
     oss << "animationOff:  " << config->GetAnimationOffState() << std::endl;
     oss << "invertColor:  " << config->GetInvertColorState() << std::endl;
     oss << "highContrastText:  " << config->GetHighContrastTextState() << std::endl;
     oss << "audioMono:  " << config->GetAudioMonoState() << std::endl;
-    oss << "ShortkeyTarget:  " << config->GetShortkeyTarget() << std::endl;
-    oss << "MouseAutoClick:  " << config->GetMouseAutoClick() << std::endl;
+    oss << "shortkeyTarget:  " << config->GetShortkeyTarget() << std::endl;
+    oss << "mouseAutoClick:  " << config->GetMouseAutoClick() << std::endl;
     oss << "daltonizationColorFilter:  " << config->GetDaltonizationColorFilter() << std::endl;
     oss << "contentTimeout:  " << config->GetContentTimeout() << std::endl;
     oss << "brightnessDiscount:  " << config->GetBrightnessDiscount() << std::endl;
     oss << "audioBalance:  " << config->GetAudioBalance() << std::endl;
 
     // Dump caption info
-    oss << "CaptionState:  " << config->GetCaptionState() << std::endl;
+    oss << "captionState:  " << config->GetCaptionState() << std::endl;
     if (config->GetCaptionState()) {
         AccessibilityConfig::CaptionProperty captionProperty = config->GetCaptionProperty();
         oss << "    fontFamily:  " << captionProperty.GetFontFamily() << std::endl;
