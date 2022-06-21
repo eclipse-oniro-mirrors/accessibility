@@ -185,7 +185,6 @@ public:
     void UpdateShortkeyTarget();
 
 private:
-    int32_t GetOsAccountId();
     void AddUITestClient(const sptr<IRemoteObject> &obj);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection);
 

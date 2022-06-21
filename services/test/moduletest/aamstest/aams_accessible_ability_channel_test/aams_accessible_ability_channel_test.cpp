@@ -68,6 +68,7 @@ void AamsAccessibleAbilityChannelTest::SetUp()
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 

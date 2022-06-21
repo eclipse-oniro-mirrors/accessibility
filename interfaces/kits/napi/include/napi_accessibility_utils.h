@@ -23,8 +23,8 @@
 #include "accessibility_caption.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
-#include "accessibility_window_info.h"
 #include "accessibility_gesture_inject_path.h"
+#include "accessibility_window_info.h"
 #include "element_name.h"
 #include "key_event.h"
 #include "accessibility_config.h"
@@ -66,10 +66,6 @@ OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 
-void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
-    std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath,
-    std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>>& gesturePathArray,
-    bool &isParameterArray);
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
@@ -103,6 +99,10 @@ const std::string ConvertWindowUpdateTypeToString(OHOS::Accessibility::WindowUpd
 const std::string ConvertAccessibilityEventTypeToString(OHOS::Accessibility::EventType type);
 void ConvertEventTypeToString(const OHOS::Accessibility::AccessibilityEventInfo &eventInfo,
     std::string &eventTypeString);
+void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
+    std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath,
+    std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>>& gesturePathArray,
+    bool &isParameterArray);
 
 struct AccessibilityCallbackInfo {
     napi_env env_;

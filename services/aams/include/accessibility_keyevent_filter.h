@@ -106,7 +106,7 @@ private:
     /**
      * @brief Find processing event.
      * @param connection the corresponding AccessiblityAbility
-     * @param sequenceNum the squence of event
+     * @param sequenceNum the sequence of event
      * @return the processing event
      */
     std::shared_ptr<ProcessingEvent> FindProcessingEvent(AccessibleAbilityConnection &connection,

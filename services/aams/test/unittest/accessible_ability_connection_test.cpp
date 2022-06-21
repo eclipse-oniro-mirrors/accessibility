@@ -72,6 +72,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 
     // new Interaction proxy
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
@@ -83,6 +84,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     AccessibilityAbilityInitParams initParams;
     initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
     accountData_ = new AccessibilityAccountData(0);
     if (accountData_ != nullptr) {
         accountData_->AddAccessibilityWindowConnection(0, connection);

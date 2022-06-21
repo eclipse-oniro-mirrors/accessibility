@@ -26,6 +26,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
+} // namespace
+
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
 
@@ -33,18 +37,31 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     : SystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, true), bundleManager_(nullptr)
 {
     HILOG_INFO("AccessibleAbilityManagerService is constructed");
+    dependentServicesStatus_[ABILITY_MGR_SERVICE_ID] = false;
+    dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
+    dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
+    dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
+    dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
-{}
+{
+    inputInterceptor_ = nullptr;
+    touchEventInjector_ = nullptr;
+    keyEventFilter_ = nullptr;
+}
 
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
 
+    if (isRunning_) {
+        HILOG_DEBUG("AccessibleAbilityManagerService is already start.");
+        return;
+    }
+
     if (!runner_) {
-        const std::string serviceName = "AccessibleAbilityManagerService";
-        runner_ = AppExecFwk::EventRunner::Create(serviceName);
+        runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
         if (!runner_) {
             HILOG_ERROR("AccessibleAbilityManagerService::OnStart failed:create AAMS runner failed");
             return;
@@ -59,23 +76,76 @@ void AccessibleAbilityManagerService::OnStart()
         }
     }
 
-    (void)Init();
+    HILOG_INFO("AddAbilityListener!");
+    AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
+    AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
+    AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
+    AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
+
+    isRunning_ = true;
 }
 
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+
+    if (!isRunning_) {
+        HILOG_DEBUG("AccessibleAbilityManagerService is already stop.");
+        return;
+    }
+
+    currentAccountId_ = -1;
+    a11yAccountsData_.clear();
+    bundleManager_ = nullptr;
+    inputInterceptor_ = nullptr;
+    touchEventInjector_ = nullptr;
+    keyEventFilter_ = nullptr;
+    stateCallbackDeathRecipient_ = nullptr;
+    runner_.reset();
+    handler_.reset();
+    for (auto &iter : dependentServicesStatus_) {
+        iter.second = false;
+    }
+
+    HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
+    isRunning_ = false;
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    (void)systemAbilityId;
-    (void)deviceId;
-    if (Publish(&Singleton<AccessibleAbilityManagerService>::GetInstance()) == false) {
-        HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
+    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    if (!handler_) {
+        HILOG_DEBUG("Event handler is nullptr.");
         return;
     }
-    HILOG_INFO("OnAddSystemAbility AccessibleAbilityManagerService");
+
+    handler_->PostTask(std::bind([=]() -> void {
+        auto iter = dependentServicesStatus_.find(systemAbilityId);
+        if (iter == dependentServicesStatus_.end()) {
+            HILOG_ERROR("SystemAbilityId is not found!");
+            return;
+        }
+
+        dependentServicesStatus_[systemAbilityId] = true;
+        for (auto &iter : dependentServicesStatus_) {
+            if (iter.second == false) {
+                HILOG_DEBUG("Not all the dependence is ready!");
+                return;
+            }
+        }
+
+        if (Init() == false) {
+            HILOG_ERROR("AccessibleAbilityManagerService::Init failed!");
+            return;
+        }
+
+        if (Publish(this) == false) {
+            HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
+            return;
+        }
+        HILOG_DEBUG("AAMS is ready!");
+        }), "OnAddSystemAbility");
 }
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
@@ -94,28 +164,10 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
 bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG("start");
-    currentAccountId_ = GetOsAccountId();
-    HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return false;
-    }
-    accountData->Init();
-    // Get installed accessibility extension ability from BMS
-    if (accountData->GetInstalledAbilitiesFromBMS()) {
-        UpdateAbilities();
-        UpdateAccessibilityManagerService();
-    } else {
-        HILOG_ERROR("Get installed ExtensionAbility failed");
-        return false;
-    }
-
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().Init();
-
     return true;
 }
 
@@ -183,7 +235,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
     const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation)
 {
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(
-        windowId, operation, GetOsAccountId());
+        windowId, operation, currentAccountId_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (accountData != nullptr && connection != nullptr) {
         accountData->AddAccessibilityWindowConnection(windowId, connection);
@@ -214,6 +266,11 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 void AccessibleAbilityManagerService::NotifyDisplayResizeStateChanged(
     int32_t displayId, Rect& rect, float scale, float centerX, float centerY)
 {
+    (void)displayId;
+    (void)rect;
+    (void)scale;
+    (void)centerX;
+    (void)centerY;
 }
 
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
@@ -328,7 +385,7 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
         return;
     }
 
-    AccessibilityConfig::CaptionProperty caption = accountData->GetCurrentConfig()->GetCaptionProperty();
+    AccessibilityConfig::CaptionProperty caption = accountData->GetConfig()->GetCaptionProperty();
     for (auto& callback : accountData->GetCaptionPropertyCallbacks()) {
         callback->OnPropertyChanged(caption);
     }
@@ -455,12 +512,6 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
 void AccessibleAbilityManagerService::PackageAdd(const std::string& bundleName)
 {
     (void)bundleName;
-}
-
-int32_t AccessibleAbilityManagerService::GetOsAccountId()
-{
-    constexpr int32_t TEMP_ACCOUNT_ID = 100;
-    return TEMP_ACCOUNT_ID;
 }
 
 void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
@@ -687,6 +738,20 @@ void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
 {
     HILOG_DEBUG("accountId(%{public}d)", accountId);
+    // Switch account id
+    currentAccountId_ = accountId;
+
+    // Initialize data for current account
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+    accountData->Init();
+    if (accountData->GetInstalledAbilitiesFromBMS()) {
+        UpdateAbilities();
+        UpdateAccessibilityManagerService();
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

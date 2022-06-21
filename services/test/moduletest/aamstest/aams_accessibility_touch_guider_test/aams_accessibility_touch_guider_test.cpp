@@ -90,6 +90,7 @@ void AamsTouchGuideTest::SetUp()
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();

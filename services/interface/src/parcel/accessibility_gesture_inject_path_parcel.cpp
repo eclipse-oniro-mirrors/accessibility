@@ -22,14 +22,14 @@ namespace Accessibility {
 AccessibilityGestureInjectPathParcel::AccessibilityGestureInjectPathParcel(
     const AccessibilityGestureInjectPath &gesturePath)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     AccessibilityGestureInjectPath *self = this;
     *self = gesturePath;
 }
 
 bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     int32_t positionSize = 0;
@@ -45,7 +45,7 @@ bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
 
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positions_.size());
@@ -59,7 +59,7 @@ bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityGestureInjectPathParcel> AccessibilityGestureInjectPathParcel::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibilityGestureInjectPathParcel> path = new AccessibilityGestureInjectPathParcel();
     if (!path || !path->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityGestureInjectPathParcel failed.");

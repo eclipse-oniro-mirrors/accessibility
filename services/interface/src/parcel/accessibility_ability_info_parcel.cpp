@@ -22,14 +22,14 @@ namespace Accessibility {
 AccessibilityAbilityInfoParcel::AccessibilityAbilityInfoParcel(
     const AccessibilityAbilityInfo &accessibilityAbilityInfo)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     AccessibilityAbilityInfo *self = this;
     *self = accessibilityAbilityInfo;
 }
 
 bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
@@ -47,7 +47,7 @@ bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, moduleName_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, name_);
@@ -65,7 +65,7 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityAbilityInfoParcel> AccessibilityAbilityInfoParcel::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG();
     sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel();
     if (!info->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityAbilityInfo failed.");

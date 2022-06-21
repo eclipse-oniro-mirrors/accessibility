@@ -29,7 +29,7 @@ using namespace OHOS::AccessibilityConfig;
 napi_value NAccessibilityConfigObserver::StartWork(
     napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE])
 {
-    HILOG_INFO("start");
+    HILOG_INFO();
     int32_t id = 0;
     ParseInt32(env, id, args[0]);
     configId_ = static_cast<OHOS::AccessibilityConfig::CONFIG_ID>(id);
@@ -42,7 +42,7 @@ napi_value NAccessibilityConfigObserver::StartWork(
 void NAccessibilityConfigObserver::NotifyStateChangedJS(napi_env env, bool enabled,
     const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(id), enabled ? "true" : "false");
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->state_ = enabled;
@@ -80,7 +80,7 @@ void NAccessibilityConfigObserver::NotifyStateChangedJS(napi_env env, bool enabl
 
 void NAccessibilityConfigObserver::OnConfigChanged(const CONFIG_ID id, const ConfigValue &value)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
     switch (id) {
         case CONFIG_CAPTION_STATE:
             NotifyStateChanged2JS(id, value.captionState);
@@ -124,7 +124,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChangedJS(napi_env env,
     OHOS::AccessibilityConfig::CaptionProperty caption,
     const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
 
     CaptionCallbackInfo *callbackInfo = new CaptionCallbackInfo();
     callbackInfo->caption_ = caption;
@@ -206,7 +206,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(const OHOS::Accessibili
 void NAccessibilityConfigObserver::NotifyStringChanged2JSInner(
     napi_env env, const std::string& value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d] value = [%{public}s]", static_cast<int32_t>(id), value.c_str());
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->stringValue_ = value;
@@ -250,7 +250,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JSInner(
 void NAccessibilityConfigObserver::NotifyIntChanged2JSInner(
     napi_env env, int32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(id), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->int32Value_ = value;
@@ -289,7 +289,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JSInner(
 void NAccessibilityConfigObserver::NotifyUintChanged2JSInner(
     napi_env env, uint32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(id), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->uint32Value_ = value;
@@ -328,7 +328,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JSInner(
 void NAccessibilityConfigObserver::NotifyFloatChanged2JSInner(
     napi_env env, float value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
 {
-    HILOG_INFO("start");
+    HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(id), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->floatValue_ = value;

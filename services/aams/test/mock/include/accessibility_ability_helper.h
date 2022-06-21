@@ -269,6 +269,9 @@ public:
         sendEventTimes_ = 0;
     }
 
+public:
+    static const int32_t accountId_ = 100;
+
 private:
     std::vector<int> touchAction_;
     bool isDestroyEvents_ = false;

@@ -156,7 +156,7 @@ public:
         AccessibilityElementInfo &child) = 0;
 
     /**
-     * @brief Get the child node informations
+     * @brief Get the child node information
      * @param parent The parent info to get child.
      * @param children The element info of children.
      * @return Return true if gets child elementInfo successfully, else return false.

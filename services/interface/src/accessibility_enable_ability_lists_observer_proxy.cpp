@@ -27,7 +27,7 @@ AccessibilityEnableAbilityListsObserverProxy::~AccessibilityEnableAbilityListsOb
 
 bool AccessibilityEnableAbilityListsObserverProxy::WriteInterfaceToken(MessageParcel &data)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     if (!data.WriteInterfaceToken(AccessibilityEnableAbilityListsObserverProxy::GetDescriptor())) {
         HILOG_ERROR("write interface token failed");
         return false;
@@ -37,7 +37,7 @@ bool AccessibilityEnableAbilityListsObserverProxy::WriteInterfaceToken(MessagePa
 
 void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityListsChanged()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
 
     MessageParcel data;
     MessageParcel reply;

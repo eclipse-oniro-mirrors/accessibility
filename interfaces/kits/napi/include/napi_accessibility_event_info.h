@@ -21,9 +21,8 @@
 
 class NAccessibilityEventInfo {
 public:
-    static void DefineJSAccessibilityEventInfo(napi_env env);
+    static void DefineJSAccessibilityEventInfo(napi_env env, napi_value exports);
     static napi_value JSConstructor(napi_env env, napi_callback_info info);
-    static thread_local napi_ref consRef_;
 private:
     NAccessibilityEventInfo() = default;
     ~NAccessibilityEventInfo() = default;

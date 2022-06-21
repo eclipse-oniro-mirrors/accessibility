@@ -38,39 +38,39 @@ void AccessibilityCommonEvent::UnSubscriberEvent()
 {
 }
 
-void AccessibilityCommonEvent::OnReceiveEvent(const Want& want)
+void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &data)
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandleUserAdded(const Want& want) const
+void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandleUserRemoved(const Want& want) const
+void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandleUserSwitched(const Want& want) const
+void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandlePackageRemoved(const Want& want) const
+void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandlePackageAdd(const Want& want) const
+void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 
-void AccessibilityCommonEvent::HandlePackageChanged(const Want& want) const
+void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventData &data) const
 {
-    (void)want;
+    (void)data;
 }
 } // namespace Accessibility
 } // namespace OHOS

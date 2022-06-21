@@ -65,6 +65,7 @@ void AccessibleAbilityManagerServiceUnitTest::SetUp()
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     stub_ = new MockAccessibleAbilityClientStubImpl();
 }
 

@@ -35,7 +35,7 @@ class AccessibilityInputEventConsumer : public MMI::IInputEventConsumer {
 public:
     AccessibilityInputEventConsumer();
     ~AccessibilityInputEventConsumer();
-    void OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const override;
+    void OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const override {};
     void OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const override;
     void OnInputEvent(std::shared_ptr<MMI::AxisEvent> axisEvent) const override {};
 private:

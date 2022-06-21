@@ -100,6 +100,13 @@ public:
     const std::string &GetPackageName() const;
 
     /**
+     * @brief Obtains the module name of the accessible ability.
+     * @param
+     * @return Return the module name of the accessible ability.
+     */
+    const std::string &GetModuleName() const;
+
+    /**
      * @brief Obtains the package name of the accessible ability.
      * @param bundleName the package name of the accessible ability
      * @return -
@@ -171,7 +178,7 @@ protected:
     std::string settingsAbility_;
 
     uint32_t abilityTypes_ = ACCESSIBILITY_ABILITY_TYPE_INVALID;
-    uint32_t eventTypes_ = EventType::TYPES_ALL_MASK;
+    uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
 
     std::vector<std::string> targetBundleNames_;
 };

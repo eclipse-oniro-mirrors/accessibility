@@ -161,7 +161,10 @@ declare interface AccessibilityElement {
 }
 
 type ElementAttributeValues = {
-    'windowId': number; //The id of the window which the node in.
+    /************************/
+    /*     element info     */
+    /************************/
+    'componentId': number;  //The id of the view which the node in.
     'pageId': number;
     'parentId': number; 
     'inspectorKey': string
@@ -211,17 +214,24 @@ type ElementAttributeValues = {
     // text move
     'textMoveUnit': accessibility.TextMoveUnit; //The movement step used for reading texts.
     'parent': AccessibilityElement;
-    'childs': Array<AccessibilityElement>;
-    // WindowInfo
+    'children': Array<AccessibilityElement>;
+    'triggerAction': accessibility.Action;
+    'contents': Array<string>;
+    'lastContent': string;
+    /************************/
+    /*     window info      */
+    /************************/
     'isActive': boolean;
     'screenRect': Rect;
     'layer': number;
     'type': WindowType;
     'anchor': AccessibilityElement;
     'rootElement': AccessibilityElement;
-    // common
+    /************************/
+    /*        common        */
+    /************************/
+    'windowId': number; //The id of the window which the node in.
     'isFocused': boolean;
-    'componentId': number;  //The id of the view which the node in.
 }
 
 type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';

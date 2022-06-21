@@ -87,6 +87,7 @@ void AamsKeyEventFilterTest::SetUp()
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     // Add an ability connection client
@@ -150,9 +151,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
 
     bool handled = true;
@@ -186,9 +187,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
 
     bool handled = false;
@@ -224,9 +225,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
     sleep(1);
     WaitUntilTaskFinished();

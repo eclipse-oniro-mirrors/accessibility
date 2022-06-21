@@ -189,7 +189,7 @@ int64_t AccessibilityMouseAutoclick::GetDelayTime()
         return 0;
     }
 
-    int32_t delayTime = accountData->GetCurrentConfig()->GetMouseAutoClick();
+    int32_t delayTime = accountData->GetConfig()->GetMouseAutoClick();
     return delayTime;
 }
 
@@ -198,7 +198,7 @@ AccessibilityMouseAutoclick::MouseAutoclickEventHandler::MouseAutoclickEventHand
     AccessibilityMouseAutoclick &mouseAutoclick)
     : AppExecFwk::EventHandler(runner), mouseAutoclick_(mouseAutoclick)
 {
-    HILOG_DEBUG("MouseAutoclickEventHandler is created");
+    HILOG_DEBUG();
 }
 
 void AccessibilityMouseAutoclick::MouseAutoclickEventHandler::ProcessEvent(

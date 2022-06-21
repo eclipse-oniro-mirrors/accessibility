@@ -177,7 +177,7 @@ AccessibilityShortKey::ShortKeyEventHandler::ShortKeyEventHandler(
     const std::shared_ptr<AppExecFwk::EventRunner> &runner,
     AccessibilityShortKey &shortKey) : AppExecFwk::EventHandler(runner), shortKey_(shortKey)
 {
-    HILOG_DEBUG("ShortKeyEventHandler is created");
+    HILOG_DEBUG();
 }
 
 void AccessibilityShortKey::ShortKeyEventHandler::ProcessEvent(
