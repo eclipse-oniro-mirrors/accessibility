@@ -27,6 +27,7 @@ public:
     static std::vector<int32_t> GetTouchActions();
     static void ClearInputEventConsumer();
     static std::shared_ptr<IInputEventConsumer> GetInputEventConsumer();
+    static std::function<void(std::shared_ptr<KeyEvent>)> GetKeyEventInterceptor();
 };
 } // namespace MMI
 } // namespace OHOS

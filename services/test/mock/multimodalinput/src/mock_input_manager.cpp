@@ -19,7 +19,7 @@ namespace OHOS {
 namespace MMI {
 static int mockKeyCode = -1;
 static std::vector<int32_t> mockTouchActions;
-static std::function<void(std::shared_ptr<MMI::PointerEvent>)> mockPointerCallback = nullptr;
+static std::function<void(std::shared_ptr<MMI::KeyEvent>)> mockKeyEventCallback = nullptr;
 static std::shared_ptr<MMI::IInputEventConsumer> mockInputEventConsumer = nullptr;
 
 int MockInputManager::GetKeyCode()
@@ -72,7 +72,13 @@ int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interc
 
 int32_t InputManager::AddInterceptor(std::function<void(std::shared_ptr<KeyEvent>)> interceptor)
 {
+    mockKeyEventCallback = interceptor;
     return 0;
+}
+
+std::function<void(std::shared_ptr<KeyEvent>)> MockInputManager::GetKeyEventInterceptor()
+{
+    return mockKeyEventCallback;
 }
 
 void InputManager::RemoveInterceptor(int32_t interceptorId)
