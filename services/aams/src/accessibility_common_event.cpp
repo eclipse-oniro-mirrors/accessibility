@@ -98,7 +98,6 @@ void AccessibilityCommonEvent::UnSubscriberEvent()
         subscriber_ = nullptr;
         eventHandler_ = nullptr;
     }
-    HILOG_DEBUG("UnSubscriberEvent end.");
 }
 
 void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &data)
@@ -123,7 +122,6 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
 
 void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     int32_t accountId = data.GetCode();
     HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
@@ -135,7 +133,6 @@ void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &
 
 void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     int32_t accountId = data.GetCode();
     HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
@@ -147,7 +144,6 @@ void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData
 
 void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     int32_t accountId = data.GetCode();
     HILOG_INFO("account id is %{public}d", accountId);
     if (accountId == -1) {
@@ -159,7 +155,6 @@ void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventDat
 
 void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     std::string bundleName = data.GetWant().GetBundle();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageRemoved(bundleName);
@@ -167,7 +162,6 @@ void AccessibilityCommonEvent::HandlePackageRemoved(const EventFwk::CommonEventD
 
 void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     std::string bundleName = data.GetWant().GetBundle();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageAdd(bundleName);
@@ -175,7 +169,6 @@ void AccessibilityCommonEvent::HandlePackageAdd(const EventFwk::CommonEventData 
 
 void AccessibilityCommonEvent::HandlePackageChanged(const EventFwk::CommonEventData &data) const
 {
-    HILOG_DEBUG();
     std::string bundleName = data.GetWant().GetBundle();
     HILOG_INFO("bundleName is %{public}s", bundleName.c_str());
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
