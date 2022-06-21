@@ -20,8 +20,6 @@
 
 #include "hilog_wrapper.h"
 #include "napi_accessibility_event_info.h"
-#include "napi_accessibility_gesture_path.h"
-#include "napi_accessibility_gesture_pos.h"
 #include "napi_accessibility_system_ability_client.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -46,21 +44,7 @@ static napi_value Init(napi_env env, napi_value exports)
 
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
-    NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env);
-    NGesturePos::DefineJSGesturePos(env);
-    NGesturePath::DefineJSGesturePath(env);
-
-    napi_value infoConstructor = nullptr;
-    NAPI_CALL(env, napi_get_reference_value(env, NAccessibilityEventInfo::consRef_, &infoConstructor));
-    NAPI_CALL(env, napi_set_named_property(env, exports, "EventInfo", infoConstructor));
-
-    napi_value posConstructor = nullptr;
-    NAPI_CALL(env, napi_get_reference_value(env, NGesturePos::consRef_, &posConstructor));
-    NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePos", posConstructor));
-
-    napi_value pathConstructor = nullptr;
-    NAPI_CALL(env, napi_get_reference_value(env, NGesturePath::consRef_, &pathConstructor));
-    NAPI_CALL(env, napi_set_named_property(env, exports, "GesturePath", pathConstructor));
+    NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env, exports);
 
     HILOG_INFO("-----Init end------");
     return exports;

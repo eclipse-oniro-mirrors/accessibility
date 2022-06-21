@@ -28,7 +28,9 @@ using namespace OHOS::AbilityRuntime;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-constexpr int32_t ERROR_CODE_ONE = 1;
+constexpr int32_t CONTEXT_ERROR = 1;
+constexpr int32_t PARAMETER_ERROR = 2;
+constexpr int32_t RESULT_ERROR = 3;
 
 static void ConvertAccessibilityWindowInfoToJS(
     napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
@@ -141,10 +143,6 @@ private:
         uint32_t filter = TYPE_VIEW_INVALID;
         ConvertJSToEventTypes(reinterpret_cast<napi_env>(&engine),
             reinterpret_cast<napi_value>(info.argv[PARAM0]), filter);
-        if (filter == TYPE_VIEW_INVALID) {
-            HILOG_ERROR("ConvertJSToEventTypes failed");
-            return engine.CreateUndefined();
-        }
         HILOG_INFO("filter = %{public}d", filter);
 
         AsyncTask::CompleteCallback complete =
@@ -153,22 +151,26 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
-
+                if (filter == TYPE_VIEW_INVALID) {
+                    HILOG_ERROR("filter is invalid");
+                    task.Reject(engine, CreateJsError(engine, PARAMETER_ERROR, "filter is invalid"));
+                    return;
+                }
                 bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "set event type failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
                 }
             };
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetEventTypeFilter",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -194,7 +196,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -203,13 +205,13 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "set target bundle name failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
                 }
             };
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -255,7 +257,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -273,12 +275,12 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Get focus elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get focus elementInfo failed."));
                 }
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetFocusElement",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -293,6 +295,7 @@ private:
         }
 
         int32_t windowId = INVALID_WINDOW_ID;
+        bool isActiveWindow = true;
         NativeValue* lastParam = nullptr;
         if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             lastParam = info.argv[PARAM0];
@@ -302,12 +305,14 @@ private:
                 return engine.CreateUndefined();
             }
             lastParam = info.argv[PARAM1];
+            isActiveWindow = false;
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             bool ret = ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
             if (!ret) {
                 HILOG_ERROR("Convert windowId failed. ret[%{public}d] windowId[%{public}d]", ret, windowId);
                 return engine.CreateUndefined();
             }
+            isActiveWindow = false;
         } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
                    info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
             // Use default value.
@@ -317,18 +322,16 @@ private:
         }
 
         AsyncTask::CompleteCallback complete =
-            [weak = context_, windowId](NativeEngine& engine, AsyncTask& task, int32_t status) {
+            [weak = context_, windowId, isActiveWindow](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindowRootElement begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
-                bool isActiveWindow = (windowId == INVALID_WINDOW_ID) ? true : false;
                 HILOG_DEBUG("isActiveWindow[%{public}d] windowId[%{public}d]", isActiveWindow, windowId);
-
                 OHOS::Accessibility::AccessibilityElementInfo elementInfo;
                 bool ret = false;
                 if (isActiveWindow) {
@@ -352,12 +355,12 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Get root elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get root elementInfo failed."));
                 }
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetWindowRootElement",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -412,7 +415,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -427,12 +430,12 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
                 }
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -446,7 +449,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -467,12 +470,12 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
                 }
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -503,7 +506,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -512,13 +515,13 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Perform common action failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Perform common action failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Perform common action failed."));
                 }
             };
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnExecuteCommonAction",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -564,7 +567,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
                 bool ret = false;
@@ -577,13 +580,13 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Gesture inject failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Gesture inject failed."));
                 }
             };
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_TWO) ? nullptr : info.argv[PARAM2];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
