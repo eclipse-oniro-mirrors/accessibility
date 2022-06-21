@@ -28,7 +28,9 @@ using namespace OHOS::AbilityRuntime;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-constexpr int32_t ERROR_CODE_ONE = 1;
+constexpr int32_t CONTEXT_ERROR = 1;
+constexpr int32_t PARAMETER_ERROR = 2;
+constexpr int32_t RESULT_ERROR = 3;
 
 static void ConvertAccessibilityWindowInfoToJS(
     napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
@@ -149,12 +151,12 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
                 if (filter == TYPE_VIEW_INVALID) {
                     HILOG_ERROR("filter is invalid");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "filter is invalid"));
+                    task.Reject(engine, CreateJsError(engine, PARAMETER_ERROR, "filter is invalid"));
                     return;
                 }
                 bool ret = context->SetEventTypeFilter(filter);
@@ -162,7 +164,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "set event type failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
                 }
             };
 
@@ -194,7 +196,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -203,7 +205,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "set target bundle name failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
                 }
             };
 
@@ -255,7 +257,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -273,7 +275,7 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Get focus elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get focus elementInfo failed."));
                 }
             };
 
@@ -322,13 +324,12 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
                 bool isActiveWindow = (windowId == INVALID_WINDOW_ID) ? true : false;
                 HILOG_DEBUG("isActiveWindow[%{public}d] windowId[%{public}d]", isActiveWindow, windowId);
-
                 OHOS::Accessibility::AccessibilityElementInfo elementInfo;
                 bool ret = false;
                 if (isActiveWindow) {
@@ -352,7 +353,7 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, false, "Get root elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get root elementInfo failed."));
                 }
             };
 
@@ -419,7 +420,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -434,7 +435,7 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, false, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
                 }
             };
 
@@ -453,7 +454,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -468,7 +469,7 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, false, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
                 }
             };
 
@@ -504,7 +505,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
 
@@ -513,7 +514,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Perform common action failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Perform common action failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Perform common action failed."));
                 }
             };
 
@@ -565,7 +566,7 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
                 bool ret = false;
@@ -578,7 +579,7 @@ private:
                     task.Resolve(engine, engine.CreateBoolean(ret));
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, ERROR_CODE_ONE, "Gesture inject failed."));
+                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Gesture inject failed."));
                 }
             };
 
