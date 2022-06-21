@@ -150,9 +150,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
 
     bool handled = true;
@@ -186,9 +186,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
 
     bool handled = false;
@@ -224,9 +224,9 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003
             ->GetConnectedA11yAbilities();
     EXPECT_EQ(connectionMaps.size(), 1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
+    auto keyEventInterceptor = MMI::MockInputManager::GetKeyEventInterceptor();
+    if (keyEventInterceptor != nullptr) {
+        keyEventInterceptor(keyEvent);
     }
     sleep(1);
     WaitUntilTaskFinished();
