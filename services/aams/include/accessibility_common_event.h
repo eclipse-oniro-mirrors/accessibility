@@ -25,7 +25,7 @@
 #include "singleton.h"
 #include "want.h"
 
-using EventHandle = std::function<void(const OHOS::AAFwk::Want&)>;
+using EventHandle = std::function<void(const OHOS::EventFwk::CommonEventData &)>;
 
 namespace OHOS {
 namespace Accessibility {
@@ -34,7 +34,7 @@ class AccessibilityCommonEvent {
 public:
     void SubscriberEvent(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnSubscriberEvent();
-    void OnReceiveEvent(const AAFwk::Want &want);
+    void OnReceiveEvent(const EventFwk::CommonEventData &data);
 
 private:
     class AccessibilityCommonEventSubscriber : public EventFwk::CommonEventSubscriber {
@@ -46,22 +46,22 @@ private:
 
         void OnReceiveEvent(const EventFwk::CommonEventData &data) override
         {
-            registry_.OnReceiveEvent(data.GetWant());
+            registry_.OnReceiveEvent(data);
         }
 
     private:
         AccessibilityCommonEvent &registry_;
     };
 
-    void HandleUserAdded(const AAFwk::Want &want) const;
-    void HandleUserRemoved(const AAFwk::Want &want) const;
-    void HandleUserSwitched(const AAFwk::Want &want) const;
+    void HandleUserAdded(const EventFwk::CommonEventData &data) const;
+    void HandleUserRemoved(const EventFwk::CommonEventData &data) const;
+    void HandleUserSwitched(const EventFwk::CommonEventData &data) const;
 
-    void HandlePackageRemoved(const AAFwk::Want &want) const;
-    void HandlePackageChanged(const AAFwk::Want &want) const;
-    void HandlePackageAdd(const AAFwk::Want &want) const;
+    void HandlePackageRemoved(const EventFwk::CommonEventData &data) const;
+    void HandlePackageChanged(const EventFwk::CommonEventData &data) const;
+    void HandlePackageAdd(const EventFwk::CommonEventData &data) const;
 
-    typedef void (AccessibilityCommonEvent::*HandleEventFunc)(const AAFwk::Want&) const;
+    typedef void (AccessibilityCommonEvent::*HandleEventFunc)(const EventFwk::CommonEventData &) const;
     std::map<std::string, EventHandle> eventHandles_;
     std::map<std::string, HandleEventFunc> handleEventFunc_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

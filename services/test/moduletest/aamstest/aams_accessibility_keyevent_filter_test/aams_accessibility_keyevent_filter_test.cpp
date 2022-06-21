@@ -87,6 +87,7 @@ void AamsKeyEventFilterTest::SetUp()
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     // Add an ability connection client

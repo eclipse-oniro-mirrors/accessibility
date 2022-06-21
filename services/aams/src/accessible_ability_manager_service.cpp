@@ -25,8 +25,6 @@
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "input_manager.h"
-#include "os_account_info.h"
-#include "os_account_manager.h"
 #include "system_ability_definition.h"
 #include "utils.h"
 
@@ -40,7 +38,6 @@ namespace {
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
-    constexpr int32_t OS_ACCOUNT_ID = 100;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -52,7 +49,6 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
 {
     HILOG_INFO("AccessibleAbilityManagerService is constructed");
     dependentServicesStatus_[ABILITY_MGR_SERVICE_ID] = false;
-    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
     dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
@@ -95,7 +91,6 @@ void AccessibleAbilityManagerService::OnStart()
 
     HILOG_INFO("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
-    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
@@ -113,6 +108,7 @@ void AccessibleAbilityManagerService::OnStop()
         return;
     }
 
+    currentAccountId_ = -1;
     a11yAccountsData_.clear();
     bundleManager_ = nullptr;
     inputInterceptor_ = nullptr;
@@ -188,12 +184,6 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo &ui
     HILOG_DEBUG("eventType[%{public}d] gestureId[%{public}d]", uiEvent.GetEventType(), uiEvent.GetGestureType());
     if (!handler_) {
         HILOG_ERROR("Parameters check failed!");
-        return;
-    }
-
-    if (currentAccountId_ != GetOsAccountId()) {
-        HILOG_ERROR("account is wrong osAccount[%{public}d], currentAccount[%{public}d]!",
-            GetOsAccountId(), currentAccountId_);
         return;
     }
 
@@ -389,27 +379,19 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
     }
 
     handler_->PostTask(std::bind([=]() -> void {
-        HILOG_DEBUG("start");
-        int32_t osAccountId = GetOsAccountId();
-        auto iter = a11yAccountsData_.find(osAccountId);
-        if (iter == a11yAccountsData_.end()) {
-            HILOG_DEBUG("There is no account[%{public}d] and new one", osAccountId);
-            sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(osAccountId);
-            if (!accountData) {
-                HILOG_ERROR("accountData is null");
-                return;
-            }
-            a11yAccountsData_.insert(make_pair(osAccountId, accountData));
+        HILOG_INFO("Register windowId[%{public}d]", windowId);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Get current account data failed!!");
+            return;
         }
-
-        sptr<AccessibilityAccountData> accountData = a11yAccountsData_[osAccountId];
         if (accountData->GetAccessibilityWindowConnection(windowId)) {
             HILOG_WARN("This operation already exists, do not register twice!!");
             return;
         }
 
         sptr<AccessibilityWindowConnection> connection =
-            new(std::nothrow) AccessibilityWindowConnection(windowId, operation, osAccountId);
+            new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);
         if (!connection) {
             HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
             return;
@@ -866,23 +848,6 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
 bool AccessibleAbilityManagerService::Init()
 {
     HILOG_DEBUG();
-    currentAccountId_ = GetOsAccountId();
-    HILOG_DEBUG("current accountId %{public}d", currentAccountId_);
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return false;
-    }
-    accountData->Init();
-    // Get installed accessibility extension ability from BMS
-    if (accountData->GetInstalledAbilitiesFromBMS()) {
-        UpdateAbilities();
-        UpdateAccessibilityManagerService();
-    } else {
-        HILOG_ERROR("Get installed ExtensionAbility failed");
-        return false;
-    }
-
     Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
     Singleton<AccessibilityDisplayManager>::GetInstance().RegisterDisplayListener(handler_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
@@ -1092,34 +1057,31 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
 
     // Clear last account's data
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
+    if (currentAccountId_ != -1) {
+        HILOG_DEBUG("current account id: %{public}d", currentAccountId_);
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->OnAccountSwitched();
+        UpdateAccessibilityManagerService();
     }
-    accountData->OnAccountSwitched();
-    UpdateAccessibilityManagerService();
 
     // Switch account id
     currentAccountId_ = accountId;
 
     // Initialize data for current account
-    auto iter = a11yAccountsData_.find(currentAccountId_);
-    if (iter != a11yAccountsData_.end()) {
-        HILOG_DEBUG("Find account[%{public}d].", currentAccountId_);
-        accountData = iter->second;
-    } else {
-        accountData = new(std::nothrow) AccessibilityAccountData(currentAccountId_);
-        a11yAccountsData_.insert(make_pair(currentAccountId_, accountData));
-    }
-
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
-        HILOG_ERROR("accountData is null");
+        HILOG_ERROR("accountData is nullptr.");
         return;
     }
     accountData->Init();
-    accountData->GetInstalledAbilitiesFromBMS();
-    UpdateAbilities();
+    if (accountData->GetInstalledAbilitiesFromBMS()) {
+        UpdateAbilities();
+        UpdateAccessibilityManagerService();
+    }
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -1196,7 +1158,7 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
         return;
     }
     bundleMgrProxy->QueryExtensionAbilityInfos(
-        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, currentAccountId_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto &newAbility : extensionInfos) {
         if (newAbility.bundleName == bundleName) {
@@ -1248,7 +1210,7 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
         return;
     }
     bundleMgrProxy->QueryExtensionAbilityInfos(
-        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, GetCurrentAccountId(), extensionInfos);
+        AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, currentAccountId_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto &changedAbility : extensionInfos) {
         if (changedAbility.bundleName == bundleName) {
@@ -1482,13 +1444,6 @@ void AccessibleAbilityManagerService::RemoveUITestClient(sptr<AccessibleAbilityC
     }
     accountData->RemoveInstalledAbility(UI_TEST_BUNDLE_NAME);
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName(), 0);
-}
-
-int32_t AccessibleAbilityManagerService::GetOsAccountId()
-{
-    HILOG_DEBUG("start");
-    // Temp deal
-    return OS_ACCOUNT_ID;
 }
 
 void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)

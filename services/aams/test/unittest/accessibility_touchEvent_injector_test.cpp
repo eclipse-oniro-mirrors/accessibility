@@ -58,6 +58,7 @@ void TouchEventInjectorTest::SetUpTestCase()
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUpTestCase";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 
 void TouchEventInjectorTest::TearDownTestCase()

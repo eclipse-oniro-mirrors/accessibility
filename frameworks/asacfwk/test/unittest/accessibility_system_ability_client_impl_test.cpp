@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include <memory>
+#include "accessibility_ability_helper.h"
 #include "accessibility_system_ability_client_impl.h"
 #include "accessible_ability_manager_service.h"
 #include "mock_accessibility_element_operator.h"
@@ -46,20 +47,17 @@ public:
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(ABILITY_MGR_SERVICE_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(
-            SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(
             BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(DISPLAY_MANAGER_SERVICE_SA_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnAddSystemAbility(WINDOW_MANAGER_SERVICE_ID, "");
+        Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
         GTEST_LOG_(INFO) << "AccessibilitySystemAbilityClientImplTest Start";
     }
     static void TearDownTestCase()
     {
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(ABILITY_MGR_SERVICE_ID, "");
-        Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(
-            SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(
             BUNDLE_MGR_SERVICE_SYS_ABILITY_ID, "");
         Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(COMMON_EVENT_SERVICE_ID, "");
