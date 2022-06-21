@@ -168,7 +168,7 @@ private:
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetEventTypeFilter",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -209,7 +209,7 @@ private:
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -278,7 +278,7 @@ private:
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetFocusElement",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -358,7 +358,7 @@ private:
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetWindowRootElement",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -440,7 +440,7 @@ private:
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -474,7 +474,7 @@ private:
             };
 
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -520,7 +520,7 @@ private:
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnExecuteCommonAction",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
@@ -585,7 +585,7 @@ private:
 
         NativeValue* lastParam = (info.argc == ARGS_SIZE_TWO) ? nullptr : info.argv[PARAM2];
         NativeValue* result = nullptr;
-        AsyncTask::Schedule(
+        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
