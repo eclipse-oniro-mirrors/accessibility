@@ -393,35 +393,40 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
 
 napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_ZERO;
-    napi_value argv[ARGS_SIZE_TWO], thisVar;
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {0};
+    napi_value thisVar;
     void* data = nullptr;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
-
     NAccessibilityElementData *callbackInfo = new NAccessibilityElementData();
     callbackInfo->env_ = env;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
     if (argc != ARGS_SIZE_TWO) {
         HILOG_ERROR("argc is not two!");
         return ErrorOperation(callbackInfo);
     }
 
-    AccessibilityElement *accessibilityElement = nullptr;
+    // Parse conditionType name
+    std::string conditionType = "";
+    ParseString(env, conditionType, argv[PARAM0]);
+    HILOG_INFO("conditionType = %{public}s", conditionType.c_str());
+
+    // Parse queryData name
+    std::string queryData = "";
+    ParseString(env, queryData, argv[PARAM1]);
+    HILOG_INFO("queryData = %{public}s", queryData.c_str());
+
+    // Unwrap AccessibilityElement
+    AccessibilityElement* accessibilityElement = nullptr;
     napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
     if (!accessibilityElement || status != napi_ok) {
         HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
         return ErrorOperation(callbackInfo);
     }
-
-    std::string conditionType;
-    if (!ParseString(env, conditionType, argv[PARAM0])) {
-        HILOG_ERROR("ParseString for argv[0] failed");
-        return ErrorOperation(callbackInfo);
-    }
-    FindElementCondition condition = ConvertStringToCondition(conditionType);
     callbackInfo->accessibilityElement_ = *accessibilityElement;
-    std::string queryData;
+
+    FindElementCondition condition = ConvertStringToCondition(conditionType);
     switch (condition) {
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
             if (!ParseString(env, queryData, argv[PARAM1])) {
