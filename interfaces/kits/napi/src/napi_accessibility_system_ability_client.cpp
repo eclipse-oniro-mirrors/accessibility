@@ -191,8 +191,12 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             napi_get_undefined(env, &undefined);
             napi_create_array(env, &result[PARAM1]);
             ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
-            if (callbackInfo->callback_ && callbackInfo->result_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+            if (callbackInfo->callback_) {
+                if (callbackInfo->result_) {
+                    result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+                } else {
+                    result[PARAM0] = GetErrorValue(env, CODE_FAILED);
+                }
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
