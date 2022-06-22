@@ -14,6 +14,9 @@
  */
 
 #include "accessible_ability_channel_client.h"
+
+#include <cinttypes>
+
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
 
@@ -178,7 +181,7 @@ bool AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowI
 bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows) const
 {
-    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}ju]", channelId_, displayId);
+    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
     if (proxy_) {
         bool ret = proxy_->GetWindowsByDisplayId(displayId, windows);
         for (auto &window : windows) {

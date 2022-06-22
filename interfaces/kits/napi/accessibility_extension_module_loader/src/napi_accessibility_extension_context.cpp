@@ -454,7 +454,7 @@ private:
                 }
 
                 if (displayId < 0) {
-                    HILOG_ERROR("displayId is error: %{public}ju", displayId);
+                    HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
                     task.Reject(engine, CreateJsError(engine, PARAMETER_ERROR, "displayId is error"));
                     return;
                 }

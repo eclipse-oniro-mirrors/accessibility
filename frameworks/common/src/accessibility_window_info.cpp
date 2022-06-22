@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_window_info.h"
+
+#include <cinttypes>
+
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -132,13 +135,13 @@ AccessibilityWindowInfo::AccessibilityWindowInfo()
 
 void AccessibilityWindowInfo::SetDisplayId(const uint64_t displayId)
 {
-    HILOG_DEBUG("displayId[%{public}ju]", displayId);
+    HILOG_DEBUG("displayId:%{public}" PRIu64 "", displayId);
     displayId_ = displayId;
 }
 
 uint64_t AccessibilityWindowInfo::GetDisplayId() const
 {
-    HILOG_DEBUG("displayId[%{public}ju]", displayId_);
+    HILOG_DEBUG("displayId:%{public}" PRIu64 "", displayId_);
     return displayId_;
 }
 
