@@ -95,6 +95,6 @@ const uint32_t STATE_INVETRTCOLOR_ENABLED = 0x00000200;
 const uint32_t STATE_ANIMATIONOFF_ENABLED = 0x00000400;
 const uint32_t STATE_AUDIOMONO_ENABLED = 0x00000800;
 
-const uint32_t INVALID_CHANNEL_ID = 0xFFFFFFFF;
+const int32_t INVALID_CHANNEL_ID = 0xFFFFFFFF;
 } // namespace Accessibility
 } // namespace OHOS
