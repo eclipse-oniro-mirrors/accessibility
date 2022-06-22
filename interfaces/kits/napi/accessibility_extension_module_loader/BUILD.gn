@@ -55,6 +55,7 @@ ohos_shared_library("accessibility_extension_module") {
     "ability_runtime:runtime",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
+    "utils_base:utils",
   ]
 
   subsystem_name = "barrierfree"
