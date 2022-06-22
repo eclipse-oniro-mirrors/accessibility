@@ -351,11 +351,11 @@ public:
      * @brief Get the record by index.
      * @note Remained
      * @param
-     * @return
+     * @return Returns true when the specified record is found, otherwise returns false.
      * @since 3
      * @sysCap Accessibility
      */
-    const AccessibilityEventInfo &GetRecord(const int32_t index) const;    // remained
+    bool GetRecord(const int32_t index, AccessibilityEventInfo &eventInfo) const; // remained
 
     /**
      * @brief Gets the accessibility record list.

@@ -188,6 +188,8 @@ private:
      */
     bool ConnectToService();
 
+    void Init();
+
     /**
      * @brief Notify the state is changed.
      * @param stateType The state type and value.
