@@ -914,5 +914,42 @@ int32_t AccessibilityElementInfo::GetItemCounts() const
     HILOG_DEBUG("itemCounts_[%{public}d]", itemCounts_);
     return itemCounts_;
 }
+
+void AccessibilityElementInfo::SetTriggerAction(const ActionType action)
+{
+    HILOG_DEBUG("action[%{public}d]", action);
+    triggerAction_ = action;
+}
+
+ActionType AccessibilityElementInfo::GetTriggerAction() const
+{
+    return triggerAction_;
+}
+
+void AccessibilityElementInfo::SetContentList(const std::vector<std::string> &contentList)
+{
+    contentList_.clear();
+    for (auto &content : contentList) {
+        contentList_.emplace_back(content);
+    }
+}
+
+void AccessibilityElementInfo::GetContentList(std::vector<std::string> &contenList) const
+{
+    contenList.clear();
+    for (auto &content : contentList_) {
+        contenList.emplace_back(content);
+    }
+}
+
+void AccessibilityElementInfo::SetLatestContent(const std::string &content)
+{
+    latestConent_ = content;
+}
+
+const std::string &AccessibilityElementInfo::GetLatestContent() const
+{
+    return latestConent_;
+}
 } // namespace Accessibility
 } // namespace OHOS

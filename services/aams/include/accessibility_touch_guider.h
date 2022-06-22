@@ -188,6 +188,13 @@ public:
     void SendAccessibilityEventToAA(EventType eventType);
 
     /**
+     * @brief Send gesture event to specific AccessiblityAbility.
+     * @param gestureId the gesture id of the event
+     * @return
+     */
+    void SendGestureEventToAA(GestureType gestureId);
+
+    /**
      * @brief Get hover enter and move event.
      * @param
      * @return Returns pointerEvents_ list.

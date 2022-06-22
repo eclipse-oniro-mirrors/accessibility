@@ -167,6 +167,18 @@ void TouchGuider::SendAccessibilityEventToAA(EventType eventType)
     }
 }
 
+void TouchGuider::SendGestureEventToAA(GestureType gestureId)
+{
+    HILOG_DEBUG("gestureId is %{public}d.", gestureId);
+
+    AccessibilityEventInfo eventInfo {};
+    int32_t windowsId = Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_;
+    eventInfo.SetWindowId(windowsId);
+    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
+    eventInfo.SetGestureType(gestureId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
+}
+
 void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action)
 {
     HILOG_DEBUG("action:%{public}d, SourceType:%{public}d.", action, event.GetSourceType());
@@ -266,11 +278,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     server_.currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
 
     // Send customize gesture type to aa
-    AccessibilityEventInfo eventInfo {};
-    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
-    eventInfo.SetGestureType(gestureId);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
-
+    server_.SendGestureEventToAA(gestureId);
     return true;
 }
 

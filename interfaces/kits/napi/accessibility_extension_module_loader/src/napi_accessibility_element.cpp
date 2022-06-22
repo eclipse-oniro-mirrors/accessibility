@@ -25,16 +25,16 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 
 namespace {
-    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"windowId", "pageId", "parentId", "inspectorKey",
+    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "pageId", "parentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "resourceName",
         "childNodeIds", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
         "accessibilityFocused", "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "popupSupported", "pluralLineSupported", "deleteable", "isHint", "isEssential", "itemCount",
         "currentIndex", "startIndex", "endIndex", "rangeInfo", "grid", "gridItem", "activeRegion", "isContentInvalid",
-        "error", "label", "beginSelected", "endSelected", "textMoveUnit", "parent", "childs",
-        "isFocused", "componentId"};
+        "error", "label", "beginSelected", "endSelected", "textMoveUnit", "parent", "children", "triggerAction",
+        "contents", "lastContent", "windowId", "isFocused"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type", "anchor",
-        "rootElement", "isFocused", "componentId"};
+        "rootElement", "isFocused", "windowId"};
 } // namespace
 
 thread_local napi_ref NAccessibilityElement::consRef_ = nullptr;
@@ -144,6 +144,10 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
             HILOG_DEBUG("execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
 
             // Promise mode
             napi_create_array(env, &result);
@@ -257,7 +261,12 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 std::vector<AccessibleAction> operations =
                     callbackInfo->accessibilityElement_.elementInfo_->GetActionList();
                 HILOG_DEBUG("action list size is %{public}zu", operations.size());
@@ -273,6 +282,10 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
             HILOG_DEBUG("execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
 
             // Promise mode
             if (callbackInfo->ret_) {
@@ -344,6 +357,11 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             ActionType action = ConvertStringToAccessibleOperationType(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient) {
@@ -355,6 +373,11 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("ExecuteAction execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             napi_value ret = 0;
             napi_get_boolean(callbackInfo->env_, callbackInfo->ret_, &ret);
             napi_resolve_deferred(env, callbackInfo->deferred_, ret);
@@ -444,6 +467,10 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -452,6 +479,11 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             napi_value undefined = nullptr;
             napi_get_undefined(env, &undefined);
             napi_reject_deferred(env, callbackInfo->deferred_, undefined);
@@ -469,6 +501,10 @@ napi_value NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -476,7 +512,12 @@ napi_value NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetWindowId();
                 HILOG_DEBUG("windowId: [%{public}d]", callbackInfo->int32Data_);
             } else {
@@ -488,6 +529,11 @@ napi_value NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementDa
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoWindowId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             napi_value argv;
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &argv);
@@ -511,6 +557,10 @@ napi_value NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -518,7 +568,12 @@ napi_value NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetPageId();
                 HILOG_DEBUG("GetElementInfoPageId: [%{public}d]", callbackInfo->int32Data_);
             } else {
@@ -531,6 +586,11 @@ napi_value NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoPageId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -553,6 +613,10 @@ napi_value NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -560,7 +624,12 @@ napi_value NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetParentNodeId();
                 HILOG_DEBUG("parentId: [%{public}d]", callbackInfo->int32Data_);
             } else {
@@ -573,6 +642,11 @@ napi_value NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoParentId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -595,6 +669,10 @@ napi_value NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -602,7 +680,12 @@ napi_value NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetInspectorKey();
                 HILOG_DEBUG("inspectorKey: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -615,6 +698,11 @@ napi_value NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoInspectorKey execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -637,6 +725,10 @@ napi_value NAccessibilityElement::GetElementInfoBundleName(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -644,7 +736,12 @@ napi_value NAccessibilityElement::GetElementInfoBundleName(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetBundleName();
                 HILOG_DEBUG("bundle name: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -657,6 +754,11 @@ napi_value NAccessibilityElement::GetElementInfoBundleName(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoBundleName execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -679,6 +781,10 @@ napi_value NAccessibilityElement::GetElementInfoComponentType(NAccessibilityElem
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -686,7 +792,12 @@ napi_value NAccessibilityElement::GetElementInfoComponentType(NAccessibilityElem
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetComponentType();
                 HILOG_DEBUG("component type: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -699,6 +810,11 @@ napi_value NAccessibilityElement::GetElementInfoComponentType(NAccessibilityElem
             HILOG_DEBUG("GetElementInfoComponentType execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -721,6 +837,10 @@ napi_value NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -728,7 +848,12 @@ napi_value NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetInputType();
                 HILOG_DEBUG("input type: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -741,6 +866,11 @@ napi_value NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoInputType execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -763,6 +893,10 @@ napi_value NAccessibilityElement::GetElementInfoText(NAccessibilityElementData *
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -770,7 +904,12 @@ napi_value NAccessibilityElement::GetElementInfoText(NAccessibilityElementData *
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetContent();
                 HILOG_DEBUG("text: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -783,6 +922,11 @@ napi_value NAccessibilityElement::GetElementInfoText(NAccessibilityElementData *
             HILOG_DEBUG("GetElementInfoText execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -805,6 +949,10 @@ napi_value NAccessibilityElement::GetElementInfoHintText(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -812,7 +960,12 @@ napi_value NAccessibilityElement::GetElementInfoHintText(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetHint();
                 HILOG_DEBUG("hint text: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -825,6 +978,11 @@ napi_value NAccessibilityElement::GetElementInfoHintText(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoHintText execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -847,6 +1005,10 @@ napi_value NAccessibilityElement::GetElementInfoDescription(NAccessibilityElemen
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -854,7 +1016,12 @@ napi_value NAccessibilityElement::GetElementInfoDescription(NAccessibilityElemen
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetDescriptionInfo();
                 HILOG_DEBUG("description: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -867,6 +1034,11 @@ napi_value NAccessibilityElement::GetElementInfoDescription(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoDescription execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -889,6 +1061,10 @@ napi_value NAccessibilityElement::GetElementInfoResourceName(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -896,7 +1072,12 @@ napi_value NAccessibilityElement::GetElementInfoResourceName(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetComponentResourceId();
                 HILOG_DEBUG("resource name: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
@@ -909,6 +1090,11 @@ napi_value NAccessibilityElement::GetElementInfoResourceName(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoResourceName execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -931,6 +1117,10 @@ napi_value NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -938,7 +1128,12 @@ napi_value NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->childIds_ = callbackInfo->accessibilityElement_.elementInfo_->GetChildIds();
                 HILOG_DEBUG("childIds size: [%{public}zu]", callbackInfo->childIds_.size());
             } else {
@@ -951,6 +1146,11 @@ napi_value NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoChildNodeIds execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_array(env, &argv);
                 size_t index = 0;
@@ -980,6 +1180,10 @@ napi_value NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityEl
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -987,7 +1191,12 @@ napi_value NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityEl
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetTextLengthLimit();
                 HILOG_DEBUG("textLengthLimit: [%{public}d]", callbackInfo->int32Data_);
             } else {
@@ -1000,6 +1209,11 @@ napi_value NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityEl
             HILOG_DEBUG("GetElementInfoTextLengthLimit execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
@@ -1022,6 +1236,10 @@ napi_value NAccessibilityElement::GetElementInfoRect(NAccessibilityElementData *
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1029,7 +1247,12 @@ napi_value NAccessibilityElement::GetElementInfoRect(NAccessibilityElementData *
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
                 callbackInfo->screenRect_ = callbackInfo->accessibilityElement_.elementInfo_->GetRectInScreen();
             } else {
                 HILOG_ERROR("no elementInfo_");
@@ -1041,6 +1264,11 @@ napi_value NAccessibilityElement::GetElementInfoRect(NAccessibilityElementData *
             HILOG_DEBUG("GetElementInfoRect execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_object(env, &argv);
                 ConvertRectToJS(env, argv, callbackInfo->screenRect_);
@@ -1064,6 +1292,10 @@ napi_value NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1071,6 +1303,11 @@ napi_value NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsCheckable();
                 HILOG_DEBUG("GetElementInfoCheckable: [%{public}d]", callbackInfo->boolData_);
@@ -1084,6 +1321,11 @@ napi_value NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoCheckable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1106,6 +1348,10 @@ napi_value NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementDat
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1113,6 +1359,11 @@ napi_value NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementDat
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsChecked();
                 HILOG_DEBUG("GetElementInfoChecked: [%{public}d]", callbackInfo->boolData_);
@@ -1126,6 +1377,11 @@ napi_value NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementDat
             HILOG_DEBUG("GetElementInfoChecked execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1148,6 +1404,10 @@ napi_value NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1155,6 +1415,11 @@ napi_value NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsFocusable();
                 HILOG_DEBUG("GetElementInfoFocusable: [%{public}d]", callbackInfo->boolData_);
@@ -1168,6 +1433,11 @@ napi_value NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoFocusable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1190,6 +1460,10 @@ napi_value NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1197,6 +1471,11 @@ napi_value NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsVisible();
                 HILOG_DEBUG("GetElementInfoIsVisible: [%{public}d]", callbackInfo->boolData_);
@@ -1210,6 +1489,11 @@ napi_value NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoIsVisible execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1232,6 +1516,10 @@ napi_value NAccessibilityElement::GetElementInfoAccessibilityFocused(NAccessibil
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1239,6 +1527,11 @@ napi_value NAccessibilityElement::GetElementInfoAccessibilityFocused(NAccessibil
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->HasAccessibilityFocus();
                 HILOG_DEBUG("GetElementInfoAccessibilityFocused: [%{public}d]", callbackInfo->boolData_);
@@ -1252,6 +1545,11 @@ napi_value NAccessibilityElement::GetElementInfoAccessibilityFocused(NAccessibil
             HILOG_DEBUG("GetElementInfoAccessibilityFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1274,6 +1572,10 @@ napi_value NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1281,6 +1583,11 @@ napi_value NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsSelected();
                 HILOG_DEBUG("GetElementInfoSelected: [%{public}d]", callbackInfo->boolData_);
@@ -1294,6 +1601,11 @@ napi_value NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1316,6 +1628,10 @@ napi_value NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1323,6 +1639,11 @@ napi_value NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsClickable();
                 HILOG_DEBUG("GetElementInfoClickable: [%{public}d]", callbackInfo->boolData_);
@@ -1336,6 +1657,11 @@ napi_value NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoClickable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1358,6 +1684,10 @@ napi_value NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElem
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1365,6 +1695,11 @@ napi_value NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElem
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsLongClickable();
                 HILOG_DEBUG("GetElementInfoLongClickable: [%{public}d]", callbackInfo->boolData_);
@@ -1378,6 +1713,11 @@ napi_value NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElem
             HILOG_DEBUG("GetElementInfoLongClickable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1400,6 +1740,10 @@ napi_value NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1407,6 +1751,11 @@ napi_value NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsEnabled();
                 HILOG_DEBUG("GetElementInfoIsEnable: [%{public}d]", callbackInfo->boolData_);
@@ -1420,6 +1769,11 @@ napi_value NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoIsEnable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1442,6 +1796,10 @@ napi_value NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1449,6 +1807,11 @@ napi_value NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsPassword();
                 HILOG_DEBUG("GetElementInfoIsPassword: [%{public}d]", callbackInfo->boolData_);
@@ -1462,6 +1825,11 @@ napi_value NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoIsPassword execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1484,6 +1852,10 @@ napi_value NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1491,6 +1863,11 @@ napi_value NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsScrollable();
                 HILOG_DEBUG("GetElementInfoScrollable: [%{public}d]", callbackInfo->boolData_);
@@ -1504,6 +1881,11 @@ napi_value NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoScrollable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1526,6 +1908,10 @@ napi_value NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1533,6 +1919,11 @@ napi_value NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsEditable();
                 HILOG_DEBUG("GetElementInfoEditable: [%{public}d]", callbackInfo->boolData_);
@@ -1546,6 +1937,11 @@ napi_value NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoEditable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1568,6 +1964,10 @@ napi_value NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityEle
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1575,6 +1975,11 @@ napi_value NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityEle
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsPopupSupported();
                 HILOG_DEBUG("GetElementInfoPopupSupported: [%{public}d]", callbackInfo->boolData_);
@@ -1588,6 +1993,11 @@ napi_value NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityEle
             HILOG_DEBUG("GetElementInfoPopupSupported execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1610,6 +2020,10 @@ napi_value NAccessibilityElement::GetElementInfoPluralLineSupported(NAccessibili
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1617,6 +2031,11 @@ napi_value NAccessibilityElement::GetElementInfoPluralLineSupported(NAccessibili
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsPluraLineSupported();
                 HILOG_DEBUG("GetElementInfoPluralLineSupported: [%{public}d]", callbackInfo->boolData_);
@@ -1630,6 +2049,11 @@ napi_value NAccessibilityElement::GetElementInfoPluralLineSupported(NAccessibili
             HILOG_DEBUG("GetElementInfoPluralLineSupported execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1652,6 +2076,10 @@ napi_value NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1659,6 +2087,11 @@ napi_value NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsDeletable();
                 HILOG_DEBUG("GetElementInfoDeleteable: [%{public}d]", callbackInfo->boolData_);
@@ -1672,6 +2105,11 @@ napi_value NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoDeleteable execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1694,6 +2132,10 @@ napi_value NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1701,6 +2143,11 @@ napi_value NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsGivingHint();
                 HILOG_DEBUG("GetElementInfoIsHint: [%{public}d]", callbackInfo->boolData_);
@@ -1714,6 +2161,11 @@ napi_value NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoIsHint execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1736,6 +2188,10 @@ napi_value NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElemen
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1743,6 +2199,11 @@ napi_value NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElemen
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsEssential();
                 HILOG_DEBUG("GetElementInfoIsEssential: [%{public}d]", callbackInfo->boolData_);
@@ -1756,6 +2217,11 @@ napi_value NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoIsEssential execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1778,6 +2244,10 @@ napi_value NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1785,6 +2255,11 @@ napi_value NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetItemCounts();
                 HILOG_DEBUG("GetElementInfoItemCount: [%{public}d]", callbackInfo->int32Data_);
@@ -1798,6 +2273,11 @@ napi_value NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoItemCount execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1820,6 +2300,10 @@ napi_value NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1827,6 +2311,11 @@ napi_value NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetCurrentIndex();
                 HILOG_DEBUG("GetElementInfoCurrentIndex: [%{public}d]", callbackInfo->int32Data_);
@@ -1840,6 +2329,11 @@ napi_value NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoCurrentIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1862,6 +2356,10 @@ napi_value NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1869,6 +2367,11 @@ napi_value NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetBeginIndex();
                 HILOG_DEBUG("GetElementInfoStartIndex: [%{public}d]", callbackInfo->int32Data_);
@@ -1882,6 +2385,11 @@ napi_value NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElement
             HILOG_DEBUG("GetElementInfoStartIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1904,6 +2412,10 @@ napi_value NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1911,6 +2423,11 @@ napi_value NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetEndIndex();
                 HILOG_DEBUG("GetElementInfoEndIndex: [%{public}d]", callbackInfo->int32Data_);
@@ -1924,6 +2441,11 @@ napi_value NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoEndIndex execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -1946,6 +2468,10 @@ napi_value NAccessibilityElement::GetElementInfoRangeInfo(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1953,6 +2479,11 @@ napi_value NAccessibilityElement::GetElementInfoRangeInfo(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->rangeInfo_ = callbackInfo->accessibilityElement_.elementInfo_->GetRange();
             } else {
@@ -1965,6 +2496,11 @@ napi_value NAccessibilityElement::GetElementInfoRangeInfo(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoRangeInfo execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertRangeInfoToJS(callbackInfo->env_, result, callbackInfo->rangeInfo_);
@@ -1988,6 +2524,10 @@ napi_value NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -1995,6 +2535,11 @@ napi_value NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->gridInfo_ = callbackInfo->accessibilityElement_.elementInfo_->GetGrid();
             } else {
@@ -2007,6 +2552,11 @@ napi_value NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *
             HILOG_DEBUG("GetElementInfoGrid execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertGridInfoToJS(callbackInfo->env_, result, callbackInfo->gridInfo_);
@@ -2030,6 +2580,10 @@ napi_value NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2037,6 +2591,11 @@ napi_value NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->gridItemInfo_ = callbackInfo->accessibilityElement_.elementInfo_->GetGridItem();
             } else {
@@ -2049,6 +2608,11 @@ napi_value NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoGridItem execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_object(callbackInfo->env_, &result);
                 ConvertGridItemToJS(callbackInfo->env_, result, callbackInfo->gridItemInfo_);
@@ -2072,6 +2636,10 @@ napi_value NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2079,6 +2647,11 @@ napi_value NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetLiveRegion();
                 HILOG_DEBUG("GetElementInfoActiveRegion: [%{public}d]", callbackInfo->int32Data_);
@@ -2092,6 +2665,11 @@ napi_value NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoActiveRegion execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2114,6 +2692,10 @@ napi_value NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityE
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2121,6 +2703,11 @@ napi_value NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityE
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->GetContentInvalid();
                 HILOG_DEBUG("GetElementInfoIsContentInvalid: [%{public}d]", callbackInfo->boolData_);
@@ -2134,6 +2721,11 @@ napi_value NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityE
             HILOG_DEBUG("GetElementInfoIsContentInvalid execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2156,6 +2748,10 @@ napi_value NAccessibilityElement::GetElementInfoError(NAccessibilityElementData 
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2163,6 +2759,11 @@ napi_value NAccessibilityElement::GetElementInfoError(NAccessibilityElementData 
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetContentInvalid();
                 HILOG_DEBUG("GetElementInfoError: [%{public}s]", callbackInfo->stringData_.c_str());
@@ -2176,6 +2777,11 @@ napi_value NAccessibilityElement::GetElementInfoError(NAccessibilityElementData 
             HILOG_DEBUG("GetElementInfoError execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH,
                     &result);
@@ -2199,6 +2805,10 @@ napi_value NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData 
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2206,6 +2816,11 @@ napi_value NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData 
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ =
                     callbackInfo->accessibilityElement_.elementInfo_->GetLabeledAccessibilityId();
@@ -2220,6 +2835,11 @@ napi_value NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData 
             HILOG_DEBUG("GetElementInfoLabel execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2242,6 +2862,10 @@ napi_value NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElem
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2249,6 +2873,11 @@ napi_value NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElem
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetSelectedBegin();
                 HILOG_DEBUG("GetElementInfoBeginSelected: [%{public}d]", callbackInfo->int32Data_);
@@ -2262,6 +2891,11 @@ napi_value NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElem
             HILOG_DEBUG("GetElementInfoBeginSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2284,6 +2918,10 @@ napi_value NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElemen
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2291,6 +2929,11 @@ napi_value NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElemen
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetSelectedEnd();
                 HILOG_DEBUG("GetElementInfoEndSelected: [%{public}d]", callbackInfo->int32Data_);
@@ -2304,6 +2947,11 @@ napi_value NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoEndSelected execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2326,6 +2974,10 @@ napi_value NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityEleme
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2333,6 +2985,11 @@ napi_value NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityEleme
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->stringData_ = ConvertTextMoveUnitToString(
                     callbackInfo->accessibilityElement_.elementInfo_->GetTextMovementStep());
@@ -2351,6 +3008,11 @@ napi_value NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityEleme
             HILOG_DEBUG("GetElementInfoTextMoveUnit execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH,
                     &result);
@@ -2374,6 +3036,10 @@ napi_value NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2381,6 +3047,11 @@ napi_value NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
                 if (!aaClient) {
@@ -2400,6 +3071,11 @@ napi_value NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData
             HILOG_DEBUG("GetElementInfoParent execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -2425,6 +3101,10 @@ napi_value NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2432,6 +3112,11 @@ napi_value NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
                 if (!aaClient) {
@@ -2451,6 +3136,11 @@ napi_value NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementDa
             HILOG_DEBUG("GetElementInfoChildren execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
@@ -2470,10 +3160,195 @@ napi_value NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementDa
     return promise;
 }
 
+napi_value NAccessibilityElement::GetElementInfoTriggerAction(NAccessibilityElementData *callbackInfo)
+{
+    HILOG_INFO();
+    napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
+    napi_env env = callbackInfo->env_;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetElementInfoTriggerAction", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
+                callbackInfo->stringData_ = ConvertOperationTypeToString(
+                    callbackInfo->accessibilityElement_.elementInfo_->GetTriggerAction());
+                HILOG_DEBUG("GetElementInfoTriggerAction: [%{public}s]", callbackInfo->stringData_.c_str());
+                if (callbackInfo->stringData_ == "") {
+                    callbackInfo->ret_ = false;
+                    HILOG_ERROR("no stringData_");
+                }
+            } else {
+                HILOG_ERROR("no elementInfo_");
+                callbackInfo->ret_ = false;
+            }
+        },
+        // Execute the complete function
+        [](napi_env env, napi_status status, void* data) {
+            HILOG_DEBUG("GetElementInfoTriggerAction execute back");
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->ret_) {
+                napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH,
+                    &result);
+                napi_resolve_deferred(env, callbackInfo->deferred_, result);
+            } else {
+                HILOG_ERROR("GetElementInfoTriggerAction failed!");
+                napi_get_undefined(env, &result);
+                napi_reject_deferred(env, callbackInfo->deferred_, result);
+            }
+            napi_delete_async_work(env, callbackInfo->work_);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+        },
+        (void*)callbackInfo,
+        &callbackInfo->work_);
+    napi_queue_async_work(env, callbackInfo->work_);
+    return promise;
+}
+
+napi_value NAccessibilityElement::GetElementInfoContents(NAccessibilityElementData *callbackInfo)
+{
+    HILOG_INFO();
+    napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
+    napi_env env = callbackInfo->env_;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetElementInfoContents", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo && callbackInfo->accessibilityElement_.elementInfo_) {
+                callbackInfo->accessibilityElement_.elementInfo_->GetContentList(callbackInfo->contents_);
+                HILOG_DEBUG("contents size: [%{public}zu]", callbackInfo->contents_.size());
+            } else {
+                HILOG_ERROR("no elementInfo_");
+                callbackInfo->ret_ = false;
+            }
+        },
+        // Execute the complete function
+        [](napi_env env, napi_status status, void* data) {
+            HILOG_DEBUG("GetElementInfoContents execute back");
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->ret_) {
+                napi_create_array(env, &argv);
+                size_t index = 0;
+                for (auto& content : callbackInfo->contents_) {
+                    napi_value nContent = nullptr;
+                    napi_create_string_utf8(env, content.c_str(), NAPI_AUTO_LENGTH, &nContent);
+                    napi_set_element(env, argv, index, nContent);
+                    index++;
+                }
+                napi_resolve_deferred(env, callbackInfo->deferred_, argv);
+            } else {
+                HILOG_ERROR("GetElementInfoContents failed!");
+                napi_get_undefined(env, &argv);
+                napi_reject_deferred(env, callbackInfo->deferred_, argv);
+            }
+            napi_delete_async_work(env, callbackInfo->work_);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+        },
+        (void*)callbackInfo,
+        &callbackInfo->work_);
+    napi_queue_async_work(env, callbackInfo->work_);
+    return promise;
+}
+
+napi_value NAccessibilityElement::GetElementInfoLastContent(NAccessibilityElementData *callbackInfo)
+{
+    HILOG_INFO();
+    napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
+    napi_env env = callbackInfo->env_;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetElementInfoLastContent", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->accessibilityElement_.elementInfo_) {
+                callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetLatestContent();
+                HILOG_DEBUG("last content: [%{public}s]", callbackInfo->stringData_.c_str());
+            } else {
+                HILOG_ERROR("no elementInfo_");
+                callbackInfo->ret_ = false;
+            }
+        },
+        // Execute the complete function
+        [](napi_env env, napi_status status, void* data) {
+            HILOG_DEBUG("GetElementInfoLastContent execute back");
+            NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            napi_value argv;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
+            if (callbackInfo->ret_) {
+                napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
+                napi_resolve_deferred(env, callbackInfo->deferred_, argv);
+            } else {
+                HILOG_ERROR("GetElementInfoLastContent failed!");
+                napi_get_undefined(env, &argv);
+                napi_reject_deferred(env, callbackInfo->deferred_, argv);
+            }
+            napi_delete_async_work(env, callbackInfo->work_);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+        },
+        (void*)callbackInfo,
+        &callbackInfo->work_);
+    napi_queue_async_work(env, callbackInfo->work_);
+    return promise;
+}
+
 napi_value NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo)
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2481,6 +3356,11 @@ napi_value NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.elementInfo_->IsFocused();
                 HILOG_DEBUG("GetElementInfoIsFocused: [%{public}d]", callbackInfo->boolData_);
@@ -2494,6 +3374,11 @@ napi_value NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementD
             HILOG_DEBUG("GetElementInfoIsFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2516,6 +3401,10 @@ napi_value NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElemen
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2523,6 +3412,11 @@ napi_value NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElemen
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId();
                 HILOG_DEBUG("GetElementInfoComponentId: [%{public}d]", callbackInfo->int32Data_);
@@ -2536,6 +3430,11 @@ napi_value NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElemen
             HILOG_DEBUG("GetElementInfoComponentId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2558,6 +3457,10 @@ napi_value NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementDat
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2565,6 +3468,11 @@ napi_value NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementDat
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.windowInfo_->IsActive();
                 HILOG_DEBUG("GetWindowInfoIsActive: [%{public}d]", callbackInfo->boolData_);
@@ -2578,6 +3486,11 @@ napi_value NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementDat
             HILOG_DEBUG("GetWindowInfoIsActive execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2600,6 +3513,10 @@ napi_value NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementD
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2607,6 +3524,11 @@ napi_value NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementD
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->screenRect_ = callbackInfo->accessibilityElement_.windowInfo_->GetRectInScreen();
             } else {
@@ -2619,6 +3541,11 @@ napi_value NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementD
             HILOG_DEBUG("GetWindowInfoScreenRect execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_object(env, &result);
                 ConvertRectToJS(env, result, callbackInfo->screenRect_);
@@ -2642,6 +3569,10 @@ napi_value NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2649,6 +3580,11 @@ napi_value NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.windowInfo_->GetWindowLayer();
                 HILOG_DEBUG("GetWindowInfoLayer: [%{public}d]", callbackInfo->int32Data_);
@@ -2662,6 +3598,11 @@ napi_value NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *
             HILOG_DEBUG("GetWindowInfoLayer execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2684,6 +3625,10 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2691,6 +3636,11 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->int32Data_ =
                     callbackInfo->accessibilityElement_.windowInfo_->GetAccessibilityWindowType();
@@ -2705,6 +3655,11 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
             HILOG_DEBUG("GetWindowInfoType execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2727,6 +3682,10 @@ napi_value NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData 
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2734,6 +3693,11 @@ napi_value NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData 
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
                 if (!aaClient) {
@@ -2756,6 +3720,11 @@ napi_value NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData 
             HILOG_DEBUG("GetWindowInfoAnchor execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -2781,6 +3750,10 @@ napi_value NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElement
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2788,6 +3761,11 @@ napi_value NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElement
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
                 if (!aaClient) {
@@ -2810,6 +3788,11 @@ napi_value NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElement
             HILOG_DEBUG("GetWindowInfoRootElement execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_value constructor = nullptr;
                 napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -2835,6 +3818,10 @@ napi_value NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementDa
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
@@ -2842,6 +3829,11 @@ napi_value NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementDa
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->boolData_ = callbackInfo->accessibilityElement_.windowInfo_->IsFocused();
                 HILOG_DEBUG("GetWindowInfoIsFocused: [%{public}d]", callbackInfo->boolData_);
@@ -2855,6 +3847,11 @@ napi_value NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementDa
             HILOG_DEBUG("GetWindowInfoIsFocused execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_get_boolean(callbackInfo->env_, callbackInfo->boolData_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
@@ -2873,20 +3870,29 @@ napi_value NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementDa
     return promise;
 }
 
-napi_value NAccessibilityElement::GetWindowInfoComponentId(NAccessibilityElementData *callbackInfo)
+napi_value NAccessibilityElement::GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo)
 {
     HILOG_INFO();
     napi_value promise = nullptr;
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     napi_env env = callbackInfo->env_;
     napi_create_promise(env, &callbackInfo->deferred_, &promise);
     napi_value resource = nullptr;
-    napi_create_string_utf8(env, "GetWindowInfoComponentId", NAPI_AUTO_LENGTH, &resource);
+    napi_create_string_utf8(env, "GetWindowInfoWindowId", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
                 callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.windowInfo_->GetWindowId();
-                HILOG_DEBUG("GetWindowInfoComponentId: [%{public}d]", callbackInfo->int32Data_);
+                HILOG_DEBUG("GetWindowInfoWindowId: [%{public}d]", callbackInfo->int32Data_);
             } else {
                 HILOG_ERROR("no windowInfo_");
                 callbackInfo->ret_ = false;
@@ -2894,14 +3900,19 @@ napi_value NAccessibilityElement::GetWindowInfoComponentId(NAccessibilityElement
         },
         // Execute the complete function
         [](napi_env env, napi_status status, void* data) {
-            HILOG_DEBUG("GetWindowInfoComponentId execute back");
+            HILOG_DEBUG("GetWindowInfoWindowId execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
-                HILOG_ERROR("GetWindowInfoComponentId failed!");
+                HILOG_ERROR("GetWindowInfoWindowId failed!");
                 napi_get_undefined(env, &result);
                 napi_reject_deferred(env, callbackInfo->deferred_, result);
             }
@@ -2925,6 +3936,11 @@ napi_value NAccessibilityElement::GetElementInfoByContent(NAccessibilityElementD
     napi_create_async_work(callbackInfo->env_, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient != nullptr && callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->ret_ = aaClient->GetByContent(
@@ -2939,8 +3955,12 @@ napi_value NAccessibilityElement::GetElementInfoByContent(NAccessibilityElementD
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoByContent execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
@@ -2971,6 +3991,10 @@ napi_value NAccessibilityElement::GetElementInfoByFocusType(NAccessibilityElemen
     napi_create_async_work(callbackInfo->env_, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
             AccessibilityElementInfo nodeInfo;
             int32_t focusType = ConvertStringToFocusType(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -2989,8 +4013,12 @@ napi_value NAccessibilityElement::GetElementInfoByFocusType(NAccessibilityElemen
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoByFocusType execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-            
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
@@ -3021,6 +4049,10 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
     napi_create_async_work(callbackInfo->env_, nullptr, resource,
         [](napi_env env, void* data) {
             NAccessibilityElementData *callbackInfo = static_cast<NAccessibilityElementData*>(data);
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
             AccessibilityElementInfo nodeInfo;
             FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -3039,8 +4071,12 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
         [](napi_env env, napi_status status, void* data) {
             HILOG_DEBUG("GetElementInfoByFocusDirection execute back");
             NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
-
             napi_value result = nullptr;
+            if (!callbackInfo) {
+                HILOG_ERROR("callbackInfo is nullptr");
+                return;
+            }
+
             if (callbackInfo->ret_) {
                 napi_create_array(env, &result);
                 ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);

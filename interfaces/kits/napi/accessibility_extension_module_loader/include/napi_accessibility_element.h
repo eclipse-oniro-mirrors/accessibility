@@ -50,6 +50,7 @@ struct NAccessibilityElementData {
     std::vector<std::string> actionNames_ {};
 
     std::vector<int32_t> childIds_;
+    std::vector<std::string> contents_;
 
     std::string stringData_ = "";
     bool boolData_ = false;
@@ -82,7 +83,7 @@ public:
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
 
     // Element info
-    static napi_value GetElementInfoWindowId(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoComponentId(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoPageId(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoParentId(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoInspectorKey(NAccessibilityElementData *callbackInfo);
@@ -129,8 +130,11 @@ public:
     static napi_value GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoParent(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoChildren(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoTriggerAction(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoContents(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoLastContent(NAccessibilityElementData *callbackInfo);
+    static napi_value GetElementInfoWindowId(NAccessibilityElementData *callbackInfo);
     static napi_value GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoComponentId(NAccessibilityElementData *callbackInfo);
 
     // Window info
     static napi_value GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo);
@@ -140,7 +144,7 @@ public:
     static napi_value GetWindowInfoAnchor(NAccessibilityElementData *callbackInfo);
     static napi_value GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo);
     static napi_value GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoComponentId(NAccessibilityElementData *callbackInfo);
+    static napi_value GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo);
 
     // Element info by condition
     static napi_value GetElementInfoByContent(NAccessibilityElementData *callbackInfo);
@@ -159,7 +163,7 @@ private:
 
 typedef napi_value (*AttributeNamesFunc)(NAccessibilityElementData *callbackInfo);
 static std::map<std::string, AttributeNamesFunc> g_elementInfoFuncMap = {
-    {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
+    {"componentId", &NAccessibilityElement::GetElementInfoComponentId},
     {"pageId", &NAccessibilityElement::GetElementInfoPageId},
     {"parentId", &NAccessibilityElement::GetElementInfoParentId},
     {"inspectorKey", &NAccessibilityElement::GetElementInfoInspectorKey},
@@ -205,9 +209,12 @@ static std::map<std::string, AttributeNamesFunc> g_elementInfoFuncMap = {
     {"endSelected", &NAccessibilityElement::GetElementInfoEndSelected},
     {"textMoveUnit", &NAccessibilityElement::GetElementInfoTextMoveUnit},
     {"parent", &NAccessibilityElement::GetElementInfoParent},
-    {"childs", &NAccessibilityElement::GetElementInfoChildren},
+    {"children", &NAccessibilityElement::GetElementInfoChildren},
+    {"triggerAction", &NAccessibilityElement::GetElementInfoTriggerAction},
+    {"contents", &NAccessibilityElement::GetElementInfoContents},
+    {"lastContent", &NAccessibilityElement::GetElementInfoLastContent},
+    {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
     {"isFocused", &NAccessibilityElement::GetElementInfoIsFocused},
-    {"componentId", &NAccessibilityElement::GetElementInfoComponentId},
 };
 static std::map<std::string, AttributeNamesFunc> g_windowInfomemberFuncMap = {
     {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
@@ -217,6 +224,6 @@ static std::map<std::string, AttributeNamesFunc> g_windowInfomemberFuncMap = {
     {"anchor", &NAccessibilityElement::GetWindowInfoAnchor},
     {"rootElement", &NAccessibilityElement::GetWindowInfoRootElement},
     {"isFocused", &NAccessibilityElement::GetWindowInfoIsFocused},
-    {"componentId", &NAccessibilityElement::GetWindowInfoComponentId},
+    {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
 };
 #endif // NAPI_ACCESSIBILITY_ELEMENT_H
