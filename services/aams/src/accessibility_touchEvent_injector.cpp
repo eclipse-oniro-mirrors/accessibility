@@ -207,7 +207,7 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
         HILOG_WARN("PositionSize is zero.");
         return;
     }
-     int64_t durationTime = gesturePositions_->GetDurationTime();
+    int64_t durationTime = gesturePositions_->GetDurationTime();
     if (durationTime < 0) {
         HILOG_WARN("DurationTime is wrong.");
         return;
