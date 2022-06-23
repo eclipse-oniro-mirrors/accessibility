@@ -98,7 +98,7 @@ extern const uint32_t STATE_HIGHCONTRAST_ENABLED;
 extern const uint32_t STATE_INVETRTCOLOR_ENABLED;
 extern const uint32_t STATE_ANIMATIONOFF_ENABLED;
 extern const uint32_t STATE_AUDIOMONO_ENABLED;
-extern const uint32_t INVALID_CHANNEL_ID;
+extern const int32_t INVALID_CHANNEL_ID;
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBILITY_CONSTANTS_H

@@ -179,7 +179,7 @@ public:
 private:
     int32_t GenrateRequestId();
 
-    uint32_t channelId_ = INVALID_CHANNEL_ID;
+    int32_t channelId_ = INVALID_CHANNEL_ID;
     sptr<IAccessibleAbilityChannel> proxy_ = nullptr;
     std::atomic<int> requestId_ = 0;
 };
