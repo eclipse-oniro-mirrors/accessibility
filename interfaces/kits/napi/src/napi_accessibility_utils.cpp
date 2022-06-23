@@ -955,9 +955,6 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     napi_create_string_utf8(env, "windowUpdateType", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
-        if (eventType != TYPE_WINDOW_UPDATE) {
-            return false;
-        }
         napi_value windowUpdateTypeValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &windowUpdateTypeValue);
         str = GetStringFromNAPI(env, windowUpdateTypeValue);
