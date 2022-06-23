@@ -27,7 +27,7 @@ const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 struct NAccessibilityConfigObserver {
 public:
     NAccessibilityConfigObserver(napi_env env, napi_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
-		: env_(env), handlerRef_(callback), configId_(id) {};
+        : env_(env), handlerRef_(callback), configId_(id) {};
     void OnConfigChanged(const OHOS::AccessibilityConfig::ConfigValue& value);
 
     void NotifyStateChanged2JS(bool enabled);

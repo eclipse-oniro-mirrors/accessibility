@@ -26,8 +26,7 @@
 #include "accessibility_config.h"
 
 struct EnableAbilityListsObserver {
-    EnableAbilityListsObserver(napi_env env, napi_ref callback)
-		: env_(env), callback_(callback) {};
+    EnableAbilityListsObserver(napi_env env, napi_ref callback) : env_(env), callback_(callback) {};
     void OnEnableAbilityListsStateChanged();
     napi_env env_ = nullptr;
     napi_ref callback_ = nullptr;

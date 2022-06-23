@@ -590,7 +590,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
 
     napi_ref handler = nullptr;
     napi_create_reference(env, parameters[PARAM0], 1, &handler);
-    std::shared_ptr<NAccessibilityConfigObserver> observer = 
+    std::shared_ptr<NAccessibilityConfigObserver> observer =
         std::make_shared<NAccessibilityConfigObserver>(env, handler, obj->GetConfigId());
     
     configObservers->SubscribeObserver(observer);

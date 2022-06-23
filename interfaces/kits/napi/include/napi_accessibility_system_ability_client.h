@@ -29,8 +29,7 @@
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
 struct StateListener {
-    StateListener(napi_env env, napi_ref ref)
-		: handlerRef_(ref), env_(env) {};
+    StateListener(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
     static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
     void OnStateChanged(const bool state);
 
