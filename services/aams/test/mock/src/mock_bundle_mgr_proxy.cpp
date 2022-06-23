@@ -388,13 +388,6 @@ bool BundleMgrProxy::SetAbilityEnabled(const AbilityInfo& abilityInfo, bool isEn
     return true;
 }
 
-std::string BundleMgrProxy::GetAbilityIcon(const std::string& bundleName, const std::string& className)
-{
-    (void)bundleName;
-    (void)className;
-    return Constants::EMPTY_STRING;
-}
-
 sptr<IBundleInstaller> BundleMgrProxy::GetBundleInstaller()
 {
     return nullptr;
@@ -441,11 +434,10 @@ bool BundleMgrProxy::GetAllCommonEventInfo(const std::string& eventKey, std::vec
     return true;
 }
 
-bool BundleMgrProxy::GetDistributedBundleInfo(const std::string& networkId, int32_t userId,
-    const std::string& bundleName, DistributedBundleInfo& distributedBundleInfo)
+bool BundleMgrProxy::GetDistributedBundleInfo(const std::string &networkId, const std::string &bundleName,
+    DistributedBundleInfo &distributedBundleInfo)
 {
     (void)networkId;
-    (void)userId;
     (void)bundleName;
     (void)distributedBundleInfo;
     return true;
@@ -486,14 +478,6 @@ bool BundleMgrProxy::QueryExtensionAbilityInfos(
     (void)userId;
     (void)extensionInfos;
     return true;
-}
-
-std::shared_ptr<Media::PixelMap> BundleMgrProxy::GetAbilityPixelMapIcon(
-    const std::string& bundleName, const std::string& abilityName)
-{
-    (void)bundleName;
-    (void)abilityName;
-    return nullptr;
 }
 
 template <typename T>
