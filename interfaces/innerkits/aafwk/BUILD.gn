@@ -49,7 +49,7 @@ ohos_shared_library("accessibleability") {
   public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
-    "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "${ability_runtime_kits_path}/ability/native:abilitykit_native",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
   ]
 
