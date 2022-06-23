@@ -26,32 +26,72 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
 
-napi_value NAccessibilityConfigObserver::StartWork(
-    napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE])
+void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
 {
-    HILOG_INFO();
-    int32_t id = 0;
-    ParseInt32(env, id, args[0]);
-    configId_ = static_cast<OHOS::AccessibilityConfig::CONFIG_ID>(id);
-    napi_create_reference(env, args[functionIndex], 1, &handlerRef_);
-    env_ = env;
-    napi_value result = {0};
-    return result;
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
+    switch (configId_) {
+        case CONFIG_CAPTION_STATE:
+            NotifyStateChanged2JS(value.captionState);
+            break;
+        case CONFIG_CAPTION_STYLE:
+            NotifyPropertyChanged2JS(value.captionStyle);
+            break;
+        case CONFIG_SCREEN_MAGNIFICATION:
+            NotifyStateChanged2JS(value.screenMagnifier);
+            break;
+        case CONFIG_MOUSE_KEY:
+            NotifyStateChanged2JS(value.mouseKey);
+            break;
+        case CONFIG_SHORT_KEY:
+            NotifyStateChanged2JS(value.shortkey);
+            break;
+        case CONFIG_SHORT_KEY_TARGET:
+            NotifyStringChanged2JS(value.shortkey_target);
+            break;
+        case CONFIG_MOUSE_AUTOCLICK:
+            NotifyIntChanged2JS(value.mouseAutoClick);
+            break;
+        case CONFIG_DALTONIZATION_COLOR_FILTER:
+            NotifyUintChanged2JS(value.daltonizationColorFilter);
+            break;
+        case CONFIG_CONTENT_TIMEOUT:
+            NotifyUintChanged2JS(value.contentTimeout);
+            break;
+        case CONFIG_BRIGHTNESS_DISCOUNT:
+            NotifyFloatChanged2JS(value.brightnessDiscount);
+            break;
+        case CONFIG_AUDIO_BALANCE:
+            NotifyFloatChanged2JS(value.audioBalance);
+            break;
+        case CONFIG_HIGH_CONTRASTE_TEXT:
+            NotifyStateChanged2JS(value.highContrastText);
+            break;
+        case CONFIG_INVERT_COLOR:
+            NotifyStateChanged2JS(value.invertColor);
+            break;
+        case CONFIG_AUDIO_MONO:
+            NotifyStateChanged2JS(value.audioMono);
+            break;
+        case CONFIG_ANIMATION_OFF:
+            NotifyStateChanged2JS(value.animationOff);
+            break;
+        default:
+            break;
+    }
 }
 
-void NAccessibilityConfigObserver::NotifyStateChangedJS(napi_env env, bool enabled,
-    const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
+void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
 {
-    HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(id), enabled ? "true" : "false");
+    HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(configId_), enabled ? "true" : "false");
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->state_ = enabled;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -78,62 +118,18 @@ void NAccessibilityConfigObserver::NotifyStateChangedJS(napi_env env, bool enabl
         });
 }
 
-void NAccessibilityConfigObserver::OnConfigChanged(const CONFIG_ID id, const ConfigValue &value)
+void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption)
 {
-    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
-    switch (id) {
-        case CONFIG_CAPTION_STATE:
-            NotifyStateChanged2JS(id, value.captionState);
-            break;
-        case CONFIG_CAPTION_STYLE:
-            NotifyPropertyChanged2JS(id, value.captionStyle);
-            break;
-        case CONFIG_SCREEN_MAGNIFICATION:
-            NotifyStateChanged2JS(id, value.screenMagnifier);
-            break;
-        case CONFIG_MOUSE_KEY:
-            NotifyStateChanged2JS(id, value.mouseKey);
-            break;
-        case CONFIG_SHORT_KEY:
-            NotifyStateChanged2JS(id, value.shortkey);
-            break;
-        case CONFIG_SHORT_KEY_TARGET:
-            NotifyStringChanged2JS(id, value.shortkey_target);
-            break;
-        case CONFIG_MOUSE_AUTOCLICK:
-            NotifyIntChanged2JS(id, value.mouseAutoClick);
-            break;
-        case CONFIG_DALTONIZATION_COLOR_FILTER:
-            NotifyUintChanged2JS(id, value.daltonizationColorFilter);
-            break;
-        case CONFIG_CONTENT_TIMEOUT:
-            NotifyUintChanged2JS(id, value.contentTimeout);
-            break;
-        case CONFIG_BRIGHTNESS_DISCOUNT:
-            NotifyFloatChanged2JS(id, value.brightnessDiscount);
-            break;
-        case CONFIG_AUDIO_BALANCE:
-            NotifyFloatChanged2JS(id, value.audioBalance);
-            break;
-        default:
-            break;
-    }
-}
-
-void NAccessibilityConfigObserver::NotifyPropertyChangedJS(napi_env env,
-    OHOS::AccessibilityConfig::CaptionProperty caption,
-    const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
-{
-    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
 
     CaptionCallbackInfo *callbackInfo = new CaptionCallbackInfo();
     callbackInfo->caption_ = caption;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<CaptionCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -161,61 +157,18 @@ void NAccessibilityConfigObserver::NotifyPropertyChangedJS(napi_env env,
         });
 }
 
-void NAccessibilityConfigObserver::NotifyStateChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, bool enabled)
+void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& value)
 {
-    if (GetConfigId() == id) {
-        NotifyStateChangedJS(GetEnv(), enabled, id, GetHandler());
-    }
-}
-
-void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(
-    const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption)
-{
-    if (GetConfigId() == id) {
-        NotifyPropertyChangedJS(GetEnv(), caption, id, GetHandler());
-    }
-}
-
-void NAccessibilityConfigObserver::NotifyStringChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id,
-                                                          const std::string &value)
-{
-    if (GetConfigId() == id) {
-        NotifyStringChanged2JSInner(GetEnv(), value, id, GetHandler());
-    }
-}
-void NAccessibilityConfigObserver::NotifyUintChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, uint32_t value)
-{
-    if (GetConfigId() == id) {
-        NotifyUintChanged2JSInner(GetEnv(), value, id, GetHandler());
-    }
-}
-void NAccessibilityConfigObserver::NotifyIntChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, int32_t value)
-{
-    if (GetConfigId() == id) {
-        NotifyIntChanged2JSInner(GetEnv(), value, id, GetHandler());
-    }
-}
-
-void NAccessibilityConfigObserver::NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, float value)
-{
-    if (GetConfigId() == id) {
-        NotifyFloatChanged2JSInner(GetEnv(), value, id, GetHandler());
-    }
-}
-
-void NAccessibilityConfigObserver::NotifyStringChanged2JSInner(
-    napi_env env, const std::string& value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
-{
-    HILOG_INFO("id = [%{public}d] value = [%{public}s]", static_cast<int32_t>(id), value.c_str());
+    HILOG_INFO("value = [%{public}s]", value.c_str());
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->stringValue_ = value;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -247,19 +200,18 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JSInner(
         });
 }
 
-void NAccessibilityConfigObserver::NotifyIntChanged2JSInner(
-    napi_env env, int32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
+void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
 {
-    HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(id), value);
+    HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->int32Value_ = value;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -286,19 +238,18 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JSInner(
         });
 }
 
-void NAccessibilityConfigObserver::NotifyUintChanged2JSInner(
-    napi_env env, uint32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
+void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
 {
-    HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(id), value);
+    HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->uint32Value_ = value;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -325,19 +276,18 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JSInner(
         });
 }
 
-void NAccessibilityConfigObserver::NotifyFloatChanged2JSInner(
-    napi_env env, float value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef)
+void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
 {
-    HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(id), value);
+    HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(configId_), value);
 
     StateCallbackInfo *callbackInfo = new StateCallbackInfo();
     callbackInfo->floatValue_ = value;
-    callbackInfo->env_ = env;
-    callbackInfo->ref_ = handlerRef;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
     uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    napi_get_uv_event_loop(env_, &loop);
     uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -362,4 +312,56 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JSInner(
             delete work;
             work = nullptr;
         });
+}
+
+void NAccessibilityConfigObserverImpl::SubscribeToFramework()
+{
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRASTE_TEXT, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_INVERT_COLOR, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_DALTONIZATION_COLOR_FILTER, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_ANIMATION_OFF, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_BRIGHTNESS_DISCOUNT, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_AUDIO_MONO, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_AUDIO_BALANCE, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_MOUSE_KEY, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_SHORT_KEY, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_CAPTION_STATE, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_CAPTION_STYLE, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, shared_from_this());
+    instance.SubscribeConfigObserver(CONFIG_MOUSE_AUTOCLICK, shared_from_this());
+}
+
+void NAccessibilityConfigObserverImpl::OnConfigChanged(
+    const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto &observer : observers_) {
+        if (observer && observer->configId_ == id) {
+            observer->OnConfigChanged(value);
+        }
+    }
+}
+
+void NAccessibilityConfigObserverImpl::SubscribeObserver(const std::shared_ptr<NAccessibilityConfigObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    observers_.emplace_back(observer);
+}
+
+void NAccessibilityConfigObserverImpl::UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        if ((*iter)->configId_ == id) {
+            observers_.erase(iter);
+        } else {
+            iter++;
+        }
+    }
 }

@@ -22,6 +22,7 @@
 #include "napi_accessibility_config.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "accessibility_config.h"
 
 EXTERN_C_START
 /*
@@ -301,6 +302,9 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
+
+    NAccessibilityConfig::configObservers->SubscribeToFramework();
+    NAccessibilityConfig::enableAbilityListsObservers->SubscribeToFramework();
     HILOG_INFO("-----Init config module end------");
     return exports;
 }
