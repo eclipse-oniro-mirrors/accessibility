@@ -144,10 +144,10 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -222,10 +222,10 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -306,10 +306,10 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -388,10 +388,10 @@ ohos_moduletest("aams_server_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -464,10 +464,10 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
@@ -545,10 +545,10 @@ ohos_moduletest("aams_common_event_registry_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
+    "utils_base:utils",
   ]
 
   public_deps = [
-    "//foundation/graphic/graphic_2d:libwmclient",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/windowmanager/wm:libwm",
   ]
