@@ -533,17 +533,17 @@ void AccessibilitySettingsConfig::InitCapability()
     strValue = pref_->GetString("gesture", "");
     HILOG_DEBUG("gesture = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
-        filteringKeyEvents_ = true;
+        gesturesSimulation_ = true;
     } else {
-        filteringKeyEvents_ = false;
+        gesturesSimulation_ = false;
     }
 
     strValue = pref_->GetString("keyEventObserver", "");
     HILOG_DEBUG("keyEventObserver = %{public}s", strValue.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
-        gesturesSimulation_ = true;
+        filteringKeyEvents_ = true;
     } else {
-        gesturesSimulation_ = false;
+        filteringKeyEvents_ = false;
     }
 }
 
