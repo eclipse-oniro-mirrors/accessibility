@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_event_info.h"
+
+#include <cinttypes>
+
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -241,14 +244,14 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
 
 int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
-    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
+    HILOG_DEBUG("timeStamp:%{public}" PRId64 "", timeStamp_);
     return timeStamp_;
 }
 
 void AccessibilityEventInfo::SetTimeStamp(int64_t timeStamp)
 {
     timeStamp_ = timeStamp;
-    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
+    HILOG_DEBUG("timeStamp:%{public}" PRId64 "", timeStamp_);
 }
 
 const std::string &AccessibilityEventInfo::GetBundleName() const
