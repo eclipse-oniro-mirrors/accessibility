@@ -60,7 +60,12 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     }
 
     int32_t requestId = GenrateRequestId();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("Failed to create elementOperator.");
+        return false;
+    }
     std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, elementOperator)) {
@@ -110,7 +115,12 @@ bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId
     }
 
     int32_t requestId = GenrateRequestId();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("Failed to create elementOperator.");
+        return false;
+    }
     std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, elementOperator)) {
@@ -137,7 +147,12 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     }
 
     int32_t requestId = GenrateRequestId();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("Failed to create elementOperator.");
+        return false;
+    }
     std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
@@ -215,7 +230,12 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
     }
 
     int32_t requestId = GenrateRequestId();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("Failed to create elementOperator.");
+        return false;
+    }
     std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, elementOperator)) {
@@ -250,7 +270,12 @@ bool AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindow
     }
 
     int32_t requestId = GenrateRequestId();
-    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator = new AccessibilityElementOperatorCallbackImpl();
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    if (!elementOperator) {
+        HILOG_ERROR("Failed to create elementOperator.");
+        return false;
+    }
     std::future<void> promiseFutrue = elementOperator->promise_.get_future();
 
     if (!proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator)) {

@@ -34,10 +34,14 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
     HILOG_INFO();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv;
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
     napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
 
     napi_value promise = nullptr;
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     if (argc > 0) {
         HILOG_DEBUG("IsOpenAccessibility callback mode");
         napi_create_reference(env, argv, 1, &callbackInfo->callback_);
@@ -91,12 +95,16 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
 napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv;
     napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
 
     napi_value promise = nullptr;
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     if (argc > 0) {
         HILOG_DEBUG("IsOpenTouchExploration callback mode");
         napi_create_reference(env, argv, 1, &callbackInfo->callback_);
@@ -149,6 +157,12 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
 
 napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info info)
 {
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+
     size_t argc = 3;
     napi_value parameters[3] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
@@ -157,7 +171,6 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
     std::string stateTypes = GetStringFromNAPI(env, parameters[1]);
     HILOG_INFO("abilityTypes[%{public}s] stateTypes[%{public}s]", abilityTypes.c_str(), stateTypes.c_str());
 
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     callbackInfo->abilityTypes_ = ConvertStringToAccessibilityAbilityTypes(abilityTypes);
     callbackInfo->stateTypes_ = ConvertStringToAbilityStateType(stateTypes);
 
@@ -217,11 +230,15 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
 napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+
     size_t argc = ARGS_SIZE_TWO;
     napi_value parameters[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
     callbackInfo->result_ = ConvertEventInfoJSToNAPI(env, parameters[0], callbackInfo->eventInfo_);
 
     napi_value promise = nullptr;
@@ -382,15 +399,25 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 {
     HILOG_INFO("state = [%{public}s]", state ? "true" : "false");
     
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->state_ = state;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -429,12 +456,14 @@ void StateListener::OnStateChanged(const bool state)
 napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    NAccessibilitySystemAbilityClient* callbackInfo = new NAccessibilitySystemAbilityClient();
-
     napi_value promise = nullptr;
 
     if (argc >= ARGS_SIZE_ONE) {

@@ -156,7 +156,11 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibilityEventInfoParcel> AccessibilityEventInfoParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityEventInfoParcel> accessibilityEventInfo = new AccessibilityEventInfoParcel();
+    sptr<AccessibilityEventInfoParcel> accessibilityEventInfo = new(std::nothrow) AccessibilityEventInfoParcel();
+    if (!accessibilityEventInfo) {
+        HILOG_ERROR("Failed to create accessibilityEventInfo.");
+        return nullptr;
+    }
     if (!accessibilityEventInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;

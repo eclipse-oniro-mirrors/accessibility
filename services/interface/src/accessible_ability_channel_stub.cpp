@@ -218,7 +218,11 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
     HILOG_DEBUG();
 
     int32_t windowId = data.ReadInt32();
-    sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new AccessibilityWindowInfoParcel();
+    sptr<AccessibilityWindowInfoParcel> windowInfoParcel = new(std::nothrow) AccessibilityWindowInfoParcel();
+    if (!windowInfoParcel) {
+        HILOG_ERROR("Failed to create windowInfoParcel.");
+        return ERR_NULL_OBJECT;
+    }
 
     bool result = GetWindow(windowId, *windowInfoParcel);
     if (!reply.WriteStrongParcelable(windowInfoParcel)) {
@@ -240,7 +244,11 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
         return ERR_INVALID_VALUE;
     }
     for (auto &window : windows) {
-        sptr<AccessibilityWindowInfoParcel> windowInfo = new AccessibilityWindowInfoParcel(window);
+        sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
+        if (!windowInfo) {
+            HILOG_ERROR("Failed to create windowInfo.");
+            return ERR_NULL_OBJECT;
+        }
         if (!reply.WriteStrongParcelable(windowInfo)) {
             HILOG_ERROR("WriteStrongParcelable windows failed");
             return ERR_INVALID_VALUE;
@@ -262,7 +270,11 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
         return ERR_INVALID_VALUE;
     }
     for (auto &window : windows) {
-        sptr<AccessibilityWindowInfoParcel> windowInfo = new AccessibilityWindowInfoParcel(window);
+        sptr<AccessibilityWindowInfoParcel> windowInfo = new(std::nothrow) AccessibilityWindowInfoParcel(window);
+        if (!windowInfo) {
+            HILOG_ERROR("Failed to create windowInfo.");
+            return ERR_NULL_OBJECT;
+        }
         if (!reply.WriteStrongParcelable(windowInfo)) {
             HILOG_ERROR("WriteStrongParcelable windows failed");
             return ERR_INVALID_VALUE;

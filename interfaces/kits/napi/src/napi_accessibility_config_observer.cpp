@@ -44,15 +44,25 @@ void NAccessibilityConfigObserver::NotifyStateChangedJS(napi_env env, bool enabl
 {
     HILOG_INFO("id = [%{public}d] enabled = [%{public}s]", static_cast<int32_t>(id), enabled ? "true" : "false");
 
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->state_ = enabled;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -126,15 +136,25 @@ void NAccessibilityConfigObserver::NotifyPropertyChangedJS(napi_env env,
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
 
-    CaptionCallbackInfo *callbackInfo = new CaptionCallbackInfo();
+    CaptionCallbackInfo *callbackInfo = new(std::nothrow) CaptionCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->caption_ = caption;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<CaptionCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -208,15 +228,25 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JSInner(
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}s]", static_cast<int32_t>(id), value.c_str());
 
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->stringValue_ = value;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -252,15 +282,25 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JSInner(
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}d]", static_cast<int32_t>(id), value);
 
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->int32Value_ = value;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -291,15 +331,25 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JSInner(
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}u]", static_cast<int32_t>(id), value);
 
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->uint32Value_ = value;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
@@ -330,15 +380,25 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JSInner(
 {
     HILOG_INFO("id = [%{public}d] value = [%{public}f]", static_cast<int32_t>(id), value);
 
-    StateCallbackInfo *callbackInfo = new StateCallbackInfo();
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
     callbackInfo->floatValue_ = value;
     callbackInfo->env_ = env;
     callbackInfo->ref_ = handlerRef;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<StateCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,

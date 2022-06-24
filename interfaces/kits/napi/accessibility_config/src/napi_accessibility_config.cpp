@@ -646,13 +646,21 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
+
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = callback_;
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<AccessibilityCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,
