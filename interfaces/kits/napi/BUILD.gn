@@ -36,8 +36,8 @@ ohos_shared_library("accessibility") {
   configs = []
 
   deps = [
-    "${aafwk_kits_path}/ability/native:abilitykit_native",
-    "${aafwk_kits_path}/appkit:appkit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
