@@ -301,7 +301,7 @@ bool AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo
 
 bool AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_INFO("displayId[%{public}ju]", displayId);
+    HILOG_INFO("displayId[%{public}" PRIu64 "]", displayId);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return false;

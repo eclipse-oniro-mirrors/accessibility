@@ -14,7 +14,7 @@
 import("//build/ohos.gni")
 import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
 
-ability_runtime_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
+aafwk_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
 
 config("accessibleability_private_config") {
   visibility = [ ":*" ]
@@ -35,10 +35,10 @@ config("accessibleability_public_config") {
 }
 
 aafwk_files = [
-  "${ability_runtime_path}/src/accessibility_element_operator_callback_impl.cpp",
-  "${ability_runtime_path}/src/accessibility_ui_test_ability_impl.cpp",
-  "${ability_runtime_path}/src/accessible_ability_channel_client.cpp",
-  "${ability_runtime_path}/src/accessible_ability_client_impl.cpp",
+  "${aafwk_path}/src/accessibility_element_operator_callback_impl.cpp",
+  "${aafwk_path}/src/accessibility_ui_test_ability_impl.cpp",
+  "${aafwk_path}/src/accessible_ability_channel_client.cpp",
+  "${aafwk_path}/src/accessible_ability_client_impl.cpp",
 ]
 
 ohos_shared_library("accessibleability") {
@@ -49,7 +49,7 @@ ohos_shared_library("accessibleability") {
   public_configs = [ ":accessibleability_public_config" ]
 
   deps = [
-    "${ability_runtime_kits_path}/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
   ]
 
@@ -64,6 +64,7 @@ ohos_shared_library("accessibleability") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "samgr_standard:samgr_proxy",
+    "utils_base:utils",
   ]
 
   public_deps = [

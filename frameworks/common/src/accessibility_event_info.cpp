@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_event_info.h"
+
+#include <cinttypes>
+
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -186,15 +189,15 @@ void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
     records_.push_back(record);
 }
 
-const AccessibilityEventInfo &AccessibilityEventInfo::GetRecord(const int32_t index) const
+bool AccessibilityEventInfo::GetRecord(const int32_t index, AccessibilityEventInfo &eventInfo) const
 {
     HILOG_DEBUG();
     if (index >= recordsCount_ || index < 0) {
-        AccessibilityEventInfo record {};
         HILOG_ERROR("[called] index[%{public}d] is invalid", index);
-        return record;
+        return false;
     }
-    return records_[index];
+    eventInfo = records_[index];
+    return true;
 }
 
 const std::vector<AccessibilityEventInfo> &AccessibilityEventInfo::GetRecords() const
@@ -241,14 +244,14 @@ void AccessibilityEventInfo::SetEventType(const EventType eventType)
 
 int64_t AccessibilityEventInfo::GetTimeStamp() const
 {
-    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
+    HILOG_DEBUG("timeStamp:%{public}" PRId64 "", timeStamp_);
     return timeStamp_;
 }
 
 void AccessibilityEventInfo::SetTimeStamp(int64_t timeStamp)
 {
     timeStamp_ = timeStamp;
-    HILOG_DEBUG("timeStamp_[%{public}ju]", timeStamp_);
+    HILOG_DEBUG("timeStamp:%{public}" PRId64 "", timeStamp_);
 }
 
 const std::string &AccessibilityEventInfo::GetBundleName() const

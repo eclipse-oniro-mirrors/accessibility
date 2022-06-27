@@ -14,6 +14,9 @@
  */
 
 #include "accessible_ability_channel_proxy.h"
+
+#include <cinttypes>
+
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
@@ -369,7 +372,7 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
     }
 
     if (!data.WriteUint64(displayId)) {
-        HILOG_ERROR("displayId write error: %{public}ju, ", displayId);
+        HILOG_ERROR("displayId write error: %{public}" PRIu64 ", ", displayId);
         return false;
     }
 

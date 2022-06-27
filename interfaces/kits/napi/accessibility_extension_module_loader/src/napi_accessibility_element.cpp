@@ -393,35 +393,40 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
 
 napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start");
-    size_t argc = ARGS_SIZE_ZERO;
-    napi_value argv[ARGS_SIZE_TWO], thisVar;
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value argv[ARGS_SIZE_TWO] = {0};
+    napi_value thisVar;
     void* data = nullptr;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
-
     NAccessibilityElementData *callbackInfo = new NAccessibilityElementData();
     callbackInfo->env_ = env;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
     if (argc != ARGS_SIZE_TWO) {
         HILOG_ERROR("argc is not two!");
         return ErrorOperation(callbackInfo);
     }
 
-    AccessibilityElement *accessibilityElement = nullptr;
+    // Parse conditionType name
+    std::string conditionType = "";
+    ParseString(env, conditionType, argv[PARAM0]);
+    HILOG_INFO("conditionType = %{public}s", conditionType.c_str());
+
+    // Parse queryData name
+    std::string queryData = "";
+    ParseString(env, queryData, argv[PARAM1]);
+    HILOG_INFO("queryData = %{public}s", queryData.c_str());
+
+    // Unwrap AccessibilityElement
+    AccessibilityElement* accessibilityElement = nullptr;
     napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
     if (!accessibilityElement || status != napi_ok) {
         HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
         return ErrorOperation(callbackInfo);
     }
-
-    std::string conditionType;
-    if (!ParseString(env, conditionType, argv[PARAM0])) {
-        HILOG_ERROR("ParseString for argv[0] failed");
-        return ErrorOperation(callbackInfo);
-    }
-    FindElementCondition condition = ConvertStringToCondition(conditionType);
     callbackInfo->accessibilityElement_ = *accessibilityElement;
-    std::string queryData;
+
+    FindElementCondition condition = ConvertStringToCondition(conditionType);
     switch (condition) {
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
             if (!ParseString(env, queryData, argv[PARAM1])) {
@@ -854,8 +859,8 @@ napi_value NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementD
             }
 
             if (callbackInfo->accessibilityElement_.elementInfo_) {
-                callbackInfo->stringData_ = callbackInfo->accessibilityElement_.elementInfo_->GetInputType();
-                HILOG_DEBUG("input type: [%{public}s]", callbackInfo->stringData_.c_str());
+                callbackInfo->int32Data_ = callbackInfo->accessibilityElement_.elementInfo_->GetInputType();
+                HILOG_DEBUG("input type: [%{public}d]", callbackInfo->int32Data_);
             } else {
                 HILOG_ERROR("no elementInfo_");
                 callbackInfo->ret_ = false;
@@ -872,7 +877,7 @@ napi_value NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementD
             }
 
             if (callbackInfo->ret_) {
-                napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &argv);
+                napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &argv);
                 napi_resolve_deferred(env, callbackInfo->deferred_, argv);
             } else {
                 HILOG_ERROR("get input type failed!");
@@ -3642,9 +3647,10 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
             }
 
             if (callbackInfo->accessibilityElement_.windowInfo_ != nullptr) {
-                callbackInfo->int32Data_ =
-                    callbackInfo->accessibilityElement_.windowInfo_->GetAccessibilityWindowType();
-                HILOG_DEBUG("GetWindowInfoType: [%{public}d]", callbackInfo->int32Data_);
+                callbackInfo->stringData_ =
+                    ConvertWindowTypeToString(
+                        callbackInfo->accessibilityElement_.windowInfo_->GetAccessibilityWindowType());
+                HILOG_DEBUG("GetWindowInfoType: [%{public}s]", callbackInfo->stringData_.c_str());
             } else {
                 HILOG_ERROR("no windowInfo_");
                 callbackInfo->ret_ = false;
@@ -3661,7 +3667,7 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
             }
 
             if (callbackInfo->ret_) {
-                napi_create_int32(callbackInfo->env_, callbackInfo->int32Data_, &result);
+                napi_create_string_utf8(env, callbackInfo->stringData_.c_str(), NAPI_AUTO_LENGTH, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
                 HILOG_ERROR("GetWindowInfoType failed!");
@@ -3995,15 +4001,12 @@ napi_value NAccessibilityElement::GetElementInfoByFocusType(NAccessibilityElemen
                 HILOG_ERROR("callbackInfo is nullptr");
                 return;
             }
-            AccessibilityElementInfo nodeInfo;
+
             int32_t focusType = ConvertStringToFocusType(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient != nullptr && callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->ret_ = aaClient->GetFocusByElementInfo(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), focusType, nodeInfo);
-                if (callbackInfo->ret_) {
-                    callbackInfo->nodeInfos_.push_back(nodeInfo);
-                }
+                    *(callbackInfo->accessibilityElement_.elementInfo_), focusType, callbackInfo->nodeInfo_);
             } else {
                 HILOG_ERROR("no client or element info!");
                 callbackInfo->ret_ = false;
@@ -4020,8 +4023,10 @@ napi_value NAccessibilityElement::GetElementInfoByFocusType(NAccessibilityElemen
             }
 
             if (callbackInfo->ret_) {
-                napi_create_array(env, &result);
-                ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
+                napi_value constructor = nullptr;
+                napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+                napi_new_instance(env, constructor, 0, nullptr, &result);
+                ConvertElementInfoToJS(env, result, callbackInfo->nodeInfo_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
                 HILOG_ERROR("get element info failed!");
@@ -4053,15 +4058,12 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
                 HILOG_ERROR("callbackInfo is nullptr");
                 return;
             }
-            AccessibilityElementInfo nodeInfo;
+
             FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->stringData_);
             sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
             if (aaClient != nullptr && callbackInfo->accessibilityElement_.elementInfo_ != nullptr) {
                 callbackInfo->ret_ = aaClient->GetNext(*(callbackInfo->accessibilityElement_.elementInfo_),
-                    direction, nodeInfo);
-                if (callbackInfo->ret_) {
-                    callbackInfo->nodeInfos_.push_back(nodeInfo);
-                }
+                    direction, callbackInfo->nodeInfo_);
             } else {
                 HILOG_ERROR("no client or element info!");
                 callbackInfo->ret_ = false;
@@ -4078,8 +4080,10 @@ napi_value NAccessibilityElement::GetElementInfoByFocusDirection(NAccessibilityE
             }
 
             if (callbackInfo->ret_) {
-                napi_create_array(env, &result);
-                ConvertElementInfosToJS(env, result, callbackInfo->nodeInfos_);
+                napi_value constructor = nullptr;
+                napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+                napi_new_instance(env, constructor, 0, nullptr, &result);
+                ConvertElementInfoToJS(env, result, callbackInfo->nodeInfo_);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
             } else {
                 HILOG_ERROR("get element info failed!");

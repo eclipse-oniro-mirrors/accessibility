@@ -14,6 +14,9 @@
  */
 
 #include "accessible_ability_channel_client.h"
+
+#include <cinttypes>
+
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
 
@@ -71,6 +74,13 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
         HILOG_ERROR("Failed to wait result");
         return false;
     }
+
+    if (elementOperator->accessibilityInfoResult_.GetAccessibilityId() ==
+        AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+        HILOG_ERROR("The elementInfo from ace is wrong");
+        return false;
+    }
+    HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
     elementInfo.SetChannelId(channelId_);
@@ -142,6 +152,10 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     }
 
     for (auto &info : elementOperator->elementInfosResult_) {
+        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+            HILOG_ERROR("The elementInfo from ace is wrong");
+            return false;
+        }
         info.SetChannelId(channelId_);
     }
     HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
@@ -178,7 +192,7 @@ bool AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowI
 bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows) const
 {
-    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}ju]", channelId_, displayId);
+    HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
     if (proxy_) {
         bool ret = proxy_->GetWindowsByDisplayId(displayId, windows);
         for (auto &window : windows) {
@@ -215,6 +229,10 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
     }
 
     for (auto &info : elementOperator->elementInfosResult_) {
+        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+            HILOG_ERROR("The elementInfo from ace is wrong");
+            return false;
+        }
         info.SetChannelId(channelId_);
     }
     HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
@@ -245,6 +263,13 @@ bool AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindow
         return false;
     }
 
+    if (elementOperator->accessibilityInfoResult_.GetAccessibilityId() ==
+        AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+        HILOG_ERROR("The elementInfo from ace is wrong");
+        return false;
+    }
+
+    HILOG_INFO("Get result successfully from ace");
     elementInfo = elementOperator->accessibilityInfoResult_;
     elementInfo.SetChannelId(channelId_);
     return true;

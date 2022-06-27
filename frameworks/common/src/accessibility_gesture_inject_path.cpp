@@ -14,13 +14,16 @@
  */
 
 #include "accessibility_gesture_inject_path.h"
+
+#include <cinttypes>
+
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
 int64_t AccessibilityGestureInjectPath::GetDurationTime() const
 {
-    HILOG_DEBUG("durationTime:%{public}jd", durationTime_);
+    HILOG_DEBUG("durationTime:%{public}" PRId64 "", durationTime_);
     return durationTime_;
 }
 
@@ -33,7 +36,7 @@ const std::vector<AccessibilityGesturePosition> &AccessibilityGestureInjectPath:
 
 void AccessibilityGestureInjectPath::SetDurationTime(int64_t durationTime)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("durationTime:%{public}" PRId64 "", durationTime);
     durationTime_ = durationTime;
 }
 

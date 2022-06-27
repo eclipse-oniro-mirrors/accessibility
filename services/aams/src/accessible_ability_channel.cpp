@@ -320,7 +320,7 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
     }
 
     uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
-    HILOG_DEBUG("default display id is %{public}ju", displayId);
+    HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindowsByDisplayId,

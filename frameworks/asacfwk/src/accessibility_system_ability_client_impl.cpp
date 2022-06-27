@@ -43,22 +43,7 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
         HILOG_ERROR("Failed to connect to aams service");
         return;
     }
-
-    stateArray_.fill(false);
-    stateObserver_ = new AccessibleAbilityManagerStateObserverImpl(*this);
-    uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
-    if (stateType & STATE_ACCESSIBILITY_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
-    }
-    if (stateType & STATE_EXPLORATION_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED] = true;
-    }
-    if (stateType & STATE_KEYEVENT_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED] = true;
-    }
-    if (stateType & STATE_GESTURE_ENABLED) {
-        stateArray_[AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED] = true;
-    }
+    Init();
 }
 
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
@@ -101,6 +86,26 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
     }
 
     return true;
+}
+
+void AccessibilitySystemAbilityClientImpl::Init()
+{
+    HILOG_DEBUG();
+    stateArray_.fill(false);
+    stateObserver_ = new AccessibleAbilityManagerStateObserverImpl(*this);
+    uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
+    if (stateType & STATE_ACCESSIBILITY_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
+    }
+    if (stateType & STATE_EXPLORATION_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED] = true;
+    }
+    if (stateType & STATE_KEYEVENT_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_KEVEVENT_STATE_CHANGED] = true;
+    }
+    if (stateType & STATE_GESTURE_ENABLED) {
+        stateArray_[AccessibilityStateEventType::EVENT_GESTURE_STATE_CHANGED] = true;
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)

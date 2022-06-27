@@ -188,7 +188,7 @@ void TouchEventInjector::InjectGesturePathInner()
         if (injectedEvents_[i]) {
             int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
             if (timeout < 0) {
-                HILOG_WARN("timeout is error.%{public}jd", timeout);
+                HILOG_WARN("timeout is error.%{public}" PRId64 "", timeout);
             } else {
                 handler_->SendEvent(SEND_TOUCH_EVENT_MSG, parameters, timeout);
             }
@@ -204,10 +204,15 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
     const std::vector<AccessibilityGesturePosition> &positions = gesturePositions_->GetPositions();
     size_t positionSize = positions.size();
     if (!positionSize) {
-        HILOG_WARN("positionSize is zero.");
+        HILOG_WARN("PositionSize is zero.");
         return;
     }
-    int64_t perDurationTime = gesturePositions_->GetDurationTime() / positionSize;
+    int64_t durationTime = gesturePositions_->GetDurationTime();
+    if (durationTime < 0) {
+        HILOG_WARN("DurationTime is wrong.");
+        return;
+    }
+    int64_t perDurationTime = static_cast<int64_t>(static_cast<uint64_t>(durationTime) / positionSize);
     int64_t downTime = startTime;
     int64_t nowTime = startTime;
     for (size_t i = 0; i < positionSize; i++) {
@@ -241,10 +246,15 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime)
     std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
     size_t positionSize = positions.size();
     if (positionSize < MOVE_GESTURE_MIN_PATH_COUNT) {
-        HILOG_WARN("positionSize is zero.");
+        HILOG_WARN("PositionSize is zero.");
         return;
     }
-    int64_t perDurationTime = gesturePositions_->GetDurationTime() / (positionSize - 1);
+    int64_t durationTime = gesturePositions_->GetDurationTime();
+    if (durationTime < 0) {
+        HILOG_WARN("DurationTime is wrong.");
+        return;
+    }
+    int64_t perDurationTime = static_cast<int64_t>(static_cast<uint64_t>(durationTime) / (positionSize - 1));
     int64_t downTime = startTime;
     int64_t nowTime = startTime;
     for (size_t i = 0; i < positionSize; i++) {

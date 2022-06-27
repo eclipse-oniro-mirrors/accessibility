@@ -33,8 +33,8 @@ ohos_shared_library("config_napi") {
   configs = []
 
   deps = [
-    "//foundation/ability/ability_runtime/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/ability/ability_runtime/frameworks/kits/appkit:appkit_native",
+    "//foundation/ability/ability_runtime/frameworks/native/ability/native:abilitykit_native",
+    "//foundation/ability/ability_runtime/frameworks/native/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
