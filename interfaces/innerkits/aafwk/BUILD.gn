@@ -20,7 +20,7 @@ config("accessibleability_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "${ability_runtime_path}/include",
+    "${aafwk_path}/include",
     "//foundation/barrierfree/accessibility/common/log/include",
   ]
 
