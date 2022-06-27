@@ -84,6 +84,7 @@ void NAccessibilityElement::ConvertElementInfoToJS(napi_env env, napi_value resu
         [](napi_env env, void* data, void* hint) {
             AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
             delete info;
+            info = nullptr;
         },
         nullptr,
         nullptr);

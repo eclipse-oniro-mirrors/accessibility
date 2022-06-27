@@ -461,6 +461,8 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
@@ -558,6 +560,8 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
