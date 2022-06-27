@@ -300,6 +300,11 @@ void AccessibilityWindowManager::UpdateWindowLayer(const sptr<Rosen::Accessibili
     HILOG_DEBUG("start");
     int32_t layer = 0;
     for (auto& window : windowInfo->windowList_) {
+        if (!window) {
+            HILOG_ERROR("window is nullptr");
+            continue;
+        }
+
         auto it = a11yWindows_.find(window->wid_);
         if (it == a11yWindows_.end()) {
             HILOG_ERROR("The window(%{public}d) not in a11yWindows_", window->wid_);
