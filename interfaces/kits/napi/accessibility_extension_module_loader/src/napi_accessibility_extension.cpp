@@ -140,7 +140,7 @@ void NAccessibilityExtension::OnAbilityConnected()
         callbackInfo = nullptr;
         return;
     }
-    work->data = callbackInfo;
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -174,7 +174,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         callbackInfo = nullptr;
         return;
     }
-    work->data = callbackInfo;
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -312,7 +312,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         callbackInfo = nullptr;
         return;
     }
-    work->data = callbackInfo;
+    work->data = static_cast<void*>(callbackInfo);
 
     uv_queue_work(
         loop,
@@ -354,7 +354,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         callbackInfo = nullptr;
         return false;
     }
-    work->data = callbackInfo;
+    work->data = static_cast<void*>(callbackInfo);
     std::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     uv_queue_work(

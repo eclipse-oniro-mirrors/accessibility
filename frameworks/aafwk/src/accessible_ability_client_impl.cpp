@@ -104,11 +104,10 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
     // Add death recipient
     if (!deathRecipient_) {
         deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
-    }
-
-    if (!deathRecipient_) {
-        HILOG_ERROR("Failed to create deathRecipient.");
-        return;
+        if (!deathRecipient_) {
+            HILOG_ERROR("Failed to create deathRecipient.");
+            return;
+        }
     }
 
     auto object = channelClient_->GetRemote();

@@ -662,7 +662,7 @@ void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequenc
     data->env_ = callbackInfo->env_;
     data->state_ = result;
     data->ref_ = callbackInfo->callback_;
-    work->data = data;
+    work->data = static_cast<void*>(data);
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(callbackInfo->env_, &loop);

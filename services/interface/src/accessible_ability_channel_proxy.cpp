@@ -446,6 +446,12 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
+    sptr<AccessibilityGestureInjectPathParcel> path =
+        new(std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
+    if (!path) {
+        HILOG_ERROR("Failed to create path.");
+        return;
+    }
 
     MessageParcel data;
     MessageParcel reply;
@@ -459,12 +465,6 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
         return;
     }
 
-    sptr<AccessibilityGestureInjectPathParcel> path =
-        new(std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
-    if (!path) {
-        HILOG_ERROR("Failed to create path.");
-        return;
-    }
     if (!data.WriteStrongParcelable(path)) {
         HILOG_ERROR("WriteStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
         return;
