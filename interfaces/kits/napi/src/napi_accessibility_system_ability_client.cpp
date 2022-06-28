@@ -23,11 +23,15 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListeners_ =
+    std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
+std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
+    std::make_shared<NAccessibilityConfigObserverImpl>();
+
 thread_local napi_ref NAccessibilityClient::aaConsRef_;
 thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
-
-std::map<std::string, std::vector<std::shared_ptr<StateListener>>> NAccessibilityClient::stateListeners_ = {};
-std::vector<std::shared_ptr<NAccessibilityConfigObserver>> NAccessibilityClient::captionListeners_ = {};
 
 napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback_info info)
 {
@@ -321,13 +325,19 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
 
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>();
-    stateListener->StartWork(env, 1, args);
+    napi_ref ref;
+    napi_create_reference(env, args[1], 1, &ref);
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
 
-    NAccessibilityClient::stateListeners_[eventType].push_back(stateListener);
-    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-    if (asaClient) {
-        asaClient->SubscribeStateObserver(stateListener, type);
+    switch (type) {
+        case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
+            accessibilityStateListeners_->SubscribeObserver(stateListener);
+            break;
+        case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
+            touchGuideStateListeners_->SubscribeObserver(stateListener);
+            break;
+        default:
+            break;
     }
     return nullptr;
 }
@@ -348,51 +358,18 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
         HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
-    HILOG_INFO("observer size%{public}zu", NAccessibilityClient::stateListeners_[eventType].size());
-    bool result = true;
-    for (auto it = NAccessibilityClient::stateListeners_[eventType].begin();
-        it != NAccessibilityClient::stateListeners_[eventType].end();) {
-        std::shared_ptr<StateListener> observer= *it;
-        if (observer->GetEnv() == env) {
-            auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-            if (asaClient) {
-                result = asaClient->UnsubscribeStateObserver(observer, type);
-                it = NAccessibilityClient::stateListeners_[eventType].erase(it);
-                HILOG_INFO("UnsubscribeState result%{public}d", result);
-            }
-        } else {
-            it++;
-        }
+    switch (type) {
+        case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
+            accessibilityStateListeners_->UnsubscribeObserver();
+            break;
+        case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
+            touchGuideStateListeners_->UnsubscribeObserver();
+            break;
+        default:
+            break;
     }
 
     return nullptr;
-}
-
-StateListener::StateListener()
-{}
-
-AccessibilityStateEventType StateListener::GetStateType()
-{
-    HILOG_INFO();
-    AccessibilityStateEventType type = EVENT_ACCESSIBILITY_STATE_CHANGED;
-    if (!std::strcmp(eventType_.c_str(), "accessibility")) {
-        type = EVENT_ACCESSIBILITY_STATE_CHANGED;
-    } else if (!std::strcmp(eventType_.c_str(), "touchExplorer")) {
-        type = EVENT_TOUCH_GUIDE_STATE_CHANGED;
-    } else {
-        HILOG_ERROR("SubscribeState eventType[%s] is error", eventType_.c_str());
-    }
-    return type;
-}
-
-napi_value StateListener::StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE])
-{
-    HILOG_INFO();
-    eventType_ = GetStringFromNAPI(env, args[0]);
-    napi_create_reference(env, args[functionIndex], 1, &handlerRef_);
-    env_ = env;
-    napi_value result = {0};
-    return result;
 }
 
 void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
@@ -442,15 +419,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 
 void StateListener::OnStateChanged(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "true" : "false");
-    for (auto &observer : NAccessibilityClient::stateListeners_[GetEventType()]) {
-        if (observer.get() == this) {
-            HILOG_INFO("observer found");
-            observer->NotifyJS(GetEnv(), state, GetHandler());
-            return;
-        }
-    }
-    HILOG_WARN("observer not found");
+    NotifyJS(env_, state, handlerRef_);
 }
 
 napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info info)
@@ -648,21 +617,18 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         return nullptr;
     }
 
-    napi_create_int32(env, type, &args[0]);
-    std::shared_ptr<NAccessibilityConfigObserver> captionListener = std::make_shared<NAccessibilityConfigObserver>();
-    captionListener->StartWork(env, 1, args);
-    captionListener->SetConfigId(type);
-    NAccessibilityClient::captionListeners_.push_back(captionListener);
-
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SubscribeConfigObserver(type, captionListener);
+    napi_ref ref;
+    napi_create_reference(env, args[PARAM1], 1, &ref);
+    std::shared_ptr<NAccessibilityConfigObserver> captionListener =
+        std::make_shared<NAccessibilityConfigObserver>(env, ref, type);
+    captionListeners_->SubscribeObserver(captionListener);
 
     return nullptr;
 }
 
 napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("start observer size%{public}zu", NAccessibilityClient::captionListeners_.size());
+    HILOG_INFO();
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -678,18 +644,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
-    for (auto it = NAccessibilityClient::captionListeners_.begin();
-        it != NAccessibilityClient::captionListeners_.end();) {
-        std::shared_ptr<NAccessibilityConfigObserver> observer= *it;
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-        if (observer->GetEnv() == env && observer->GetConfigId() == type) {
-            instance.UnsubscribeConfigObserver(type, observer);
-            it = NAccessibilityClient::captionListeners_.erase(it);
-            HILOG_INFO("unregister observer");
-        } else {
-            it++;
-        }
-    }
+    captionListeners_->UnsubscribeObserver(type);
 
     return nullptr;
 }
@@ -956,4 +911,36 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     napi_value ret = nullptr;
     napi_get_undefined(env, &ret);
     return ret;
+}
+
+void StateListenerImpl::SubscribeToFramework()
+{
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient) {
+        asaClient->SubscribeStateObserver(shared_from_this(), type_);
+    }
+}
+
+void StateListenerImpl::OnStateChanged(const bool state)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto &observer : observers_) {
+        observer->OnStateChanged(state);
+    }
+}
+
+void StateListenerImpl::SubscribeObserver(const std::shared_ptr<StateListener> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    observers_.emplace_back(observer);
+    HILOG_INFO("observer size%{public}zu", observers_.size());
+}
+
+void StateListenerImpl::UnsubscribeObserver()
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    observers_.clear();
 }

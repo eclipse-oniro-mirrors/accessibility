@@ -23,8 +23,10 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
 
-std::vector<std::shared_ptr<NAccessibilityConfigObserver>> NAccessibilityConfig::configListeners_ = {};
-std::vector<std::shared_ptr<EnableAbilityListsObserver>> NAccessibilityConfig::enableAbilityListsObservers_ = {};
+std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configObservers_ =
+    std::make_shared<NAccessibilityConfigObserverImpl>();
+std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers_ =
+    std::make_shared<EnableAbilityListsObserverImpl>();
 
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
 {
@@ -184,22 +186,17 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
 
-    std::shared_ptr<EnableAbilityListsObserver> observer = std::make_shared<EnableAbilityListsObserver>();
     napi_ref callback = nullptr;
     napi_create_reference(env, args[PARAM1], 1, &callback);
-    observer->SetCallBack(callback);
-    observer->SetEnv(env);
-    enableAbilityListsObservers_.emplace_back(observer);
-    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
+    std::shared_ptr<EnableAbilityListsObserver> observer = std::make_shared<EnableAbilityListsObserver>(env, callback);
 
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SubscribeEnableAbilityListsObserver(observer);
+    enableAbilityListsObservers_->SubscribeObserver(observer);
     return nullptr;
 }
 
 napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
+    HILOG_INFO();
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -215,15 +212,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         return nullptr;
     }
 
-    for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
-        if ((*iter)->GetEnv() == env) {
-            auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-            instance.UnsubscribeEnableAbilityListsObserver(*iter);
-            enableAbilityListsObservers_.erase(iter);
-        } else {
-            iter ++;
-        }
-    }
+    enableAbilityListsObservers_->UnsubscribeObserver();
     return nullptr;
 }
 
@@ -464,6 +453,8 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
@@ -562,6 +553,8 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        delete callbackInfo;
+        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
@@ -603,23 +596,18 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
         return nullptr;
     }
 
-    std::shared_ptr<NAccessibilityConfigObserver> observer = std::make_shared<NAccessibilityConfigObserver>();
     napi_ref handler = nullptr;
     napi_create_reference(env, parameters[PARAM0], 1, &handler);
-    observer->SetHandler(handler);
-    observer->SetEnv(env);
-    observer->SetConfigId(obj->GetConfigId());
-    configListeners_.emplace_back(observer);
-    HILOG_INFO("observer size%{public}zu", configListeners_.size());
-
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SubscribeConfigObserver(obj->GetConfigId(), observer);
+    std::shared_ptr<NAccessibilityConfigObserver> observer =
+        std::make_shared<NAccessibilityConfigObserver>(env, handler, obj->GetConfigId());
+    
+    configObservers_->SubscribeObserver(observer);
     return nullptr;
 }
 
 napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO("observer size%{public}zu", configListeners_.size());
+    HILOG_INFO();
     napi_value jsthis;
     napi_get_cb_info(env, info, 0, nullptr, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
@@ -628,16 +616,8 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
         HILOG_ERROR("obj is nullptr");
         return nullptr;
     }
-    for (auto iter = configListeners_.begin(); iter != configListeners_.end();) {
-        if ((*iter)->GetEnv() == env &&
-            (*iter)->GetConfigId() == obj->GetConfigId()) {
-            auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-            instance.UnsubscribeConfigObserver(obj->GetConfigId(), *iter);
-            configListeners_.erase(iter);
-        } else {
-            iter ++;
-        }
-    }
+
+    configObservers_->UnsubscribeObserver(obj->GetConfigId());
     return nullptr;
 }
 
@@ -683,4 +663,34 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
             delete work;
             work = nullptr;
         });
+}
+
+void EnableAbilityListsObserverImpl::SubscribeToFramework()
+{
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SubscribeEnableAbilityListsObserver(shared_from_this());
+}
+
+void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto &observer : enableAbilityListsObservers_) {
+        observer->OnEnableAbilityListsStateChanged();
+    }
+}
+
+void EnableAbilityListsObserverImpl::SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    enableAbilityListsObservers_.emplace_back(observer);
+    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
+}
+
+void EnableAbilityListsObserverImpl::UnsubscribeObserver()
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    enableAbilityListsObservers_.clear();
 }

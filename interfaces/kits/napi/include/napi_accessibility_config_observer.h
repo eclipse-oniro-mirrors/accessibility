@@ -24,67 +24,36 @@
 
 const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
-class NAccessibilityConfigObserver : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
+struct NAccessibilityConfigObserver {
 public:
-    NAccessibilityConfigObserver() = default;
-    void NotifyStateChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, bool enabled);
-    void NotifyStringChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, const std::string &value);
-    void NotifyIntChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, int32_t value);
-    void NotifyUintChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, uint32_t value);
-    void NotifyFloatChanged2JS(const OHOS::AccessibilityConfig::CONFIG_ID id, float value);
-    void NotifyPropertyChanged2JS(
-        const OHOS::AccessibilityConfig::CONFIG_ID id, OHOS::AccessibilityConfig::CaptionProperty caption);
+    NAccessibilityConfigObserver(napi_env env, napi_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
+        : env_(env), handlerRef_(callback), configId_(id) {};
+    void OnConfigChanged(const OHOS::AccessibilityConfig::ConfigValue& value);
 
-    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[CONFIG_START_WORK_ARGS_SIZE]);
+    void NotifyStateChanged2JS(bool enabled);
+    void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption);
+    void NotifyStringChanged2JS(const std::string& value);
+    void NotifyIntChanged2JS(int32_t value);
+    void NotifyUintChanged2JS(uint32_t value);
+    void NotifyFloatChanged2JS(float value);
+
+    napi_env env_ = nullptr;
+    napi_ref handlerRef_ = nullptr;
+    OHOS::AccessibilityConfig::CONFIG_ID configId_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
+};
+
+class NAccessibilityConfigObserverImpl : public OHOS::AccessibilityConfig::AccessibilityConfigObserver,
+    public std::enable_shared_from_this<NAccessibilityConfigObserverImpl> {
+public:
+    NAccessibilityConfigObserverImpl() = default;
     virtual void OnConfigChanged(
         const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override;
-
-    void SetEnv(const napi_env env)
-    {
-        env_ = env;
-    }
-
-    napi_env GetEnv() const
-    {
-        return env_;
-    }
-
-    void SetHandler(const napi_ref handler)
-    {
-        handlerRef_ = handler;
-    }
-
-    napi_ref GetHandler() const
-    {
-        return handlerRef_;
-    }
-
-    void SetConfigId(const OHOS::AccessibilityConfig::CONFIG_ID id)
-    {
-        configId_ = id;
-    }
-
-    OHOS::AccessibilityConfig::CONFIG_ID GetConfigId() const
-    {
-        return configId_;
-    }
-private:
-    static void NotifyStateChangedJS(napi_env env, bool enabled, const OHOS::AccessibilityConfig::CONFIG_ID id,
-                                     napi_ref handlerRef);
-    static void NotifyPropertyChangedJS(napi_env env, OHOS::AccessibilityConfig::CaptionProperty caption,
-                                        const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyStringChanged2JSInner(napi_env env, const std::string& value,
-                                            const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyIntChanged2JSInner(
-        napi_env env, int32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyUintChanged2JSInner(
-        napi_env env, uint32_t value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
-    static void NotifyFloatChanged2JSInner(
-        napi_env env, float value, const OHOS::AccessibilityConfig::CONFIG_ID id, napi_ref handlerRef);
+    void SubscribeToFramework();
+    void SubscribeObserver(const std::shared_ptr<NAccessibilityConfigObserver> &observer);
+    void UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id);
 
 private:
-    napi_ref handlerRef_ = nullptr;
-    napi_env env_ = nullptr;
-    OHOS::AccessibilityConfig::CONFIG_ID configId_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
+    std::mutex mutex_;
+    std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
 #endif  // NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H

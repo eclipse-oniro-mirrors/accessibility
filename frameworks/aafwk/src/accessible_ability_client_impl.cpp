@@ -14,6 +14,10 @@
  */
 
 #include "accessible_ability_client_impl.h"
+
+#include <thread>
+#include <chrono>
+
 #include "accessible_ability_client.h"
 #include "display_manager.h"
 #include "hilog_wrapper.h"
@@ -23,6 +27,8 @@
 
 namespace OHOS {
 namespace Accessibility {
+// tmp: wait for window registing when client connect done
+constexpr int WAIT_WINDOW_REGIST = 500;
 namespace {
     constexpr int32_t NONE_ID = -1;
     std::mutex g_Mutex;
@@ -115,6 +121,7 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
         HILOG_DEBUG("Add death recipient");
         object->AddDeathRecipient(deathRecipient_);
     }
+    std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_WINDOW_REGIST));
     listener_->OnAbilityConnected();
 }
 

@@ -271,6 +271,7 @@ void ConvertAccessibilityEventInfoToJS(napi_env env, napi_value objEventInfo, co
             [](napi_env env, void* data, void* hint) {
                 AccessibilityElement* info = static_cast<AccessibilityElement*>(data);
                 delete info;
+                info = nullptr;
             },
             nullptr,
             nullptr);
