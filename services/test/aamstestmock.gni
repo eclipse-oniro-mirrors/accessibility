@@ -22,7 +22,7 @@ aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",
   "$AAMS_MOCK_PATH/multimodalinput/include",
   "$AAMS_MOCK_PATH/powermanager/include",
-  "//foundation/distributeddatamgr/appdatamgr/preference/interfaces/inner_api/include",
+  "//foundation/distributeddatamgr/appdatamgr/preferences/interfaces/inner_api/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
   "//base/powermgr/power_manager/interfaces/innerkits/native/include",
