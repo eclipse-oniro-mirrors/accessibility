@@ -18,35 +18,32 @@
 
 #include <vector>
 #include <map>
+#include <mutex>
 #include "napi_accessibility_utils.h"
 #include "napi_accessibility_config_observer.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_config.h"
 
-class EnableAbilityListsObserver : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
+struct EnableAbilityListsObserver {
+    EnableAbilityListsObserver(napi_env env, napi_ref callback) : env_(env), callback_(callback) {};
+    void OnEnableAbilityListsStateChanged();
+    napi_env env_ = nullptr;
+    napi_ref callback_ = nullptr;
+};
+
+class EnableAbilityListsObserverImpl : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver,
+    public std::enable_shared_from_this<EnableAbilityListsObserverImpl> {
 public:
-    EnableAbilityListsObserver() = default;
+    EnableAbilityListsObserverImpl() = default;
     void OnEnableAbilityListsStateChanged() override;
-
-    void SetCallBack(napi_ref callback)
-    {
-        callback_ = callback;
-    }
-
-    void SetEnv(napi_env env)
-    {
-        env_ = env;
-    }
-
-    napi_env GetEnv() const
-    {
-        return env_;
-    }
+    void SubscribeToFramework();
+    void SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer);
+    void UnsubscribeObserver();
 
 private:
-    napi_ref callback_ = nullptr;
-    napi_env env_ = nullptr;
+    std::mutex mutex_;
+    std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_ = {};
 };
 
 struct NAccessibilityConfigData {
@@ -114,8 +111,8 @@ public:
     static napi_value GetConfig(napi_env env, napi_callback_info info);
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
-    static std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_;
-    static std::vector<std::shared_ptr<NAccessibilityConfigObserver>> configListeners_;
+    static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
+    static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
 private:
     static void SetConfigComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);

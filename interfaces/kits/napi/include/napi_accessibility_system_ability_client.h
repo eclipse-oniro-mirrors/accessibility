@@ -28,34 +28,28 @@
 #include "napi_accessibility_config_observer.h"
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
-class StateListener : public OHOS::Accessibility::AccessibilityStateObserver {
-public:
-    StateListener();
+struct StateListener {
+    StateListener(napi_env env, napi_ref ref) : handlerRef_(ref), env_(env) {};
     static void NotifyJS(napi_env env, bool state, napi_ref handlerRef);
-    napi_value StartWork(napi_env env, size_t functionIndex, napi_value (&args)[START_WORK_ARGS_SIZE]);
-    void OnStateChanged(const bool state) override;
-    OHOS::Accessibility::AccessibilityStateEventType GetStateType();
+    void OnStateChanged(const bool state);
 
-    std::string GetEventType() const
-    {
-        return eventType_;
-    }
-
-    napi_env GetEnv() const
-    {
-        return env_;
-    }
-
-    napi_ref GetHandler() const
-    {
-        return handlerRef_;
-    }
-
-private:
     napi_ref handlerRef_ = nullptr;
     napi_env env_ = nullptr;
-    std::string eventType_ = "";
-    std::string description_ = "";
+};
+
+class StateListenerImpl : public OHOS::Accessibility::AccessibilityStateObserver,
+    public std::enable_shared_from_this<StateListenerImpl> {
+public:
+    StateListenerImpl(OHOS::Accessibility::AccessibilityStateEventType type) : type_(type) {};
+    void OnStateChanged(const bool state) override;
+    void SubscribeToFramework();
+    void SubscribeObserver(const std::shared_ptr<StateListener> &observer);
+    void UnsubscribeObserver();
+
+private:
+    std::mutex mutex_;
+    OHOS::Accessibility::AccessibilityStateEventType type_;
+    std::vector<std::shared_ptr<StateListener>> observers_ = {};
 };
 
 struct NAccessibilitySystemAbilityClient {
@@ -126,9 +120,9 @@ public:
 
     static thread_local napi_ref aaConsRef_;
     static thread_local napi_ref aaStyleConsRef_;
-
-    static std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;
-    static std::vector<std::shared_ptr<NAccessibilityConfigObserver>> captionListeners_;
+    static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
+    static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
+    static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
     NAccessibilityClient() = default;
