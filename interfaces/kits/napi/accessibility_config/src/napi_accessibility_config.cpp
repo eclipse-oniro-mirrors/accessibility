@@ -23,9 +23,9 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
 
-std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configObservers =
+std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configObservers_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
-std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers =
+std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers_ =
     std::make_shared<EnableAbilityListsObserverImpl>();
 
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
@@ -188,7 +188,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     napi_create_reference(env, args[PARAM1], 1, &callback);
     std::shared_ptr<EnableAbilityListsObserver> observer = std::make_shared<EnableAbilityListsObserver>(env, callback);
 
-    enableAbilityListsObservers->SubscribeObserver(observer);
+    enableAbilityListsObservers_->SubscribeObserver(observer);
     return nullptr;
 }
 
@@ -210,7 +210,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         return nullptr;
     }
 
-    enableAbilityListsObservers->UnsubscribeObserver();
+    enableAbilityListsObservers_->UnsubscribeObserver();
     return nullptr;
 }
 
@@ -593,7 +593,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     std::shared_ptr<NAccessibilityConfigObserver> observer =
         std::make_shared<NAccessibilityConfigObserver>(env, handler, obj->GetConfigId());
     
-    configObservers->SubscribeObserver(observer);
+    configObservers_->SubscribeObserver(observer);
     return nullptr;
 }
 
@@ -609,7 +609,7 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
         return nullptr;
     }
 
-    configObservers->UnsubscribeObserver(obj->GetConfigId());
+    configObservers_->UnsubscribeObserver(obj->GetConfigId());
     return nullptr;
 }
 

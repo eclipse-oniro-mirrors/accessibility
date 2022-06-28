@@ -303,8 +303,8 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
-    NAccessibilityConfig::configObservers->SubscribeToFramework();
-    NAccessibilityConfig::enableAbilityListsObservers->SubscribeToFramework();
+    NAccessibilityConfig::configObservers_->SubscribeToFramework();
+    NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();
     HILOG_INFO("-----Init config module end------");
     return exports;
 }

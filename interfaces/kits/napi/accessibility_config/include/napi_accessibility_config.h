@@ -111,8 +111,8 @@ public:
     static napi_value GetConfig(napi_env env, napi_callback_info info);
     static napi_value SubscribeConfigObserver(napi_env env, napi_callback_info info);
     static napi_value UnSubscribeConfigObserver(napi_env env, napi_callback_info info);
-    static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers;
-    static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers;
+    static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
+    static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
 private:
     static void SetConfigComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);

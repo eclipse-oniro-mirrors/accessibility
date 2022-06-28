@@ -45,9 +45,9 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env, exports);
-    NAccessibilityClient::accessibilityStateListeners->SubscribeToFramework();
-    NAccessibilityClient::touchGuideStateListeners->SubscribeToFramework();
-    NAccessibilityClient::captionListeners->SubscribeToFramework();
+    NAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
+    NAccessibilityClient::captionListeners_->SubscribeToFramework();
     HILOG_INFO("-----Init end------");
     return exports;
 }

@@ -120,9 +120,9 @@ public:
 
     static thread_local napi_ref aaConsRef_;
     static thread_local napi_ref aaStyleConsRef_;
-    static std::shared_ptr<StateListenerImpl> accessibilityStateListeners;
-    static std::shared_ptr<StateListenerImpl> touchGuideStateListeners;
-    static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners;
+    static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
+    static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
+    static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
     NAccessibilityClient() = default;

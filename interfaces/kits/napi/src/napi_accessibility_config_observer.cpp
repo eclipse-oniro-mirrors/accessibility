@@ -317,21 +317,9 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
 void NAccessibilityConfigObserverImpl::SubscribeToFramework()
 {
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRASTE_TEXT, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_INVERT_COLOR, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_DALTONIZATION_COLOR_FILTER, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_ANIMATION_OFF, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_BRIGHTNESS_DISCOUNT, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_AUDIO_MONO, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_AUDIO_BALANCE, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_MOUSE_KEY, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_SHORT_KEY, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_CAPTION_STATE, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_CAPTION_STYLE, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, shared_from_this());
-    instance.SubscribeConfigObserver(CONFIG_MOUSE_AUTOCLICK, shared_from_this());
+    for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
+        instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this());
+    }
 }
 
 void NAccessibilityConfigObserverImpl::OnConfigChanged(
@@ -359,7 +347,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(OHOS::AccessibilityCo
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
-            observers_.erase(iter);
+            iter = observers_.erase(iter);
         } else {
             iter++;
         }

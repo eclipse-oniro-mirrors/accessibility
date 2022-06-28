@@ -23,11 +23,11 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 
-std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListeners =
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
-std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListeners =
+std::shared_ptr<StateListenerImpl> NAccessibilityClient::touchGuideStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED);
-std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners =
+std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionListeners_ =
     std::make_shared<NAccessibilityConfigObserverImpl>();
 
 thread_local napi_ref NAccessibilityClient::aaConsRef_;
@@ -314,10 +314,10 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
-            accessibilityStateListeners->SubscribeObserver(stateListener);
+            accessibilityStateListeners_->SubscribeObserver(stateListener);
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
-            touchGuideStateListeners->SubscribeObserver(stateListener);
+            touchGuideStateListeners_->SubscribeObserver(stateListener);
             break;
         default:
             break;
@@ -343,10 +343,10 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     }
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
-            accessibilityStateListeners->UnsubscribeObserver();
+            accessibilityStateListeners_->UnsubscribeObserver();
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
-            touchGuideStateListeners->UnsubscribeObserver();
+            touchGuideStateListeners_->UnsubscribeObserver();
             break;
         default:
             break;
@@ -592,7 +592,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     napi_create_reference(env, args[PARAM1], 1, &ref);
     std::shared_ptr<NAccessibilityConfigObserver> captionListener =
         std::make_shared<NAccessibilityConfigObserver>(env, ref, type);
-    captionListeners->SubscribeObserver(captionListener);
+    captionListeners_->SubscribeObserver(captionListener);
 
     return nullptr;
 }
@@ -615,7 +615,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
         return nullptr;
     }
-    captionListeners->UnsubscribeObserver(type);
+    captionListeners_->UnsubscribeObserver(type);
 
     return nullptr;
 }
@@ -896,8 +896,8 @@ void StateListenerImpl::OnStateChanged(const bool state)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
-        (*iter)->OnStateChanged(state);
+    for (auto &observer : observers_) {
+        observer->OnStateChanged(state);
     }
 }
 
