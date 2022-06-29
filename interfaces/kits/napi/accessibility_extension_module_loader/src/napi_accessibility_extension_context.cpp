@@ -38,7 +38,12 @@ static void ConvertAccessibilityWindowInfoToJS(
     // Bind js object to a Native object
     std::shared_ptr<AccessibilityWindowInfo> windowInfo =
         std::make_shared<AccessibilityWindowInfo>(accessibilityWindowInfo);
-    AccessibilityElement* pAccessibilityElement = new AccessibilityElement(windowInfo);
+    AccessibilityElement* pAccessibilityElement = new(std::nothrow) AccessibilityElement(windowInfo);
+    if (!pAccessibilityElement) {
+        HILOG_ERROR("Failed to create work.");
+        return;
+    }
+
     napi_status sts = napi_wrap(
         env,
         result,
@@ -642,15 +647,26 @@ void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequenc
         return;
     }
 
-    StateCallbackInfo *data = new StateCallbackInfo();
+    StateCallbackInfo *data = new(std::nothrow) StateCallbackInfo();
+    if (!data) {
+        HILOG_ERROR("Failed to create data.");
+        return;
+    }
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete data;
+        data = nullptr;
+        return;
+    }
+
     data->env_ = callbackInfo->env_;
     data->state_ = result;
     data->ref_ = callbackInfo->callback_;
+    work->data = static_cast<void*>(data);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(callbackInfo->env_, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = data;
-
     uv_queue_work(
         loop,
         work,

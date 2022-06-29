@@ -26,7 +26,7 @@ AbilityRuntime::Extension *AccessibilityExtensionModuleLoader::Create(
     const std::unique_ptr<AbilityRuntime::Runtime>& runtime) const
 {
     if (!runtime) {
-        return new AccessibilityExtension();
+        return new(std::nothrow) AccessibilityExtension();
     }
     HILOG_INFO("AccessibilityExtension::Create runtime");
     switch (runtime->GetLanguage()) {
@@ -34,7 +34,7 @@ AbilityRuntime::Extension *AccessibilityExtensionModuleLoader::Create(
             return NAccessibilityExtension::Create(runtime);
 
         default:
-            return new AccessibilityExtension();
+            return new(std::nothrow) AccessibilityExtension();
     }
 }
 

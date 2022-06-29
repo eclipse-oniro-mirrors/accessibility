@@ -31,15 +31,16 @@ std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbil
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    size_t argc = ARGS_SIZE_THREE;
-    napi_value parameters[ARGS_SIZE_THREE] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return nullptr;
     }
+
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value parameters[ARGS_SIZE_THREE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
     // parse name
     std::string ability = "";
     ParseString(env, ability, parameters[PARAM0]);
@@ -102,15 +103,16 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return nullptr;
     }
+
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
     // parse name
     std::string ability = "";
     ParseString(env, ability, parameters[PARAM0]);
@@ -436,16 +438,17 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
-    napi_value jsthis;
-    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
-
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return nullptr;
     }
+
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_value jsthis;
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
+
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
@@ -535,16 +538,17 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
 napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    size_t argc = ARGS_SIZE_ONE;
-    napi_value parameters[ARGS_SIZE_ONE] = {0};
-    napi_value jsthis;
-    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
-
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return nullptr;
     }
+
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value parameters[ARGS_SIZE_ONE] = {0};
+    napi_value jsthis;
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
+
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
@@ -626,13 +630,21 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
+
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = callback_;
+    work->data = static_cast<void*>(callbackInfo);
+
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_work_t *work = new uv_work_t;
-    work->data = static_cast<AccessibilityCallbackInfo*>(callbackInfo);
-
     uv_queue_work(
         loop,
         work,

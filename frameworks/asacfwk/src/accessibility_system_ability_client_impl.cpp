@@ -70,8 +70,10 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
+    deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
     if (!deathRecipient_) {
-        deathRecipient_ = new DeathRecipient(*this);
+        HILOG_ERROR("Failed to create deathRecipient.");
+        return false;
     }
 
     if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
@@ -92,7 +94,11 @@ void AccessibilitySystemAbilityClientImpl::Init()
 {
     HILOG_DEBUG();
     stateArray_.fill(false);
-    stateObserver_ = new AccessibleAbilityManagerStateObserverImpl(*this);
+    stateObserver_ = new(std::nothrow) AccessibleAbilityManagerStateObserverImpl(*this);
+    if (!stateObserver_) {
+        HILOG_ERROR("Failed to create stateObserver.");
+        return;
+    }
     uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
         stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED] = true;
@@ -143,7 +149,11 @@ int32_t AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     }
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
-        new AccessibilityElementOperatorImpl(windowId, operation);
+        new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation);
+    if (!aamsInteractionOperator) {
+        HILOG_ERROR("Failed to create aamsInteractionOperator.");
+        return -1;
+    }
     interactionOperators_[windowId] = aamsInteractionOperator;
     serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
 

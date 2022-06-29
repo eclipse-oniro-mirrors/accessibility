@@ -66,7 +66,11 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibilityAbilityInfoParcel> AccessibilityAbilityInfoParcel::Unmarshalling(Parcel &parcel)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel();
+    sptr<AccessibilityAbilityInfoParcel> info = new(std::nothrow) AccessibilityAbilityInfoParcel();
+    if (!info) {
+        HILOG_ERROR("Failed to create info.");
+        return nullptr;
+    }
     if (!info->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityAbilityInfo failed.");
         info = nullptr;

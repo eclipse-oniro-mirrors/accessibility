@@ -184,7 +184,11 @@ sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalli
 {
     HILOG_DEBUG();
 
-    sptr<AccessibilityElementInfoParcel> accessibilityInfo = new AccessibilityElementInfoParcel();
+    sptr<AccessibilityElementInfoParcel> accessibilityInfo = new(std::nothrow) AccessibilityElementInfoParcel();
+    if (!accessibilityInfo) {
+        HILOG_ERROR("Failed to create accessibilityInfo.");
+        return nullptr;
+    }
     if (!accessibilityInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
@@ -222,7 +226,11 @@ bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<AccessibleActionParcel> accessibleOperation = new AccessibleActionParcel();
+    sptr<AccessibleActionParcel> accessibleOperation = new(std::nothrow) AccessibleActionParcel();
+    if (!accessibleOperation) {
+        HILOG_ERROR("Failed to create accessibleOperation.");
+        return nullptr;
+    }
     if (!accessibleOperation->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
@@ -261,7 +269,11 @@ bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<RangeInfoParcel> rangeInfo = new RangeInfoParcel();
+    sptr<RangeInfoParcel> rangeInfo = new(std::nothrow) RangeInfoParcel();
+    if (!rangeInfo) {
+        HILOG_ERROR("Failed to create rangeInfo.");
+        return nullptr;
+    }
     if (!rangeInfo->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
@@ -300,7 +312,11 @@ bool GridInfoParcel::Marshalling(Parcel &parcel) const
 sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<GridInfoParcel> grid = new GridInfoParcel();
+    sptr<GridInfoParcel> grid = new(std::nothrow) GridInfoParcel();
+    if (!grid) {
+        HILOG_ERROR("Failed to create grid.");
+        return nullptr;
+    }
     if (!grid->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
@@ -345,7 +361,11 @@ bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<GridItemInfoParcel> gridItem = new GridItemInfoParcel();
+    sptr<GridItemInfoParcel> gridItem = new(std::nothrow) GridItemInfoParcel();
+    if (!gridItem) {
+        HILOG_ERROR("Failed to create gridItem.");
+        return nullptr;
+    }
     if (!gridItem->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
@@ -384,7 +404,11 @@ bool RectParcel::Marshalling(Parcel &parcel) const
 sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
 {
     HILOG_DEBUG();
-    sptr<RectParcel> rect = new RectParcel();
+    sptr<RectParcel> rect = new(std::nothrow) RectParcel();
+    if (!rect) {
+        HILOG_ERROR("Failed to create rect.");
+        return nullptr;
+    }
     if (!rect->ReadFromParcel(parcel)) {
         HILOG_ERROR("read from parcel failed");
         return nullptr;
