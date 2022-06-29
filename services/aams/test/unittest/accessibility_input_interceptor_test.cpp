@@ -264,7 +264,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003
- * @tc.name: InterceptKeyEventCallBack
+ * @tc.name: OnInputEvent
  * @tc.desc: Check the on mouse event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003, TestSize.Level1)
@@ -308,7 +308,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002
- * @tc.name: InterceptKeyEventCallBack
+ * @tc.name: OnKeyEvent
  * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002, TestSize.Level1)
@@ -330,7 +330,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003
- * @tc.name: InterceptKeyEventCallBack
+ * @tc.name: OnKeyEvent
  * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003, TestSize.Level1)
