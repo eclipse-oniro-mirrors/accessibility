@@ -22,6 +22,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+enum class TraceTaskId : int32_t {
+    ACCESSIBLE_ABILITY_CONNECT = 0,
+};
+
 class Utils {
 public:
     static void Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, AccessibilityAbilityInitParams &initParams);

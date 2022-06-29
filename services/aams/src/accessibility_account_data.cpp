@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_account_data.h"
+
+#include <hitrace_meter.h>
+
 #include "accessibility_display_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
@@ -556,7 +559,7 @@ uint32_t AccessibilityAccountData::GetConfigCapabilitiesFromBms(const std::strin
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 {
     HILOG_DEBUG("start.");
-
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryInstalledAbilityInfo");
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     sptr<AppExecFwk::IBundleMgr> bms = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
     if (!bms) {
