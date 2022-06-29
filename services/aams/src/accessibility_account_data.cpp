@@ -563,7 +563,11 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         HILOG_ERROR("GetBundleMgrProxy failed.");
         return false;
     }
-    bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    bool ret = bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    if (!ret) {
+        HILOG_ERROR("Query extension ability information failed.");
+        return false;
+    }
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto& info : extensionInfos) {
         AccessibilityAbilityInitParams initParams;
