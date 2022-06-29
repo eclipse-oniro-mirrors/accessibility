@@ -398,21 +398,18 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         }
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
-        if (!interactionOperationDeathRecipient_) {
-            interactionOperationDeathRecipient_ = new(std::nothrow) InteractionOperationDeathRecipient(windowId);
-            if (!interactionOperationDeathRecipient_) {
-                HILOG_ERROR("interactionOperationDeathRecipient_ is null");
+        auto object = operation->AsObject();
+        if (object) {
+            sptr<IRemoteObject::DeathRecipient> deathRecipient =
+                new(std::nothrow) InteractionOperationDeathRecipient(windowId);
+            if (!deathRecipient) {
+                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
                 return;
             }
-        }
 
-        if (connection->GetProxy()) {
-            auto object = connection->GetProxy()->AsObject();
-            if (object) {
-                HILOG_DEBUG("Add death recipient of operation");
-                bool result = object->AddDeathRecipient(interactionOperationDeathRecipient_);
-                HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
-            }
+            bool result = object->AddDeathRecipient(deathRecipient);
+            interactionOperationDeathRecipients_[windowId] = deathRecipient;
+            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
         }
         }), "TASK_REGISTER_ELEMENT_OPERATOR");
 }
@@ -440,9 +437,13 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
         if (connection->GetProxy()) {
             auto object = connection->GetProxy()->AsObject();
             if (object) {
-                HILOG_DEBUG("Delete death recipient of operation");
-                bool result = object->RemoveDeathRecipient(interactionOperationDeathRecipient_);
-                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+                auto iter = interactionOperationDeathRecipients_.find(windowId);
+                if (iter != interactionOperationDeathRecipients_.end()) {
+                    sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
+                    bool result = object->RemoveDeathRecipient(deathRecipient);
+                    HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+                    interactionOperationDeathRecipients_.erase(iter);
+                }
             }
         }
 
@@ -859,8 +860,7 @@ bool AccessibleAbilityManagerService::Init()
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_INFO();
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
 }
 
