@@ -40,7 +40,6 @@ public:
     MOCK_METHOD1(OnPointerEvent, void(MMI::PointerEvent& event));
     MOCK_METHOD1(SetAvailableFunctions, void(uint32_t availableFunctions));
     MOCK_METHOD1(NotifyAccessibilityEvent, void(AccessibilityEventInfo& event));
-    MOCK_METHOD1(InterceptKeyEventCallback, void(std::shared_ptr<MMI::KeyEvent> keyEvent));
 };
 } // namespace Accessibility
 } // namespace OHOS

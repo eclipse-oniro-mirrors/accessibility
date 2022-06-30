@@ -35,7 +35,7 @@ class AccessibilityInputEventConsumer : public MMI::IInputEventConsumer {
 public:
     AccessibilityInputEventConsumer();
     ~AccessibilityInputEventConsumer();
-    void OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const override {};
+    void OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const override;
     void OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const override;
     void OnInputEvent(std::shared_ptr<MMI::AxisEvent> axisEvent) const override {};
 private:
@@ -70,7 +70,6 @@ public:
     void OnPointerEvent(MMI::PointerEvent &event) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
     void NotifyAccessibilityEvent(AccessibilityEventInfo &event) const;
-    static void InterceptKeyEventCallback(std::shared_ptr<MMI::KeyEvent> keyEvent);
 
 private:
     AccessibilityInputInterceptor();
@@ -88,7 +87,6 @@ private:
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
     uint32_t availableFunctions_ = 0;
     int32_t interceptorId_ = -1;
-    int32_t keyEventInterceptorId_ = -1;
     MMI::InputManager *inputManager_ = nullptr;
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
