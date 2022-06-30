@@ -398,8 +398,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         }
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
-        auto object = operation->AsObject();
-        if (object) {
+        if (operation && operation->AsObject()) {
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(windowId);
             if (!deathRecipient) {
@@ -407,7 +406,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
                 return;
             }
 
-            bool result = object->AddDeathRecipient(deathRecipient);
+            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
             interactionOperationDeathRecipients_[windowId] = deathRecipient;
             HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
         }
