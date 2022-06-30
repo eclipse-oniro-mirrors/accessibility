@@ -111,7 +111,7 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     }
 
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
-        (availableFunctions_& FEATURE_INJECT_TOUCH_EVENTS) ||
+        (availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
         CreatePointerEventTransmitters();
