@@ -38,6 +38,9 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/services/interface/include",
     "//foundation/barrierfree/accessibility/services/interface/include/parcel",
     "//foundation/barrierfree/accessibility/util/include",
+    "//base/account/os_account/frameworks/common/account_error/include",
+    "//base/account/os_account/frameworks/common/database/include",
+    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//base/global/resource_management/interfaces/inner_api/include",
     "//base/notification/common_event_service/interfaces/inner_api",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
@@ -250,6 +253,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_common_event_test.cpp",
   ]
@@ -316,6 +320,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/src/mock_accessibility_window_manager.cpp",
     "mock/src/mock_accessible_ability_manager_service_stub.cpp",
     "mock/src/mock_system_ability.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
@@ -430,6 +435,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_keyevent_filter_test.cpp",
   ]
@@ -505,6 +511,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessible_ability_connection_test.cpp",
   ]
