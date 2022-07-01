@@ -30,6 +30,7 @@ struct AccessibilityAbilityInitParams {
     std::string settingsAbility = "";
     uint32_t capabilities = 0;
     uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
+    bool isImportant = false;
 };
 
 class AccessibilityAbilityInfo {
@@ -40,7 +41,7 @@ public:
     AccessibilityAbilityInfo() = default;
 
     /**
-     * @brief The desconstructor of AccessibilityAbilityInfo.
+     * @brief The deconstructor of AccessibilityAbilityInfo.
      */
     ~AccessibilityAbilityInfo() = default;
 
@@ -167,6 +168,8 @@ public:
         eventTypes_ = eventTypes;
     }
 
+    bool IsImportant() const;
+
 protected:
     std::string bundleName_;
     std::string moduleName_;
@@ -181,6 +184,7 @@ protected:
     uint32_t eventTypes_ = EventType::TYPE_VIEW_INVALID;
 
     std::vector<std::string> targetBundleNames_;
+    bool isImportant_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

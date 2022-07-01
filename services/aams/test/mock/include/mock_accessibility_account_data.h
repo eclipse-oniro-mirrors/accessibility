@@ -81,6 +81,8 @@ public:
     MOCK_METHOD1(AddUITestConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD1(RemoveUITestConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
     MOCK_METHOD0(GetUITestConnectedAbilityConnection, const sptr<AccessibleAbilityConnection>());
+    MOCK_METHOD1(GetImportantEnabledAbilities, void(std::map<std::string, uint32_t> &importantEnabledAbilities));
+    MOCK_METHOD1(UpdateImportantEnabledAbilities, void(std::map<std::string, uint32_t> &importantEnabledAbilities));
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1057,6 +1057,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         return;
     }
 
+    std::map<std::string, uint32_t> importantEnabledAbilities;
     // Clear last account's data
     if (currentAccountId_ != -1) {
         HILOG_DEBUG("current account id: %{public}d", currentAccountId_);
@@ -1065,6 +1066,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
             HILOG_ERROR("Current account data is null");
             return;
         }
+        accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
     }
@@ -1080,6 +1082,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
     accountData->Init();
     if (accountData->GetInstalledAbilitiesFromBMS()) {
+        accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         UpdateAbilities();
         UpdateAccessibilityManagerService();
     }
@@ -1292,7 +1295,6 @@ void AccessibleAbilityManagerService::UpdateAbilities()
                 bundleName.c_str(), abilityName.c_str());
             continue;
         }
-
         sptr<AccessibleAbilityConnection> connection =
             accountData->GetAccessibleAbilityConnection(Utils::GetUri(bundleName, abilityName));
 

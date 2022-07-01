@@ -75,6 +75,7 @@ void AccessibilityAccountData::OnAccountSwitched()
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         itr->second->Disconnect();
     }
+    enabledAbilities_.clear();
 }
 
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
@@ -222,12 +223,11 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
     HILOG_DEBUG("start.");
     for (auto &ability : enabledAbilities_) {
         if (ability == name) {
-            HILOG_ERROR("The ability is already enabled, and it's name is %{public}s", name.c_str());
+            HILOG_DEBUG("The ability is already enabled, and it's name is %{public}s", name.c_str());
             return;
         }
     }
     enabledAbilities_.push_back(name);
-    UpdateEnabledFromPref();
     UpdateEnableAbilityListsState();
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
@@ -258,7 +258,6 @@ void AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
         if (*it == name) {
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
-            RemoveEnabledFromPref(name);
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
             return;
@@ -522,7 +521,6 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
         }
     }
     enabledAbilities_.push_back(name);
-    UpdateEnabledFromPref();
     UpdateEnableAbilityListsState();
     return true;
 }
@@ -578,20 +576,6 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
             std::make_shared<AccessibilityAbilityInfo>(initParams);
         AddInstalledAbility(*accessibilityInfo);
-    }
-
-    std::map<std::string, uint32_t> abilityCapabilities;
-    GetCapabilitiesFromConfig(abilityCapabilities);
-
-    for (auto &ability : abilityCapabilities) {
-        bool result = SetAbilityCapabilities(ability.first, ability.second);
-        if (!result) {
-            HILOG_ERROR("set ability capabilities failed!");
-            continue;
-        }
-        enabledAbilities_.push_back(ability.first);
-        UpdateEnabledFromPref();
-        UpdateEnableAbilityListsState();
     }
     return true;
 }
@@ -676,6 +660,63 @@ void AccessibilityAccountData::GetCapabilitiesFromConfig(std::map<std::string, u
             continue;
         }
         abilityCapabilities.insert(std::make_pair(name, capability));
+    }
+}
+
+void AccessibilityAccountData::GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities)
+{
+    HILOG_DEBUG();
+    if (installedAbilities_.empty()) {
+        HILOG_DEBUG("Current user has no installedAbilities.");
+        return;
+    }
+    if (enabledAbilities_.empty()) {
+        HILOG_DEBUG("Current user has no enabledabilities.");
+        return;
+    }
+    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+    for (auto &installAbility : installedAbilities_) {
+        if (!installAbility.IsImportant()) {
+            HILOG_DEBUG("The ability is not important.");
+            continue;
+        }
+        std::string bundleName = installAbility.GetPackageName();
+        std::string abilityName = installAbility.GetName();
+        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
+            bundleName.c_str(), abilityName.c_str());
+        std::string uri = Utils::GetUri(bundleName, abilityName);
+        std::vector<std::string>::iterator iter = std::find(enabledAbilities_.begin(), enabledAbilities_.end(), uri);
+        if (iter != enabledAbilities_.end()) {
+            uint32_t capabilityValues = installAbility.GetCapabilityValues();
+            importantEnabledAbilities.emplace(std::make_pair(uri, capabilityValues));
+        }
+    }
+}
+
+void AccessibilityAccountData::UpdateImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities)
+{
+    HILOG_DEBUG();
+    if (importantEnabledAbilities.empty()) {
+        HILOG_DEBUG("There is no enabled abilities.");
+        return;
+    }
+    if (installedAbilities_.empty()) {
+        HILOG_DEBUG("Current user has no installedAbilities.");
+        return;
+    }
+    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+    for (auto &installAbility : installedAbilities_) {
+        std::string bundleName = installAbility.GetPackageName();
+        std::string abilityName = installAbility.GetName();
+        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
+            bundleName.c_str(), abilityName.c_str());
+        std::string uri = Utils::GetUri(bundleName, abilityName);
+        std::map<std::string, uint32_t>::iterator iter = importantEnabledAbilities.find(uri);
+        if (iter != importantEnabledAbilities.end()) {
+            AddEnabledAbility(uri);
+            installAbility.SetCapabilityValues(iter->second);
+        }
     }
 }
 } // namespace Accessibility

@@ -330,7 +330,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     abilityInfo->SetCapabilityValues(1);
     accountData->AddInstalledAbility(*abilityInfo);
     accountData->AddEnabledAbility(bundleName);
-    EXPECT_EQ(1, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
+    EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 end";
 }
 
@@ -355,11 +355,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     accountData->AddInstalledAbility(*abilityInfo);
 
     accountData->AddEnabledAbility(bundleName);
-    EXPECT_EQ(1, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
+    EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
 
     /* remove */
     accountData->RemoveEnabledAbility(bundleName);
-    EXPECT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
+    EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility001 end";
 }

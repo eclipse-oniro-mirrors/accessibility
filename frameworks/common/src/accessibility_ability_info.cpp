@@ -30,6 +30,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     capabilities_ = initParams.capabilities;
     settingsAbility_ = initParams.settingsAbility;
     abilityTypes_ = initParams.abilityTypes;
+    isImportant_ = initParams.isImportant;
 
     HILOG_DEBUG("ability name is [%{public}s]].", name_.c_str());
     HILOG_DEBUG("bundle name is [%{public}s].", bundleName_.c_str());
@@ -38,6 +39,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     HILOG_DEBUG("rationale is [%{public}s].", rationale_.c_str());
     HILOG_DEBUG("settingsAbility is [%{public}s]].", settingsAbility_.c_str());
     HILOG_DEBUG("abilityTypes is [%{public}d]].", abilityTypes_);
+    HILOG_DEBUG("isImportant is [%{public}d]].", isImportant_);
 }
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()
@@ -104,6 +106,12 @@ const std::string &AccessibilityAbilityInfo::GetSettingsAbility() const
 {
     HILOG_DEBUG();
     return settingsAbility_;
+}
+
+bool AccessibilityAbilityInfo::IsImportant() const
+{
+    HILOG_DEBUG();
+    return isImportant_;
 }
 } // namespace Accessibility
 } // namespace OHOS
