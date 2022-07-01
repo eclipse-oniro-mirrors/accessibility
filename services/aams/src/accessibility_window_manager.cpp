@@ -133,6 +133,11 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
                 aams.SendEvent(evtInfFocused);
                 break;
             }
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: {
+                auto a11yWindowInfoProperty = CreateAccessibilityWindowInfo(windowInfo->currentWindowInfo_);
+                a11yWindows_[windowInfo->currentWindowInfo_->wid_] = a11yWindowInfoProperty;
+                break;
+            }
             default:
                 break;
         }
