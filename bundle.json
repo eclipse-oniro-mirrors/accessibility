@@ -22,15 +22,21 @@
     "ram": "10000KB",
     "deps": {
       "components": [
-        "ability_manager",
-        "appexecfwk_base",
-        "appexecfwk_core",
-        "cesfwk_innerkits",
-        "ipc_core",
-        "libhilog",
-        "libmmi-client",
-        "samgr_proxy",
-        "want"
+        "samgr_standard",
+        "napi",
+        "window_manager",
+        "eventhandler",
+        "input",
+        "utils_base",
+        "common_event_service",
+        "preference",
+        "ability_base",
+        "safwk",
+        "bundle_framework",
+        "hitrace_native",
+        "hiviewdfx_hilog_native",
+        "ipc",
+        "ability_runtime"
       ],
       "third_party": []
     },
