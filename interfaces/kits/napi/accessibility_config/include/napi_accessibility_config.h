@@ -122,4 +122,4 @@ private:
     ~NAccessibilityConfig() = default;
 };
 
-#endif  // NAPI_ACCESSIBILITY_CONFIG_H
+#endif // NAPI_ACCESSIBILITY_CONFIG_H

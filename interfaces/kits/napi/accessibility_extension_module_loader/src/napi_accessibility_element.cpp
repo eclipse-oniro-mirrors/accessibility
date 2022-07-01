@@ -23,18 +23,14 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
-
 namespace {
-    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "pageId", "parentId", "inspectorKey",
-        "bundleName", "componentType", "inputType", "text", "hintText", "description", "resourceName",
-        "childNodeIds", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
-        "accessibilityFocused", "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
-        "editable", "popupSupported", "pluralLineSupported", "deleteable", "isHint", "isEssential", "itemCount",
-        "currentIndex", "startIndex", "endIndex", "rangeInfo", "grid", "gridItem", "activeRegion", "isContentInvalid",
-        "error", "label", "beginSelected", "endSelected", "textMoveUnit", "parent", "children", "triggerAction",
-        "contents", "lastContent", "windowId", "isFocused"};
-    const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type", "anchor",
-        "rootElement", "isFocused", "windowId"};
+    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "parentId", "inspectorKey",
+        "bundleName", "componentType", "inputType", "text", "hintText", "resourceName",
+        "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
+        "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
+        "editable", "pluralLineSupported", "parent", "children", "isFocused"};
+    const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
+        "rootElement", "isFocused"};
 } // namespace
 
 thread_local napi_ref NAccessibilityElement::consRef_ = nullptr;
