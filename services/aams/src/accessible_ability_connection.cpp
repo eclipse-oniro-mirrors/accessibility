@@ -67,7 +67,11 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     HILOG_DEBUG("ResultCode is %{public}d", resultCode);
     FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
         static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
+    std::string bundleName = element.GetBundleName();
+    std::string abilityName = element.GetAbilityName();
     if (!accountData_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("accountData_ is nullptr.");
         return;
     }
@@ -77,10 +81,14 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
         accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_));
         accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAbilities();
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         return;
     }
 
     if (!remoteObject) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
         return;
     }
@@ -88,6 +96,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     if (!abilityClient_) {
         abilityClient_ = new(std::nothrow) AccessibleAbilityClientProxy(remoteObject);
         if (!abilityClient_) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
             HILOG_ERROR("abilityClient_ is null");
             return;
         }
@@ -96,6 +106,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     if (!deathRecipient_) {
         deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
         if (!deathRecipient_) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
             HILOG_ERROR("deathRecipient_ is null");
             return;
         }
@@ -112,6 +124,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
 
     channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
     if (!channel_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("channel_ is null");
         return;
     }
@@ -291,20 +305,23 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
     HILOG_DEBUG();
     StartAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
         static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
+    std::string bundleName = element.GetBundleName();
+    std::string abilityName = element.GetAbilityName();
     if (!accountData_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("accountData_ is nullptr");
         return;
     }
     elementName_ = element;
-
-    std::string bundleName = elementName_.GetBundleName();
-    std::string abilitName = elementName_.GetAbilityName();
     int32_t accountId = accountData_->GetAccountId();
     HILOG_DEBUG("bundleName[%{public}s], abilityName [%{public}s], accountId [%{public}d]",
-        bundleName.c_str(), abilitName.c_str(), accountId);
+        bundleName.c_str(), abilityName.c_str(), accountId);
 
     auto bundleMgr = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
     if (!bundleMgr) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("get bundleMgr failed");
         return;
     }
@@ -313,15 +330,19 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
 
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
     if (!abilityManagerClient) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("abilityManagerClient is nullptr");
         return;
     }
     AAFwk::Want want = CreateWant(elementName_);
     if (abilityManagerClient->ConnectAbility(want, this, nullptr, uid / UID_MASK) != ERR_OK) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         HILOG_ERROR("ConnectAbility failed!");
         return;
     }
-    accountData_->AddConnectingA11yAbility(Utils::GetUri(bundleName, abilitName));
+    accountData_->AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName));
 }
 
 int32_t AccessibleAbilityConnection::GetChannelId()
@@ -333,6 +354,9 @@ int32_t AccessibleAbilityConnection::GetChannelId()
 void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject>& remote)
 {
+    Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+        A11yError::ERROR_A11Y_APPLICATION_DISCONNECT_ABNORMALLY,
+        recipientElementName_.GetBundleName(), recipientElementName_.GetAbilityName());
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!recipientAccountData_) {

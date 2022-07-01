@@ -14,6 +14,9 @@
  */
 
 #include "utils.h"
+
+#include <hisysevent.h>
+
 #include "bundle_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "nlohmann/json.hpp"
@@ -209,6 +212,79 @@ std::string Utils::GetUri(const std::string &bundleName, const std::string &abil
 {
     HILOG_DEBUG("bundle name(%{public}s) ability name(%{public}s)", bundleName.c_str(), abilityName.c_str());
     return bundleName + "/" + abilityName;
+}
+
+void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
+    const std::string &bundleName, const std::string &abilityName)
+{
+    if (!(errCode > A11yError::ERROR_NEED_REPORT_BASE && errCode < A11yError::ERROR_NEED_REPORT_END)) {
+        return;
+    }
+    std::ostringstream oss;
+    oss << "accessibility function is unavailable: " << "event: " << TransferUnavailableEventToString(event)
+        << ", errCode: " << static_cast<int32_t>(errCode)
+        << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
+    std::string info = oss.str();
+    HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
+    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "ACCESSIBILITY_UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", info);
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
+    }
+}
+
+std::string Utils::TransferUnavailableEventToString(A11yUnavailableEvent type)
+{
+    std::string event;
+    switch (type) {
+        case A11yUnavailableEvent::READ_EVENT:
+            event = "READ";
+            break;
+        case A11yUnavailableEvent::CONNECT_EVENT:
+            event = "CONNECT";
+            break;
+        case A11yUnavailableEvent::QUERY_EVENT:
+            event = "QUERY";
+            break;
+        default:
+            event = "UNDEFINE";
+            break;
+    }
+    return event;
+}
+
+void Utils::RecordStartingA11yEvent(uint32_t flag)
+{
+    std::ostringstream oss;
+    oss << "starting accessibility: " << "event: " << "system" << ", id: " << flag << ";";
+    HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
+    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "ACCESSIBILITY_STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG", oss.str());
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
+    }
+}
+
+void Utils::RecordStartingA11yEvent(const std::string &bundleName, const std::string &abilityName)
+{
+    std::ostringstream oss;
+    oss << "starting accessibility: " << "event: " << "extension"
+        << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
+    HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
+    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "ACCESSIBILITY_STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG", oss.str());
+    if (ret != 0) {
+        HILOG_ERROR("Write HiSysEvent error, ret:%{public}d", ret);
+    }
 }
 } // namespace Accessibility
 } // namespace OHOS

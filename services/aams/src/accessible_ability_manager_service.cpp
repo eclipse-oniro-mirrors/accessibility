@@ -375,6 +375,8 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
 {
     HILOG_INFO("Register windowId[%{public}d] start", windowId);
     if (!handler_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
         HILOG_ERROR("handler_ is nullptr.");
         return;
     }
@@ -384,10 +386,14 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
             HILOG_ERROR("Get current account data failed!!");
             return;
         }
         if (accountData->GetAccessibilityWindowConnection(windowId)) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
             HILOG_WARN("This operation already exists, do not register twice!!");
             return;
         }
@@ -395,6 +401,8 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         sptr<AccessibilityWindowConnection> connection =
             new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);
         if (!connection) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
             HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
             return;
         }
@@ -404,6 +412,8 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
             sptr<IRemoteObject::DeathRecipient> deathRecipient =
                 new(std::nothrow) InteractionOperationDeathRecipient(windowId);
             if (!deathRecipient) {
+                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
                 HILOG_ERROR("Create interactionOperationDeathRecipient failed");
                 return;
             }
@@ -861,6 +871,8 @@ bool AccessibleAbilityManagerService::Init()
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
+    Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+        A11yError::ERROR_TARGET_APPLICATION_DISCONNECT_ABNORMALLY);
     HILOG_INFO();
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
 }
@@ -1390,6 +1402,7 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
         return;
     }
     inputInterceptor_->SetAvailableFunctions(flag);
+    Utils::RecordStartingA11yEvent(flag);
 }
 
 void AccessibleAbilityManagerService::AddUITestClient(const sptr<IRemoteObject> &obj)

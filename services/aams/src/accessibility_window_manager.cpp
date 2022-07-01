@@ -19,6 +19,7 @@
 
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -32,11 +33,13 @@ bool AccessibilityWindowManager::Init()
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
     sptr<Rosen::AccessibilityWindowInfo> windowInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
     if (!windowInfo) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("Create window info failed.");
         return false;
     }
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfo);
     if (err != Rosen::WMError::WM_OK || !windowInfo) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_WINDOW_INFO_FAILED);
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
         return false;
     }
