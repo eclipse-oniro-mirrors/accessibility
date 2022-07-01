@@ -181,8 +181,8 @@ std::string ConvertWindowTypeToString(AccessibilityWindowType type)
 static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
 {
     std::vector<std::string> result;
-    static std::map<EventType, std::string> accessibilityEventTable =
-        {{EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
+    static std::map<EventType, std::string> accessibilityEventTable = {
+        {EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
         {EventType::TYPE_VIEW_LONG_CLICKED_EVENT, "longClick"},
         {EventType::TYPE_VIEW_SELECTED_EVENT, "select"},
         {EventType::TYPE_VIEW_FOCUSED_EVENT, "focus"},
