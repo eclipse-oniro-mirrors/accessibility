@@ -319,8 +319,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/src/mock_accessibility_touch_guider.cpp",
     "mock/src/mock_accessibility_window_manager.cpp",
     "mock/src/mock_accessible_ability_manager_service_stub.cpp",
-    "mock/src/mock_system_ability.cpp",
     "mock/src/mock_os_account_manager.cpp",
+    "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
