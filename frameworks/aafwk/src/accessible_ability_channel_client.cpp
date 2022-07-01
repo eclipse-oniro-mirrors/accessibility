@@ -16,6 +16,7 @@
 #include "accessible_ability_channel_client.h"
 
 #include <cinttypes>
+#include <hitrace_meter.h>
 
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
@@ -54,6 +55,7 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     int32_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "FindFocusedElement");
     if (!proxy_) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
@@ -109,6 +111,7 @@ bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId
     int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
     if (!proxy_) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
@@ -141,6 +144,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
     int32_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, accessibilityWindowId);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
     if (!proxy_) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
@@ -181,17 +185,18 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
 bool AccessibleAbilityChannelClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, windowId);
+    HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
     if (!proxy_) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
     }
-
     return proxy_->GetWindow(windowId, windowInfo);
 }
 
 bool AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
     if (proxy_) {
         bool ret = proxy_->GetWindows(windows);
         for (auto &window : windows) {
@@ -208,6 +213,7 @@ bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows) const
 {
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetWindowsByDisplayId");
     if (proxy_) {
         bool ret = proxy_->GetWindowsByDisplayId(displayId, windows);
         for (auto &window : windows) {
@@ -224,6 +230,7 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
     int32_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementByText");
     if (!proxy_) {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;

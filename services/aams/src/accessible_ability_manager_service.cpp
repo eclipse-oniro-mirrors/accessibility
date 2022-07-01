@@ -18,6 +18,7 @@
 #include <new>
 #include <unistd.h>
 #include <functional>
+#include <hitrace_meter.h>
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
@@ -380,6 +381,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
 
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
+        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Get current account data failed!!");

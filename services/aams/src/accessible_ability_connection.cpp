@@ -14,6 +14,9 @@
  */
 
 #include "accessible_ability_connection.h"
+
+#include <hitrace_meter.h>
+
 #include "ability_manager_client.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
@@ -62,6 +65,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
     HILOG_DEBUG("ResultCode is %{public}d", resultCode);
+    FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
+        static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
     if (!accountData_) {
         HILOG_ERROR("accountData_ is nullptr.");
         return;
@@ -284,6 +289,8 @@ void AccessibleAbilityConnection::Disconnect()
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element)
 {
     HILOG_DEBUG();
+    StartAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
+        static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
     if (!accountData_) {
         HILOG_ERROR("accountData_ is nullptr");
         return;
