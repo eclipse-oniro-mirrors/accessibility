@@ -42,11 +42,11 @@ config("module_private_config") {
     "//base/notification/common_event_service/interfaces/inner_api",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation",
-    "${aafwk_path}/interfaces/kits/native/ability/native/",
-    "${aafwk_path}/interfaces/kits/native/appkit/app/",
-    "${aafwk_inner_api_path}/ability_manager/include",
-    "${aafwk_inner_api_path}/app_manager/include/appmgr/",
-    "${aafwk_services_path}/abilitymgr/include",
+    "${ability_runtime_path}/interfaces/kits/native/ability/native/",
+    "${ability_runtime_path}/interfaces/kits/native/appkit/app/",
+    "${ability_runtime_inner_api_path}/ability_manager/include",
+    "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
+    "${ability_runtime_services_path}/abilitymgr/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
@@ -92,8 +92,8 @@ ohos_unittest("accessibility_account_data_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -143,7 +143,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -206,7 +206,7 @@ ohos_unittest("accessibility_touch_guider_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -258,7 +258,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -324,8 +324,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -377,8 +377,8 @@ ohos_unittest("accessibility_window_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -438,7 +438,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -513,7 +513,7 @@ ohos_unittest("accessible_ability_connection_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -554,7 +554,7 @@ ohos_unittest("accessibility_display_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
@@ -599,7 +599,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
