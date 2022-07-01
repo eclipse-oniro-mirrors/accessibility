@@ -148,13 +148,13 @@ bool AccessibilityMouseAutoclick::IsMouseMovement(MMI::PointerEvent &event)
     int32_t pointerId = event.GetPointerId();
     MMI::PointerEvent::PointerItem item;
     event.GetPointerItem(pointerId, item);
-    int32_t newX = item.GetGlobalX();
-    int32_t newY = item.GetGlobalY();
+    int32_t newX = item.GetDisplayX();
+    int32_t newY = item.GetDisplayY();
 
     pointerId = lastMouseEvent_->GetPointerId();
     lastMouseEvent_->GetPointerItem(pointerId, item);
-    int32_t oldX = item.GetGlobalX();
-    int32_t oldY = item.GetGlobalY();
+    int32_t oldX = item.GetDisplayX();
+    int32_t oldY = item.GetDisplayY();
     if ((newX != oldX) || (newY != oldY)) {
         return true;
     }

@@ -450,8 +450,8 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
                     // Adjust this event's location.
                     MMI::PointerEvent::PointerItem pointer = {};
                     event.GetPointerItem(event.GetPointerId(), pointer);
-                    pointer.SetGlobalX(pointer.GetGlobalX() + longPressOffsetX_);
-                    pointer.SetGlobalY(pointer.GetGlobalY() + longPressOffsetY_);
+                    pointer.SetDisplayX(pointer.GetDisplayX() + longPressOffsetX_);
+                    pointer.SetDisplayY(pointer.GetDisplayY() + longPressOffsetY_);
                     event.RemovePointerItem(event.GetPointerId());
                     event.AddPointerItem(pointer);
                     longPressPointId_ = INIT_POINT_ID;
@@ -598,10 +598,10 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
         MMI::PointerEvent::PointerItem pointerS = {};
         event.GetPointerItem(pIds[INDEX_0], pointerF);
         event.GetPointerItem(pIds[INDEX_1], pointerS);
-        float xPointF = pointerF.GetGlobalX();
-        float xPointS = pointerS.GetGlobalX();
-        float yPointF = pointerF.GetGlobalY();
-        float yPointS = pointerS.GetGlobalY();
+        float xPointF = pointerF.GetDisplayX();
+        float xPointS = pointerS.GetDisplayX();
+        float yPointF = pointerF.GetDisplayY();
+        float yPointS = pointerS.GetDisplayY();
         float offsetX = abs(xPointF - xPointS);
         float offsetY = abs(yPointF - yPointS);
         double duration = hypot(offsetX, offsetY);
@@ -609,8 +609,8 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
             // Adjust this event's location.
             MMI::PointerEvent::PointerItem pointer = {};
             event.GetPointerItem(event.GetPointerId(), pointer);
-            pointer.SetGlobalX(pointer.GetGlobalX() + DIVIDE_2(offsetX));
-            pointer.SetGlobalY(pointer.GetGlobalY() + DIVIDE_2(offsetY));
+            pointer.SetDisplayX(pointer.GetDisplayX() + DIVIDE_2(offsetX));
+            pointer.SetDisplayY(pointer.GetDisplayY() + DIVIDE_2(offsetY));
             event.RemovePointerItem(event.GetPointerId());
             event.AddPointerItem(pointer);
         }
@@ -648,10 +648,10 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
         HILOG_WARN("GetPointerItem(%d) failed", pIds[1]);
     }
 
-    float xPointF = pointerF.GetGlobalX();
-    float xPointS = pointerS.GetGlobalX();
-    float yPointF = pointerF.GetGlobalY();
-    float yPointS = pointerS.GetGlobalY();
+    float xPointF = pointerF.GetDisplayX();
+    float xPointS = pointerS.GetDisplayX();
+    float yPointF = pointerF.GetDisplayY();
+    float yPointS = pointerS.GetDisplayY();
     float xPointDownF = receivedRecorder_.pointerDownX[INDEX_0];
     float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
     float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
@@ -715,8 +715,8 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent &event)
     receivedRecorder_.lastEvent = std::make_shared<MMI::PointerEvent>(event);
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            receivedRecorder_.pointerDownX[pointId] = pointer.GetGlobalX();
-            receivedRecorder_.pointerDownY[pointId] = pointer.GetGlobalY();
+            receivedRecorder_.pointerDownX[pointId] = pointer.GetDisplayX();
+            receivedRecorder_.pointerDownY[pointId] = pointer.GetDisplayY();
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
             receivedRecorder_.pointerDownX[pointId] = 0;

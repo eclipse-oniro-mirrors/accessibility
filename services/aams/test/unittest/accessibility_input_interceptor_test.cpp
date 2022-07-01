@@ -196,8 +196,8 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     MMI::PointerEvent::PointerItem item = {};
 
     item.SetPointerId(1);
-    item.SetGlobalX(1);
-    item.SetGlobalY(1);
+    item.SetDisplayX(1);
+    item.SetDisplayY(1);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
