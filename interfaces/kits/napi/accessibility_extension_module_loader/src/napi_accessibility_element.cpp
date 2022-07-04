@@ -2976,7 +2976,7 @@ napi_value NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *c
 
             if (callbackInfo->accessibilityElement_.windowInfo_) {
                 std::string accessibilityWindowType = ConvertWindowTypeToString(
-                        callbackInfo->accessibilityElement_.windowInfo_->GetAccessibilityWindowType());
+                    callbackInfo->accessibilityElement_.windowInfo_->GetAccessibilityWindowType());
                 HILOG_DEBUG("GetWindowInfoType: [%{public}s]", accessibilityWindowType.c_str());
                 napi_create_string_utf8(env, accessibilityWindowType.c_str(), NAPI_AUTO_LENGTH, &result);
                 napi_resolve_deferred(env, callbackInfo->deferred_, result);
