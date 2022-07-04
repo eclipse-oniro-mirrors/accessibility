@@ -26,6 +26,7 @@
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "input_manager.h"
+#include "os_account_manager.h"
 #include "system_ability_definition.h"
 #include "utils.h"
 
@@ -39,6 +40,8 @@ namespace {
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
+    constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -53,6 +56,7 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
     dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
+    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
 }
 
@@ -95,6 +99,7 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
+    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
 
     isRunning_ = true;
@@ -128,7 +133,7 @@ void AccessibleAbilityManagerService::OnStop()
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    HILOG_INFO("systemAbilityId:%{public}d added!", systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
         return;
@@ -164,7 +169,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
+    HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
 
 int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
@@ -855,6 +860,27 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
+
+    int32_t retry = QUERY_USER_ID_RETRY_COUNT;
+    int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
+    std::vector<int32_t> accountIds;
+    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
+    while (ret != ERR_OK || accountIds.size() == 0) {
+        HILOG_DEBUG("Query account information failed, left retry count:%{public}d", retry);
+        if (retry == 0) {
+            HILOG_ERROR("Query account information failed!!!");
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+        ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
+        retry--;
+    }
+
+    if (accountIds.size() > 0) {
+        HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
+        SwitchedUser(accountIds[0]);
+    }
+
     return true;
 }
 
