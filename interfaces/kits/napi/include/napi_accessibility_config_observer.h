@@ -56,4 +56,4 @@ private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
-#endif  // NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H
+#endif // NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H

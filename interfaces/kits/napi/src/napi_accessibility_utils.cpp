@@ -145,19 +145,21 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
 {
     napi_value nLeftTopX;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetLeftTopXScreenPostion(), &nLeftTopX));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "leftTopX", nLeftTopX));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "left", nLeftTopX));
 
     napi_value nLeftTopY;
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetLeftTopYScreenPostion(), &nLeftTopY));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "leftTopY", nLeftTopY));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "top", nLeftTopY));
 
-    napi_value nRightBottomX;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetRightBottomXScreenPostion(), &nRightBottomX));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rightBottomX", nRightBottomX));
+    napi_value nWidth;
+    int32_t width = rect.GetRightBottomXScreenPostion() - rect.GetLeftTopXScreenPostion();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, width, &nWidth));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "width", nWidth));
 
-    napi_value nRightBottomY;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rect.GetRightBottomYScreenPostion(), &nRightBottomY));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "rightBottomY", nRightBottomY));
+    napi_value nHeight;
+    int32_t height = rect.GetRightBottomYScreenPostion() - rect.GetLeftTopYScreenPostion();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, height, &nHeight));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
 }
 
 std::string ConvertWindowTypeToString(AccessibilityWindowType type)
@@ -179,31 +181,18 @@ std::string ConvertWindowTypeToString(AccessibilityWindowType type)
 static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
 {
     std::vector<std::string> result;
-    static std::map<EventType, std::string> accessibilityEventTable = {{EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
+    static std::map<EventType, std::string> accessibilityEventTable = {
+        {EventType::TYPE_VIEW_CLICKED_EVENT, "click"},
         {EventType::TYPE_VIEW_LONG_CLICKED_EVENT, "longClick"},
         {EventType::TYPE_VIEW_SELECTED_EVENT, "select"},
         {EventType::TYPE_VIEW_FOCUSED_EVENT, "focus"},
         {EventType::TYPE_VIEW_TEXT_UPDATE_EVENT, "textUpdate"},
-        {EventType::TYPE_PAGE_STATE_UPDATE, "pageStateUpdate"},
-        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
         {EventType::TYPE_VIEW_HOVER_ENTER_EVENT, "hoverEnter"},
         {EventType::TYPE_VIEW_HOVER_EXIT_EVENT, "hoverExit"},
-        {EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN, "touchGuideGestureBegin"},
-        {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
-        {EventType::TYPE_PAGE_CONTENT_UPDATE, "pageContentUpdate"},
         {EventType::TYPE_VIEW_SCROLLED_EVENT, "scroll"},
         {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
-        {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
-        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
-        {EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT, "textMoveUnit"},
-        {EventType::TYPE_TOUCH_GUIDE_BEGIN, "touchGuideBegin"},
-        {EventType::TYPE_TOUCH_GUIDE_END, "touchGuideEnd"},
-        {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
-        {EventType::TYPE_TOUCH_END, "touchEnd"},
-        {EventType::TYPE_WINDOW_UPDATE, "windowUpdate"},
-        {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
-        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
+        {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -342,7 +331,7 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, filterBundleNames, idx, bundleName));
         idx++;
     }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "TargetBundleName", filterBundleNames));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "targetBundleNames", filterBundleNames));
 }
 
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
@@ -377,20 +366,10 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_HOVER_EXIT_EVENT, "hoverExit"},
         {EventType::TYPE_VIEW_TEXT_UPDATE_EVENT, "textUpdate"},
         {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
-        {EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT, "textMoveUnit"},
-        {EventType::TYPE_WINDOW_UPDATE, "windowUpdate"},
         {EventType::TYPE_PAGE_CONTENT_UPDATE, "pageContentUpdate"},
         {EventType::TYPE_PAGE_STATE_UPDATE, "pageStateUpdate"},
         {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},
-        {EventType::TYPE_TOUCH_END, "touchEnd"},
-        {EventType::TYPE_TOUCH_GUIDE_BEGIN, "touchGuideBegin"},
-        {EventType::TYPE_TOUCH_GUIDE_END, "touchGuideEnd"},
-        {EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN, "touchGuideGestureBegin"},
-        {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
-        {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
-        {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
-        {EventType::TYPE_INTERRUPT_EVENT, "interrupt"},
-        {EventType::TYPE_GESTURE_EVENT, "gesture"}};
+        {EventType::TYPE_TOUCH_END, "touchEnd"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -430,17 +409,11 @@ std::string CoverGestureTypeToString(GestureType type)
 const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
 {
     static const std::map<WindowUpdateType, const std::string> windowUpdateTypeTable = {
-        {WindowUpdateType::WINDOW_UPDATE_ACCESSIBILITY_FOCUSED, "accessibilityFocus"},
         {WindowUpdateType::WINDOW_UPDATE_FOCUSED, "focus"},
         {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
         {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
         {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
-        {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"},
-        {WindowUpdateType::WINDOW_UPDATE_TITLE, "title"},
-        {WindowUpdateType::WINDOW_UPDATE_LAYER, "layer"},
-        {WindowUpdateType::WINDOW_UPDATE_PARENT, "parent"},
-        {WindowUpdateType::WINDOW_UPDATE_CHILDREN, "children"},
-        {WindowUpdateType::WINDOW_UPDATE_PIP, "pip"}};
+        {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"}};
 
     if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
         return "";
@@ -456,11 +429,6 @@ void ConvertEventTypeToString(const AccessibilityEventInfo &eventInfo, std::stri
         case TYPE_GESTURE_EVENT: {
             GestureType gestureType = eventInfo.GetGestureType();
             eventTypeString = CoverGestureTypeToString(gestureType);
-            break;
-        }
-        case TYPE_NOTIFICATION_UPDATE_EVENT: {
-            NotificationCategory notificationType = eventInfo.GetNotificationInfo();
-            eventTypeString = ConvertCategoryNotificationToString(notificationType);
             break;
         }
         case TYPE_WINDOW_UPDATE: {
@@ -517,12 +485,6 @@ std::string ConvertOperationTypeToString(ActionType type)
         {ActionType::ACCESSIBILITY_ACTION_CUT, "cut"},
         {ActionType::ACCESSIBILITY_ACTION_SET_SELECTION, "setSelection"},
         {ActionType::ACCESSIBILITY_ACTION_SET_TEXT, "setText"},
-        {ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT, "nextText"},
-        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT, "previousText"},
-        {ActionType::ACCESSIBILITY_ACTION_UNFOLD, "unfold"},
-        {ActionType::ACCESSIBILITY_ACTION_FOLD, "fold"},
-        {ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM, "nextHtmlItem"},
-        {ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM, "previousHtmlItem"},
         {ActionType::ACCESSIBILITY_ACTION_DELETED, "delete"},
     };
 
@@ -636,26 +598,12 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"select", EventType::TYPE_VIEW_SELECTED_EVENT},
         {"focus", EventType::TYPE_VIEW_FOCUSED_EVENT},
         {"textUpdate", EventType::TYPE_VIEW_TEXT_UPDATE_EVENT},
-        {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
-        {"notificationUpdate", EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
         {"hoverEnter", EventType::TYPE_VIEW_HOVER_ENTER_EVENT},
         {"hoverExit", EventType::TYPE_VIEW_HOVER_EXIT_EVENT},
-        {"touchGuideGestureBegin", EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN},
-        {"touchGuideGestureEnd", EventType::TYPE_TOUCH_GUIDE_GESTURE_END},
-        {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
         {"scroll", EventType::TYPE_VIEW_SCROLLED_EVENT},
         {"textSelectionUpdate", EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT},
-        {"publicNotice", EventType::TYPE_PUBLIC_NOTICE_EVENT},
         {"accessibilityFocus", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT},
-        {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT},
-        {"textMoveUnit", EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT},
-        {"touchGuideBegin", EventType::TYPE_TOUCH_GUIDE_BEGIN},
-        {"touchGuideEnd", EventType::TYPE_TOUCH_GUIDE_END},
-        {"touchBegin", EventType::TYPE_TOUCH_BEGIN},
-        {"touchEnd", EventType::TYPE_TOUCH_END},
-        {"windowUpdate", EventType::TYPE_WINDOW_UPDATE},
-        {"interrupt", EventType::TYPE_INTERRUPT_EVENT},
-        {"gesture", EventType::TYPE_GESTURE_EVENT}};
+        {"accessibilityFocusClear", EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());
@@ -701,12 +649,6 @@ ActionType ConvertStringToAccessibleOperationType(const std::string &type)
         {"cut", ActionType::ACCESSIBILITY_ACTION_CUT},
         {"setSelection", ActionType::ACCESSIBILITY_ACTION_SET_SELECTION},
         {"setText", ActionType::ACCESSIBILITY_ACTION_SET_TEXT},
-        {"nextText", ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT},
-        {"previousText", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT},
-        {"unfold", ActionType::ACCESSIBILITY_ACTION_UNFOLD},
-        {"fold", ActionType::ACCESSIBILITY_ACTION_FOLD},
-        {"nextHtmlItem", ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM},
-        {"previousHtmlItem", ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM},
         {"delete", ActionType::ACCESSIBILITY_ACTION_DELETED}};
 
     if (accessibleOperationTypeTable.find(type) == accessibleOperationTypeTable.end()) {
@@ -958,6 +900,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
         napi_value windowUpdateTypeValue = nullptr;
         napi_get_property(env, object, propertyNameValue, &windowUpdateTypeValue);
         str = GetStringFromNAPI(env, windowUpdateTypeValue);
+        eventInfo.SetEventType(TYPE_WINDOW_UPDATE);
         eventInfo.SetWindowChangeTypes(ConvertStringToWindowUpdateTypes(str));
     }
 
