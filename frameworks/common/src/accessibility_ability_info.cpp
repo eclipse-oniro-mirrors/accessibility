@@ -32,14 +32,11 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     abilityTypes_ = initParams.abilityTypes;
     isImportant_ = initParams.isImportant;
 
-    HILOG_DEBUG("ability name is [%{public}s]].", name_.c_str());
-    HILOG_DEBUG("bundle name is [%{public}s].", bundleName_.c_str());
-    HILOG_DEBUG("module name is [%{public}s].", moduleName_.c_str());
-    HILOG_DEBUG("capabilities is [%{public}d].", capabilities_);
-    HILOG_DEBUG("rationale is [%{public}s].", rationale_.c_str());
-    HILOG_DEBUG("settingsAbility is [%{public}s]].", settingsAbility_.c_str());
-    HILOG_DEBUG("abilityTypes is [%{public}d]].", abilityTypes_);
-    HILOG_DEBUG("isImportant is [%{public}d]].", isImportant_);
+    HILOG_DEBUG("ability name:[%{public}s], bundle name:[%{public}s], module name:[%{public}s],"
+        "capabilities:[%{public}d], rationale:[%{public}s], settingsAbility:[%{public}s],"
+        "abilityTypes:[%{public}d], isImportant:[%{public}d]",
+        name_.c_str(), bundleName_.c_str(), moduleName_.c_str(), capabilities_,
+        rationale_.c_str(), settingsAbility_.c_str(), abilityTypes_, isImportant_);
 }
 
 uint32_t AccessibilityAbilityInfo::GetAccessibilityAbilityType()

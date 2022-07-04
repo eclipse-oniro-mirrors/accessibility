@@ -663,7 +663,8 @@ void AccessibilityAccountData::GetCapabilitiesFromConfig(std::map<std::string, u
     }
 }
 
-void AccessibilityAccountData::GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities)
+void AccessibilityAccountData::GetImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG();
     if (installedAbilities_.empty()) {
@@ -685,7 +686,8 @@ void AccessibilityAccountData::GetImportantEnabledAbilities(std::map<std::string
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             bundleName.c_str(), abilityName.c_str());
         std::string uri = Utils::GetUri(bundleName, abilityName);
-        std::vector<std::string>::iterator iter = std::find(enabledAbilities_.begin(), enabledAbilities_.end(), uri);
+        std::vector<std::string>::const_iterator iter = std::find(enabledAbilities_.begin(),
+            enabledAbilities_.end(), uri);
         if (iter != enabledAbilities_.end()) {
             uint32_t capabilityValues = installAbility.GetCapabilityValues();
             importantEnabledAbilities.emplace(std::make_pair(uri, capabilityValues));

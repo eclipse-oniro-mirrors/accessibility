@@ -374,7 +374,8 @@ std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig
     return config_;
 }
 
-void AccessibilityAccountData::GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities)
+void AccessibilityAccountData::GetImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG();
     (void)importantEnabledAbilities;

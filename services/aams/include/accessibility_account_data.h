@@ -299,7 +299,7 @@ public:
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
     const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks() const;
 
-    void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
+    void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
 private:
     /**
