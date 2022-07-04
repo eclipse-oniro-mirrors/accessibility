@@ -25,8 +25,9 @@ using namespace OHOS;
 using namespace OHOS::Accessibility;
 namespace {
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "parentId", "inspectorKey",
-        "bundleName", "componentType", "inputType", "text", "hintText", "resourceName",
-        "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
+        "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
+        "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
+        "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
         "selected", "clickable", "longClickable", "isEnable", "isPassword", "scrollable",
         "editable", "pluralLineSupported", "parent", "children", "isFocused"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
