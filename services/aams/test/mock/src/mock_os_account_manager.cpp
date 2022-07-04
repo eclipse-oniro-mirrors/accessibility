@@ -18,9 +18,11 @@
 
 namespace OHOS {
 namespace AccountSA {
+const int32_t accountId = 100;
+
 ErrCode OsAccountManager::QueryActiveOsAccountIds(std::vector<int32_t>& ids)
 {
-    ids.push_back(Accessibility::AccessibilityAbilityHelper::accountId_);
+    ids.push_back(accountId);
     return ERR_OK;
 }
 
