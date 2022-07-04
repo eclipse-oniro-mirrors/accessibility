@@ -199,7 +199,12 @@ bool AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, Accessibilit
 bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG();
+    HILOG_INFO("focusType[%{public}d]", focusType);
+    if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
+        HILOG_ERROR("focusType is not allowed.");
+        return false;
+    }
+
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return false;
