@@ -50,7 +50,7 @@ AccessibilityMouseAutoclick::~AccessibilityMouseAutoclick()
     lastMouseEvent_ = nullptr;
 }
 
-void AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
+bool AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
@@ -67,8 +67,8 @@ void AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
     }
 
     EventTransmission::OnPointerEvent(event);
+    return false;
 }
-
 
 void AccessibilityMouseAutoclick::SendMouseClickEvent()
 {
@@ -115,6 +115,7 @@ void AccessibilityMouseAutoclick::DestroyEvents()
     HILOG_DEBUG();
 
     CancelAutoclick();
+    EventTransmission::DestroyEvents();
 }
 
 void AccessibilityMouseAutoclick::RecognizeAutoclick(MMI::PointerEvent &event)

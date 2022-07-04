@@ -18,23 +18,35 @@
 
 namespace OHOS {
 namespace Accessibility {
-void EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
+bool EventTransmission::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
     auto next = GetNext();
     if (next != nullptr) {
-        next->OnKeyEvent(event);
+        return next->OnKeyEvent(event);
     }
+    return false;
 }
 
-void EventTransmission::OnPointerEvent(MMI::PointerEvent &event)
+bool EventTransmission::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
     auto next = GetNext();
     if (next != nullptr) {
-        next->OnPointerEvent(event);
+        return next->OnPointerEvent(event);
+    }
+    return false;
+}
+
+void EventTransmission::OnMoveMouse(int32_t offsetX, int32_t offsetY)
+{
+    HILOG_DEBUG();
+
+    auto next = GetNext();
+    if (next != nullptr) {
+        next->OnMoveMouse(offsetX, offsetY);
     }
 }
 

@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "accessibility_event_transmission.h"
+#include "accessibility_mouse_key.h"
 #include "event_handler.h"
 #include "i_input_event_consumer.h"
 #include "input_manager.h"
@@ -62,12 +63,16 @@ public:
     // Feature flag for short key.
     static constexpr uint32_t FEATURE_SHORT_KEY = 0x00000020;
 
+    // Feature flag for mouse key.
+    static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
+
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
     void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
     void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const;
-    void OnKeyEvent(MMI::KeyEvent &event) override;
-    void OnPointerEvent(MMI::PointerEvent &event) override;
+    bool OnKeyEvent(MMI::KeyEvent &event) override;
+    bool OnPointerEvent(MMI::PointerEvent &event) override;
+    void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
     void NotifyAccessibilityEvent(AccessibilityEventInfo &event) const;
 
@@ -85,6 +90,7 @@ private:
 
     sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
     sptr<EventTransmission> keyEventTransmitters_ = nullptr;
+    sptr<EventTransmission> mouseKey_ = nullptr;
     uint32_t availableFunctions_ = 0;
     int32_t interceptorId_ = -1;
     MMI::InputManager *inputManager_ = nullptr;

@@ -25,9 +25,10 @@ KeyEventFilter::KeyEventFilter()
 KeyEventFilter::~KeyEventFilter()
 {}
 
-void KeyEventFilter::OnKeyEvent(MMI::KeyEvent& event)
+bool KeyEventFilter::OnKeyEvent(MMI::KeyEvent& event)
 {
     (void)event;
+    return true;
 }
 
 void KeyEventFilter::SetServiceOnKeyEventResult(

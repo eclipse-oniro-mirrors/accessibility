@@ -53,6 +53,12 @@ InputManager *InputManager::GetInstance()
     return instance_;
 }
 
+void InputManager::MoveMouse(int32_t offsetX, int32_t offsetY)
+{
+    (void)offsetX;
+    (void)offsetY;
+}
+
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
 {
     mockKeyCode = keyEvent->GetKeyCode();

@@ -72,9 +72,10 @@ public:
     /**
      * @brief Handle pointer events from previous event stream node.
      * @param event the pointer event from Multimodal
-     * @return
+     * @return true: the event has been processed and does not need to be passed to the next node;
+     *         false: the event is not processed.
      */
-    void OnPointerEvent(MMI::PointerEvent &event) override;
+    bool OnPointerEvent(MMI::PointerEvent &event) override;
 
     /**
      * @brief Clear event state from specific input source.

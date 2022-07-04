@@ -52,7 +52,7 @@ AccessibilityShortKey::~AccessibilityShortKey()
     lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
 }
 
-void AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
+bool AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
@@ -63,10 +63,11 @@ void AccessibilityShortKey::OnKeyEvent(MMI::KeyEvent &event)
         HILOG_DEBUG("key[%{public}d] is not power key, or the number[%{public}zu]\
             of keys pressed is greater than 1.", keycode, pressedKeyCount);
         EventTransmission::OnKeyEvent(event);
-        return;
+        return false;
     }
 
     RecognizeShortKey(event);
+    return true;
 }
 
 void AccessibilityShortKey::SendKeyEventToNext()
@@ -85,6 +86,7 @@ void AccessibilityShortKey::DestroyEvents()
     HILOG_DEBUG();
 
     ClearCachedEventsAndMsg();
+    EventTransmission::DestroyEvents();
 }
 
 void AccessibilityShortKey::RecognizeShortKey(MMI::KeyEvent &event)

@@ -26,7 +26,7 @@ public:
     AccessibilityShortKey();
     virtual ~AccessibilityShortKey();
 
-    void OnKeyEvent(MMI::KeyEvent &event) override;
+    bool OnKeyEvent(MMI::KeyEvent &event) override;
     void SendKeyEventToNext();
     void DestroyEvents() override;
 

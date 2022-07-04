@@ -1405,6 +1405,10 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     if (accountData->GetConfig()->GetShortKeyState()) {
         flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
     }
+    if (accountData->GetConfig()->GetMouseKeyState()) {
+        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
+    }
+
     int32_t autoclickTime = accountData->GetConfig()->GetMouseAutoClick();
     if (autoclickTime >= AUTOCLICK_DELAY_TIME_MIN && autoclickTime <= AUTOCLICK_DELAY_TIME_MAX) {
         flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;

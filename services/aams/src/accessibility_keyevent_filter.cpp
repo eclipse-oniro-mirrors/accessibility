@@ -58,16 +58,17 @@ KeyEventFilter::~KeyEventFilter()
     eventMaps_.clear();
 }
 
-void KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
+bool KeyEventFilter::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
     bool whetherIntercept = IsWantedKeyEvent(event);
     if (whetherIntercept) {
         DispatchKeyEvent(event);
-    } else {
-        EventTransmission::OnKeyEvent(event);
+        return true;
     }
+    EventTransmission::OnKeyEvent(event);
+    return false;
 }
 
 void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &connection, bool isHandled,
@@ -204,6 +205,7 @@ void KeyEventFilter::DestroyEvents()
 
     timeouthandler_->RemoveAllEvents();
     eventMaps_.clear();
+    EventTransmission::DestroyEvents();
 }
 
 void KeyEventFilter::SendEventToNext(MMI::KeyEvent &event)

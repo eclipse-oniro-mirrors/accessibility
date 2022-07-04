@@ -62,7 +62,7 @@ AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
     inputEventConsumer_ = nullptr;
 }
 
-void AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
+bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
@@ -73,9 +73,10 @@ void AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent &event)
     } else {
         HILOG_ERROR("inputManager_ is null.");
     }
+    return true;
 }
 
-void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
+bool AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("PointerAction:%{public}d, SourceType:%{public}d, PointerId:%{public}d",
         event.GetPointerAction(), event.GetSourceType(), event.GetPointerId());
@@ -84,6 +85,17 @@ void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent &event)
     std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
     if (inputManager_) {
         inputManager_->SimulateInputEvent(pointerEvent);
+    } else {
+        HILOG_ERROR("inputManager_ is null.");
+    }
+    return true;
+}
+
+void AccessibilityInputInterceptor::OnMoveMouse(int32_t offsetX, int32_t offsetY)
+{
+    HILOG_DEBUG("offsetX:%{public}d, offsetY:%{public}d", offsetX, offsetY);
+    if (inputManager_) {
+        inputManager_->MoveMouse(offsetX, offsetY);
     } else {
         HILOG_ERROR("inputManager_ is null.");
     }
@@ -108,6 +120,11 @@ void AccessibilityInputInterceptor::CreateTransmitters()
 
     if (!availableFunctions_) {
         return;
+    }
+
+    if ((availableFunctions_ & FEATURE_MOUSE_KEY) && (!mouseKey_)) {
+        mouseKey_ = new(std::nothrow) AccessibilityMouseKey();
+        mouseKey_->SetNext(instance_);
     }
 
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
@@ -215,6 +232,7 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) ||
+        (availableFunctions_ & FEATURE_MOUSE_KEY) ||
         (availableFunctions_ & FEATURE_SHORT_KEY)) {
         if (interceptorId_ < 0) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
@@ -247,6 +265,13 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
 {
     HILOG_DEBUG();
 
+    if ((availableFunctions_ & FEATURE_MOUSE_KEY) != FEATURE_MOUSE_KEY) {
+        if (mouseKey_) {
+            mouseKey_->DestroyEvents();
+            mouseKey_ = nullptr;
+        }
+    }
+
     if (pointerEventTransmitters_ != nullptr) {
         pointerEventTransmitters_->DestroyEvents();
         Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(nullptr);
@@ -275,6 +300,10 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 {
     HILOG_DEBUG();
 
+    if (mouseKey_) {
+        mouseKey_->OnPointerEvent(*event);
+    }
+
     if (!pointerEventTransmitters_) {
         HILOG_DEBUG("pointerEventTransmitters_ is empty.");
         const_cast<AccessibilityInputInterceptor*>(this)->OnPointerEvent(*event);
@@ -287,6 +316,14 @@ void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::Poi
 void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const
 {
     HILOG_DEBUG();
+
+    if (mouseKey_) {
+        bool result = mouseKey_->OnKeyEvent(*event);
+        if (result) {
+            HILOG_DEBUG("The event is mouse key event.");
+            return;
+        }
+    }
 
     if (!keyEventTransmitters_) {
         HILOG_DEBUG("keyEventTransmitters_ is empty.");

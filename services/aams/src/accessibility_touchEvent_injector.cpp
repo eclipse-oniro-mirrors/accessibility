@@ -69,11 +69,12 @@ TouchEventInjector::TouchEventInjector()
     }
 }
 
-void TouchEventInjector::OnPointerEvent(MMI::PointerEvent &event)
+bool TouchEventInjector::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
     EventTransmission::OnPointerEvent(event);
+    return false;
 }
 
 void TouchEventInjector::ClearEvents(uint32_t inputSource)

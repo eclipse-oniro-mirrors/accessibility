@@ -28,8 +28,9 @@ class EventTransmission : public RefBase {
 public:
     EventTransmission() {};
     virtual ~EventTransmission() {};
-    virtual void OnKeyEvent(MMI::KeyEvent &event);
-    virtual void OnPointerEvent(MMI::PointerEvent &event);
+    virtual bool OnKeyEvent(MMI::KeyEvent &event);
+    virtual bool OnPointerEvent(MMI::PointerEvent &event);
+    virtual void OnMoveMouse(int32_t offsetX, int32_t offsetY);
     virtual void OnAccessibilityEvent(AccessibilityEventInfo &event);
     void SetNext(const sptr<EventTransmission> &next);
     sptr<EventTransmission> GetNext();
@@ -40,5 +41,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // OHOS_EVENT_TRANSMISSION_H_
+#endif // OHOS_EVENT_TRANSMISSION_H_
