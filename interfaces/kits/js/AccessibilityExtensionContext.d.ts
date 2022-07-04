@@ -62,6 +62,16 @@ type ElementAttributeValues = {
     'inputType': number;  //The type of the input text.
     'text': string;       //The text of the node.
     'hintText': string;   //The hint text of the node.
+    'description': string; // The description of the node.
+    'triggerAction': accessibility.Action;
+    'textMoveUnit': accessibility.TextMoveUnit; //The movement step used for reading texts.
+    'contents': Array<string>;
+    'lastContent': string;
+    // list
+    'itemCount': number;  //The total of the items.
+    'currentIndex': number; //The index of the current item on the screen.
+    'startIndex': number; ///The start index of listed items on the screen.
+    'endIndex': number; //The end index of listed items on the screen.
     'resourceName': string; //The resource name of the node.
     'textLengthLimit': number;  //The max text length of the node.
     'rect': Rect;       //The rect of the node.
