@@ -202,8 +202,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
 
     int32_t abilityInfoSize = static_cast<int32_t>(abilityInfos.size());
     reply.WriteInt32(abilityInfoSize);
-    for (auto& abilityInfo : abilityInfos) {
-        sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(abilityInfo);
+    for (auto &abilityInfo : abilityInfos) {
+        sptr<AccessibilityAbilityInfoParcel> info = new(std::nothrow) AccessibilityAbilityInfoParcel(abilityInfo);
+        if (!info) {
+            HILOG_ERROR("Failed to create info.");
+            return ERR_NULL_OBJECT;
+        }
         if (!reply.WriteStrongParcelable(info)) {
             HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return TRANSACTION_ERR;
@@ -373,7 +377,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
 
     reply.WriteInt32(num);
     for (int32_t i = 0; i < num; i++) {
-        sptr<AccessibilityAbilityInfoParcel> info = new AccessibilityAbilityInfoParcel(installedAbilities[i]);
+        sptr<AccessibilityAbilityInfoParcel> info =
+            new(std::nothrow) AccessibilityAbilityInfoParcel(installedAbilities[i]);
+        if (!info) {
+            HILOG_ERROR("Failed to create info.");
+            return ERR_NULL_OBJECT;
+        }
         bool result = reply.WriteStrongParcelable(info);
         if (!result) {
             HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");

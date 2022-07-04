@@ -885,7 +885,11 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
     }
 
     uint32_t timeOut = 500;
-    sptr<ElementOperatorCallbackImpl> focusCallback = new ElementOperatorCallbackImpl();
+    sptr<ElementOperatorCallbackImpl> focusCallback = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (!focusCallback) {
+        HILOG_ERROR("Failed to create focusCallback.");
+        return false;
+    }
     std::future<void> focusFutrue = focusCallback->promise_.get_future();
     connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
     std::future_status waitFocus = focusFutrue.wait_for(std::chrono::milliseconds(timeOut));
@@ -896,7 +900,11 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
     elementId = focusCallback->accessibilityInfoResult_.GetAccessibilityId();
 
     std::map<std::string, std::string> actionArguments {};
-    sptr<ElementOperatorCallbackImpl> actionCallback = new ElementOperatorCallbackImpl();
+    sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (!actionCallback) {
+        HILOG_ERROR("Failed to create actionCallback.");
+        return false;
+    }
     std::future<void> actionFutrue = actionCallback->promise_.get_future();
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
     std::future_status waitAction = actionFutrue.wait_for(std::chrono::milliseconds(timeOut));

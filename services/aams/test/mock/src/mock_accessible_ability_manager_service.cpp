@@ -337,7 +337,7 @@ void AccessibleAbilityManagerService::UpdateAbilities()
             if (!connection) {
                 AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
                 connection =
-                    new (std::nothrow) AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
+                    new(std::nothrow) AccessibleAbilityConnection(accountData, connectCounter_++, installAbility);
                 connection->Connect(element);
             }
         } else {

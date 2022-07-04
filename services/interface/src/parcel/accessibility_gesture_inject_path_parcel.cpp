@@ -60,7 +60,11 @@ bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
 sptr<AccessibilityGestureInjectPathParcel> AccessibilityGestureInjectPathParcel::Unmarshalling(Parcel &parcel)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityGestureInjectPathParcel> path = new AccessibilityGestureInjectPathParcel();
+    sptr<AccessibilityGestureInjectPathParcel> path = new(std::nothrow) AccessibilityGestureInjectPathParcel();
+    if (!path) {
+        HILOG_ERROR("Failed to create path.");
+        return nullptr;
+    }
     if (!path || !path->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityGestureInjectPathParcel failed.");
         path = nullptr;

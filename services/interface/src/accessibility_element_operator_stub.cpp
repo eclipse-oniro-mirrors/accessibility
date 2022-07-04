@@ -74,8 +74,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        new AccessibilityElementOperatorCallbackProxy(remote);
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     int32_t mode = data.ReadInt32();
     SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
     return NO_ERROR;
@@ -91,8 +90,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        new AccessibilityElementOperatorCallbackProxy(remote);
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     SearchElementInfosByText(elementId, text, requestId, callback);
     return NO_ERROR;
 }
@@ -107,8 +105,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        new AccessibilityElementOperatorCallbackProxy(remote);
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     FindFocusedElementInfo(elementId, focusType, requestId, callback);
     return NO_ERROR;
 }
@@ -122,8 +119,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        new AccessibilityElementOperatorCallbackProxy(remote);
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     FocusMoveSearch(elementId, direction, requestId, callback);
     return NO_ERROR;
 }
@@ -151,8 +147,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
-    sptr<IAccessibilityElementOperatorCallback> callback =
-        new AccessibilityElementOperatorCallbackProxy(remote);
+    sptr<IAccessibilityElementOperatorCallback> callback = iface_cast<IAccessibilityElementOperatorCallback>(remote);
     ExecuteAction(elementId, action, arguments, requestId, callback);
     return NO_ERROR;
 }

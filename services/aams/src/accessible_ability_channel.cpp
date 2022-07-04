@@ -297,7 +297,6 @@ void AccessibleAbilityChannel::InnerGetWindow(std::promise<bool> &syncPromise,
     const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG("windowId:%{public}d", windowId);
-
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindow failed: no capability");
         syncPromise.set_value(false);
@@ -356,7 +355,6 @@ void AccessibleAbilityChannel::InnerGetWindowsByDisplayId(std::promise<bool> &sy
     const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
-
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
         syncPromise.set_value(false);

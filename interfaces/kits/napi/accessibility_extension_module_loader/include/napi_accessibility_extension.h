@@ -167,7 +167,8 @@ struct KeyEventCallbackInfo : public ExtensionCallbackInfo {
 };
 
 struct AccessibilityEventInfoCallbackInfo : public ExtensionCallbackInfo {
-    OHOS::Accessibility::AccessibilityEventInfo eventInfo_;
+    std::string eventType_ = "";
+    int64_t timeStamp_ = 0;
     std::shared_ptr<AccessibilityElement> element_ = nullptr;
 };
 } // namespace Accessibility

@@ -269,7 +269,7 @@ private:
     std::shared_ptr<AAMSEventHandler> handler_;
 
     sptr<IRemoteObject::DeathRecipient> stateCallbackDeathRecipient_ = nullptr;
-    sptr<IRemoteObject::DeathRecipient> interactionOperationDeathRecipient_ = nullptr;
+    std::map<int32_t, sptr<IRemoteObject::DeathRecipient>> interactionOperationDeathRecipients_ {};
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;

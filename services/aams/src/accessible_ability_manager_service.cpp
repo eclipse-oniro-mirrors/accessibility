@@ -18,6 +18,7 @@
 #include <new>
 #include <unistd.h>
 #include <functional>
+#include <hitrace_meter.h>
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
@@ -25,6 +26,7 @@
 #include "hilog_wrapper.h"
 #include "iservice_registry.h"
 #include "input_manager.h"
+#include "os_account_manager.h"
 #include "system_ability_definition.h"
 #include "utils.h"
 
@@ -38,6 +40,8 @@ namespace {
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
+    constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -52,6 +56,7 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[BUNDLE_MGR_SERVICE_SYS_ABILITY_ID] = false;
     dependentServicesStatus_[COMMON_EVENT_SERVICE_ID] = false;
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
+    dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
 }
 
@@ -94,6 +99,7 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
+    AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
 
     isRunning_ = true;
@@ -127,7 +133,7 @@ void AccessibleAbilityManagerService::OnStop()
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
+    HILOG_INFO("systemAbilityId:%{public}d added!", systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
         return;
@@ -163,7 +169,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
+    HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
 
 int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
@@ -380,6 +386,7 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
 
     handler_->PostTask(std::bind([=]() -> void {
         HILOG_INFO("Register windowId[%{public}d]", windowId);
+        HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "RegisterElementOperator");
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Get current account data failed!!");
@@ -398,21 +405,17 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
         }
         accountData->AddAccessibilityWindowConnection(windowId, connection);
 
-        if (!interactionOperationDeathRecipient_) {
-            interactionOperationDeathRecipient_ = new(std::nothrow) InteractionOperationDeathRecipient(windowId);
-            if (!interactionOperationDeathRecipient_) {
-                HILOG_ERROR("interactionOperationDeathRecipient_ is null");
+        if (operation && operation->AsObject()) {
+            sptr<IRemoteObject::DeathRecipient> deathRecipient =
+                new(std::nothrow) InteractionOperationDeathRecipient(windowId);
+            if (!deathRecipient) {
+                HILOG_ERROR("Create interactionOperationDeathRecipient failed");
                 return;
             }
-        }
 
-        if (connection->GetProxy()) {
-            auto object = connection->GetProxy()->AsObject();
-            if (object) {
-                HILOG_DEBUG("Add death recipient of operation");
-                bool result = object->AddDeathRecipient(interactionOperationDeathRecipient_);
-                HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
-            }
+            bool result = operation->AsObject()->AddDeathRecipient(deathRecipient);
+            interactionOperationDeathRecipients_[windowId] = deathRecipient;
+            HILOG_DEBUG("The result of adding operation's death recipient is %{public}d", result);
         }
         }), "TASK_REGISTER_ELEMENT_OPERATOR");
 }
@@ -440,9 +443,13 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
         if (connection->GetProxy()) {
             auto object = connection->GetProxy()->AsObject();
             if (object) {
-                HILOG_DEBUG("Delete death recipient of operation");
-                bool result = object->RemoveDeathRecipient(interactionOperationDeathRecipient_);
-                HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+                auto iter = interactionOperationDeathRecipients_.find(windowId);
+                if (iter != interactionOperationDeathRecipients_.end()) {
+                    sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
+                    bool result = object->RemoveDeathRecipient(deathRecipient);
+                    HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
+                    interactionOperationDeathRecipients_.erase(iter);
+                }
             }
         }
 
@@ -853,14 +860,34 @@ bool AccessibleAbilityManagerService::Init()
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
+
+    int32_t retry = QUERY_USER_ID_RETRY_COUNT;
+    int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
+    std::vector<int32_t> accountIds;
+    ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
+    while (ret != ERR_OK || accountIds.size() == 0) {
+        HILOG_DEBUG("Query account information failed, left retry count:%{public}d", retry);
+        if (retry == 0) {
+            HILOG_ERROR("Query account information failed!!!");
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+        ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
+        retry--;
+    }
+
+    if (accountIds.size() > 0) {
+        HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
+        SwitchedUser(accountIds[0]);
+    }
+
     return true;
 }
 
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
+    HILOG_INFO();
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(windowId_);
 }
 

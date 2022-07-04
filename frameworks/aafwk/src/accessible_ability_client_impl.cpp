@@ -40,7 +40,7 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(g_Mutex);
     if (!g_Instance) {
-        g_Instance = new AccessibleAbilityClientImpl();
+        g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
     }
     return g_Instance;
 }
@@ -109,7 +109,11 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
 
     // Add death recipient
     if (!deathRecipient_) {
-        deathRecipient_ = new AccessibleAbilityDeathRecipient(*this);
+        deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
+        if (!deathRecipient_) {
+            HILOG_ERROR("Failed to create deathRecipient.");
+            return;
+        }
     }
 
     auto object = channelClient_->GetRemote();

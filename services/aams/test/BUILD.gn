@@ -38,15 +38,18 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/services/interface/include",
     "//foundation/barrierfree/accessibility/services/interface/include/parcel",
     "//foundation/barrierfree/accessibility/util/include",
+    "//base/account/os_account/frameworks/common/account_error/include",
+    "//base/account/os_account/frameworks/common/database/include",
+    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//base/global/resource_management/interfaces/inner_api/include",
     "//base/notification/common_event_service/interfaces/inner_api",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation",
-    "${aafwk_path}/interfaces/kits/native/ability/native/",
-    "${aafwk_path}/interfaces/kits/native/appkit/app/",
-    "${aafwk_inner_api_path}/ability_manager/include",
-    "${aafwk_inner_api_path}/app_manager/include/appmgr/",
-    "${aafwk_services_path}/abilitymgr/include",
+    "${ability_runtime_path}/interfaces/kits/native/ability/native/",
+    "${ability_runtime_path}/interfaces/kits/native/appkit/app/",
+    "${ability_runtime_inner_api_path}/ability_manager/include",
+    "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
+    "${ability_runtime_services_path}/abilitymgr/include",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr/include",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
@@ -92,8 +95,8 @@ ohos_unittest("accessibility_account_data_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -114,6 +117,7 @@ ohos_unittest("accessibility_account_data_test") {
     "bundle_framework:appexecfwk_core",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -143,7 +147,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -206,7 +210,7 @@ ohos_unittest("accessibility_touch_guider_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -224,6 +228,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "samgr_standard:samgr_proxy",
@@ -250,6 +255,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_common_event_test.cpp",
   ]
@@ -258,7 +264,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -278,6 +284,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -315,6 +322,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "mock/src/mock_accessibility_touch_guider.cpp",
     "mock/src/mock_accessibility_window_manager.cpp",
     "mock/src/mock_accessible_ability_manager_service_stub.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_input_interceptor_test.cpp",
   ]
@@ -324,8 +332,8 @@ ohos_unittest("accessibility_input_interceptor_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -346,6 +354,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "bundle_framework:appexecfwk_core",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -377,8 +386,8 @@ ohos_unittest("accessibility_window_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_inner_api_path}/ability_manager:ability_manager",
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -399,6 +408,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "bundle_framework:appexecfwk_core",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
@@ -430,6 +440,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_keyevent_filter_test.cpp",
   ]
@@ -438,7 +449,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -458,6 +469,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
@@ -505,6 +517,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "mock/src/mock_common_event_subscriber.cpp",
     "mock/src/mock_common_event_support.cpp",
     "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_os_account_manager.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessible_ability_connection_test.cpp",
   ]
@@ -513,7 +526,7 @@ ohos_unittest("accessible_ability_connection_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -534,6 +547,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "eventhandler:libeventhandler",
+    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
@@ -554,7 +568,7 @@ ohos_unittest("accessibility_display_manager_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
@@ -599,7 +613,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",

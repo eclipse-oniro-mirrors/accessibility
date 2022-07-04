@@ -42,8 +42,12 @@ static napi_value InitHighContrastText(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, highContrastTextValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRASTE_TEXT);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRASTE_TEXT);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, highContrastTextValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -57,8 +61,12 @@ static napi_value InitInvertColor(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, invertColorValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_INVERT_COLOR);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_INVERT_COLOR);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, invertColorValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -73,8 +81,12 @@ static napi_value InitDaltonizationColorFilter(napi_env env)
                                           sizeof(configDesc) /
                                           sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_DALTONIZATION_COLOR_FILTER);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_DALTONIZATION_COLOR_FILTER);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, daltonizationColorFilterValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -88,8 +100,12 @@ static napi_value InitContentTimeout(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, contentTimeoutValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_CONTENT_TIMEOUT);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CONTENT_TIMEOUT);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, contentTimeoutValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -103,8 +119,12 @@ static napi_value InitAnimationOff(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, animationOffValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_ANIMATION_OFF);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_ANIMATION_OFF);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, animationOffValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -118,8 +138,12 @@ static napi_value InitBrightnessDiscount(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, brightnessDiscountValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_BRIGHTNESS_DISCOUNT);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_BRIGHTNESS_DISCOUNT);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, brightnessDiscountValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -133,8 +157,12 @@ static napi_value InitScreenMagnifier(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, screenMagnifierValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_SCREEN_MAGNIFICATION);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SCREEN_MAGNIFICATION);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, screenMagnifierValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -148,8 +176,12 @@ static napi_value InitAudioMono(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, audioMonoValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_AUDIO_MONO);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_AUDIO_MONO);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, audioMonoValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -163,8 +195,12 @@ static napi_value InitAudioBalance(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, audioBalanceValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_AUDIO_BALANCE);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_AUDIO_BALANCE);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, audioBalanceValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -178,8 +214,12 @@ static napi_value InitMouseKey(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, mouseKeyValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_MOUSE_KEY);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_MOUSE_KEY);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, mouseKeyValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -193,8 +233,12 @@ static napi_value InitMouseAutoClick(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, mouseAutoClickValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_MOUSE_AUTOCLICK);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_MOUSE_AUTOCLICK);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, mouseAutoClickValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -208,8 +252,12 @@ static napi_value InitShortKey(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, shortKeyValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_SHORT_KEY);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, shortKeyValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -223,8 +271,12 @@ static napi_value InitShortKeyTarget(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, shortKeyTargetValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_SHORT_KEY_TARGET);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY_TARGET);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, shortKeyTargetValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -238,8 +290,12 @@ static napi_value InitCaptionState(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, captionValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, captionValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
@@ -253,8 +309,12 @@ static napi_value InitCaptionStyle(napi_env env)
     NAPI_CALL(env, napi_define_properties(env, captionStyleValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
-    NAccessibilityConfigClass* nativeObj = new NAccessibilityConfigClass(
-                                            OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE);
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
     nativeObj->SetEnv(env);
     NAPI_CALL(env, napi_wrap(env, captionStyleValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));

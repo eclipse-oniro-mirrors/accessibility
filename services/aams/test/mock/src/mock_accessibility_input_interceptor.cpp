@@ -65,12 +65,6 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
 {
     inputManager_ = nullptr;
     interceptorId_ = 0;
-    keyEventInterceptorId_ = 0;
-}
-
-void AccessibilityInputInterceptor::InterceptKeyEventCallback(std::shared_ptr<MMI::KeyEvent> keyEvent)
-{
-    (void)keyEvent;
 }
 
 void AccessibilityInputInterceptor::DestroyInterceptor()
@@ -107,6 +101,11 @@ AccessibilityInputEventConsumer::AccessibilityInputEventConsumer()
 
 AccessibilityInputEventConsumer::~AccessibilityInputEventConsumer()
 {}
+
+void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::KeyEvent> keyEvent) const
+{
+    (void)keyEvent;
+}
 
 void AccessibilityInputEventConsumer::OnInputEvent(std::shared_ptr<MMI::PointerEvent> pointerEvent) const
 {

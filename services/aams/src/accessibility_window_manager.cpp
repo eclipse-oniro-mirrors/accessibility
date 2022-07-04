@@ -14,6 +14,9 @@
  */
 
 #include "accessibility_window_manager.h"
+
+#include <hitrace_meter.h>
+
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -26,6 +29,7 @@ AccessibilityWindowManager::AccessibilityWindowManager()
 bool AccessibilityWindowManager::Init()
 {
     HILOG_DEBUG("start");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
     sptr<Rosen::AccessibilityWindowInfo> windowInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
     if (!windowInfo) {
         HILOG_ERROR("Create window info failed.");
@@ -127,6 +131,11 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
                 SetActiveWindow(windowInfo->currentWindowInfo_->wid_);
                 AccessibilityEventInfo evtInfFocused(windowInfo->currentWindowInfo_->wid_, WINDOW_UPDATE_FOCUSED);
                 aams.SendEvent(evtInfFocused);
+                break;
+            }
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: {
+                auto a11yWindowInfoProperty = CreateAccessibilityWindowInfo(windowInfo->currentWindowInfo_);
+                a11yWindows_[windowInfo->currentWindowInfo_->wid_] = a11yWindowInfoProperty;
                 break;
             }
             default:
