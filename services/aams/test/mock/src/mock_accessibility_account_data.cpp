@@ -373,5 +373,19 @@ std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig
     HILOG_DEBUG("start.");
     return config_;
 }
+
+void AccessibilityAccountData::GetImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities) const
+{
+    HILOG_DEBUG();
+    (void)importantEnabledAbilities;
+}
+
+void AccessibilityAccountData::UpdateImportantEnabledAbilities(
+    std::map<std::string, uint32_t> &importantEnabledAbilities)
+{
+    HILOG_DEBUG();
+    (void)importantEnabledAbilities;
+}
 } // namespace Accessibility
 } // namespace OHOS

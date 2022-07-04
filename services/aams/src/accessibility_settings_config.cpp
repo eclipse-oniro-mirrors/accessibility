@@ -575,8 +575,6 @@ void AccessibilitySettingsConfig::Init()
 
     InitCaption();
     InitSetting();
-    InitCapability();
-    InitEnabledList();
 }
 
 void AccessibilitySettingsConfig::VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut)

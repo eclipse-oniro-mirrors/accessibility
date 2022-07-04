@@ -25,6 +25,7 @@ namespace {
     const std::string KEY_ACCESSIBILITY_CAPABILITIES = "accessibilityCapabilities";
     const std::string KEY_SETTINGS_ABILITY = "settingsAbility";
     const std::string KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE = "accessibilityCapabilityRationale";
+    const std::string KEY_IS_IMPORTANT = "isImportant";
 
     // The json value of accessibilityAbility type
     const std::string ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN = "spoken";
@@ -69,6 +70,20 @@ public:
         if (json.find(key) != json.end() && json.at(key).is_array()) {
             HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
             value = json.at(key).get<std::vector<std::string>>();
+        }
+        return true;
+    }
+
+    static bool GetBoolFromJson(const nlohmann::json &json, const std::string &key, bool &value)
+    {
+        HILOG_DEBUG("start.");
+        if (!json.is_object()) {
+            HILOG_ERROR("json is not object.");
+            return false;
+        }
+        if (json.find(key) != json.end() && json.at(key).is_boolean()) {
+            HILOG_DEBUG("Find key[%{public}s] successful.", key.c_str());
+            value = json.at(key).get<bool>();
         }
         return true;
     }
@@ -161,7 +176,7 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     // accessibilityCapabilities
     std::vector<std::string> capabilities;
     if (!JsonUtils::GetStringVecFromJson(sourceJson, KEY_ACCESSIBILITY_CAPABILITIES, capabilities)) {
-        HILOG_ERROR("Get stringVec from json failed.");
+        HILOG_ERROR("Get accessibilityCapabilities from json failed.");
         return;
     }
     initParams.capabilities = PraseVecUtils::ParseCapabilitiesFromVec(capabilities);
@@ -169,20 +184,26 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
     // accessibilityAbilityTypes
     std::vector<std::string> abilityTypes;
     if (!JsonUtils::GetStringVecFromJson(sourceJson, KEY_ACCESSIBILITY_ABILITY_TYPES, abilityTypes)) {
-        HILOG_ERROR("Get stringVec from json failed.");
+        HILOG_ERROR("Get accessibilityAbilityTypes from json failed.");
         return;
     }
     initParams.abilityTypes = PraseVecUtils::ParseAbilityTypesFromVec(abilityTypes);
 
     // accessibilityCapabilityRationale
     if (!JsonUtils::GetStringFromJson(sourceJson, KEY_ACCESSIBILITY_CAPABILITIES_RATIONALE, initParams.rationale)) {
-        HILOG_ERROR("Get stringVec from json failed.");
+        HILOG_ERROR("Get accessibilityCapabilityRationale from json failed.");
         return;
     }
 
     // settingsAbility
     if (!JsonUtils::GetStringFromJson(sourceJson, KEY_SETTINGS_ABILITY, initParams.settingsAbility)) {
-        HILOG_ERROR("Get stringVec from json failed.");
+        HILOG_ERROR("Get settingsAbility from json failed.");
+        return;
+    }
+
+    // isImportant
+    if (!JsonUtils::GetBoolFromJson(sourceJson, KEY_IS_IMPORTANT, initParams.isImportant)) {
+        HILOG_ERROR("Get isImportant from json failed.");
         return;
     }
 }

@@ -298,6 +298,9 @@ public:
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
     const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks() const;
+
+    void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
+    void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -363,5 +366,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // ACCESSIBILITY_ACCOUNT_DATA_H
+#endif // ACCESSIBILITY_ACCOUNT_DATA_H
