@@ -39,6 +39,8 @@ namespace {
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
+    constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -857,8 +859,8 @@ bool AccessibleAbilityManagerService::Init()
     bool result = Singleton<AccessibilityWindowManager>::GetInstance().Init();
     HILOG_DEBUG("wms init result is %{public}d", result);
 
-    int32_t retry = 60;
-    int32_t sleepTime = 50;
+    int32_t retry = QUERY_USER_ID_RETRY_COUNT;
+    int32_t sleepTime = QUERY_USER_ID_SLEEP_TIME;
     std::vector<int32_t> accountIds;
     ErrCode ret = AccountSA::OsAccountManager::QueryActiveOsAccountIds(accountIds);
     while (ret != ERR_OK || accountIds.size() == 0) {
