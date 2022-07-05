@@ -94,12 +94,12 @@ void NAccessibilityElement::ConvertElementInfoToJS(napi_env env, napi_value resu
 void NAccessibilityElement::ConvertElementInfosToJS(
     napi_env env, napi_value result, const std::vector<OHOS::Accessibility::AccessibilityElementInfo>& elementInfos)
 {
-    size_t index = 0;
     HILOG_DEBUG("elementInfo size(%{public}zu)", elementInfos.size());
 
     napi_value constructor = nullptr;
     napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
 
+    size_t index = 0;
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
         napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
@@ -116,22 +116,15 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     size_t argc = ARGS_SIZE_ZERO;
     napi_value argv, thisVar;
     void* data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
-
-    AccessibilityElement* accessibilityElement = nullptr;
-    napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
-    if (!accessibilityElement || status != napi_ok) {
-        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
-        return ErrorOperation(callbackInfo);
-    }
-    callbackInfo->accessibilityElement_ = *accessibilityElement;
 
     napi_value promise = nullptr;
     if (argc == 0) {
@@ -141,6 +134,15 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
         HILOG_ERROR("The size of args is err[%{public}zu]", argc);
         return ErrorOperation(callbackInfo);
     }
+
+    AccessibilityElement* accessibilityElement = nullptr;
+    napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        return ErrorOperation(callbackInfo);
+    }
+    callbackInfo->accessibilityElement_ = *accessibilityElement;
+
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "AttributeNames", NAPI_AUTO_LENGTH, &resource);
 
@@ -182,14 +184,15 @@ napi_value NAccessibilityElement::AttributeValue(napi_env env, napi_callback_inf
     napi_value argv[ARGS_SIZE_ONE] = {0};
     napi_value thisVar;
     void* data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
     if (argc != ARGS_SIZE_ONE) {
         HILOG_ERROR("argc is not one!");
         return ErrorOperation(callbackInfo);
@@ -239,14 +242,24 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     size_t argc = ARGS_SIZE_ZERO;
     napi_value argv, thisVar;
     void* data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}zu", argc);
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, &argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}zu", argc);
+
+    napi_value promise = nullptr;
+    if (argc == 0) {
+        HILOG_DEBUG("promise mode");
+        napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    } else {
+        HILOG_ERROR("The size of args is err[%{public}zu]", argc);
+        return ErrorOperation(callbackInfo);
+    }
 
     AccessibilityElement* accessibilityElement = nullptr;
     napi_status status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
@@ -260,14 +273,6 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
         return ErrorOperation(callbackInfo);
     }
 
-    napi_value promise = nullptr;
-    if (argc == 0) {
-        HILOG_DEBUG("promise mode");
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    } else {
-        HILOG_ERROR("The size of args is err[%{public}zu]", argc);
-        return ErrorOperation(callbackInfo);
-    }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "ActionNames", NAPI_AUTO_LENGTH, &resource);
 
@@ -315,14 +320,15 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
     napi_value argv[ARGS_SIZE_TWO] = {0};
     napi_value thisVar;
     void* data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}zu", argc);
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}zu", argc);
     if (argc != ARGS_SIZE_ONE && argc != ARGS_SIZE_TWO) {
         HILOG_ERROR("argc's size[%{public}zu] is wrong!", argc);
         return ErrorOperation(callbackInfo);
@@ -403,14 +409,15 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     napi_value argv[ARGS_SIZE_TWO] = {0};
     napi_value thisVar;
     void* data = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
+    HILOG_DEBUG("argc = %{public}d", (int)argc);
+
     NAccessibilityElementData *callbackInfo = new(std::nothrow) NAccessibilityElementData();
     if (!callbackInfo) {
         HILOG_ERROR("Failed to create callbackInfo.");
         return nullptr;
     }
     callbackInfo->env_ = env;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
-    HILOG_DEBUG("argc = %{public}d", (int)argc);
     if (argc != ARGS_SIZE_TWO) {
         HILOG_ERROR("argc is not two!");
         return ErrorOperation(callbackInfo);
