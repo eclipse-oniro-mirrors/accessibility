@@ -39,6 +39,7 @@ struct NAccessibilityElementData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
     napi_env env_ {};
+    napi_ref callback_ {};
     AccessibilityElement accessibilityElement_ = {};
     std::map<std::string, std::string> actionArguments_;
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> nodeInfos_ {};
