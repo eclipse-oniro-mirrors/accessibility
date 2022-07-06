@@ -275,7 +275,7 @@ protected:
     std::string componentType_ = "";
     std::string description_ = "";
     std::string beforeText_ = "";
-    std::string latestConent_ = "";
+    std::string latestContent_ = "";
     int32_t elementId_ = 0;
     int32_t itemCounts_ = 0;
 };
@@ -531,7 +531,7 @@ public:
     NotificationCategory GetNotificationInfo() const;
 
     /**
-     * @brief Set the custemize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
+     * @brief Set the customize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
      * @param category Refer to [GestureType], It maybe changed from APP
      * @return -
      * @since 3
@@ -540,7 +540,7 @@ public:
     void SetGestureType(const GestureType gestureType);
 
     /**
-     * @brief Get the custemize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
+     * @brief Get the customize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
      * @param -
      * @return Refer to [GestureType], It maybe changed from APP
      * @since 3

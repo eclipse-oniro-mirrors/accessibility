@@ -1389,7 +1389,7 @@ public:
     ActionType GetTriggerAction() const;
 
     void SetContentList(const std::vector<std::string> &contentList);
-    void GetContentList(std::vector<std::string> &contenList) const;
+    void GetContentList(std::vector<std::string> &contentList) const;
 
     void SetLatestContent(const std::string &content);
     const std::string &GetLatestContent() const;
@@ -1448,7 +1448,7 @@ protected:
     int32_t itemCounts_ = 0;
     ActionType triggerAction_ = ACCESSIBILITY_ACTION_INVALID;
     std::vector<std::string> contentList_ {};
-    std::string latestConent_ = "";
+    std::string latestContent_ = "";
 };
 } // namespace Accessibility
 } // namespace OHOS

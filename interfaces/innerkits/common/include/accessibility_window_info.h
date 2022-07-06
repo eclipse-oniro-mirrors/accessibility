@@ -187,12 +187,12 @@ public:
 
     /**
      * @brief Set whether this window has gained accessibility focus.
-     * @param accessibilityfocused true: this window has gained accessibility focus, otherwise is not.
+     * @param accessibilityFocused true: this window has gained accessibility focus, otherwise is not.
      * @return -
      * @since 3
      * @sysCap Accessibility
      */
-    void SetAccessibilityFocused(const bool accessibilityfocused);
+    void SetAccessibilityFocused(const bool accessibilityFocused);
 
     /**
      * @brief Set the display id

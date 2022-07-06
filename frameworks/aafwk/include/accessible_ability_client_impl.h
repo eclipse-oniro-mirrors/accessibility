@@ -32,7 +32,7 @@ public:
     AccessibleAbilityClientImpl();
 
     /**
-     * @brief The desconstructor of AccessibleAbilityClientImpl.
+     * @brief The deconstructor of AccessibleAbilityClientImpl.
      */
     ~AccessibleAbilityClientImpl() = default;
 

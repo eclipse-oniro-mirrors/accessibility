@@ -48,7 +48,7 @@ public:
     static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance();
 
     /**
-     * @brief Desconstruct.
+     * @brief Deconstruct.
      * @param
      * @return
      */

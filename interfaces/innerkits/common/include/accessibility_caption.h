@@ -84,4 +84,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_CAPTION_H
+#endif // ACCESSIBILITY_CAPTION_H

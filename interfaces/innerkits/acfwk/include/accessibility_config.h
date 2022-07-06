@@ -135,7 +135,7 @@ public:
 
     /**
      * @brief Enabled specified abilities
-     * @param name The strings formated by 'bundleName/abilityName'.
+     * @param name The string formatted by 'bundleName/abilityName'.
      * @param capabilities The capabilities you permit.
      * @return Return true if the command is sent successfully, else return false.
      */
@@ -143,7 +143,7 @@ public:
 
     /**
      * @brief Disabled specified ability
-     * @param name The strings formated by 'bundleName/abilityName'.
+     * @param name The string formatted by 'bundleName/abilityName'.
      * @return Return true if the command is sent successfully, else return false.
      */
     bool DisableAbility(const std::string &name);

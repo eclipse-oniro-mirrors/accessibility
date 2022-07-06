@@ -137,14 +137,14 @@ const std::vector<std::string> &AccessibilityMemo::GetContentList() const
 
 const std::string &AccessibilityMemo::GetLatestContent() const
 {
-    HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
-    return latestConent_;
+    HILOG_DEBUG("latestContent_[%{public}s]", latestContent_.c_str());
+    return latestContent_;
 }
 
 void AccessibilityMemo::SetLatestContent(const std::string &content)
 {
-    latestConent_ = content;
-    HILOG_DEBUG("latestConent_[%{public}s]", latestConent_.c_str());
+    latestContent_ = content;
+    HILOG_DEBUG("latestContent_[%{public}s]", latestContent_.c_str());
 }
 
 const std::string &AccessibilityMemo::GetDescription() const

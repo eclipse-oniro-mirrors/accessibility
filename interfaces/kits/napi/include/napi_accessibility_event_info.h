@@ -28,4 +28,4 @@ private:
     ~NAccessibilityEventInfo() = default;
 };
 
-#endif  // NAPI_ACCESSIBILITY_EVENT_INFO_H
+#endif // NAPI_ACCESSIBILITY_EVENT_INFO_H

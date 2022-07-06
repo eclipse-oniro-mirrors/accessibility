@@ -83,9 +83,9 @@ private:
     int64_t GetSystemTime();
     int64_t GetDelayTime();
 
-    std::shared_ptr<MouseAutoclickEventHandler> timeouthandler_ = nullptr;
+    std::shared_ptr<MouseAutoclickEventHandler> timeoutHandler_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> lastMouseEvent_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_MOUSE_AUTOCLICK_H_
+#endif // ACCESSIBILITY_MOUSE_AUTOCLICK_H_

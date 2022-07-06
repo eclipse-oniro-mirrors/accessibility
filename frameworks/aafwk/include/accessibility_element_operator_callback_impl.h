@@ -38,7 +38,7 @@ public:
     AccessibilityElementOperatorCallbackImpl() = default;
 
     /**
-     * @brief desconstruct function
+     * @brief deconstruct function
      * @return
      */
     ~AccessibilityElementOperatorCallbackImpl() = default;

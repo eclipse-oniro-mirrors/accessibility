@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITYGESTURERECOGNIZER_H
-#define ACCESSIBILITYGESTURERECOGNIZER_H
+#ifndef ACCESSIBILITY_GESTURE_RECOGNIZER_H
+#define ACCESSIBILITY_GESTURE_RECOGNIZER_H
 
 #include <cmath>
 #include <vector>
@@ -276,7 +276,7 @@ private:
 
     /**
      * @brief Get swipe direction.
-     * @param firstP the startpoint
+     * @param firstP the start point
      * @param secondP the endpoint
      * @return the type of swipe direction
      */
@@ -347,5 +347,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // ACCESSIBILITYGESTURERECOGNIZER_H
+#endif // ACCESSIBILITY_GESTURE_RECOGNIZER_H

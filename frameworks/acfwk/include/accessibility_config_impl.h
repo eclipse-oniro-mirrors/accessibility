@@ -74,7 +74,7 @@ public:
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
-    void OnAccessibleAbilityManagerCongfigStateChanged(const uint32_t stateType);
+    void OnAccessibleAbilityManagerConfigStateChanged(const uint32_t stateType);
     void OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance);
     void OnAccessibleAbilityManagerBrightnessDiscountChanged(const float brightnessDiscount);
     void OnAccessibleAbilityManagerContentTimeoutChanged(const uint32_t contentTimeout);
@@ -122,7 +122,7 @@ private:
 
         virtual void OnConfigStateChanged(const uint32_t stateType) override
         {
-            config_.OnAccessibleAbilityManagerCongfigStateChanged(stateType);
+            config_.OnAccessibleAbilityManagerConfigStateChanged(stateType);
         }
         virtual void OnAudioBalanceChanged(const float audioBalance) override
         {

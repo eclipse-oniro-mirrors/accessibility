@@ -105,7 +105,7 @@ private:
 
     /**
      * @brief Find processing event.
-     * @param connection the corresponding AccessiblityAbility
+     * @param connection the corresponding AccessibleAbility
      * @param sequenceNum the sequence of event
      * @return the processing event
      */
@@ -113,7 +113,7 @@ private:
         uint32_t sequenceNum);
 
     std::map<sptr<AccessibleAbilityConnection>, std::vector<std::shared_ptr<ProcessingEvent>>> eventMaps_;
-    std::shared_ptr<KeyEventFilterEventHandler> timeouthandler_ = nullptr;
+    std::shared_ptr<KeyEventFilterEventHandler> timeoutHandler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     uint32_t sequenceNum_ = 0;
 };

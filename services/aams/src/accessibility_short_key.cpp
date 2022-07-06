@@ -37,8 +37,8 @@ AccessibilityShortKey::AccessibilityShortKey()
         return;
     }
 
-    timeouthandler_ = std::make_shared<ShortKeyEventHandler>(runner, *this);
-    if (!timeouthandler_) {
+    timeoutHandler_ = std::make_shared<ShortKeyEventHandler>(runner, *this);
+    if (!timeoutHandler_) {
         HILOG_ERROR("create event handler failed");
     }
 }
@@ -48,7 +48,7 @@ AccessibilityShortKey::~AccessibilityShortKey()
     HILOG_DEBUG();
 
     cachedKeyEvents_.clear();
-    timeouthandler_ = nullptr;
+    timeoutHandler_ = nullptr;
     lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
 }
 
@@ -102,8 +102,8 @@ void AccessibilityShortKey::RecognizeShortKey(MMI::KeyEvent &event)
             return;
         }
         if (lastKeyAction_ != MMI::KeyEvent::KEY_ACTION_DOWN) {
-            timeouthandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
-            timeouthandler_->SendEvent(SHORT_KEY_TIMEOUT_MSG, 0, MULTI_PRESS_TIMER);
+            timeoutHandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
+            timeoutHandler_->SendEvent(SHORT_KEY_TIMEOUT_MSG, 0, MULTI_PRESS_TIMER);
         }
         lastKeyAction_ = action;
     } else if (action == MMI::KeyEvent::KEY_ACTION_UP) {
@@ -170,7 +170,7 @@ void AccessibilityShortKey::ClearCachedEventsAndMsg()
 
     cachedKeyEvents_.clear();
     lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
-    timeouthandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
+    timeoutHandler_->RemoveEvent(SHORT_KEY_TIMEOUT_MSG);
 }
 
 AccessibilityShortKey::ShortKeyEventHandler::ShortKeyEventHandler(

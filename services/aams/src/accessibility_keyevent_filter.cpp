@@ -44,8 +44,8 @@ KeyEventFilter::KeyEventFilter()
         return;
     }
 
-    timeouthandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
-    if (!timeouthandler_) {
+    timeoutHandler_ = std::make_shared<KeyEventFilterEventHandler>(runner_, *this);
+    if (!timeoutHandler_) {
         HILOG_ERROR("create event handler failed");
         return;
     }
@@ -83,11 +83,11 @@ void KeyEventFilter::SetServiceOnKeyEventResult(AccessibleAbilityConnection &con
 
     if (!isHandled) {
         if (!processingEvent->usedCount_) {
-            timeouthandler_->RemoveEvent(processingEvent->seqNum_);
+            timeoutHandler_->RemoveEvent(processingEvent->seqNum_);
             EventTransmission::OnKeyEvent(*processingEvent->event_);
         }
     } else {
-        timeouthandler_->RemoveEvent(processingEvent->seqNum_);
+        timeoutHandler_->RemoveEvent(processingEvent->seqNum_);
         RemoveProcessingEvent(processingEvent);
     }
 }
@@ -148,7 +148,7 @@ void KeyEventFilter::DispatchKeyEvent(MMI::KeyEvent &event)
         return;
     }
 
-    timeouthandler_->SendEvent(sequenceNum_, processingEvent, g_taskTime);
+    timeoutHandler_->SendEvent(sequenceNum_, processingEvent, g_taskTime);
 }
 
 bool KeyEventFilter::RemoveProcessingEvent(std::shared_ptr<ProcessingEvent> event)
@@ -202,7 +202,7 @@ void KeyEventFilter::DestroyEvents()
 {
     HILOG_DEBUG();
 
-    timeouthandler_->RemoveAllEvents();
+    timeoutHandler_->RemoveAllEvents();
     eventMaps_.clear();
 }
 

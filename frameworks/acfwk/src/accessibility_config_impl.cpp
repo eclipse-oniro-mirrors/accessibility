@@ -1044,7 +1044,7 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
     }
 }
 
-void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCongfigStateChanged(const uint32_t stateType)
+void AccessibilityConfig::Impl::OnAccessibleAbilityManagerConfigStateChanged(const uint32_t stateType)
 {
     HILOG_INFO("stateType = [%{public}u}", stateType);
     if (stateType & Accessibility::STATE_CAPTION_ENABLED) {

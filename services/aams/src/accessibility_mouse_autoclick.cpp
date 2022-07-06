@@ -36,8 +36,8 @@ AccessibilityMouseAutoclick::AccessibilityMouseAutoclick()
         return;
     }
 
-    timeouthandler_ = std::make_shared<MouseAutoclickEventHandler>(runner, *this);
-    if (!timeouthandler_) {
+    timeoutHandler_ = std::make_shared<MouseAutoclickEventHandler>(runner, *this);
+    if (!timeoutHandler_) {
         HILOG_ERROR("create event handler failed");
     }
 }
@@ -46,7 +46,7 @@ AccessibilityMouseAutoclick::~AccessibilityMouseAutoclick()
 {
     HILOG_DEBUG();
 
-    timeouthandler_ = nullptr;
+    timeoutHandler_ = nullptr;
     lastMouseEvent_ = nullptr;
 }
 
@@ -68,7 +68,6 @@ void AccessibilityMouseAutoclick::OnPointerEvent(MMI::PointerEvent &event)
 
     EventTransmission::OnPointerEvent(event);
 }
-
 
 void AccessibilityMouseAutoclick::SendMouseClickEvent()
 {
@@ -128,13 +127,13 @@ void AccessibilityMouseAutoclick::RecognizeAutoclick(MMI::PointerEvent &event)
     }
 
     lastMouseEvent_ = std::make_shared<MMI::PointerEvent>(event);
-    if (!timeouthandler_) {
+    if (!timeoutHandler_) {
         HILOG_ERROR("handler is null.");
         return;
     }
     int64_t delayTime = GetDelayTime();
-    timeouthandler_->RemoveEvent(AUTOCLICK_TIMEOUT_MSG);
-    timeouthandler_->SendEvent(AUTOCLICK_TIMEOUT_MSG, 0, delayTime);
+    timeoutHandler_->RemoveEvent(AUTOCLICK_TIMEOUT_MSG);
+    timeoutHandler_->SendEvent(AUTOCLICK_TIMEOUT_MSG, 0, delayTime);
 }
 
 bool AccessibilityMouseAutoclick::IsMouseMovement(MMI::PointerEvent &event)
@@ -167,7 +166,7 @@ void AccessibilityMouseAutoclick::CancelAutoclick()
     HILOG_DEBUG();
 
     ResetAutoclickInfo();
-    timeouthandler_->RemoveEvent(AUTOCLICK_TIMEOUT_MSG);
+    timeoutHandler_->RemoveEvent(AUTOCLICK_TIMEOUT_MSG);
 }
 
 int64_t AccessibilityMouseAutoclick::GetSystemTime()

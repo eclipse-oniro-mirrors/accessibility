@@ -40,5 +40,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // OHOS_EVENT_TRANSMISSION_H_
+#endif // OHOS_EVENT_TRANSMISSION_H_

@@ -74,4 +74,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_WINDOW_MANGER_H
+#endif // ACCESSIBILITY_WINDOW_MANGER_H

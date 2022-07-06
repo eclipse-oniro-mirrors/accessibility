@@ -934,22 +934,22 @@ void AccessibilityElementInfo::SetContentList(const std::vector<std::string> &co
     }
 }
 
-void AccessibilityElementInfo::GetContentList(std::vector<std::string> &contenList) const
+void AccessibilityElementInfo::GetContentList(std::vector<std::string> &contentList) const
 {
-    contenList.clear();
+    contentList.clear();
     for (auto &content : contentList_) {
-        contenList.emplace_back(content);
+        contentList.emplace_back(content);
     }
 }
 
 void AccessibilityElementInfo::SetLatestContent(const std::string &content)
 {
-    latestConent_ = content;
+    latestContent_ = content;
 }
 
 const std::string &AccessibilityElementInfo::GetLatestContent() const
 {
-    return latestConent_;
+    return latestContent_;
 }
 } // namespace Accessibility
 } // namespace OHOS
