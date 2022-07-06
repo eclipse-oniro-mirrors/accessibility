@@ -51,11 +51,11 @@ bool AccessibilityMouseKey::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    int32_t source = event.GetSourceType();
+    int32_t sourceType = event.GetSourceType();
     int32_t action = event.GetPointerAction();
     std::vector<int32_t> pointers = event.GetPointersIdList();
     size_t pointerCount = pointers.size();
-    if ((source == MMI::PointerEvent::SOURCE_TYPE_MOUSE) &&
+    if ((sourceType == MMI::PointerEvent::SOURCE_TYPE_MOUSE) &&
         (action == MMI::PointerEvent::POINTER_ACTION_MOVE) &&
         (pointerCount == ITEM_COUNT_1)) {
         UpdateLastMouseEvent(event);
@@ -69,9 +69,8 @@ bool AccessibilityMouseKey::OnKeyEvent(MMI::KeyEvent &event)
 
     int32_t keyCode = event.GetKeyCode();
     size_t pressedKeyCount = event.GetPressedKeys().size();
-    int32_t keyAction = event.GetKeyAction();
     if (IsMouseKey(keyCode) && (pressedKeyCount == ITEM_COUNT_1)) {
-        if (keyAction == MMI::KeyEvent::KEY_ACTION_DOWN) {
+        if (event.GetKeyAction() == MMI::KeyEvent::KEY_ACTION_DOWN) {
             ExecuteMouseKey(keyCode);
         }
         return true;
@@ -79,16 +78,16 @@ bool AccessibilityMouseKey::OnKeyEvent(MMI::KeyEvent &event)
     return false;
 }
 
-void AccessibilityMouseKey::UpdateLastMouseEvent(MMI::PointerEvent &event)
+void AccessibilityMouseKey::UpdateLastMouseEvent(const MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
     lastMouseMoveEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
-bool AccessibilityMouseKey::IsMouseKey(int32_t keyCode)
+bool AccessibilityMouseKey::IsMouseKey(int32_t keyCode) const
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("keyCode:%{public}d", keyCode);
     if (std::find(MOUSE_KEYCODE_V.begin(), MOUSE_KEYCODE_V.end(), keyCode) != MOUSE_KEYCODE_V.end()) {
         return true;
     }
@@ -97,7 +96,7 @@ bool AccessibilityMouseKey::IsMouseKey(int32_t keyCode)
 
 void AccessibilityMouseKey::ExecuteMouseKey(int32_t keyCode)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("keyCode:%{public}d", keyCode);
 
     if ((keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_1) ||
         (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_2) ||
@@ -154,55 +153,38 @@ void AccessibilityMouseKey::SendMouseClickEvent(CLICK_TYPE clickType)
     lastMouseMoveEvent_->UpdatePointerItem(pointerId, item);
 
     for (uint32_t clickCount = 0; clickCount < clickType; clickCount ++) {
+        HILOG_DEBUG("selectedKeyType:%{public}u", selectedKeyType_);
         if (selectedKeyType_ == LEFT_KEY) {
-            // Send mouse left button down event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
-
-            // Send mouse left button up event.
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_LEFT, MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_LEFT, MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
         } else if (selectedKeyType_ == RIGHT_KEY) {
-            // Send mouse right button down event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
-
-            // Send mouse right button up event.
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_RIGHT, MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_RIGHT, MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
         } else if (selectedKeyType_ == BOOTH_KEY) {
-            // Send mouse left button down event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_LEFT, MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_RIGHT, MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
 
-            // Send mouse right button down event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
-
-            // Send mouse left button up event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_LEFT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
-
-            // Send mouse right button up event.
-            lastMouseMoveEvent_->SetButtonId(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetButtonPressed(MMI::PointerEvent::MOUSE_BUTTON_RIGHT);
-            lastMouseMoveEvent_->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
-            EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_LEFT, MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
+            PerformMouseAction(MMI::PointerEvent::MOUSE_BUTTON_RIGHT, MMI::PointerEvent::POINTER_ACTION_BUTTON_UP);
         }
     }
 }
 
-int64_t AccessibilityMouseKey::GetSystemTime()
+void AccessibilityMouseKey::PerformMouseAction(int32_t buttonId, int32_t actionType)
+{
+    HILOG_DEBUG();
+
+    if (!lastMouseMoveEvent_) {
+        HILOG_DEBUG("No mouse event to be sent.");
+        return;
+    }
+    lastMouseMoveEvent_->SetButtonId(buttonId);
+    lastMouseMoveEvent_->SetButtonPressed(buttonId);
+    lastMouseMoveEvent_->SetPointerAction(actionType);
+    EventTransmission::OnPointerEvent(*lastMouseMoveEvent_);
+}
+
+int64_t AccessibilityMouseKey::GetSystemTime() const
 {
     HILOG_DEBUG();
 

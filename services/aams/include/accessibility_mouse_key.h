@@ -63,12 +63,13 @@ private:
         DOUBLE_CLICK = 2,
     };
 
-    void UpdateLastMouseEvent(MMI::PointerEvent &event);
-    bool IsMouseKey(int32_t keyCode);
+    void UpdateLastMouseEvent(const MMI::PointerEvent &event);
+    bool IsMouseKey(int32_t keyCode) const;
     void ExecuteMouseKey(int32_t keyCode);
     void MoveMousePointer(int32_t offsetX, int32_t offsetY);
     void SendMouseClickEvent(CLICK_TYPE clickType);
-    int64_t GetSystemTime();
+    int64_t GetSystemTime() const;
+    void PerformMouseAction(int32_t buttonId, int32_t actionType);
 
     std::shared_ptr<MMI::PointerEvent> lastMouseMoveEvent_ = nullptr;
     SELECTED_KEY_TYPE selectedKeyType_ = LEFT_KEY;

@@ -124,7 +124,9 @@ void AccessibilityInputInterceptor::CreateTransmitters()
 
     if ((availableFunctions_ & FEATURE_MOUSE_KEY) && (!mouseKey_)) {
         mouseKey_ = new(std::nothrow) AccessibilityMouseKey();
-        mouseKey_->SetNext(instance_);
+        if (mouseKey_) {
+            mouseKey_->SetNext(instance_);
+        }
     }
 
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
