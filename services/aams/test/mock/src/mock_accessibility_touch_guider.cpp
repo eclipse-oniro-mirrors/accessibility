@@ -103,8 +103,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent& event)
         case TouchGuideState::TRANSMITTING:
             HandleTransmitingState(event);
             break;
-        case TouchGuideState::GESTURE_RECOGNIZING:
-            break;
         default:
             break;
     }
