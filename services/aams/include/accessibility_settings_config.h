@@ -128,5 +128,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-
-#endif  // ACCESSIBILITY_SETTINGS_CONFIG_H
+#endif // ACCESSIBILITY_SETTINGS_CONFIG_H

@@ -32,7 +32,7 @@ public:
         const sptr<IAccessibleAbilityChannel> &channel) : channelId_(channelId), proxy_(channel) {}
 
     /**
-     * @brief The desconstructor of AccessibleAbilityChannelClient.
+     * @brief The deconstructor of AccessibleAbilityChannelClient.
      */
     ~AccessibleAbilityChannelClient() = default;
 
@@ -177,7 +177,7 @@ public:
     bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
 
 private:
-    int32_t GenrateRequestId();
+    int32_t GenerateRequestId();
 
     int32_t channelId_ = INVALID_CHANNEL_ID;
     sptr<IAccessibleAbilityChannel> proxy_ = nullptr;

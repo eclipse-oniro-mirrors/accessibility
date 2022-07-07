@@ -36,7 +36,7 @@ public:
     AccessibilitySystemAbilityClientImpl();
 
     /**
-     * @brief Desconstruct.
+     * @brief Deconstruct.
      */
     ~AccessibilitySystemAbilityClientImpl();
 

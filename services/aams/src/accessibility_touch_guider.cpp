@@ -886,9 +886,9 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
         HILOG_ERROR("Failed to create focusCallback.");
         return false;
     }
-    std::future<void> focusFutrue = focusCallback->promise_.get_future();
+    std::future<void> focusFuture = focusCallback->promise_.get_future();
     connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
-    std::future_status waitFocus = focusFutrue.wait_for(std::chrono::milliseconds(timeOut));
+    std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitFocus != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
@@ -901,9 +901,9 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
         HILOG_ERROR("Failed to create actionCallback.");
         return false;
     }
-    std::future<void> actionFutrue = actionCallback->promise_.get_future();
+    std::future<void> actionFuture = actionCallback->promise_.get_future();
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
-    std::future_status waitAction = actionFutrue.wait_for(std::chrono::milliseconds(timeOut));
+    std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitAction != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;

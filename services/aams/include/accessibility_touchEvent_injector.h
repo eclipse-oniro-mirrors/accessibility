@@ -101,7 +101,7 @@ public:
     /**
      * @brief Get current gesture service.
      * @param
-     * @return the corresponding AccessiblityAbility
+     * @return the corresponding AccessibleAbility
      */
     sptr<IAccessibleAbilityClient> GetCurrentGestureService()
     {
@@ -121,7 +121,7 @@ public:
     /**
      * @brief Inject simulated gestures.
      * @param gesturePath the gesture path
-     * @param service the corresponding AccessiblityAbility
+     * @param service the corresponding AccessibleAbility
      * @param sequence the sequence of gesture
      * @return
      */
@@ -198,4 +198,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_TOUCHEVENT_INJECTOR_H
+#endif // ACCESSIBILITY_TOUCHEVENT_INJECTOR_H

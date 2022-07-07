@@ -40,6 +40,6 @@ private:
     void ShowHelpInfo(std::string& dumpInfo) const;
     void ShowIllegalArgsInfo(std::string& dumpInfo) const;
 };
-}
-}
+} // Accessibility
+} // OHOS
 #endif // ACCESSIBILITY_DUMPER_H

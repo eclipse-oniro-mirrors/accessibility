@@ -50,4 +50,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_DISPLAY_MANAGER_H
+#endif // ACCESSIBILITY_DISPLAY_MANAGER_H

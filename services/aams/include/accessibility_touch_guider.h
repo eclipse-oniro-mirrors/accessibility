@@ -182,14 +182,14 @@ public:
     void SendEventToMultimodal(MMI::PointerEvent &event, int32_t action);
 
     /**
-     * @brief Send accessibility event to specific AccessiblityAbility.
+     * @brief Send accessibility event to specific AccessibleAbility.
      * @param eventType the type of the event
      * @return
      */
     void SendAccessibilityEventToAA(EventType eventType);
 
     /**
-     * @brief Send gesture event to specific AccessiblityAbility.
+     * @brief Send gesture event to specific AccessibleAbility.
      * @param gestureId the gesture id of the event
      * @return
      */
@@ -259,14 +259,14 @@ private:
         bool OnDoubleTap(MMI::PointerEvent &event) override;
 
         /**
-         * @brief Send GESTURE_BEGIN to AccessiblityAbility.
+         * @brief Send GESTURE_BEGIN to AccessibleAbility.
          * @param
          * @return
          */
         bool OnStarted() override;
 
         /**
-         * @brief Send GESTURE_END and TOUCH_END to AccessiblityAbility.
+         * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility.
          * @param gestureId the id of gesture
          * @return
          */
@@ -507,4 +507,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_TOUCH_GUIDER_H
+#endif // ACCESSIBILITY_TOUCH_GUIDER_H

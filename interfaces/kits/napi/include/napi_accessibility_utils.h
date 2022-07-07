@@ -120,4 +120,4 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
 struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
     OHOS::AccessibilityConfig::CaptionProperty caption_;
 };
-#endif  // NAPI_ACCESSIBILITY_UTILS_H
+#endif // NAPI_ACCESSIBILITY_UTILS_H

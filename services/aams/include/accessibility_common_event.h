@@ -69,4 +69,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_COMMON_EVENT_REGISTRY_H
+#endif // ACCESSIBILITY_COMMON_EVENT_REGISTRY_H

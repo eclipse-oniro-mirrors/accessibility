@@ -42,7 +42,7 @@ public:
     AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo);
 
     /**
-     * @brief Used for IPC communcation
+     * @brief Used for IPC communication
      * @param parcel
      * @return true: Read parcel data successfully; otherwise is not.
      * @since 3
@@ -51,7 +51,7 @@ public:
     bool ReadFromParcel(Parcel &parcel);
 
     /**
-     * @brief Used for IPC communcation
+     * @brief Used for IPC communication
      * @param parcel
      * @return true: Write parcel data successfully; otherwise is not.
      * @since 3
@@ -60,7 +60,7 @@ public:
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
-     * @brief Used for IPC communcation
+     * @brief Used for IPC communication
      * @param parcel
      * @return Read AccessibilityEventInfoParcel from parcel data
      * @since 3

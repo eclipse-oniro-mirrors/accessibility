@@ -130,7 +130,7 @@ public:
     virtual void ClearFocus() override;
 
     /**
-     * @brief the low layser is notified by the function called while accessibility system execute
+     * @brief the low layer is notified by the function called while accessibility system execute
      * the function of executeAction from AS to check the all low windows cared the outside event.
      * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
      * @param -

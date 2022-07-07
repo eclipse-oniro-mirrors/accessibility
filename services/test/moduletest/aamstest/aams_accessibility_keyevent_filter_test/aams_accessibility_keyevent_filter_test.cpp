@@ -138,7 +138,7 @@ std::shared_ptr<MMI::KeyEvent> AamsKeyEventFilterTest::CreateOnKeyEvent(int32_t 
 /**
  * @tc.number: OnKeyEvent001
  * @tc.name: OnKeyEvent
- * @tc.desc: AccessiblityAbility responds the keyevent within 500 ms.(handled is true)
+ * @tc.desc: AccessibleAbility responds the keyevent within 500 ms.(handled is true)
  */
 HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001, TestSize.Level1)
 {
@@ -174,7 +174,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent001
 /**
  * @tc.number: OnKeyEvent002
  * @tc.name: OnKeyEvent
- * @tc.desc: AccessiblityAbility responds the keyevent within 500 ms.(handled is false)
+ * @tc.desc: AccessibleAbility responds the keyevent within 500 ms.(handled is false)
  */
 HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002, TestSize.Level1)
 {
@@ -212,7 +212,7 @@ HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent002
 /**
  * @tc.number: OnKeyEvent003
  * @tc.name: OnKeyEvent
- * @tc.desc: AccessiblityAbility doesn't respond the keyevent within 500 ms.
+ * @tc.desc: AccessibleAbility doesn't respond the keyevent within 500 ms.
  */
 HWTEST_F(AamsKeyEventFilterTest, AamsKeyEventFilterTest_Moduletest_OnKeyEvent003, TestSize.Level1)
 {

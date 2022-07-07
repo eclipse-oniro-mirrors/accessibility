@@ -129,4 +129,4 @@ private:
     ~NAccessibilityClient() = default;
 };
 
-#endif  // NAPI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H
+#endif // NAPI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H

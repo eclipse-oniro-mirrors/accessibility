@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string TASK_SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID = "SendEvent";
+    const std::string TASK_SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID = "SearchElementInfoByAccessibilityId";
     const std::string TASK_SEARCH_ELEMENTINFOS_BY_TEXT = "SearchElementInfosByText";
     const std::string TASK_FIND_FOCUSED_ELEMENTINFO = "FindFocusedElementInfo";
     const std::string TASK_FOCUS_MOVE_SEARCH = "FocusMoveSearch";

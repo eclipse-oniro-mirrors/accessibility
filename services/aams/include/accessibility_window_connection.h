@@ -38,4 +38,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif  // ACCESSIBILITY_WINDOW_CONNECTION_H
+#endif // ACCESSIBILITY_WINDOW_CONNECTION_H

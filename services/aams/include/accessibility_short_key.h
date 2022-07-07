@@ -49,7 +49,7 @@ private:
     void OnShortKey();
 
     std::vector<std::shared_ptr<MMI::KeyEvent>> cachedKeyEvents_;
-    std::shared_ptr<ShortKeyEventHandler> timeouthandler_ = nullptr;
+    std::shared_ptr<ShortKeyEventHandler> timeoutHandler_ = nullptr;
     int32_t lastKeyAction_ = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
 };
 } // namespace Accessibility

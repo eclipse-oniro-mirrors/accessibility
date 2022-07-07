@@ -123,9 +123,9 @@ bool AccessibilityWindowInfo::IsAccessibilityFocused() const
     return accessibilityFocused_;
 }
 
-void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityfocused)
+void AccessibilityWindowInfo::SetAccessibilityFocused(const bool accessibilityFocused)
 {
-    accessibilityFocused_ = accessibilityfocused;
+    accessibilityFocused_ = accessibilityFocused;
     HILOG_DEBUG("accessibilityFocused_[%{public}d]", accessibilityFocused_);
 }
 

@@ -28,7 +28,7 @@ namespace {
     constexpr int32_t REQUEST_ID_MAX = 0x7FFFFFFF;
 } // namespace
 
-int32_t AccessibleAbilityChannelClient::GenrateRequestId()
+int32_t AccessibleAbilityChannelClient::GenerateRequestId()
 {
     int32_t requestId = requestId_++;
     requestId = requestId % REQUEST_ID_MAX;
@@ -61,14 +61,14 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
         return false;
     }
 
-    int32_t requestId = GenrateRequestId();
+    int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
         HILOG_ERROR("Failed to create elementOperator.");
         return false;
     }
-    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     if (!proxy_->FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, elementOperator)) {
         return false;
@@ -76,7 +76,7 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     HILOG_DEBUG("channelId:%{public}d, accessibilityWindowId:%{public}d, elementId:%{public}d, focusType:%{public}d",
         channelId_, accessibilityWindowId, elementId, focusType);
 
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
@@ -117,20 +117,20 @@ bool AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId
         return false;
     }
 
-    int32_t requestId = GenrateRequestId();
+    int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
         HILOG_ERROR("Failed to create elementOperator.");
         return false;
     }
-    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     if (!proxy_->ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, elementOperator)) {
         return false;
     }
 
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
@@ -150,21 +150,21 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
         return false;
     }
 
-    int32_t requestId = GenrateRequestId();
+    int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
         HILOG_ERROR("Failed to create elementOperator.");
         return false;
     }
-    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId,
         elementOperator, mode)) {
         return false;
     }
 
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
@@ -236,20 +236,20 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
         return false;
     }
 
-    int32_t requestId = GenrateRequestId();
+    int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
         HILOG_ERROR("Failed to create elementOperator.");
         return false;
     }
-    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     if (!proxy_->SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, elementOperator)) {
         return false;
     }
 
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
@@ -276,20 +276,20 @@ bool AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindow
         return false;
     }
 
-    int32_t requestId = GenrateRequestId();
+    int32_t requestId = GenerateRequestId();
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
         HILOG_ERROR("Failed to create elementOperator.");
         return false;
     }
-    std::future<void> promiseFutrue = elementOperator->promise_.get_future();
+    std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
     if (!proxy_->FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, elementOperator)) {
         return false;
     }
 
-    std::future_status wait = promiseFutrue.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait result");
         return false;
