@@ -79,39 +79,35 @@ void TGEventHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
     }
 }
 
-void TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
+bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    switch (event.GetSourceType()) {
-        case MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN:
-            if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
-                Clear(event);
-                return;
-            }
-            RecordReceivedEvent(event);
-            if (gestureRecognizer_.OnPointerEvent(event)) {
-                return;
-            }
-            switch (static_cast<TouchGuideState>(currentState_)) {
-                case TouchGuideState::TOUCH_GUIDING:
-                    HandleTouchGuidingState(event);
-                    break;
-                case TouchGuideState::DRAGGING:
-                    HandleDraggingState(event);
-                    break;
-                case TouchGuideState::TRANSMITTING:
-                    HandleTransmitingState(event);
-                    break;
-                case TouchGuideState::GESTURE_RECOGNIZING:
-                    break;
-                default:
-                    break;
-            }
+    if (event.GetSourceType() != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
+        EventTransmission::OnPointerEvent(event);
+        return false;
+    }
+    if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
+        Clear(event);
+        return true;
+    }
+    RecordReceivedEvent(event);
+    if (gestureRecognizer_.OnPointerEvent(event)) {
+        return true;
+    }
+    switch (static_cast<TouchGuideState>(currentState_)) {
+        case TouchGuideState::TOUCH_GUIDING:
+            HandleTouchGuidingState(event);
+            break;
+        case TouchGuideState::DRAGGING:
+            HandleDraggingState(event);
+            break;
+        case TouchGuideState::TRANSMITTING:
+            HandleTransmitingState(event);
             break;
         default:
-            EventTransmission::OnPointerEvent(event);
             break;
     }
+    return true;
 }
 
 void TouchGuider::OnAccessibilityEvent(AccessibilityEventInfo &event)

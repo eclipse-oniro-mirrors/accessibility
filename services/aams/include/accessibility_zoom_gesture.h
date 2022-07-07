@@ -43,7 +43,7 @@ public:
     AccessibilityZoomGesture(Rosen::DisplayId displayId);
     ~AccessibilityZoomGesture() = default;
 
-    virtual void OnPointerEvent(MMI::PointerEvent &event) override;
+    virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
 
 private:
     class ZoomGestureEventHandler : public AppExecFwk::EventHandler {

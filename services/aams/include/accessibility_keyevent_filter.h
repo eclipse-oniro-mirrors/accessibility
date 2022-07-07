@@ -54,9 +54,10 @@ public:
     /**
      * @brief Handle key events from previous event stream node.
      * @param event the key event from Multimodal
-     * @return
+     * @return true: the event has been processed and does not need to be passed to the next node;
+     *         false: the event is not processed.
      */
-    void OnKeyEvent(MMI::KeyEvent &event) override;
+    bool OnKeyEvent(MMI::KeyEvent &event) override;
 
     /**
      * @brief Send key event to next stream node.

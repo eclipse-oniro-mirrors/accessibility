@@ -43,14 +43,22 @@ AccessibilityInputInterceptor::AccessibilityInputInterceptor()
 AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
 {}
 
-void AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent& event)
+bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent& event)
 {
     (void)event;
+    return true;
 }
 
-void AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent& event)
+void AccessibilityInputInterceptor::OnMoveMouse(int32_t offsetX, int32_t offsetY)
+{
+    (void)offsetX;
+    (void)offsetY;
+}
+
+bool AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent& event)
 {
     (void)event;
+    return true;
 }
 
 void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunctions)

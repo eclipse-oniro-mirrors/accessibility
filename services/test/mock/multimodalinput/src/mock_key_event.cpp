@@ -24,6 +24,19 @@ const int32_t KeyEvent::KEY_ACTION_UNKNOWN = 0X00000000;
 const int32_t KeyEvent::KEY_ACTION_CANCEL = 0X00000001;
 const int32_t KeyEvent::KEY_ACTION_DOWN = 0x00000002;
 const int32_t KeyEvent::KEY_ACTION_UP = 0X00000003;
+const int32_t KeyEvent::KEYCODE_NUMPAD_1 = 2104;
+const int32_t KeyEvent::KEYCODE_NUMPAD_2 = 2105;
+const int32_t KeyEvent::KEYCODE_NUMPAD_3 = 2106;
+const int32_t KeyEvent::KEYCODE_NUMPAD_4 = 2107;
+const int32_t KeyEvent::KEYCODE_NUMPAD_5 = 2108;
+const int32_t KeyEvent::KEYCODE_NUMPAD_6 = 2109;
+const int32_t KeyEvent::KEYCODE_NUMPAD_7 = 2110;
+const int32_t KeyEvent::KEYCODE_NUMPAD_8 = 2111;
+const int32_t KeyEvent::KEYCODE_NUMPAD_9 = 2112;
+const int32_t KeyEvent::KEYCODE_NUMPAD_DIVIDE = 2113;
+const int32_t KeyEvent::KEYCODE_NUMPAD_MULTIPLY = 2114;
+const int32_t KeyEvent::KEYCODE_NUMPAD_SUBTRACT = 2115;
+const int32_t KeyEvent::KEYCODE_NUMPAD_ADD = 2116;
 
 KeyEvent::KeyItem::KeyItem()
 {}

@@ -203,6 +203,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
         }
         if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
             (abs(pointerIterm.GetDisplayY() - prePointer_.GetDisplayY())) >= yMinPixels_) {
+            HILOG_DEBUG("Add position to pointer route.");
             prePointer_ = pointerIterm;
             mp.px_ = pointerIterm.GetDisplayX();
             mp.py_ = pointerIterm.GetDisplayY();
@@ -231,6 +232,7 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event
     if (isGestureStarted_) {
         if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
             (abs(pointerIterm.GetDisplayY() - prePointer_.GetDisplayY())) >= yMinPixels_) {
+            HILOG_DEBUG("Add position to pointer route.");
             mp.px_ = pointerIterm.GetDisplayX();
             mp.py_ = pointerIterm.GetDisplayY();
             pointerRoute_.push_back(mp);

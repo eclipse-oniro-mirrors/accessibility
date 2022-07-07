@@ -52,14 +52,14 @@ AccessibilityZoomGesture::AccessibilityZoomGesture(Rosen::DisplayId displayId)
     multiTapDistance_ = densityPixels * DOUBLE_TAP_SLOP + 0.5f;
 }
 
-void AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
+bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("state_ is %{public}d.", state_);
 
     int32_t sourceType = event.GetSourceType();
     if (sourceType != MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
         EventTransmission::OnPointerEvent(event);
-        return;
+        return false;
     }
 
     switch (state_) {
@@ -77,6 +77,7 @@ void AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)
         default:
             break;
     }
+    return true;
 }
 
 void AccessibilityZoomGesture::TransferState(ACCESSIBILITY_ZOOM_STATE state)
