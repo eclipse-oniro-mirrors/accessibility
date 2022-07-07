@@ -254,8 +254,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_006, TestSize.Level1
     point.SetPointerId(1);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(10);
-    otherPoint.SetGlobalY(10);
+    otherPoint.SetDisplayX(10);
+    otherPoint.SetDisplayY(10);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -308,12 +308,12 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_007, TestSize.Level1
     point.SetPointerId(1);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(10);
-    otherPoint.SetGlobalY(10);
+    otherPoint.SetDisplayX(10);
+    otherPoint.SetDisplayY(10);
     MMI::PointerEvent::PointerItem otherPoint1 = {};
     otherPoint1.SetPointerId(3);
-    otherPoint1.SetGlobalX(10);
-    otherPoint1.SetGlobalY(10);
+    otherPoint1.SetDisplayX(10);
+    otherPoint1.SetDisplayY(10);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -382,12 +382,12 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_009, TestSize.Level1
     point.SetPointerId(1);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(500);
-    otherPoint.SetGlobalY(500);
+    otherPoint.SetDisplayX(500);
+    otherPoint.SetDisplayY(500);
     MMI::PointerEvent::PointerItem otherPoint1 = {};
     otherPoint1.SetPointerId(3);
-    otherPoint1.SetGlobalX(500);
-    otherPoint1.SetGlobalY(500);
+    otherPoint1.SetDisplayX(500);
+    otherPoint1.SetDisplayY(500);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -436,8 +436,8 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_010, TestSize.Level1
     point.SetPointerId(1);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(10);
-    otherPoint.SetGlobalY(10);
+    otherPoint.SetDisplayX(10);
+    otherPoint.SetDisplayY(10);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -482,12 +482,12 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_011, TestSize.Level1
     point.SetPointerId(1);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(500);
-    otherPoint.SetGlobalY(500);
+    otherPoint.SetDisplayX(500);
+    otherPoint.SetDisplayY(500);
     MMI::PointerEvent::PointerItem otherPoint1 = {};
     otherPoint1.SetPointerId(3);
-    otherPoint1.SetGlobalX(500);
-    otherPoint1.SetGlobalY(500);
+    otherPoint1.SetDisplayX(500);
+    otherPoint1.SetDisplayY(500);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -533,12 +533,12 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_012, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(10);
-    point.SetGlobalY(10);
+    point.SetDisplayX(10);
+    point.SetDisplayY(10);
     MMI::PointerEvent::PointerItem otherPoint = {};
     otherPoint.SetPointerId(2);
-    otherPoint.SetGlobalX(50);
-    otherPoint.SetGlobalY(10);
+    otherPoint.SetDisplayX(50);
+    otherPoint.SetDisplayY(10);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -615,16 +615,16 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_014, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(500);
-    point.SetGlobalY(500);
+    point.SetDisplayX(500);
+    point.SetDisplayY(500);
     MMI::PointerEvent::PointerItem movepoint = {};
     movepoint.SetPointerId(1);
-    movepoint.SetGlobalX(2500);
-    movepoint.SetGlobalY(500);
+    movepoint.SetDisplayX(2500);
+    movepoint.SetDisplayY(500);
     MMI::PointerEvent::PointerItem othermovepoint = {};
     othermovepoint.SetPointerId(1);
-    othermovepoint.SetGlobalX(2500);
-    othermovepoint.SetGlobalY(750);
+    othermovepoint.SetDisplayX(2500);
+    othermovepoint.SetDisplayY(750);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -668,20 +668,20 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_015, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(3500);
-    movepoint1.SetGlobalY(2500);
+    movepoint1.SetDisplayX(3500);
+    movepoint1.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
     movepoint2.SetPointerId(1);
-    movepoint2.SetGlobalX(5000);
-    movepoint2.SetGlobalY(2500);
+    movepoint2.SetDisplayX(5000);
+    movepoint2.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint3 = {};
     movepoint3.SetPointerId(1);
-    movepoint3.SetGlobalX(4000);
-    movepoint3.SetGlobalY(0);
+    movepoint3.SetDisplayX(4000);
+    movepoint3.SetDisplayY(0);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -742,20 +742,20 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_016, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(1500);
-    movepoint1.SetGlobalY(2500);
+    movepoint1.SetDisplayX(1500);
+    movepoint1.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
     movepoint2.SetPointerId(1);
-    movepoint2.SetGlobalX(0);
-    movepoint2.SetGlobalY(2500);
+    movepoint2.SetDisplayX(0);
+    movepoint2.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint3 = {};
     movepoint3.SetPointerId(1);
-    movepoint3.SetGlobalX(1000);
-    movepoint3.SetGlobalY(0);
+    movepoint3.SetDisplayX(1000);
+    movepoint3.SetDisplayY(0);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -816,20 +816,20 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_017, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(2500);
-    movepoint1.SetGlobalY(3500);
+    movepoint1.SetDisplayX(2500);
+    movepoint1.SetDisplayY(3500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
     movepoint2.SetPointerId(1);
-    movepoint2.SetGlobalX(2500);
-    movepoint2.SetGlobalY(5000);
+    movepoint2.SetDisplayX(2500);
+    movepoint2.SetDisplayY(5000);
     MMI::PointerEvent::PointerItem movepoint3 = {};
     movepoint3.SetPointerId(1);
-    movepoint3.SetGlobalX(0);
-    movepoint3.SetGlobalY(4000);
+    movepoint3.SetDisplayX(0);
+    movepoint3.SetDisplayY(4000);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -890,20 +890,20 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_018, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(2500);
-    movepoint1.SetGlobalY(3500);
+    movepoint1.SetDisplayX(2500);
+    movepoint1.SetDisplayY(3500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
     movepoint2.SetPointerId(1);
-    movepoint2.SetGlobalX(2500);
-    movepoint2.SetGlobalY(5000);
+    movepoint2.SetDisplayX(2500);
+    movepoint2.SetDisplayY(5000);
     MMI::PointerEvent::PointerItem movepoint3 = {};
     movepoint3.SetPointerId(1);
-    movepoint3.SetGlobalX(5000);
-    movepoint3.SetGlobalY(4000);
+    movepoint3.SetDisplayX(5000);
+    movepoint3.SetDisplayY(4000);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -964,16 +964,16 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_019, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(1000);
-    movepoint1.SetGlobalY(2500);
+    movepoint1.SetDisplayX(1000);
+    movepoint1.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
     movepoint2.SetPointerId(1);
-    movepoint2.SetGlobalX(0);
-    movepoint2.SetGlobalY(2500);
+    movepoint2.SetDisplayX(0);
+    movepoint2.SetDisplayY(2500);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -1026,12 +1026,12 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnTouchEvent_020, TestSize.Level1
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
     point.SetPointerId(1);
-    point.SetGlobalX(2500);
-    point.SetGlobalY(2500);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
     movepoint1.SetPointerId(1);
-    movepoint1.SetGlobalX(2250);
-    movepoint1.SetGlobalY(2500);
+    movepoint1.SetDisplayX(2250);
+    movepoint1.SetDisplayY(2500);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
