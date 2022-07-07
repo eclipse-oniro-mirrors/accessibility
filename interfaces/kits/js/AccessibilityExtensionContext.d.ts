@@ -16,6 +16,7 @@
 import { Callback, AsyncCallback } from "../basic";
 import ExtensionContext from "./ExtensionContext";
 import accessibility from "../@ohos.accessibility";
+import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility";
 
 export default class AccessibilityExtensionContext extends ExtensionContext {
     setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<boolean>): boolean;
@@ -106,16 +107,6 @@ type ElementAttributeValues = {
 type FocusDirection = 'up' | 'down' | 'left' | 'right' | 'forward' | 'backward';
 
 type FocusType = 'accessibility' | 'normal';
-
-interface GesturePath {
-    positions: Array<GesturePos>;
-    durationTime: number;
-}
-
-interface GesturePos {
-    posX: number;
-    posY: number;
-}
 
 interface Rect {
     left: number;

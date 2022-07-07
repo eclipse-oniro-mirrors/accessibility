@@ -1030,7 +1030,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     return true;
 }
 
-static void ConvertGesturePathPositionJSToNAPI(
+static void ConvertGesturePointJSToNAPI(
     napi_env env, napi_value object, AccessibilityGesturePosition& gesturePathPosition)
 {
     HILOG_DEBUG();
@@ -1038,7 +1038,7 @@ static void ConvertGesturePathPositionJSToNAPI(
     bool hasProperty = false;
     double position = 0;
 
-    napi_create_string_utf8(env, "posX", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_create_string_utf8(env, "positionX", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value valueX = nullptr;
@@ -1047,7 +1047,7 @@ static void ConvertGesturePathPositionJSToNAPI(
         gesturePathPosition.positionX_ = static_cast<float>(position);
     }
 
-    napi_create_string_utf8(env, "posY", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_create_string_utf8(env, "positionY", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value valueY = nullptr;
@@ -1064,7 +1064,7 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
 
-    napi_create_string_utf8(env, "positions", NAPI_AUTO_LENGTH, &propertyNameValue);
+    napi_create_string_utf8(env, "points", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value positionValue = nullptr;
@@ -1087,7 +1087,7 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
                 HILOG_ERROR("get element of paths failed and i = %{public}d", i);
                 return;
             }
-            ConvertGesturePathPositionJSToNAPI(env, jsValue, path);
+            ConvertGesturePointJSToNAPI(env, jsValue, path);
             gesturePath->AddPosition(path);
         }
     }
