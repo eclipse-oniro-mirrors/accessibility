@@ -383,8 +383,8 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
         }
         MMI::PointerEvent::PointerItem item;
         event.GetPointerItem(pointerId, item);
-        sumX += static_cast<float>(item.GetGlobalX());
-        sumY += static_cast<float>(item.GetGlobalY());
+        sumX += static_cast<float>(item.GetDisplayX());
+        sumY += static_cast<float>(item.GetDisplayY());
     }
 
     coordinate.centerX = sumX / count;
@@ -421,8 +421,8 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
         }
         MMI::PointerEvent::PointerItem item;
         event.GetPointerItem(pointerId, item);
-        sumSpanX += static_cast<float>(abs(item.GetGlobalX() - coordinate.centerX));
-        sumSpanY += static_cast<float>(abs(item.GetGlobalY() - coordinate.centerY));
+        sumSpanX += static_cast<float>(abs(item.GetDisplayX() - coordinate.centerX));
+        sumSpanY += static_cast<float>(abs(item.GetDisplayY() - coordinate.centerY));
     }
 
     float spanX = sumSpanX / count;
@@ -512,8 +512,8 @@ float AccessibilityZoomGesture::CalcSeparationDistance(std::shared_ptr<MMI::Poin
     MMI::PointerEvent::PointerItem secondItem;
     firstEvent->GetPointerItem(firstEvent->GetPointerId(), firstItem);
     secondEvent->GetPointerItem(secondEvent->GetPointerId(), secondItem);
-    int32_t durationX = secondItem.GetGlobalX() - firstItem.GetGlobalX();
-    int32_t durationY = secondItem.GetGlobalY() - firstItem.GetGlobalY();
+    int32_t durationX = secondItem.GetDisplayX() - firstItem.GetDisplayX();
+    int32_t durationY = secondItem.GetDisplayY() - firstItem.GetDisplayY();
     float distance = static_cast<float>(hypot(durationX, durationY));
 
     return distance;
@@ -529,8 +529,8 @@ void AccessibilityZoomGesture::OnTripleTaps(MMI::PointerEvent &event)
             int32_t pointerId = event.GetPointerId();
             MMI::PointerEvent::PointerItem item;
             event.GetPointerItem(pointerId, item);
-            int32_t centerX = item.GetGlobalX();
-            int32_t centerY = item.GetGlobalY();
+            int32_t centerX = item.GetDisplayX();
+            int32_t centerY = item.GetDisplayY();
             zoomHandler_->OnZoomIn(centerX, centerY);
             break;
         }

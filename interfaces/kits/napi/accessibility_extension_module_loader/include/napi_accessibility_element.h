@@ -43,19 +43,9 @@ struct NAccessibilityElementData {
     std::map<std::string, std::string> actionArguments_;
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> nodeInfos_ {};
     OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
-    OHOS::Accessibility::Rect screenRect_ {};
-    OHOS::Accessibility::RangeInfo rangeInfo_ {};
-    OHOS::Accessibility::GridInfo gridInfo_ {};
-    OHOS::Accessibility::GridItemInfo gridItemInfo_ {};
-    std::vector<std::string> actionNames_ {};
-
-    std::vector<int32_t> childIds_;
-    std::vector<std::string> contents_;
-
-    std::string stringData_ = "";
-    bool boolData_ = false;
-    int32_t int32Data_ = -1;
-    bool ret_ = true;
+    std::string actionName_ = "";
+    std::string condition_ = "";
+    bool ret_ = false;
 };
 
 enum FindElementCondition {

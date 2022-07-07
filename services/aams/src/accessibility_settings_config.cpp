@@ -15,6 +15,7 @@
 
 #include "accessibility_settings_config.h"
 #include "hilog_wrapper.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -569,6 +570,7 @@ void AccessibilitySettingsConfig::Init()
     pref_ = NativePreferences::PreferencesHelper::GetPreferences(PREF_PATH + std::to_string(accountId_) + ".xml",
                                                                  errCode);
     if (errCode) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
         HILOG_ERROR("GetPreferences failed! account id (%{public}d), errCode(%{public}d).", accountId_, errCode);
         return;
     }

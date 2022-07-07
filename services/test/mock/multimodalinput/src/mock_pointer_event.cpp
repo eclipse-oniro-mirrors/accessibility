@@ -53,42 +53,42 @@ void PointerEvent::PointerItem::SetPressed(bool pressed)
     pressed_ = pressed;
 }
 
-int32_t PointerEvent::PointerItem::GetGlobalX() const
+int32_t PointerEvent::PointerItem::GetDisplayX() const
 {
     return globalX_;
 }
 
-void PointerEvent::PointerItem::SetGlobalX(int32_t x)
+void PointerEvent::PointerItem::SetDisplayX(int32_t x)
 {
     globalX_ = x;
 }
 
-int32_t PointerEvent::PointerItem::GetGlobalY() const
+int32_t PointerEvent::PointerItem::GetDisplayY() const
 {
     return globalY_;
 }
 
-void PointerEvent::PointerItem::SetGlobalY(int32_t y)
+void PointerEvent::PointerItem::SetDisplayY(int32_t y)
 {
     globalY_ = y;
 }
 
-int32_t PointerEvent::PointerItem::GetLocalX() const
+int32_t PointerEvent::PointerItem::GetWindowX() const
 {
     return localX_;
 }
 
-void PointerEvent::PointerItem::SetLocalX(int32_t x)
+void PointerEvent::PointerItem::SetWindowX(int32_t x)
 {
     localX_ = x;
 }
 
-int32_t PointerEvent::PointerItem::GetLocalY() const
+int32_t PointerEvent::PointerItem::GetWindowY() const
 {
     return localY_;
 }
 
-void PointerEvent::PointerItem::SetLocalY(int32_t y)
+void PointerEvent::PointerItem::SetWindowY(int32_t y)
 {
     localY_ = y;
 }

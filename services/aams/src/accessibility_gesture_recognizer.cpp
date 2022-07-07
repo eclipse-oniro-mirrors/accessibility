@@ -154,8 +154,8 @@ void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &eve
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_WARN("get GetPointerItem(%d) failed", event.GetPointerId());
     }
-    mp.px_ = static_cast<float>(pointerIterm.GetGlobalX());
-    mp.py_ = static_cast<float>(pointerIterm.GetGlobalY());
+    mp.px_ = static_cast<float>(pointerIterm.GetDisplayX());
+    mp.py_ = static_cast<float>(pointerIterm.GetDisplayY());
     isDoubleTap_ = false;
     isRecognizingGesture_ = true;
     isGestureStarted_ = false;
@@ -176,8 +176,8 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
     }
     int64_t eventTime = event.GetActionTime();
-    float offsetX = startPointer_.GetGlobalX() - pointerIterm.GetGlobalX();
-    float offsetY = startPointer_.GetGlobalY() - pointerIterm.GetGlobalY();
+    float offsetX = startPointer_.GetDisplayX() - pointerIterm.GetDisplayX();
+    float offsetY = startPointer_.GetDisplayY() - pointerIterm.GetDisplayY();
     double duration = hypot(offsetX, offsetY);
     if (isRecognizingGesture_) {
         if (duration > threshold_) {
@@ -201,12 +201,12 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
                 return listener_->OnCancelled(event);
             }
         }
-        if ((abs(pointerIterm.GetGlobalX() - prePointer_.GetGlobalX())) >= xMinPixels_ ||
-            (abs(pointerIterm.GetGlobalY() - prePointer_.GetGlobalY())) >= yMinPixels_) {
+        if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
+            (abs(pointerIterm.GetDisplayY() - prePointer_.GetDisplayY())) >= yMinPixels_) {
             HILOG_DEBUG("Add position to pointer route.");
             prePointer_ = pointerIterm;
-            mp.px_ = pointerIterm.GetGlobalX();
-            mp.py_ = pointerIterm.GetGlobalY();
+            mp.px_ = pointerIterm.GetDisplayX();
+            mp.py_ = pointerIterm.GetDisplayY();
             pointerRoute_.push_back(mp);
         }
     }
@@ -230,11 +230,11 @@ bool AccessibilityGestureRecognizer::HandleTouchUpEvent(MMI::PointerEvent &event
         return DoubleTapRecognized(event);
     }
     if (isGestureStarted_) {
-        if ((abs(pointerIterm.GetGlobalX() - prePointer_.GetGlobalX())) >= xMinPixels_ ||
-            (abs(pointerIterm.GetGlobalY() - prePointer_.GetGlobalY())) >= yMinPixels_) {
+        if ((abs(pointerIterm.GetDisplayX() - prePointer_.GetDisplayX())) >= xMinPixels_ ||
+            (abs(pointerIterm.GetDisplayY() - prePointer_.GetDisplayY())) >= yMinPixels_) {
             HILOG_DEBUG("Add position to pointer route.");
-            mp.px_ = pointerIterm.GetGlobalX();
-            mp.py_ = pointerIterm.GetGlobalY();
+            mp.px_ = pointerIterm.GetDisplayX();
+            mp.py_ = pointerIterm.GetDisplayY();
             pointerRoute_.push_back(mp);
         }
         return recognizeDirectionGesture(event);
@@ -431,8 +431,8 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
 
     MMI::PointerEvent::PointerItem firstPI;
     pCurDown_->GetPointerItem(pCurDown_->GetPointerId(), firstPI);
-    int32_t durationX = firstPI.GetGlobalX() - curPI.GetGlobalX();
-    int32_t durationY = firstPI.GetGlobalY() - curPI.GetGlobalY();
+    int32_t durationX = firstPI.GetDisplayX() - curPI.GetDisplayX();
+    int32_t durationY = firstPI.GetDisplayY() - curPI.GetDisplayY();
 
     return (durationX * durationX + durationY * durationY < doubleTapScaledSlop_);
 }
