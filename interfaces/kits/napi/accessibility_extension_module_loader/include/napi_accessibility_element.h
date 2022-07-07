@@ -35,6 +35,13 @@ struct AccessibilityElement {
     bool isElementInfo_ = true;
 };
 
+enum FindElementCondition {
+    FIND_ELEMENT_CONDITION_CONTENT,
+    FIND_ELEMENT_CONDITION_FOCUS_TYPE,
+    FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
+    FIND_ELEMENT_CONDITION_INVALID
+};
+
 struct NAccessibilityElementData {
     napi_async_work work_ {};
     napi_deferred deferred_ {};
@@ -44,16 +51,11 @@ struct NAccessibilityElementData {
     std::map<std::string, std::string> actionArguments_;
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> nodeInfos_ {};
     OHOS::Accessibility::AccessibilityElementInfo nodeInfo_ {};
+    FindElementCondition conditionId_ = FIND_ELEMENT_CONDITION_INVALID;
+    std::string attribute_ = "";
     std::string actionName_ = "";
     std::string condition_ = "";
     bool ret_ = false;
-};
-
-enum FindElementCondition {
-    FIND_ELEMENT_CONDITION_CONTENT,
-    FIND_ELEMENT_CONDITION_FOCUS_TYPE,
-    FIND_ELEMENT_CONDITION_FOCUS_DIRECTION,
-    FIND_ELEMENT_CONDITION_INVALID
 };
 
 class NAccessibilityElement {
@@ -74,147 +76,86 @@ public:
     static napi_value ErrorOperation(NAccessibilityElementData *callbackInfo);
 
     // Element info
-    static napi_value GetElementInfoComponentId(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoPageId(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoParentId(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoInspectorKey(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoBundleName(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoComponentType(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoInputType(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoText(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoHintText(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoDescription(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoResourceName(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoChildNodeIds(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoTextLengthLimit(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoRect(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoCheckable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoChecked(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoFocusable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsVisible(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoAccessibilityFocused(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoSelected(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoClickable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoLongClickable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsEnable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsPassword(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoScrollable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoEditable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoPopupSupported(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoPluralLineSupported(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoDeleteable(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsHint(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoItemCount(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoCurrentIndex(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoStartIndex(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoEndIndex(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoRangeInfo(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoGrid(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoGridItem(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoActiveRegion(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsContentInvalid(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoError(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoLabel(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoBeginSelected(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoEndSelected(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoParent(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoChildren(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoTriggerAction(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoContents(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoLastContent(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoWindowId(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo);
+    static void GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoPageId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoParentId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoInspectorKey(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoBundleName(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoComponentType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoInputType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoText(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoHintText(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoDescription(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoResourceName(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoChildNodeIds(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoTextLengthLimit(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoRect(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoCheckable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoChecked(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoFocusable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsVisible(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoAccessibilityFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoSelected(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoClickable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoLongClickable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsEnable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsPassword(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoScrollable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoEditable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoPopupSupported(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoPluralLineSupported(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoDeleteable(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsHint(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoItemCount(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoCurrentIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoStartIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoEndIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoRangeInfo(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoGrid(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoActiveRegion(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsContentInvalid(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoError(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoLabel(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoBeginSelected(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoEndSelected(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoParent(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoChildren(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoTriggerAction(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoContents(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoLastContent(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
-    static napi_value GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoScreenRect(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoLayer(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoType(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoAnchor(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo);
-    static napi_value GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo);
-
-    // Element info by condition
-    static napi_value GetElementInfoByContent(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoByFocusType(NAccessibilityElementData *callbackInfo);
-    static napi_value GetElementInfoByFocusDirection(NAccessibilityElementData *callbackInfo);
+    static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoScreenRect(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoLayer(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoType(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoAnchor(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     static thread_local napi_ref consRef_;
 private:
+    static void AttributeNamesComplete(napi_env env, napi_status status, void* data);
+    static void AttributeValueExecute(napi_env env, void* data);
+    static void AttributeValueComplete(napi_env env, napi_status status, void* data);
+    static void ActionNamesComplete(napi_env env, napi_status status, void* data);
+    static void PerformActionExecute(napi_env env, void* data);
+    static void PerformActionComplete(napi_env env, napi_status status, void* data);
+    static void FindElementExecute(napi_env env, void* data);
+    static void FindElementComplete(napi_env env, napi_status status, void* data);
+    static void GetElement(NAccessibilityElementData *callbackInfo, napi_value &value);
+
     static FindElementCondition ConvertStringToCondition(const std::string &str);
     static OHOS::Accessibility::FocusMoveDirection ConvertStringToDirection(const std::string &str);
     static int32_t ConvertStringToFocusType(const std::string &str);
 
     NAccessibilityElement() = default;
     ~NAccessibilityElement() = default;
-};
-
-typedef napi_value (*AttributeNamesFunc)(NAccessibilityElementData *callbackInfo);
-static std::map<std::string, AttributeNamesFunc> g_elementInfoFuncMap = {
-    {"componentId", &NAccessibilityElement::GetElementInfoComponentId},
-    {"pageId", &NAccessibilityElement::GetElementInfoPageId},
-    {"parentId", &NAccessibilityElement::GetElementInfoParentId},
-    {"inspectorKey", &NAccessibilityElement::GetElementInfoInspectorKey},
-    {"bundleName", &NAccessibilityElement::GetElementInfoBundleName},
-    {"componentType", &NAccessibilityElement::GetElementInfoComponentType},
-    {"inputType", &NAccessibilityElement::GetElementInfoInputType},
-    {"text", &NAccessibilityElement::GetElementInfoText},
-    {"hintText", &NAccessibilityElement::GetElementInfoHintText},
-    {"description", &NAccessibilityElement::GetElementInfoDescription},
-    {"resourceName", &NAccessibilityElement::GetElementInfoResourceName},
-    {"childNodeIds", &NAccessibilityElement::GetElementInfoChildNodeIds},
-    {"textLengthLimit", &NAccessibilityElement::GetElementInfoTextLengthLimit},
-    {"rect", &NAccessibilityElement::GetElementInfoRect},
-    {"checkable", &NAccessibilityElement::GetElementInfoCheckable},
-    {"checked", &NAccessibilityElement::GetElementInfoChecked},
-    {"focusable", &NAccessibilityElement::GetElementInfoFocusable},
-    {"isVisible", &NAccessibilityElement::GetElementInfoIsVisible},
-    {"accessibilityFocused", &NAccessibilityElement::GetElementInfoAccessibilityFocused},
-    {"selected", &NAccessibilityElement::GetElementInfoSelected},
-    {"clickable", &NAccessibilityElement::GetElementInfoClickable},
-    {"longClickable", &NAccessibilityElement::GetElementInfoLongClickable},
-    {"isEnable", &NAccessibilityElement::GetElementInfoIsEnable},
-    {"isPassword", &NAccessibilityElement::GetElementInfoIsPassword},
-    {"scrollable", &NAccessibilityElement::GetElementInfoScrollable},
-    {"editable", &NAccessibilityElement::GetElementInfoEditable},
-    {"popupSupported", &NAccessibilityElement::GetElementInfoPopupSupported},
-    {"pluralLineSupported", &NAccessibilityElement::GetElementInfoPluralLineSupported},
-    {"deleteable", &NAccessibilityElement::GetElementInfoDeleteable},
-    {"isHint", &NAccessibilityElement::GetElementInfoIsHint},
-    {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
-    {"itemCount", &NAccessibilityElement::GetElementInfoItemCount},
-    {"currentIndex", &NAccessibilityElement::GetElementInfoCurrentIndex},
-    {"startIndex", &NAccessibilityElement::GetElementInfoStartIndex},
-    {"endIndex", &NAccessibilityElement::GetElementInfoEndIndex},
-    {"rangeInfo", &NAccessibilityElement::GetElementInfoRangeInfo},
-    {"grid", &NAccessibilityElement::GetElementInfoGrid},
-    {"gridItem", &NAccessibilityElement::GetElementInfoGridItem},
-    {"activeRegion", &NAccessibilityElement::GetElementInfoActiveRegion},
-    {"isContentInvalid", &NAccessibilityElement::GetElementInfoIsContentInvalid},
-    {"error", &NAccessibilityElement::GetElementInfoError},
-    {"label", &NAccessibilityElement::GetElementInfoLabel},
-    {"beginSelected", &NAccessibilityElement::GetElementInfoBeginSelected},
-    {"endSelected", &NAccessibilityElement::GetElementInfoEndSelected},
-    {"textMoveUnit", &NAccessibilityElement::GetElementInfoTextMoveUnit},
-    {"parent", &NAccessibilityElement::GetElementInfoParent},
-    {"children", &NAccessibilityElement::GetElementInfoChildren},
-    {"triggerAction", &NAccessibilityElement::GetElementInfoTriggerAction},
-    {"contents", &NAccessibilityElement::GetElementInfoContents},
-    {"lastContent", &NAccessibilityElement::GetElementInfoLastContent},
-    {"windowId", &NAccessibilityElement::GetElementInfoWindowId},
-    {"isFocused", &NAccessibilityElement::GetElementInfoIsFocused},
-};
-static std::map<std::string, AttributeNamesFunc> g_windowInfomemberFuncMap = {
-    {"isActive", &NAccessibilityElement::GetWindowInfoIsActive},
-    {"screenRect", &NAccessibilityElement::GetWindowInfoScreenRect},
-    {"layer", &NAccessibilityElement::GetWindowInfoLayer},
-    {"type", &NAccessibilityElement::GetWindowInfoType},
-    {"anchor", &NAccessibilityElement::GetWindowInfoAnchor},
-    {"rootElement", &NAccessibilityElement::GetWindowInfoRootElement},
-    {"isFocused", &NAccessibilityElement::GetWindowInfoIsFocused},
-    {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
 };
 #endif // NAPI_ACCESSIBILITY_ELEMENT_H
