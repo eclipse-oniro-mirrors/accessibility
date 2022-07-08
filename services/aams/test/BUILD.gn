@@ -659,7 +659,6 @@ group("unittest") {
     ":accessibility_display_manager_test",
     ":accessibility_input_interceptor_test",
     ":accessibility_keyevent_filter_test",
-    ":accessibility_touch_guider_test",
     ":accessibility_touchevent_injector_test",
     ":accessibility_window_manager_test",
     ":accessible_ability_connection_test",
