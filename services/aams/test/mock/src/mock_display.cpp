@@ -14,7 +14,7 @@
  */
 
 #include "display.h"
-#include "windowmanager/utils/include/display_info.h"
+#include "window/window_manager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
 class Display::Impl : public RefBase {
