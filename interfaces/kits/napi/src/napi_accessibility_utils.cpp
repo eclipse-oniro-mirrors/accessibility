@@ -1030,7 +1030,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     return true;
 }
 
-static void ConvertGesturePointJSToNAPI(
+static bool ConvertGesturePointJSToNAPI(
     napi_env env, napi_value object, AccessibilityGesturePosition& gesturePathPosition)
 {
     HILOG_DEBUG();
@@ -1045,6 +1045,8 @@ static void ConvertGesturePointJSToNAPI(
         napi_get_property(env, object, propertyNameValue, &valueX);
         napi_get_value_double(env, valueX, &position);
         gesturePathPosition.positionX_ = static_cast<float>(position);
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "positionY", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1054,7 +1056,10 @@ static void ConvertGesturePointJSToNAPI(
         napi_get_property(env, object, propertyNameValue, &valueY);
         napi_get_value_double(env, valueY, &position);
         gesturePathPosition.positionY_ = static_cast<float>(position);
+    } else {
+        return false;
     }
+    return true;
 }
 
 static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
@@ -1087,8 +1092,10 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
                 HILOG_ERROR("get element of paths failed and i = %{public}d", i);
                 return;
             }
-            ConvertGesturePointJSToNAPI(env, jsValue, path);
-            gesturePath->AddPosition(path);
+            bool result = ConvertGesturePointJSToNAPI(env, jsValue, path);
+            if (result) {
+                gesturePath->AddPosition(path);
+            }
         }
     }
 

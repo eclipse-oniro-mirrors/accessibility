@@ -359,7 +359,7 @@ void TouchGuider::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(const Ac
 
 void TouchGuider::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded, const int32_t requestId)
 {
-    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    HILOG_DEBUG("Response [result:%{public}d, requestId:%{public}d]", succeeded, requestId);
     executeActionResult_ = succeeded;
     promise_.set_value();
 }
