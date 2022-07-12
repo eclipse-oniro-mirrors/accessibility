@@ -55,42 +55,42 @@ void PointerEvent::PointerItem::SetPressed(bool pressed)
 
 int32_t PointerEvent::PointerItem::GetDisplayX() const
 {
-    return globalX_;
+    return displayX_;
 }
 
 void PointerEvent::PointerItem::SetDisplayX(int32_t x)
 {
-    globalX_ = x;
+    displayX_ = x;
 }
 
 int32_t PointerEvent::PointerItem::GetDisplayY() const
 {
-    return globalY_;
+    return displayY_;
 }
 
 void PointerEvent::PointerItem::SetDisplayY(int32_t y)
 {
-    globalY_ = y;
+    displayY_ = y;
 }
 
 int32_t PointerEvent::PointerItem::GetWindowX() const
 {
-    return localX_;
+    return windowX_;
 }
 
 void PointerEvent::PointerItem::SetWindowX(int32_t x)
 {
-    localX_ = x;
+    windowX_ = x;
 }
 
 int32_t PointerEvent::PointerItem::GetWindowY() const
 {
-    return localY_;
+    return windowY_;
 }
 
 void PointerEvent::PointerItem::SetWindowY(int32_t y)
 {
-    localY_ = y;
+    windowY_ = y;
 }
 
 int32_t PointerEvent::PointerItem::GetWidth() const
