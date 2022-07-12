@@ -104,7 +104,8 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     }
 
     if (!deathRecipient_) {
-        deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(accountData_, elementName_);
+        deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(
+            accountData_, elementName_, eventHandler_);
         if (!deathRecipient_) {
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                 A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
@@ -357,31 +358,35 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_A11Y_APPLICATION_DISCONNECT_ABNORMALLY,
         recipientElementName_.GetBundleName(), recipientElementName_.GetAbilityName());
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!recipientAccountData_) {
-        HILOG_ERROR("recipientAccountData_ is null.");
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr");
         return;
     }
+    handler_->PostTask(std::bind([=]() -> void {
+        HILOG_DEBUG();
+        if (!recipientAccountData_) {
+            HILOG_ERROR("recipientAccountData_ is null.");
+            return;
+        }
 
-    std::string uri = Utils::GetUri(recipientElementName_);
-    sptr<AccessibleAbilityConnection> connection = recipientAccountData_->GetAccessibleAbilityConnection(uri);
-    if (!connection) {
-        HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
-        return;
-    }
-    recipientAccountData_->RemoveConnectedAbility(connection);
-    recipientAccountData_->RemoveEnabledAbility(Utils::GetUri(recipientElementName_));
+        std::string uri = Utils::GetUri(recipientElementName_);
+        sptr<AccessibleAbilityConnection> connection = recipientAccountData_->GetAccessibleAbilityConnection(uri);
+        if (!connection) {
+            HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
+            return;
+        }
+        recipientAccountData_->RemoveConnectedAbility(connection);
+        recipientAccountData_->RemoveEnabledAbility(Utils::GetUri(recipientElementName_));
 
-    std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
-    if (uri == uiTestUri) {
-        recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
-    }
+        std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
+        if (uri == uiTestUri) {
+            recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
+        }
 
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    aams.UpdateAbilities();
-    aams.UpdateAccessibilityManagerService();
-    // Temp deal: notify setting
+        auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+        aams.UpdateAbilities();
+        aams.UpdateAccessibilityManagerService();
+        }), "OnRemoteDied");
 }
 } // namespace Accessibility
 } // namespace OHOS

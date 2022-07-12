@@ -996,57 +996,69 @@ void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilte
 
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()) {
+        HILOG_ERROR("handler is nullptr");
         return;
     }
-    remote->RemoveDeathRecipient(this);
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveStateCallback(remote);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()->PostTask(std::bind([=]() -> void {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(this);
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->RemoveStateCallback(remote);
+        }), "OnRemoteDied");
 }
 
 void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()) {
+        HILOG_ERROR("handler is nullptr");
         return;
     }
-    remote->RemoveDeathRecipient(this);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()->PostTask(std::bind([=]() -> void {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(this);
 
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveCaptionPropertyCallback(remote);
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->RemoveCaptionPropertyCallback(remote);
+        }), "OnRemoteDied");
 }
 
 void AccessibleAbilityManagerService::EnableAbilityListsObserverDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()) {
+        HILOG_ERROR("handler is nullptr");
         return;
     }
-    remote->RemoveDeathRecipient(this);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()->PostTask(std::bind([=]() -> void {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(this);
 
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveEnableAbilityListsObserver(remote);
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->RemoveEnableAbilityListsObserver(remote);
+        }), "OnRemoteDied");
 }
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
@@ -2171,20 +2183,24 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
 void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
+    if (!Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()) {
+        HILOG_ERROR("handler is nullptr");
         return;
     }
-    remote->RemoveDeathRecipient(this);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler()->PostTask(std::bind([=]() -> void {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(this);
 
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveConfigCallback(remote);
+        auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        accountData->RemoveConfigCallback(remote);
+        }), "OnRemoteDied");
 }
 
 void AccessibleAbilityManagerService::UpdateConfigState()
