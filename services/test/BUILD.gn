@@ -57,10 +57,10 @@ config("module_private_config") {
     "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
     "//foundation/multimedia/image_standard/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
-    "//foundation/windowmanager/dm/include",
-    "//foundation/windowmanager/interfaces/innerkits/dm",
-    "//foundation/windowmanager/interfaces/innerkits/wm",
-    "//foundation/windowmanager/utils/include",
+    "//foundation/window/window_manager/dm/include",
+    "//foundation/window/window_manager/interfaces/innerkits/dm",
+    "//foundation/window/window_manager/interfaces/innerkits/wm",
+    "//foundation/window/window_manager/utils/include",
     "//third_party/json/include",
     "//third_party/jsoncpp/include",
     "//third_party/jsoncpp/include/json",
@@ -133,7 +133,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
@@ -156,7 +156,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 
@@ -215,7 +215,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
@@ -238,7 +238,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 
@@ -303,7 +303,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
@@ -326,7 +326,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 
@@ -389,7 +389,7 @@ ohos_moduletest("aams_server_test") {
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
@@ -412,7 +412,7 @@ ohos_moduletest("aams_server_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 
@@ -469,7 +469,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
@@ -492,7 +492,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 
@@ -555,7 +555,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/utils:libwmutil",
+    "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
   ]
@@ -577,7 +577,7 @@ ohos_moduletest("aams_common_event_registry_test") {
 
   public_deps = [
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
-    "//foundation/windowmanager/wm:libwm",
+    "//foundation/window/window_manager/wm:libwm",
   ]
 }
 

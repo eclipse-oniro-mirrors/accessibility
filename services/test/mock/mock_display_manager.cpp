@@ -18,7 +18,7 @@
 #include "display.h"
 #include "dm_common.h"
 #include "singleton_delegator.h"
-#include "windowmanager/utils/include/display_info.h"
+#include "window/window_manager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
 WM_IMPLEMENT_SINGLE_INSTANCE(DisplayManager)
