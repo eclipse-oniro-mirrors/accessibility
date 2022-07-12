@@ -75,17 +75,17 @@ void PointerEvent::PointerItem::SetDisplayY(int32_t y)
 
 int32_t PointerEvent::PointerItem::GetWindowX() const
 {
-    return windowX_ ;
+    return windowX_;
 }
 
 void PointerEvent::PointerItem::SetWindowX(int32_t x)
 {
-    windowX_  = x;
+    windowX_ = x;
 }
 
 int32_t PointerEvent::PointerItem::GetWindowY() const
 {
-    return  windowY_;
+    return windowY_;
 }
 
 void PointerEvent::PointerItem::SetWindowY(int32_t y)
