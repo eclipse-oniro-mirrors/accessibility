@@ -251,7 +251,7 @@ void AccessibilityAccountData::RemoveEnabledFromPref(const std::string &name)
     config_->UpdateEnabledAbilities(vecvalue);
 }
 
-void AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
+bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
@@ -260,10 +260,11 @@ void AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
             enabledAbilities_.erase(it);
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
-            return;
+            return true;
         }
     }
     HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
+    return false;
 }
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
