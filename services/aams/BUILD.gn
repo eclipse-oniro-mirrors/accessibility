@@ -45,7 +45,6 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_settings_config.cpp",
   "${services_path}/src/accessibility_window_connection.cpp",
   "${services_path}/src/accessibility_zoom_gesture.cpp",
-  "${services_path}/src/accessibility_zoom_handler.cpp",
   "${services_path}/src/accessibility_common_event.cpp",
   "${services_path}/src/accessibility_touch_guider.cpp",
   "${services_path}/src/accessibility_gesture_recognizer.cpp",

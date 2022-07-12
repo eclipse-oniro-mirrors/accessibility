@@ -16,6 +16,7 @@
 #include "accessibility_zoom_gesture.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
+#include "window_accessibility_controller.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -25,17 +26,17 @@ namespace {
     constexpr int32_t MULTI_TAP_TIMER = 300; // ms
     constexpr int32_t LONG_PRESS_TIMER = 500; // ms
     constexpr int64_t US_TO_MS = 1000;
-    constexpr float MIN_SCALE_SPAN = 27.0f; // 27mm
+    constexpr float MIN_SCALE_SPAN = 26.0f; // 27mm
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
     constexpr float HALF = 0.5f;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
+    constexpr float DEFAULT_SCALE = 2.0f;
 } // namespace
 
-AccessibilityZoomGesture::AccessibilityZoomGesture(Rosen::DisplayId displayId)
+AccessibilityZoomGesture::AccessibilityZoomGesture()
 {
     HILOG_DEBUG();
 
-    zoomHandler_ = std::make_shared<AccessibilityZoomHandler>(displayId);
     zoomGestureEventHandler_ = std::make_shared<ZoomGestureEventHandler>(
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner(), *this);
 
@@ -290,7 +291,7 @@ void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
             if ((abs(offsetX) > 1) || (abs(offsetY) > 1)) {
                 lastScrollFocusX_ = coordinate.centerX;
                 lastScrollFocusY_ = coordinate.centerY;
-                zoomHandler_->OnScroll(offsetX, offsetY);
+                OnScroll(offsetX, offsetY);
             }
             break;
         }
@@ -349,7 +350,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
     lastSpan_ = span;
     float ratio = lastSpan_ / preSpan_;
     if (ratio != 1) {
-        zoomHandler_->OnScale(ratio, focusXY.centerX, focusXY.centerY);
+        OnScale(ratio, focusXY.centerX, focusXY.centerY);
         preSpan_ = lastSpan_;
     }
 }
@@ -529,14 +530,14 @@ void AccessibilityZoomGesture::OnTripleTaps(MMI::PointerEvent &event)
             int32_t pointerId = event.GetPointerId();
             MMI::PointerEvent::PointerItem item;
             event.GetPointerItem(pointerId, item);
-            int32_t centerX = item.GetDisplayX();
-            int32_t centerY = item.GetDisplayY();
-            zoomHandler_->OnZoomIn(centerX, centerY);
+            int32_t anchorX = item.GetDisplayX();
+            int32_t anchorY = item.GetDisplayY();
+            OnZoom(anchorX, anchorY);
             break;
         }
         case ZOOMIN_STATE:
             TransferState(READY_STATE);
-            zoomHandler_->OnZoomOut();
+            OffZoom();
             break;
         default:
             break;
@@ -565,6 +566,36 @@ void AccessibilityZoomGesture::ZoomGestureEventHandler::ProcessEvent(const AppEx
         default:
             break;
     }
+}
+
+void AccessibilityZoomGesture::OnZoom(int32_t anchorX, int32_t anchorY)
+{
+    HILOG_DEBUG("anchorX:%{public}d, anchorY:%{public}d.", anchorX, anchorY);
+
+    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorAndScale(anchorX, anchorY, DEFAULT_SCALE);
+}
+
+void AccessibilityZoomGesture::OffZoom()
+{
+    HILOG_DEBUG();
+
+    OHOS::Rosen::WindowAccessibilityController::GetInstance().OffWindowZoom();
+}
+
+void AccessibilityZoomGesture::OnScroll(float offsetX, float offsetY)
+{
+    HILOG_DEBUG("offsetX:%{public}f, offsetY:%{public}f.", offsetX, offsetY);
+
+    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorOffset(
+        static_cast<int32_t>(offsetX), static_cast<int32_t>(offsetY));
+}
+
+void AccessibilityZoomGesture::OnScale(float scaleRatio, float focusX, float focusY)
+{
+    HILOG_DEBUG("scaleRatio:%{public}f, focusX:%{public}f, focusY:%{public}f.", scaleRatio, focusX, focusY);
+
+    OHOS::Rosen::WindowAccessibilityController::GetInstance().SetAnchorAndScale(
+        static_cast<int32_t>(focusX), static_cast<int32_t>(focusY), scaleRatio);
 }
 } // namespace Accessibility
 } // namespace OHOS
