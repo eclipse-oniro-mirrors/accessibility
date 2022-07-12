@@ -264,6 +264,19 @@ public:
     virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
     /**
+     * @brief Set cache mode.
+     *        The mode is used for functions: GetRoot, GetRootByWindow, GetChildElementInfo,
+     *        GetChildren, GetAnchor, GetSource, GetParentElementInfo.
+     * @param cacheMode The cache mode. It includes:
+     *             PREFETCH_PREDECESSORS: cache the parent node info also.
+     *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
+     *             PREFETCH_CHILDREN: cache the child node info also.
+     *             otherwise: no cache.
+     * @return Return true if sets target bundle names successfully, else return false.
+     */
+    virtual void SetCacheMode(const int32_t cacheMode) override;
+
+    /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
      * @return
@@ -289,12 +302,18 @@ private:
      * @return
      */
     void DispatchGestureInjectResult(uint32_t sequence, bool result);
+    bool GetCacheElementInfo(const int32_t windowId, const int32_t elementId, AccessibilityElementInfo &elementInfo);
+    void SetCacheElementInfo(const int32_t windowId,
+        std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
     std::map<uint32_t, std::shared_ptr<AccessibilityGestureResultListener>> gestureResultListenerInfos_;
+    int32_t cacheMode_ = 0;
+    int32_t cacheWindowId_ = -1;
+    std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
 };
 } // namespace Accessibility
 } // namespace OHOS
