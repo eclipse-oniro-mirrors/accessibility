@@ -90,7 +90,7 @@ int32_t PointerEvent::PointerItem::GetWindowY() const
 
 void PointerEvent::PointerItem::SetWindowY(int32_t y)
 {
-     windowY_ = y;
+    windowY_ = y;
 }
 
 int32_t PointerEvent::PointerItem::GetWidth() const
