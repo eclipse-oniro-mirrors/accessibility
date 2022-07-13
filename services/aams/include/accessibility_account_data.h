@@ -133,9 +133,9 @@ public:
     /**
      * @brief Remove accessibility that have been opened.
      * @param name bundle name + / + ability name.
-     * @return
+     * @return return true if removes enabled ability successfully, else return false.
      */
-    void RemoveEnabledAbility(const std::string &name);
+    bool RemoveEnabledAbility(const std::string &name);
 
     void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo); // For UT
 

@@ -773,7 +773,10 @@ bool AccessibleAbilityManagerService::InnerDisableAbility(const std::string &nam
         HILOG_ERROR("accountData is nullptr");
         return false;
     }
-    accountData->RemoveEnabledAbility(name);
+    if (!accountData->RemoveEnabledAbility(name)) {
+        HILOG_ERROR("RemoveEnabledAbility failed");
+        return false;
+    }
     UpdateAbilities();
     return true;
 }
