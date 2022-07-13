@@ -348,6 +348,10 @@ bool AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elemen
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
+    if (direction == DIRECTION_INVALID) {
+        HILOG_ERROR("direction is invalid.");
+        return false;
+    }
     return channelClient_->FocusMoveSearch(elementInfo.GetWindowId(),
         elementInfo.GetAccessibilityId(), direction, nextElementInfo);
 }
@@ -502,6 +506,10 @@ bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &
     HILOG_DEBUG();
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
+        return false;
+    }
+    if (action == ACCESSIBILITY_ACTION_INVALID) {
+        HILOG_ERROR("action is invalid.");
         return false;
     }
     int32_t channelId = elementInfo.GetChannelId();

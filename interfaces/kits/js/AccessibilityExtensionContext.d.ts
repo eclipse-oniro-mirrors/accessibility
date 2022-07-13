@@ -43,12 +43,27 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
 
 declare interface AccessibilityElement {
     attributeNames<T extends keyof ElementAttributeValues>(): Promise<Array<T>>;
+    attributeNames<T extends keyof ElementAttributeValues>(callback: AsyncCallback<Array<T>>): void;
+
     attributeValue<T extends keyof ElementAttributeValues>(attributeName: T): Promise<ElementAttributeValues[T]>;
+    attributeValue<T extends keyof ElementAttributeValues>(attributeName: T,
+        callback: AsyncCallback<ElementAttributeValues[T]>): void;
+
     actionNames(): Promise<Array<string>>;
-    performAction(actionName: string, args?: object): Promise<boolean>;
+    actionNames(callback: AsyncCallback<Array<string>>): void;
+
+    performAction(actionName: string, parameters?: object): Promise<boolean>;
+    performAction(actionName: string, callback: AsyncCallback<boolean>): void;
+    performAction(actionName: string, parameters: object, callback: AsyncCallback<boolean>): void;
+
     findElement(type: 'content', condition: string): Promise<Array<AccessibilityElement>>;
+    findElement(type: 'content', condition: string, callback: AsyncCallback<Array<AccessibilityElement>>): void
+
     findElement(type: 'focusType', condition: FocusType): Promise<AccessibilityElement>;
+    findElement(type: 'focusType', condition: FocusType, callback: AsyncCallback<AccessibilityElement>): void
+
     findElement(type: 'focusDirection', condition: FocusDirection): Promise<AccessibilityElement>;
+    findElement(type: 'focusDirection', condition: FocusDirection, callback: AsyncCallback<AccessibilityElement>): void
 }
 
 type ElementAttributeValues = {
