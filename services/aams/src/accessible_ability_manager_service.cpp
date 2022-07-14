@@ -999,57 +999,20 @@ void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilte
 
 void AccessibleAbilityManagerService::StateCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
-        return;
-    }
-    remote->RemoveDeathRecipient(this);
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveStateCallback(remote);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(STATE_CALLBACK, this, remote);
 }
 
 void AccessibleAbilityManagerService::CaptionPropertyCallbackDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
-        return;
-    }
-    remote->RemoveDeathRecipient(this);
-
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveCaptionPropertyCallback(remote);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(CAPTION_PROPERTY_CALLBACK, this, remote);
 }
 
 void AccessibleAbilityManagerService::EnableAbilityListsObserverDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
-        return;
-    }
-    remote->RemoveDeathRecipient(this);
-
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveEnableAbilityListsObserver(remote);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(
+        ENABLE_ABILITY_LISTS_CALLBACK, this, remote);
 }
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
@@ -2174,20 +2137,7 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
 void AccessibleAbilityManagerService::ConfigCallbackDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!remote.GetRefPtr()) {
-        HILOG_ERROR("remote is null");
-        return;
-    }
-    remote->RemoveDeathRecipient(this);
-
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("Current account data is null");
-        return;
-    }
-    accountData->RemoveConfigCallback(remote);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemoveCallback(CONFIG_CALLBACK, this, remote);
 }
 
 void AccessibleAbilityManagerService::UpdateConfigState()
@@ -2321,6 +2271,45 @@ void AccessibleAbilityManagerService::UpdateShortkeyTarget()
             }
         }
         }), "UpdateShortkeyTarget");
+}
+
+void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
+    const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote)
+{
+    HILOG_INFO("remove callback[%{public}d]", callback);
+    if (!handler_) {
+        HILOG_ERROR("handler is nullptr");
+        return;
+    }
+    handler_->PostTask(std::bind([=]() -> void {
+        if (!remote.GetRefPtr()) {
+            HILOG_ERROR("remote is null");
+            return;
+        }
+        remote->RemoveDeathRecipient(recipient);
+
+        auto accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Current account data is null");
+            return;
+        }
+        switch (callback) {
+            case STATE_CALLBACK:
+                accountData->RemoveStateCallback(remote);
+                break;
+            case CAPTION_PROPERTY_CALLBACK:
+                accountData->RemoveCaptionPropertyCallback(remote);
+                break;
+            case ENABLE_ABILITY_LISTS_CALLBACK:
+                accountData->RemoveEnableAbilityListsObserver(remote);
+                break;
+            case CONFIG_CALLBACK:
+                accountData->RemoveConfigCallback(remote);
+                break;
+            default:
+                break;
+        }
+        }), "RemoveCallback");
 }
 } // namespace Accessibility
 } // namespace OHOS
