@@ -287,7 +287,7 @@ bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent &event)
             server_.OnTouchInteractionEnd();
             server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
-                event.GetPointersIdList().size() == POINTER_COUNT_1) {
+                event.GetPointerIds().size() == POINTER_COUNT_1) {
                 server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
             }
             server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
@@ -310,7 +310,7 @@ bool TouchGuider::TouchGuideListener::TransformToSingleTap(MMI::PointerEvent &ev
 {
     HILOG_DEBUG();
 
-    std::vector<int32_t> pointerIds = event.GetPointersIdList();
+    std::vector<int32_t> pointerIds = event.GetPointerIds();
     for (auto &pId : pointerIds) {
         event.RemovePointerItem(pId);
     }
@@ -370,7 +370,7 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchGuidingStateInnerDown(event);
             } else {
                 CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
@@ -381,7 +381,7 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
             HandleTouchGuidingStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 OnTouchInteractionEnd();
                 if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                     PostHoverExit();
@@ -404,7 +404,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 Clear(event);
             } else {
                 currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
@@ -416,7 +416,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent &event)
             HandleDraggingStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 OnTouchInteractionEnd();
                 SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
                 SendEventToMultimodal(event, NO_CHANGE);
@@ -436,12 +436,12 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 Clear(event);
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 if (longPressPointId_ >= 0) {
                     // Adjust this event's location.
                     MMI::PointerEvent::PointerItem pointer = {};
@@ -544,7 +544,7 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     std::shared_ptr<MMI::PointerEvent> lastInjectEvent = injectedRecorder_.lastHoverEvent;
-    switch (event.GetPointersIdList().size()) {
+    switch (event.GetPointerIds().size()) {
         case POINTER_COUNT_1:
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                 pointerEvents_.push_back(event);
@@ -580,7 +580,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    std::vector<int32_t> pIds = event.GetPointersIdList();
+    std::vector<int32_t> pIds = event.GetPointerIds();
     int32_t pointCount = pIds.size();
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
@@ -634,7 +634,7 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    std::vector<int32_t> pIds = event.GetPointersIdList();
+    std::vector<int32_t> pIds = event.GetPointerIds();
     MMI::PointerEvent::PointerItem pointerF = {};
     MMI::PointerEvent::PointerItem pointerS = {};
     if (!event.GetPointerItem(pIds[0], pointerF)) {
@@ -747,7 +747,7 @@ void TouchGuider::SendAllDownEvents(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    std::vector<int32_t> pIds = event.GetPointersIdList();
+    std::vector<int32_t> pIds = event.GetPointerIds();
     for (auto& pId : pIds) {
         if (!(injectedRecorder_.downPointers & (1 << pId))) {
             event.SetPointerId(pId);
@@ -760,7 +760,7 @@ void TouchGuider::SendUpForAllInjectedEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    std::vector<int32_t> pIds = event.GetPointersIdList();
+    std::vector<int32_t> pIds = event.GetPointerIds();
     for (auto& pId : pIds) {
         if (!(injectedRecorder_.downPointers & (1 << pId))) {
             continue;

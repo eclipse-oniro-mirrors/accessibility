@@ -92,7 +92,7 @@ void AccessibilityZoomGesture::CacheEvents(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointersIdList().size();
+    size_t pointerCount = event.GetPointerIds().size();
     std::shared_ptr<MMI::PointerEvent> pointerEvent = std::make_shared<MMI::PointerEvent>(event);
 
     switch (action) {
@@ -162,7 +162,7 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointersIdList().size();
+    size_t pointerCount = event.GetPointerIds().size();
     bool isTripleTaps = false;
 
     switch (action) {
@@ -198,7 +198,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointersIdList().size();
+    size_t pointerCount = event.GetPointerIds().size();
     bool isTripleTaps = false;
 
     switch (action) {
@@ -251,7 +251,7 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointersIdList().size();
+    size_t pointerCount = event.GetPointerIds().size();
 
     // Recognize scroll and zoom gestures.
     RecognizeScroll(event);
@@ -308,7 +308,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
     HILOG_DEBUG();
 
     int32_t action = event.GetPointerAction();
-    size_t pointerCount = event.GetPointersIdList().size();
+    size_t pointerCount = event.GetPointerIds().size();
     if (((action == MMI::PointerEvent::POINTER_ACTION_UP) && (pointerCount == POINTER_COUNT_1)) ||
         (action == MMI::PointerEvent::POINTER_ACTION_CANCEL)) {
         startScaling_ = false;
@@ -362,7 +362,7 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
     float sumY = 0.0f;
     int32_t upPointerId = -1;
     int32_t action = event.GetPointerAction();
-    std::vector<int32_t> pointerIdList = event.GetPointersIdList();
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t count = pointerIdList.size();
     if (!count) {
         return;
@@ -400,7 +400,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
     float sumSpanY = 0.0f;
     int32_t upPointerId = -1;
     int32_t action = event.GetPointerAction();
-    std::vector<int32_t> pointerIdList = event.GetPointersIdList();
+    std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t count = pointerIdList.size();
     if (!count) {
         return span;
