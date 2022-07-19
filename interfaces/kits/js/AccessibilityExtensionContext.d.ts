@@ -128,6 +128,7 @@ declare interface AccessibilityElement {
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  */
 type ElementAttributeValues = {
+    'parentId': number;
     'accessibilityFocused': boolean;
     /**
      * Indicates the bundle name to which it belongs.
