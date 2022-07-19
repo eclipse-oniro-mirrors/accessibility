@@ -78,7 +78,8 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
     return winType;
 }
 
-AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo)
+AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
+    const sptr<Rosen::WindowInfo> windowInfo)
 {
     (void)windowInfo;
     AccessibilityWindowInfo info;

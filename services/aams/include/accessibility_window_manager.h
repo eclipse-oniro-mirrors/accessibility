@@ -29,7 +29,9 @@ class AccessibilityWindowManager {
     DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
     bool Init();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo);
+    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::WindowInfo> windowInfo);
+    static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
+        const sptr<Rosen::WindowInfo> windowInfo);
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
