@@ -27,8 +27,15 @@ struct AccessibilityGesturePosition {
 
 class AccessibilityGestureInjectPath {
 public:
-    AccessibilityGestureInjectPath() {}
-    ~AccessibilityGestureInjectPath() {}
+    /**
+     * @brief The constructor of AccessibilityGestureInjectPath
+     */
+    AccessibilityGestureInjectPath() = default;
+
+    /**
+     * @brief The deconstructor of AccessibilityGestureInjectPath
+     */
+    ~AccessibilityGestureInjectPath() = default;
 
     /**
      * @brief Obtains the duration in which this gesture path continues.

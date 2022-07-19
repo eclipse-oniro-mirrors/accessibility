@@ -52,7 +52,7 @@ public:
     /**
      * @brief Gets the action description.
      * @param -
-     * @return he description message of action.
+     * @return The description message of action.
      */
     const std::string &GetDescriptionInfo() const;
 
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Gets the current value.
      * @param
-     * @return
+     * @return current value.
      */
     int32_t GetCurrent() const;
 
@@ -164,7 +164,7 @@ public:
      * @param rowCount The number of row
      * @param columnCount The number of column
      * @param mode 0: select one line only, otherwise select multilines.
-     * @return grid object
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -173,7 +173,7 @@ public:
     /**
      * @brief Copy grid object.
      * @param other The copied grid
-     * @return grid object
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -229,8 +229,8 @@ public:
      * @param rowSpan  The row spanned.
      * @param columnIndex The index of column
      * @param columnSpan THe column spanned
-     * @param heading true: The item isHeading, otherwise is not
-     * @param selected true: The item is selected,otherwise is not
+     * @param heading true:The item isHeading, otherwise is not
+     * @param selected true:The item is selected,otherwise is not
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -241,7 +241,7 @@ public:
     /**
      * @brief Copy the GridItemInfo
      * @param other The object of GridItemInfo copied.
-     * @return GridItemInfo object
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -253,9 +253,9 @@ public:
      * @param rowSpan  The row spanned.
      * @param columnIndex The index of column
      * @param columnSpan THe column spanned
-     * @param heading true: The item isHeading, otherwise is not
-     * @param selected true: The item is selected,otherwise is not
-     * @return GridItemInfo object
+     * @param heading true:The item isHeading, otherwise is not
+     * @param selected true:The item is selected,otherwise is not
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -301,7 +301,7 @@ public:
     /**
      * @brief Checks if the grid item is a heading.
      * @param
-     * @return true: If the item is a heading, otherwise is not.
+     * @return true:If the item is a heading, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -310,7 +310,7 @@ public:
     /**
      * @brief Checks if the grid item is a selected.
      * @param
-     * @return true: If the item is a selected, otherwise is not.
+     * @return true:If the item is a selected, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -412,8 +412,8 @@ public:
     }
     /**
      * @brief Set the left top point's pixel coordinates
-     * @param leftTopX(out) The left top x pixel coordinates
-     * @param leftTopY(out) The left top y pixel coordinates
+     * @param leftTopX The left top x pixel coordinates
+     * @param leftTopY The left top y pixel coordinates
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -425,9 +425,9 @@ public:
     }
 
     /**
-     * @brief Get the right bottom point's pixel coordinates
-     * @param rightBottomX(out) The right bottom x pixel coordinates
-     * @param rightBottomY(out) The right bottom y pixel coordinates
+     * @brief Set the right bottom point's pixel coordinates
+     * @param rightBottomX The right bottom x pixel coordinates
+     * @param rightBottomY The right bottom y pixel coordinates
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -463,7 +463,7 @@ public:
     AccessibilityElementInfo();
 
     /**
-     * @brief Set the AccessibilityElementInfo
+     * @brief Set the id of AccessibilityElementInfo
      * @param componentId The id of component.
      * @return
      * @since 3
@@ -472,9 +472,9 @@ public:
     void SetComponentId(const int32_t componentId);
 
     /**
-     * @brief Get the childe accessibility Id by index.
+     * @brief Get the child's accessibility Id by index.
      * @param index The index of child
-     * @return accessibility Id
+     * @return The child's accessibility Id
      * @since 3
      * @sysCap Accessibility
      */
@@ -509,8 +509,8 @@ public:
 
     /**
      * @brief Remove child specified.
-     * @param childId Remove child
-     * @return true: Removed succeed, otherwise is not.
+     * @param childId The child to removed.
+     * @return true:Removed succeed, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -519,7 +519,7 @@ public:
     /**
      * @brief Gets an action list.
      * @param -
-     * @return action list.  Refer to ActionType
+     * @return action list.  Refer to AccessibleAction
      * @since 3
      * @sysCap Accessibility
      */
@@ -546,7 +546,7 @@ public:
     /**
      * @brief Remove the action on the component.
      * @param actionType The action type.
-     * @return
+     * @return true:successfully deleted, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -580,7 +580,7 @@ public:
     int32_t GetTextLengthLimit() const;
 
     /**
-     * @brief Get the window Id of the component is belongs to the window.
+     * @brief Get the window Id of the component that belongs to the window.
      * @param
      * @return window id
      * @since 3
@@ -589,8 +589,8 @@ public:
     int32_t GetWindowId() const;
 
     /**
-     * @brief Set the window Id of the component is belongs to the window.
-     * @param windowId
+     * @brief Set the window Id of the component that belongs to the window.
+     * @param windowId The window Id
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -598,16 +598,16 @@ public:
     void SetWindowId(const int32_t windowId);
 
     /**
-     * @brief Get Parent accessibility Id.
+     * @brief Get parent accessibility Id.
      * @param
-     * @return accessibility Id.
+     * @return The accessibility Id of parent.
      * @since 3
      * @sysCap Accessibility
      */
     int32_t GetParentNodeId() const;
 
     /**
-     * @brief Set Parent node information
+     * @brief Set parent node information
      * @param parentId Parent node id
      * @return
      * @since 3
@@ -636,16 +636,16 @@ public:
     /**
      * @brief Checks whether this node (a check box as an example) is checkable.
      * @param
-     * @return whether this node (a check box as an example) is checkable.
+     * @return true:the node is checkable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
     bool IsCheckable() const;
 
     /**
-     * @brief Set  whether this node (a check box as an example) is checkable.
-     * @param
-     * @return true : Is checkable, otherwise is not.
+     * @brief Set whether this node (a check box as an example) is checkable.
+     * @param checkable true:the node is checkable, otherwise is not.
+     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -662,7 +662,7 @@ public:
 
     /**
      * @brief Set whether this node is checked.
-     * @param checked true : Is checked, otherwise is not.
+     * @param checked true:Is checked, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -690,7 +690,7 @@ public:
     /**
      * @brief Checks whether this node has gained focus.
      * @param
-     * @return true : Focused, otherwise is not.
+     * @return true:Focused, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -716,7 +716,7 @@ public:
 
     /**
      * @brief Set whether this node is visible to users.
-     * @param visible true : visible, otherwise is not.
+     * @param visible true:visible, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -726,7 +726,7 @@ public:
     /**
      * @brief Checks whether this node has gained accessibility focus.
      * @param
-     * @return true : Gained accessibility focus, otherwise is not.
+     * @return true:Gained accessibility focus, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -734,7 +734,7 @@ public:
 
     /**
      * @brief Set whether this node has gained accessibility focus.
-     * @param focused true : Gained accessibility focus, otherwise is not.
+     * @param focused true:Gained accessibility focus, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -744,7 +744,7 @@ public:
     /**
      * @brief Checks whether this node is selected.
      * @param
-     * @return true: selected, otherwise is not.
+     * @return true:selected, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -770,7 +770,7 @@ public:
 
     /**
      * @brief Set whether this node is clickable.
-     * @param clickable true: clickable, otherwise is not.
+     * @param clickable true:clickable, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -798,7 +798,7 @@ public:
     /**
      * @brief Checks whether this node is enabled.
      * @param
-     * @return true: enabled, otherwise is not.
+     * @return true:enabled, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -824,7 +824,7 @@ public:
 
     /**
      * @brief Set whether the content in this node is a password
-     * @param type true: password, otherwise is not.
+     * @param type true:password, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -852,7 +852,7 @@ public:
     /**
      * @brief Checks whether this node is editable.
      * @param
-     * @return true: editable, otherwise is not.
+     * @return true:editable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -878,7 +878,7 @@ public:
 
     /**
      * @brief Set whether this node can display text in multiple lines.
-     * @param multiLine true: multilines, otherwise is not.
+     * @param multiLine true:multilines, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -906,7 +906,7 @@ public:
     /**
      * @brief Checks whether this node is deletable.
      * @param
-     * @return true: deletable, otherwise is not.
+     * @return true:deletable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -914,7 +914,7 @@ public:
 
     /**
      * @brief Set whether this node is deletable.
-     * @param deletable true: deletable, otherwise is not.
+     * @param deletable true:deletable, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -932,7 +932,7 @@ public:
 
     /**
      * @brief Set whether this node is essential to users.
-     * @param essential true: essential to user, otherwise is not.
+     * @param essential true:essential to user, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -942,7 +942,7 @@ public:
     /**
      * @brief Checks whether this node is displaying a hint.
      * @param
-     * @return true: displaying a hint, otherwise is not.
+     * @return true:displaying a hint, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -950,7 +950,7 @@ public:
 
     /**
      * @brief Set whether this node is displaying a hint.
-     * @param hinting true: displaying a hint, otherwise is not.
+     * @param hinting true:displaying a hint, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -976,17 +976,17 @@ public:
     void SetBundleName(const std::string &bundleName);
 
     /**
-     * @brief Gets the class name.
+     * @brief Get component type.
      * @param
-     * @return class name.
+     * @return The component type.
      * @since 3
      * @sysCap Accessibility
      */
     const std::string &GetComponentType() const;
 
     /**
-     * @brief Sets the class name.
-     * @param className class name.
+     * @brief Set component type.
+     * @param className The component type.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1073,10 +1073,11 @@ public:
      * @sysCap Accessibility
      */
     void SetLiveRegion(const int32_t liveRegion);
+
     /**
-     * @brief Get whether this node has live region
+     * @brief Get the live region of the node
      * @param
-     * @return live region
+     * @return The live region of the node
      * @since 3
      * @sysCap Accessibility
      */
@@ -1086,7 +1087,7 @@ public:
      * @brief Set whether this node has content Invalid.
      * @note If the node has content Invalid,when input invalid information, it will be talkbacked. such as:
      * The editbox permit number only, you input character("a"), The invalid information will be talkbacked.
-     * @param contentInvalid content Invalid
+     * @param contentInvalid true:the content is invalid; false:the content is valid
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1096,7 +1097,7 @@ public:
     /**
      * @brief Get whether this node has content Invalid.
      * @param
-     * @return true Is setted content invalid, otherwise is not.
+     * @return true:the content is invalid; false:the content is valid
      * @since 3
      * @sysCap Accessibility
      */
@@ -1114,7 +1115,7 @@ public:
     /**
      * @brief Get error information,it used with contentInvalid is setted true.
      * @param
-     * @return
+     * @return error information
      * @since 3
      * @sysCap Accessibility
      */
@@ -1150,7 +1151,6 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel
      * @param channelId The id of the IAccessibleAbilityChannel
-     * @param
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1158,7 +1158,7 @@ public:
     void SetChannelId(const int32_t channelId);
 
     /**
-     * @brief  Set accessibility Id
+     * @brief Set accessibility Id
      * @param componentId The id of component
      * @return
      * @since 3
@@ -1195,7 +1195,7 @@ public:
 
     /**
      * @brief Set the start location of text selected.
-     * @param start the end location of text selected.
+     * @param start the start location of text selected.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1284,7 +1284,7 @@ public:
     void SetCurrentIndex(const int32_t index);
 
     /**
-     * @brief  Get the start index of list or location text
+     * @brief Get the start index of list or location text
      * @param
      * @return the start index of list or location text
      * @since 3
@@ -1293,7 +1293,7 @@ public:
     int32_t GetBeginIndex() const;
 
     /**
-     * @brief  Set the start index of list or location text
+     * @brief Set the start index of list or location text
      * @param index the start index of list or location text
      * @return
      * @since 3
@@ -1338,9 +1338,9 @@ public:
     void SetInputType(const int32_t inputType);
 
     /**
-     * @brief Checks whether this node is valid
+     * @brief Check whether this node is valid
      * @param
-     * @return true: valid, otherwise is not.
+     * @return true:valid, otherwise is not.
      * @since 3
      * @sysCap Accessibility
      */
@@ -1348,7 +1348,7 @@ public:
 
     /**
      * @brief Set whether this node is valid
-     * @param valid true: valid, otherwise is not.
+     * @param valid true:valid, otherwise is not.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -1356,42 +1356,117 @@ public:
     void SetValidElement(const bool valid);
 
     /**
-     * @brief Set InspectorKey
-     * @param inspector key.
+     * @brief Set inspector key
+     * @param inspector The inspector key.
      * @since 3
      * @sysCap Accessibility
      */
     void SetInspectorKey(const std::string &key);
 
     /**
-     * @brief Get InspectorKey
-     * @return inspector key
+     * @brief Get inspector key
+     * @return The inspector key
      * @since 3
      * @sysCap Accessibility
      */
     const std::string &GetInspectorKey() const;
 
-    int32_t GetPageId() const;
-
+    /**
+     * @brief Set page id
+     * @param pageId page id.
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetPageId(const int32_t pageId);
 
+    /**
+     * @brief Get page id
+     * @return page id
+     * @sysCap Accessibility
+     */
+    int32_t GetPageId() const;
+
+    /**
+     * @brief Set the text movement step
+     * @param granularity text moving unit
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetTextMovementStep(const TextMoveUnit granularity);
 
+    /**
+     * @brief Get the text movement step
+     * @param -
+     * @return Text moving unit
+     * @sysCap Accessibility
+     */
     TextMoveUnit GetTextMovementStep() const;
 
+    /**
+     * @brief Set item count
+     * @param itemCounts The count of item
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetItemCounts(const int32_t itemCounts);
 
+    /**
+     * @brief Get item count
+     * @param -
+     * @return The count of item
+     * @sysCap Accessibility
+     */
     int32_t GetItemCounts() const;
 
     // The following methods are only used when the target application uses
     // the sendEvent interface to send event data.
+    /**
+     * @brief Set trigger action
+     * @param action The trigger action
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetTriggerAction(const ActionType action);
+
+    /**
+     * @brief Get trigger action
+     * @param -
+     * @return The trigger action
+     * @sysCap Accessibility
+     */
     ActionType GetTriggerAction() const;
 
+    /**
+     * @brief Set content list
+     * @param contentList The list of content
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetContentList(const std::vector<std::string> &contentList);
+
+    /**
+     * @brief Get content list
+     * @param contentList Outgoing parameter
+     *                    The list of content
+     * @return -
+     * @sysCap Accessibility
+     */
     void GetContentList(std::vector<std::string> &contentList) const;
 
+    /**
+     * @brief Set latest content
+     * @param content The latest content
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetLatestContent(const std::string &content);
+
+    /**
+     * @brief Get latest content
+     * @param -
+     * @return The latest content
+     * @sysCap Accessibility
+     */
     const std::string &GetLatestContent() const;
 
 protected:

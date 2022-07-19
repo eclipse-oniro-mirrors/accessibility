@@ -58,12 +58,11 @@ public:
 
     /**
      * @brief Queries the list of accessibility abilities.
-     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
-     *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
+     * @param accessibilityAbilityTypes Indicates the accessibility type specified by AccessibilityAbilityTypes.
      * @param stateType Indicates the accessibility ability status.
      *                  1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled;
-     *                  4 indicates that the ability has been installed.
+     *                  3 indicates that the ability has been installed.
      * @param infos accessibility ability infos by specified types.
      * @return Return true if get ability lists successfully, else return false.
      */
@@ -71,7 +70,7 @@ public:
         std::vector<AccessibilityAbilityInfo> &infos) = 0;
 
     /**
-     * @brief Register the interaction operation, so the AA can get node info from ACE.
+     * @brief Register the element operator, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
      * @return 0: Succeed ; otherwise is failed.
@@ -80,7 +79,7 @@ public:
         const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation) = 0;
 
     /**
-     * @brief Deregister the interaction operation.
+     * @brief Deregister the element operator.
      * @param windowId Window ID
      * @return
      */

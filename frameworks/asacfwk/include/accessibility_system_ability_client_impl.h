@@ -41,7 +41,7 @@ public:
     ~AccessibilitySystemAbilityClientImpl();
 
     /**
-     * @brief Register the interaction operation, so the AA can get node info from ACE.
+     * @brief Register the element operator, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
      * @return 0: Succeed ; otherwise is failed.
@@ -50,7 +50,7 @@ public:
         const std::shared_ptr<AccessibilityElementOperator> &operation) override;
 
     /**
-     * @brief Deregister the interaction operation.
+     * @brief Deregister the element operator.
      * @param windowId Window ID
      * @return
      */
@@ -72,12 +72,11 @@ public:
 
     /**
      * @brief Queries the list of accessibility abilities.
-     * @param accessibilityAbilityTypes Indicates the accessibility type specified by
-     *                                  AccessibilityAbilityInfo#ACCESSIBILITY_ABILITY_TYPE_SPOKEN.
+     * @param accessibilityAbilityTypes Indicates the accessibility type specified by AccessibilityAbilityTypes.
      * @param stateType Indicates the accessibility ability status.
      *                  1 indicates that the ability is enabled;
      *                  2 indicates that the ability is disabled;
-     *                  4 indicates that the ability has been installed.
+     *                  3 indicates that the ability has been installed.
      * @param infos accessibility ability infos by specified types.
      * @return Return true if get ability lists successfully, else return false.
      */
@@ -103,9 +102,7 @@ public:
      * @brief Subscribes to the specified type of accessibility status change events.
      * @param observer Indicates the observer for listening to status events, which is specified
      *              by AccessibilityStateObserver.
-     * @param eventType Indicates the status type, which is specified by AccessibilityStateEvent
-     *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
-     *              #EVENT_SCREEN_MAGNIFIER_CHANGED and EVENT_AUTO_CLICK_CHANGED and #EVENT_SHORT_KEY_CHANGED
+     * @param eventType Indicates the status type, which is specified by AccessibilityStateEventType.
      * @return true: send ok; otherwise is refused.
      */
     virtual bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
@@ -114,9 +111,7 @@ public:
     /**
      * @brief Unsubscribe the specified type of accessibility status change events.
      * @param observer Indicates the registered accessibility status event observer.
-     * @param eventType Indicates the status type, which is specified by AccessibilityStateEvent
-     *              #EVENT_ACCESSIBILITY_STATE_CHANGED and AccessibilityStateEvent#EVENT_TOUCH_BROWSE_STATE_CHANGED
-     *              #EVENT_SCREEN_MAGNIFIER_CHANGED and EVENT_AUTO_CLICK_CHANGED and #EVENT_SHORT_KEY_CHANGED
+     * @param eventType Indicates the status type, which is specified by AccessibilityStateEventType.
      * @return true: send ok; otherwise is refused.
      */
     virtual bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,

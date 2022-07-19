@@ -51,7 +51,7 @@ public:
     /**
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
-     * @return
+     * @return Return true if the key event has been consumed, else return return false.
      */
     virtual bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) = 0;
 };

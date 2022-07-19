@@ -87,17 +87,17 @@ public:
     int32_t GetAnchorId() const;
 
     /**
-     * @brief Get the widnow id of current window.
+     * @brief Get the window id of current window.
      * @param -
-     * @return The widnow id of current window.
+     * @return The window id of current window.
      * @since 3
      * @sysCap Accessibility
      */
     int32_t GetWindowId() const;
 
     /**
-     * @brief Set the widnow id of current window.
-     * @param id The widnow id of current window.
+     * @brief Set the window id of current window.
+     * @param id The window id of current window.
      * @return
      * @since 3
      * @sysCap Accessibility
@@ -209,16 +209,50 @@ public:
      */
     uint64_t GetDisplayId() const;
 
+    /**
+     * @brief Get window type
+     * @return The type of window. Refer to [OHOS::Rosen::WindowType].
+     * @sysCap Accessibility
+     */
     uint32_t GetWindowType() const;
 
+    /**
+     * @brief Set window type
+     * @param type The type of window. Refer to [OHOS::Rosen::WindowType].
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetWindowType(const uint32_t type);
 
+    /**
+     * @brief Get window mode
+     * @return The mode of window. Refer to [OHOS::Rosen::WindowMode].
+     * @sysCap Accessibility
+     */
     uint32_t GetWindowMode() const;
 
+    /**
+     * @brief Set window mode
+     * @param mode The mode of window. Refer to [OHOS::Rosen::WindowMode].
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetWindowMode(const uint32_t mode);
 
+    /**
+     * @brief Get whether the decoration state is enabled
+     * @param -
+     * @return true:the decoration is enabled; false:the decoration is disabled
+     * @sysCap Accessibility
+     */
     bool IsDecorEnable() const;
 
+    /**
+     * @brief Set the decoration state
+     * @param isDecorEnable true:enable decoration; false:disable decoration
+     * @return -
+     * @sysCap Accessibility
+     */
     void SetDecorEnable(const bool isDecorEnable);
 
 protected:
