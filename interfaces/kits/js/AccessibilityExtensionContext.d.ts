@@ -71,7 +71,6 @@ type ElementAttributeValues = {
     /*     element info     */
     /************************/
     'componentId': number;  //The id of the view which the node in.
-    'parentId': number; 
     'inspectorKey': string
     'bundleName': string; //The bundle name.
     'componentType': string;  //The type of the event source component,such as button, chart.
