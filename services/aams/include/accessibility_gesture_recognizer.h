@@ -30,7 +30,7 @@
 namespace OHOS {
 namespace Accessibility {
 const int64_t GESTURE_STARTED_TIME_THRESHOLD = 300000; // microsecond
-const int64_t GESTURE_NOT_STARTED_TIME_THRESHOLD = 150000; // microsecond
+const int64_t GESTURE_NOT_STARTED_TIME_THRESHOLD = 200000; // microsecond
 const float DOUBLE_TAP_SLOP = 100.0f;
 const int64_t MIN_DOUBLE_TAP_TIME = 40000; // microsecond
 const int64_t DOUBLE_TAP_TIMEOUT = 300000; // microsecond
@@ -38,7 +38,7 @@ const int64_t LONG_PRESS_TIMEOUT = 400000; // microsecond
 const float DEGREES_THRESHOLD = 0.0f;
 const int32_t DIRECTION_NUM = 4;
 const int64_t US_TO_MS = 1000;
-#define CALCULATION_DIMENSION(xdpi) ((xdpi) * (1.0f / 25.4f) * 10)
+#define CALCULATION_DIMENSION(xdpi) ((xdpi) * 0.25f)
 #define MIN_PIXELS(xyDpi) ((xyDpi) * 0.1f)
 
 struct Pointer {
