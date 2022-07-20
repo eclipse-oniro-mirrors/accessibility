@@ -35,9 +35,9 @@ public:
     virtual ~AccessibilityUITestAbility() = default;
 
     /**
-     * @brief Gets an instance of AccessibleAbility.
+     * @brief Gets an instance of AccessibilityUITestAbility.
      * @param
-     * @return Return an instance of AccessibleAbility.
+     * @return Return an instance of AccessibilityUITestAbility.
      */
     static std::shared_ptr<AccessibilityUITestAbility> GetInstance();
 
@@ -146,7 +146,7 @@ public:
         AccessibilityElementInfo &nextElementInfo) = 0;
 
     /**
-     * @brief Get the child node information by childId
+     * @brief Get the child node information by child index.
      * @param index The index of the child.
      * @param parent The parent info to get child.
      * @param child The element info of child.
@@ -156,10 +156,10 @@ public:
         AccessibilityElementInfo &child) = 0;
 
     /**
-     * @brief Get the child node information
-     * @param parent The parent info to get child.
+     * @brief Get the children node information
+     * @param parent The parent info to get children.
      * @param children The element info of children.
-     * @return Return true if gets child elementInfo successfully, else return false.
+     * @return Return true if gets children elementInfo successfully, else return false.
      */
     virtual bool GetChildren(const AccessibilityElementInfo &parent,
         std::vector<AccessibilityElementInfo> &children) = 0;

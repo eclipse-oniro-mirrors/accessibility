@@ -22,27 +22,105 @@ namespace OHOS {
 namespace AccessibilityConfig {
 class CaptionProperty {
 public:
+    /**
+     * @brief The constructor of CaptionProperty
+     */
     CaptionProperty() = default;
+
+    /**
+     * @brief The deconstructor of CaptionProperty
+     */
     ~CaptionProperty() = default;
 
+    /**
+     * @brief Check property
+     * @param property The value of property
+     * @return -
+     */
     bool CheckProperty(const std::string &property);
 
+    /**
+     * @brief Set font family
+     * @param family Font family
+     * @return -
+     */
     void SetFontFamily(const std::string &family);
+
+    /**
+     * @brief Get font family
+     * @param -
+     * @return Font family
+     */
     const std::string &GetFontFamily() const;
 
-    int32_t GetFontScale() const;
+    /**
+     * @brief Set font scale
+     * @param scale Font scale
+     * @return -
+     */
     void SetFontScale(int32_t scale);
 
+    /**
+     * @brief Get font scale
+     * @param -
+     * @return Font scale
+     */
+    int32_t GetFontScale() const;
+
+    /**
+     * @brief Set font color
+     * @param color Font color
+     * @return -
+     */
     void SetFontColor(uint32_t color);
+
+    /**
+     * @brief Get font color
+     * @param -
+     * @return Font color
+     */
     uint32_t GetFontColor() const;
 
+    /**
+     * @brief Set font edge type
+     * @param type The type of font edge
+     * @return -
+     */
     void SetFontEdgeType(const std::string &type);
+
+    /**
+     * @brief Get font edge type
+     * @param -
+     * @return The type of font edge
+     */
     const std::string &GetFontEdgeType() const;
 
+    /**
+     * @brief Set window color
+     * @param color The color of window
+     * @return -
+     */
     void SetWindowColor(uint32_t color);
+
+    /**
+     * @brief Get window color
+     * @param -
+     * @return The color of window
+     */
     uint32_t GetWindowColor() const;
 
+    /**
+     * @brief Set background color
+     * @param color The color of background
+     * @return -
+     */
     void SetBackgroundColor(uint32_t color);
+
+    /**
+     * @brief Get background color
+     * @param -
+     * @return The color of background
+     */
     uint32_t GetBackgroundColor() const;
 
 protected:
@@ -68,18 +146,22 @@ enum CaptionObserverType : int32_t {
 class CaptionObserver {
 public:
     /**
-     * @brief Destruct
-     * @param
-     * @return
+     * @brief The deconstructor of CaptionObserver
      */
     virtual ~CaptionObserver() = default;
 
     /**
-     * @brief Called when the caption property changed.
-     * @param caption current caption property.
-     * @return
+     * @brief Called when the accessibility state changed.
+     * @param enable true:the accessibility state is enabled;false:the accessibility state is disabled
+     * @return -
      */
     virtual void OnStateChanged(const bool& enable) = 0;
+
+    /**
+     * @brief Called when the caption property changed.
+     * @param caption current caption property.
+     * @return -
+     */
     virtual void OnPropertyChanged(const CaptionProperty& caption) = 0;
 };
 } // namespace Accessibility

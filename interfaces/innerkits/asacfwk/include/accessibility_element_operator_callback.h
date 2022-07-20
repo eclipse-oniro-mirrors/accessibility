@@ -35,7 +35,7 @@ public:
 
     /**
      * @brief Set the element information by accessibility id to AA.
-     * @param infos The element info searched by accessibility id.
+     * @param infos The element information searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
      * @return
      */
