@@ -33,9 +33,18 @@ public:
         return helper;
     }
 
-    std::vector<int> GetTouchEventActionVector()
+    std::vector<int32_t> GetTouchEventActionVector()
     {
         return touchAction_;
+    }
+
+    int32_t GetTouchEventActionOfTargetIndex(int32_t index)
+    {
+        int32_t size = static_cast<int32_t>(touchAction_.size());
+        if (size > index) {
+            return touchAction_[index];
+        }
+        return -1;
     }
 
     void ClearTouchEventActionVector()
@@ -43,7 +52,7 @@ public:
         touchAction_.clear();
     }
 
-    void SetTouchEventActionVectors(int touchAction)
+    void SetTouchEventActionVectors(int32_t touchAction)
     {
         touchAction_.push_back(touchAction);
     }
@@ -141,6 +150,15 @@ public:
     std::vector<EventType> GetEventTypeVector()
     {
         return eventType_;
+    }
+
+    EventType GetEventTypeOfTargetIndex(int32_t index)
+    {
+        int32_t size = static_cast<int32_t>(eventType_.size());
+        if (size > index) {
+            return eventType_[index];
+        }
+        return TYPE_VIEW_INVALID;
     }
 
     void ClearEventTypeActionVector()
@@ -273,7 +291,7 @@ public:
     static const int32_t accountId_ = 100;
 
 private:
-    std::vector<int> touchAction_;
+    std::vector<int32_t> touchAction_;
     bool isDestroyEvents_ = false;
     bool isClearEvents_ = false;
     int testElementId_ = -1;
