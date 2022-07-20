@@ -59,7 +59,6 @@ ohos_unittest("asac_unit_test") {
   sources = [
     "../src/accessibility_element_operator_impl.cpp",
     "../src/accessibility_system_ability_client_impl.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/asacfwk/test/mock/src/mock_accessible_ability_manager_service.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_constants.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
@@ -72,6 +71,7 @@ ohos_unittest("asac_unit_test") {
     "//foundation/barrierfree/accessibility/services/aams/src/accessibility_window_manager.cpp",
     "//foundation/barrierfree/accessibility/services/aams/src/accessible_ability_manager_service_event_handler.cpp",
     "//foundation/barrierfree/accessibility/services/aams/src/utils.cpp",
+    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service.cpp",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_os_account_manager.cpp",
