@@ -64,8 +64,6 @@ void AccessibilityWindowManagerTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     AccessibilityAbilityHelper::GetInstance().ClearSendEventTimes();
 }
 
