@@ -220,9 +220,9 @@ public:
     void AddContent(const std::string &content);
 
     /**
-     * @brief Gets the content list in the event.
+     * @brief Get the content list in the event.
      * @param -
-     * @return Returns the content list in the event.
+     * @return The content list in the event.
      * @since 3
      * @sysCap Accessibility
      */
@@ -239,7 +239,7 @@ public:
 
     /**
      * @brief Sets the last content of the component.
-     * @param content Indicates the last content to set for the component.
+     * @param content The last content of component.
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -319,7 +319,6 @@ public:
 
     /**
      * @brief Gets the number of accessibility records.
-     * @note It is same to getCount​()
      * @param -
      * @return The number of the records that describe the information of current event
      * @since 3
@@ -339,8 +338,7 @@ public:
 
     /**
      * @brief Adds an accessibility record to describe the information of the current event.
-     * @note It is same to addRecord​(AccessibilityEventInfo eventInfo)
-     * @param record The records that describe the information of current event
+     * @param record The record that describe the information of current event
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -350,27 +348,27 @@ public:
     /**
      * @brief Get the record by index.
      * @note Remained
-     * @param
-     * @return Returns true when the specified record is found, otherwise returns false.
+     * @param index The index of the record
+     * @param eventInfo(out) Information of the specified record
+     * @return Return true when the specified record is found, otherwise returns false.
      * @since 3
      * @sysCap Accessibility
      */
     bool GetRecord(const int32_t index, AccessibilityEventInfo &eventInfo) const; // remained
 
     /**
-     * @brief Gets the accessibility record list.
+     * @brief Get the accessibility record list.
      * @param
-     * @return
+     * @return The accessibility record list
      * @since 3
      * @sysCap Accessibility
      */
     const std::vector<AccessibilityEventInfo> &GetRecords() const;
 
     /**
-     * @brief Gets the type of an accessibility event.
-     * @note It is same to the getAccessibilityEventType​()
+     * @brief Get the type of the accessibility event.
      * @param -
-     * @return The type of an accessibility event.
+     * @return The type of the accessibility event.
      * @since 3
      * @sysCap Accessibility
      */
@@ -433,7 +431,7 @@ public:
 
     /**
      * @brief ASAC set the time of accessibility is sent to AA
-     * @param The time of accessibility event is sent from ASAC
+     * @param timeStamp The time of accessibility event is sent from ASAC
      * @return -
      * @since 3
      * @sysCap Accessibility
@@ -488,7 +486,7 @@ public:
     /**
      * @brief Get the move granularity of the text
      * @param -
-     * @return he move granularity of the text. Refer to "AccessibilityElementInfo.TextMoveUnit"
+     * @return The move granularity of the text. Refer to "AccessibilityElementInfo.TextMoveUnit"
      * @since 3
      * @sysCap Accessibility
      */
@@ -564,7 +562,6 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-
     int32_t GetPageId() const;
 
 protected:

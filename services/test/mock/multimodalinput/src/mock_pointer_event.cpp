@@ -217,7 +217,7 @@ void PointerEvent::AddPointerItem(PointerItem& pointerItem)
     pointers_.push_back(pointerItem);
 }
 
-std::vector<int32_t> PointerEvent::GetPointersIdList() const
+std::vector<int32_t> PointerEvent::GetPointerIds() const
 {
     std::vector<int32_t> pointerIdList;
 

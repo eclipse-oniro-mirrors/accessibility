@@ -32,7 +32,6 @@ class AccessibilityElementOperatorCallbackImpl : public AccessibilityElementOper
 public:
     /**
      * @brief construct function
-     * @param promise The promise of execution
      * @return
      */
     AccessibilityElementOperatorCallbackImpl() = default;

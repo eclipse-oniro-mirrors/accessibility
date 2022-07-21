@@ -25,50 +25,26 @@ bool EventTransmission::OnPointerEvent(MMI::PointerEvent& event)
     HILOG_DEBUG();
     int32_t touchAction = event.GetPointerAction();
     AccessibilityAbilityHelper::GetInstance().SetTouchEventActionVectors(touchAction);
-    GTEST_LOG_(INFO) << "##########EventTransmission OnPointerEvent touchAction=" << (int32_t)touchAction;
-    auto next = GetNext();
-    if (next != nullptr) {
-        return next->OnPointerEvent(event);
-    }
+    GTEST_LOG_(INFO) << "##########EventTransmission OnPointerEvent touchAction=" << touchAction;
     return false;
 }
 
 bool EventTransmission::OnKeyEvent(MMI::KeyEvent& event)
 {
     (void)event;
-    HILOG_DEBUG();
     return false;
 }
 
 void EventTransmission::OnMoveMouse(int32_t offsetX, int32_t offsetY)
 {
-    HILOG_DEBUG();
-
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->OnMoveMouse(offsetX, offsetY);
-    }
+    (void)offsetX;
+    (void)offsetY;
 }
 
 void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo& event)
 {
     (void)event;
     GTEST_LOG_(INFO) << "##########EventTransmission OnAccessibilityEvent event=" << (int32_t)(event.GetGestureType());
-    HILOG_DEBUG();
-}
-
-void EventTransmission::SetNext(const sptr<EventTransmission>& next)
-{
-    HILOG_DEBUG();
-
-    next_ = next;
-}
-
-sptr<EventTransmission> EventTransmission::GetNext()
-{
-    HILOG_DEBUG();
-
-    return next_;
 }
 
 void EventTransmission::ClearEvents(uint32_t inputSource)

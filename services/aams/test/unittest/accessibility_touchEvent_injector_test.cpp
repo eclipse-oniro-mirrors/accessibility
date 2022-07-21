@@ -48,7 +48,6 @@ protected:
     sptr<IAccessibleAbilityClient> service = nullptr;
     MMI::PointerEvent CreateTouchEvent(int32_t action);
     int32_t pointId_ = -1;
-    std::vector<int32_t> touchAction;
     bool isClearEvents_ = false;
     bool isDestroyEvents_ = false;
 };
@@ -83,7 +82,6 @@ void TouchEventInjectorTest::TearDown()
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDown";
     service = nullptr;
     inputInterceptor_ = nullptr;
-    touchAction.clear();
 }
 
 MMI::PointerEvent TouchEventInjectorTest::CreateTouchEvent(int32_t action)
@@ -116,15 +114,14 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     touchEventInjector_->InjectEvents(gesturePath, service, 1);
 
     sleep(SLEEP_TIME_2);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
-    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
+    int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
-
-    EXPECT_EQ(touchAction[0], expectValue);
+    EXPECT_EQ(touchAction, expectValue);
 
     expectValue = MMI::PointerEvent::POINTER_ACTION_UP;
-
-    EXPECT_EQ(touchAction[1], expectValue);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
+    EXPECT_EQ(touchAction, expectValue);
+    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
 }
 
 /**
@@ -153,9 +150,9 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     touchEventInjector_->OnPointerEvent(touchevent);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
     sleep(SLEEP_TIME_2);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
+    int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
-    EXPECT_EQ(touchAction[1], expectValue);
+    EXPECT_EQ(touchAction, expectValue);
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_004 end";
 }
@@ -178,13 +175,13 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 
     touchEventInjector_->InjectEvents(gesturePath, service, 1);
     sleep(SLEEP_TIME_1);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
+    int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     touchEventInjector_->DestroyEvents();
     isDestroyEvents_ = AccessibilityAbilityHelper::GetInstance().GetDestroyState();
     EXPECT_EQ(isDestroyEvents_, true);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
-    EXPECT_EQ(touchAction[0], expectValue);
+    EXPECT_EQ(touchAction, expectValue);
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_005 end";
 }
@@ -211,15 +208,19 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
 
     touchEventInjector_->InjectEvents(gesturePath, service, 1);
     sleep(SLEEP_TIME_2);
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector();
-    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
+    int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
-    EXPECT_EQ(touchAction[1], expectValue);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
+    EXPECT_EQ(touchAction, expectValue);
     expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
-    EXPECT_EQ(touchAction[2], expectValue);
-    EXPECT_EQ(touchAction[3], expectValue);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(2);
+    EXPECT_EQ(touchAction, expectValue);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(3);
+    EXPECT_EQ(touchAction, expectValue);
     expectValue = MMI::PointerEvent::POINTER_ACTION_UP;
-    EXPECT_EQ(touchAction[4], expectValue);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(4);
+    EXPECT_EQ(touchAction, expectValue);
+    AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
 
     GTEST_LOG_(INFO) << "TouchEventInjector_Unittest_TouchEventInjector_006 end";
 }

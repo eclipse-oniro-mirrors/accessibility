@@ -24,7 +24,7 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 namespace {
-    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "parentId", "inspectorKey",
+    const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
         "textMoveUnit", "contents", "lastContent", "itemCount", "currentIndex", "startIndex", "endIndex",
         "resourceName", "textLengthLimit", "rect", "checkable", "checked", "focusable", "isVisible",
@@ -37,7 +37,6 @@ namespace {
     using AttributeNamesFunc = void (*)(NAccessibilityElementData *callbackInfo, napi_value &value);
     std::map<std::string, AttributeNamesFunc> elementInfoCompleteMap = {
         {"componentId", &NAccessibilityElement::GetElementInfoComponentId},
-        {"parentId", &NAccessibilityElement::GetElementInfoParentId},
         {"inspectorKey", &NAccessibilityElement::GetElementInfoInspectorKey},
         {"bundleName", &NAccessibilityElement::GetElementInfoBundleName},
         {"componentType", &NAccessibilityElement::GetElementInfoComponentType},
@@ -46,7 +45,6 @@ namespace {
         {"hintText", &NAccessibilityElement::GetElementInfoHintText},
         {"description", &NAccessibilityElement::GetElementInfoDescription},
         {"resourceName", &NAccessibilityElement::GetElementInfoResourceName},
-        {"childNodeIds", &NAccessibilityElement::GetElementInfoChildNodeIds},
         {"textLengthLimit", &NAccessibilityElement::GetElementInfoTextLengthLimit},
         {"rect", &NAccessibilityElement::GetElementInfoRect},
         {"checkable", &NAccessibilityElement::GetElementInfoCheckable},
@@ -60,21 +58,11 @@ namespace {
         {"isPassword", &NAccessibilityElement::GetElementInfoIsPassword},
         {"scrollable", &NAccessibilityElement::GetElementInfoScrollable},
         {"editable", &NAccessibilityElement::GetElementInfoEditable},
-        {"popupSupported", &NAccessibilityElement::GetElementInfoPopupSupported},
         {"pluralLineSupported", &NAccessibilityElement::GetElementInfoPluralLineSupported},
-        {"deleteable", &NAccessibilityElement::GetElementInfoDeleteable},
-        {"isEssential", &NAccessibilityElement::GetElementInfoIsEssential},
         {"itemCount", &NAccessibilityElement::GetElementInfoItemCount},
         {"currentIndex", &NAccessibilityElement::GetElementInfoCurrentIndex},
         {"startIndex", &NAccessibilityElement::GetElementInfoStartIndex},
         {"endIndex", &NAccessibilityElement::GetElementInfoEndIndex},
-        {"grid", &NAccessibilityElement::GetElementInfoGrid},
-        {"gridItem", &NAccessibilityElement::GetElementInfoGridItem},
-        {"activeRegion", &NAccessibilityElement::GetElementInfoActiveRegion},
-        {"isContentInvalid", &NAccessibilityElement::GetElementInfoIsContentInvalid},
-        {"label", &NAccessibilityElement::GetElementInfoLabel},
-        {"beginSelected", &NAccessibilityElement::GetElementInfoBeginSelected},
-        {"endSelected", &NAccessibilityElement::GetElementInfoEndSelected},
         {"textMoveUnit", &NAccessibilityElement::GetElementInfoTextMoveUnit},
         {"parent", &NAccessibilityElement::GetElementInfoParent},
         {"children", &NAccessibilityElement::GetElementInfoChildren},
@@ -96,7 +84,6 @@ namespace {
         {"screenRect", &NAccessibilityElement::GetWindowInfoScreenRect},
         {"layer", &NAccessibilityElement::GetWindowInfoLayer},
         {"type", &NAccessibilityElement::GetWindowInfoType},
-        {"anchor", &NAccessibilityElement::GetWindowInfoAnchor},
         {"rootElement", &NAccessibilityElement::GetWindowInfoRootElement},
         {"isFocused", &NAccessibilityElement::GetWindowInfoIsFocused},
         {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
@@ -340,13 +327,6 @@ void NAccessibilityElement::AttributeValueExecute(napi_env env, void* data)
                 *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfos_);
         } else {
             HILOG_ERROR("elementInfo is nullptr");
-        }
-    } else if (callbackInfo->attribute_ == "anchor") {
-        if (callbackInfo->accessibilityElement_.windowInfo_) {
-            callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetAnchor(
-                *callbackInfo->accessibilityElement_.windowInfo_, callbackInfo->nodeInfo_);
-        } else {
-            HILOG_ERROR("windowInfo is nullptr");
         }
     } else if (callbackInfo->attribute_ == "rootElement") {
         if (callbackInfo->accessibilityElement_.windowInfo_) {

@@ -53,7 +53,7 @@ bool AccessibilityMouseKey::OnPointerEvent(MMI::PointerEvent &event)
 
     int32_t sourceType = event.GetSourceType();
     int32_t action = event.GetPointerAction();
-    std::vector<int32_t> pointers = event.GetPointersIdList();
+    std::vector<int32_t> pointers = event.GetPointerIds();
     size_t pointerCount = pointers.size();
     if ((sourceType == MMI::PointerEvent::SOURCE_TYPE_MOUSE) &&
         (action == MMI::PointerEvent::POINTER_ACTION_MOVE) &&

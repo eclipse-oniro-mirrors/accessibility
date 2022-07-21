@@ -54,7 +54,7 @@ public:
     /**
      * @brief Obtains the types of the accessible ability.
      * @param
-     * @return Return the type of the accessible ability.
+     * @return Return the types of the accessible ability.
      */
     uint32_t GetAccessibilityAbilityType();
 
@@ -73,9 +73,9 @@ public:
     const std::string &GetDescription() const;
 
     /**
-     * @brief Obtains the type of the accessible events.
+     * @brief Obtains the types of the accessible events.
      * @param
-     * @return Return the type of the accessible events.
+     * @return Return the types of the accessible events.
      */
     uint32_t GetEventTypes();
 
@@ -108,7 +108,7 @@ public:
     const std::string &GetModuleName() const;
 
     /**
-     * @brief Obtains the package name of the accessible ability.
+     * @brief Set the package name of the accessible ability.
      * @param bundleName the package name of the accessible ability
      * @return -
      */
@@ -150,7 +150,7 @@ public:
 
     /**
      * @brief Set the types of the ability.
-     * @param abilityTypes the ability to set.
+     * @param abilityTypes the ability types to set.
      * @return
      */
     inline void SetAccessibilityAbilityType(uint32_t abilityTypes)
@@ -168,6 +168,10 @@ public:
         eventTypes_ = eventTypes;
     }
 
+    /**
+     * @brief Obtains if the ability is important.
+     * @return Return if the ability is important.
+     */
     bool IsImportant() const;
 
 protected:

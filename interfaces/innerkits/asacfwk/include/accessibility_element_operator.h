@@ -83,7 +83,7 @@ public:
         AccessibilityElementOperatorCallback &callback) = 0;
 
     /**
-     * @brief To return the result of perform action.
+     * @brief To return the result of execute action.
      * @param elementId: The unique id of the component ID.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.

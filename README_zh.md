@@ -18,10 +18,11 @@
 /foundation/barrierfree/accessibility
 ├── frameworks
 │   ├── aafwk               # AccessibleAbility Kit实现代码
+│   ├── acfwk               # AccessibilityConfiguration Kit实现代码
 │   └── asacfwk             # AccessibleAbilityClient Kit实现代码
 ├── interfaces
-│   ├── innerkits           # AccessibleAbility 和 AccessibleAbilityClient 的子系统接口
-│   └── kits                # AccessibleAbility 和 AccessibleAbilityClient 的开发者接口
+│   ├── innerkits           # AccessibleAbility、AccessibilityConfiguration 和 AccessibleAbilityClient 的子系统接口
+│   └── kits                # AccessibleAbility、AccessibilityConfiguration 和 AccessibleAbilityClient 的开发者接口
 ├── sa_profile              # 系统服务配置文件
 └── services
     └── aams                # AccessibleAbility 管理服务框架代码
@@ -33,10 +34,16 @@
 
 **accessibility**
 
-[distributedschedule_samgr](https://gitee.com/openharmony/distributedschedule_samgr)
+[ability_ability_runtime](https://gitee.com/openharmony/ability_ability_runtime)
 
-[appexecfwk_standard](https://gitee.com/openharmony/appexecfwk_standard)
+[account_os_account](https://gitee.com/openharmony/account_os_account)
 
-[notification_common_event_service](https://gitee.com/openharmony/notification_ces_standard)
+[bundlemanager_bundle_framework](https://gitee.com/openharmony/bundlemanager_bundle_framework)
+
+[distributeddatamgr_appdatamgr](https://gitee.com/openharmony/distributeddatamgr_appdatamgr)
+
+[notification_common_event_service](https://gitee.com/openharmony/notification_common_event_service)
 
 [multimodalinput_input](https://gitee.com/openharmony/multimodalinput_input)
+
+[windowmanager](https://gitee.com/openharmony/windowmanager)

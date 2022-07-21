@@ -105,7 +105,7 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchDownEvent(event);
             } else {
                 isRecognizingGesture_ = false;
@@ -116,7 +116,7 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
             return HandleTouchMoveEvent(event);
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 return HandleTouchUpEvent(event);
             }
             break;
@@ -251,7 +251,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 if (pCurDown_ && pPreUp_ && isDoubleTap(event)) {
                     HILOG_DEBUG("Double tap is recognized");
                     isDoubleTapdetecting_ = true;
@@ -270,7 +270,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 continueDown_ = false;
                 if (isLongpress_) {
                     handler_->RemoveEvent(SINGLE_TAP_MSG);
