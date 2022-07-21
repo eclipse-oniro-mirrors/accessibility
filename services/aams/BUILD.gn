@@ -87,7 +87,7 @@ ohos_shared_library("accessibleabilityms") {
     "os_account:os_account_innerkits",
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
     "utils_base:utils",
     "window_manager:libdm",
     "window_manager:libwm",

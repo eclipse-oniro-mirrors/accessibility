@@ -50,11 +50,11 @@ config("module_private_config") {
     "${ability_runtime_inner_api_path}/ability_manager/include",
     "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
     "${ability_runtime_services_path}/abilitymgr/include",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/common/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/distributedschedule/samgr/services/samgr/native/include",
+    "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/common/include",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
+    "//foundation/systemabilitymgr/samgr/services/samgr/native/include",
     "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
     "//foundation/multimedia/image_standard/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
@@ -101,7 +101,7 @@ ohos_unittest("accessibility_account_data_test") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -168,7 +168,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -233,7 +233,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -291,7 +291,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -343,7 +343,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -398,7 +398,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -480,7 +480,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -539,7 +539,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
@@ -598,7 +598,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
@@ -645,7 +645,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
