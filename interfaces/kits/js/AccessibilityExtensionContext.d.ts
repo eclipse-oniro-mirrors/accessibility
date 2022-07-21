@@ -19,11 +19,14 @@ import accessibility from "../@ohos.accessibility";
 import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility";
 
 export default class AccessibilityExtensionContext extends ExtensionContext {
-    setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<boolean>): boolean;
-    setEventTypeFilter(type: Array<accessibility.EventType>): Promise<boolean>;
-
-    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<boolean>): boolean;
-    setTargetBundleName(targetNames: Array<string>): Promise<boolean>;
+    setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<void>): void;
+    setEventTypeFilter(type: Array<accessibility.EventType>): Promise<void>;
+    /**
+     * Set the name of the bundle name that is interested in sending the event.
+     * @param targetNames 
+     */
+    setTargetBundleName(targetNames: Array<string>): Promise<void>;
+    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<void>): void;
 
     getFocusElement(callback: AsyncCallback<AccessibilityElement>): void;
     getFocusElement(isAccessibilityFocus: boolean, callback: AsyncCallback<AccessibilityElement>): void;

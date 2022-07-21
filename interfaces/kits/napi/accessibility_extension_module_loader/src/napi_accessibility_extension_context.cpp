@@ -167,7 +167,7 @@ private:
                 }
                 bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
@@ -208,7 +208,7 @@ private:
 
                 bool ret = context->SetTargetBundleName(targetBundleNames);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
