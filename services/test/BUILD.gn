@@ -65,8 +65,6 @@ config("module_private_config") {
     "//third_party/jsoncpp/include",
     "//third_party/jsoncpp/include/json",
     "//commonlibrary/c_utils/base/include",
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
     "//utils/system/safwk/native/include",
     "mock/aafwk/include",
   ]
