@@ -17,7 +17,6 @@
 #define ACCESSIBILITY_ZOOM_GESTURE_H
 
 #include "accessibility_event_transmission.h"
-#include "accessibility_zoom_handler.h"
 #include "event_handler.h"
 #include "pointer_event.h"
 
@@ -40,7 +39,7 @@ struct ZOOM_FOCUS_COORDINATE {
 
 class AccessibilityZoomGesture : public EventTransmission {
 public:
-    AccessibilityZoomGesture(Rosen::DisplayId displayId);
+    AccessibilityZoomGesture();
     ~AccessibilityZoomGesture() = default;
 
     virtual bool OnPointerEvent(MMI::PointerEvent &event) override;
@@ -76,6 +75,10 @@ private:
         std::shared_ptr<MMI::PointerEvent> secondEvent);
     float CalcSeparationDistance(std::shared_ptr<MMI::PointerEvent> firstEvent,
         std::shared_ptr<MMI::PointerEvent> secondEvent);
+    void OnZoom(int32_t centerX, int32_t centerY);
+    void OffZoom();
+    void OnScroll(float offsetX, float offsetY);
+    void OnScale(float scaleRatio, float focusX, float focusY);
 
     bool startScaling_ = false;
     float preSpan_ = 0;
@@ -89,7 +92,6 @@ private:
     std::shared_ptr<MMI::PointerEvent> lastDownEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> preLastUpEvent_ = nullptr;
     std::shared_ptr<MMI::PointerEvent> lastUpEvent_ = nullptr;
-    std::shared_ptr<AccessibilityZoomHandler> zoomHandler_ = nullptr;
     std::shared_ptr<ZoomGestureEventHandler> zoomGestureEventHandler_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEvents_;
 };
