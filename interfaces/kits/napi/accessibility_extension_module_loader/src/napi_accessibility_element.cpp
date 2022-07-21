@@ -858,7 +858,7 @@ void NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElementData *
         callbackInfo->ret_ = false;
         return;
     }
-   NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->IsDeletable(), &value));
 }
 
