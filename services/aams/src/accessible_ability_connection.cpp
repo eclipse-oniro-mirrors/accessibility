@@ -181,20 +181,9 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
         return;
     }
 
-    bool send = false;
-    if (IsAllowedListEvent(eventInfo.GetEventType())) {
-        HILOG_DEBUG("EventType is in the allowed list!");
-        send = true;
-    } else {
-        std::vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
-        if (IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() ||
-            find(filterBundleNames.begin(), filterBundleNames.end(),
-                eventInfo.GetBundleName()) != filterBundleNames.end())) {
-            send = true;
-        }
-    }
-
-    if (send) {
+    std::vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
+    if (IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() || find(filterBundleNames.begin(),
+        filterBundleNames.end(), eventInfo.GetBundleName()) != filterBundleNames.end())) {
         eventInfo.SetChannelId(connectionId_);
         abilityClient_->OnAccessibilityEvent(eventInfo);
         HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
@@ -203,33 +192,6 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     }
 
     return;
-}
-
-bool AccessibleAbilityConnection::IsAllowedListEvent(EventType eventType)
-{
-    bool ret = false;
-    switch (eventType) {
-        case EventType::TYPE_PAGE_STATE_UPDATE:
-        case EventType::TYPE_NOTIFICATION_UPDATE_EVENT:
-        case EventType::TYPE_PUBLIC_NOTICE_EVENT:
-        case EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN:
-        case EventType::TYPE_TOUCH_GUIDE_GESTURE_END:
-        case EventType::TYPE_TOUCH_GUIDE_BEGIN:
-        case EventType::TYPE_TOUCH_GUIDE_END:
-        case EventType::TYPE_TOUCH_BEGIN:
-        case EventType::TYPE_TOUCH_END:
-        case EventType::TYPE_VIEW_HOVER_ENTER_EVENT:
-        case EventType::TYPE_VIEW_HOVER_EXIT_EVENT:
-        case EventType::TYPE_INTERRUPT_EVENT:
-        case EventType::TYPE_GESTURE_EVENT:
-        case EventType::TYPE_WINDOW_UPDATE: {
-            ret = true;
-            break;
-        }
-        default:
-            break;
-    }
-    return ret;
 }
 
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence)

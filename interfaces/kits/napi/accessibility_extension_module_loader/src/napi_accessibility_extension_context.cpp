@@ -614,12 +614,10 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     }
     object->SetNativePointer(jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr);
 
-    BindNativeFunction(engine, *object, "setEventTypeFilter", NAccessibilityExtensionContext::SetEventTypeFilter);
     BindNativeFunction(engine, *object, "setTargetBundleName", NAccessibilityExtensionContext::SetTargetBundleName);
     BindNativeFunction(engine, *object, "getFocusElement", NAccessibilityExtensionContext::GetFocusElement);
     BindNativeFunction(engine, *object, "getWindowRootElement", NAccessibilityExtensionContext::GetWindowRootElement);
     BindNativeFunction(engine, *object, "getWindows", NAccessibilityExtensionContext::GetWindows);
-    BindNativeFunction(engine, *object, "executeCommonAction", NAccessibilityExtensionContext::ExecuteCommonAction);
     BindNativeFunction(engine, *object, "gestureInject", NAccessibilityExtensionContext::InjectGesture);
 
     return objValue;
