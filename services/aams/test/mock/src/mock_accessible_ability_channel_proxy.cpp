@@ -130,12 +130,11 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     (void)sequence;
 }
 
-void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
+bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    (void)requestId;
     (void)gesturePath;
-    return;
+    return true;
 }
 
 bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)

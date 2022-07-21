@@ -44,9 +44,7 @@ bool AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityEle
     return aaClient->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-bool AccessibilityExtensionContext::InjectGesture(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibilityExtensionContext::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -54,12 +52,11 @@ bool AccessibilityExtensionContext::InjectGesture(const uint32_t sequence,
         HILOG_ERROR("aaClient is nullptr");
         return false;
     }
-    return aaClient->InjectGesture(sequence, gesturePath, listener);
+    return aaClient->InjectGesture(gesturePath);
 }
 
-bool AccessibilityExtensionContext::InjectGesture(const uint32_t sequence,
-    const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibilityExtensionContext::InjectGesture(
+    const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths)
 {
     HILOG_DEBUG("This method is temporarily not implemented!");
     return false;

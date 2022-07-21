@@ -442,7 +442,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     }
 }
 
-void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
+bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
@@ -450,29 +450,27 @@ void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t requestId,
         new(std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
     if (!path) {
         HILOG_ERROR("Failed to create path.");
-        return;
+        return false;
     }
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_SYNC);
 
     if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return;
+        return false;
     }
 
     if (!data.WriteStrongParcelable(path)) {
         HILOG_ERROR("WriteStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
-        return;
+        return false;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
         HILOG_ERROR("fail to send simulation gesture path");
+        return false;
     }
+    return reply.ReadBool();
 }
 
 bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)

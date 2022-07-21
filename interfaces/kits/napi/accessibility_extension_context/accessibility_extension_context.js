@@ -50,9 +50,9 @@ class AccessibilityExtensionContext extends ExtensionContext {
         return this.__context_impl__.executeCommonAction(action, callback);
     }
 
-    gestureInject(gesture, listener, callback) {
-        console.log('gestureInject');
-        return this.__context_impl__.gestureInject(gesture, listener, callback);
+    injectGesture(gesture, callback) {
+        console.log('injectGesture');
+        return this.__context_impl__.injectGesture(gesture, callback);
     }
 }
 

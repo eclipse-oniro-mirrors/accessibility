@@ -56,14 +56,6 @@ public:
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
 
-    /**
-     * @brief Called when need to notify the result of simulation gesture through the proxy object.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
-
 private:
     /**
      * @brief Send the command data from proxy to stub in IPC mechanism.

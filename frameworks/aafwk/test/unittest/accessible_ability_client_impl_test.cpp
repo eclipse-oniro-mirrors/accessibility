@@ -108,30 +108,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_001, TestSize.Lev
 }
 
 /**
- * @tc.number: OnGestureInjectResult_001
- * @tc.name: OnGestureInjectResult
- * @tc.desc: Test function OnGestureInjectResult
- */
-HWTEST_F(AccessibleAbilityClientImplTest, OnGestureInjectResult_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "OnGestureInjectResult_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    instance_->OnGestureInjectResult(SEQUENCE, true);
-    GTEST_LOG_(INFO) << "OnGestureInjectResult_001 end";
-}
-
-/**
  * @tc.number: GetFocus_001
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus
@@ -254,8 +230,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_001, TestSize.Level1)
         return;
     }
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
-    EXPECT_FALSE(instance_->InjectGesture(SEQUENCE, gesturePath, listener));
+    EXPECT_FALSE(instance_->InjectGesture(gesturePath));
 
     GTEST_LOG_(INFO) << "InjectGesture_001 end";
 }

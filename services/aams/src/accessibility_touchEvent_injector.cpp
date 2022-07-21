@@ -41,14 +41,6 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &eve
         case TouchEventInjector::SEND_TOUCH_EVENT_MSG:
             parameters = event->GetSharedObject<SendEventArgs>();
             server_.SendPointerEvent(*parameters->event_);
-            if (parameters->isLastEvent_) {
-                if (server_.GetCurrentGestureService()) {
-                    server_.GetCurrentGestureService()->OnGestureInjectResult(server_.GetSequence(), true);
-                }
-            }
-            break;
-        case TouchEventInjector::GESTURE_INJECT_EVENT_MSG:
-            server_.InjectGesturePathInner();
             break;
         default:
             break;
@@ -129,7 +121,6 @@ void TouchEventInjector::CancelInjectedEvents()
     if (handler_->HasInnerEvent(SEND_TOUCH_EVENT_MSG)) {
         handler_->RemoveEvent(SEND_TOUCH_EVENT_MSG);
         CancelGesture();
-        currentGestureService_->OnGestureInjectResult(sequence_, false);
     }
 }
 
@@ -155,36 +146,26 @@ int64_t TouchEventInjector::GetSystemTime()
     return microsecond;
 }
 
-void TouchEventInjector::InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-    const sptr<IAccessibleAbilityClient> &service, int32_t sequence)
-{
-    sequence_ = sequence;
-    currentGestureService_ = service;
-    gesturePositions_ = gesturePath;
-    handler_->SendEvent(GESTURE_INJECT_EVENT_MSG, 0, 0);
-}
-
-void TouchEventInjector::InjectGesturePathInner()
+void TouchEventInjector::InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
 
     int64_t curTime = GetSystemTime();
     if (isDestroyEvent_ || !GetNext()) {
-        currentGestureService_->OnGestureInjectResult(sequence_, false);
+        HILOG_WARN("Inject gesture fail");
         return;
     }
     CancelInjectedEvents();
     CancelGesture();
 
-    ParseTouchEventsFromGesturePath(curTime);
+    ParseTouchEventsFromGesturePath(curTime, gesturePath);
 
     if (injectedEvents_.empty()) {
-        currentGestureService_->OnGestureInjectResult(sequence_, false);
+        HILOG_WARN("No injected events");
         return;
     }
     for (size_t i = 0; i < injectedEvents_.size(); i++) {
         std::shared_ptr<SendEventArgs> parameters = std::make_shared<SendEventArgs>();
-        parameters->isLastEvent_ = (i == injectedEvents_.size() - 1) ? true : false;
         parameters->event_ = injectedEvents_[i];
         if (injectedEvents_[i]) {
             int64_t timeout = (injectedEvents_[i]->GetActionTime() - curTime) / MS_TO_US;
@@ -198,17 +179,22 @@ void TouchEventInjector::InjectGesturePathInner()
     injectedEvents_.clear();
 }
 
-void TouchEventInjector::ParseTapsEvents(int64_t startTime)
+void TouchEventInjector::ParseTapsEvents(int64_t startTime,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
 
-    const std::vector<AccessibilityGesturePosition> &positions = gesturePositions_->GetPositions();
+    if (!gesturePath) {
+        HILOG_ERROR("gesturePath is null.");
+        return;
+    }
+    const std::vector<AccessibilityGesturePosition> &positions = gesturePath->GetPositions();
     size_t positionSize = positions.size();
     if (!positionSize) {
         HILOG_WARN("PositionSize is zero.");
         return;
     }
-    int64_t durationTime = gesturePositions_->GetDurationTime();
+    int64_t durationTime = gesturePath->GetDurationTime();
     if (durationTime < 0) {
         HILOG_WARN("DurationTime is wrong.");
         return;
@@ -239,17 +225,22 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
     }
 }
 
-void TouchEventInjector::ParseMovesEvents(int64_t startTime)
+void TouchEventInjector::ParseMovesEvents(int64_t startTime,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
 
-    std::vector<AccessibilityGesturePosition> positions = gesturePositions_->GetPositions();
-    size_t positionSize = positions.size();
-    if (positionSize < MOVE_GESTURE_MIN_PATH_COUNT) {
-        HILOG_WARN("PositionSize is zero.");
+    if (!gesturePath) {
+        HILOG_ERROR("gesturePath is null.");
         return;
     }
-    int64_t durationTime = gesturePositions_->GetDurationTime();
+    std::vector<AccessibilityGesturePosition> positions = gesturePath->GetPositions();
+    size_t positionSize = positions.size();
+    if (positionSize < MOVE_GESTURE_MIN_PATH_COUNT) {
+        HILOG_WARN("PositionSize is wrong.");
+        return;
+    }
+    int64_t durationTime = gesturePath->GetDurationTime();
     if (durationTime < 0) {
         HILOG_WARN("DurationTime is wrong.");
         return;
@@ -288,14 +279,15 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime)
     }
 }
 
-void TouchEventInjector::ParseTouchEventsFromGesturePath(int64_t startTime)
+void TouchEventInjector::ParseTouchEventsFromGesturePath(int64_t startTime,
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
-    if (!gesturePositions_) {
-        HILOG_ERROR("gesturePositions_ is null.");
+    if (!gesturePath) {
+        HILOG_ERROR("gesturePath is null.");
         return;
     }
-    const std::vector<AccessibilityGesturePosition> &positions = gesturePositions_->GetPositions();
+    const std::vector<AccessibilityGesturePosition> &positions = gesturePath->GetPositions();
     if (positions.size() == 0) {
         HILOG_ERROR("position size is 0.");
         return;
@@ -303,9 +295,9 @@ void TouchEventInjector::ParseTouchEventsFromGesturePath(int64_t startTime)
     if ((positions.size() == 1) ||
         ((positions[0].positionX_ == positions[1].positionX_) &&
         (positions[0].positionY_ == positions[1].positionY_))) {
-        ParseTapsEvents(startTime);
+        ParseTapsEvents(startTime, gesturePath);
     } else {
-        ParseMovesEvents(startTime);
+        ParseMovesEvents(startTime, gesturePath);
     }
 }
 } // namespace Accessibility

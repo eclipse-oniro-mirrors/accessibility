@@ -61,7 +61,6 @@
           "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
           "header": {
             "header_files": [
-              "accessibility_gesture_result_listener.h",
               "accessibility_ui_test_ability.h",
               "accessible_ability_client.h",
               "accessible_ability_listener.h"

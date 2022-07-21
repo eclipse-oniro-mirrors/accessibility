@@ -19,7 +19,6 @@
 
 #include <time.h>
 #include "accessibility_event_transmission.h"
-#include "i_accessible_ability_client.h"
 #include "event_handler.h"
 #include "event_runner.h"
 #include "accessibility_gesture_inject_path.h"
@@ -32,7 +31,6 @@ const int64_t DOUBLE_TAP_MIN_TIME = 50000; // microsecond
 
 struct SendEventArgs {
     std::shared_ptr<MMI::PointerEvent> event_;
-    bool isLastEvent_;
 };
 
 class TouchEventInjector;
@@ -53,7 +51,6 @@ private:
 class TouchEventInjector : public EventTransmission, public AppExecFwk::EventHandler {
 public:
     static constexpr uint32_t SEND_TOUCH_EVENT_MSG = 1;
-    static constexpr uint32_t GESTURE_INJECT_EVENT_MSG = 2;
 
     /**
      * @brief A constructor used to create a TouchEventInjector instance.
@@ -99,41 +96,11 @@ public:
     void SendPointerEvent(MMI::PointerEvent &event);
 
     /**
-     * @brief Get current gesture service.
-     * @param
-     * @return the corresponding AccessibleAbility
-     */
-    sptr<IAccessibleAbilityClient> GetCurrentGestureService()
-    {
-        return currentGestureService_;
-    }
-
-    /**
-     * @brief Get sequence of gesture.
-     * @param
-     * @return the sequence of gesture
-     */
-    int32_t GetSequence()
-    {
-        return sequence_;
-    }
-
-    /**
      * @brief Inject simulated gestures.
      * @param gesturePath the gesture path
-     * @param service the corresponding AccessibleAbility
-     * @param sequence the sequence of gesture
      * @return
      */
-    void InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-        const sptr<IAccessibleAbilityClient> &service, int32_t sequence);
-
-    /**
-     * @brief Parsing inject simulated gestures.
-     * @param
-     * @return
-     */
-    void InjectGesturePathInner();
+    void InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
 private:
     /**
@@ -168,33 +135,34 @@ private:
 
     /**
      * @brief Parse taps events.
-     * @param
+     * @param startTime the start time of gesture injection
+     * @param gesturePath the gesture path
      * @return
      */
-    void ParseTapsEvents(int64_t startTime);
+    void ParseTapsEvents(int64_t startTime, const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
     /**
      * @brief Parse move events.
-     * @param
+     * @param startTime the start time of gesture injection
+     * @param gesturePath the gesture path
      * @return
      */
-    void ParseMovesEvents(int64_t startTime);
+    void ParseMovesEvents(int64_t startTime, const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
     /**
      * @brief Parse touchevents from gesturepath.
-     * @param
+     * @param startTime the start time of gesture injection
+     * @param gesturePath the gesture path
      * @return
      */
-    void ParseTouchEventsFromGesturePath(int64_t startTime);
+    void ParseTouchEventsFromGesturePath(int64_t startTime,
+        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
-    int32_t sequence_ = -1;
     bool isGestureUnderway_ = false;
     bool isDestroyEvent_ = false;
-    sptr<IAccessibleAbilityClient> currentGestureService_ = nullptr;
     std::shared_ptr<TouchInjectHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
     std::vector<std::shared_ptr<MMI::PointerEvent>> injectedEvents_;
-    std::shared_ptr<AccessibilityGestureInjectPath> gesturePositions_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

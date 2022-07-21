@@ -1446,8 +1446,7 @@ public:
 
     /**
      * @brief Get content list
-     * @param contentList Outgoing parameter
-     *                    The list of content
+     * @param contentList(out) The list of content
      * @return -
      * @sysCap Accessibility
      */

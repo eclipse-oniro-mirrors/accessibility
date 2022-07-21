@@ -150,12 +150,10 @@ public:
 
     /**
      * @brief Send simulation gesture through the proxy object.
-     * @param requestId The sequence of simulation gesture.
      * @param gesturePath The gesture path to send.
-     * @return
+     * @return Return true if gesture injection is successfully, otherwise return false.
      */
-    virtual void SendSimulateGesture(const int32_t requestId,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+    virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     /**
      * @brief Set event types to filter.

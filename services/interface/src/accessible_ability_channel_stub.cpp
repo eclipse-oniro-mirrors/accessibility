@@ -311,8 +311,6 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
 {
     HILOG_DEBUG();
 
-    int32_t requestId = data.ReadInt32();
-
     sptr<AccessibilityGestureInjectPathParcel> positions =
         data.ReadStrongParcelable<AccessibilityGestureInjectPathParcel>();
     if (!positions) {
@@ -322,7 +320,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
  
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
         std::make_shared<AccessibilityGestureInjectPath>(*positions);
-    SendSimulateGesture(requestId, gesturePath);
+    bool result = SendSimulateGesture(gesturePath);
+    reply.WriteBool(result);
     return NO_ERROR;
 }
 

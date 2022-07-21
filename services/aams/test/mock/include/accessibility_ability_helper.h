@@ -221,16 +221,6 @@ public:
         testDisplayId_ = DisplayId;
     }
 
-    int GetTestGestureSimulateResult()
-    {
-        return testGestureSimulateResult_;
-    }
-
-    void SetTestGestureSimulateResult(int GestureSimulateResult)
-    {
-        testGestureSimulateResult_ = GestureSimulateResult;
-    }
-
     int GetTestStateType()
     {
         return testStateType_;
@@ -307,7 +297,6 @@ private:
     int testGesture_ = -1;
     int testKeyPressEvent_ = -1;
     int testDisplayId_ = -1;
-    int testGestureSimulateResult_ = -1;
     int testStateType_ = -1;
     bool testKeyEvent_ = false;
     bool isServicePublished_ = false;

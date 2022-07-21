@@ -36,9 +36,14 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     getWindows(callback: AsyncCallback<Array<AccessibilityElement>>): void;
     getWindows(displayId: number, callback: AsyncCallback<Array<AccessibilityElement>>): void;
     getWindows(displayId?: number): Promise<Array<AccessibilityElement>>;
-
-    gestureInject(gesturePath: GesturePath, listener: Callback<boolean>, callback: AsyncCallback<boolean>): void;
-    gestureInject(gesturePath: GesturePath, listener: Callback<boolean>): Promise<boolean>;
+    /**
+     * Inject gesture path events.
+     * @param gesturePath Indicates the gesture path.
+     * @param listener It is used to receive the result of gesture injection,
+     * true means success, otherwise means failure.
+     */
+    injectGesture(gesturePath: GesturePath): Promise<void>;
+    injectGesture(gesturePath: GesturePath, callback: AsyncCallback<void>): void;
 }
 
 declare interface AccessibilityElement {

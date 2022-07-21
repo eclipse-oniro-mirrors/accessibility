@@ -29,7 +29,6 @@ namespace Accessibility {
 namespace {
     const std::string TEST = "test";
     constexpr int32_t FOCUS_TYPE = 1;
-    constexpr uint32_t SEQUENCE = 1;
 } // namespace
 
 class AccessibilityUITestAbilityImplTest : public ::testing::Test {
@@ -171,8 +170,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_001, TestSize.Level1)
         return;
     }
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    std::shared_ptr<AccessibilityGestureResultListener> listener = nullptr;
-    EXPECT_FALSE(instance_->InjectGesture(SEQUENCE, gesturePath, listener));
+    EXPECT_FALSE(instance_->InjectGesture(gesturePath));
 
     GTEST_LOG_(INFO) << "InjectGesture_001 end";
 }

@@ -58,20 +58,11 @@ public:
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) = 0;
 
-    /**
-     * @brief Called when need to notify the result of simulation gesture.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) = 0;
-
     enum class Message {
         INIT = 0,
         DISCONNECT,
         ON_ACCESSIBILITY_EVENT,
         ON_KEY_PRESS_EVENT,
-        ON_GESTURE_INJECT_RESULT,
     };
 };
 } // namespace Accessibility

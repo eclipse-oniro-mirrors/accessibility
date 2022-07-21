@@ -75,7 +75,6 @@ void AamsAccessibleAbilityChannelTest::SetUp()
 void AamsAccessibleAbilityChannelTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown";
-    AccessibilityHelper::GetInstance().SetTestGestureSimulate(-1);
 
     // Deregister ElementOperator
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
@@ -498,11 +497,9 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     gesturePath->SetDurationTime(100);
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(1, gesturePath);
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
     sleep(2);
 
-    int32_t result = Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector()->GetSequence();
-    EXPECT_EQ(1, result);
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001 end";
 }
@@ -699,9 +696,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     gesturePath->SetDurationTime(100);
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(1, gesturePath);
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
     sleep(2);
-    EXPECT_EQ(1, AccessibilityHelper::GetInstance().GetTestGestureSimulate());
     GTEST_LOG_(INFO) << "clear end";
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001 end";

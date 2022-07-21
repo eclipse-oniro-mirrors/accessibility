@@ -31,8 +31,6 @@ AccessibleAbilityClientStub::AccessibleAbilityClientStub()
         &AccessibleAbilityClientStub::HandleOnAccessibilityEvent;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnKeyPressEvent;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_GESTURE_INJECT_RESULT)] =
-        &AccessibleAbilityClientStub::HandleOnGestureInjectResult;
 }
 
 AccessibleAbilityClientStub::~AccessibleAbilityClientStub()
@@ -115,16 +113,6 @@ ErrCode AccessibleAbilityClientStub::HandleOnKeyPressEvent(MessageParcel &data, 
         return ERR_INVALID_VALUE;
     }
     OnKeyPressEvent(*keyEvent, sequence);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityClientStub::HandleOnGestureInjectResult(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG();
-    int32_t sequence = data.ReadInt32();
-    bool completedSuccessfully = data.ReadBool();
-
-    OnGestureInjectResult(sequence, completedSuccessfully);
     return NO_ERROR;
 }
 } // namespace Accessibility

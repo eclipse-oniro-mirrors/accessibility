@@ -170,16 +170,6 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     }
 }
 
-void AccessibleAbilityClientImpl::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    HILOG_INFO("sequence[%{public}d] completedSuccessfully[%{public}d]", sequence, completedSuccessfully);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return;
-    }
-    DispatchGestureInjectResult(sequence, completedSuccessfully);
-}
-
 bool AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
@@ -219,11 +209,9 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::InjectGesture(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
-    HILOG_INFO("sequence[%{public}d]", sequence);
+    HILOG_INFO();
 
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
@@ -242,12 +230,7 @@ bool AccessibleAbilityClientImpl::InjectGesture(const uint32_t sequence,
         return false;
     }
 
-    if (listener) {
-        gestureResultListenerInfos_.insert(make_pair(sequence, listener));
-    }
-
-    channelClient_->SendSimulateGesture(sequence, gesturePath);
-    return true;
+    return channelClient_->SendSimulateGesture(gesturePath);
 }
 
 bool AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
@@ -558,32 +541,6 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
             HILOG_DEBUG("ResetAAClient OK");
         }
     }
-}
-
-void AccessibleAbilityClientImpl::DispatchGestureInjectResult(uint32_t sequence, bool result)
-{
-    HILOG_DEBUG();
-
-    if (gestureResultListenerInfos_.empty()) {
-        HILOG_ERROR("There is no information of gestureResultListener");
-        return;
-    }
-
-    std::shared_ptr<AccessibilityGestureResultListener> gestureResultListener = nullptr;
-    auto it = gestureResultListenerInfos_.find(sequence);
-    if (it != gestureResultListenerInfos_.end()) {
-        HILOG_DEBUG("gestureResultListenerInfo has been found.");
-        gestureResultListener = gestureResultListenerInfos_[sequence];
-        gestureResultListenerInfos_.erase(it);
-    }
-
-    if (!gestureResultListener) {
-        HILOG_ERROR("There is no gestureResultListenerInfo in gestureResultListenerInfos_[%{public}d", sequence);
-        return;
-    }
-
-    HILOG_INFO("sequence[%{public}d] result[%{public}d]", sequence, result);
-    gestureResultListener->OnGestureInjectResult(sequence, result);
 }
 } // namespace Accessibility
 } // namespace OHOS

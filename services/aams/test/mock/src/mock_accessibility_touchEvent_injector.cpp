@@ -28,8 +28,18 @@ TouchInjectHandler::TouchInjectHandler(
 
 void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer& event)
 {
-    (void)event;
-    server_.InjectGesturePathInner();
+    std::shared_ptr<SendEventArgs> parameters = nullptr;
+    if (!event) {
+        return;
+    }
+    switch (event->GetInnerEventId()) {
+        case TouchEventInjector::SEND_TOUCH_EVENT_MSG:
+            parameters = event->GetSharedObject<SendEventArgs>();
+            server_.SendPointerEvent(*parameters->event_);
+            break;
+        default:
+            break;
+    }
 }
 
 TouchEventInjector::TouchEventInjector()

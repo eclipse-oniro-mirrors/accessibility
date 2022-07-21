@@ -56,8 +56,7 @@ public:
 
     void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
-    void SendSimulateGesture(const int32_t requestId,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+    bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     bool SetEventTypeFilter(const uint32_t filter) override;
 
@@ -83,7 +82,7 @@ private:
         std::vector<AccessibilityWindowInfo> &windows);
     void InnerExecuteCommonAction(const int32_t action);
     void InnerSetOnKeyPressEventResult(const bool handled, const int32_t sequence);
-    void InnerSendSimulateGesturePath(const int32_t requestId,
+    void InnerSendSimulateGesturePath(std::promise<bool> &syncPromise,
         const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
     void InnerSetEventTypeFilter(std::promise<bool> &syncPromise, const uint32_t filter);
     void InnerSetTargetBundleName(std::promise<bool> &syncPromise, const std::vector<std::string> &targetBundleNames);

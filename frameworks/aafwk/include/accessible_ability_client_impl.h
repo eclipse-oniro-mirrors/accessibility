@@ -81,14 +81,6 @@ public:
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
 
     /**
-     * @brief Called when need to notify the result of simulation gesture.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
-
-    /**
      * @brief Obtains elementInfo of focus.
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
      * @param elementInfo The accessibilityElementInfo of focus.
@@ -108,14 +100,10 @@ public:
 
     /**
      * @brief Sends simulate gestures to the screen.
-     * @param sequence The sequence of gesture.
      * @param gesturePath The gesture which need to send.
-     * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    virtual bool InjectGesture(const uint32_t sequence,
-        const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-        const std::shared_ptr<AccessibilityGestureResultListener> &listener) override;
+    virtual bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) override;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -282,19 +270,10 @@ private:
         AccessibleAbilityClientImpl &client_;
     };
 
-    /**
-     * @brief Dispatch the result of simulate gesture.
-     * @param sequence The sequence of gesture.
-     * @param result The result of gesture completion.
-     * @return
-     */
-    void DispatchGestureInjectResult(uint32_t sequence, bool result);
-
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
-    std::map<uint32_t, std::shared_ptr<AccessibilityGestureResultListener>> gestureResultListenerInfos_;
 };
 } // namespace Accessibility
 } // namespace OHOS

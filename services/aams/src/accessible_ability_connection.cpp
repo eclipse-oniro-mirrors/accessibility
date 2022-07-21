@@ -248,15 +248,6 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     return true;
 }
 
-void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    if (!abilityClient_) {
-        HILOG_ERROR("OnGestureInjectResult failed");
-        return;
-    }
-    abilityClient_->OnGestureInjectResult(sequence, completedSuccessfully);
-}
-
 void AccessibleAbilityConnection::SetAbilityInfoEventTypeFilter(const uint32_t eventTypes)
 {
     HILOG_DEBUG();
