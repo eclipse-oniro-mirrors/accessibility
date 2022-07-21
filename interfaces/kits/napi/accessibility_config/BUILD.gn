@@ -42,7 +42,6 @@ ohos_shared_library("config_napi") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -51,6 +50,7 @@ ohos_shared_library("config_napi") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",

@@ -43,7 +43,7 @@ config("module_private_config") {
     "//third_party/json/include",
     "//third_party/jsoncpp/include",
     "//third_party/jsoncpp/include/json",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "//utils/system/safwk/native/include",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
@@ -97,7 +97,6 @@ ohos_unittest("asac_unit_test") {
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -107,6 +106,7 @@ ohos_unittest("asac_unit_test") {
     "ability_runtime:abilitykit_native",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
