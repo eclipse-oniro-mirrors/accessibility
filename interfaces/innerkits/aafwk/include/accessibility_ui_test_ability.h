@@ -244,7 +244,7 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return Return true if sets target bundle names successfully, else return false.
+     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) = 0;
 };

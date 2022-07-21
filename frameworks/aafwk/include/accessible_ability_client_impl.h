@@ -272,7 +272,7 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return Return true if sets target bundle names successfully, else return false.
+     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) override;
 
@@ -302,9 +302,13 @@ private:
      * @return
      */
     void DispatchGestureInjectResult(uint32_t sequence, bool result);
-    bool GetCacheElementInfo(const int32_t windowId, const int32_t elementId, AccessibilityElementInfo &elementInfo);
+    bool GetCacheElementInfo(const int32_t windowId,
+        const int32_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
-        std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
+        const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
+
+    bool SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
+        const int32_t mode, AccessibilityElementInfo &info);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
