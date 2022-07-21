@@ -137,8 +137,10 @@ void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityW
                 break;
             }
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: {
-                auto a11yWindowInfoProperty = CreateAccessibilityWindowInfo(windowInfo->currentWindowInfo_);
-                a11yWindows_[windowInfo->currentWindowInfo_->wid_] = a11yWindowInfoProperty;
+                if (a11yWindows_.count(windowInfo->currentWindowInfo_->wid_)) {
+                    UpdateAccessibilityWindowInfo(a11yWindows_[windowInfo->currentWindowInfo_->wid_],
+                        windowInfo->currentWindowInfo_);
+                }
                 break;
             }
             default:
@@ -184,22 +186,29 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
     return winType;
 }
 
-AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo)
+void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
+    const sptr<Rosen::WindowInfo> windowInfo)
 {
-    AccessibilityWindowInfo info;
-    info.SetWindowId(windowInfo->wid_);
-    info.SetWindowType(static_cast<uint32_t>(windowInfo->type_));
-    info.SetWindowMode(static_cast<uint32_t>(windowInfo->mode_));
-    info.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));
-    info.SetFocused(windowInfo->focused_);
+    accWindowInfo.SetWindowId(windowInfo->wid_);
+    accWindowInfo.SetWindowType(static_cast<uint32_t>(windowInfo->type_));
+    accWindowInfo.SetWindowMode(static_cast<uint32_t>(windowInfo->mode_));
+    accWindowInfo.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));
+    accWindowInfo.SetFocused(windowInfo->focused_);
     Rect bound;
     bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
     bound.SetRightBottomScreenPostion(
         windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
         windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
-    info.SetRectInScreen(bound);
-    info.SetDisplayId(windowInfo->displayId_);
-    info.SetDecorEnable(windowInfo->isDecorEnable_);
+    accWindowInfo.SetRectInScreen(bound);
+    accWindowInfo.SetDisplayId(windowInfo->displayId_);
+    accWindowInfo.SetDecorEnable(windowInfo->isDecorEnable_);
+}
+
+AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
+    const sptr<Rosen::WindowInfo> windowInfo)
+{
+    AccessibilityWindowInfo info;
+    UpdateAccessibilityWindowInfo(info, windowInfo);
     HILOG_DEBUG("Create WindowInfo Id(%{public}d) type(%{public}d) posX(%{public}d) posY(%{public}d)"
         "witdth(%{public}d) height(%{public}d) display id(%{public}" PRIu64 ") isDecorEnable(%{public}d)",
         windowInfo->wid_, windowInfo->type_, windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_,
