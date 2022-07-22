@@ -57,6 +57,7 @@ std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowTy
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
 void ConvertOperationToJS(napi_env env, napi_value result, const OHOS::Accessibility::AccessibleAction& operation);
 void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid);
+void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo);
 void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const OHOS::Accessibility::GridItemInfo& gridItem);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,

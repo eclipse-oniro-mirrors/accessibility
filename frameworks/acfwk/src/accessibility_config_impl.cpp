@@ -1228,11 +1228,11 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
 
 void AccessibilityConfig::Impl::InitVar()
 {
-    if(!serviceProxy_){
+    if (!serviceProxy_) {
         HILOG_ERROR("AAMS Service is not connected");
         return;
     }
-    highContrastText_ = serviceProxy_->GetHighContrastTextState();;
+    highContrastText_ = serviceProxy_->GetHighContrastTextState();
     invertColor_ = serviceProxy_->GetInvertColorState();
     animationOff_ = serviceProxy_->GetAnimationOffState();
     audioMono_ = serviceProxy_->GetAudioMonoState();
@@ -1247,7 +1247,6 @@ void AccessibilityConfig::Impl::InitVar()
     audioBalance_ = serviceProxy_->GetAudioBalance();
     shortkeyTarget_ = serviceProxy_->GetShortkeyTarget();
     captionProperty_ = serviceProxy_->GetCaptionProperty();
-
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS
