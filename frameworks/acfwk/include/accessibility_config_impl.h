@@ -43,8 +43,8 @@ public:
     void SetScreenMagnificationState(const bool state);
     void SetShortKeyState(const bool state);
     void SetMouseKeyState(const bool state);
-    void SetCaptionState(const bool state);
-    void SetCaptionProperty(const CaptionProperty &caption);
+    void SetCaptionsState(const bool state);
+    void SetCaptionsProperty(const CaptionProperty &caption);
     void SetMouseAutoClick(const int32_t time);
     void SetShortkeyTarget(const std::string &name);
     void SetHighContrastTextState(bool state);
@@ -59,8 +59,8 @@ public:
     void GetScreenMagnificationState(bool &state);
     void GetShortKeyState(bool &state);
     void GetMouseKeyState(bool &state);
-    void GetCaptionState(bool &state);
-    void GetCaptionProperty(CaptionProperty &caption);
+    void GetCaptionsState(bool &state);
+    void GetCaptionsProperty(CaptionProperty &caption);
     void GetMouseAutoClick(int32_t &time);
     void GetShortkeyTarget(std::string &name);
     void GetInvertColorState(bool &state);
@@ -208,6 +208,7 @@ private:
     void UpdateAnimationOffEnabled(const bool enabled);
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
+    void InitVar();
 
     sptr<AccessibilityEnableAbilityListsObserverStubImpl> enableAbilityListsObserverStub_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;

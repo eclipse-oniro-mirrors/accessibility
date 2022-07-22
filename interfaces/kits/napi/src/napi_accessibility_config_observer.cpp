@@ -52,10 +52,10 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
             NotifyIntChanged2JS(value.mouseAutoClick);
             break;
         case CONFIG_DALTONIZATION_COLOR_FILTER:
-            NotifyUintChanged2JS(value.daltonizationColorFilter);
+            NotifyStringChanged2JS(ConvertDaltonizationTypeToString(value.daltonizationColorFilter));
             break;
         case CONFIG_CONTENT_TIMEOUT:
-            NotifyUintChanged2JS(value.contentTimeout);
+            NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
             break;
         case CONFIG_BRIGHTNESS_DISCOUNT:
             NotifyFloatChanged2JS(value.brightnessDiscount);
@@ -110,6 +110,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_value jsEvent;
+            napi_create_object(callbackInfo->env_, &jsEvent);
             napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
 
             napi_value handler = nullptr;

@@ -128,6 +128,25 @@ bool ParseInt32(napi_env env, int32_t& param, napi_value args)
     return true;
 }
 
+bool ParseDouble(napi_env env, double& param, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_number) {
+        HILOG_ERROR("Wrong argument type. uint32 expected.");
+        return false;
+    }
+
+    napi_get_value_double(env, args, &param);
+    return true;
+}
+
 napi_value GetErrorValue(napi_env env, int errCode)
 {
     napi_value result = nullptr;
@@ -1365,7 +1384,7 @@ uint32_t GetColorValue(napi_env env, napi_value value)
     return color;
 }
 
-void ConvertObjToCaptionProperty(
+bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
 {
     HILOG_DEBUG("start");
@@ -1382,6 +1401,8 @@ void ConvertObjToCaptionProperty(
         napi_get_property(env, object, propertyNameValue, &value);
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         ptrCaptionProperty->SetFontFamily(std::string(outBuffer));
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "fontScale", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1391,12 +1412,16 @@ void ConvertObjToCaptionProperty(
         napi_get_property(env, object, propertyNameValue, &value);
         napi_get_value_int32(env, value, &num);
         ptrCaptionProperty->SetFontScale(num);
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "fontColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         ptrCaptionProperty->SetFontColor(GetColorValue(env, object, propertyNameValue));
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "fontEdgeType", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1408,19 +1433,27 @@ void ConvertObjToCaptionProperty(
         napi_get_property(env, object, propertyNameValue, &value);
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         ptrCaptionProperty->SetFontEdgeType(std::string(outBuffer));
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "backgroundColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         ptrCaptionProperty->SetBackgroundColor(GetColorValue(env, object, propertyNameValue));
+    } else {
+        return false;
     }
 
     napi_create_string_utf8(env, "windowColor", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         ptrCaptionProperty->SetWindowColor(GetColorValue(env, object, propertyNameValue));
+    } else {
+        return false;
     }
+
+    return true;
 }
 
 void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string>& values)

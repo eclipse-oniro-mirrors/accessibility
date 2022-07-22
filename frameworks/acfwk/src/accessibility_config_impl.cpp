@@ -49,6 +49,8 @@ AccessibilityConfig::Impl::Impl()
         return;
     }
     serviceProxy_->RegisterConfigObserver(configObserver_);
+
+    InitVar();
 }
 
 bool AccessibilityConfig::Impl::ConnectToService()
@@ -128,7 +130,7 @@ bool AccessibilityConfig::Impl::DisableAbility(const std::string &name)
     return serviceProxy_->DisableAbility(name);
 }
 
-void AccessibilityConfig::Impl::GetCaptionState(bool &state)
+void AccessibilityConfig::Impl::GetCaptionsState(bool &state)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
@@ -140,7 +142,7 @@ void AccessibilityConfig::Impl::GetCaptionState(bool &state)
     state = serviceProxy_->GetCaptionState();
 }
 
-void AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &caption)
+void AccessibilityConfig::Impl::GetCaptionsProperty(CaptionProperty &caption)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
@@ -151,7 +153,7 @@ void AccessibilityConfig::Impl::GetCaptionProperty(CaptionProperty &caption)
     caption = serviceProxy_->GetCaptionProperty();
 }
 
-void AccessibilityConfig::Impl::SetCaptionProperty(const CaptionProperty& caption)
+void AccessibilityConfig::Impl::SetCaptionsProperty(const CaptionProperty& caption)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
@@ -162,7 +164,7 @@ void AccessibilityConfig::Impl::SetCaptionProperty(const CaptionProperty& captio
     serviceProxy_->SetCaptionProperty(caption);
 }
 
-void AccessibilityConfig::Impl::SetCaptionState(const bool state)
+void AccessibilityConfig::Impl::SetCaptionsState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     std::lock_guard<std::mutex> lock(mutex_);
@@ -1222,6 +1224,30 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
     }
 
     NotifyShortkeyTargetChanged(observers, shortkeyTarget);
+}
+
+void AccessibilityConfig::Impl::InitVar()
+{
+    if(!serviceProxy_){
+        HILOG_ERROR("AAMS Service is not connected");
+        return;
+    }
+    highContrastText_ = serviceProxy_->GetHighContrastTextState();;
+    invertColor_ = serviceProxy_->GetInvertColorState();
+    animationOff_ = serviceProxy_->GetAnimationOffState();
+    audioMono_ = serviceProxy_->GetAudioMonoState();
+    mouseKey_ = serviceProxy_->GetMouseKeyState();
+    captionState_ = serviceProxy_->GetCaptionState();
+    screenMagnifier_ = serviceProxy_->GetScreenMagnificationState();
+    shortkey_ = serviceProxy_->GetShortKeyState();
+    mouseAutoClick_ = serviceProxy_->GetMouseAutoClick();
+    daltonizationColorFilter_ = serviceProxy_->GetDaltonizationColorFilter();
+    contentTimeout_ = serviceProxy_->GetContentTimeout();
+    brightnessDiscount_ = serviceProxy_->GetBrightnessDiscount();
+    audioBalance_ = serviceProxy_->GetAudioBalance();
+    shortkeyTarget_ = serviceProxy_->GetShortkeyTarget();
+    captionProperty_ = serviceProxy_->GetCaptionProperty();
+
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS
