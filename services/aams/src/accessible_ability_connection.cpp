@@ -80,7 +80,7 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     if (resultCode != NO_ERROR) {
         accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_));
         accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
-        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAbilities();
+        accountData_->UpdateAbilities();
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
         return;
@@ -384,7 +384,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         }
 
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        aams.UpdateAbilities();
+        recipientAccountData_->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
         }), "OnRemoteDied");
 }

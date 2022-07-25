@@ -388,5 +388,29 @@ void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     HILOG_DEBUG();
     (void)importantEnabledAbilities;
 }
+
+uint32_t AccessibilityAccountData::GetInputFilterFlag()
+{
+    return 0;
+}
+
+void AccessibilityAccountData::UpdateAbilities()
+{
+}
+
+void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
+    const std::string &bundleName, const std::string &abilityName)
+{
+    (void)obj;
+    (void)bundleName;
+    (void)abilityName;
+}
+
+void AccessibilityAccountData::RemoveUITestClient(
+    sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName)
+{
+    (void)connection;
+    (void)bundleName;
+}
 } // namespace Accessibility
 } // namespace OHOS

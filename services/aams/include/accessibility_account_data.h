@@ -301,6 +301,17 @@ public:
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
+
+    uint32_t GetInputFilterFlag();
+    void UpdateAbilities();
+    bool RemoveAbility(const std::string &bundleName);
+    void AddAbility(const std::string &bundleName);
+    void ChangeAbility(const std::string &bundleName);
+
+    void AddUITestClient(const sptr<IRemoteObject> &obj,
+        const std::string &bundleName, const std::string &abilityName);
+    void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
+
 private:
     /**
      * @brief Update connected accessibility whether have touch guide
@@ -353,6 +364,7 @@ private:
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
+    uint32_t connectCounter_ = 1;
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
