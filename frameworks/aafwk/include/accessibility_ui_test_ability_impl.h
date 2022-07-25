@@ -228,6 +228,19 @@ public:
      */
     virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
+    /**
+     * @brief Set cache mode.
+     *        The mode is used for functions: GetRoot, GetRootByWindow, GetChildElementInfo,
+     *        GetChildren, GetAnchor, GetSource, GetParentElementInfo.
+     * @param cacheMode The cache mode. It includes:
+     *             PREFETCH_PREDECESSORS: cache the parent node info also.
+     *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
+     *             PREFETCH_CHILDREN: cache the child node info also.
+     *             otherwise: no cache.
+     * @return -
+     */
+    virtual void SetCacheMode(const int32_t cacheMode) override;
+
 private:
     sptr<AccessibleAbilityManagerServiceProxy> serviceProxy_ = nullptr;
 };

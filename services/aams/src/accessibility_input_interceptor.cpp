@@ -169,7 +169,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
     }
 
     if (availableFunctions_& FEATURE_SCREEN_MAGNIFICATION) {
-        sptr<AccessibilityZoomGesture> zoomGesture = new(std::nothrow) AccessibilityZoomGesture(0);
+        sptr<AccessibilityZoomGesture> zoomGesture = new(std::nothrow) AccessibilityZoomGesture();
         if (!zoomGesture) {
             HILOG_ERROR("zoomGesture is null");
             return;

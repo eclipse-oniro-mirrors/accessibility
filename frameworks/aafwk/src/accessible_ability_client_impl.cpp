@@ -30,7 +30,7 @@ namespace Accessibility {
 // tmp: wait for window registing when client connect done
 constexpr int WAIT_WINDOW_REGIST = 500;
 namespace {
-    constexpr int32_t NONE_ID = -1;
+    constexpr int32_t ROOT_NONE_ID = -1;
     std::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
 } // namespace
@@ -243,15 +243,14 @@ bool AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
 
     int32_t activeWindow = serviceProxy_->GetActiveWindow();
     HILOG_INFO("activeWindow[%{public}d]", activeWindow);
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = channelClient_->SearchElementInfosByAccessibilityId(activeWindow, NONE_ID, 0, elementInfos);
-    if (!result) {
-        return false;
+    if (GetCacheElementInfo(activeWindow, ROOT_NONE_ID, elementInfo)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
 
-    HILOG_DEBUG("element [elementSize:%{public}zu]", elementInfos.size());
-    if (!elementInfos.empty()) {
-        elementInfo = elementInfos[0];
+    if (!SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
     }
     return true;
 }
@@ -265,17 +264,18 @@ bool AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo 
         return false;
     }
 
-    int32_t channelId = windowInfo.GetChannelId();
     int32_t windowId = windowInfo.GetWindowId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d]", channelId, windowId);
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = false;
-    result = channelClient_->SearchElementInfosByAccessibilityId(windowId, -1, 0, elementInfos);
-    if (!elementInfos.empty()) {
-        HILOG_DEBUG("GetRootByWindow OK.");
-        elementInfo = elementInfos.front();
+    HILOG_INFO("windowId[%{public}d]", windowId);
+    if (GetCacheElementInfo(windowId, ROOT_NONE_ID, elementInfo)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
-    return result;
+
+    if (!SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
+    }
+    return true;
 }
 
 bool AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
@@ -347,22 +347,24 @@ bool AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    int32_t channelId = parent.GetChannelId();
+
     int32_t windowId = parent.GetWindowId();
     int32_t childId = parent.GetChildId(index);
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], childId[%{public}d]", channelId, windowId, childId);
+    HILOG_INFO("windowId[%{public}d], childId[%{public}d]", windowId, childId);
     if (childId == -1) {
         HILOG_ERROR("childId[%{public}d] is invalid", childId);
         return false;
     }
-    bool result = false;
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    result = channelClient_->SearchElementInfosByAccessibilityId(windowId, childId, 0, elementInfos);
-    if (!elementInfos.empty()) {
-        HILOG_DEBUG("GetChildElementInfo OK");
-        child = elementInfos.front();
+    if (GetCacheElementInfo(windowId, childId, child)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
-    return result;
+
+    if (!SearchElementInfoFromAce(windowId, childId, cacheMode_, child)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
+    }
+    return true;
 }
 
 bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
@@ -384,18 +386,18 @@ bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &pa
             return false;
         }
 
-        std::vector<AccessibilityElementInfo> elementInfos {};
-        bool result = channelClient_->SearchElementInfosByAccessibilityId(windowId, childId, 0, elementInfos);
-        if (!result) {
-            HILOG_ERROR("Search elementInfos by AccessibilityId failed. windowId[%{public}d], childId[%{public}d]",
-                windowId, childId);
-            return false;
-        } else {
-            if (!elementInfos.empty()) {
-                HILOG_DEBUG("Get child elementInfo OK. windowId[%{public}d], childId[%{public}d]", windowId, childId);
-                children.emplace_back(elementInfos.front());
-            }
+        AccessibilityElementInfo child;
+        if (GetCacheElementInfo(windowId, childId, child)) {
+            HILOG_DEBUG("get element info from cache");
+            children.emplace_back(child);
+            continue;
         }
+
+        if (!SearchElementInfoFromAce(windowId, childId, cacheMode_, child)) {
+            HILOG_ERROR("Get element info from ace failed");
+            return false;
+        }
+        children.emplace_back(child);
     }
     return true;
 }
@@ -424,19 +426,19 @@ bool AccessibleAbilityClientImpl::GetAnchor(const AccessibilityWindowInfo &windo
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    int32_t channelId = windowInfo.GetChannelId();
     int32_t windowId = windowInfo.GetWindowId();
     int32_t anchorId = windowInfo.GetAnchorId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], anchorId[%{public}d]",
-        channelId, windowId, anchorId);
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = false;
-    result = channelClient_->SearchElementInfosByAccessibilityId(windowId, anchorId, 0, elementInfos);
-    if (!elementInfos.empty()) {
-        HILOG_DEBUG("GetAnchor OK");
-        elementInfo = elementInfos.front();
+    HILOG_INFO("windowId[%{public}d], anchorId[%{public}d]", windowId, anchorId);
+    if (GetCacheElementInfo(windowId, anchorId, elementInfo)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
-    return result;
+
+    if (!SearchElementInfoFromAce(windowId, anchorId, cacheMode_, elementInfo)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
+    }
+    return true;
 }
 
 bool AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &eventInfo,
@@ -447,18 +449,19 @@ bool AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &eventI
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    int32_t channelId = eventInfo.GetChannelId();
     int32_t windowId = eventInfo.GetWindowId();
     int32_t elementId = eventInfo.GetAccessibilityId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], elementId[%{public}d]", channelId, windowId, elementId);
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = false;
-    result = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId, 0, elementInfos);
-    if (!elementInfos.empty()) {
-        HILOG_DEBUG("GetSource OK");
-        elementInfo = elementInfos.front();
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}d]", windowId, elementId);
+    if (GetCacheElementInfo(windowId, elementId, elementInfo)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
-    return result;
+
+    if (!SearchElementInfoFromAce(windowId, elementId, cacheMode_, elementInfo)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
+    }
+    return true;
 }
 
 bool AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
@@ -469,18 +472,19 @@ bool AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElemen
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    int32_t channelId = child.GetChannelId();
     int32_t windowId = child.GetWindowId();
     int32_t elementId = child.GetParentNodeId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], parentId[%{public}d]", channelId, windowId, elementId);
-    std::vector<AccessibilityElementInfo> elementInfos {};
-    bool result = false;
-    result = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId, 0, elementInfos);
-    if (!elementInfos.empty()) {
-        HILOG_DEBUG("GetParentElementInfo OK");
-        parent = elementInfos.front();
+    HILOG_INFO("windowId[%{public}d], parentId[%{public}d]", windowId, elementId);
+    if (GetCacheElementInfo(windowId, elementId, parent)) {
+        HILOG_DEBUG("get element info from cache");
+        return true;
     }
-    return result;
+
+    if (!SearchElementInfoFromAce(windowId, elementId, cacheMode_, parent)) {
+        HILOG_ERROR("Get element info from ace failed");
+        return false;
+    }
+    return true;
 }
 
 bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
@@ -541,6 +545,69 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
             HILOG_DEBUG("ResetAAClient OK");
         }
     }
+}
+
+void AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
+{
+    HILOG_INFO("set cache mode: [%{public}d]", cacheMode);
+    cacheWindowId_ = -1;
+    cacheElementInfos_.clear();
+    cacheMode_ = cacheMode & GET_SOURCE_PREFETCH_MODE;
+}
+
+bool AccessibleAbilityClientImpl::GetCacheElementInfo(const int32_t windowId,
+    const int32_t elementId, AccessibilityElementInfo &elementInfo) const
+{
+    HILOG_DEBUG();
+    if (cacheWindowId_ == -1 || cacheWindowId_ != windowId) {
+        HILOG_ERROR("cacheWindowId[%{public}d], windowId[%{public}d]", cacheWindowId_, windowId);
+        return false;
+    }
+
+    auto iter = cacheElementInfos_.find(elementId);
+    if (iter == cacheElementInfos_.end()) {
+        HILOG_ERROR("the element id[%{public}d] is not in cache", elementId);
+        return false;
+    }
+
+    elementInfo = iter->second;
+    return true;
+}
+
+void AccessibleAbilityClientImpl::SetCacheElementInfo(const int32_t windowId,
+    const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG("windowId[%{public}d], elementInfos size[%{public}zu]", windowId, elementInfos.size());
+    cacheElementInfos_.clear();
+    cacheWindowId_ = windowId;
+    for (auto &elementInfo : elementInfos) {
+        cacheElementInfos_.insert(std::make_pair(elementInfo.GetAccessibilityId(), elementInfo));
+    }
+}
+
+bool AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
+    const int32_t mode, AccessibilityElementInfo &info)
+{
+    if (!channelClient_) {
+        HILOG_ERROR("The channel is invalid.");
+        return false;
+    }
+
+    std::vector<AccessibilityElementInfo> elementInfos {};
+    if (!channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId, mode, elementInfos)) {
+        HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}d] mode[%{public}d]",
+            windowId, elementId, mode);
+        return false;
+    }
+    if (elementInfos.empty()) {
+        HILOG_ERROR("elementInfos from ace is empty");
+        return false;
+    }
+
+    HILOG_DEBUG("element [elementSize:%{public}zu]", elementInfos.size());
+    SetCacheElementInfo(windowId, elementInfos);
+    info = elementInfos.front();
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS
