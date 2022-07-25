@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_KEYEVENT_FILTER_H_
-#define ACCESSIBILITY_KEYEVENT_FILTER_H_
+#ifndef ACCESSIBILITY_KEYEVENT_FILTER_H
+#define ACCESSIBILITY_KEYEVENT_FILTER_H
 
 #include <map>
 #include <vector>
@@ -141,4 +141,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_KEYEVENT_FILTER_H_
+#endif // ACCESSIBILITY_KEYEVENT_FILTER_H

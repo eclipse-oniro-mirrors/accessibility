@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_SHORT_KEY_H_
-#define ACCESSIBILITY_SHORT_KEY_H_
+#ifndef ACCESSIBILITY_SHORT_KEY_H
+#define ACCESSIBILITY_SHORT_KEY_H
 
 #include "accessibility_event_transmission.h"
 #include "event_handler.h"
@@ -54,4 +54,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_SHORT_KEY_H_
+#endif // ACCESSIBILITY_SHORT_KEY_H
