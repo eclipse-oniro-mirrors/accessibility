@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_MOUSE_AUTOCLICK_H_
-#define ACCESSIBILITY_MOUSE_AUTOCLICK_H_
+#ifndef ACCESSIBILITY_MOUSE_AUTOCLICK_H
+#define ACCESSIBILITY_MOUSE_AUTOCLICK_H
 
 #include "accessibility_event_transmission.h"
 #include "event_handler.h"
@@ -89,4 +89,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_MOUSE_AUTOCLICK_H_
+#endif // ACCESSIBILITY_MOUSE_AUTOCLICK_H
