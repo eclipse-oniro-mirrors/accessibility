@@ -243,6 +243,15 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
     
+    class BundleManagerDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        BundleManagerDeathRecipient() = default;
+        ~BundleManagerDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(BundleManagerDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+    };
+
     void InitAccountDependence();
     void InitBundleDependence();
     void InitCommonEventDependence();
@@ -261,6 +270,7 @@ private:
     void UpdateCaptionProperty();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
+    void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
 
     bool isRunning_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
@@ -282,7 +292,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
-    static std::mutex mutex_;
+    sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
