@@ -111,7 +111,6 @@ public:
     static void GetElementInfoCurrentIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoStartIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoEndIndex(NAccessibilityElementData *callbackInfo, napi_value &value);
-    static void GetElementInfoRangeInfo(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoGrid(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoActiveRegion(NAccessibilityElementData *callbackInfo, napi_value &value);
@@ -128,6 +127,9 @@ public:
     static void GetElementInfoLastContent(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoValueMax(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoValueMin(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     // Window info
     static void GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value);

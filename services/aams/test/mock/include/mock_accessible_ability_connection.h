@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef MOCK_ACCESSIBLE_ABILITY_CONNECTION_H_
-#define MOCK_ACCESSIBLE_ABILITY_CONNECTION_H_
+#ifndef MOCK_ACCESSIBLE_ABILITY_CONNECTION_H
+#define MOCK_ACCESSIBLE_ABILITY_CONNECTION_H
 
 #include <gmock/gmock.h>
 #include "accessible_ability_connection.h"
@@ -95,4 +95,4 @@ public:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // MOCK_ACCESSIBLE_ABILITY_CONNECTION_H_
+#endif // MOCK_ACCESSIBLE_ABILITY_CONNECTION_H
