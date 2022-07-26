@@ -95,8 +95,8 @@ private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         AccessibleAbilityConnectionDeathRecipient(sptr<AccessibilityAccountData> accountData,
-            AppExecFwk::ElementName& elementName)
-            : recipientAccountData_(accountData), recipientElementName_(elementName) {};
+            AppExecFwk::ElementName& elementName, std::shared_ptr<AppExecFwk::EventHandler> handler)
+            : recipientAccountData_(accountData), recipientElementName_(elementName), handler_(handler) {};
         ~AccessibleAbilityConnectionDeathRecipient() = default;
         DISALLOW_COPY_AND_MOVE(AccessibleAbilityConnectionDeathRecipient);
 
@@ -104,6 +104,7 @@ private:
 
         sptr<AccessibilityAccountData> recipientAccountData_;
         AppExecFwk::ElementName& recipientElementName_;
+        std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
     };
 
     bool IsWantedEvent(int32_t eventType);

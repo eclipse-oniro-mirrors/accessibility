@@ -43,6 +43,13 @@ namespace Accessibility {
 class AccessibilityAccountData;
 class TouchEventInjector;
 
+enum CallBackID {
+    STATE_CALLBACK,
+    CAPTION_PROPERTY_CALLBACK,
+    ENABLE_ABILITY_LISTS_CALLBACK,
+    CONFIG_CALLBACK
+};
+
 class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceStub {
     DECLARE_SINGLETON(AccessibleAbilityManagerService)
     DECLEAR_SYSTEM_ABILITY(AccessibleAbilityManagerService)
@@ -252,6 +259,8 @@ private:
     void UpdateAccessibilityState();
     void UpdateInputFilter();
     void UpdateCaptionProperty();
+
+    void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
 
     bool isRunning_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
