@@ -64,9 +64,7 @@ config("module_private_config") {
     "//third_party/json/include",
     "//third_party/jsoncpp/include",
     "//third_party/jsoncpp/include/json",
-    "//utils/native/base/include",
-    "//utils/native/base/include",
-    "//utils/system/safwk/native/include",
+    "//commonlibrary/c_utils/base/include",
     "//utils/system/safwk/native/include",
     "mock/aafwk/include",
   ]
@@ -144,13 +142,13 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "utils_base:utils",
   ]
 
   public_deps = [
@@ -225,13 +223,13 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "utils_base:utils",
   ]
 
   public_deps = [
@@ -312,13 +310,13 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "utils_base:utils",
   ]
 
   public_deps = [
@@ -397,13 +395,13 @@ ohos_moduletest("aams_server_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "utils_base:utils",
   ]
 
   public_deps = [
@@ -476,13 +474,13 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "utils_base:utils",
   ]
 
   public_deps = [
@@ -560,13 +558,13 @@ ohos_moduletest("aams_common_event_registry_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "ipc:libdbinder",
-    "utils_base:utils",
   ]
 
   public_deps = [

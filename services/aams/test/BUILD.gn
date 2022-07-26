@@ -63,9 +63,7 @@ config("module_private_config") {
     "//foundation/window/window_manager/interfaces/innerkits/dm",
     "//foundation/window/window_manager/interfaces/innerkits/wm",
     "//third_party/json/include",
-    "//utils/native/base/include",
-    "//utils/native/base/include",
-    "//utils/system/safwk/native/include",
+    "//commonlibrary/c_utils/base/include",
     "//utils/system/safwk/native/include",
     "mock",
   ]
@@ -106,7 +104,6 @@ ohos_unittest("accessibility_account_data_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -114,6 +111,7 @@ ohos_unittest("accessibility_account_data_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hitrace_native:hitrace_meter",
@@ -156,7 +154,6 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -164,6 +161,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -219,7 +217,6 @@ ohos_unittest("accessibility_touch_guider_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -228,6 +225,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -276,7 +274,6 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -285,6 +282,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -347,7 +345,6 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -355,6 +352,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
@@ -402,7 +400,6 @@ ohos_unittest("accessibility_window_manager_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -410,6 +407,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
@@ -464,7 +462,6 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -473,6 +470,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -542,7 +540,6 @@ ohos_unittest("accessible_ability_connection_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -552,6 +549,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -583,7 +581,6 @@ ohos_unittest("accessibility_display_manager_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -592,6 +589,7 @@ ohos_unittest("accessibility_display_manager_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
@@ -631,7 +629,6 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "//foundation/window/window_manager/utils:libwmutil",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
@@ -640,6 +637,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "ability_runtime:runtime",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
