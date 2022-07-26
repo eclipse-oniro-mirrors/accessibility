@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_EVENT_TRANSMISSION_H_
-#define OHOS_EVENT_TRANSMISSION_H_
+#ifndef OHOS_EVENT_TRANSMISSION_H
+#define OHOS_EVENT_TRANSMISSION_H
 
 #include <cstdint>
 #include "accessibility_event_info.h"
@@ -41,4 +41,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // OHOS_EVENT_TRANSMISSION_H_
+#endif // OHOS_EVENT_TRANSMISSION_H

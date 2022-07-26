@@ -92,7 +92,6 @@ ohos_unittest("asac_unit_test") {
 
   deps = [
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//base/miscservices/time/services:time_service",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//third_party/googletest:gmock_main",
@@ -118,6 +117,7 @@ ohos_unittest("asac_unit_test") {
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
+    "time_service:time_service",
     "utils_base:utils",
     "window_manager:libdm",
     "window_manager:libwm",
