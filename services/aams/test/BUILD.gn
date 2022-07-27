@@ -71,7 +71,7 @@ config("module_private_config") {
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
-    "AAMS_LOG_DOMAIN = 0xD005205",
+    "AAMS_LOG_DOMAIN = 0xD001D05",
   ]
 }
 

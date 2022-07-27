@@ -32,7 +32,7 @@ config("aams_service_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility\"",
-    "AAMS_LOG_DOMAIN = 0xD005200",
+    "AAMS_LOG_DOMAIN = 0xD001D00",
   ]
 }
 

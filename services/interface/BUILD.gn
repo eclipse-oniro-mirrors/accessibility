@@ -20,7 +20,7 @@ config("aams_interface_private_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"aams_interface\"",
-    "AAMS_LOG_DOMAIN = 0xD005202",
+    "AAMS_LOG_DOMAIN = 0xD001D02",
   ]
 
   if (target_cpu == "arm") {
