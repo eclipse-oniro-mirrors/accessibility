@@ -277,7 +277,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     }
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     switch (callbackInfo->id_) {
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             instance.SetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
@@ -344,7 +344,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     napi_get_undefined(env, &undefined);
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     switch (callbackInfo->id_) {
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
@@ -399,7 +399,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     }
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     switch (callbackInfo->id_) {
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             instance.GetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
@@ -482,7 +482,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
 
     switch (obj->GetConfigId()) {
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRASTE_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:

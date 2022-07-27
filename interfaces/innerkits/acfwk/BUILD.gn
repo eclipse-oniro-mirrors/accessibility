@@ -53,7 +53,6 @@ ohos_shared_library("accessibilityconfig") {
 
   external_deps = [
     "ability_base:want",
-    "ability_runtime:abilitykit_native",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
