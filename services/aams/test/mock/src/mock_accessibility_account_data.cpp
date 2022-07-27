@@ -389,7 +389,7 @@ void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     (void)importantEnabledAbilities;
 }
 
-uint32_t AccessibilityAccountData::GetInputFilterFlag()
+uint32_t AccessibilityAccountData::GetInputFilterFlag() const
 {
     return 0;
 }
