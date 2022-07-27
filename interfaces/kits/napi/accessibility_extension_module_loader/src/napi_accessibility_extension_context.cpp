@@ -167,7 +167,7 @@ private:
                 }
                 bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
@@ -208,7 +208,7 @@ private:
 
                 bool ret = context->SetTargetBundleName(targetBundleNames);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
@@ -597,12 +597,10 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     }
     object->SetNativePointer(jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr);
 
-    BindNativeFunction(engine, *object, "setEventTypeFilter", NAccessibilityExtensionContext::SetEventTypeFilter);
     BindNativeFunction(engine, *object, "setTargetBundleName", NAccessibilityExtensionContext::SetTargetBundleName);
     BindNativeFunction(engine, *object, "getFocusElement", NAccessibilityExtensionContext::GetFocusElement);
     BindNativeFunction(engine, *object, "getWindowRootElement", NAccessibilityExtensionContext::GetWindowRootElement);
     BindNativeFunction(engine, *object, "getWindows", NAccessibilityExtensionContext::GetWindows);
-    BindNativeFunction(engine, *object, "executeCommonAction", NAccessibilityExtensionContext::ExecuteCommonAction);
     BindNativeFunction(engine, *object, "injectGesture", NAccessibilityExtensionContext::InjectGesture);
 
     return objValue;

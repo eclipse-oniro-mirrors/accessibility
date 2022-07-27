@@ -20,11 +20,6 @@ class AccessibilityExtensionContext extends ExtensionContext {
         super(obj);
     }
 
-    setEventTypeFilter(type, callback) {
-        console.log('setEventTypeFilter');
-        return this.__context_impl__.setEventTypeFilter(type, callback);
-    }
-
     setTargetBundleName(targetNames, callback) {
         console.log('setTargetBundleName');
         return this.__context_impl__.setTargetBundleName(targetNames, callback);
@@ -43,11 +38,6 @@ class AccessibilityExtensionContext extends ExtensionContext {
     getWindows(displayId, callback) {
         console.log('getWindows');
         return this.__context_impl__.getWindows(displayId, callback);
-    }
-
-    executeCommonAction(action, callback) {
-        console.log('executeCommonAction');
-        return this.__context_impl__.executeCommonAction(action, callback);
     }
 
     injectGesture(gesture, callback) {

@@ -50,6 +50,7 @@ bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
 bool ParseUint32(napi_env env, uint32_t& param, napi_value args);
 bool ParseInt32(napi_env env, int32_t& param, napi_value args);
+bool ParseDouble(napi_env env, double& param, napi_value args);
 napi_value GetErrorValue(napi_env env, int errCode);
 
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
@@ -68,7 +69,7 @@ void ConvertActionArgsJSToNAPI(
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
-void ConvertObjToCaptionProperty(
+bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty);
 void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string> &values);
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values);

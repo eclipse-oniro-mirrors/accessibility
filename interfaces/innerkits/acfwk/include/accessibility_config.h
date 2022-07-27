@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace AccessibilityConfig {
 enum CONFIG_ID : int32_t {
-    CONFIG_HIGH_CONTRASTE_TEXT = 0,
+    CONFIG_HIGH_CONTRAST_TEXT = 0,
     CONFIG_INVERT_COLOR,
     CONFIG_DALTONIZATION_COLOR_FILTER,
     CONFIG_CONTENT_TIMEOUT,
@@ -176,14 +176,14 @@ public:
      * @param state true:enable caption function; false:disable caption function
      * @return -
      */
-    void SetCaptionState(const bool state);
+    void SetCaptionsState(const bool state);
 
     /**
      * @brief Set caption properties
      * @param caption caption properties
      * @return -
      */
-    void SetCaptionProperty(const CaptionProperty &caption);
+    void SetCaptionsProperty(const CaptionProperty &caption);
 
     /**
      * @brief Set the time for the cursor to stop for the mouse to automatically perform the click action
@@ -281,14 +281,14 @@ public:
      * @param state(out) true:the caption function is enabled; false:the caption function is disabled
      * @return -
      */
-    void GetCaptionState(bool &state) const;
+    void GetCaptionsState(bool &state) const;
 
     /**
      * @brief Get caption properties
      * @param caption(out) caption properties
      * @return -
      */
-    void GetCaptionProperty(CaptionProperty &caption) const;
+    void GetCaptionsProperty(CaptionProperty &caption) const;
 
     /**
      * @brief Get the time for the cursor to stop for the mouse to automatically perform the click action

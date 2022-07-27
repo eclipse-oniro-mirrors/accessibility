@@ -43,7 +43,7 @@ static napi_value InitHighContrastText(napi_env env)
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
-        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRASTE_TEXT);
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRAST_TEXT);
     if (!nativeObj) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
@@ -283,11 +283,11 @@ static napi_value InitShortKeyTarget(napi_env env)
     return shortKeyTargetValue;
 }
 
-static napi_value InitCaptionState(napi_env env)
+static napi_value InitCaptionsState(napi_env env)
 {
-    napi_value captionValue;
-    napi_create_object(env, &captionValue);
-    NAPI_CALL(env, napi_define_properties(env, captionValue,
+    napi_value captionsValue;
+    napi_create_object(env, &captionsValue);
+    NAPI_CALL(env, napi_define_properties(env, captionsValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
@@ -297,16 +297,16 @@ static napi_value InitCaptionState(napi_env env)
         return nullptr;
     }
     nativeObj->SetEnv(env);
-    NAPI_CALL(env, napi_wrap(env, captionValue, reinterpret_cast<void*>(nativeObj),
+    NAPI_CALL(env, napi_wrap(env, captionsValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
-    return captionValue;
+    return captionsValue;
 }
 
-static napi_value InitCaptionStyle(napi_env env)
+static napi_value InitCaptionsStyle(napi_env env)
 {
-    napi_value captionStyleValue;
-    napi_create_object(env, &captionStyleValue);
-    NAPI_CALL(env, napi_define_properties(env, captionStyleValue,
+    napi_value captionsStyleValue;
+    napi_create_object(env, &captionsStyleValue);
+    NAPI_CALL(env, napi_define_properties(env, captionsStyleValue,
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
@@ -316,9 +316,9 @@ static napi_value InitCaptionStyle(napi_env env)
         return nullptr;
     }
     nativeObj->SetEnv(env);
-    NAPI_CALL(env, napi_wrap(env, captionStyleValue, reinterpret_cast<void*>(nativeObj),
+    NAPI_CALL(env, napi_wrap(env, captionsStyleValue, reinterpret_cast<void*>(nativeObj),
                              NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
-    return captionStyleValue;
+    return captionsStyleValue;
 }
 
 static napi_value InitConfigModule(napi_env env, napi_value exports)
@@ -336,8 +336,8 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     napi_value mouseAutoClickValue = InitMouseAutoClick(env);
     napi_value shortKeyValue = InitShortKey(env);
     napi_value shortKeyTargetValue = InitShortKeyTarget(env);
-    napi_value captionValue = InitCaptionState(env);
-    napi_value captionStyleValue = InitCaptionStyle(env);
+    napi_value captionsValue = InitCaptionsState(env);
+    napi_value captionsStyleValue = InitCaptionsStyle(env);
 
     napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("on", NAccessibilityConfig::SubscribeState),
@@ -356,9 +356,9 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("mouseKey", mouseKeyValue),
         DECLARE_NAPI_STATIC_PROPERTY("mouseAutoClick", mouseAutoClickValue),
         DECLARE_NAPI_STATIC_PROPERTY("shortkey", shortKeyValue),
-        DECLARE_NAPI_STATIC_PROPERTY("shortkey_target", shortKeyTargetValue),
-        DECLARE_NAPI_STATIC_PROPERTY("caption", captionValue),
-        DECLARE_NAPI_STATIC_PROPERTY("captionStyle", captionStyleValue),
+        DECLARE_NAPI_STATIC_PROPERTY("shortkeyTarget", shortKeyTargetValue),
+        DECLARE_NAPI_STATIC_PROPERTY("captions", captionsValue),
+        DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", captionsStyleValue),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));

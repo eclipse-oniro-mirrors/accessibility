@@ -25,11 +25,12 @@ import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility"
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  */
 export default class AccessibilityExtensionContext extends ExtensionContext {
-    setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<boolean>): boolean;
-    setEventTypeFilter(type: Array<accessibility.EventType>): Promise<boolean>;
-
-    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<boolean>): boolean;
-    setTargetBundleName(targetNames: Array<string>): Promise<boolean>;
+    /**
+     * Set the name of the bundle name that is interested in sending the event.
+     * @param targetNames 
+     */
+    setTargetBundleName(targetNames: Array<string>): Promise<void>;
+    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<void>): void;
 
     /**
      * Get focus element.

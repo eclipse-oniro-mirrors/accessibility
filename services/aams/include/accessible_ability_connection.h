@@ -106,7 +106,6 @@ private:
     };
 
     bool IsWantedEvent(int32_t eventType);
-    bool IsAllowedListEvent(EventType eventType);
 
     void InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
         const sptr<IRemoteObject> &remoteObject, int32_t resultCode);

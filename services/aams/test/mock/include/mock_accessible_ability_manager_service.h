@@ -62,11 +62,6 @@ public:
         return 0;
     }
 
-    inline uint32_t GetConnectCounter()
-    {
-        return 0;
-    }
-
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
     inline std::shared_ptr<AAMSEventHandler>& GetMainHandler()
@@ -88,7 +83,6 @@ public:
     MOCK_METHOD1(PackageRemoved, void(const std::string& bundleName));
     MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
-    MOCK_METHOD0(UpdateAbilities, void());
     MOCK_METHOD0(GetEnabledState, bool());
     MOCK_METHOD0(GetCaptionState, bool());
     MOCK_METHOD0(GetTouchGuideState, bool());

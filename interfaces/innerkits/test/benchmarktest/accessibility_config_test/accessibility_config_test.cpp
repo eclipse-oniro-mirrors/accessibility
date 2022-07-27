@@ -103,7 +103,7 @@ namespace {
             configObserver->SetCompletePromise(complete);
             config.SetShortkeyTarget(nameStr);
             syncFuture.wait();
-            if (!strcmp(nameStr.c_str(), "aaa")) {
+            if (!nameStr.compare("aaa")) {
                 nameStr = "bbb";
             } else {
                 nameStr = "aaa";
