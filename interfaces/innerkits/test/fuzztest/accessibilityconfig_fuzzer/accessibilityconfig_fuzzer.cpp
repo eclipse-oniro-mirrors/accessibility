@@ -79,7 +79,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
     abConfig.SetShortKeyState(data[startPos++] & 0x01);
     abConfig.SetMouseKeyState(data[startPos++] & 0x01);
-    abConfig.SetCaptionState(data[startPos++] & 0x01);
+    abConfig.SetCaptionsState(data[startPos++] & 0x01);
     abConfig.SetHighContrastTextState(data[startPos++] & 0x01);
     abConfig.SetInvertColorState(data[startPos++] & 0x01);
     abConfig.SetAnimationOffState(data[startPos++] & 0x01);
@@ -111,7 +111,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
-    abConfig.SetCaptionProperty(property);
+    abConfig.SetCaptionsProperty(property);
 
     (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string abilityName1(name);
