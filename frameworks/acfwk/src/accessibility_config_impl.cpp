@@ -493,7 +493,7 @@ void AccessibilityConfig::Impl::UpdateHighContrastTextEnabled(const bool enabled
         }
         highContrastText_ = enabled;
         std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
-            configObservers_.find(CONFIG_HIGH_CONTRASTE_TEXT);
+            configObservers_.find(CONFIG_HIGH_CONTRAST_TEXT);
         if (it == configObservers_.end()) {
             return;
         }
@@ -594,7 +594,7 @@ void AccessibilityConfig::Impl::NotifyHighContrastTextChanged(
         if (observer) {
             ConfigValue configValue;
             configValue.highContrastText = state;
-            observer->OnConfigChanged(CONFIG_HIGH_CONTRASTE_TEXT, configValue);
+            observer->OnConfigChanged(CONFIG_HIGH_CONTRAST_TEXT, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }

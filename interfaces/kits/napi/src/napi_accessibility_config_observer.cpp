@@ -63,7 +63,7 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
         case CONFIG_AUDIO_BALANCE:
             NotifyFloatChanged2JS(value.audioBalance);
             break;
-        case CONFIG_HIGH_CONTRASTE_TEXT:
+        case CONFIG_HIGH_CONTRAST_TEXT:
             NotifyStateChanged2JS(value.highContrastText);
             break;
         case CONFIG_INVERT_COLOR:

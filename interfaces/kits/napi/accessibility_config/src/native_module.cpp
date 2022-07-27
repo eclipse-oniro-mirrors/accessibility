@@ -43,7 +43,7 @@ static napi_value InitHighContrastText(napi_env env)
                                           sizeof(configDesc) / sizeof(configDesc[0]),
                                           configDesc));
     NAccessibilityConfigClass* nativeObj =
-        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRASTE_TEXT);
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_HIGH_CONTRAST_TEXT);
     if (!nativeObj) {
         HILOG_ERROR("Failed to create nativeObj.");
         return nullptr;
