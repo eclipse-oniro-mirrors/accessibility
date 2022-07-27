@@ -215,7 +215,7 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
     }
     int64_t perDurationTime = static_cast<int64_t>(static_cast<uint64_t>(durationTime) / positionSize);
     int64_t downTime = startTime;
-    int64_t nowTime = startTime;
+    int64_t upTime = 0;
     for (size_t i = 0; i < positionSize; i++) {
         std::shared_ptr<MMI::PointerEvent> event;
         MMI::PointerEvent::PointerItem pointer = {};
@@ -231,12 +231,11 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime)
         injectedEvents_.push_back(event);
 
         // Append up event
-        nowTime += perDurationTime * MS_TO_US;
-        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, nowTime);
+        upTime = downTime + perDurationTime * MS_TO_US;
+        event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, pointer, upTime);
         HILOG_DEBUG("append up event");
         injectedEvents_.push_back(event);
-        nowTime += DOUBLE_TAP_MIN_TIME;
-        downTime += DOUBLE_TAP_MIN_TIME;
+        downTime = upTime + DOUBLE_TAP_MIN_TIME;
     }
 }
 

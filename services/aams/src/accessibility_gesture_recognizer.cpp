@@ -253,6 +253,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             if (event.GetPointersIdList().size() == POINTER_COUNT_1) {
                 if (pCurDown_ && pPreUp_ && isDoubleTap(event)) {
+                    HILOG_DEBUG("Double tap is recognized");
                     isDoubleTapdetecting_ = true;
                     isDoubleTap_ = true;
                 } else {
@@ -421,6 +422,7 @@ bool AccessibilityGestureRecognizer::isDoubleTap(MMI::PointerEvent &event)
     HILOG_DEBUG();
     int64_t durationTime = event.GetActionTime() - pPreUp_->GetActionTime();
     if (!(durationTime <= DOUBLE_TAP_TIMEOUT && durationTime >= MIN_DOUBLE_TAP_TIME)) {
+        HILOG_WARN("durationTime[%{public}" PRId64 "] is wrong", durationTime);
         return false;
     }
 
