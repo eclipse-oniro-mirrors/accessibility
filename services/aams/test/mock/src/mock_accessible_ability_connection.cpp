@@ -174,12 +174,6 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     return;
 }
 
-bool AccessibleAbilityConnection::IsAllowedListEvent(EventType eventType)
-{
-    (void)eventType;
-    return true;
-}
-
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence)
 {
     (void)keyEvent;

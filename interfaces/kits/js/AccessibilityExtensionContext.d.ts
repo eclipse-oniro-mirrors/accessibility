@@ -25,8 +25,6 @@ import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility"
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  */
 export default class AccessibilityExtensionContext extends ExtensionContext {
-    setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<void>): void;
-    setEventTypeFilter(type: Array<accessibility.EventType>): Promise<void>;
     /**
      * Set the name of the bundle name that is interested in sending the event.
      * @param targetNames 
