@@ -50,7 +50,7 @@ AccessibilityConfig::Impl::Impl()
     }
     serviceProxy_->RegisterConfigObserver(configObserver_);
 
-	InitVar();
+    InitVar();
 }
 
 bool AccessibilityConfig::Impl::ConnectToService()
@@ -1232,7 +1232,7 @@ void AccessibilityConfig::Impl::InitVar()
         HILOG_ERROR("AAMS Service is not connected");
         return;
     }
-    highContrastText_ = serviceProxy_->GetHighContrastTextState();;
+    highContrastText_ = serviceProxy_->GetHighContrastTextState();
     invertColor_ = serviceProxy_->GetInvertColorState();
     animationOff_ = serviceProxy_->GetAnimationOffState();
     audioMono_ = serviceProxy_->GetAudioMonoState();
