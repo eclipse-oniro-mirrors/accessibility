@@ -15,6 +15,7 @@
 
 #include "accessibilitysystemabilityclient_fuzzer.h"
 #include "accessibility_system_ability_client.h"
+#include "securec.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -31,7 +32,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    std::memcpy(&object, data, objectSize);
+    (void)memcpy_s(&object, objectSize, data, size);
     return objectSize;
 }
 
@@ -118,37 +119,37 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string className(name);
     eventInfo.SetComponentType(className);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string beforeText(name);
     eventInfo.SetBeforeText(beforeText);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string content(name);
     eventInfo.AddContent(content);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string lastContent(name);
     eventInfo.SetLatestContent(lastContent);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string contentDescription(name);
     eventInfo.SetDescription(contentDescription);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string bundleName(name);
     eventInfo.SetBundleName(bundleName);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string notificationContent(name);
     eventInfo.SetNotificationContent(notificationContent);
     position += LEN;

@@ -16,6 +16,7 @@
 #include "accessibleabilityclient_fuzzer.h"
 #include "accessibility_element_info.h"
 #include "accessibility_ui_test_ability.h"
+#include "securec.h"
 
 namespace OHOS {
 namespace {
@@ -33,7 +34,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    std::memcpy(&object, data, objectSize);
+    (void)memcpy_s(&object, objectSize, data, size);
     return objectSize;
 }
 
@@ -157,42 +158,42 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string bundleName(name);
     sourceElementInfo.SetBundleName(bundleName);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string componentType(name);
     sourceElementInfo.SetComponentType(componentType);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string text(name);
     sourceElementInfo.SetContent(text);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string hintText(name);
     sourceElementInfo.SetHint(hintText);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string contentDescription(name);
     sourceElementInfo.SetDescriptionInfo(contentDescription);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string resourceName(name);
     sourceElementInfo.SetComponentResourceId(resourceName);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string inspectorKey(name);
     sourceElementInfo.SetInspectorKey(inspectorKey);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string error(name);
     sourceElementInfo.SetError(error);
     position += LEN;
@@ -236,7 +237,7 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 
     for (size_t i = 0; i < VEC_SIZE; i++) {
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
-        std::memcpy(&name, &data[position], LEN);
+        (void)memcpy_s(&name, LEN, &data[position], LEN);
         position += LEN;
         std::string description(name);
 
@@ -301,12 +302,12 @@ static size_t GenerateAccessibilityEventInfoPartial(OHOS::Accessibility::Accessi
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string bundleName(name);
     sourceEventInfo.SetBundleName(bundleName);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string notificationContent(name);
     sourceEventInfo.SetNotificationContent(notificationContent);
     position += LEN;
@@ -511,7 +512,7 @@ bool DoSomethingInterestingWithGetByContent(const uint8_t* data, size_t size)
     startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[startPos], LEN);
+    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string text(name);
     startPos += LEN;
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetByContent(
@@ -581,11 +582,11 @@ bool DoSomethingInterestingWithExecuteAction(const uint8_t* data, size_t size)
     for (size_t i = 0; i < MAP_SIZE; i++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
-        std::memcpy(&name, &data[startPos], LEN);
+        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
         std::string action1(name);
         startPos += LEN;
 
-        std::memcpy(&name, &data[startPos], LEN);
+        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
         std::string action2(name);
         startPos += LEN;
         actionArguments.insert(std::make_pair(action1, action2));
@@ -621,7 +622,7 @@ bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t s
     for (size_t i = 0; i < VEC_SIZE; i++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
-        std::memcpy(&name, &data[startPos], LEN);
+        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
         std::string targetBundleName(name);
         startPos += LEN;
         targetBundleNames.push_back(targetBundleName);
