@@ -17,7 +17,6 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_touch_guider.h"
 #include "accessibility_touchEvent_injector.h"
-#include "accessibility_zoom_handler.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "input_event.h"

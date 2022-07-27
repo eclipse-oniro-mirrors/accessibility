@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_MOUSE_KEY_H_
-#define ACCESSIBILITY_MOUSE_KEY_H_
+#ifndef ACCESSIBILITY_MOUSE_KEY_H
+#define ACCESSIBILITY_MOUSE_KEY_H
 
 #include "accessibility_event_transmission.h"
 
@@ -76,4 +76,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_MOUSE_KEY_H_
+#endif // ACCESSIBILITY_MOUSE_KEY_H

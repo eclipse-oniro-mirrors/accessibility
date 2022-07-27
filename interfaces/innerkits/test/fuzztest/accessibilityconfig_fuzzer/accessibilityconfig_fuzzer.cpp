@@ -15,6 +15,7 @@
 
 #include "accessibilityconfig_fuzzer.h"
 #include "accessibility_config.h"
+#include "securec.h"
 
 namespace OHOS {
 namespace {
@@ -30,7 +31,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    std::memcpy(&object, data, objectSize);
+    (void)memcpy_s(&object, objectSize, data, size);
     return objectSize;
 }
 
@@ -53,12 +54,12 @@ static size_t GenerateCaptionProperty(
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string family(name);
     property.SetFontFamily(family);
     position += LEN;
 
-    std::memcpy(&name, &data[position], LEN);
+    (void)memcpy_s(&name, LEN, &data[position], LEN);
     std::string type(name);
     property.SetFontFamily(type);
     position += LEN;
@@ -103,7 +104,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    std::memcpy(&name, &data[startPos], LEN);
+    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string nameStr(name);
     abConfig.SetShortkeyTarget(nameStr);
     startPos += LEN;
@@ -112,13 +113,13 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
     abConfig.SetCaptionProperty(property);
 
-    std::memcpy(&name, &data[startPos], LEN);
+    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string abilityName1(name);
     startPos += LEN;
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
     abConfig.EnableAbility(abilityName1, temp);
 
-    std::memcpy(&name, &data[startPos], LEN);
+    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string abilityName2(name);
     startPos += LEN;
     abConfig.DisableAbility(abilityName2);
