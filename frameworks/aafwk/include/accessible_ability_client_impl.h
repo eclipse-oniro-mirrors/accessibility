@@ -252,6 +252,19 @@ public:
     virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
     /**
+     * @brief Set cache mode.
+     *        The mode is used for functions: GetRoot, GetRootByWindow, GetChildElementInfo,
+     *        GetChildren, GetAnchor, GetSource, GetParentElementInfo.
+     * @param cacheMode The cache mode. It includes:
+     *             PREFETCH_PREDECESSORS: cache the parent node info also.
+     *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
+     *             PREFETCH_CHILDREN: cache the child node info also.
+     *             otherwise: no cache.
+     * @return -
+     */
+    virtual void SetCacheMode(const int32_t cacheMode) override;
+
+    /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
      * @return
@@ -270,10 +283,20 @@ private:
         AccessibleAbilityClientImpl &client_;
     };
 
+    bool GetCacheElementInfo(const int32_t windowId,
+        const int32_t elementId, AccessibilityElementInfo &elementInfo) const;
+    void SetCacheElementInfo(const int32_t windowId,
+        const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
+    bool SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
+        const int32_t mode, AccessibilityElementInfo &info);
+
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
+    int32_t cacheMode_ = 0;
+    int32_t cacheWindowId_ = -1;
+    std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
 };
 } // namespace Accessibility
 } // namespace OHOS

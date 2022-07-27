@@ -525,21 +525,6 @@ void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibili
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "selectionMode", nSelectionMode));
 }
 
-void ConvertRangeInfoToJS(napi_env env, napi_value nRangeInfo, const OHOS::Accessibility::RangeInfo& rangeInfo)
-{
-    napi_value nMin;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMin(), &nMin));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "min", nMin));
-
-    napi_value nMax;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetMax(), &nMax));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "max", nMax));
-
-    napi_value nCurrent;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, rangeInfo.GetCurrent(), &nCurrent));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nRangeInfo, "current", nCurrent));
-}
-
 void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo& gridItem)
 {
     napi_value nHeading;

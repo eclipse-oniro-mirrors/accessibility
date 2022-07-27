@@ -108,10 +108,10 @@ void TouchEventInjector::CancelGesture()
     HILOG_DEBUG();
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(1);
+    pointer.SetPointerId(0);
     int64_t time = GetSystemTime();
     pointer.SetDownTime(time);
-    pointer.SetPointerId(1);
+    pointer.SetPointerId(0);
     if (GetNext() != nullptr && isGestureUnderway_) {
         event = obtainTouchEvent(MMI::PointerEvent::POINTER_ACTION_CANCEL, pointer, time);
         SendPointerEvent(*event);
@@ -209,7 +209,7 @@ void TouchEventInjector::ParseTapsEvents(int64_t startTime,
     for (size_t i = 0; i < positionSize; i++) {
         std::shared_ptr<MMI::PointerEvent> event;
         MMI::PointerEvent::PointerItem pointer = {};
-        pointer.SetPointerId(1);
+        pointer.SetPointerId(0);
         // Append down event
         int32_t px = static_cast<int32_t>(positions[i].positionX_);
         int32_t py = static_cast<int32_t>(positions[i].positionY_);
@@ -257,7 +257,7 @@ void TouchEventInjector::ParseMovesEvents(int64_t startTime,
         MMI::PointerEvent::PointerItem pointer = {};
         int32_t px = static_cast<int32_t>(positions[i].positionX_);
         int32_t py = static_cast<int32_t>(positions[i].positionY_);
-        pointer.SetPointerId(1);
+        pointer.SetPointerId(0);
         pointer.SetDisplayX(px);
         pointer.SetDisplayY(py);
         pointer.SetDownTime(downTime);

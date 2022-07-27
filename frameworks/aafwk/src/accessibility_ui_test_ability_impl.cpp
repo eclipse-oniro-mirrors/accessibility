@@ -320,5 +320,11 @@ bool AccessibilityUITestAbilityImpl::GetChildren(const AccessibilityElementInfo 
     HILOG_INFO();
     return AccessibleAbilityClient::GetInstance()->GetChildren(parent, children);
 }
+
+void AccessibilityUITestAbilityImpl::SetCacheMode(const int32_t cacheMode)
+{
+    HILOG_INFO();
+    return AccessibleAbilityClient::GetInstance()->SetCacheMode(cacheMode);
+}
 } // namespace Accessibility
 } // namespace OHOS
