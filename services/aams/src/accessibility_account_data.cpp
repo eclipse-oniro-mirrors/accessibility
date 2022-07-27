@@ -732,7 +732,7 @@ void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     }
 }
 
-uint32_t AccessibilityAccountData::GetInputFilterFlag()
+uint32_t AccessibilityAccountData::GetInputFilterFlag() const
 {
     HILOG_DEBUG();
     if (!config_) {
@@ -792,7 +792,9 @@ void AccessibilityAccountData::UpdateAbilities()
             if (!connection) {
                 AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
                 connection = new(std::nothrow) AccessibleAbilityConnection(this, connectCounter_++, installAbility);
-                connection->Connect(element);
+                if (connection) {
+                    connection->Connect(element);
+                }
             }
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");

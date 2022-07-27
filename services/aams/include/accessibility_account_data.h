@@ -302,7 +302,7 @@ public:
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
 
-    uint32_t GetInputFilterFlag();
+    uint32_t GetInputFilterFlag() const;
     void UpdateAbilities();
     bool RemoveAbility(const std::string &bundleName);
     void AddAbility(const std::string &bundleName);
