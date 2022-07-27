@@ -49,6 +49,8 @@ AccessibilityConfig::Impl::Impl()
         return;
     }
     serviceProxy_->RegisterConfigObserver(configObserver_);
+
+    InitVar();
 }
 
 bool AccessibilityConfig::Impl::ConnectToService()
@@ -1222,6 +1224,29 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
     }
 
     NotifyShortkeyTargetChanged(observers, shortkeyTarget);
+}
+
+void AccessibilityConfig::Impl::InitVar()
+{
+    if (!serviceProxy_) {
+        HILOG_ERROR("AAMS Service is not connected");
+        return;
+    }
+    highContrastText_ = serviceProxy_->GetHighContrastTextState();
+    invertColor_ = serviceProxy_->GetInvertColorState();
+    animationOff_ = serviceProxy_->GetAnimationOffState();
+    audioMono_ = serviceProxy_->GetAudioMonoState();
+    mouseKey_ = serviceProxy_->GetMouseKeyState();
+    captionState_ = serviceProxy_->GetCaptionState();
+    screenMagnifier_ = serviceProxy_->GetScreenMagnificationState();
+    shortkey_ = serviceProxy_->GetShortKeyState();
+    mouseAutoClick_ = serviceProxy_->GetMouseAutoClick();
+    daltonizationColorFilter_ = serviceProxy_->GetDaltonizationColorFilter();
+    contentTimeout_ = serviceProxy_->GetContentTimeout();
+    brightnessDiscount_ = serviceProxy_->GetBrightnessDiscount();
+    audioBalance_ = serviceProxy_->GetAudioBalance();
+    shortkeyTarget_ = serviceProxy_->GetShortkeyTarget();
+    captionProperty_ = serviceProxy_->GetCaptionProperty();
 }
 } // namespace AccessibilityConfig
 } // namespace OHOS

@@ -208,6 +208,7 @@ private:
     void UpdateAnimationOffEnabled(const bool enabled);
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
+    void InitVar();
 
     sptr<AccessibilityEnableAbilityListsObserverStubImpl> enableAbilityListsObserverStub_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
