@@ -35,6 +35,9 @@ void TouchInjectHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer& eve
     switch (event->GetInnerEventId()) {
         case TouchEventInjector::SEND_TOUCH_EVENT_MSG:
             parameters = event->GetSharedObject<SendEventArgs>();
+            if (!parameters->event_) {
+                return;
+            }
             server_.SendPointerEvent(*parameters->event_);
             break;
         default:
