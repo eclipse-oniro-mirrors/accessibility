@@ -23,7 +23,7 @@ config("accessibility_common_private_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_common\"",
-    "AAMS_LOG_DOMAIN = 0xD005202",
+    "AAMS_LOG_DOMAIN = 0xD001D02",
   ]
 }
 

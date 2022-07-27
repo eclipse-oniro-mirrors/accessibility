@@ -26,7 +26,7 @@ config("accessibleability_private_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_aakit\"",
-    "AAMS_LOG_DOMAIN = 0xD005201",
+    "AAMS_LOG_DOMAIN = 0xD001D01",
   ]
 }
 
