@@ -28,7 +28,6 @@ public:
     /**
      * @brief Receive the state notify from AAMS and send it to the observer registered.
      * @param caption The caption properties.
-     * @return
      */
     virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) = 0;
 

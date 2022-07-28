@@ -65,22 +65,17 @@ public:
 
     /**
      * @brief Called when your accessibility service is successfully connected to the OS.
-     * @param
-     * @return
      */
     void OnAbilityConnected();
 
     /**
      * @brief Called when your accessibility service is successfully disconnected to the OS.
-     * @param
-     * @return
      */
     void OnAbilityDisconnected();
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo);
 
@@ -99,9 +94,7 @@ private:
         ~AbilityListener() = default;
         /**
          * @brief Called when your accessibility service is successfully connected to the OS.
-         * @param
-         * @return
-         */
+             */
         void OnAbilityConnected() override
         {
             extension_.OnAbilityConnected();
@@ -109,9 +102,7 @@ private:
 
         /**
          * @brief Called when an accessibility is disconnected.
-         * @param
-         * @return
-         */
+             */
         void OnAbilityDisconnected() override
         {
             extension_.OnAbilityDisconnected();
@@ -120,7 +111,6 @@ private:
         /**
          * @brief Called when an accessibility event occurs.
          * @param eventInfo The information of accessible event.
-         * @return
          */
         void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo) override
         {

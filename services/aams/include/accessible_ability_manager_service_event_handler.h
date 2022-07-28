@@ -27,7 +27,6 @@ public:
     /**
      * @brief Process the event of install system bundles.
      * @param event Indicates the event to be processed.
-     * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 };

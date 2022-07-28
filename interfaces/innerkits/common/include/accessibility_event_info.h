@@ -31,8 +31,6 @@ class AccessibilityMemo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -41,7 +39,6 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel
      * @param channelId The id of the IAccessibleAbilityChannel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -49,7 +46,6 @@ public:
 
     /**
      * @brief Get the id of the IAccessibleAbilityChannel
-     * @param -
      * @return The id of the IAccessibleAbilityChannel
      * @since 3
      * @sysCap Accessibility
@@ -59,7 +55,6 @@ public:
     /**
      * @brief Set the component of the event related.
      * @param componentId The id of component.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -67,7 +62,6 @@ public:
 
     /**
      * @brief Gets the view(component) ID associated with the accessibility event.
-     * @param -
      * @return The view(component) ID associated with the accessibility event.
      * @since 3
      * @sysCap Accessibility
@@ -76,7 +70,6 @@ public:
 
     /**
      * @brief Gets the accessibility ID of the component.
-     * @param -
      * @return The accessibility ID of the component.
      * @since 3
      * @sysCap Accessibility
@@ -86,7 +79,6 @@ public:
     /**
      * @brief Set the window ID associated with the accessibility event.
      * @param windowId The window ID associated with the accessibility event.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -94,7 +86,6 @@ public:
 
     /**
      * @brief Gets the window ID associated with the accessibility event.
-     * @param -
      * @return The window ID associated with the accessibility event.
      * @since 3
      * @sysCap Accessibility
@@ -104,7 +95,6 @@ public:
 
     /**
      * @brief Gets the current index of listed items or text position associated with the current event.
-     * @param -
      * @return The current index of listed items or text position associated with the current event.
      * @since 3
      * @sysCap Accessibility
@@ -114,7 +104,6 @@ public:
     /**
      * @brief Sets the current index of listed items or text position associated with the current event.
      * @param index The current index of listed items or text position associated with the current event.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -122,7 +111,6 @@ public:
 
     /**
      * @brief Gets the start index of listed items on the screen.
-     * @param -
      * @return The start index of listed items. It is unique value for the listed items.
      * @since 3
      * @sysCap Accessibility
@@ -132,7 +120,6 @@ public:
     /**
      * @brief Sets the start index of listed items on the screen.
      * @param index The start index of listed items. It is unique value for the listed items.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -140,7 +127,6 @@ public:
 
     /**
      * @brief Gets the number items on the screen.
-     * @param -
      * @return The number of items.
      * @since 3
      * @sysCap Accessibility
@@ -150,7 +136,6 @@ public:
     /**
      * @brief Sets the number items on the screen.
      * @param ItemCounts The number of items.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -158,7 +143,6 @@ public:
 
     /**
      * @brief Gets the end index of listed items on the screen.
-     * @param -
      * @return The end index of listed items on the screen.
      * @since 3
      * @sysCap Accessibility
@@ -168,7 +152,6 @@ public:
     /**
      * @brief Sets the end index of listed items on the screen.
      * @param index The end index of listed items on the screen.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -176,7 +159,6 @@ public:
 
     /**
      * @brief Gets the class(component type) name.
-     * @param -
      * @return The class(component type) name.
      * @since 3
      * @sysCap Accessibility
@@ -186,7 +168,6 @@ public:
     /**
      * @brief Sets the class(component type) name.
      * @param className The class(component type) name.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -194,7 +175,6 @@ public:
 
     /**
      * @brief Gets the before text changed of the component.
-     * @param -
      * @return The before text changed of the component.
      * @since 3
      * @sysCap Accessibility
@@ -204,7 +184,6 @@ public:
     /**
      * @brief Set the before text changed of the component.
      * @param beforeText The before text changed of the component.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -213,7 +192,6 @@ public:
     /**
      * @brief Adds an text to the content list.
      * @param content Indicates the text to add.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -221,7 +199,6 @@ public:
 
     /**
      * @brief Get the content list in the event.
-     * @param -
      * @return The content list in the event.
      * @since 3
      * @sysCap Accessibility
@@ -230,7 +207,6 @@ public:
 
     /**
      * @brief Gets the last content of the component(The text of changed after).
-     * @param -
      * @return The last content of the component(The text of changed after).
      * @since 3
      * @sysCap Accessibility
@@ -240,7 +216,6 @@ public:
     /**
      * @brief Sets the last content of the component.
      * @param content The last content of component.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -248,7 +223,6 @@ public:
 
     /**
      * @brief Gets the accessibility event description.
-     * @param -
      * @return The accessibility event description
      * @since 3
      * @sysCap Accessibility
@@ -258,7 +232,6 @@ public:
     /**
      * @brief Sets the accessibility event description.
      * @param contentDescription The accessibility event description
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -291,8 +264,6 @@ class AccessibilityEventInfo : public AccessibilityMemo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -301,7 +272,6 @@ public:
     /**
      * @brief Construct
      * @param eventType the type of event info
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -311,7 +281,6 @@ public:
      * @brief Construct
      * @param windowId The id of window
      * @param windowChangeTypes the window change type
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -319,7 +288,6 @@ public:
 
     /**
      * @brief Gets the number of accessibility records.
-     * @param -
      * @return The number of the records that describe the information of current event
      * @since 3
      * @sysCap Accessibility
@@ -330,7 +298,6 @@ public:
      * @brief Set the number of accessibility records.
      * @note It is same to setCount​(int32_t count)
      * @param recordCount The number of the records that describe the information of current event
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -339,7 +306,6 @@ public:
     /**
      * @brief Adds an accessibility record to describe the information of the current event.
      * @param record The record that describe the information of current event
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -358,7 +324,6 @@ public:
 
     /**
      * @brief Get the accessibility record list.
-     * @param
      * @return The accessibility record list
      * @since 3
      * @sysCap Accessibility
@@ -367,7 +332,6 @@ public:
 
     /**
      * @brief Get the type of the accessibility event.
-     * @param -
      * @return The type of the accessibility event.
      * @since 3
      * @sysCap Accessibility
@@ -376,7 +340,6 @@ public:
 
     /**
      * @brief Get the window content changed types
-     * @param -
      * @return The window content changed types. Refer to "WindowsContentChangeTypes"
      * @since 3
      * * @sysCap Accessibility
@@ -386,7 +349,6 @@ public:
     /**
      * @brief Set the window content changed types
      * @param changeTypes The window content changed types. Refer to "WindowsContentChangeTypes"
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -394,7 +356,6 @@ public:
 
     /**
      * @brief Get the window changed types
-     * @param -
      * @return The window changed types.refer to WindowUpdateType
      * @since 3
      * @sysCap Accessibility
@@ -404,7 +365,6 @@ public:
     /**
      * @brief Set the window changed types
      * @param changeTypes The window changed types.refer to WindowUpdateType
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -414,7 +374,6 @@ public:
      * @brief Sets the type of an accessibility event.
      * @note It is same to setAccessibilityEventType​(int32_t accessibilityEventType)
      * @param eventType The type of an accessibility event. Refer to "EventType"
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -422,7 +381,6 @@ public:
 
     /**
      * @brief AA get the time of accessibility event is sent from ASAC.
-     * @param -
      * @return The time of accessibility event is sent from ASAC
      * @since 3
      * @sysCap Accessibility
@@ -432,7 +390,6 @@ public:
     /**
      * @brief ASAC set the time of accessibility is sent to AA
      * @param timeStamp The time of accessibility event is sent from ASAC
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -440,7 +397,6 @@ public:
 
     /**
      * @brief Gets the bundle name of the event source, that is, the bundle name of the target application.
-     * @param -
      * @return Returns the bundle name of the event source.
      * @since 3
      * @sysCap Accessibility
@@ -450,7 +406,6 @@ public:
     /**
      * @brief Set the bundle name of the event source, that is, the bundle name of the target application.
      * @param bundleName The bundle name of the event source.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -458,7 +413,6 @@ public:
 
     /**
      * @brief Get the notification content of the event source.
-     * @param -
      * @return Return the notification content of the event source.
      * @since 3
      * @sysCap Accessibility
@@ -468,7 +422,6 @@ public:
     /**
      * @brief Set the notification content of the event source.
      * @param notificationContent The notification content of the event source.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -477,7 +430,6 @@ public:
     /**
      * @brief Set the move granularity of the text
      * @param granularity The move granularity of the text. Refer to "AccessibilityElementInfo.TextMoveUnit"
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -485,7 +437,6 @@ public:
 
     /**
      * @brief Get the move granularity of the text
-     * @param -
      * @return The move granularity of the text. Refer to "AccessibilityElementInfo.TextMoveUnit"
      * @since 3
      * @sysCap Accessibility
@@ -495,7 +446,6 @@ public:
     /**
      * @brief Sets the action that triggers the accessibility event.
      * @param action The operation of the event. Refer to "AccessibilityElementInfo.ActionType"
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -503,7 +453,6 @@ public:
 
     /**
      * @brief Gets the action that triggers the accessibility event.
-     * @param -
      * @return The operation of the event. Refer to "AccessibilityElementInfo.ActionType"
      * @since 3
      * @sysCap Accessibility
@@ -513,7 +462,6 @@ public:
     /**
      * @brief Set the information of accessibility event of [TYPE_NOTIFICATION_UPDATE_EVENT]
      * @param category Refer to [NotificationCategory], It maybe changed from APP
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -521,7 +469,6 @@ public:
 
     /**
      * @brief Get the information of accessibility event of [TYPE_NOTIFICATION_UPDATE_EVENT]
-     * @param -
      * @return Refer to [NotificationCategory], It maybe changed from APP
      * @since 3
      * @sysCap Accessibility
@@ -531,7 +478,6 @@ public:
     /**
      * @brief Set the customize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
      * @param category Refer to [GestureType], It maybe changed from APP
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -539,7 +485,6 @@ public:
 
     /**
      * @brief Get the customize gesture type of accessibility event of [TYPE_GESTURE_EVENT]
-     * @param -
      * @return Refer to [GestureType], It maybe changed from APP
      * @since 3
      * @sysCap Accessibility
@@ -549,7 +494,6 @@ public:
     /**
      * @brief Set the page ID associated with the accessibility event.
      * @param pageId The page ID associated with the accessibility event.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -557,7 +501,6 @@ public:
 
     /**
      * @brief Gets the page ID associated with the accessibility event.
-     * @param -
      * @return The page ID associated with the accessibility event.
      * @since 3
      * @sysCap Accessibility

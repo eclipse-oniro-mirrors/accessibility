@@ -32,21 +32,18 @@ public:
      * @brief Init accessible ability.
      * @param channel The object of IAccessibleAbilityChannel.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId) = 0;
 
     /**
      * @brief Disconnect accessible ability.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Disconnect(const int32_t channelId) = 0;
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) = 0;
 
@@ -54,7 +51,6 @@ public:
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
-     * @return
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) = 0;
 

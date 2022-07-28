@@ -30,14 +30,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit MockAccessibilityElementOperatorProxy(const sptr<IRemoteObject>& object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~MockAccessibilityElementOperatorProxy() override;
 
@@ -50,7 +47,6 @@ public:
      *              PREFETCH_SIBLINGS: Need to make the sister/brothers node info also.
      *              PREFETCH_CHILDREN: Need to make the child node info also.
      *              otherwise: Make the node information by elementId only.
-     * @return -
      * @sysCap Accessibility
      */
     virtual void SearchElementInfoByAccessibilityId(const int32_t elementId, const int32_t requestId,
@@ -62,7 +58,6 @@ public:
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param text  Filter for the child components to matched with the text
-     * @return
      */
     virtual void SearchElementInfosByText(const int32_t elementId, const std::string& text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
@@ -74,7 +69,6 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param focusType FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
-     * @return
      */
     virtual void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
@@ -85,7 +79,6 @@ public:
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
-     * @return -
      */
     virtual void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
@@ -110,7 +103,6 @@ public:
      *                                  {ACTION_ARGU_SELECT_TEXT_END,"10"(end location)})
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
-     * @return
      */
     virtual void ExecuteAction(const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, int32_t requestId,
@@ -119,8 +111,6 @@ public:
     /**
      * @brief The function is called while accessibility System check the id of window is not equal
      * to the id of active window when sendAccessibility.
-     * @param -
-     * @return
      */
     virtual void ClearFocus() override;
 
@@ -128,8 +118,6 @@ public:
      * @brief the low layer is notified by the function called while accessibility system execute
      * the function of executeAction from AS to check the all low windows cared the outside event.
      * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
-     * @param -
-     * @return
      */
     virtual void OutsideTouch() override;
 

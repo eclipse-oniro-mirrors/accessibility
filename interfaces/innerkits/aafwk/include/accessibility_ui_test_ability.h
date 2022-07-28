@@ -28,14 +28,11 @@ class AccessibilityUITestAbility {
 public:
     /**
      * @brief Destruct
-     * @param
-     * @return
      */
     virtual ~AccessibilityUITestAbility() = default;
 
     /**
      * @brief Gets an instance of AccessibilityUITestAbility.
-     * @param
      * @return Return an instance of AccessibilityUITestAbility.
      */
     static std::shared_ptr<AccessibilityUITestAbility> GetInstance();
@@ -239,7 +236,6 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) = 0;
 };

@@ -53,56 +53,48 @@ public:
 
     /**
      * @brief Obtains the types of the accessible ability.
-     * @param
      * @return Return the types of the accessible ability.
      */
     uint32_t GetAccessibilityAbilityType();
 
     /**
      * @brief Obtains the types of the capabilities.
-     * @param
      * @return Return the types of the capabilities.
      */
     uint32_t GetCapabilityValues() const;
 
     /**
      * @brief Obtains the description of the accessible ability.
-     * @param
      * @return Return the description of the accessible ability.
      */
     const std::string &GetDescription() const;
 
     /**
      * @brief Obtains the types of the accessible events.
-     * @param
      * @return Return the types of the accessible events.
      */
     uint32_t GetEventTypes();
 
     /**
      * @brief Obtains the id of the accessible ability.
-     * @param
      * @return Return the id of the accessible ability.
      */
     std::string GetId() const;
 
     /**
      * @brief Obtains the name of the accessible ability.
-     * @param
      * @return Return the name of the accessible ability.
      */
     const std::string &GetName() const;
 
     /**
      * @brief Obtains the package name of the accessible ability.
-     * @param
      * @return Return the package name of the accessible ability.
      */
     const std::string &GetPackageName() const;
 
     /**
      * @brief Obtains the module name of the accessible ability.
-     * @param
      * @return Return the module name of the accessible ability.
      */
     const std::string &GetModuleName() const;
@@ -110,20 +102,17 @@ public:
     /**
      * @brief Set the package name of the accessible ability.
      * @param bundleName the package name of the accessible ability
-     * @return -
      */
     void SetPackageName(const std::string &bundleName);
 
     /**
      * @brief Obtains the target bundles's name that you are listening on.
-     * @param
      * @return Return the target bundles's name that you are listening on.
      */
     const std::vector<std::string> &GetFilterBundleNames() const;
 
     /**
      * @brief Obtains the setting ability of the accessible ability.
-     * @param
      * @return Return the setting ability of the accessible ability.
      */
     const std::string &GetSettingsAbility() const;
@@ -131,7 +120,6 @@ public:
     /**
      * @brief Set the target bundles's name that you want to listening on.
      * @param targetBundleNames the target bundle name to set.
-     * @return
      */
     inline void SetFilterBundleNames(const std::vector<std::string> &targetBundleNames)
     {
@@ -141,7 +129,6 @@ public:
     /**
      * @brief Set the types of the capabilities.
      * @param capabilities the capabilities to set.
-     * @return
      */
     inline void SetCapabilityValues(uint32_t capabilities)
     {
@@ -151,7 +138,6 @@ public:
     /**
      * @brief Set the types of the ability.
      * @param abilityTypes the ability types to set.
-     * @return
      */
     inline void SetAccessibilityAbilityType(uint32_t abilityTypes)
     {
@@ -161,7 +147,6 @@ public:
     /**
      * @brief Set the types of the event.
      * @param eventTypes the event to set.
-     * @return
      */
     inline void SetEventTypes(uint32_t eventTypes)
     {

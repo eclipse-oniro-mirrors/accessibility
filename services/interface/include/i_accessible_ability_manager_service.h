@@ -81,7 +81,6 @@ public:
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
-     * @return
      */
     virtual void DeregisterElementOperator(const int32_t windowId) = 0;
 

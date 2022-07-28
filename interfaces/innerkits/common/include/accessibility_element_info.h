@@ -29,8 +29,6 @@ class AccessibleAction {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     AccessibleAction() {}
 
@@ -38,20 +36,17 @@ public:
      * @brief Construct
      * @param actionType The type of action, refer to [ActionType]
      * @param description The description message of action.
-     * @return
      */
     AccessibleAction(ActionType actionType, const std::string &description);
 
     /**
      * @brief Gets the action type.
-     * @param -
      * @return The type of action, refer to [ActionType]
      */
     ActionType GetActionType() const;
 
     /**
      * @brief Gets the action description.
-     * @param -
      * @return The description message of action.
      */
     const std::string &GetDescriptionInfo() const;
@@ -70,8 +65,6 @@ class RangeInfo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     RangeInfo() {}
 
@@ -80,27 +73,23 @@ public:
      * @param min The min value
      * @param max The max value
      * @param current current value
-     * @return
      */
     RangeInfo(int32_t min, int32_t max, int32_t current);
 
     /**
      * @brief Gets the min value.
-     * @param
      * @return min value
      */
     int32_t GetMin() const;
 
     /**
      * @brief Gets the max value.
-     * @param
      * @return max value.
      */
     int32_t GetMax() const;
 
     /**
      * @brief Gets the current value.
-     * @param
      * @return current value.
      */
     int32_t GetCurrent() const;
@@ -108,21 +97,18 @@ public:
     /**
      * @brief Sets the min value.
      * @param min min value
-     * @return
      */
     void SetMin(int32_t min);
 
     /**
      * @brief Sets the max value.
      * @param max max value.
-     * @return
      */
     void SetMax(int32_t max);
 
     /**
      * @brief Sets the current value.
      * @param current current value
-     * @return
      */
     void SetCurrent(int32_t current);
 
@@ -141,8 +127,6 @@ class GridInfo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -153,7 +137,6 @@ public:
      * @param rowCount The number of row
      * @param columnCount The number of column
      * @param mode 0: select one line only, otherwise select multilines.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -164,7 +147,6 @@ public:
      * @param rowCount The number of row
      * @param columnCount The number of column
      * @param mode 0: select one line only, otherwise select multilines.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -173,7 +155,6 @@ public:
     /**
      * @brief Copy grid object.
      * @param other The copied grid
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -181,7 +162,6 @@ public:
 
     /**
      * @brief Gets the number of rows.
-     * @param -
      * @return number of rows.
      * @since 3
      * @sysCap Accessibility
@@ -190,7 +170,6 @@ public:
 
     /**
      * @brief Gets the number of columns.
-     * @param
      * @return number of columns.
      * @since 3
      * @sysCap Accessibility
@@ -199,7 +178,6 @@ public:
 
     /**
      * @brief Get the mode of grid
-     * @param
      * @return 0: Selected by one line, otherwise is multilines.
      * @since 3
      * @sysCap Accessibility
@@ -216,8 +194,6 @@ class GridItemInfo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -231,7 +207,6 @@ public:
      * @param columnSpan THe column spanned
      * @param heading true:The item isHeading, otherwise is not
      * @param selected true:The item is selected,otherwise is not
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -241,7 +216,6 @@ public:
     /**
      * @brief Copy the GridItemInfo
      * @param other The object of GridItemInfo copied.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -255,7 +229,6 @@ public:
      * @param columnSpan THe column spanned
      * @param heading true:The item isHeading, otherwise is not
      * @param selected true:The item is selected,otherwise is not
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -264,7 +237,6 @@ public:
 
     /**
      * @brief Gets the column index at which the item is located.
-     * @param
      * @return The column index.
      * @since 3
      * @sysCap Accessibility
@@ -273,7 +245,6 @@ public:
 
     /**
      * @brief Gets the row index at which the item is located.
-     * @param
      * @return The row index.
      * @since 3
      * @sysCap Accessibility
@@ -282,7 +253,6 @@ public:
 
     /**
      * @brief Gets the number of columns the item spans.
-     * @param
      * @return The column span.
      * @since 3
      * @sysCap Accessibility
@@ -291,7 +261,6 @@ public:
 
     /**
      * @brief Gets the number of rows the item spans.
-     * @param
      * @return The row span.
      * @since 3
      * @sysCap Accessibility
@@ -300,7 +269,6 @@ public:
 
     /**
      * @brief Checks if the grid item is a heading.
-     * @param
      * @return true:If the item is a heading, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -309,7 +277,6 @@ public:
 
     /**
      * @brief Checks if the grid item is a selected.
-     * @param
      * @return true:If the item is a selected, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -329,8 +296,6 @@ class Rect {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -338,8 +303,6 @@ public:
 
     /**
      * @brief Destruct
-     * @param -
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -351,7 +314,6 @@ public:
      * @param leftTopY : The left top y pixel coordinates
      * @param rightBottomY : The right bottom y pixel coordinates
      * @param rightBottomX : The right bottom x pixel coordinates
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -365,7 +327,6 @@ public:
 
     /**
      * @brief Get the left top point's pixel coordinates
-     * @param -
      * @return The left top x pixel coordinates
      * @since 3
      * @sysCap Accessibility
@@ -377,7 +338,6 @@ public:
 
     /**
      * @brief Get the left top point's pixel coordinates
-     * @param -
      * @return The left top y pixel coordinates
      * @since 3
      * @sysCap Accessibility
@@ -389,7 +349,6 @@ public:
 
     /**
      * @brief Get the right bottom point's pixel coordinates
-     * @param -
      * @return The bottom x pixel coordinates
      * @since 3
      * @sysCap Accessibility
@@ -401,7 +360,6 @@ public:
 
     /**
      * @brief Get the right bottom point's pixel coordinates
-     * @param -
      * @return The bottom y pixel coordinates
      * @since 3
      * @sysCap Accessibility
@@ -414,7 +372,6 @@ public:
      * @brief Set the left top point's pixel coordinates
      * @param leftTopX The left top x pixel coordinates
      * @param leftTopY The left top y pixel coordinates
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -428,7 +385,6 @@ public:
      * @brief Set the right bottom point's pixel coordinates
      * @param rightBottomX The right bottom x pixel coordinates
      * @param rightBottomY The right bottom y pixel coordinates
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -455,8 +411,6 @@ public:
 
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -465,7 +419,6 @@ public:
     /**
      * @brief Set the id of AccessibilityElementInfo
      * @param componentId The id of component.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -482,7 +435,6 @@ public:
 
     /**
      * @brief Gets the number of children
-     * @param -
      * @return The number of children
      * @since 3
      * @sysCap Accessibility
@@ -491,7 +443,6 @@ public:
 
     /**
      * @brief Gets the id of children
-     * @param -
      * @return The list of children id
      * @since 3
      * @sysCap Accessibility
@@ -501,7 +452,6 @@ public:
     /**
      * @brief Add child node information
      * @param childId The id of child node
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -518,7 +468,6 @@ public:
 
     /**
      * @brief Gets an action list.
-     * @param -
      * @return action list.  Refer to AccessibleAction
      * @since 3
      * @sysCap Accessibility
@@ -528,7 +477,6 @@ public:
     /**
      * @brief Add action on the component
      * @param action The action on the component.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -537,7 +485,6 @@ public:
     /**
      * @brief Remove action on the component
      * @param action The action object.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -554,8 +501,6 @@ public:
 
     /**
      * @brief Remove all the action on the component.
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -564,7 +509,6 @@ public:
     /**
      * @brief Sets the maximum length of text allowed for this node.
      * @param max The maximum length of text
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -572,7 +516,6 @@ public:
 
     /**
      * @brief Gets the maximum length of text allowed for this node.
-     * @param
      * @return The maximum length of text
      * @since 3
      * @sysCap Accessibility
@@ -581,7 +524,6 @@ public:
 
     /**
      * @brief Get the window Id of the component that belongs to the window.
-     * @param
      * @return window id
      * @since 3
      * @sysCap Accessibility
@@ -591,7 +533,6 @@ public:
     /**
      * @brief Set the window Id of the component that belongs to the window.
      * @param windowId The window Id
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -599,7 +540,6 @@ public:
 
     /**
      * @brief Get parent accessibility Id.
-     * @param
      * @return The accessibility Id of parent.
      * @since 3
      * @sysCap Accessibility
@@ -609,7 +549,6 @@ public:
     /**
      * @brief Set parent node information
      * @param parentId Parent node id
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -617,7 +556,6 @@ public:
 
     /**
      * @brief Gets the rectangular area of this accessibility node control in the screen.
-     * @param
      * @return The rectangular area of this accessibility node
      * @since 3
      * @sysCap Accessibility
@@ -627,7 +565,6 @@ public:
     /**
      * @brief Set the rectangular area of this accessibility node control in the screen.
      * @param bounds The rectangular area of this accessibility node
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -635,7 +572,6 @@ public:
 
     /**
      * @brief Checks whether this node (a check box as an example) is checkable.
-     * @param
      * @return true:the node is checkable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -645,7 +581,6 @@ public:
     /**
      * @brief Set whether this node (a check box as an example) is checkable.
      * @param checkable true:the node is checkable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -653,7 +588,6 @@ public:
 
     /**
      * @brief Checks whether this node is checked.
-     * @param
      * @return true : Is checked, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -663,7 +597,6 @@ public:
     /**
      * @brief Set whether this node is checked.
      * @param checked true:Is checked, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -671,7 +604,6 @@ public:
 
     /**
      * @brief Checks whether this node can be focused.
-     * @param
      * @return true : Can be focused, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -681,7 +613,6 @@ public:
     /**
      * @brief Set whether this node can be focused.
      * @param focusable true : Can be focused, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -689,7 +620,6 @@ public:
 
     /**
      * @brief Checks whether this node has gained focus.
-     * @param
      * @return true:Focused, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -699,7 +629,6 @@ public:
     /**
      * @brief Set whether this node has gained focus.
      * @param focused true : Focused, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -707,7 +636,6 @@ public:
 
     /**
      * @brief Checks whether this node is visible to users.
-     * @param
      * @return true : visible, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -717,7 +645,6 @@ public:
     /**
      * @brief Set whether this node is visible to users.
      * @param visible true:visible, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -725,7 +652,6 @@ public:
 
     /**
      * @brief Checks whether this node has gained accessibility focus.
-     * @param
      * @return true:Gained accessibility focus, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -735,7 +661,6 @@ public:
     /**
      * @brief Set whether this node has gained accessibility focus.
      * @param focused true:Gained accessibility focus, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -743,7 +668,6 @@ public:
 
     /**
      * @brief Checks whether this node is selected.
-     * @param
      * @return true:selected, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -753,7 +677,6 @@ public:
     /**
      * @brief Set whether this node is selected.
      * @param selected true: selected, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -761,7 +684,6 @@ public:
 
     /**
      * @brief Checks whether this node is clickable.
-     * @param
      * @return true: clickable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -771,7 +693,6 @@ public:
     /**
      * @brief Set whether this node is clickable.
      * @param clickable true:clickable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -779,7 +700,6 @@ public:
 
     /**
      * @brief Checks whether this node is long clickable.
-     * @param
      * @return true: long clickable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -789,7 +709,6 @@ public:
     /**
      * @brief Set whether this node is long clickable.
      * @param longClickable true: long clickable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -797,7 +716,6 @@ public:
 
     /**
      * @brief Checks whether this node is enabled.
-     * @param
      * @return true:enabled, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -807,7 +725,6 @@ public:
     /**
      * @brief Set whether this node is enabled.
      * @param enabled true: enabled, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -815,7 +732,6 @@ public:
 
     /**
      * @brief Checks whether the content in this node is a password.
-     * @param
      * @return true: password, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -825,7 +741,6 @@ public:
     /**
      * @brief Set whether the content in this node is a password
      * @param type true:password, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -833,7 +748,6 @@ public:
 
     /**
      * @brief Checks whether this node is scrollable.
-     * @param
      * @return true: scrollable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -843,7 +757,6 @@ public:
     /**
      * @brief Set whether this node is scrollable.
      * @param scrollable true: scrollable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -851,7 +764,6 @@ public:
 
     /**
      * @brief Checks whether this node is editable.
-     * @param
      * @return true:editable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -861,7 +773,6 @@ public:
     /**
      * @brief Set whether this node is editable.
      * @param editable true: editable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -869,7 +780,6 @@ public:
 
     /**
      * @brief Checks whether this node can display text in multiple lines.
-     * @param
      * @return true: multilines, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -879,7 +789,6 @@ public:
     /**
      * @brief Set whether this node can display text in multiple lines.
      * @param multiLine true:multilines, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -887,7 +796,6 @@ public:
 
     /**
      * @brief Checks whether pop-up windows are supported.
-     * @param
      * @return true: Support popup, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -897,7 +805,6 @@ public:
     /**
      * @brief Set whether pop-up windows are supported.
      * @param supportPopup true: Support popup, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -905,7 +812,6 @@ public:
 
     /**
      * @brief Checks whether this node is deletable.
-     * @param
      * @return true:deletable, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -915,7 +821,6 @@ public:
     /**
      * @brief Set whether this node is deletable.
      * @param deletable true:deletable, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -923,7 +828,6 @@ public:
 
     /**
      * @brief Checks whether this node is essential to users.
-     * @param
      * @return true: essential to user, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -933,7 +837,6 @@ public:
     /**
      * @brief Set whether this node is essential to users.
      * @param essential true:essential to user, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -941,7 +844,6 @@ public:
 
     /**
      * @brief Checks whether this node is displaying a hint.
-     * @param
      * @return true:displaying a hint, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -951,7 +853,6 @@ public:
     /**
      * @brief Set whether this node is displaying a hint.
      * @param hinting true:displaying a hint, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -959,7 +860,6 @@ public:
 
     /**
      * @brief Gets the bundle name of application target.
-     * @param
      * @return bundle name
      * @since 3
      * @sysCap Accessibility
@@ -969,7 +869,6 @@ public:
     /**
      * @brief Set the bundle name of application target.
      * @param bundleName The bundle name of application target.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -977,7 +876,6 @@ public:
 
     /**
      * @brief Get component type.
-     * @param
      * @return The component type.
      * @since 3
      * @sysCap Accessibility
@@ -987,7 +885,6 @@ public:
     /**
      * @brief Set component type.
      * @param className The component type.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -995,7 +892,6 @@ public:
 
     /**
      * @brief Gets the text of node.
-     * @param
      * @return The text of node
      * @since 3
      * @sysCap Accessibility
@@ -1005,7 +901,6 @@ public:
     /**
      * @brief Set the text of node.
      * @param text The text of node
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1013,7 +908,6 @@ public:
 
     /**
      * @brief Gets the hint information.
-     * @param
      * @return the hint information.
      * @since 3
      * @sysCap Accessibility
@@ -1023,7 +917,6 @@ public:
     /**
      * @brief Sets the hint information.
      * @param hintText the hint information.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1031,7 +924,6 @@ public:
 
     /**
      * @brief Gets the description of the accessibility node.
-     * @param
      * @return the description of the accessibility node.
      * @since 3
      * @sysCap Accessibility
@@ -1041,7 +933,6 @@ public:
     /**
      * @brief Set the description of the accessibility node.
      * @param contentDescription the description of the accessibility node.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1050,7 +941,6 @@ public:
     /**
      * @brief Set the resource name of the component.
      * @param viewIdResName The resource name.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1058,7 +948,6 @@ public:
 
     /**
      * @brief Gets the resource name.
-     * @param
      * @return the resource name.
      * @since 3
      * @sysCap Accessibility
@@ -1068,7 +957,6 @@ public:
     /**
      * @brief Set whether this node has live region
      * @param liveRegion live region: 0: not live region; 1: interrupt current talk back; 2: talk back by order
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1076,7 +964,6 @@ public:
 
     /**
      * @brief Get the live region of the node
-     * @param
      * @return The live region of the node
      * @since 3
      * @sysCap Accessibility
@@ -1088,7 +975,6 @@ public:
      * @note If the node has content Invalid,when input invalid information, it will be talkbacked. such as:
      * The editbox permit number only, you input character("a"), The invalid information will be talkbacked.
      * @param contentInvalid true:the content is invalid; false:the content is valid
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1096,7 +982,6 @@ public:
 
     /**
      * @brief Get whether this node has content Invalid.
-     * @param
      * @return true:the content is invalid; false:the content is valid
      * @since 3
      * @sysCap Accessibility
@@ -1106,7 +991,6 @@ public:
     /**
      * @brief Set error information, it used with contentInvalid is setted true.
      * @param error error information
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1114,7 +998,6 @@ public:
 
     /**
      * @brief Get error information,it used with contentInvalid is setted true.
-     * @param
      * @return error information
      * @since 3
      * @sysCap Accessibility
@@ -1124,7 +1007,6 @@ public:
     /**
      * @brief Set the id of component labeled
      * @param componentId the id of component
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1132,7 +1014,6 @@ public:
 
     /**
      * @brief Get labeled accessibility Id
-     * @param
      * @return accessibility Id
      * @since 3
      * @sysCap Accessibility
@@ -1141,7 +1022,6 @@ public:
 
     /**
      * @brief Get the id of the IAccessibleAbilityChannel
-     * @param
      * @return The id of the IAccessibleAbilityChannel
      * @since 3
      * @sysCap Accessibility
@@ -1151,7 +1031,6 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel
      * @param channelId The id of the IAccessibleAbilityChannel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1160,7 +1039,6 @@ public:
     /**
      * @brief Set accessibility Id
      * @param componentId The id of component
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1168,7 +1046,6 @@ public:
 
     /**
      * @brief Get accessibility Id
-     * @param
      * @return accessibility Id
      * @since 3
      * @sysCap Accessibility
@@ -1177,7 +1054,6 @@ public:
 
     /**
      * @brief Get the object of RangeInfo
-     * @param
      * @return the object of RangeInfo
      * @since 3
      * @sysCap Accessibility
@@ -1187,7 +1063,6 @@ public:
     /**
      * @brief Set the object of RangeInfo
      * @param rangeInfo the object of RangeInfo
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1196,7 +1071,6 @@ public:
     /**
      * @brief Set the start location of text selected.
      * @param start the start location of text selected.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1204,7 +1078,6 @@ public:
 
     /**
      * @brief Get the start location of text selected.
-     * @param
      * @return the start location of text selected.
      * @since 3
      * @sysCap Accessibility
@@ -1214,7 +1087,6 @@ public:
     /**
      * @brief Set the end location of text selected.
      * @param end the end location of text selected.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1222,7 +1094,6 @@ public:
 
     /**
      * @brief Get the end location of text selected.
-     * @param
      * @return the end location of text selected.
      * @since 3
      * @sysCap Accessibility
@@ -1231,7 +1102,6 @@ public:
 
     /**
      * @brief Get the object of GridInfo
-     * @param
      * @return the object of GridInfo
      * @since 3
      * @sysCap Accessibility
@@ -1241,7 +1111,6 @@ public:
     /**
      * @brief Set the object of GridInfo
      * @param grid the object of GridInfo
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1249,7 +1118,6 @@ public:
 
     /**
      * @brief Get the object of GridItemInfo
-     * @param
      * @return the object of GridItemInfo
      * @since 3
      * @sysCap Accessibility
@@ -1259,7 +1127,6 @@ public:
     /**
      * @brief Set the object of GridItemInfo
      * @param gridItem the object of GridItemInfo
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1267,7 +1134,6 @@ public:
 
     /**
      * @brief Get the current index of list or location text
-     * @param
      * @return the current index of list or location text
      * @since 3
      * @sysCap Accessibility
@@ -1277,7 +1143,6 @@ public:
     /**
      * @brief Set the current index of list or location text
      * @param index the current index of list or location text
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1285,7 +1150,6 @@ public:
 
     /**
      * @brief Get the start index of list or location text
-     * @param
      * @return the start index of list or location text
      * @since 3
      * @sysCap Accessibility
@@ -1295,7 +1159,6 @@ public:
     /**
      * @brief Set the start index of list or location text
      * @param index the start index of list or location text
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1303,7 +1166,6 @@ public:
 
     /**
      * @brief Get the end index of list or location text
-     * @param
      * @return the end index of list or location text
      * @since 3
      * @sysCap Accessibility
@@ -1313,7 +1175,6 @@ public:
     /**
      * @brief Set the end index of list or location text
      * @param index the end index of list or location text
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1321,7 +1182,6 @@ public:
 
     /**
      * @brief Get the input type of text
-     * @param
      * @return The input type of text
      * @since 3
      * @sysCap Accessibility
@@ -1331,7 +1191,6 @@ public:
     /**
      * @brief Set the input type of text
      * @param inputType The input type of text
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1339,7 +1198,6 @@ public:
 
     /**
      * @brief Check whether this node is valid
-     * @param
      * @return true:valid, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -1349,7 +1207,6 @@ public:
     /**
      * @brief Set whether this node is valid
      * @param valid true:valid, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -1374,7 +1231,6 @@ public:
     /**
      * @brief Set page id
      * @param pageId page id.
-     * @return -
      * @sysCap Accessibility
      */
     void SetPageId(const int32_t pageId);
@@ -1389,14 +1245,12 @@ public:
     /**
      * @brief Set the text movement step
      * @param granularity text moving unit
-     * @return -
      * @sysCap Accessibility
      */
     void SetTextMovementStep(const TextMoveUnit granularity);
 
     /**
      * @brief Get the text movement step
-     * @param -
      * @return Text moving unit
      * @sysCap Accessibility
      */
@@ -1405,14 +1259,12 @@ public:
     /**
      * @brief Set item count
      * @param itemCounts The count of item
-     * @return -
      * @sysCap Accessibility
      */
     void SetItemCounts(const int32_t itemCounts);
 
     /**
      * @brief Get item count
-     * @param -
      * @return The count of item
      * @sysCap Accessibility
      */
@@ -1423,14 +1275,12 @@ public:
     /**
      * @brief Set trigger action
      * @param action The trigger action
-     * @return -
      * @sysCap Accessibility
      */
     void SetTriggerAction(const ActionType action);
 
     /**
      * @brief Get trigger action
-     * @param -
      * @return The trigger action
      * @sysCap Accessibility
      */
@@ -1439,7 +1289,6 @@ public:
     /**
      * @brief Set content list
      * @param contentList The list of content
-     * @return -
      * @sysCap Accessibility
      */
     void SetContentList(const std::vector<std::string> &contentList);
@@ -1447,7 +1296,6 @@ public:
     /**
      * @brief Get content list
      * @param contentList(out) The list of content
-     * @return -
      * @sysCap Accessibility
      */
     void GetContentList(std::vector<std::string> &contentList) const;
@@ -1455,14 +1303,12 @@ public:
     /**
      * @brief Set latest content
      * @param content The latest content
-     * @return -
      * @sysCap Accessibility
      */
     void SetLatestContent(const std::string &content);
 
     /**
      * @brief Get latest content
-     * @param -
      * @return The latest content
      * @sysCap Accessibility
      */

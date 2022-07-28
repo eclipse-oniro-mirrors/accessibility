@@ -25,15 +25,11 @@ class AccessibilityUITestAbilityImpl final : public AccessibilityUITestAbility {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     AccessibilityUITestAbilityImpl();
 
     /**
      * @brief Destruct
-     * @param
-     * @return
      */
     ~AccessibilityUITestAbilityImpl() = default;
 
@@ -237,7 +233,6 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) override;
 

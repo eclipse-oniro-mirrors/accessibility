@@ -26,21 +26,17 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibleAbilityManagerCaptionObserverProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityManagerCaptionObserverProxy() override;
 
     /**
      * @brief Receive the caption property notify from AAMS and send it to the observer registered.
      * @param caption the caption property
-     * @return
      */
     virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) override;
 private:

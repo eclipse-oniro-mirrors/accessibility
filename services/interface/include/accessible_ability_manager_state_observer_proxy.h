@@ -26,14 +26,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibleAbilityManagerStateObserverProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityManagerStateObserverProxy() override;
 
@@ -43,7 +40,6 @@ public:
      *                  state type: Refer to AccessibilityStateEventType.
      *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/
      *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED
-     * @return
      */
     virtual void OnStateChanged(const uint32_t stateType) override;
 private:

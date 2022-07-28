@@ -26,14 +26,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibleAbilityManagerConfigObserverProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityManagerConfigObserverProxy() override;
 

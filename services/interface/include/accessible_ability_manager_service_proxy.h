@@ -29,14 +29,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibleAbilityManagerServiceProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityManagerServiceProxy() override;
 
@@ -84,7 +81,6 @@ public:
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
-     * @return
      */
     virtual void DeregisterElementOperator(const int32_t windowId) override;
 

@@ -108,7 +108,6 @@ void TouchEventInjector::CancelGesture()
     HILOG_DEBUG();
     std::shared_ptr<MMI::PointerEvent> event;
     MMI::PointerEvent::PointerItem pointer = {};
-    pointer.SetPointerId(0);
     int64_t time = GetSystemTime();
     pointer.SetDownTime(time);
     pointer.SetPointerId(0);

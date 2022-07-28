@@ -36,8 +36,6 @@ class AccessibilityStateObserver {
 public:
     /**
      * @brief Destruct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -46,7 +44,6 @@ public:
     /**
      * @brief Receives notifications on accessibility status changes.
      * @param state Indicates the status change.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */

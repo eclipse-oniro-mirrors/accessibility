@@ -31,21 +31,17 @@ class AccessibleAbilityClient : public virtual RefBase {
 public:
     /**
      * @brief Destruct
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityClient() = default;
 
     /**
      * @brief Gets an instance of AccessibleAbilityClient.
-     * @param
      * @return Return an instance of AccessibleAbilityClient.
      */
     static sptr<AccessibleAbilityClient> GetInstance();
 
     /**
      * @brief Gets remote object.
-     * @param
      * @return Remote object.
      */
     virtual sptr<IRemoteObject> GetRemoteObject() = 0;
@@ -237,7 +233,6 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) = 0;
 };

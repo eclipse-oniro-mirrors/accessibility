@@ -29,14 +29,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibilityElementOperatorCallbackProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibilityElementOperatorCallbackProxy() override;
 
@@ -44,7 +41,6 @@ public:
      * @brief Set the element information by accessibility id to AA.
      * @param infos The element info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override;
@@ -53,7 +49,6 @@ public:
      * @brief Set the element information matched with text to AA.
      * @param infos The element information searched matched with text.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override;
@@ -62,7 +57,6 @@ public:
      * @brief Set the element information matched with focus type to AA.
      * @param info The element information searched matched with focus type.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
 
@@ -70,7 +64,6 @@ public:
      * @brief Set the element information by focus direction to AA.
      * @param info The element information searched by focus direction.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
 
@@ -78,7 +71,6 @@ public:
      * @brief Set the result of action executed to AA.
      * @param succeeded True: The action is executed successfully; otherwise is false.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 

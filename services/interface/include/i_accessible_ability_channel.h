@@ -137,7 +137,6 @@ public:
      * @brief Set the result of key press event.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
      * @param sequence The sequence of key press event result.
-     * @return
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) = 0;
 

@@ -24,15 +24,11 @@ class AccessibilityMouseKey : public EventTransmission {
 public:
     /**
      * @brief A constructor used to create a AccessibilityMouseKey instance.
-     * @param
-     * @return
      */
     AccessibilityMouseKey() = default;
 
     /**
      * @brief A destructor used to delete the AccessibilityMouseKey instance.
-     * @param
-     * @return
      */
     virtual ~AccessibilityMouseKey() = default;
 

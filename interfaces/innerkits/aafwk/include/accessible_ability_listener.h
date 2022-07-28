@@ -29,22 +29,17 @@ public:
 
     /**
      * @brief Called when an accessibility is connected.
-     * @param
-     * @return
      */
     virtual void OnAbilityConnected() = 0;
 
     /**
      * @brief Called when an accessibility is disconnected.
-     * @param
-     * @return
      */
     virtual void OnAbilityDisconnected() = 0;
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) = 0;
 

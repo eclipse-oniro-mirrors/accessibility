@@ -25,8 +25,6 @@ class AccessibilityEventInfoParcel : public AccessibilityEventInfo, public Parce
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -35,7 +33,6 @@ public:
     /**
      * @brief Construct
      * @param eventInfo The object of AccessibilityEventInfo.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */

@@ -41,7 +41,6 @@ public:
     /**
      * @brief Process the event of install system bundles.
      * @param event Indicates the event to be processed.
-     * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 private:
@@ -54,15 +53,11 @@ public:
 
     /**
      * @brief A constructor used to create a TouchEventInjector instance.
-     * @param
-     * @return
      */
     TouchEventInjector();
 
     /**
      * @brief A destructor used to delete the TouchEventInjector instance.
-     * @param
-     * @return
      */
     ~TouchEventInjector() {}
 
@@ -77,43 +72,34 @@ public:
     /**
      * @brief Clear event state from specific input source.
      * @param inputSource the input source
-     * @return
      */
     void ClearEvents(uint32_t inputSource) override;
 
     /**
      * @brief Destroy event state.
-     * @param
-     * @return
      */
     void DestroyEvents() override;
 
     /**
      * @brief Send pointer event to next stream node.
      * @param event the touch event prepared to send
-     * @return
      */
     void SendPointerEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Inject simulated gestures.
      * @param gesturePath the gesture path
-     * @return
      */
     void InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
 private:
     /**
      * @brief Cancel the gesture.
-     * @param
-     * @return
      */
     void CancelGesture();
 
     /**
      * @brief Cancel the injected events.
-     * @param
-     * @return
      */
     void CancelInjectedEvents();
 
@@ -128,7 +114,6 @@ private:
 
     /**
      * @brief Get the number of microseconds elapsed since the system was booted.
-     * @param
      * @return the number of microseconds elapsed since the system was booted
      */
     int64_t GetSystemTime();
@@ -137,7 +122,6 @@ private:
      * @brief Parse taps events.
      * @param startTime the start time of gesture injection
      * @param gesturePath the gesture path
-     * @return
      */
     void ParseTapsEvents(int64_t startTime, const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
@@ -145,7 +129,6 @@ private:
      * @brief Parse move events.
      * @param startTime the start time of gesture injection
      * @param gesturePath the gesture path
-     * @return
      */
     void ParseMovesEvents(int64_t startTime, const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
 
@@ -153,7 +136,6 @@ private:
      * @brief Parse touchevents from gesturepath.
      * @param startTime the start time of gesture injection
      * @param gesturePath the gesture path
-     * @return
      */
     void ParseTouchEventsFromGesturePath(int64_t startTime,
         const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);

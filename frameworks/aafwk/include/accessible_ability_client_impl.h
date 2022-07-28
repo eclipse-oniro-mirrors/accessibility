@@ -38,7 +38,6 @@ public:
 
     /**
      * @brief Gets remote object.
-     * @param
      * @return Remote object.
      */
     virtual sptr<IRemoteObject> GetRemoteObject() override;
@@ -54,21 +53,18 @@ public:
      * @brief Init accessible ability.
      * @param channel The object of IAccessibleAbilityChannel.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId) override;
 
     /**
      * @brief Disconnect accessible ability.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Disconnect(const int32_t channelId) override;
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
 
@@ -76,7 +72,6 @@ public:
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
-     * @return
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
 
@@ -260,14 +255,12 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) override;
 
     /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
-     * @return
      */
     void ResetAAClient(const wptr<IRemoteObject> &remote);
 
