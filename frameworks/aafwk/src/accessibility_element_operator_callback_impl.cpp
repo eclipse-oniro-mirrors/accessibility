@@ -21,46 +21,40 @@ namespace Accessibility {
 void AccessibilityElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
     const int32_t requestId)
 {
-    HILOG_INFO("Response [requestId:%{public}d]", requestId);
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     accessibilityInfoResult_ = info;
     promise_.set_value();
-    HILOG_DEBUG("Response [requestId:%{public}d] end", requestId);
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_INFO("Response [elementInfoSize:%{public}zu] [requestId:%{public}d]",
-        infos.size(), requestId);
+    HILOG_DEBUG("Response [elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
     elementInfosResult_ = infos;
     promise_.set_value();
-    HILOG_DEBUG("Response [requestId:%{public}d] end", requestId);
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_INFO("Response[elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
+    HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
     elementInfosResult_ = infos;
     promise_.set_value();
-    HILOG_DEBUG("Response [requestId:%{public}d] end", requestId);
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetFocusMoveSearchResult(const AccessibilityElementInfo &info,
     const int32_t requestId)
 {
-    HILOG_INFO("Response [requestId:%{public}d]", requestId);
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
     accessibilityInfoResult_ = info;
     promise_.set_value();
-    HILOG_DEBUG("Response [requestId:%{public}d] end", requestId);
 }
 
 void AccessibilityElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded, const int32_t requestId)
 {
-    HILOG_INFO("Response [requestId:%{public}d] result[%{public}d]", requestId, succeeded);
+    HILOG_DEBUG("Response [requestId:%{public}d] result[%{public}d]", requestId, succeeded);
     executeActionResult_ = succeeded;
     promise_.set_value();
-    HILOG_DEBUG("Response [requestId:%{public}d] end", requestId);
 }
 } // namespace Accessibility
 } // namespace OHOS

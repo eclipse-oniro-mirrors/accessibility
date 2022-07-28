@@ -376,7 +376,6 @@ bool AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes
 void AccessibleAbilityManagerService::RegisterElementOperator(
     const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
 {
-    HILOG_INFO("Register windowId[%{public}d] start", windowId);
     if (!handler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
@@ -430,7 +429,6 @@ void AccessibleAbilityManagerService::RegisterElementOperator(
 
 void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
 {
-    HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return;
@@ -1066,7 +1064,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     HILOG_DEBUG("accountId(%{public}d)", accountId);
 
     if (accountId == currentAccountId_) {
-        HILOG_ERROR("switch user failed, this account is current account.");
+        HILOG_WARN("The account id(%{public}d) is current account id.", accountId);
         return;
     }
 
