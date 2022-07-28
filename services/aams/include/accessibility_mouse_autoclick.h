@@ -54,7 +54,7 @@ private:
     public:
         /**
          * @brief A constructor used to create a MouseAutoclickEventHandler instance.
-             */
+         */
         MouseAutoclickEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
             AccessibilityMouseAutoclick &mouseAutoclick);
         virtual ~MouseAutoclickEventHandler() = default;

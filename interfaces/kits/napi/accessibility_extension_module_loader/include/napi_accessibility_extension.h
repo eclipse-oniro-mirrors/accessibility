@@ -94,7 +94,7 @@ private:
         ~AbilityListener() = default;
         /**
          * @brief Called when your accessibility service is successfully connected to the OS.
-             */
+         */
         void OnAbilityConnected() override
         {
             extension_.OnAbilityConnected();
@@ -102,7 +102,7 @@ private:
 
         /**
          * @brief Called when an accessibility is disconnected.
-             */
+         */
         void OnAbilityDisconnected() override
         {
             extension_.OnAbilityDisconnected();
