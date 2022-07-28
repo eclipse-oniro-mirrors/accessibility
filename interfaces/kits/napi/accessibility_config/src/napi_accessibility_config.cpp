@@ -78,17 +78,21 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
             napi_value callback = 0;
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->ret_, &result[PARAM1]);
+            napi_get_undefined(env, &result[PARAM1]);
             if (callbackInfo->callback_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+                result[PARAM0] = callbackInfo->ret_ ?
+                    GetErrorValue(env, CODE_SUCCESS) : GetErrorValue(env, CODE_FAILED);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
                 napi_delete_reference(env, callbackInfo->callback_);
                 HILOG_DEBUG("complete function callback mode");
             } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
+                if (callbackInfo->ret_) {
+                    napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+                } else {
+                    napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+                }
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;
@@ -145,18 +149,22 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             napi_value result[ARGS_SIZE_TWO] = {0};
             napi_value undefined = 0;
             napi_get_undefined(env, &undefined);
-            napi_get_boolean(env, callbackInfo->ret_, &result[PARAM1]);
+            napi_get_undefined(env, &result[PARAM1]);
             if (callbackInfo->callback_) {
+                result[PARAM0] = callbackInfo->ret_ ?
+                    GetErrorValue(env, CODE_SUCCESS) : GetErrorValue(env, CODE_FAILED);
                 napi_value callback = 0;
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
                 napi_get_reference_value(env, callbackInfo->callback_, &callback);
                 napi_value returnVal;
                 napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
                 napi_delete_reference(env, callbackInfo->callback_);
                 HILOG_DEBUG("complete function callback mode");
             } else {
-                napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
+                if (callbackInfo->ret_) {
+                    napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+                } else {
+                    napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+                }
             }
             napi_delete_async_work(env, callbackInfo->work_);
             delete callbackInfo;

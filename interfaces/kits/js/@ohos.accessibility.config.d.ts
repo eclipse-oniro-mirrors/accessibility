@@ -23,26 +23,20 @@ declare namespace config {
   var captionStyle: Config<accessibility.CaptionsStyle>;
 
   /**
-   * Enabled the accessibility abilities by names.
-   * @since 9
-   * @sysCap Accessibility
-   * @param name The strings formatted by 'bundleName/abilityName'.
-   * @param capability The capabilities allowed. 
-   * @return Returns {@code true} if set extension enabled succeeded; returns {@code false} otherwise.
+   * Enable the acceessibility extension ability.
+   * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * @param capability Indicates the ability.
    */
-  function enableAbility(name: string, capability: Array<accessibility.Capability>, callback: AsyncCallback<boolean>): void;
-  function enableAbility(name: string, capability: Array<accessibility.Capability>): Promise<boolean>;
-
+  function enableAbility(name: string, capability: Array<accessibility.Capability>): Promise<void>;
+  function enableAbility(name: string, capability: Array<accessibility.Capability>, callback: AsyncCallback<void>): void;
+ 
   /**
-   * Disabled the accessibility abilities by names.
-   * @since 9
-   * @sysCap Accessibility
-   * @param name The strings formatted by 'bundleName/abilityName'.
-   * @return Returns {@code true} if set extension disabled succeeded; returns {@code false} otherwise.
+   * Disable the acceessibility extension ability.
+   * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
    */
-  function disableAbility(name: string, callback: AsyncCallback<boolean>): void;
-  function disableAbility(name: string): Promise<boolean>;
-
+  function disableAbility(name: string): Promise<void>;
+  function disableAbility(name: string, callback: AsyncCallback<void>): void;
+ 
   /**
    * Register the observe of the AbilityLists enable status changed.
    * @since 9
