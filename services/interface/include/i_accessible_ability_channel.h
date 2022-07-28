@@ -137,18 +137,15 @@ public:
      * @brief Set the result of key press event.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
      * @param sequence The sequence of key press event result.
-     * @return
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) = 0;
 
     /**
      * @brief Send simulation gesture.
-     * @param requestId The sequence of simulation gesture.
      * @param gesturePath The gesture path to send.
-     * @return
+     * @return Return true if gesture injection is successfully, otherwise return false.
      */
-    virtual void SendSimulateGesture(const int32_t requestId,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) = 0;
+    virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) = 0;
 
     /**
      * @brief Set event types to filter.

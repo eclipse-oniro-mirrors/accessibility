@@ -225,25 +225,6 @@ HWTEST_F(
 }
 
 /**
- * @tc.number: AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001
- * @tc.name: OnGestureSimulateResult
- * @tc.desc: Test function OnGestureSimulateResult
- */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 start";
-    if (connection_ != nullptr) {
-        sleep(SLEEP_TIME_2);
-        OHOS::Accessibility::Rect rect(0, 0, 0, 0);
-        connection_->OnGestureInjectResult(1, false);
-        sleep(SLEEP_TIME_2);
-        EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestGestureSimulateResult(), 1);
-    }
-    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnGestureSimulateResult_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityConnection_Unittest_Connect_001
  * @tc.name: Connect
  * @tc.desc: Test function Connect

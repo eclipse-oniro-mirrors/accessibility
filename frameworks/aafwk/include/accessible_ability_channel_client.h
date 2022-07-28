@@ -64,11 +64,10 @@ public:
 
     /**
      * @brief Send simulate gesture to aams.
-     * @param sequenceNum  The sequence of gesture.
      * @param gesturePath The path of gesture.
+     * @return Return true if gesture injection is successfully, otherwise return false.
      */
-    void SendSimulateGesture(const int32_t sequenceNum,
-        const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
+    bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
     /**
      * @brief execute the action on the component.

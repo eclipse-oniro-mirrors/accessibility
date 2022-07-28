@@ -96,14 +96,15 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     return true;
 }
 
-void AccessibleAbilityChannelClient::SendSimulateGesture(const int32_t sequenceNum,
+bool AccessibleAbilityChannelClient::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO("[channelId:%{public}d]", channelId_);
     if (proxy_) {
-        proxy_->SendSimulateGesture(sequenceNum, gesturePath);
+        return proxy_->SendSimulateGesture(gesturePath);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        return false;
     }
 }
 

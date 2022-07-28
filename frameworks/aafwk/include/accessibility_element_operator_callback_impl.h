@@ -32,13 +32,11 @@ class AccessibilityElementOperatorCallbackImpl : public AccessibilityElementOper
 public:
     /**
      * @brief construct function
-     * @return
      */
     AccessibilityElementOperatorCallbackImpl() = default;
 
     /**
      * @brief deconstruct function
-     * @return
      */
     ~AccessibilityElementOperatorCallbackImpl() = default;
 
@@ -46,7 +44,6 @@ public:
      * @brief Save the elements information searched in ACE side
      * @param infos The elements info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override;
@@ -55,7 +52,6 @@ public:
      * @brief Save the elements information searched in ACE side
      * @param infos The elements info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
         const int32_t requestId) override;
@@ -64,7 +60,6 @@ public:
      * @brief Save the element information searched in ACE side
      * @param info The element info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
         const int32_t requestId) override;
@@ -73,7 +68,6 @@ public:
      * @brief Save the element information searched in ACE side
      * @param info The element info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
 
@@ -81,7 +75,6 @@ public:
      * @brief Save the result of action executed in ACE.
      * @param succeeded True: The action is executed successfully; otherwise is false.
      * @param requestId The request id from AA, it is used to match with request and response.
-     * @return
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 

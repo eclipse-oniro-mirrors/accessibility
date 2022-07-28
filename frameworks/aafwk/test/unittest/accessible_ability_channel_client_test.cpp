@@ -29,7 +29,6 @@ namespace {
     constexpr int32_t SEQUENCE = 1;
     constexpr int32_t ACCESSIBILITY_WINDOW_ID = 1;
     constexpr int32_t FOCUS_TYPE = 1;
-    constexpr int32_t SEQUENCE_NUM = 1;
     constexpr int32_t ELEMENT_ID = 1;
     constexpr int32_t ACTION = 1;
     constexpr int32_t DIRECTION = 1;
@@ -120,7 +119,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SendSimulateGesture_001, TestSize.L
     }
 
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    instance_->SendSimulateGesture(SEQUENCE_NUM, gesturePath);
+    instance_->SendSimulateGesture(gesturePath);
     GTEST_LOG_(INFO) << "SendSimulateGesture_001 end";
 }
 

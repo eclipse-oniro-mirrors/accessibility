@@ -129,9 +129,7 @@ bool AccessibilityUITestAbilityImpl::GetFocusByElementInfo(const AccessibilityEl
     return aaClient->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-bool AccessibilityUITestAbilityImpl::InjectGesture(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibilityUITestAbilityImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -139,7 +137,7 @@ bool AccessibilityUITestAbilityImpl::InjectGesture(const uint32_t sequence,
         HILOG_ERROR("aaClient is nullptr");
         return false;
     }
-    return aaClient->InjectGesture(sequence, gesturePath, listener);
+    return aaClient->InjectGesture(gesturePath);
 }
 
 bool AccessibilityUITestAbilityImpl::GetRoot(AccessibilityElementInfo &elementInfo)

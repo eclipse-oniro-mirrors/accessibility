@@ -30,21 +30,18 @@ public:
      * @brief Init accessible ability through the proxy object.
      * @param channel The object of IAccessibleAbilityChannel.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId) override;
 
     /**
      * @brief Disconnect accessible ability through the proxy object.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Disconnect(const int32_t channelId) override;
 
     /**
      * @brief Called when an accessibility event occurs through the proxy object.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
 
@@ -52,17 +49,8 @@ public:
      * @brief Called when a key event occurs through the proxy object.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
-     * @return
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
-
-    /**
-     * @brief Called when need to notify the result of simulation gesture through the proxy object.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
 
 private:
     /**

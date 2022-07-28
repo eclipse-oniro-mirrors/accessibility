@@ -32,21 +32,18 @@ public:
      * @brief Init accessible ability.
      * @param channel The object of IAccessibleAbilityChannel.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId) = 0;
 
     /**
      * @brief Disconnect accessible ability.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Disconnect(const int32_t channelId) = 0;
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) = 0;
 
@@ -54,24 +51,14 @@ public:
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
-     * @return
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) = 0;
-
-    /**
-     * @brief Called when need to notify the result of simulation gesture.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) = 0;
 
     enum class Message {
         INIT = 0,
         DISCONNECT,
         ON_ACCESSIBILITY_EVENT,
         ON_KEY_PRESS_EVENT,
-        ON_GESTURE_INJECT_RESULT,
     };
 };
 } // namespace Accessibility

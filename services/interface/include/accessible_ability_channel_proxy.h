@@ -26,14 +26,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibleAbilityChannelProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityChannelProxy() = default;
 
@@ -144,18 +141,15 @@ public:
      * @brief Set the result of key press event through the proxy object.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
      * @param sequence The sequence of key press event result.
-     * @return
      */
     virtual void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
     /**
      * @brief Send simulation gesture through the proxy object.
-     * @param requestId The sequence of simulation gesture.
      * @param gesturePath The gesture path to send.
-     * @return
+     * @return Return true if gesture injection is successfully, otherwise return false.
      */
-    virtual void SendSimulateGesture(const int32_t requestId,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+    virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     /**
      * @brief Set event types to filter.

@@ -35,7 +35,6 @@ private:
     ErrCode HandleDisconnect(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnAccessibilityEvent(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnKeyPressEvent(MessageParcel &data, MessageParcel &reply);
-    ErrCode HandleOnGestureInjectResult(MessageParcel &data, MessageParcel &reply);
 
     using AccessibleAbilityClientFunc =
         ErrCode (AccessibleAbilityClientStub::*)(MessageParcel &data, MessageParcel &reply);

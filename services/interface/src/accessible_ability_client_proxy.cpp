@@ -155,31 +155,5 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
         return;
     }
 }
-
-void AccessibleAbilityClientProxy::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
-
-    HILOG_DEBUG();
-
-    if (!WriteInterfaceToken(data)) {
-        return;
-    }
-    if (!data.WriteInt32(sequence)) {
-        HILOG_ERROR("fail, sequence write int32 error");
-        return;
-    }
-    if (!data.WriteBool(completedSuccessfully)) {
-        HILOG_ERROR("fail, completedSuccessfully write bool error");
-        return;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::ON_GESTURE_INJECT_RESULT, data, reply, option)) {
-        HILOG_ERROR("OnGestureInjectResult fail");
-        return;
-    }
-}
 } // namespace Accessibility
 } // namespace OHOS

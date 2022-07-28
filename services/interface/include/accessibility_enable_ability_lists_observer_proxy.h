@@ -26,20 +26,16 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     explicit AccessibilityEnableAbilityListsObserverProxy(const sptr<IRemoteObject> &object);
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibilityEnableAbilityListsObserverProxy() override;
 
     /**
      * @brief Receive the state notify from AAMS and send it to the observer registered.
-     * @return
      */
     virtual void OnAccessibilityEnableAbilityListsChanged() override;
 private:

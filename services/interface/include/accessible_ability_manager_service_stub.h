@@ -30,14 +30,11 @@ public:
     /**
      * @brief construct function
      * @param object The object of IPC
-     * @return
      */
     AccessibleAbilityManagerServiceStub();
 
     /**
      * @brief destruct function
-     * @param
-     * @return
      */
     virtual ~AccessibleAbilityManagerServiceStub();
 
@@ -47,7 +44,6 @@ public:
      * @param data The data of process communication
      * @param reply The response of IPC request
      * @param option The option parameter of IPC,such as: async,sync
-     * @return
      */
     virtual int OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;

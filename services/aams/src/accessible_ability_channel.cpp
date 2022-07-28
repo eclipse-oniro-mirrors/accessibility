@@ -440,40 +440,41 @@ void AccessibleAbilityChannel::InnerSetOnKeyPressEventResult(const bool handled,
     keyEventFilter->SetServiceOnKeyEventResult(connection_, handled, sequence);
 }
 
-void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
-    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_INFO();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr");
-        return;
+        return false;
     }
+    std::promise<bool> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSendSimulateGesturePath,
-        this, requestId, gesturePath);
+        this, std::ref(syncPromise), gesturePath);
     eventHandler_->PostTask(task, TASK_SEND_SIMULATE_GESTURE_PATH);
+    bool ret = syncFuture.get();
+    return ret;
 }
 
-void AccessibleAbilityChannel::InnerSendSimulateGesturePath(const int32_t requestId,
+void AccessibleAbilityChannel::InnerSendSimulateGesturePath(std::promise<bool> &syncPromise,
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
-    sptr<IAccessibleAbilityClient> abilityClient = connection_.GetAbilityClient();
-    if (!abilityClient) {
-        return;
-    }
     if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_GESTURE)) {
         HILOG_ERROR("AccessibleAbilityChannel::SendSimulateGesture failed: no capability");
-        abilityClient->OnGestureInjectResult(requestId, false);
+        syncPromise.set_value(false);
         return;
     }
 
     sptr<TouchEventInjector> touchEventInjector =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
     if (!touchEventInjector) {
-        abilityClient->OnGestureInjectResult(requestId, false);
+        HILOG_ERROR("touchEventInjector is null");
+        syncPromise.set_value(false);
         return;
     }
-    touchEventInjector->InjectEvents(gesturePath, abilityClient, requestId);
+    touchEventInjector->InjectEvents(gesturePath);
+    syncPromise.set_value(true);
 }
 
 bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)

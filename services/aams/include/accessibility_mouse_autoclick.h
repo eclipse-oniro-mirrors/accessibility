@@ -25,15 +25,11 @@ class AccessibilityMouseAutoclick : public EventTransmission {
 public:
     /**
      * @brief A constructor used to create a AccessibilityMouseAutoclick instance.
-     * @param
-     * @return
      */
     AccessibilityMouseAutoclick();
 
     /**
      * @brief A destructor used to delete the AccessibilityMouseAutoclick instance.
-     * @param
-     * @return
      */
     virtual ~AccessibilityMouseAutoclick();
 
@@ -50,8 +46,6 @@ public:
 
     /**
      * @brief Destroy the events.
-     * @param
-     * @return
      */
     void DestroyEvents() override;
 
@@ -60,8 +54,6 @@ private:
     public:
         /**
          * @brief A constructor used to create a MouseAutoclickEventHandler instance.
-         * @param
-         * @return
          */
         MouseAutoclickEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner,
             AccessibilityMouseAutoclick &mouseAutoclick);
@@ -70,7 +62,6 @@ private:
         /**
          * @brief Process the event of install system bundles.
          * @param event Indicates the event to be processed.
-         * @return
          */
         virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 

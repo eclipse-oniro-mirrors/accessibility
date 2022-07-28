@@ -21,7 +21,6 @@
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_gesture_inject_path.h"
-#include "accessibility_gesture_result_listener.h"
 #include "accessibility_window_info.h"
 #include "extension_context.h"
 
@@ -52,24 +51,17 @@ public:
 
     /**
      * @brief Sends simulate gestures to the screen.
-     * @param sequence The sequence of gesture.
      * @param gesturePath The gesture which need to send.
-     * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    bool InjectGesture(const uint32_t sequence, const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-        const std::shared_ptr<AccessibilityGestureResultListener> &listener);
+    bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
     /**
      * @brief Sends simulate gestures to the screen.
-     * @param sequence The sequence of gesture.
      * @param gesturePaths The gesture which need to send.
-     * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    bool InjectGesture(const uint32_t sequence,
-        const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths,
-        const std::shared_ptr<AccessibilityGestureResultListener> &listener);
+    bool InjectGesture(const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths);
 
     /**
      * @brief Obtains elementInfo of the accessible root node.

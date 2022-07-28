@@ -25,15 +25,11 @@ class AccessibilityUITestAbilityImpl final : public AccessibilityUITestAbility {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     AccessibilityUITestAbilityImpl();
 
     /**
      * @brief Destruct
-     * @param
-     * @return
      */
     ~AccessibilityUITestAbilityImpl() = default;
 
@@ -76,14 +72,10 @@ public:
 
     /**
      * @brief Sends simulate gestures to the screen.
-     * @param sequence The sequence of gesture.
      * @param gesturePath The gesture which need to send.
-     * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    virtual bool InjectGesture(const uint32_t sequence,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-        const std::shared_ptr<AccessibilityGestureResultListener>& listener) override;
+    virtual bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -241,7 +233,6 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) override;
 

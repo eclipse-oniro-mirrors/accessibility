@@ -59,16 +59,6 @@ public:
     {
         mTgestureId_ = gestureId;
     }
-
-    int32_t GetTestGestureSimulate()
-    {
-        return testGestureSimulate_;
-    }
-    void SetTestGestureSimulate(int32_t testGestureSimulate)
-    {
-        testGestureSimulate_ = testGestureSimulate;
-    }
-
     OHOS::sptr<OHOS::Accessibility::IAccessibleAbilityChannel>& GetTestStub()
     {
         return testStub_;
@@ -170,7 +160,6 @@ public:
     static const int32_t accountId_ = 100;
 
 private:
-    int32_t testGestureSimulate_ = -1;
     OHOS::sptr<OHOS::Accessibility::IAccessibleAbilityChannel> testStub_ = nullptr;
     std::vector<EventType> mTeventType_ = {};
     int32_t mTgestureId_ = 0;

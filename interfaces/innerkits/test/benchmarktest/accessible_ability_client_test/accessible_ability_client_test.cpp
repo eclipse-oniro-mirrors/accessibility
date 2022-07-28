@@ -52,12 +52,6 @@ namespace {
         std::promise<void> complete_;
     };
 
-    class AccessibilityGestureResultListenerForBenchmark : public AccessibilityGestureResultListener {
-    public:
-        virtual ~AccessibilityGestureResultListenerForBenchmark() = default;
-        void OnGestureInjectResult(uint32_t sequence, bool result) override {}
-    };
-
     class AccessibleAbilityClientTest : public benchmark::Fixture {
     public:
         AccessibleAbilityClientTest()
@@ -174,19 +168,14 @@ namespace {
     BENCHMARK_F(AccessibleAbilityClientTest, InjectGestureTestCase)(
         benchmark::State &state)
     {
-        uint32_t sequence = 0;
         while (state.KeepRunning()) {
-            sequence++;
             std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
                 std::make_shared<AccessibilityGestureInjectPath>();
             int64_t durationTime = 20;
             gesturePath->SetDurationTime(durationTime);
             AccessibilityGesturePosition position = {200.0f, 200.0f};
             gesturePath->AddPosition(position);
-
-            std::shared_ptr<AccessibilityGestureResultListenerForBenchmark> listener =
-                std::make_shared<AccessibilityGestureResultListenerForBenchmark>();
-            AccessibilityUITestAbility::GetInstance()->InjectGesture(sequence, gesturePath, listener);
+            AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
         }
     }
 }

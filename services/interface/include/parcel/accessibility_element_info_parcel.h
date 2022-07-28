@@ -28,15 +28,12 @@ class AccessibleActionParcel : public AccessibleAction, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     AccessibleActionParcel() = default;
 
     /**
      * @brief Construct
      * @param action The object of AccessibleAction
-     * @return
      */
     AccessibleActionParcel(const AccessibleAction &action);
 
@@ -50,7 +47,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
@@ -71,36 +67,30 @@ class RangeInfoParcel : public RangeInfo, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      */
     RangeInfoParcel() = default;
 
     /**
      * @brief Construct
      * @param rangeInfo The object of RangeInfo.
-     * @return
      */
     RangeInfoParcel(const RangeInfo &rangeInfo);
 
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      */
     bool ReadFromParcel(Parcel &parcel);
 
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      */
     virtual bool Marshalling(Parcel &parcel) const override;
 
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      */
     static sptr<RangeInfoParcel> Unmarshalling(Parcel &parcel);
 };
@@ -114,8 +104,6 @@ class GridInfoParcel : public GridInfo, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -124,7 +112,6 @@ public:
     /**
      * @brief Construct
      * @param gridInfo The object of GridInfo.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -133,7 +120,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -142,7 +128,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -151,8 +136,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -163,8 +146,6 @@ class GridItemInfoParcel : public GridItemInfo, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -173,7 +154,6 @@ public:
     /**
      * @brief Construct
      * @param itemInfo The object of GridItemInfo.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -182,8 +162,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -192,8 +170,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -202,8 +178,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -214,8 +188,6 @@ class RectParcel : public Rect, public Parcelable {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -224,7 +196,6 @@ public:
     /**
      * @brief Construct
      * @param rect The object of Rect.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -233,7 +204,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -242,7 +212,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -251,7 +220,6 @@ public:
     /**
      * @brief Used for IPC communication
      * @param parcel
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -265,8 +233,6 @@ class AccessibilityElementInfoParcel : public AccessibilityElementInfo, public P
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -275,7 +241,6 @@ public:
     /**
      * @brief Construct
      * @param elementInfo The object of AccessibilityElementInfo.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */

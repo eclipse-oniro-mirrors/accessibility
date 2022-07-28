@@ -66,13 +66,6 @@ ErrCode MockAccessibleAbilityClientStubImpl::HandleOnKeyPressEvent(MessageParcel
     GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl HandleOnKeyPressEvent";
     return 0;
 }
-ErrCode MockAccessibleAbilityClientStubImpl::HandleOnGestureInjectResult(MessageParcel& data, MessageParcel& reply)
-{
-    (void)data;
-    (void)reply;
-    GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl HandleOnGestureInjectResult";
-    return 0;
-}
 void MockAccessibleAbilityClientStubImpl::Init(const sptr<IAccessibleAbilityChannel>& channel, const int32_t channelId)
 {
     (void)channel;
@@ -94,14 +87,6 @@ void MockAccessibleAbilityClientStubImpl::OnKeyPressEvent(const MMI::KeyEvent& k
     (void)keyEvent;
     (void)sequence;
     GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl OnKeyPressEvent";
-}
-void MockAccessibleAbilityClientStubImpl::OnGestureInjectResult(
-    const int32_t sequence, const bool completedSuccessfully)
-{
-    (void)sequence;
-    (void)completedSuccessfully;
-    GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl OnGestureInjectResult";
-    AccessibilityAbilityHelper::GetInstance().SetTestGestureSimulateResult(1);
 }
 } // namespace Accessibility
 } // namespace OHOS

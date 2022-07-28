@@ -124,11 +124,11 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     (void)sequence;
 }
 
-void AccessibleAbilityChannelProxy::SendSimulateGesture(const int32_t sequenceNum,
+bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    (void)sequenceNum;
     (void)gesturePath;
+    return true;
 }
 
 MockAccessibleAbilityChannelProxy::MockAccessibleAbilityChannelProxy(const sptr<IRemoteObject>& object)

@@ -26,7 +26,6 @@ public:
 
     /**
      * @brief Receive the state notify from AAMS and send it to the observer registered.
-     * @return
      */
     virtual void OnAccessibilityEnableAbilityListsChanged() = 0;
 
