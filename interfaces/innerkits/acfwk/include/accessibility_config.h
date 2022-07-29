@@ -98,6 +98,12 @@ class AccessibilityConfig {
     DECLARE_SINGLETON(AccessibilityConfig)
 public:
     /**
+     * @brief Initialize the run context.
+     * @return Return true if successfully, else return false.
+     */
+    bool InitializeContext();
+
+    /**
      * @brief Subscribes to accessibility config value.
      * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility

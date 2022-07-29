@@ -36,6 +36,12 @@ AccessibilityConfig::~AccessibilityConfig()
 {
 }
 
+bool AccessibilityConfig::InitializeContext()
+{
+    CHECK_IMPL_PTR(false)
+    return pImpl_->InitializeContext();
+}
+
 void AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {

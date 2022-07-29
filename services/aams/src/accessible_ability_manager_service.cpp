@@ -27,6 +27,7 @@
 #include "iservice_registry.h"
 #include "input_manager.h"
 #include "os_account_manager.h"
+#include "parameter.h"
 #include "system_ability_definition.h"
 #include "utils.h"
 
@@ -38,6 +39,7 @@ namespace {
     const std::string AAMS_SERVICE_NAME = "AccessibleAbilityManagerService";
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
@@ -125,8 +127,9 @@ void AccessibleAbilityManagerService::OnStop()
         iter.second = false;
     }
 
-    HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
     isRunning_ = false;
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+    HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
@@ -891,6 +894,7 @@ bool AccessibleAbilityManagerService::Init()
         HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
         SwitchedUser(accountIds[0]);
     }
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
 
     return true;
 }

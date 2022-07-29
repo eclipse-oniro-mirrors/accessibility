@@ -44,6 +44,7 @@ config("module_private_config") {
     "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//base/global/resource_management/interfaces/inner_api/include",
     "//base/notification/common_event_service/interfaces/inner_api",
+    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara/include",
     "//foundation",
     "${ability_runtime_path}/interfaces/kits/native/ability/native/",
     "${ability_runtime_path}/interfaces/kits/native/appkit/ability_runtime",
@@ -114,9 +115,9 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_touch_guider_test/aams_accessibility_touch_guider_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
@@ -194,9 +195,9 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_touchEvent_injector_test/aams_accessibility_touchEvent_injector_test.cpp",
   ]
 
@@ -281,9 +282,9 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_matching_skill.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessible_ability_channel_test/aams_accessible_ability_channel_test.cpp",
   ]
 
@@ -366,9 +367,9 @@ ohos_moduletest("aams_server_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_matching_skill.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_server_test/aams_server_test.cpp",
   ]
 
@@ -445,9 +446,9 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
-    "//third_party/jsoncpp/src/lib_json/json_writer.cpp",
     "moduletest/aamstest/aams_accessibility_keyevent_filter_test/aams_accessibility_keyevent_filter_test.cpp",
   ]
 
@@ -530,6 +531,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_matching_skill.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_system_ability.cpp",
     "moduletest/aamstest/aams_common_event_registry_test/aams_common_event_registry_test.cpp",

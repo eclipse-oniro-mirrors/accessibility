@@ -42,6 +42,8 @@ static napi_value Init(napi_env env, napi_value exports)
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
+    auto &instance = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    (void)instance.InitializeContext();
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env, exports);

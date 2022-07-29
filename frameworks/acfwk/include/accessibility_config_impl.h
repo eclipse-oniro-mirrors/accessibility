@@ -30,6 +30,8 @@ public:
     Impl();
     ~Impl() = default;
 
+    bool InitializeContext();
+
     void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
@@ -208,13 +210,15 @@ private:
     void UpdateAnimationOffEnabled(const bool enabled);
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
-    void InitVar();
+    void InitConfigValues();
+    static void OnParameterChanged(const char *key, const char *value, void *context);
 
     sptr<AccessibilityEnableAbilityListsObserverStubImpl> enableAbilityListsObserverStub_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
-    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_;
+    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
 
+    bool isInitialized_ = false;
     bool highContrastText_ = false;
     bool invertColor_ = false;
     bool animationOff_ = false;

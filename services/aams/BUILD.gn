@@ -82,6 +82,8 @@ ohos_shared_library("accessibleabilityms") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbeget_proxy",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
