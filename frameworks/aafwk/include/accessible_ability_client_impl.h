@@ -281,13 +281,13 @@ private:
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
     bool SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
-        const int32_t mode, AccessibilityElementInfo &info);
+        const uint32_t mode, AccessibilityElementInfo &info);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
-    int32_t cacheMode_ = 0;
+    uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
 };
