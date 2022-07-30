@@ -23,13 +23,15 @@ namespace OHOS {
 namespace Accessibility {
 class MockAccessibilityWindowListener : public AccessibilityWindowListener {
 public:
-    MOCK_METHOD2(OnWindowUpdate, void(const sptr<Rosen::WindowInfo>& windowInfo, Rosen::WindowUpdateType type));
+    MOCK_METHOD2(OnWindowUpdate, void(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
+        Rosen::WindowUpdateType type));
 };
 
 class MockAccessibilityWindowInfoManager : public AccessibilityWindowManager {
 public:
     ~MockAccessibilityWindowInfoManager() = default;
-    MOCK_METHOD1(CreateAccessibilityWindowInfo, AccessibilityWindowInfo(sptr<Rosen::WindowInfo> windowInfo));
+    MOCK_METHOD1(CreateAccessibilityWindowInfo, AccessibilityWindowInfo(
+        sptr<Rosen::AccessibilityWindowInfo> windowInfo));
     MOCK_METHOD2(ConvertToRealWindowId, int32_t(int32_t windowId, int32_t focusType));
     MOCK_METHOD1(RegisterWindowListener, void(const std::shared_ptr<AppExecFwk::EventHandler> &handler));
     MOCK_METHOD0(DeregisterWindowListener, void());

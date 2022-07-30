@@ -29,9 +29,9 @@ class AccessibilityWindowManager {
     DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
     bool Init();
-    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::WindowInfo> windowInfo);
+    static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
-        const sptr<Rosen::WindowInfo> windowInfo);
+        const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
@@ -43,9 +43,8 @@ public:
 
     // test for ut to resize a window
     void SetWindowSize(int32_t windowId, Rect rect);
-    void UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
 
-    void OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo, Rosen::WindowUpdateType type);
+    void OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos, Rosen::WindowUpdateType type);
 
     std::map<int32_t, AccessibilityWindowInfo> a11yWindows_ {};
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
@@ -58,18 +57,22 @@ private:
             : windInfoMgr_(windInfoMgr) {}
         ~AccessibilityWindowListener() = default;
 
-        virtual void OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
+        virtual void OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos,
             Rosen::WindowUpdateType type) override
         {
-            windInfoMgr_.OnWindowUpdate(windowInfo, type);
+            windInfoMgr_.OnWindowUpdate(infos, type);
         }
 
     private:
         AccessibilityWindowManager &windInfoMgr_;
     };
 
-    void WindowUpdateAdded(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
-    void WindowUpdateRemoved(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo);
+    void WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateBounds(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
