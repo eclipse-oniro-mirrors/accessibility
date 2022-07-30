@@ -92,6 +92,19 @@ int AccessibilityDumper::DumpAccessibilityWindowInfo(std::string& dumpInfo) cons
         }
     }
 
+    index = 0;
+    const std::map<int32_t, AccessibilityWindowInfo> &windows = Singleton<AccessibilityWindowManager>::
+        GetInstance().a11yWindows_;
+    oss << std::endl << "a11yWindows_ id: ";
+    for (auto &iter : windows) {
+        index++;
+        oss << iter.first;
+
+        if (index != connectedWindowList.size()) {
+            oss << ", ";
+        }
+    }
+
     oss << std::endl << "active window id: " <<
         Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_ << std::endl;
     oss << "accessibility focused window id: " <<
