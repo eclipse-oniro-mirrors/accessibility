@@ -70,36 +70,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
                 callbackInfo->ret_ = instance.EnableAbility(
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
             }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_undefined(env, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = callbackInfo->ret_ ?
-                    GetErrorValue(env, CODE_SUCCESS) : GetErrorValue(env, CODE_FAILED);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("complete function callback mode");
-            } else {
-                if (callbackInfo->ret_) {
-                    napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                } else {
-                    napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                }
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -142,36 +113,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             if (callbackInfo) {
                 callbackInfo->ret_ = instance.DisableAbility(callbackInfo->abilityName_);
             }
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_get_undefined(env, &result[PARAM1]);
-            if (callbackInfo->callback_) {
-                result[PARAM0] = callbackInfo->ret_ ?
-                    GetErrorValue(env, CODE_SUCCESS) : GetErrorValue(env, CODE_FAILED);
-                napi_value callback = 0;
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-                HILOG_DEBUG("complete function callback mode");
-            } else {
-                if (callbackInfo->ret_) {
-                    napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                } else {
-                    napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-                }
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -224,7 +166,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     return nullptr;
 }
 
-void NAccessibilityConfig::SetConfigComplete(napi_env env, napi_status status, void* data)
+void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, void* data)
 {
     HILOG_INFO();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
@@ -549,7 +491,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         // Execute async to call c++ function
         NAccessibilityConfig::SetConfigExecute,
         // Execute the complete function
-        NAccessibilityConfig::SetConfigComplete,
+        NAccessibilityConfig::AsyncWorkComplete,
         (void*)callbackInfo,
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
