@@ -22,6 +22,7 @@
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessible_ability_manager_config_observer_stub.h"
 #include "accessible_ability_manager_service_proxy.h"
+#include "event_handler.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -30,7 +31,10 @@ public:
     Impl();
     ~Impl() = default;
 
-    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
+    bool InitializeContext();
+
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer,
+        const bool retFlag);
     void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
     void SubscribeEnableAbilityListsObserver(const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
@@ -84,12 +88,12 @@ public:
     void OnAccessibilityEnableAbilityListsChanged();
 
 private:
-    class AccessibilityEnableAbilityListsObserverStubImpl :
+    class AccessibilityEnableAbilityListsObserverImpl :
         public Accessibility::AccessibilityEnableAbilityListsObserverStub {
     public:
-        explicit AccessibilityEnableAbilityListsObserverStubImpl(Impl &client)
+        explicit AccessibilityEnableAbilityListsObserverImpl(Impl &client)
             : client_(client) {}
-        ~AccessibilityEnableAbilityListsObserverStubImpl() = default;
+        ~AccessibilityEnableAbilityListsObserverImpl() = default;
 
         virtual void OnAccessibilityEnableAbilityListsChanged() override
         {
@@ -168,6 +172,11 @@ private:
     };
 
     bool ConnectToService();
+    bool ConnectToServiceAsync();
+
+    bool RegisterToService();
+    bool InitAccessibilityServiceProxy();
+
     void NotifyCaptionStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const bool state);
     void NotifyCaptionChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
@@ -208,13 +217,18 @@ private:
     void UpdateAnimationOffEnabled(const bool enabled);
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
-    void InitVar();
+    void NotifyDefaultConfigs();
+    void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
+    void InitConfigValues();
+    void InitEventHandler();
+    static void OnParameterChanged(const char *key, const char *value, void *context);
 
-    sptr<AccessibilityEnableAbilityListsObserverStubImpl> enableAbilityListsObserverStub_ = nullptr;
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
-    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_;
+    sptr<AccessibleAbilityManagerConfigObserverImpl> configObserver_ = nullptr;
+    sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
 
+    bool isInitialized_ = false;
     bool highContrastText_ = false;
     bool invertColor_ = false;
     bool animationOff_ = false;
@@ -236,6 +250,9 @@ private:
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
     std::mutex mutex_;
+
+    std::shared_ptr<AppExecFwk::EventRunner> runner_;
+    std::shared_ptr<AppExecFwk::EventHandler> handler_;
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS

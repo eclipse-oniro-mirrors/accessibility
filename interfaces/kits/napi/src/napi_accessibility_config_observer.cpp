@@ -379,7 +379,7 @@ void NAccessibilityConfigObserverImpl::SubscribeToFramework()
 {
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
-        instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this());
+        instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), shared_from_this(), false);
     }
 }
 
