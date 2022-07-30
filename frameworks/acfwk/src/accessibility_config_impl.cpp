@@ -110,7 +110,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
                 (void)RegisterToService();
                 InitConfigValues();
             }
-        }), "ConnectToServiceAsync");
+            }), "ConnectToServiceAsync");
         return true;
     } else {
         HILOG_ERROR("Event handler is nullptr");
@@ -1369,7 +1369,7 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
                 configValue.captionStyle = captionProperty_;
             }
             observer->OnConfigChanged(id, configValue);
-        }), "NotifyImmediately");
+            }), "NotifyImmediately");
     } else {
         HILOG_ERROR("Event handler is nullptr");
     }
