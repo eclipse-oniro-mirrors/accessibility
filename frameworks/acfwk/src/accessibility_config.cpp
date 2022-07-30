@@ -43,10 +43,10 @@ bool AccessibilityConfig::InitializeContext()
 }
 
 void AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
-    const std::shared_ptr<AccessibilityConfigObserver> &observer)
+    const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
     CHECK_IMPL_PTR()
-    pImpl_->SubscribeConfigObserver(id, observer);
+    pImpl_->SubscribeConfigObserver(id, observer, retFlag);
 }
 
 void AccessibilityConfig::UnsubscribeConfigObserver(const CONFIG_ID id,

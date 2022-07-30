@@ -51,7 +51,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
 
-        config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver);
+        config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver, false);
         config.GetScreenMagnificationState(value);
         for (auto _ : state) {
             /* @tc.steps: step1.call SetScreenMagnificationState in loop */
@@ -94,7 +94,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
 
-        config.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, configObserver);
+        config.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, configObserver, false);
 
         for (auto _ : state) {
             /* @tc.steps: step1.call SetShortkeyTarget in loop */
@@ -140,7 +140,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
 
-        config.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, configObserver);
+        config.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, configObserver, false);
         config.GetContentTimeout(value);
         for (auto _ : state) {
             /* @tc.steps: step1.call SetContentTimeout in loop */
@@ -184,7 +184,7 @@ namespace {
 
         for (auto _ : state) {
             /* @tc.steps: step1.call SubscribeConfigObserver in loop */
-            config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver);
+            config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver, false);
             config.UnsubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver);
         }
     }

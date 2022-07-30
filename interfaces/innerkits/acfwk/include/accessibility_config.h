@@ -108,7 +108,8 @@ public:
      * @param id  the config id which is observed.
      * @param observer Indicates the observer for listening to accessibility
      */
-    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer,
+        const bool retFlag = true);
 
     /**
      * @brief Unsubscribe the accessibility config value observer.
