@@ -1429,11 +1429,11 @@ void AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
     int setGraphicParamRes = -1;
     int setArkuiParamRes = -1;
     if (state) {
-        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
-    } else {
         setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
         setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
+    } else {
+        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
     }
     HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
 }
