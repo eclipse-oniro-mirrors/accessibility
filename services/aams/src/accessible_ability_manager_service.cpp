@@ -40,6 +40,8 @@ namespace {
     const std::string UI_TEST_BUNDLE_NAME = "ohos.uitest";
     const std::string UI_TEST_ABILITY_NAME = "uitestability";
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
+    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
+    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
@@ -1424,6 +1426,16 @@ void AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
         UpdateConfigState();
         }), "TASK_SET_ANIMATIONOFF_STATE");
     syncFuture.get();
+    int setGraphicParamRes = -1;
+    int setArkuiParamRes = -1;
+    if (state) {
+        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+    } else {
+        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
+    }
+    HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
 }
 
 void AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
