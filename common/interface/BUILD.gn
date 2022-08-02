@@ -13,13 +13,13 @@
 
 import("//build/ohos.gni")
 
-config("aams_interface_private_config") {
+config("accessibility_interface_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [ "//foundation/barrierfree/accessibility/common/log/include" ]
 
   defines = [
-    "AAMS_LOG_TAG = \"aams_interface\"",
+    "AAMS_LOG_TAG = \"accessibility_interface\"",
     "AAMS_LOG_DOMAIN = 0xD001D02",
   ]
 
@@ -28,14 +28,14 @@ config("aams_interface_private_config") {
   }
 }
 
-config("aams_interface_public_config") {
+config("accessibility_interface_public_config") {
   include_dirs = [
     "include",
     "include/parcel",
   ]
 }
 
-aams_interface_src = [
+accessibility_interface_src = [
   "src/accessibility_element_operator_callback_proxy.cpp",
   "src/accessibility_element_operator_callback_stub.cpp",
   "src/accessibility_element_operator_proxy.cpp",
@@ -56,7 +56,7 @@ aams_interface_src = [
   "src/accessible_ability_manager_config_observer_stub.cpp",
 ]
 
-aams_data_parcel_src = [
+accessibility_data_parcel_src = [
   "src/parcel/accessibility_ability_info_parcel.cpp",
   "src/parcel/accessibility_caption_parcel.cpp",
   "src/parcel/accessibility_element_info_parcel.cpp",
@@ -65,13 +65,13 @@ aams_data_parcel_src = [
   "src/parcel/accessibility_gesture_inject_path_parcel.cpp",
 ]
 
-ohos_shared_library("aams_interface") {
-  sources = aams_interface_src
-  sources += aams_data_parcel_src
+ohos_shared_library("accessibility_interface") {
+  sources = accessibility_interface_src
+  sources += accessibility_data_parcel_src
 
-  configs = [ ":aams_interface_private_config" ]
+  configs = [ ":accessibility_interface_private_config" ]
 
-  public_configs = [ ":aams_interface_public_config" ]
+  public_configs = [ ":accessibility_interface_public_config" ]
 
   deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
