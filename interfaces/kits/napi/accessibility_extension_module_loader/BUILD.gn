@@ -25,7 +25,7 @@ config("accessibility_extension_module_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_napi\"",
-    "AAMS_LOG_DOMAIN = 0xD005210",
+    "AAMS_LOG_DOMAIN = 0xD001D10",
   ]
 }
 
