@@ -503,7 +503,7 @@ void AccessibilitySettingsConfig::InitSetting()
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(pref_->GetInt("daltonizationColorFilter", 0));
     contentTimeout_ = static_cast<uint32_t>(pref_->GetInt("contentTimeout", 0));
-    brightnessDiscount_ = static_cast<uint32_t>(pref_->GetFloat("brightnessDiscount", 0));
+    brightnessDiscount_ = static_cast<uint32_t>(pref_->GetFloat("brightnessDiscount", 1.0));
     audioBalance_ = static_cast<uint32_t>(pref_->GetFloat("audioBalance", 0));
 }
 
