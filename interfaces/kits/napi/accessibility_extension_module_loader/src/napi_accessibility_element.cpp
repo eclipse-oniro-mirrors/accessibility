@@ -387,7 +387,7 @@ void NAccessibilityElement::AttributeValueComplete(napi_env env, napi_status sta
     callbackInfo = nullptr;
 }
 
-bool CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
+bool NAccessibilityElement::CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -999,7 +999,7 @@ void NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementData *c
         callbackInfo->accessibilityElement_.elementInfo_->IsFocused(), &value));
 }
 
-bool CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
+bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
