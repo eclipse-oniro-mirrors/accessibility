@@ -67,38 +67,6 @@ declare interface AccessibilityEvent {
 }
 
 /**
- * Indicates the path of the gesture.
- * @since 9
- * @syscap SystemCapability.BarrierFree.Accessibility.Core
- */
- declare interface GesturePath {
-    /**
-     * Indicates the position of the points that make up the gesture.
-     */
-    points: Array<GesturePoint>;
-    /**
-     * Indicates the duration of the gesture.
-     */
-    durationTime: number;
-}
-
-/**
- * Indicates the point of the gesture.
- * @since 9
- * @syscap SystemCapability.BarrierFree.Accessibility.Core
- */
-declare interface GesturePoint {
-    /**
-     * Indicates the X coordinate of point.
-     */
-    positionX: number;
-    /**
-     * Indicates the Y coordinate of point.
-     */
-    positionY: number;
-}
-
-/**
  * Indicates the gusture type.
  * @since 9
  * @syscap SystemCapability.BarrierFree.Accessibility.Core

@@ -71,5 +71,7 @@ group("napi_packages") {
     "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextensionability_napi",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_gesture_path:gesturepath_napi",
+    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_gesture_point:gesturepoint_napi",
   ]
 }
