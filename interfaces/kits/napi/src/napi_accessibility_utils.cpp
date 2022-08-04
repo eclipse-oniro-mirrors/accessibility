@@ -88,7 +88,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
     return true;
 }
 
-bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
+bool ParseNumber(napi_env env, napi_value args)
 {
     napi_status status;
     napi_valuetype valuetype;
@@ -102,44 +102,34 @@ bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
         HILOG_ERROR("Wrong argument type. uint32 expected.");
         return false;
     }
+    
+    HILOG_DEBUG("The type of args is number.");
+    return true;
+}
+
+bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
+{
+    if (!ParseNumber(env, args)) {
+        return false;
+    }
 
     napi_get_value_uint32(env, args, &param);
-    HILOG_DEBUG("param=%{public}u.", valuetype);
     return true;
 }
 
 bool ParseInt32(napi_env env, int32_t& param, napi_value args)
 {
-    napi_status status;
-    napi_valuetype valuetype;
-    status = napi_typeof(env, args, &valuetype);
-    if (status != napi_ok) {
-        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
-        return false;
-    }
-
-    if (valuetype != napi_number) {
-        HILOG_ERROR("Wrong argument type. uint32 expected.");
+    if (!ParseNumber(env, args)) {
         return false;
     }
 
     napi_get_value_int32(env, args, &param);
-    HILOG_DEBUG("param=%{public}d.", valuetype);
     return true;
 }
 
 bool ParseDouble(napi_env env, double& param, napi_value args)
 {
-    napi_status status;
-    napi_valuetype valuetype;
-    status = napi_typeof(env, args, &valuetype);
-    if (status != napi_ok) {
-        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
-        return false;
-    }
-
-    if (valuetype != napi_number) {
-        HILOG_ERROR("Wrong argument type. uint32 expected.");
+    if (!ParseNumber(env, args)) {
         return false;
     }
 

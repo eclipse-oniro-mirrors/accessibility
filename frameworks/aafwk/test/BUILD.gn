@@ -94,7 +94,7 @@ ohos_unittest("accessible_ability_test") {
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_caption_parcel.cpp",
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_element_info_parcel.cpp",
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_event_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "unittest/accessibility_element_operator_callback_impl_test.cpp",
     "unittest/accessibility_ui_test_ability_impl_test.cpp",
     "unittest/accessible_ability_channel_client_test.cpp",
