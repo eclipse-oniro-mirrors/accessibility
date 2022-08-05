@@ -42,15 +42,12 @@ class AccessibilitySystemAbilityClient {
 public:
     /**
      * @brief Obtains the AccessibilitySystemAbilityClient instance.
-     * @param -
      * @return AccessibilitySystemAbilityClient instance
      */
     static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance();
 
     /**
      * @brief Deconstruct.
-     * @param
-     * @return
      */
     virtual ~AccessibilitySystemAbilityClient() = default;
 
@@ -66,20 +63,17 @@ public:
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
-     * @return
      */
     virtual void DeregisterElementOperator(const int32_t windowId) = 0;
 
     /**
      * @brief Checks whether accessibility ability is enabled.
-     * @param -
      * @return true: enabled; false: disabled
      */
     virtual bool IsEnabled() = 0;
 
     /**
      * @brief Checks whether touch exploration ability is enabled.
-     * @param -
      * @return true: enabled; false: disabled
      */
     virtual bool IsTouchExplorationEnabled() = 0;

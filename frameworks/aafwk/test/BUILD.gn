@@ -45,13 +45,14 @@ config("module_private_config") {
     "//base/account/os_account/frameworks/common/database/include",
     "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
     "//base/hiviewdfx/hiview/adapter/utility/include/extra/singleton.h",
+    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara/include",
     "//foundation/arkui/napi/native_engine",
     "//foundation/multimodalinput/input/util/common/include",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
-    "AAMS_LOG_DOMAIN = 0xD005205",
+    "AAMS_LOG_DOMAIN = 0xD001D05",
   ]
 }
 
@@ -93,6 +94,7 @@ ohos_unittest("accessible_ability_test") {
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_caption_parcel.cpp",
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_element_info_parcel.cpp",
     "//foundation/barrierfree/accessibility/services/interface/src/parcel/accessibility_event_info_parcel.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.cpp",
     "unittest/accessibility_element_operator_callback_impl_test.cpp",
     "unittest/accessibility_ui_test_ability_impl_test.cpp",
     "unittest/accessible_ability_channel_client_test.cpp",
@@ -105,8 +107,8 @@ ohos_unittest("accessible_ability_test") {
   deps = [
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",
     "//foundation/arkui/napi:ace_napi",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
     "//third_party/googletest:gmock_main",
     "//third_party/googletest:gtest_main",
   ]

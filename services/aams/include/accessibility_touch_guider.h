@@ -92,22 +92,17 @@ public:
     /**
      * @brief Process the event of install system bundles.
      * @param event Indicates the event to be processed.
-     * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 
 private:
     /**
      * @brief Send HoverEnter and HoverMove to Multimodal.
-     * @param
-     * @return
      */
     void HoverEnterAndMoveRunner();
 
     /**
      * @brief Send HoverExit to Multimodal.
-     * @param
-     * @return
      */
     void HoverExitRunner();
     TouchGuider &tgServer_;
@@ -123,22 +118,16 @@ public:
 
     /**
      * @brief A constructor used to create a touchGuide instance.
-     * @param
-     * @return
      */
     TouchGuider();
 
     /**
      * @brief A destructor used to delete the touchGuide instance.
-     * @param
-     * @return
      */
     ~TouchGuider() {}
 
     /**
      * @brief TouchGuide start up.
-     * @param
-     * @return
      */
     void StartUp();
 
@@ -155,21 +144,17 @@ public:
      * @brief Handle accessibility events from previous event stream node.
      *
      * @param event  the accessibility event  to be handled.
-     * @return
      */
     void OnAccessibilityEvent(AccessibilityEventInfo &event) override;
 
     /**
      * @brief Clear event state from specific input source.
      * @param inputSource  the input source.
-     * @return
      */
     void ClearEvents(uint32_t inputSource) override;
 
     /**
      * @brief Destroy event state.
-     * @param
-     * @return
      */
     void DestroyEvents() override;
 
@@ -177,41 +162,34 @@ public:
      * @brief Send event to multimodal input.
      * @param event the event prepared to send to Multimodal
      * @param action the action of the event
-     * @return
      */
     void SendEventToMultimodal(MMI::PointerEvent &event, int32_t action);
 
     /**
      * @brief Send accessibility event to specific AccessibleAbility.
      * @param eventType the type of the event
-     * @return
      */
     void SendAccessibilityEventToAA(EventType eventType);
 
     /**
      * @brief Send gesture event to specific AccessibleAbility.
      * @param gestureId the gesture id of the event
-     * @return
      */
     void SendGestureEventToAA(GestureType gestureId);
 
     /**
      * @brief Get hover enter and move event.
-     * @param
      * @return Returns pointerEvents_ list.
      */
     std::list<MMI::PointerEvent> getHoverEnterAndMoveEvent();
 
     /**
      * @brief Clear hover enter and move event.
-     * @param
-     * @return
      */
     void ClearHoverEnterAndMoveEvent();
 
     /**
      * @brief Get last received event.
-     * @param
      * @return Returns last event ptr.
      */
     std::shared_ptr<MMI::PointerEvent> getLastReceivedEvent();
@@ -239,43 +217,35 @@ private:
     public:
         /**
          * @brief A constructor used to create a TouchGuideListener instance.
-         * @param
-         * @return
          */
         explicit TouchGuideListener(TouchGuider &server) : server_(server) {};
 
         /**
          * @brief Prepare to send the event corresponding to the long press to the Multimodal.
          * @param event the touch event from Multimodal
-         * @return
          */
         void OnDoubleTapLongPress(MMI::PointerEvent &event) override;
 
         /**
          * @brief Prepare to send the event corresponding to the single tap to the Multimodal.
          * @param event the touch event from Multimodal
-         * @return
          */
         bool OnDoubleTap(MMI::PointerEvent &event) override;
 
         /**
          * @brief Send GESTURE_BEGIN to AccessibleAbility.
-         * @param
-         * @return
          */
         bool OnStarted() override;
 
         /**
          * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility.
          * @param gestureId the id of gesture
-         * @return
          */
         bool OnCompleted(GestureType gestureId) override;
 
         /**
          * @brief The gesture has been cancelled.
          * @param event the touch event from Multimodal
-         * @return
          */
         bool OnCancelled(MMI::PointerEvent &event) override;
 
@@ -315,36 +285,30 @@ private:
 
     /**
      * @brief Determine whether to clear the touchguide.
-     * @param
-     * @return
      */
     void Clear();
 
     /**
      * @brief clear the touchguide.
      * @param event the last event from Multimodal
-     * @return
      */
     void Clear(MMI::PointerEvent &event);
 
     /**
      * @brief Handle touch events on touchExploring state.
      * @param event the touch event from Multimodal
-     * @return
      */
     void HandleTouchGuidingState(MMI::PointerEvent &event);
 
     /**
      * @brief Handle touch events on dragging state.
      * @param event the touch event from Multimodal
-     * @return
      */
     void HandleDraggingState(MMI::PointerEvent &event);
 
     /**
      * @brief Handle touch events on transmitting state.
      * @param event the touch event from Multimodal
-     * @return
      */
     void HandleTransmitingState(MMI::PointerEvent &event);
 
@@ -367,98 +331,79 @@ private:
     /**
      * @brief Get the info of injected event.
      * @param event the event prepared to send to Multimodal
-     * @return
      */
     void RecordInjectedEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Get the info of Received event.
      * @param event event the touch event from Multimodal
-     * @return
      */
     void RecordReceivedEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Clear received recorder info.
-     * @param
-     * @return
      */
     void ClearReceivedEventRecorder();
 
     /**
      * @brief Clear Injected recorder info.
-     * @param
-     * @return
      */
     void ClearInjectedEventRecorder();
 
     /**
      * @brief Send exit event to multimodal.
-     * @param
-     * @return
      */
     void SendExitEvents();
 
     /**
      * @brief Send all down events to multimodal.
      * @param event the event prepared to send to Multimodal
-     * @return
      */
     void SendAllDownEvents(MMI::PointerEvent &event);
 
     /**
      * @brief Send all up events to multimodal.
      * @param event the event prepared to send to Multimodal
-     * @return
      */
     void SendUpForAllInjectedEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Send exit message.
-     * @param
-     * @return
      */
     void PostGestureRecognizeExit();
 
     /**
      * @brief Send enter and move message.
      * @param event event the touch event from Multimodal
-     * @return
      */
     void PostHoverEnterAndMove(MMI::PointerEvent &event);
 
     /**
      * @brief Send exit message.
-     * @param
-     * @return
      */
     void PostHoverExit();
 
     /**
      * @brief Send accessibility event message.
      * @param innerEventID the id of inner event
-     * @return
      */
     void PostAccessibilityEvent(uint32_t innerEventID);
 
     /**
      * @brief Cancel message.
      * @param innerEventID the id of inner event
-     * @return
      */
     void CancelPostEvent(uint32_t innerEventID);
 
     /**
      * @brief Cancel message if it has been sent.
      * @param innerEventID the id of inner event
-     * @return
      */
     void CancelPostEventIfNeed(uint32_t innerEventID);
 
     /**
      * @brief Check whether it has been sending.
      * @param innerEventID the id of inner event
-     * @return
      */
     bool HasEventPending(uint32_t innerEventID);
 
@@ -466,28 +411,24 @@ private:
      * @brief Force send and remove event.
      * @param innerEventID the id of inner event
      * @param event event the touch event from Multimodal
-     * @return
      */
     void ForceSendAndRemoveEvent(uint32_t innerEventID, MMI::PointerEvent &event);
 
     /**
      * @brief Handle down events on touchExploring state.
      * @param event event the touch event from Multimodal
-     * @return
      */
     void HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event);
 
     /**
      * @brief Handle move events on touchExploring state.
      * @param event event the touch event from Multimodal
-     * @return
      */
     void HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event);
 
     /**
      * @brief Handle move events on dragging state.
      * @param event event the touch event from Multimodal
-     * @return
      */
     void HandleDraggingStateInnerMove(MMI::PointerEvent &event);
 

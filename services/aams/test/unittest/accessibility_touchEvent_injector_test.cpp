@@ -45,7 +45,6 @@ public:
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
 
 protected:
-    sptr<IAccessibleAbilityClient> service = nullptr;
     MMI::PointerEvent CreateTouchEvent(int32_t action);
     int32_t pointId_ = -1;
     bool isClearEvents_ = false;
@@ -70,17 +69,13 @@ void TouchEventInjectorTest::SetUp()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUp";
     touchEventInjector_ = new TouchEventInjector();
-
     sptr<MockAccessibleAbilityClientStubImpl> stub = new MockAccessibleAbilityClientStubImpl();
-
-    service = new AccessibleAbilityClientProxy(stub->AsObject());
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 
 void TouchEventInjectorTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest TearDown";
-    service = nullptr;
     inputInterceptor_ = nullptr;
 }
 
@@ -111,7 +106,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     gesturePath->AddPosition(point);
     gesturePath->SetDurationTime(100);
 
-    touchEventInjector_->InjectEvents(gesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath);
 
     sleep(SLEEP_TIME_2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
@@ -173,7 +168,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     gesturePath->AddPosition(point);
     gesturePath->SetDurationTime(100000);
 
-    touchEventInjector_->InjectEvents(gesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath);
     sleep(SLEEP_TIME_1);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -206,7 +201,7 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     gesturePath->AddPosition(point3);
     gesturePath->SetDurationTime(200);
 
-    touchEventInjector_->InjectEvents(gesturePath, service, 1);
+    touchEventInjector_->InjectEvents(gesturePath);
     sleep(SLEEP_TIME_2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;

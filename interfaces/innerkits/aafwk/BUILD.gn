@@ -26,7 +26,7 @@ config("accessibleability_private_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_aakit\"",
-    "AAMS_LOG_DOMAIN = 0xD005201",
+    "AAMS_LOG_DOMAIN = 0xD001D01",
   ]
 }
 
@@ -50,7 +50,7 @@ ohos_shared_library("accessibleability") {
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
   ]
 
   external_deps = [

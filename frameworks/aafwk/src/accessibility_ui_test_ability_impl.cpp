@@ -46,16 +46,14 @@ AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
         HILOG_ERROR("Failed to get ISystemAbilityManager");
         return;
     }
-    HILOG_DEBUG("ISystemAbilityManager obtained");
 
     sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (!object) {
         HILOG_ERROR("Get IAccessibleAbilityManagerService object from samgr failed");
         return;
     }
-    HILOG_DEBUG("Get remote object ok");
 
-    serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceProxy>(object);
+    serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("Get aams proxy failed");
         return;
@@ -129,9 +127,7 @@ bool AccessibilityUITestAbilityImpl::GetFocusByElementInfo(const AccessibilityEl
     return aaClient->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-bool AccessibilityUITestAbilityImpl::InjectGesture(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibilityUITestAbilityImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
@@ -139,7 +135,7 @@ bool AccessibilityUITestAbilityImpl::InjectGesture(const uint32_t sequence,
         HILOG_ERROR("aaClient is nullptr");
         return false;
     }
-    return aaClient->InjectGesture(sequence, gesturePath, listener);
+    return aaClient->InjectGesture(gesturePath);
 }
 
 bool AccessibilityUITestAbilityImpl::GetRoot(AccessibilityElementInfo &elementInfo)

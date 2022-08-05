@@ -38,7 +38,6 @@ public:
 
     /**
      * @brief Gets remote object.
-     * @param
      * @return Remote object.
      */
     virtual sptr<IRemoteObject> GetRemoteObject() override;
@@ -54,21 +53,18 @@ public:
      * @brief Init accessible ability.
      * @param channel The object of IAccessibleAbilityChannel.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId) override;
 
     /**
      * @brief Disconnect accessible ability.
      * @param channelId The id of channel.
-     * @return
      */
     virtual void Disconnect(const int32_t channelId) override;
 
     /**
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
-     * @return
      */
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
 
@@ -76,17 +72,8 @@ public:
      * @brief Called when a key event occurs.
      * @param keyEvent Indicates the key event to send.
      * @param sequence The sequence of the key event.
-     * @return
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) override;
-
-    /**
-     * @brief Called when need to notify the result of simulation gesture.
-     * @param sequence The sequence of gesture.
-     * @param completedSuccessfully The result of gesture completion.
-     * @return
-     */
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
 
     /**
      * @brief Obtains elementInfo of focus.
@@ -108,14 +95,10 @@ public:
 
     /**
      * @brief Sends simulate gestures to the screen.
-     * @param sequence The sequence of gesture.
      * @param gesturePath The gesture which need to send.
-     * @param listener The listener of the gesture.
      * @return Return true if the gesture sends successfully, else return false.
      */
-    virtual bool InjectGesture(const uint32_t sequence,
-        const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-        const std::shared_ptr<AccessibilityGestureResultListener> &listener) override;
+    virtual bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) override;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
@@ -272,14 +255,12 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
-     * @return -
      */
     virtual void SetCacheMode(const int32_t cacheMode) override;
 
     /**
      * @brief Clean data.
      * @param remote The object access to AAMS.
-     * @return
      */
     void ResetAAClient(const wptr<IRemoteObject> &remote);
 
@@ -295,27 +276,18 @@ private:
         AccessibleAbilityClientImpl &client_;
     };
 
-    /**
-     * @brief Dispatch the result of simulate gesture.
-     * @param sequence The sequence of gesture.
-     * @param result The result of gesture completion.
-     * @return
-     */
-    void DispatchGestureInjectResult(uint32_t sequence, bool result);
     bool GetCacheElementInfo(const int32_t windowId,
         const int32_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
-
     bool SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
-        const int32_t mode, AccessibilityElementInfo &info);
+        const uint32_t mode, AccessibilityElementInfo &info);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
-    std::map<uint32_t, std::shared_ptr<AccessibilityGestureResultListener>> gestureResultListenerInfos_;
-    int32_t cacheMode_ = 0;
+    uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
 };

@@ -170,16 +170,6 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
     }
 }
 
-void AccessibleAbilityClientImpl::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    HILOG_INFO("sequence[%{public}d] completedSuccessfully[%{public}d]", sequence, completedSuccessfully);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return;
-    }
-    DispatchGestureInjectResult(sequence, completedSuccessfully);
-}
-
 bool AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
@@ -219,11 +209,9 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::InjectGesture(const uint32_t sequence,
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath,
-    const std::shared_ptr<AccessibilityGestureResultListener> &listener)
+bool AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
-    HILOG_INFO("sequence[%{public}d]", sequence);
+    HILOG_INFO();
 
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
@@ -242,12 +230,7 @@ bool AccessibleAbilityClientImpl::InjectGesture(const uint32_t sequence,
         return false;
     }
 
-    if (listener) {
-        gestureResultListenerInfos_.insert(make_pair(sequence, listener));
-    }
-
-    channelClient_->SendSimulateGesture(sequence, gesturePath);
-    return true;
+    return channelClient_->SendSimulateGesture(gesturePath);
 }
 
 bool AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
@@ -564,38 +547,17 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
     }
 }
 
-void AccessibleAbilityClientImpl::DispatchGestureInjectResult(uint32_t sequence, bool result)
-{
-    HILOG_DEBUG();
-
-    if (gestureResultListenerInfos_.empty()) {
-        HILOG_ERROR("There is no information of gestureResultListener");
-        return;
-    }
-
-    std::shared_ptr<AccessibilityGestureResultListener> gestureResultListener = nullptr;
-    auto it = gestureResultListenerInfos_.find(sequence);
-    if (it != gestureResultListenerInfos_.end()) {
-        HILOG_DEBUG("gestureResultListenerInfo has been found.");
-        gestureResultListener = gestureResultListenerInfos_[sequence];
-        gestureResultListenerInfos_.erase(it);
-    }
-
-    if (!gestureResultListener) {
-        HILOG_ERROR("There is no gestureResultListenerInfo in gestureResultListenerInfos_[%{public}d", sequence);
-        return;
-    }
-
-    HILOG_INFO("sequence[%{public}d] result[%{public}d]", sequence, result);
-    gestureResultListener->OnGestureInjectResult(sequence, result);
-}
-
 void AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_INFO("set cache mode: [%{public}d]", cacheMode);
     cacheWindowId_ = -1;
     cacheElementInfos_.clear();
-    cacheMode_ = cacheMode & GET_SOURCE_PREFETCH_MODE;
+    if (cacheMode < 0) {
+        cacheMode_ = 0;
+    } else {
+        uint32_t mode = static_cast<uint32_t>(cacheMode);
+        cacheMode_ = mode & static_cast<uint32_t>(GET_SOURCE_PREFETCH_MODE);
+    }
 }
 
 bool AccessibleAbilityClientImpl::GetCacheElementInfo(const int32_t windowId,
@@ -629,7 +591,7 @@ void AccessibleAbilityClientImpl::SetCacheElementInfo(const int32_t windowId,
 }
 
 bool AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
-    const int32_t mode, AccessibilityElementInfo &info)
+    const uint32_t mode, AccessibilityElementInfo &info)
 {
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -637,7 +599,8 @@ bool AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowI
     }
 
     std::vector<AccessibilityElementInfo> elementInfos {};
-    if (!channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId, mode, elementInfos)) {
+    if (!channelClient_->SearchElementInfosByAccessibilityId(
+        windowId, elementId, static_cast<int32_t>(mode), elementInfos)) {
         HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}d] mode[%{public}d]",
             windowId, elementId, mode);
         return false;

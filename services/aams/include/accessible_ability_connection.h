@@ -47,8 +47,6 @@ public:
 
     bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence);
 
-    void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully);
-
     void SetAbilityInfoEventTypeFilter(const uint32_t eventTypes);
 
     void SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames);
@@ -108,7 +106,6 @@ private:
     };
 
     bool IsWantedEvent(int32_t eventType);
-    bool IsAllowedListEvent(EventType eventType);
 
     void InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
         const sptr<IRemoteObject> &remoteObject, int32_t resultCode);

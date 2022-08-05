@@ -54,7 +54,6 @@ public:
     /**
      * @brief Process the event of install system bundles.
      * @param event Indicates the event to be processed.
-     * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 private:
@@ -65,15 +64,12 @@ class AccessibilityGestureRecognizeListener {
 public:
     /**
      * @brief A destructor used to delete the listener instance.
-     * @param
-     * @return
      */
     virtual ~AccessibilityGestureRecognizeListener() = default;
 
     /**
      * @brief The callback function when performed a double tap and then held down the second tap.
      * @param event  the touch event received.
-     * @return
      */
     virtual void OnDoubleTapLongPress(MMI::PointerEvent &event);
 
@@ -87,7 +83,6 @@ public:
 
     /**
      * @brief The callback function when recognized an event stream as a gesture.
-     * @param
      * @return true if the event is consumed, else false
      */
     virtual bool OnStarted();
@@ -114,35 +109,28 @@ public:
 
     /**
      * @brief A constructor used to create a accessibilityGestureRecognizer instance.
-     * @param
-     * @return
      */
     AccessibilityGestureRecognizer();
 
     /**
      * @brief A destructor used to delete the accessibilityGestureRecognizer instance.
-     * @param
-     * @return
      */
     ~AccessibilityGestureRecognizer() {}
 
     /**
      * @brief Register GestureRecognizeListener.
      * @param listener the listener from touchguide
-     * @return
      */
     void RegisterListener(AccessibilityGestureRecognizeListener& listener);
 
     /**
      * @brief Register GestureRecognizeListener.
      * @param listener the listener from touchguide
-     * @return
      */
     void UnregisterListener();
 
     /**
      * @brief Determine whether a single tap has occurred.
-     * @param
      * @return true if a single tap has occurred, else false.
      */
     bool IsfirstTap()
@@ -161,29 +149,23 @@ public:
 
     /**
      * @brief Clear state.
-     * @param
-     * @return
      */
     void Clear();
 
     /**
      * @brief If a double tap occurred, call OnDoubleTapLongPress callback.
      * @param event the touch event from touchguide
-     * @return
      */
     void MaybeRecognizeLongPress(MMI::PointerEvent &event);
 
     /**
      * @brief If a single tap completed.
-     * @param
-     * @return
      */
     void SingleTapDetected();
 
     /**
      * @brief Set isLongpress_ flag;
      * @param value set isLongpress_ flag
-     * @return
      */
     void SetIsLongpress (bool value)
     {
@@ -192,8 +174,6 @@ public:
 
     /**
      * @brief Get pCurDown_ ptr.
-     * @param
-     * @return
      */
     std::shared_ptr<MMI::PointerEvent> GetCurDown()
     {
@@ -202,8 +182,6 @@ public:
 
     /**
      * @brief Get continueDown_ flag.
-     * @param
-     * @return
      */
     bool GetContinueDown()
     {
@@ -235,21 +213,18 @@ private:
     /**
      * @brief Handle the down event from touchguide.
      * @param event the touch event from touchguide
-     * @return
      */
     void HandleTouchDownEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Handle the move event from touchguide.
      * @param event the touch event from touchguide
-     * @return
      */
     bool HandleTouchMoveEvent(MMI::PointerEvent &event);
 
     /**
      * @brief Handle the up event from touchguide.
      * @param event the touch event from touchguide
-     * @return
      */
     bool HandleTouchUpEvent(MMI::PointerEvent &event);
 
@@ -262,8 +237,6 @@ private:
 
     /**
      * @brief Cancel the gesture.
-     * @param
-     * @return
      */
     void StandardGestureCancled();
 

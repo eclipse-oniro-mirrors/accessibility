@@ -17,7 +17,6 @@
 #define NAPI_ACCESSIBILITY_EXTENSION_CONTEXT_H
 
 #include "accessibility_extension_context.h"
-#include "accessibility_gesture_result_listener.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "native_engine/native_engine.h"
@@ -26,25 +25,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-class NAccessibilityGestureResultListener : public AccessibilityGestureResultListener {
-public:
-    NAccessibilityGestureResultListener() = default;
-    virtual ~NAccessibilityGestureResultListener() = default;
-
-    void OnGestureInjectResult(uint32_t sequence, bool result) override;
-};
-
-struct NAccessibilityGestureResultListenerInfo {
-    napi_env env_;
-    napi_ref callback_;
-    std::shared_ptr<AccessibilityGestureResultListener> listener_ = nullptr;
-};
-
 NativeValue* CreateJsAccessibilityExtensionContext(
     NativeEngine& engine, std::shared_ptr<AccessibilityExtensionContext> context);
-
-static uint32_t gestureInjectSequence = 0;
-static std::map<uint32_t, std::shared_ptr<NAccessibilityGestureResultListenerInfo>> jsGestureResultListenerInfos {};
 } // namespace Accessibility
 } // namespace OHOS
 #endif // NAPI_ACCESSIBILITY_EXTENSION_CONTEXT_H

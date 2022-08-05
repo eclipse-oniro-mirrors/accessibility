@@ -149,7 +149,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_001,
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     gesturePath->AddPosition(point);
     gesturePath->SetDurationTime(100);
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
 
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
@@ -185,7 +185,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_004,
     gesturePath->AddPosition(point3);
     gesturePath->SetDurationTime(200);
 
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
 
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
@@ -225,7 +225,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_005,
     gesturePath->AddPosition(point4);
     gesturePath->SetDurationTime(300);
 
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     auto mtTouchAction = MMI::MockInputManager::GetTouchActions();
@@ -266,7 +266,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_006,
     gesturePath->AddPosition(point4);
     gesturePath->SetDurationTime(300);
 
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
 
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
@@ -308,7 +308,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_007,
     gesturePath->AddPosition(point4);
     gesturePath->SetDurationTime(300);
 
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
 
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
@@ -350,7 +350,7 @@ HWTEST_F(AamsInjectorTest, TouchEventInjector_ModuleTest_TouchEventInjector_008,
     gesturePath->AddPosition(point4);
     gesturePath->SetDurationTime(300);
 
-    aacs_->SendSimulateGesture(1, gesturePath);
+    aacs_->SendSimulateGesture(gesturePath);
     sleep(3);
 
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;

@@ -39,15 +39,11 @@ public:
 
     /**
      * @brief A constructor used to create a KeyEventFilter instance.
-     * @param
-     * @return
      */
     KeyEventFilter();
 
     /**
      * @brief A destructor used to delete the KeyEventFilter instance.
-     * @param
-     * @return
      */
     virtual ~KeyEventFilter();
 
@@ -62,7 +58,6 @@ public:
     /**
      * @brief Send key event to next stream node.
      * @param event the key event prepared to send
-     * @return
      */
     void SendEventToNext(MMI::KeyEvent &event);
 
@@ -71,21 +66,17 @@ public:
      * @param connection the AccessibleAbility
      * @param isHandled true if the AccessibleAbility can handle the event else false
      * @param sequenceNum the sequence of keyevent
-     * @return
      */
     void SetServiceOnKeyEventResult(AccessibleAbilityConnection &connection, bool isHandled, uint32_t sequenceNum);
 
     /**
      * @brief Clear AccessibleAbility keyevents.
      * @param connection the AccessibleAbility
-     * @return
      */
     void ClearServiceKeyEvents(AccessibleAbilityConnection &connection);
 
     /**
      * @brief Destroy the events.
-     * @param
-     * @return
      */
     void DestroyEvents() override;
 
@@ -100,7 +91,6 @@ private:
     /**
      * @brief Dispatch the keyevents.
      * @param event the keyevent from Multimodal
-     * @return
      */
     void DispatchKeyEvent(MMI::KeyEvent &event);
 
@@ -123,8 +113,6 @@ class KeyEventFilterEventHandler : public AppExecFwk::EventHandler {
 public:
     /**
      * @brief A constructor used to create a KeyEventFilterEventHandler instance.
-     * @param
-     * @return
      */
     KeyEventFilterEventHandler(const std::shared_ptr<AppExecFwk::EventRunner> &runner, KeyEventFilter &keyEventFilter);
     virtual ~KeyEventFilterEventHandler() = default;
@@ -132,7 +120,6 @@ public:
     /**
      * @brief Process the event of install system bundles.
      * @param event Indicates the event to be processed.
-     * @return
      */
     virtual void ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event) override;
 

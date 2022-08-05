@@ -134,12 +134,10 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     (void)sequence;
 }
 
-void AccessibleAbilityChannel::SendSimulateGesture(const int32_t requestId,
-    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
-    (void)requestId;
     (void)gesturePath;
-    return;
+    return true;
 }
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(
@@ -174,23 +172,11 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
     return;
 }
 
-bool AccessibleAbilityConnection::IsAllowedListEvent(EventType eventType)
-{
-    (void)eventType;
-    return true;
-}
-
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence)
 {
     (void)keyEvent;
     (void)sequence;
     return false;
-}
-
-void AccessibleAbilityConnection::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    (void)sequence;
-    (void)completedSuccessfully;
 }
 
 bool AccessibleAbilityConnection::IsWantedEvent(int32_t eventType)

@@ -25,7 +25,7 @@ config("accessibilityconfig_private_config") {
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_acfwk\"",
-    "AAMS_LOG_DOMAIN = 0xD005203",
+    "AAMS_LOG_DOMAIN = 0xD001D03",
   ]
 }
 
@@ -45,17 +45,17 @@ ohos_shared_library("accessibilityconfig") {
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 
-  deps = [
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
 
   public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "ability_base:want",
-    "ability_runtime:abilitykit_native",
     "c_utils:utils",
+    "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbeget_proxy",
+    "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]

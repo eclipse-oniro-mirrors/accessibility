@@ -25,11 +25,12 @@ import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility"
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  */
 export default class AccessibilityExtensionContext extends ExtensionContext {
-    setEventTypeFilter(type: Array<accessibility.EventType>, callback: AsyncCallback<boolean>): boolean;
-    setEventTypeFilter(type: Array<accessibility.EventType>): Promise<boolean>;
-
-    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<boolean>): boolean;
-    setTargetBundleName(targetNames: Array<string>): Promise<boolean>;
+    /**
+     * Set the name of the bundle name that is interested in sending the event.
+     * @param targetNames 
+     */
+    setTargetBundleName(targetNames: Array<string>): Promise<void>;
+    setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<void>): void;
 
     /**
      * Get focus element.
@@ -55,9 +56,12 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
     getWindows(callback: AsyncCallback<Array<AccessibilityElement>>): void;
     getWindows(displayId: number, callback: AsyncCallback<Array<AccessibilityElement>>): void;
 
-
-    gestureInject(gesturePath: GesturePath, listener: Callback<boolean>, callback: AsyncCallback<boolean>): void;
-    gestureInject(gesturePath: GesturePath, listener: Callback<boolean>): Promise<boolean>;
+    /**
+     * Inject gesture path events.
+     * @param gesturePath Indicates the gesture path.
+     */
+    injectGesture(gesturePath: GesturePath): Promise<void>;
+    injectGesture(gesturePath: GesturePath, callback: AsyncCallback<void>): void;
 }
 
 /**

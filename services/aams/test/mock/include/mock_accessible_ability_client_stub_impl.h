@@ -33,14 +33,12 @@ public:
     virtual void Disconnect(const int32_t channelId) override;
     virtual void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo) override;
     virtual void OnKeyPressEvent(const MMI::KeyEvent& keyEvent, const int32_t sequence) override;
-    virtual void OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully) override;
 
 private:
     ErrCode HandleInit(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleDisconnect(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleOnAccessibilityEvent(MessageParcel& data, MessageParcel& reply);
     ErrCode HandleOnKeyPressEvent(MessageParcel& data, MessageParcel& reply);
-    ErrCode HandleOnGestureInjectResult(MessageParcel& data, MessageParcel& reply);
     DISALLOW_COPY_AND_MOVE(MockAccessibleAbilityClientStubImpl);
 };
 } // namespace Accessibility

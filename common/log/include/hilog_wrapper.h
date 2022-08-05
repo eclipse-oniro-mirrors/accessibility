@@ -41,7 +41,7 @@
 #endif
 
 #ifndef AAMS_LOG_DOMAIN
-#define AAMS_LOG_DOMAIN 0xD005000
+#define AAMS_LOG_DOMAIN 0xD001D04
 #endif
 
 #ifndef AAMS_LOG_TAG

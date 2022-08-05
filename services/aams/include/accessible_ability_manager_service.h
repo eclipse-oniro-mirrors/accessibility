@@ -125,11 +125,6 @@ public:
         return currentAccountId_;
     }
 
-    inline uint32_t GetConnectCounter()
-    {
-        return connectCounter_;
-    }
-
     inline std::shared_ptr<AAMSEventHandler> &GetMainHandler()
     {
         return handler_;
@@ -152,7 +147,6 @@ public:
     void PackageAdd(const std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
-    void UpdateAbilities();
 
     void SetScreenMagnificationState(const bool state) override;
     void SetShortKeyState(const bool state) override;
@@ -192,9 +186,6 @@ public:
     void UpdateShortkeyTarget();
 
 private:
-    void AddUITestClient(const sptr<IRemoteObject> &obj);
-    void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection);
-
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
@@ -243,6 +234,15 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
     
+    class BundleManagerDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        BundleManagerDeathRecipient() = default;
+        ~BundleManagerDeathRecipient() final = default;
+        DISALLOW_COPY_AND_MOVE(BundleManagerDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
+    };
+
     void InitAccountDependence();
     void InitBundleDependence();
     void InitCommonEventDependence();
@@ -261,11 +261,11 @@ private:
     void UpdateCaptionProperty();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
+    void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
 
     bool isRunning_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
     int32_t currentAccountId_ = -1;
-    uint32_t connectCounter_ = 1;
     std::map<int32_t, sptr<AccessibilityAccountData>> a11yAccountsData_;
     sptr<AppExecFwk::IBundleMgr> bundleManager_ = nullptr;
 
@@ -282,7 +282,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
-    static std::mutex mutex_;
+    sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

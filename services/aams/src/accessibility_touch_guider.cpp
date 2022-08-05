@@ -880,7 +880,7 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
         return false;
     }
 
-    uint32_t timeOut = 500;
+    uint32_t timeOut = 5000;
     sptr<ElementOperatorCallbackImpl> focusCallback = new(std::nothrow) ElementOperatorCallbackImpl();
     if (!focusCallback) {
         HILOG_ERROR("Failed to create focusCallback.");

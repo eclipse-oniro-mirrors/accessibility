@@ -47,9 +47,7 @@ public:
     MOCK_METHOD2(GetWindowsByDisplayId, bool(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD1(ExecuteCommonAction, bool(const int32_t action));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
-    MOCK_METHOD2(
-        SendSimulateGesture, void(const int32_t sequenceNum,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
+    MOCK_METHOD1(SendSimulateGesture, bool(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
 };
 
 class MockAccessibleAbilityConnection : public AccessibleAbilityConnection {

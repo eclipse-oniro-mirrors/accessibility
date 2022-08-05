@@ -36,11 +36,17 @@ AccessibilityConfig::~AccessibilityConfig()
 {
 }
 
+bool AccessibilityConfig::InitializeContext()
+{
+    CHECK_IMPL_PTR(false)
+    return pImpl_->InitializeContext();
+}
+
 void AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
-    const std::shared_ptr<AccessibilityConfigObserver> &observer)
+    const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
     CHECK_IMPL_PTR()
-    pImpl_->SubscribeConfigObserver(id, observer);
+    pImpl_->SubscribeConfigObserver(id, observer, retFlag);
 }
 
 void AccessibilityConfig::UnsubscribeConfigObserver(const CONFIG_ID id,
@@ -94,16 +100,16 @@ void AccessibilityConfig::SetMouseKeyState(const bool state)
     pImpl_->SetMouseKeyState(state);
 }
 
-void AccessibilityConfig::SetCaptionState(const bool state)
+void AccessibilityConfig::SetCaptionsState(const bool state)
 {
     CHECK_IMPL_PTR()
-    pImpl_->SetCaptionState(state);
+    pImpl_->SetCaptionsState(state);
 }
 
-void AccessibilityConfig::SetCaptionProperty(const CaptionProperty &caption)
+void AccessibilityConfig::SetCaptionsProperty(const CaptionProperty &caption)
 {
     CHECK_IMPL_PTR()
-    pImpl_->SetCaptionProperty(caption);
+    pImpl_->SetCaptionsProperty(caption);
 }
 
 void AccessibilityConfig::SetMouseAutoClick(const int32_t time)
@@ -184,16 +190,16 @@ void AccessibilityConfig::GetMouseKeyState(bool &state) const
     pImpl_->GetMouseKeyState(state);
 }
 
-void AccessibilityConfig::GetCaptionState(bool &state) const
+void AccessibilityConfig::GetCaptionsState(bool &state) const
 {
     CHECK_IMPL_PTR()
-    pImpl_->GetCaptionState(state);
+    pImpl_->GetCaptionsState(state);
 }
 
-void AccessibilityConfig::GetCaptionProperty(CaptionProperty &caption) const
+void AccessibilityConfig::GetCaptionsProperty(CaptionProperty &caption) const
 {
     CHECK_IMPL_PTR()
-    pImpl_->GetCaptionProperty(caption);
+    pImpl_->GetCaptionsProperty(caption);
 }
 
 void AccessibilityConfig::GetMouseAutoClick(int32_t &time) const

@@ -39,14 +39,12 @@ public:
 
     /**
      * @brief Obtains the duration in which this gesture path continues.
-     * @param
      * @return Return the duration in which this gesture path continues.
      */
     int64_t GetDurationTime() const;
 
     /**
      * @brief Obtains all positions of this gesture path.
-     * @param
      * @return Return all positions of this gesture path.
      */
     const std::vector<AccessibilityGesturePosition> &GetPositions() const;
@@ -54,14 +52,12 @@ public:
     /**
      * @brief Sets the duration for this gesture path to continue.
      * @param durationTime The duration for this gesture path to continue.
-     * @return
      */
     void SetDurationTime(int64_t durationTime);
 
     /**
      * @brief Add a position of this gesture path.
      * @param position A position of this gesture path.
-     * @return
      */
     void AddPosition(AccessibilityGesturePosition &position);
 

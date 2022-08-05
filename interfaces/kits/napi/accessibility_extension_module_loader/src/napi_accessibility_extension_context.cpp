@@ -167,7 +167,7 @@ private:
                 }
                 bool ret = context->SetEventTypeFilter(filter);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
@@ -208,7 +208,7 @@ private:
 
                 bool ret = context->SetTargetBundleName(targetBundleNames);
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
@@ -536,7 +536,7 @@ private:
     {
         HILOG_INFO();
         // Only support two or three params
-        if (info.argc != ARGS_SIZE_TWO && info.argc != ARGS_SIZE_THREE) {
+        if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
             HILOG_ERROR("Not enough params");
             return engine.CreateUndefined();
         }
@@ -550,25 +550,8 @@ private:
         ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths,
             gesturePath, gesturePathArray, isParameterArray);
 
-        // Unwrap callback
-        if (info.argv[PARAM1]->TypeOf() != NATIVE_FUNCTION) {
-            HILOG_ERROR("The type of params is %{public}d.", info.argv[PARAM1]->TypeOf());
-            return engine.CreateUndefined();
-        }
-        // Create callback info
-        std::shared_ptr<NAccessibilityGestureResultListenerInfo> pCallbackInfo =
-            std::make_shared<NAccessibilityGestureResultListenerInfo>();
-        pCallbackInfo->env_ = reinterpret_cast<napi_env>(&engine);
-        NAPI_CALL(reinterpret_cast<napi_env>(&engine), napi_create_reference(reinterpret_cast<napi_env>(&engine),
-            reinterpret_cast<napi_value>(info.argv[PARAM1]), 1, &pCallbackInfo->callback_));
-        pCallbackInfo->listener_ = std::make_shared<NAccessibilityGestureResultListener>();
-        // Save callback info
-        gestureInjectSequence++;
-        jsGestureResultListenerInfos[gestureInjectSequence] = pCallbackInfo;
-
         AsyncTask::CompleteCallback complete =
-            [weak = context_, sequence = gestureInjectSequence, gesturePath, gesturePathArray,
-                isParameterArray, listener = pCallbackInfo->listener_](
+            [weak = context_, gesturePath, gesturePathArray, isParameterArray](
             NativeEngine& engine, AsyncTask& task, int32_t status) {
                 auto context = weak.lock();
                 if (!context) {
@@ -578,19 +561,19 @@ private:
                 }
                 bool ret = false;
                 if (isParameterArray) {
-                    ret = context->InjectGesture(sequence, gesturePathArray, listener);
+                    ret = context->InjectGesture(gesturePathArray);
                 } else {
-                    ret = context->InjectGesture(sequence, gesturePath, listener);
+                    ret = context->InjectGesture(gesturePath);
                 }
                 if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
+                    task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
                     task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Gesture inject failed."));
                 }
             };
 
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_TWO) ? nullptr : info.argv[PARAM2];
+        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
         NativeValue* result = nullptr;
         AsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
@@ -614,78 +597,13 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     }
     object->SetNativePointer(jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr);
 
-    BindNativeFunction(engine, *object, "setEventTypeFilter", NAccessibilityExtensionContext::SetEventTypeFilter);
     BindNativeFunction(engine, *object, "setTargetBundleName", NAccessibilityExtensionContext::SetTargetBundleName);
     BindNativeFunction(engine, *object, "getFocusElement", NAccessibilityExtensionContext::GetFocusElement);
     BindNativeFunction(engine, *object, "getWindowRootElement", NAccessibilityExtensionContext::GetWindowRootElement);
     BindNativeFunction(engine, *object, "getWindows", NAccessibilityExtensionContext::GetWindows);
-    BindNativeFunction(engine, *object, "executeCommonAction", NAccessibilityExtensionContext::ExecuteCommonAction);
-    BindNativeFunction(engine, *object, "gestureInject", NAccessibilityExtensionContext::InjectGesture);
+    BindNativeFunction(engine, *object, "injectGesture", NAccessibilityExtensionContext::InjectGesture);
 
     return objValue;
-}
-
-void NAccessibilityGestureResultListener::OnGestureInjectResult(uint32_t sequence, bool result)
-{
-    HILOG_INFO();
-
-    if (jsGestureResultListenerInfos.empty()) {
-        HILOG_ERROR("There is no information of jsGestureResultListenerInfos");
-        return;
-    }
-
-    std::shared_ptr<NAccessibilityGestureResultListenerInfo> callbackInfo = nullptr;
-    auto it = jsGestureResultListenerInfos.find(sequence);
-    if (it != jsGestureResultListenerInfos.end()) {
-        HILOG_DEBUG("callbackInfo has been found.");
-        callbackInfo = jsGestureResultListenerInfos[sequence];
-        jsGestureResultListenerInfos.erase(it);
-    }
-
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-
-    StateCallbackInfo *data = new(std::nothrow) StateCallbackInfo();
-    if (!data) {
-        HILOG_ERROR("Failed to create data.");
-        return;
-    }
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (!work) {
-        HILOG_ERROR("Failed to create work.");
-        delete data;
-        data = nullptr;
-        return;
-    }
-
-    data->env_ = callbackInfo->env_;
-    data->state_ = result;
-    data->ref_ = callbackInfo->callback_;
-    work->data = static_cast<void*>(data);
-
-    uv_loop_s *loop = nullptr;
-    napi_get_uv_event_loop(callbackInfo->env_, &loop);
-    uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        [](uv_work_t *work, int status) {
-            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_value napiResult = 0;
-            napi_value callResult = 0;
-            napi_get_undefined(callbackInfo->env_, &undefined);
-            napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &napiResult);
-            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &callback);
-            napi_call_function(callbackInfo->env_, undefined, callback, ARGS_SIZE_ONE, &napiResult, &callResult);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-            delete work;
-            work = nullptr;
-        });
 }
 } // namespace Accessibility
 } // namespace OHOS

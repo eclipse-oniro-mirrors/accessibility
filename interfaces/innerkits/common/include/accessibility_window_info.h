@@ -25,8 +25,6 @@ class AccessibilityWindowInfo {
 public:
     /**
      * @brief Construct
-     * @param
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -34,7 +32,6 @@ public:
 
     /**
      * @brief Get the window type.
-     * @param -
      * @return The accessibility window type. Refer to [AccessibilityWindowType].
      * @since 3
      * @sysCap Accessibility
@@ -44,7 +41,6 @@ public:
     /**
      * @brief Set the window type.
      * @param type The accessibility window type. Refer to [AccessibilityWindowType].
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -52,7 +48,6 @@ public:
 
     /**
      * @brief Get The window layer
-     * @param -
      * @return The layer of window
      * @since 3
      * @sysCap Accessibility
@@ -62,7 +57,6 @@ public:
     /**
      * @brief Set The window layer
      * @param layer The window layer
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -71,7 +65,6 @@ public:
     /**
      * @brief Set an anchor accessibility node that anchors this window to another window.
      * @param anchorId The accessibility id of component.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -79,7 +72,6 @@ public:
 
     /**
      * @brief Get the anchor window
-     * @param -
      * @return The anchor id of the window.
      * @since 3
      * @sysCap Accessibility
@@ -88,7 +80,6 @@ public:
 
     /**
      * @brief Get the window id of current window.
-     * @param -
      * @return The window id of current window.
      * @since 3
      * @sysCap Accessibility
@@ -98,7 +89,6 @@ public:
     /**
      * @brief Set the window id of current window.
      * @param id The window id of current window.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -107,7 +97,6 @@ public:
     /**
      * @brief AAMS called to set the id of the IAccessibleAbilityChannel.
      * @param channelId The id of the IAccessibleAbilityChannel.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -115,7 +104,6 @@ public:
 
     /**
      * @brief Get the id of the IAccessibleAbilityChannel.
-     * @param
      * @return The id of the IAccessibleAbilityChannel.
      * @since 3
      * @sysCap Accessibility
@@ -124,7 +112,6 @@ public:
 
     /**
      * @brief Get the screen pixel coordinates
-     * @param -
      * @return The screen pixel coordinates
      * @since 3
      * @sysCap Accessibility
@@ -134,7 +121,6 @@ public:
     /**
      * @brief Set the screen pixel coordinates
      * @param bounds The screen pixel coordinates
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -142,7 +128,6 @@ public:
 
     /**
      * @brief Check whether the window is active or not.
-     * @param -
      * @return true: the window is active, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -152,7 +137,6 @@ public:
     /**
      * @brief Set whether the window is active or not.
      * @param active true: the window is active, otherwise is not.
-     * @return
      * @since 3
      * @sysCap Accessibility
      */
@@ -160,7 +144,6 @@ public:
 
     /**
      * @brief Checks whether this window has gained focus.
-     * @param
      * @return true: the window has gained focus, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -170,7 +153,6 @@ public:
     /**
      * @brief Set whether this window has gained focus.
      * @param focused true: the window has gained focus, otherwise is not.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -178,7 +160,6 @@ public:
 
     /**
      * @brief Checks whether this window has gained accessibility focus.
-     * @param -
      * @return true: this window has gained accessibility focus, otherwise is not.
      * @since 3
      * @sysCap Accessibility
@@ -188,7 +169,6 @@ public:
     /**
      * @brief Set whether this window has gained accessibility focus.
      * @param accessibilityFocused true: this window has gained accessibility focus, otherwise is not.
-     * @return -
      * @since 3
      * @sysCap Accessibility
      */
@@ -197,7 +177,6 @@ public:
     /**
      * @brief Set the display id
      * @param displayId the display id of the window
-     * @return -
      * @sysCap Accessibility
      */
     void SetDisplayId(const uint64_t displayId);
@@ -219,7 +198,6 @@ public:
     /**
      * @brief Set window type
      * @param type The type of window. Refer to [OHOS::Rosen::WindowType].
-     * @return -
      * @sysCap Accessibility
      */
     void SetWindowType(const uint32_t type);
@@ -234,14 +212,12 @@ public:
     /**
      * @brief Set window mode
      * @param mode The mode of window. Refer to [OHOS::Rosen::WindowMode].
-     * @return -
      * @sysCap Accessibility
      */
     void SetWindowMode(const uint32_t mode);
 
     /**
      * @brief Get whether the decoration state is enabled
-     * @param -
      * @return true:the decoration is enabled; false:the decoration is disabled
      * @sysCap Accessibility
      */
@@ -250,7 +226,6 @@ public:
     /**
      * @brief Set the decoration state
      * @param isDecorEnable true:enable decoration; false:disable decoration
-     * @return -
      * @sysCap Accessibility
      */
     void SetDecorEnable(const bool isDecorEnable);

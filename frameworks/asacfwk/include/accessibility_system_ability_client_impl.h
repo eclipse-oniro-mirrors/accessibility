@@ -52,20 +52,17 @@ public:
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
-     * @return
      */
     virtual void DeregisterElementOperator(const int32_t windowId) override;
 
     /**
      * @brief Checks whether accessibility ability is enabled.
-     * @param -
      * @return true: enabled; false: disabled
      */
     virtual bool IsEnabled() override;
 
     /**
      * @brief Checks whether touch exploration ability is enabled.
-     * @param -
      * @return true: enabled; false: disabled
      */
     virtual bool IsTouchExplorationEnabled() override;
@@ -134,7 +131,6 @@ public:
     /**
      * @brief Clean the AAMS object data.
      * @param remote The object access to AAMS.
-     * @return
      */
     void ResetService(const wptr<IRemoteObject> &remote);
 
@@ -144,7 +140,6 @@ public:
      *                  state type: Refer to AccessibilityStateEventType.
      *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/
      *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED
-     * @return
      */
     void OnAccessibleAbilityManagerStateChanged(const uint32_t stateType);
 private:
@@ -178,7 +173,6 @@ private:
 
     /**
      * @brief Connect to AAMS Service.
-     * @param
      * @return success : true, failed : false.
      */
     bool ConnectToService();
@@ -190,7 +184,6 @@ private:
      * @param stateType The state type and value.
      *                  state type: Refer to AccessibilityStateEventType.
      * @param value The value be changed.
-     * @return
      */
     void NotifyStateChanged(uint32_t eventType, bool value);
 

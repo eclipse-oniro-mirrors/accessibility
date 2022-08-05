@@ -114,7 +114,7 @@ public:
     static std::shared_ptr<NAccessibilityConfigObserverImpl> configObservers_;
     static std::shared_ptr<EnableAbilityListsObserverImpl> enableAbilityListsObservers_;
 private:
-    static void SetConfigComplete(napi_env env, napi_status status, void* data);
+    static void AsyncWorkComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);
     static void GetConfigComplete(napi_env env, napi_status status, void* data);
     static void GetConfigExecute(napi_env env, void* data);

@@ -76,12 +76,5 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent& keyEvent
     AccessibilityHelper::GetInstance().SetTestKeyPressEvent(sequence);
     HILOG_DEBUG("start.-----------------------------mock Proxy end ");
 }
-
-void AccessibleAbilityClientProxy::OnGestureInjectResult(const int32_t sequence, const bool completedSuccessfully)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityClientProxy OnGestureInjectResult";
-    AccessibilityHelper::GetInstance().SetTestGestureSimulateResult(1);
-    AccessibilityHelper::GetInstance().SetTestGestureSimulate(sequence);
-}
 } // namespace Accessibility
 } // namespace OHOS

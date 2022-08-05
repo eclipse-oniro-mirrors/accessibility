@@ -539,7 +539,7 @@ napi_value NAccessibilityClient::SetCaptionStateEnabled(napi_env env, napi_callb
         HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
 
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-        instance.SetCaptionState(captionState);
+        instance.SetCaptionsState(captionState);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -556,7 +556,7 @@ napi_value NAccessibilityClient::GetCaptionStateEnabled(napi_env env, napi_callb
 
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     bool captionState = false;
-    instance.GetCaptionState(captionState);
+    instance.GetCaptionsState(captionState);
     napi_get_boolean(env, captionState, &captionStateEnabled);
 
     HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
@@ -574,7 +574,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
     if (argc >= ARGS_SIZE_ONE) {
         ConvertObjToCaptionProperty(env, parameters[PARAM0], &captionProperty);
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-        instance.SetCaptionProperty(captionProperty);
+        instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -697,7 +697,7 @@ napi_value NAccessibilityClient::GetCaptionsFontFamily(napi_env env, napi_callba
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     return returnValue;
 }
@@ -717,10 +717,10 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontFamily(std::string(outBuffer));
-        instance.SetCaptionProperty(captionProperty);
+        instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -735,7 +735,7 @@ napi_value NAccessibilityClient::GetCaptionsFontScale(napi_env env, napi_callbac
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     napi_create_int32(env, captionProperty.GetFontScale(), &returnValue);
     return returnValue;
 }
@@ -754,10 +754,10 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontScale(num);
-        instance.SetCaptionProperty(captionProperty);
+        instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -772,7 +772,7 @@ napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callbac
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetFontColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -790,10 +790,10 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontColor(color);
-        (void)instance.SetCaptionProperty(captionProperty);
+        (void)instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -808,7 +808,7 @@ napi_value NAccessibilityClient::GetCaptionFontEdgeType(napi_env env, napi_callb
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &returnValue);
     return returnValue;
 }
@@ -829,10 +829,10 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontEdgeType(std::string(outBuffer));
-        instance.SetCaptionProperty(captionProperty);
+        instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -847,7 +847,7 @@ napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_ca
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetBackgroundColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -865,10 +865,10 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetBackgroundColor(color);
-        (void)instance.SetCaptionProperty(captionProperty);
+        (void)instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
@@ -883,7 +883,7 @@ napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callba
     napi_value returnValue = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-    instance.GetCaptionProperty(captionProperty);
+    instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetWindowColor();
     std::string colorStr = ConvertColorToString(color);
     napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -901,10 +901,10 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
         // Get CaptionProperty
         auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
-        instance.GetCaptionProperty(captionProperty);
+        instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetWindowColor(color);
-        (void)instance.SetCaptionProperty(captionProperty);
+        (void)instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
     }
