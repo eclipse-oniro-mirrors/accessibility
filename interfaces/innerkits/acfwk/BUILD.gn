@@ -60,6 +60,8 @@ ohos_shared_library("accessibilityconfig") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "samgr_standard:samgr_proxy",
+    "display_manager:displaymgr",
+    "power_manager:powermgr_client",
   ]
 
   install_enable = true
