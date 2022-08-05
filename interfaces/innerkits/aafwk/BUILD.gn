@@ -50,7 +50,7 @@ ohos_shared_library("accessibleability") {
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
   ]
 
   external_deps = [

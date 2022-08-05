@@ -36,12 +36,12 @@ ohos_shared_library("config_napi") {
     "//foundation/ability/ability_runtime/frameworks/native/ability/native:abilitykit_native",
     "//foundation/ability/ability_runtime/frameworks/native/appkit:appkit_native",
     "//foundation/arkui/napi:ace_napi",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
   ]
 
   external_deps = [

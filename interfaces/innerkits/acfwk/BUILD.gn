@@ -45,9 +45,7 @@ ohos_shared_library("accessibilityconfig") {
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 
-  deps = [
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
 
   public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
