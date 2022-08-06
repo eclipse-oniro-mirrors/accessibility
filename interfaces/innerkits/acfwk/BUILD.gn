@@ -57,7 +57,7 @@ ohos_shared_library("accessibilityconfig") {
     "init:libbeget_proxy",
     "init:libbegetutil",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 
   install_enable = true
