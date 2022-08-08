@@ -25,7 +25,7 @@
     ],
     "deps": {
       "components": [
-        "samgr_standard",
+        "samgr",
         "napi",
         "window_manager",
         "eventhandler",
@@ -44,17 +44,23 @@
       "third_party": []
     },
     "build": {
-      "sub_component": [
-        "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-        "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-        "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages",
-        "//foundation/barrierfree/accessibility/sa_profile:aams_sa_profile",
-        "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg"
-      ],
+      "group_type": {
+        "base_group": [
+          "//foundation/barrierfree/accessibility/interfaces/kits/napi:napi_packages"
+        ],
+        "fwk_group": [
+          "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
+          "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
+          "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+          "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+          "//foundation/barrierfree/accessibility/common/interface:accessibility_interface"
+        ],
+        "service_group": [
+          "//foundation/barrierfree/accessibility/sa_profile:aams_sa_profile",
+          "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg",
+          "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms"
+        ]
+      },
       "inner_kits": [
         {
           "type": "so",

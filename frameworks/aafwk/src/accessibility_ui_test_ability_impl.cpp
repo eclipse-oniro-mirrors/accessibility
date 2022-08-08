@@ -53,7 +53,7 @@ AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
         return;
     }
 
-    serviceProxy_ = iface_cast<AccessibleAbilityManagerServiceProxy>(object);
+    serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("Get aams proxy failed");
         return;

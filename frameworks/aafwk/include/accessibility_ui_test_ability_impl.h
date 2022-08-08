@@ -17,7 +17,7 @@
 #define ACCESSIBILITY_UI_TEST_ABILITY_IMPL_H
 
 #include "accessibility_ui_test_ability.h"
-#include "accessible_ability_manager_service_proxy.h"
+#include "i_accessible_ability_manager_service.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -237,7 +237,7 @@ public:
     virtual void SetCacheMode(const int32_t cacheMode) override;
 
 private:
-    sptr<AccessibleAbilityManagerServiceProxy> serviceProxy_ = nullptr;
+    sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

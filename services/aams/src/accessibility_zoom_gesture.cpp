@@ -26,7 +26,7 @@ namespace {
     constexpr int32_t MULTI_TAP_TIMER = 300; // ms
     constexpr int32_t LONG_PRESS_TIMER = 500; // ms
     constexpr int64_t US_TO_MS = 1000;
-    constexpr float MIN_SCALE_SPAN = 26.0f; // 27mm
+    constexpr float MIN_SCALE_SPAN = 26.0f;
     constexpr float DOUBLE_TAP_SLOP = 100.0f;
     constexpr float HALF = 0.5f;
     constexpr uint32_t TRIPLE_TAP_COUNT = 3;
@@ -99,17 +99,20 @@ void AccessibilityZoomGesture::CacheEvents(MMI::PointerEvent &event)
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             if (pointerCount == POINTER_COUNT_1) {
+                HILOG_DEBUG("Cache pointer down");
                 preLastDownEvent_ = lastDownEvent_;
                 lastDownEvent_ = pointerEvent;
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (pointerCount == POINTER_COUNT_1) {
+                HILOG_DEBUG("Cache pointer up");
                 preLastUpEvent_ = lastUpEvent_;
                 lastUpEvent_ = pointerEvent;
             }
             break;
         default:
+            HILOG_DEBUG("Action is %{public}d", action);
             break;
     }
     cacheEvents_.emplace_back(pointerEvent);
@@ -136,6 +139,7 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
         if ((cacheEventsNum > 1) &&
             (cacheEventsNum == cacheEventsTotalNum) &&
             (action == MMI::PointerEvent::POINTER_ACTION_DOWN)) {
+            HILOG_DEBUG("The down event needs to be parsed again");
             isStartNewAction = true;
         }
         if (isStartNewAction) {
@@ -166,6 +170,7 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
     size_t pointerCount = event.GetPointerIds().size();
     bool isTripleTaps = false;
 
+    HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
@@ -202,6 +207,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
     size_t pointerCount = event.GetPointerIds().size();
     bool isTripleTaps = false;
 
+    HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             zoomGestureEventHandler_->RemoveEvent(MULTI_TAP_MSG);
@@ -258,6 +264,7 @@ void AccessibilityZoomGesture::RecognizeInSlidingState(MMI::PointerEvent &event)
     RecognizeScroll(event);
     RecognizeScale(event);
 
+    HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_UP:
             if (pointerCount == POINTER_COUNT_1) {
@@ -282,12 +289,13 @@ void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
 
     switch (action) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
+        case MMI::PointerEvent::POINTER_ACTION_UP:
             lastScrollFocusX_ = coordinate.centerX;
             lastScrollFocusY_ = coordinate.centerY;
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE: {
-            float offsetX = lastScrollFocusX_ - coordinate.centerX;
-            float offsetY = lastScrollFocusY_ - coordinate.centerY;
+            float offsetX = coordinate.centerX - lastScrollFocusX_;
+            float offsetY = coordinate.centerY - lastScrollFocusY_;
             if ((abs(offsetX) > 1) || (abs(offsetY) > 1)) {
                 lastScrollFocusX_ = coordinate.centerX;
                 lastScrollFocusY_ = coordinate.centerY;
@@ -295,10 +303,6 @@ void AccessibilityZoomGesture::RecognizeScroll(MMI::PointerEvent &event)
             }
             break;
         }
-        case MMI::PointerEvent::POINTER_ACTION_UP:
-            lastScrollFocusX_ = coordinate.centerX;
-            lastScrollFocusY_ = coordinate.centerY;
-            break;
         default:
             break;
     }
@@ -312,6 +316,7 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
     size_t pointerCount = event.GetPointerIds().size();
     if (((action == MMI::PointerEvent::POINTER_ACTION_UP) && (pointerCount == POINTER_COUNT_1)) ||
         (action == MMI::PointerEvent::POINTER_ACTION_CANCEL)) {
+        HILOG_DEBUG("Scaling is end");
         startScaling_ = false;
         preSpan_ = lastSpan_ = 0;
         return;
@@ -340,10 +345,12 @@ void AccessibilityZoomGesture::RecognizeScale(MMI::PointerEvent &event)
     }
 
     if (!startScaling_) {
+        HILOG_DEBUG("Current is not scaling");
         return;
     }
 
     if (action != MMI::PointerEvent::POINTER_ACTION_MOVE) {
+        HILOG_DEBUG("Action(%{public}d) is not move", action);
         return;
     }
     
@@ -366,15 +373,18 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
     std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t count = pointerIdList.size();
     if (!count) {
+        HILOG_DEBUG("The size of PointerIds is 0");
         return;
     }
 
     if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
         upPointerId = event.GetPointerId();
+        HILOG_DEBUG("The pointer id of up is %{public}d", upPointerId);
         count--;
     }
 
     if (count <= 0) {
+        HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return;
     }
 
@@ -390,6 +400,7 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
 
     coordinate.centerX = sumX / count;
     coordinate.centerY = sumY / count;
+    HILOG_DEBUG("centerX:%{public}f, centerY:%{public}f", coordinate.centerX, coordinate.centerY);
 }
 
 float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOCUS_COORDINATE coordinate)
@@ -404,15 +415,18 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
     std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t count = pointerIdList.size();
     if (!count) {
+        HILOG_DEBUG("The size of PointerIds is 0");
         return span;
     }
 
     if (action == MMI::PointerEvent::POINTER_ACTION_UP) {
         upPointerId = event.GetPointerId();
+        HILOG_DEBUG("The pointer id of up is %{public}d", upPointerId);
         count--;
     }
 
     if (count <= 0) {
+        HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return span;
     }
 
@@ -429,6 +443,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
     float spanX = sumSpanX / count;
     float spanY = sumSpanY / count;
     span = hypot(spanX, spanY) / HALF;
+    HILOG_DEBUG("The span is %{public}f", span);
     return span;
 }
 
@@ -437,10 +452,12 @@ bool AccessibilityZoomGesture::IsDownValid()
     HILOG_DEBUG();
 
     if (!preLastDownEvent_) {
+        HILOG_DEBUG("This is the first down event");
         return true;
     }
 
     if (CalcSeparationDistance(preLastDownEvent_, lastDownEvent_) >= multiTapDistance_) {
+        HILOG_DEBUG("The down event is vailid");
         return false;
     }
     return true;
@@ -451,14 +468,17 @@ bool AccessibilityZoomGesture::IsUpValid()
     HILOG_DEBUG();
 
     if (!lastDownEvent_) {
+        HILOG_DEBUG("The up event is invailid");
         return false;
     }
 
     if (CalcIntervalTime(lastDownEvent_, lastUpEvent_) >= LONG_PRESS_TIMER) {
+        HILOG_DEBUG("The time has exceeded the long press time");
         return false;
     }
 
     if (CalcSeparationDistance(lastDownEvent_, lastUpEvent_) >= tapDistance_) {
+        HILOG_DEBUG("The distance has exceeded the threshold");
         return false;
     }
     return true;
@@ -478,6 +498,7 @@ bool AccessibilityZoomGesture::IsTripleTaps()
     }
 
     if (upEventCount >= TRIPLE_TAP_COUNT) {
+        HILOG_DEBUG("Triple tap detected");
         return true;
     }
 
@@ -490,6 +511,7 @@ int64_t AccessibilityZoomGesture::CalcIntervalTime(std::shared_ptr<MMI::PointerE
     HILOG_DEBUG();
 
     if (!firstEvent || !secondEvent) {
+        HILOG_DEBUG("The event is null");
         return 0;
     }
 
@@ -506,6 +528,7 @@ float AccessibilityZoomGesture::CalcSeparationDistance(std::shared_ptr<MMI::Poin
     HILOG_DEBUG();
 
     if (!firstEvent || !secondEvent) {
+        HILOG_DEBUG("The event is null");
         return 0;
     }
 

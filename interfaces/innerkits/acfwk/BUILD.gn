@@ -45,9 +45,7 @@ ohos_shared_library("accessibilityconfig") {
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 
-  deps = [
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
 
   public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
@@ -59,7 +57,7 @@ ohos_shared_library("accessibilityconfig") {
     "init:libbeget_proxy",
     "init:libbegetutil",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 
   install_enable = true

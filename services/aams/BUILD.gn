@@ -67,8 +67,8 @@ ohos_shared_library("accessibleabilityms") {
   configs = [ ":aams_service_config" ]
 
   deps = [
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
   ]
 
   external_deps = [
@@ -89,7 +89,7 @@ ohos_shared_library("accessibleabilityms") {
     "os_account:os_account_innerkits",
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
   ]

@@ -50,7 +50,7 @@ ohos_shared_library("accessibleability") {
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/services/interface:aams_interface",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
   ]
 
   external_deps = [
@@ -65,7 +65,7 @@ ohos_shared_library("accessibleability") {
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 
   public_deps = [
