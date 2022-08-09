@@ -1143,44 +1143,142 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     }
 }
 
+KeyAction TransformKeyActionValue(int32_t keyAction)
+{
+    HILOG_DEBUG("keyAction:%{public}d", keyAction);
+
+    KeyAction action = KeyAction::UNKNOWN;
+    if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_DOWN) {
+        action = KeyAction::DOWN;
+    } else if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_UP) {
+        action = KeyAction::UP;
+    } else if (keyAction == OHOS::MMI::KeyEvent::KEY_ACTION_CANCEL) {
+        action = KeyAction::CANCEL;
+    } else {
+        HILOG_DEBUG("key action is invalid");
+    }
+    return action;
+}
+
+bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode)
+{
+    HILOG_DEBUG();
+
+    return std::find(pressedKeys.begin(), pressedKeys.end(), keyCode) != pressedKeys.end();
+}
+
+void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::KeyItem* keyItem)
+{
+    HILOG_DEBUG();
+
+    if (!keyItem) {
+        HILOG_WARN("keyItem is null.");
+        return;
+    }
+    
+    napi_value keyCodeValue = nullptr;
+    int32_t keyCode = keyItem->GetKeyCode();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyCode, &keyCodeValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyObject, "code", keyCodeValue));
+
+    napi_value timeValue = nullptr;
+    int64_t pressedTime = keyItem->GetDownTime();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int64(env, pressedTime, &timeValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyObject, "pressedTime", timeValue));
+
+    napi_value deviceIdValue = nullptr;
+    int32_t deviceId = keyItem->GetDeviceId();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, deviceId, &deviceIdValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyObject, "deviceId", deviceIdValue));
+}
+
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
 {
-    napi_value keyCode;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent->GetKeyCode(), &keyCode));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyCode", keyCode));
+    HILOG_DEBUG();
 
-    napi_value keyAction;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyEvent->GetKeyAction(), &keyAction));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keyAction", keyAction));
-
-    napi_value keys;
-    uint32_t idx = 0;
-    std::vector<OHOS::MMI::KeyEvent::KeyItem> keyItems = keyEvent->GetKeyItems();
-    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keys));
-    for (auto &key : keyItems) {
-        napi_value keyItem = nullptr;
-        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyItem));
-
-        napi_value pressed;
-        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.IsPressed(), &pressed));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "pressed", pressed));
-
-        napi_value downTime;
-        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetDownTime(), &downTime));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "downTime", downTime));
-
-        napi_value deviceId;
-        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetDeviceId(), &deviceId));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "deviceId", deviceId));
-
-        napi_value itemKeyCode;
-        NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, key.GetKeyCode(), &itemKeyCode));
-        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyItem, "keyCode", itemKeyCode));
-
-        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, keys, idx, keyItem));
-        idx++;
+    // set action
+    napi_value keyActionValue = nullptr;
+    KeyAction keyAction = TransformKeyActionValue(keyEvent->GetKeyAction());
+    if (keyAction != KeyAction::UNKNOWN) {
+        NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, keyAction, &keyActionValue));
+        NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "action", keyActionValue));
     }
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keys", keys));
+
+    // set key
+    napi_value keyObject = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyObject));
+    const OHOS::MMI::KeyEvent::KeyItem* keyItem = keyEvent->GetKeyItem();
+    GetKeyValue(env, keyObject, keyItem);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "key", keyObject));
+
+    // set unicodeChar
+    napi_value unicodeCharValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, 0, &unicodeCharValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "unicodeChar", unicodeCharValue));
+    
+    // set keys
+    napi_value keysAarry = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keysAarry));
+    uint32_t index = 0;
+    std::vector<int32_t> pressedKeys = keyEvent->GetPressedKeys();
+    for (const auto &pressedKeyCode : pressedKeys) {
+        napi_value element = nullptr;
+        NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &element));
+        const OHOS::MMI::KeyEvent::KeyItem* pressedKeyItem = keyEvent->GetKeyItem(pressedKeyCode);
+        GetKeyValue(env, element, pressedKeyItem);
+        NAPI_CALL_RETURN_VOID(env, napi_set_element(env, keysAarry, index, element));
+        ++index;
+    }
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "keys", keysAarry));
+
+    // set ctrlKey
+    bool isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_CTRL_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_CTRL_RIGHT);
+    napi_value ctrlKeyValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &ctrlKeyValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "ctrlKey", ctrlKeyValue));
+
+    // set altKey
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_ALT_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_ALT_RIGHT);
+    napi_value altKeyValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &altKeyValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "altKey", altKeyValue));
+
+    // set shiftKey
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_SHIFT_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_SHIFT_RIGHT);
+    napi_value shiftKeyValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &shiftKeyValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "shiftKey", shiftKeyValue));
+
+    // set logoKey
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_META_LEFT)
+        || HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_META_RIGHT);
+    napi_value logoKeyValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &logoKeyValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "logoKey", logoKeyValue));
+
+    // set fnKey
+    isPressed = HasKeyCode(pressedKeys, OHOS::MMI::KeyEvent::KEYCODE_FN);
+    napi_value fnKeyValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &fnKeyValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fnKey", fnKeyValue));
+
+    // set capsLock
+    napi_value capsLockValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, false, &capsLockValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "capsLock", capsLockValue));
+
+    // set numLock
+    napi_value numLockValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, false, &numLockValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "numLock", numLockValue));
+
+    // set scrollLock
+    napi_value scrollLockValue = nullptr;
+    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, false, &scrollLockValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "scrollLock", scrollLockValue));
 }
 
 void ConvertCaptionPropertyToJS(
