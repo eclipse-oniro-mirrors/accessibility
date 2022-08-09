@@ -157,6 +157,9 @@ private:
     static OHOS::Accessibility::FocusMoveDirection ConvertStringToDirection(const std::string &str);
     static int32_t ConvertStringToFocusType(const std::string &str);
 
+    static bool CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static bool CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
+
     NAccessibilityElement() = default;
     ~NAccessibilityElement() = default;
 };

@@ -24,9 +24,7 @@
 namespace OHOS {
 namespace AccessibilityConfig {
 namespace {
-    const char *VALUE_TRUE = "true";
-    const char *VALUE_FALSE = "false";
-    const char *PARAMETER_NAME = "accessibility.config.ready";
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
 } // namespace
 
@@ -53,12 +51,12 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
 {
     HILOG_INFO("Parameter key = [%{public}s] value = [%{public}s]", key, value);
 
-    if (!key || std::strcmp(key, PARAMETER_NAME)) {
+    if (!key || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
         HILOG_WARN("not accessibility.config.ready callback");
         return;
     }
 
-    if (!value || std::strcmp(value, VALUE_TRUE)) {
+    if (!value || std::strcmp(value, "true")) {
         HILOG_WARN("accessibility.config.ready value not true");
         return;
     }
@@ -76,8 +74,8 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
 bool AccessibilityConfig::Impl::ConnectToService()
 {
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
-    int retSysParam = GetParameter(PARAMETER_NAME, VALUE_FALSE, value, CONFIG_PARAMETER_VALUE_SIZE);
-    if (retSysParam >= 0 && !std::strcmp(value, VALUE_TRUE)) {
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
         // Accessibility service is ready
         if (!InitAccessibilityServiceProxy()) {
             return false;
@@ -90,7 +88,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
         InitConfigValues();
     } else {
         HILOG_INFO("Accessibility service is not ready, start watching");
-        retSysParam = WatchParameter(PARAMETER_NAME, &OnParameterChanged, this);
+        retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
         if (retSysParam) {
             HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
             return false;

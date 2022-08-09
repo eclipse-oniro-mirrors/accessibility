@@ -789,12 +789,13 @@ void AccessibilityAccountData::UpdateAbilities()
 
         iter = std::find(enabledAbilities_.begin(), enabledAbilities_.end(), Utils::GetUri(bundleName, abilityName));
         if (iter != enabledAbilities_.end()) {
-            if (!connection) {
-                AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
-                connection = new(std::nothrow) AccessibleAbilityConnection(this, connectCounter_++, installAbility);
-                if (connection) {
-                    connection->Connect(element);
-                }
+            if (connection) {
+                continue;
+            }
+            AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
+            connection = new(std::nothrow) AccessibleAbilityConnection(this, connectCounter_++, installAbility);
+            if (connection) {
+                connection->Connect(element);
             }
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");

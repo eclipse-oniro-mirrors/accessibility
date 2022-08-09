@@ -48,6 +48,7 @@ constexpr int32_t CHAE_BUFFER_MAX = 1024;
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
+bool ParseNumber(napi_env env, napi_value args);
 bool ParseUint32(napi_env env, uint32_t& param, napi_value args);
 bool ParseInt32(napi_env env, int32_t& param, napi_value args);
 bool ParseDouble(napi_env env, double& param, napi_value args);

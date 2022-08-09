@@ -387,16 +387,24 @@ void NAccessibilityElement::AttributeValueComplete(napi_env env, napi_status sta
     callbackInfo = nullptr;
 }
 
-void NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value)
+bool NAccessibilityElement::CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
-        return;
+        return false;
     }
     if (!callbackInfo->accessibilityElement_.elementInfo_) {
         HILOG_ERROR("element info is nullptr");
         napi_get_undefined(callbackInfo->env_, &value);
         callbackInfo->ret_ = false;
+        return false;
+    }
+    return true;
+}
+
+void NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -405,14 +413,7 @@ void NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElementData 
 
 void NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -421,14 +422,7 @@ void NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData *call
 
 void NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -437,14 +431,7 @@ void NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -453,14 +440,7 @@ void NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoBundleName(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -469,14 +449,7 @@ void NAccessibilityElement::GetElementInfoBundleName(NAccessibilityElementData *
 
 void NAccessibilityElement::GetElementInfoComponentType(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -485,14 +458,7 @@ void NAccessibilityElement::GetElementInfoComponentType(NAccessibilityElementDat
 
 void NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -501,14 +467,7 @@ void NAccessibilityElement::GetElementInfoInputType(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetElementInfoText(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -517,14 +476,7 @@ void NAccessibilityElement::GetElementInfoText(NAccessibilityElementData *callba
 
 void NAccessibilityElement::GetElementInfoHintText(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -533,14 +485,7 @@ void NAccessibilityElement::GetElementInfoHintText(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoDescription(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -549,14 +494,7 @@ void NAccessibilityElement::GetElementInfoDescription(NAccessibilityElementData 
 
 void NAccessibilityElement::GetElementInfoResourceName(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -565,14 +503,7 @@ void NAccessibilityElement::GetElementInfoResourceName(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     std::vector<int32_t> childIds = callbackInfo->accessibilityElement_.elementInfo_->GetChildIds();
@@ -589,14 +520,7 @@ void NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -605,14 +529,7 @@ void NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityElementD
 
 void NAccessibilityElement::GetElementInfoRect(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     OHOS::Accessibility::Rect screenRect = callbackInfo->accessibilityElement_.elementInfo_->GetRectInScreen();
@@ -622,14 +539,7 @@ void NAccessibilityElement::GetElementInfoRect(NAccessibilityElementData *callba
 
 void NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -638,14 +548,7 @@ void NAccessibilityElement::GetElementInfoCheckable(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -654,14 +557,7 @@ void NAccessibilityElement::GetElementInfoChecked(NAccessibilityElementData *cal
 
 void NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -670,14 +566,7 @@ void NAccessibilityElement::GetElementInfoFocusable(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -687,14 +576,7 @@ void NAccessibilityElement::GetElementInfoIsVisible(NAccessibilityElementData *c
 void NAccessibilityElement::GetElementInfoAccessibilityFocused(
     NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -703,14 +585,7 @@ void NAccessibilityElement::GetElementInfoAccessibilityFocused(
 
 void NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -719,14 +594,7 @@ void NAccessibilityElement::GetElementInfoSelected(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -735,14 +603,7 @@ void NAccessibilityElement::GetElementInfoClickable(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -751,14 +612,7 @@ void NAccessibilityElement::GetElementInfoLongClickable(NAccessibilityElementDat
 
 void NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -767,14 +621,7 @@ void NAccessibilityElement::GetElementInfoIsEnable(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -783,14 +630,7 @@ void NAccessibilityElement::GetElementInfoIsPassword(NAccessibilityElementData *
 
 void NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -799,14 +639,7 @@ void NAccessibilityElement::GetElementInfoScrollable(NAccessibilityElementData *
 
 void NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -815,14 +648,7 @@ void NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -832,14 +658,7 @@ void NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityElementDa
 void NAccessibilityElement::GetElementInfoPluralLineSupported(
     NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -848,14 +667,7 @@ void NAccessibilityElement::GetElementInfoPluralLineSupported(
 
 void NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -864,14 +676,7 @@ void NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElementData *
 
 void NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -880,14 +685,7 @@ void NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData *call
 
 void NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -896,14 +694,7 @@ void NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElementData 
 
 void NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -912,14 +703,7 @@ void NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -928,14 +712,7 @@ void NAccessibilityElement::GetElementInfoCurrentIndex(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -944,14 +721,7 @@ void NAccessibilityElement::GetElementInfoStartIndex(NAccessibilityElementData *
 
 void NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -960,14 +730,7 @@ void NAccessibilityElement::GetElementInfoEndIndex(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoValueMax(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -976,14 +739,7 @@ void NAccessibilityElement::GetElementInfoValueMax(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoValueMin(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -992,14 +748,7 @@ void NAccessibilityElement::GetElementInfoValueMin(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoValueNow(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1008,14 +757,7 @@ void NAccessibilityElement::GetElementInfoValueNow(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     OHOS::Accessibility::GridInfo gridInfo = callbackInfo->accessibilityElement_.elementInfo_->GetGrid();
@@ -1025,14 +767,7 @@ void NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *callba
 
 void NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     OHOS::Accessibility::GridItemInfo gridItemInfo =
@@ -1043,14 +778,7 @@ void NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1059,14 +787,7 @@ void NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -1075,14 +796,7 @@ void NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityElement
 
 void NAccessibilityElement::GetElementInfoError(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -1091,14 +805,7 @@ void NAccessibilityElement::GetElementInfoError(NAccessibilityElementData *callb
 
 void NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1107,14 +814,7 @@ void NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData *callb
 
 void NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1123,14 +823,7 @@ void NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElementDat
 
 void NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1139,14 +832,7 @@ void NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElementData 
 
 void NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     std::string textMoveUnit = ConvertTextMoveUnitToString(
@@ -1164,14 +850,7 @@ void NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityElementData
 
 void NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     if (callbackInfo->ret_) {
@@ -1189,14 +868,7 @@ void NAccessibilityElement::GetElementInfoParent(NAccessibilityElementData *call
 
 void NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     if (callbackInfo->ret_) {
@@ -1210,14 +882,7 @@ void NAccessibilityElement::GetElementInfoChildren(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoTriggerAction(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     std::string triggerAction = ConvertOperationTypeToString(
@@ -1235,14 +900,7 @@ void NAccessibilityElement::GetElementInfoTriggerAction(NAccessibilityElementDat
 
 void NAccessibilityElement::GetElementInfoContents(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     std::vector<std::string> contents {};
@@ -1262,14 +920,7 @@ void NAccessibilityElement::GetElementInfoContents(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoLastContent(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
@@ -1278,14 +929,7 @@ void NAccessibilityElement::GetElementInfoLastContent(NAccessibilityElementData 
 
 void NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1294,30 +938,31 @@ void NAccessibilityElement::GetElementInfoWindowId(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetElementInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.elementInfo_) {
-        HILOG_ERROR("element info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->IsFocused(), &value));
 }
 
-void NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value)
+bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
-        return;
+        return false;
     }
     if (!callbackInfo->accessibilityElement_.windowInfo_) {
         HILOG_ERROR("window info is nullptr");
         napi_get_undefined(callbackInfo->env_, &value);
         callbackInfo->ret_ = false;
+        return false;
+    }
+    return true;
+}
+
+void NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -1326,14 +971,7 @@ void NAccessibilityElement::GetWindowInfoIsActive(NAccessibilityElementData *cal
 
 void NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     OHOS::Accessibility::Rect screenRect = callbackInfo->accessibilityElement_.windowInfo_->GetRectInScreen();
@@ -1343,14 +981,7 @@ void NAccessibilityElement::GetWindowInfoScreenRect(NAccessibilityElementData *c
 
 void NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
@@ -1359,14 +990,7 @@ void NAccessibilityElement::GetWindowInfoLayer(NAccessibilityElementData *callba
 
 void NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     std::string accessibilityWindowType = ConvertWindowTypeToString(
@@ -1384,14 +1008,7 @@ void NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *callbac
 
 void NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     if (callbackInfo->ret_) {
@@ -1409,14 +1026,7 @@ void NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData *callb
 
 void NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     if (callbackInfo->ret_) {
@@ -1434,14 +1044,7 @@ void NAccessibilityElement::GetWindowInfoRootElement(NAccessibilityElementData *
 
 void NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
@@ -1450,14 +1053,7 @@ void NAccessibilityElement::GetWindowInfoIsFocused(NAccessibilityElementData *ca
 
 void NAccessibilityElement::GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    if (!callbackInfo->accessibilityElement_.windowInfo_) {
-        HILOG_ERROR("window info is nullptr");
-        napi_get_undefined(callbackInfo->env_, &value);
-        callbackInfo->ret_ = false;
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
         return;
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
