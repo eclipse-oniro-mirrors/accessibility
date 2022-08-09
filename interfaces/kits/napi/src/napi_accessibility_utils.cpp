@@ -1196,9 +1196,52 @@ void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, keyObject, "deviceId", deviceIdValue));
 }
 
+void SetInputEventProperty(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+
+    // set id
+    napi_value idValue = nullptr;
+    int32_t id = keyEvent->GetId();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, id, &idValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "id", idValue));
+
+    // set deviceId
+    napi_value deviceIdValue = nullptr;
+    int32_t deviceId = keyEvent->GetDeviceId();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, deviceId, &deviceIdValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "deviceId", deviceIdValue));
+
+    // set actionTime
+    napi_value actionTimeValue = nullptr;
+    int64_t actionTime = keyEvent->GetActionTime();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int64(env, actionTime, &actionTimeValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "actionTime", actionTimeValue));
+
+    // set screenId
+    napi_value screenIdValue = nullptr;
+    int32_t screenId = keyEvent->GetTargetDisplayId();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, screenId, &screenIdValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "screenId", screenIdValue));
+
+    // set windowId
+    napi_value windowIdValue = nullptr;
+    int32_t windowId = keyEvent->GetTargetWindowId();
+    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, windowId, &windowIdValue));
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowId", windowIdValue));
+}
+
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
 {
     HILOG_DEBUG();
+
+    if (!keyEvent) {
+        HILOG_ERROR("keyEvent is null.");
+        return;
+    }
+
+    // set inputEvent
+    SetInputEventProperty(env, result, keyEvent);
 
     // set action
     napi_value keyActionValue = nullptr;

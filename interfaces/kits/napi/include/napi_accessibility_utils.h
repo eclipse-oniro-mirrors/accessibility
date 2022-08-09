@@ -76,6 +76,7 @@ void ConvertActionArgsJSToNAPI(
 KeyAction TransformKeyActionValue(int32_t keyAction);
 bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode);
 void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::KeyItem* keyItem);
+void SetInputEventProperty(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
