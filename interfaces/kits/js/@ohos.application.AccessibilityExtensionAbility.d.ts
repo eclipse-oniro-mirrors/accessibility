@@ -15,7 +15,7 @@
 
 import accessibility from './@ohos.accessibility'
 import AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext'
-import KeyEvent from './@ohos.multimodalInput.keyEvent'
+import { KeyEvent } from './@ohos.multimodalInput.keyEvent'
 
 /**
  * class of accessibility extension ability.
