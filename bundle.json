@@ -13,7 +13,11 @@
   "component": {
     "name": "accessibility",
     "subsystem": "barrierfree",
-    "syscap": ["SystemCapability.Barrierfree.Accessibility.Core"],
+    "syscap": [
+      "SystemCapability.BarrierFree.Accessibility.Core",
+      "SystemCapability.BarrierFree.Accessibility.Hearing",
+      "SystemCapability.BarrierFree.Accessibility.Vision"
+    ],
     "features": [],
     "adapted_system_type": [
       "standard"
