@@ -254,7 +254,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
-    mouseKey_->OnKeyEvent(*event2); 
+    mouseKey_->OnKeyEvent(*event2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_BUTTON_UP;
     EXPECT_EQ(touchAction, expectValue);
@@ -306,7 +306,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
-    mouseKey_->OnKeyEvent(*event2); 
+    mouseKey_->OnKeyEvent(*event2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN;
     EXPECT_EQ(touchAction, expectValue);

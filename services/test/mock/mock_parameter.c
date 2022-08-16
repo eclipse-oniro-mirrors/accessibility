@@ -26,8 +26,7 @@ int SetParameter(const char *key, const char *value)
 int GetParameter(const char *key, const char *def, char *value, unsigned int len)
 {
     char name[5] = "true";
-    name[4] = '\0';
-    (void)memcpy_s(value, 5, name, 5);
+    (void)memcpy_s(value, sizeof(name), name, sizeof(name));
     (void)key;
     (void)def;
     (void)len;

@@ -141,7 +141,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetChannelId_001, TestSize.Level1)
  * @tc.name: SetRectInScreen
  * @tc.desc: Test function SetRectInScreen
  */
-HWTEST_F(AccessibilityWindowInfoUnitTest,SetRectInScreen_001, TestSize.Level1)
+HWTEST_F(AccessibilityWindowInfoUnitTest, SetRectInScreen_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetRectInScreen_001 start";
     if (!windowInfo_) {

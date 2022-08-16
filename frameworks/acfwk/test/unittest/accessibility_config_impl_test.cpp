@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "accessibility_config.h"
 #include <gtest/gtest.h>
+#include "accessibility_config.h"
 #include "system_ability_definition.h"
 
 using namespace testing;
@@ -22,6 +22,11 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace AccessibilityConfig {
+namespace {
+    constexpr uint32_t CONTENT_TIMEOUT_VALUE = 10;
+    constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 10;
+    constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
+}
 class AccessibilityConfigImplTest : public ::testing::Test {
 public:
     AccessibilityConfigImplTest()
@@ -40,7 +45,6 @@ public:
     void SetUp()
     {
         GTEST_LOG_(INFO) << "AccessibilityConfigImplTest SetUp()";
-        
     };
     void TearDown()
     {
@@ -387,7 +391,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_001, TestSize.Level1)
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(10,value);
+    EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, value);
     GTEST_LOG_(INFO) << "GetMouseAutoClick_001 end";
 }
 
@@ -455,7 +459,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_001, TestSize.
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
     instance.GetDaltonizationColorFilter(value);
-    EXPECT_EQ(1,(uint32_t)value);
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
     GTEST_LOG_(INFO) << "_001 end";
 }
 
@@ -472,7 +476,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_001, TestSize.Level1)
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
     instance.GetContentTimeout(value);
-    EXPECT_EQ(10,value);
+    EXPECT_EQ(CONTENT_TIMEOUT_VALUE, value);
     GTEST_LOG_(INFO) << "GetContentTimeout_001 end";
 }
 
@@ -506,7 +510,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetBrightnessDiscount_001, TestSize.Level1
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
     instance.GetBrightnessDiscount(value);
-    EXPECT_FLOAT_EQ(0.3,value);
+    EXPECT_FLOAT_EQ(BRIGHTNESS_DISCOUNT_VALUE, value);
     GTEST_LOG_(INFO) << "GetBrightnessDiscount_001 end";
 }
 
@@ -540,7 +544,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetAudioBalance_001, TestSize.Level1)
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
     instance.GetAudioBalance(value);
-    EXPECT_FLOAT_EQ(-1.0,value);
+    EXPECT_FLOAT_EQ(-1, value);
     GTEST_LOG_(INFO) << "GetAudioBalance_001 end";
 }
 
@@ -556,7 +560,7 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeConfigObserver_001, TestSize.Leve
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
-    instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT,observer);
+    instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
     GTEST_LOG_(INFO) << "SubscribeConfigObserver_001 end";
 }
 
@@ -572,7 +576,7 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_001, TestSize.Le
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
-    instance.UnsubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT,observer);
+    instance.UnsubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
     GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_001 end";
 }
 
@@ -621,7 +625,7 @@ HWTEST_F(AccessibilityConfigImplTest, EnableAbility_001, TestSize.Level1)
     std::string name = "test";
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();
-    instance.EnableAbility(name,0);
+    instance.EnableAbility(name, 0);
     GTEST_LOG_(INFO) << "EnableAbility_001 end";
 }
 

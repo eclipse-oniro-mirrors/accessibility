@@ -39,7 +39,7 @@ ohos_unittest("accessibility_common_test") {
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
     "unittest/accessibility_element_info_test.cpp",
     "unittest/accessibility_event_info_test.cpp",
-    "unittest/accessibility_window_info_test.cpp"
+    "unittest/accessibility_window_info_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -50,9 +50,7 @@ ohos_unittest("accessibility_common_test") {
     "//third_party/googletest:gtest_main",
   ]
 
-  external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
-  ]
+  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 }
 
 ###############################################################################

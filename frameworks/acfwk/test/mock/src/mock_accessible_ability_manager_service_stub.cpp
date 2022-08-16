@@ -18,6 +18,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr uint32_t CONTENT_TIMEOUT_VALUE = 10;
+    constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 10;
+    constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
+} // namespace
 MockAccessibleAbilityManagerServiceStub::MockAccessibleAbilityManagerServiceStub()
 {
 }
@@ -43,7 +48,6 @@ void MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEvent
 
 void MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
-
     (void)caption;
 }
 
@@ -242,7 +246,7 @@ bool MockAccessibleAbilityManagerServiceStub::GetMouseKeyState()
 
 int32_t MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick()
 {
-    return 10;
+    return MOUSE_AUTO_CLICK_VALUE;
 }
 
 std::string MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget()
@@ -277,12 +281,12 @@ uint32_t MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter()
 
 uint32_t MockAccessibleAbilityManagerServiceStub::GetContentTimeout()
 {
-    return 10;
+    return CONTENT_TIMEOUT_VALUE;
 }
 
 float MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount()
 {
-    return 0.3;
+    return BRIGHTNESS_DISCOUNT_VALUE;
 }
 
 float MockAccessibleAbilityManagerServiceStub::GetAudioBalance()

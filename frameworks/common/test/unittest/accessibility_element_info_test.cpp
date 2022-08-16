@@ -1014,7 +1014,7 @@ HWTEST_F(RangeInfoTest, SetMin_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetMin_001 start";
     rangeInfo_->SetMin(1);
-    EXPECT_EQ(rangeInfo_->GetMin(),1);
+    EXPECT_EQ(rangeInfo_->GetMin(), 1);
     GTEST_LOG_(INFO) << "SetMin_001 end";
 }
 
@@ -1027,7 +1027,7 @@ HWTEST_F(RangeInfoTest, SetMax_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetMax_001 start";
     rangeInfo_->SetMax(10);
-    EXPECT_EQ(rangeInfo_->GetMax(),10);
+    EXPECT_EQ(rangeInfo_->GetMax(), 10);
     GTEST_LOG_(INFO) << "SetMax_001 end";
 }
 
@@ -1040,7 +1040,7 @@ HWTEST_F(RangeInfoTest, SetCurrent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetCurrent_001 start";
     rangeInfo_->SetCurrent(5);
-    EXPECT_EQ(rangeInfo_->GetCurrent(),5);
+    EXPECT_EQ(rangeInfo_->GetCurrent(), 5);
     GTEST_LOG_(INFO) << "SetCurrent_001 end";
 }
 
@@ -1052,10 +1052,10 @@ HWTEST_F(RangeInfoTest, SetCurrent_001, TestSize.Level1)
 HWTEST_F(GridInfoTest, SetGrid_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetGrid_001 start";
-    gridInfo_->SetGrid(1,2,3);
-    EXPECT_EQ(gridInfo_->GetRowCount(),1);
-    EXPECT_EQ(gridInfo_->GetColumnCount(),2);
-    EXPECT_EQ(gridInfo_->GetSelectionMode(),3);
+    gridInfo_->SetGrid(1, 2, 3);
+    EXPECT_EQ(gridInfo_->GetRowCount(), 1);
+    EXPECT_EQ(gridInfo_->GetColumnCount(), 2);
+    EXPECT_EQ(gridInfo_->GetSelectionMode(), 3);
     GTEST_LOG_(INFO) << "SetGrid_001 end";
 }
 
@@ -1069,9 +1069,9 @@ HWTEST_F(GridInfoTest, SetGrid_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetGrid_002 start";
     GridInfo grid(11, 12, 13);
     gridInfo_->SetGrid(grid);
-    EXPECT_EQ(gridInfo_->GetRowCount(),11);
-    EXPECT_EQ(gridInfo_->GetColumnCount(),12);
-    EXPECT_EQ(gridInfo_->GetSelectionMode(),13);
+    EXPECT_EQ(gridInfo_->GetRowCount(), 11);
+    EXPECT_EQ(gridInfo_->GetColumnCount(), 12);
+    EXPECT_EQ(gridInfo_->GetSelectionMode(), 13);
     GTEST_LOG_(INFO) << "SetGrid_002 end";
 }
 
@@ -1084,11 +1084,11 @@ HWTEST_F(GridInfoTest, SetGrid_002, TestSize.Level1)
 HWTEST_F(GridItemInfoTest, SetGridItemInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetGridItemInfo_001 start";
-    gridItemInfo_->SetGridItemInfo(1,1,1,1,true,true);
-    EXPECT_EQ(gridItemInfo_->GetRowIndex(),1);
-    EXPECT_EQ(gridItemInfo_->GetRowSpan(),1);
-    EXPECT_EQ(gridItemInfo_->GetColumnIndex(),1);
-    EXPECT_EQ(gridItemInfo_->GetColumnSpan(),1);
+    gridItemInfo_->SetGridItemInfo(1, 1, 1, 1, true, true);
+    EXPECT_EQ(gridItemInfo_->GetRowIndex(), 1);
+    EXPECT_EQ(gridItemInfo_->GetRowSpan(), 1);
+    EXPECT_EQ(gridItemInfo_->GetColumnIndex(), 1);
+    EXPECT_EQ(gridItemInfo_->GetColumnSpan(), 1);
     EXPECT_TRUE(gridItemInfo_->IsHeading());
     EXPECT_TRUE(gridItemInfo_->IsSelected());
     GTEST_LOG_(INFO) << "SetGridItemInfo_001 end";
@@ -1103,12 +1103,12 @@ HWTEST_F(GridItemInfoTest, SetGridItemInfo_001, TestSize.Level1)
 HWTEST_F(GridItemInfoTest, SetGridItemInfo_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "SetGridItemInfo_002 start";
-    GridItemInfo itemInfo(11,12,13,14,false,false);
+    GridItemInfo itemInfo(11, 12, 13, 14, false, false);
     gridItemInfo_->SetGridItemInfo(itemInfo);
-    EXPECT_EQ(gridItemInfo_->GetRowIndex(),11);
-    EXPECT_EQ(gridItemInfo_->GetRowSpan(),12);
-    EXPECT_EQ(gridItemInfo_->GetColumnIndex(),13);
-    EXPECT_EQ(gridItemInfo_->GetColumnSpan(),14);
+    EXPECT_EQ(gridItemInfo_->GetRowIndex(), 11);
+    EXPECT_EQ(gridItemInfo_->GetRowSpan(), 12);
+    EXPECT_EQ(gridItemInfo_->GetColumnIndex(), 13);
+    EXPECT_EQ(gridItemInfo_->GetColumnSpan(), 14);
     EXPECT_FALSE(gridItemInfo_->IsHeading());
     EXPECT_FALSE(gridItemInfo_->IsSelected());
     GTEST_LOG_(INFO) << "SetGridItemInfo_002 end";
@@ -1122,9 +1122,9 @@ HWTEST_F(GridItemInfoTest, SetGridItemInfo_002, TestSize.Level1)
 HWTEST_F(AccessibleActionTest, AccessibleAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAction_001 start";
-    std::shared_ptr<AccessibleAction> action = std::make_shared<AccessibleAction>(ACCESSIBILITY_ACTION_FOCUS,"test");
+    std::shared_ptr<AccessibleAction> action = std::make_shared<AccessibleAction>(ACCESSIBILITY_ACTION_FOCUS, "test");
     ASSERT_TRUE(action);
-    EXPECT_EQ(action->GetActionType(),ACCESSIBILITY_ACTION_FOCUS);
+    EXPECT_EQ(action->GetActionType(), ACCESSIBILITY_ACTION_FOCUS);
     EXPECT_STREQ(action->GetDescriptionInfo().c_str(), "test");
     action = nullptr;
     GTEST_LOG_(INFO) << "AccessibleAction_001 end";
@@ -1140,7 +1140,7 @@ HWTEST_F(AccessibleActionTest, AccessibleAction_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "AccessibleAction_002 start";
     std::shared_ptr<AccessibleAction> action = std::make_shared<AccessibleAction>();
     ASSERT_TRUE(action);
-    EXPECT_EQ(action->GetActionType(),ACCESSIBILITY_ACTION_INVALID);
+    EXPECT_EQ(action->GetActionType(), ACCESSIBILITY_ACTION_INVALID);
     EXPECT_STREQ(action->GetDescriptionInfo().c_str(), "");
     action = nullptr;
     GTEST_LOG_(INFO) << "AccessibleAction_002 end";
