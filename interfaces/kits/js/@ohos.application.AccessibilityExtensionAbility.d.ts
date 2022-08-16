@@ -15,7 +15,7 @@
 
 import accessibility from './@ohos.accessibility'
 import AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext'
-import inputEventClient from './@ohos.multimodalInput.inputEventClient'
+import { KeyEvent } from './@ohos.multimodalInput.keyEvent'
 
 /**
  * class of accessibility extension ability.
@@ -49,7 +49,7 @@ export default class AccessibilityExtensionAbility {
      * Called when a physical key is pressed, such as when the user presses the volume button .
      * @param keyEvent Indicates the physical key event.
      */
-    onKeyEvent(keyEvent: inputEventClient.KeyEvent): boolean;
+    onKeyEvent(keyEvent: KeyEvent): boolean;
 }
 
 /**
