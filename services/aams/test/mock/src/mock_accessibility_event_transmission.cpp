@@ -31,7 +31,7 @@ bool EventTransmission::OnPointerEvent(MMI::PointerEvent& event)
 
 bool EventTransmission::OnKeyEvent(MMI::KeyEvent& event)
 {
-    (void)event;
+    AccessibilityAbilityHelper::GetInstance().SetKeyCode(event.GetKeyCode());
     return false;
 }
 

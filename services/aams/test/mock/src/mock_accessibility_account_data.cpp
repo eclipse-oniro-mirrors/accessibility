@@ -81,8 +81,13 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 // remove connect ability.
 void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
 {
-    HILOG_DEBUG("URI is %{public}s", connection->GetElementName().GetURI().c_str());
+    std::string uri = Utils::GetUri(connection->GetElementName());
+    HILOG_DEBUG("URI is %{public}s", uri.c_str());
     HILOG_DEBUG("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
+    auto iter = connectedA11yAbilities_.find(uri);
+    if (iter != connectedA11yAbilities_.end()) {
+        connectedA11yAbilities_.erase(iter);
+    }
 }
 
 void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback)
@@ -113,14 +118,20 @@ void AccessibilityAccountData::RemoveCaptionPropertyCallback(const wptr<IRemoteO
 void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
-    (void)interactionConnection;
     HILOG_DEBUG("windowId(%{public}d)", windowId);
+    if (!asacConnections_.count(windowId)) {
+        asacConnections_.insert(std::make_pair(windowId, interactionConnection));
+    }
 }
 
 // remove AccessibilityWindowConnection
 void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
+    auto iter = asacConnections_.find(windowId);
+    if (iter != asacConnections_.end()) {
+        asacConnections_.erase(iter);
+    }
 }
 
 void AccessibilityAccountData::AddConnectingA11yAbility(const std::string& bundleName)

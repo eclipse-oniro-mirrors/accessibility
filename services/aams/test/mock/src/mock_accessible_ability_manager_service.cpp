@@ -122,6 +122,7 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     }
     sptr<AccessibilityAccountData> accountData =
         new AccessibilityAccountData(AccessibilityAbilityHelper::GetInstance().accountId_);
+    accountData->Init();
     a11yAccountsData_[AccessibilityAbilityHelper::GetInstance().accountId_] = accountData;
     return accountData;
 }
@@ -356,6 +357,27 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
 {
     (void)callback;
     return NO_ERROR;
+}
+
+void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
+{
+}
+
+sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
+{
+    return nullptr;
+}
+
+void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
+{
+    HILOG_DEBUG();
+    keyEventFilter_ = keyEventFilter;
+}
+
+bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
+{
+    AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS

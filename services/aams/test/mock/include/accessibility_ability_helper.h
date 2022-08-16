@@ -57,6 +57,21 @@ public:
         touchAction_.push_back(touchAction);
     }
 
+    int32_t GetKeyCode() const
+    {
+        return keyCode_;
+    }
+
+    void ClearKeyCode()
+    {
+        keyCode_ = 0;
+    }
+
+    void SetKeyCode(int32_t keyCode)
+    {
+        keyCode_ = keyCode;
+    }
+
     bool GetDestroyState()
     {
         return isDestroyEvents_;
@@ -277,6 +292,26 @@ public:
         sendEventTimes_ = 0;
     }
 
+    uint32_t GetTestSequence() const
+    {
+        return testSequence_;
+    }
+
+    void SetTestSequence(uint32_t sequenceNum)
+    {
+        testSequence_ = sequenceNum;
+    }
+
+    void SetShortKeyTargetAbilityState(bool state)
+    {
+        enableShortKeyTargetAbility_ = state;
+    }
+
+    bool GetShortKeyTargetAbilityState() const
+    {
+        return enableShortKeyTargetAbility_;
+    }
+
 public:
     static const int32_t accountId_ = 100;
 
@@ -301,6 +336,9 @@ private:
     bool testKeyEvent_ = false;
     bool isServicePublished_ = false;
     std::atomic<int> sendEventTimes_ = 0;
+    uint32_t testSequence_ = 0;
+    int32_t keyCode_ = 0;
+    bool enableShortKeyTargetAbility_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

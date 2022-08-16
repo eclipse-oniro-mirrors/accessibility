@@ -14,10 +14,28 @@
  */
 
 #include "parameter.h"
+#include "securec.h"
 
 int SetParameter(const char *key, const char *value)
 {
     (void)key;
     (void)value;
+    return 0;
+}
+
+int GetParameter(const char *key, const char *def, char *value, unsigned int len)
+{
+    char name[5] = "true";
+    name[4] = '\0';
+    (void)memcpy_s(value, 5, name, 5);
+    (void)key;
+    (void)def;
+    (void)len;
+    return 1;
+}
+
+int WatchParameter(const char *keyprefix, ParameterChgPtr callback, void *context)
+{
+    callback(keyprefix, "true", context);
     return 0;
 }
