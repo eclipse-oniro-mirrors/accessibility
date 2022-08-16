@@ -34,7 +34,7 @@
         "window_manager",
         "eventhandler",
         "input",
-        "utils_base",
+        "c_utils",
         "common_event_service",
         "preference",
         "ability_base",
