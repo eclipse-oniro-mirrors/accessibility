@@ -50,6 +50,7 @@ namespace {
         std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
 
         config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver, false);
         config.GetScreenMagnificationState(value);
@@ -75,6 +76,7 @@ namespace {
     {
         bool value = false;
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetScreenMagnificationState in loop */
             (void)config.GetScreenMagnificationState(value);
@@ -93,6 +95,7 @@ namespace {
         std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
 
         config.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, configObserver, false);
 
@@ -121,6 +124,7 @@ namespace {
     {
         std::string value = "";
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetShortkeyTarget in loop */
             (void)config.GetShortkeyTarget(value);
@@ -139,6 +143,7 @@ namespace {
         std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
 
         config.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, configObserver, false);
         config.GetContentTimeout(value);
@@ -164,6 +169,7 @@ namespace {
     {
         uint32_t value = 0;
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetContentTimeout in loop */
             (void)config.GetContentTimeout(value);
@@ -181,6 +187,7 @@ namespace {
         std::shared_ptr<AccessibilityConfigObserverImpl> configObserver =
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        (void)config.InitializeContext();
 
         for (auto _ : state) {
             /* @tc.steps: step1.call SubscribeConfigObserver in loop */
