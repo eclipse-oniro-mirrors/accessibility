@@ -597,11 +597,15 @@ NativeValue* CreateJsAccessibilityExtensionContext(
     }
     object->SetNativePointer(jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr);
 
-    BindNativeFunction(engine, *object, "setTargetBundleName", NAccessibilityExtensionContext::SetTargetBundleName);
-    BindNativeFunction(engine, *object, "getFocusElement", NAccessibilityExtensionContext::GetFocusElement);
-    BindNativeFunction(engine, *object, "getWindowRootElement", NAccessibilityExtensionContext::GetWindowRootElement);
-    BindNativeFunction(engine, *object, "getWindows", NAccessibilityExtensionContext::GetWindows);
-    BindNativeFunction(engine, *object, "injectGesture", NAccessibilityExtensionContext::InjectGesture);
+    const char *moduleName = "NAccessibilityExtensionContext";
+    BindNativeFunction(engine, *object, "setTargetBundleName", moduleName,
+        NAccessibilityExtensionContext::SetTargetBundleName);
+    BindNativeFunction(engine, *object, "getFocusElement", moduleName,
+        NAccessibilityExtensionContext::GetFocusElement);
+    BindNativeFunction(engine, *object, "getWindowRootElement", moduleName,
+        NAccessibilityExtensionContext::GetWindowRootElement);
+    BindNativeFunction(engine, *object, "getWindows", moduleName, NAccessibilityExtensionContext::GetWindows);
+    BindNativeFunction(engine, *object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
 
     return objValue;
 }
