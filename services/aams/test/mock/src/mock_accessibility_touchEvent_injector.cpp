@@ -89,5 +89,9 @@ int64_t TouchEventInjector::GetSystemTime()
 {
     return 0;
 }
+
+void TouchEventInjector::InjectEvents(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

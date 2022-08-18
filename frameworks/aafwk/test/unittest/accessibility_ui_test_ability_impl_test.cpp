@@ -63,6 +63,18 @@ public:
 };
 
 /**
+ * @tc.number: GetInstance_001
+ * @tc.name: GetInstance
+ * @tc.desc: Test function GetInstance
+ */
+HWTEST_F(AccessibilityUITestAbilityImplTest, GetInstance_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetInstance_001 start";
+    EXPECT_TRUE(AccessibilityUITestAbility::GetInstance());
+    GTEST_LOG_(INFO) << "GetInstance_001 end";
+}
+
+/**
  * @tc.number: RegisterAbilityListener_001
  * @tc.name: RegisterAbilityListener
  * @tc.desc: Test function RegisterAbilityListener

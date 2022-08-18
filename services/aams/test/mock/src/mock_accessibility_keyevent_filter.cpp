@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_keyevent_filter.h"
+#include "accessibility_ability_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -34,9 +35,9 @@ bool KeyEventFilter::OnKeyEvent(MMI::KeyEvent& event)
 void KeyEventFilter::SetServiceOnKeyEventResult(
     AccessibleAbilityConnection& connection, bool isHandled, uint32_t sequenceNum)
 {
+    AccessibilityAbilityHelper::GetInstance().SetTestSequence(sequenceNum);
     (void)connection;
     (void)isHandled;
-    (void)sequenceNum;
 }
 
 void KeyEventFilter::ClearServiceKeyEvents(AccessibleAbilityConnection& connection)

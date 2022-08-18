@@ -14,7 +14,6 @@
  */
 
 #include "accessibility_mouse_key.h"
-#include "accessibility_display_manager.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
 
