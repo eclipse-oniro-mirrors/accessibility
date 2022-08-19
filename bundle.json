@@ -62,7 +62,8 @@
         "service_group": [
           "//foundation/barrierfree/accessibility/sa_profile:aams_sa_profile",
           "//foundation/barrierfree/accessibility/sa_profile:accessibility_cfg",
-          "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms"
+          "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
+          "//foundation/barrierfree/accessibility/services/etc:ohos.para.dac"
         ]
       },
       "inner_kits": [
