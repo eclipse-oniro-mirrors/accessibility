@@ -27,6 +27,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t ACCOUNT_ID = 100;
+} // namespace
+
 const bool REGISTER_RESULT =
     SystemAbility::MakeAndRegisterAbility(&Singleton<AccessibleAbilityManagerService>::GetInstance());
 
@@ -116,14 +120,13 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
-    auto iter = a11yAccountsData_.find(AccessibilityAbilityHelper::GetInstance().accountId_);
+    auto iter = a11yAccountsData_.find(ACCOUNT_ID);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
     }
-    sptr<AccessibilityAccountData> accountData =
-        new AccessibilityAccountData(AccessibilityAbilityHelper::GetInstance().accountId_);
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(ACCOUNT_ID);
     accountData->Init();
-    a11yAccountsData_[AccessibilityAbilityHelper::GetInstance().accountId_] = accountData;
+    a11yAccountsData_[ACCOUNT_ID] = accountData;
     return accountData;
 }
 

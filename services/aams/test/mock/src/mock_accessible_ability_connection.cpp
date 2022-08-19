@@ -109,6 +109,25 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
     return true;
 }
 
+bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    (void)windowId;
+    (void)windowInfo;
+    return true;
+}
+
+bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
+{
+    (void)filter;
+    return true;
+}
+
+bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+{
+    (void)targetBundleNames;
+    return true;
+}
+
 bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
