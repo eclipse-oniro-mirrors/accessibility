@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace NativePreferences {
-
 std::string PreferencesHelper::GetRealPath(const std::string& path, int& errorCode)
 {
     (void)path;

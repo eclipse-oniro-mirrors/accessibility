@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace NativePreferences {
-class MockPreferences : public Preferences{
+class MockPreferences : public Preferences {
 public:
     explicit MockPreferences();
     ~MockPreferences() override;

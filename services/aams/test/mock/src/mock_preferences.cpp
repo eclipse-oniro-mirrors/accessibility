@@ -22,13 +22,13 @@ MockPreferences::MockPreferences()
 {}
 MockPreferences::~MockPreferences()
 {}
-PreferencesValue MockPreferences::Get(const std::string &key, const PreferencesValue &defValue) 
+PreferencesValue MockPreferences::Get(const std::string &key, const PreferencesValue &defValue)
 {
     (void)key;
     (void)defValue;
     return nullptr;
 }
-int MockPreferences::Put(const std::string &key, const PreferencesValue &value) 
+int MockPreferences::Put(const std::string &key, const PreferencesValue &value)
 {
     (void)key;
     (void)value;

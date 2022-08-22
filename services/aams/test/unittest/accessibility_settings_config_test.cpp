@@ -22,7 +22,6 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilitySettingsConfigTest : public testing::Test {
 public:
     AccessibilitySettingsConfigTest()
@@ -121,7 +120,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState
  * @tc.desc: Test function SetKeyEventObserverState GetKeyEventObserverState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState start";
     bool state = true;
@@ -163,7 +163,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState
  * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState start";
     bool state = true;
@@ -233,7 +234,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState
  * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState start";
     bool state = true;
@@ -289,7 +291,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter
  * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter start";
     uint32_t filter = 1;
@@ -348,7 +351,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities start";
-    std::vector<std::string> vecvalue{};
+    std::vector<std::string> vecvalue {};
     settingConfig_->UpdateEnabledAbilities(vecvalue);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities end";
 }
