@@ -25,6 +25,7 @@ public:
     static int GetKeyCode();
     static void ClearTouchActions();
     static std::vector<int32_t> GetTouchActions();
+    static int32_t GetTouchActionOfTargetIndex(int32_t index);
     static void ClearInputEventConsumer();
     static std::shared_ptr<IInputEventConsumer> GetInputEventConsumer();
     static std::function<void(std::shared_ptr<KeyEvent>)> GetKeyEventInterceptor();
