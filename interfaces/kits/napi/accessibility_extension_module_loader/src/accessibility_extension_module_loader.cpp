@@ -38,6 +38,14 @@ AbilityRuntime::Extension *AccessibilityExtensionModuleLoader::Create(
     }
 }
 
+std::map<std::string, std::string> AccessibilityExtensionModuleLoader::GetParams()
+{
+    std::map<std::string, std::string> params;
+    params.insert(std::pair<std::string, std::string>("type", "4"));
+    params.insert(std::pair<std::string, std::string>("name", "AccessibilityExtension"));
+    return params;
+}
+
 extern "C" __attribute__((visibility("default"))) void* OHOS_EXTENSION_GetExtensionModule()
 {
     return &AccessibilityExtensionModuleLoader::GetInstance();

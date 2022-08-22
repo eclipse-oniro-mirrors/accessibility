@@ -58,6 +58,7 @@ ohos_shared_library("accessibility_extension_module") {
     "input:libmmi-client",
   ]
 
+  relative_install_dir = "extensionability/"
   subsystem_name = "barrierfree"
   part_name = "accessibility"
 }
