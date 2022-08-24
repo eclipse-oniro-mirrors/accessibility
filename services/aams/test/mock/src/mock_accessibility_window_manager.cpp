@@ -48,11 +48,11 @@ void AccessibilityWindowManager::DeregisterWindowListener()
 {
 }
 
-void AccessibilityWindowManager::OnWindowUpdate(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo,
+void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos,
     Rosen::WindowUpdateType type)
 {
     HILOG_DEBUG("start");
-    (void)windowInfo;
+    (void)infos;
     (void)type;
 }
 
@@ -79,7 +79,7 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
 }
 
 AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInfo(
-    const sptr<Rosen::WindowInfo> windowInfo)
+    const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
     (void)windowInfo;
     AccessibilityWindowInfo info;
@@ -130,22 +130,6 @@ void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
         if (window.first == windowId) {
             window.second.SetRectInScreen(rect);
             return;
-        }
-    }
-}
-
-void AccessibilityWindowManager::UpdateWindowLayer(const sptr<Rosen::AccessibilityWindowInfo>& windowInfo)
-{
-    HILOG_DEBUG("start");
-    int32_t layer = 0;
-    for (auto& window : windowInfo->windowList_) {
-        auto it = a11yWindows_.find(window->wid_);
-        if (it == a11yWindows_.end()) {
-            HILOG_ERROR("The window(%{public}d) not in a11yWindows_", window->wid_);
-            layer++;
-        } else {
-            it->second.SetWindowLayer(layer);
-            layer++;
         }
     }
 }
