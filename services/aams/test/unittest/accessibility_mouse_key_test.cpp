@@ -127,6 +127,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->AddKeyItem(item);
     mouseKey_->OnKeyEvent(*event);
 
@@ -151,6 +152,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
     MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->AddKeyItem(item);
     mouseKey_->OnKeyEvent(*event);
 
@@ -187,6 +189,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     item1.SetPressed(true);
     event1->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event1);
@@ -199,6 +202,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -239,6 +243,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
     event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
     item1.SetPressed(true);
     event1->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event1);
@@ -251,6 +256,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -291,6 +297,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
     event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
     item1.SetPressed(true);
     event1->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event1);
@@ -303,6 +310,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
@@ -343,6 +351,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     item1.SetPressed(true);
     event1->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event1);
@@ -355,6 +364,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_ADD);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_ADD);
     item2.SetPressed(true);
     event2->AddKeyItem(item2);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();

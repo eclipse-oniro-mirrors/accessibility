@@ -60,12 +60,14 @@ private:
     };
 
     void UpdateLastMouseEvent(const MMI::PointerEvent &event);
-    bool IsMouseKey(int32_t keyCode) const;
-    void ExecuteMouseKey(int32_t keyCode);
+    bool IsMouseKey(const std::vector<int32_t> &pressedKeys, int32_t &actionKey,
+        int32_t &metaKey1, int32_t &metaKey2) const;
+    bool ExecuteMouseKey(int32_t actionKey, int32_t metaKey1, int32_t metaKey2);
     void MoveMousePointer(int32_t offsetX, int32_t offsetY);
     void SendMouseClickEvent(CLICK_TYPE clickType);
     int64_t GetSystemTime() const;
     void PerformMouseAction(int32_t buttonId, int32_t actionType);
+    int32_t ParseMetaKey(int32_t metaKey1, int32_t metaKey2);
 
     std::shared_ptr<MMI::PointerEvent> lastMouseMoveEvent_ = nullptr;
     SELECTED_KEY_TYPE selectedKeyType_ = LEFT_KEY;

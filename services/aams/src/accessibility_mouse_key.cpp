@@ -24,17 +24,40 @@ struct MouseMoveOffset {
     int32_t offsetY = 0;
 };
 namespace {
+    // item count
     constexpr size_t ITEM_COUNT_1 = 1;
+    constexpr size_t ITEM_COUNT_2 = 2;
+    constexpr size_t ITEM_COUNT_3 = 3;
+    // move offset
     constexpr int32_t MOVE_LEFT_STEP = -5;
     constexpr int32_t MOVE_RIGHT_STEP = 5;
     constexpr int32_t MOVE_UP_STEP = -5;
     constexpr int32_t MOVE_DOWN_STEP = 5;
+    // speed multiple
+    constexpr float SPEED_UP_MULTIPLE = 5.0f;
+    constexpr float SLOW_DOWN_MULTIPLE = 0.5f;
+    // result of parsing meta key
+    constexpr int32_t INVALID_KEY = -1;
+    constexpr int32_t NONE_KEY = 0;
+    constexpr int32_t CTRL_KEY = 1;
+    constexpr int32_t SHIFT_KEY = 2;
+    constexpr int32_t CTRL_SHIFT_KEY = 3;
+    // array(PRESSED_METAKEYS_TBL)'s length
+    constexpr int32_t ROW_COUNT = 21;
+    constexpr int32_t COLUMN_COUNT = 3;
     const std::vector<int32_t> MOUSE_KEYCODE_V = {
         MMI::KeyEvent::KEYCODE_NUMPAD_1, MMI::KeyEvent::KEYCODE_NUMPAD_2, MMI::KeyEvent::KEYCODE_NUMPAD_3,
         MMI::KeyEvent::KEYCODE_NUMPAD_4, MMI::KeyEvent::KEYCODE_NUMPAD_5, MMI::KeyEvent::KEYCODE_NUMPAD_6,
         MMI::KeyEvent::KEYCODE_NUMPAD_7, MMI::KeyEvent::KEYCODE_NUMPAD_8, MMI::KeyEvent::KEYCODE_NUMPAD_9,
         MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE, MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY,
         MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT, MMI::KeyEvent::KEYCODE_NUMPAD_ADD};
+    const std::vector<int32_t> MOUSE_MOVE_KEYCODE_V = {
+        MMI::KeyEvent::KEYCODE_NUMPAD_1, MMI::KeyEvent::KEYCODE_NUMPAD_2, MMI::KeyEvent::KEYCODE_NUMPAD_3,
+        MMI::KeyEvent::KEYCODE_NUMPAD_4, MMI::KeyEvent::KEYCODE_NUMPAD_6, MMI::KeyEvent::KEYCODE_NUMPAD_7,
+        MMI::KeyEvent::KEYCODE_NUMPAD_8, MMI::KeyEvent::KEYCODE_NUMPAD_9};
+    const std::vector<int32_t> CTRL_SHIFT_KEYCODE_V = {
+        MMI::KeyEvent::KEYCODE_CTRL_LEFT, MMI::KeyEvent::KEYCODE_CTRL_RIGHT,
+        MMI::KeyEvent::KEYCODE_SHIFT_LEFT, MMI::KeyEvent::KEYCODE_SHIFT_RIGHT};
     const std::map<int32_t, MouseMoveOffset> MOUSE_MOVE_OFFSET_M = {
         {MMI::KeyEvent::KEYCODE_NUMPAD_1, {MOVE_LEFT_STEP, MOVE_DOWN_STEP}},
         {MMI::KeyEvent::KEYCODE_NUMPAD_2, {0, MOVE_DOWN_STEP}},
@@ -44,6 +67,33 @@ namespace {
         {MMI::KeyEvent::KEYCODE_NUMPAD_7, {MOVE_LEFT_STEP, MOVE_UP_STEP}},
         {MMI::KeyEvent::KEYCODE_NUMPAD_8, {0, MOVE_UP_STEP}},
         {MMI::KeyEvent::KEYCODE_NUMPAD_9, {MOVE_RIGHT_STEP, MOVE_UP_STEP}}};
+    const int32_t PRESSED_METAKEYS_TBL[ROW_COUNT][COLUMN_COUNT] = {
+        {MMI::KeyEvent::KEYCODE_UNKNOWN, MMI::KeyEvent::KEYCODE_UNKNOWN, NONE_KEY},
+        {MMI::KeyEvent::KEYCODE_UNKNOWN, MMI::KeyEvent::KEYCODE_CTRL_LEFT, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_UNKNOWN, MMI::KeyEvent::KEYCODE_CTRL_RIGHT, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_UNKNOWN, MMI::KeyEvent::KEYCODE_SHIFT_LEFT, SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_UNKNOWN, MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, SHIFT_KEY},
+
+        {MMI::KeyEvent::KEYCODE_CTRL_LEFT, MMI::KeyEvent::KEYCODE_UNKNOWN, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_LEFT, MMI::KeyEvent::KEYCODE_CTRL_RIGHT, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_LEFT, MMI::KeyEvent::KEYCODE_SHIFT_LEFT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_LEFT, MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, CTRL_SHIFT_KEY},
+
+        {MMI::KeyEvent::KEYCODE_CTRL_RIGHT, MMI::KeyEvent::KEYCODE_UNKNOWN, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_RIGHT, MMI::KeyEvent::KEYCODE_CTRL_LEFT, CTRL_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_RIGHT, MMI::KeyEvent::KEYCODE_SHIFT_LEFT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_CTRL_RIGHT, MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, CTRL_SHIFT_KEY},
+
+        {MMI::KeyEvent::KEYCODE_SHIFT_LEFT, MMI::KeyEvent::KEYCODE_UNKNOWN, SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_LEFT, MMI::KeyEvent::KEYCODE_CTRL_LEFT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_LEFT, MMI::KeyEvent::KEYCODE_CTRL_RIGHT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_LEFT, MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, SHIFT_KEY},
+
+        {MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, MMI::KeyEvent::KEYCODE_UNKNOWN, SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, MMI::KeyEvent::KEYCODE_CTRL_LEFT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, MMI::KeyEvent::KEYCODE_CTRL_RIGHT, CTRL_SHIFT_KEY},
+        {MMI::KeyEvent::KEYCODE_SHIFT_RIGHT, MMI::KeyEvent::KEYCODE_SHIFT_LEFT, SHIFT_KEY},
+    };
 } // namespace
 
 bool AccessibilityMouseKey::OnPointerEvent(MMI::PointerEvent &event)
@@ -66,13 +116,12 @@ bool AccessibilityMouseKey::OnKeyEvent(MMI::KeyEvent &event)
 {
     HILOG_DEBUG();
 
-    int32_t keyCode = event.GetKeyCode();
-    size_t pressedKeyCount = event.GetPressedKeys().size();
-    if (IsMouseKey(keyCode) && (pressedKeyCount == ITEM_COUNT_1)) {
-        if (event.GetKeyAction() == MMI::KeyEvent::KEY_ACTION_DOWN) {
-            ExecuteMouseKey(keyCode);
-        }
-        return true;
+    int32_t actionKey = MMI::KeyEvent::KEYCODE_UNKNOWN;
+    int32_t metaKey1 = MMI::KeyEvent::KEYCODE_UNKNOWN;
+    int32_t metaKey2 = MMI::KeyEvent::KEYCODE_UNKNOWN;
+    std::vector<int32_t> pressedKeys = event.GetPressedKeys();
+    if (IsMouseKey(pressedKeys, actionKey, metaKey1, metaKey2)) {
+        return ExecuteMouseKey(actionKey, metaKey1, metaKey2);
     }
     return false;
 }
@@ -84,42 +133,116 @@ void AccessibilityMouseKey::UpdateLastMouseEvent(const MMI::PointerEvent &event)
     lastMouseMoveEvent_ = std::make_shared<MMI::PointerEvent>(event);
 }
 
-bool AccessibilityMouseKey::IsMouseKey(int32_t keyCode) const
+bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, int32_t &actionKey,
+    int32_t &metaKey1, int32_t &metaKey2) const
 {
-    HILOG_DEBUG("keyCode:%{public}d", keyCode);
-    if (std::find(MOUSE_KEYCODE_V.begin(), MOUSE_KEYCODE_V.end(), keyCode) != MOUSE_KEYCODE_V.end()) {
-        return true;
+    HILOG_DEBUG();
+
+    size_t pressedKeyCount = pressedKeys.size();
+    if (pressedKeyCount == ITEM_COUNT_1) {
+        if (std::find(MOUSE_KEYCODE_V.begin(), MOUSE_KEYCODE_V.end(), pressedKeys[0]) != MOUSE_KEYCODE_V.end()) {
+            actionKey = pressedKeys[0];
+            HILOG_DEBUG("actionKey:%d", actionKey);
+            return true;
+        }
+    } else if (pressedKeyCount == ITEM_COUNT_2) {
+        for (size_t i = 0; i < ITEM_COUNT_2; i++) {
+            if (std::find(MOUSE_MOVE_KEYCODE_V.begin(), MOUSE_MOVE_KEYCODE_V.end(), pressedKeys[i]) ==
+                MOUSE_MOVE_KEYCODE_V.end()) {
+                continue;
+            }
+            actionKey = pressedKeys[i];
+            HILOG_DEBUG("actionKey:%d", actionKey);
+            size_t Index = (i + 1) % ITEM_COUNT_2;
+            if (Index > 1) {
+                return false;
+            }
+            if (std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index]) !=
+                CTRL_SHIFT_KEYCODE_V.end()) {
+                metaKey1 = pressedKeys[Index];
+                HILOG_DEBUG("metaKey1:%d", metaKey1);
+                return true;
+            }
+        }
+    } else if (pressedKeyCount == ITEM_COUNT_3) {
+        for (size_t i = 0; i < ITEM_COUNT_3; i++) {
+            if (std::find(MOUSE_MOVE_KEYCODE_V.begin(), MOUSE_MOVE_KEYCODE_V.end(), pressedKeys[i]) ==
+                MOUSE_MOVE_KEYCODE_V.end()) {
+                continue;
+            }
+            actionKey = pressedKeys[i];
+            HILOG_DEBUG("actionKey:%d", actionKey);
+            size_t Index1 = (i + 1) % ITEM_COUNT_3;
+            size_t Index2 = (i + 2) % ITEM_COUNT_3;
+            if ((Index1 > 2) || (Index2 > 2)) {
+                return false;
+            }
+            if ((std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index1]) !=
+                CTRL_SHIFT_KEYCODE_V.end()) &&
+                (std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index2]) !=
+                CTRL_SHIFT_KEYCODE_V.end())) {
+                metaKey1 = pressedKeys[Index1];
+                metaKey2 = pressedKeys[Index2];
+                HILOG_DEBUG("metaKey1:%d, metaKey2:%d", metaKey1, metaKey2);
+                return true;
+            }
+        }
     }
     return false;
 }
 
-void AccessibilityMouseKey::ExecuteMouseKey(int32_t keyCode)
+int32_t AccessibilityMouseKey::ParseMetaKey(int32_t metaKey1, int32_t metaKey2)
 {
-    HILOG_DEBUG("keyCode:%{public}d", keyCode);
-
-    if ((keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_1) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_2) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_3) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_4) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_6) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_7) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_8) ||
-        (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_9)) {
-        auto iter = MOUSE_MOVE_OFFSET_M.find(keyCode);
-        if (iter != MOUSE_MOVE_OFFSET_M.end()) {
-            MoveMousePointer(iter->second.offsetX, iter->second.offsetY);
+    HILOG_DEBUG();
+    for (int32_t i = 0; i < ROW_COUNT; i++) {
+        if ((metaKey1 == PRESSED_METAKEYS_TBL[i][0]) && (metaKey2 == PRESSED_METAKEYS_TBL[i][1])) {
+            return PRESSED_METAKEYS_TBL[i][2];
         }
-    } else if (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_5) {
+    }
+    return INVALID_KEY;
+}
+
+bool AccessibilityMouseKey::ExecuteMouseKey(int32_t actionKey, int32_t metaKey1, int32_t metaKey2)
+{
+    HILOG_DEBUG("actionKey:%{public}d, metaKey1:%{public}d, metaKey2:%{public}d", actionKey, metaKey1, metaKey2);
+
+    if ((actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_1) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_2) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_3) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_4) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_6) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_7) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_8) ||
+        (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_9)) {
+        auto iter = MOUSE_MOVE_OFFSET_M.find(actionKey);
+        if (iter != MOUSE_MOVE_OFFSET_M.end()) {
+            int32_t offsetX = iter->second.offsetX;
+            int32_t offsetY = iter->second.offsetY;
+            int32_t result = ParseMetaKey(metaKey1, metaKey2);
+            if ((result == INVALID_KEY) || (result == CTRL_SHIFT_KEY)) {
+                return false;
+            }
+            if (result == CTRL_KEY) {
+                offsetX = static_cast<int32_t>(iter->second.offsetX * SPEED_UP_MULTIPLE);
+                offsetY = static_cast<int32_t>(iter->second.offsetY * SPEED_UP_MULTIPLE);
+            } else if (result == SHIFT_KEY) {
+                offsetX = static_cast<int32_t>(iter->second.offsetX * SLOW_DOWN_MULTIPLE);
+                offsetY = static_cast<int32_t>(iter->second.offsetY * SLOW_DOWN_MULTIPLE);
+            }
+            MoveMousePointer(offsetX, offsetY);
+        }
+    } else if (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_5) {
         SendMouseClickEvent(SINGLE_CLICK);
-    } else if (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE) {
+    } else if (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE) {
         selectedKeyType_ = LEFT_KEY;
-    } else if (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY) {
+    } else if (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY) {
         selectedKeyType_ = BOOTH_KEY;
-    } else if (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT) {
+    } else if (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT) {
         selectedKeyType_ = RIGHT_KEY;
-    } else if (keyCode == MMI::KeyEvent::KEYCODE_NUMPAD_ADD) {
+    } else if (actionKey == MMI::KeyEvent::KEYCODE_NUMPAD_ADD) {
         SendMouseClickEvent(DOUBLE_CLICK);
     }
+    return true;
 }
 
 void AccessibilityMouseKey::MoveMousePointer(int32_t offsetX, int32_t offsetY)
