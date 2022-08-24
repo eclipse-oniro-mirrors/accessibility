@@ -174,7 +174,7 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
             HILOG_DEBUG("actionKey:%d", actionKey);
             size_t Index1 = (i + 1) % ITEM_COUNT_3;
             size_t Index2 = (i + 2) % ITEM_COUNT_3;
-            if ((Index1 > 2) || (Index2 > 2)) {
+            if ((Index1 > (ITEM_COUNT_3 - 1)) || (Index2 > (ITEM_COUNT_3 - 1))) {
                 return false;
             }
             if ((std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index1]) !=
@@ -196,7 +196,7 @@ int32_t AccessibilityMouseKey::ParseMetaKey(int32_t metaKey1, int32_t metaKey2)
     HILOG_DEBUG();
     for (int32_t i = 0; i < ROW_COUNT; i++) {
         if ((metaKey1 == PRESSED_METAKEYS_TBL[i][0]) && (metaKey2 == PRESSED_METAKEYS_TBL[i][1])) {
-            return PRESSED_METAKEYS_TBL[i][2];
+            return PRESSED_METAKEYS_TBL[i][COLUMN_COUNT - 1];
         }
     }
     return INVALID_KEY;
