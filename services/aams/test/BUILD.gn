@@ -34,7 +34,6 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
     "//foundation/barrierfree/accessibility/services/aams/include",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
     "//foundation/barrierfree/accessibility/common/interface/include",
     "//foundation/barrierfree/accessibility/common/interface/include/parcel",
     "//foundation/barrierfree/accessibility/util/include",
@@ -51,6 +50,7 @@ config("module_private_config") {
     "${ability_runtime_inner_api_path}/ability_manager/include",
     "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
     "${ability_runtime_services_path}/abilitymgr/include",
+    "//foundation/distributeddatamgr/preferences/interfaces/inner_api/include",
     "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk",
     "//foundation/systemabilitymgr/samgr/interfaces/innerkits/common/include",
     "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
@@ -651,6 +651,173 @@ ohos_unittest("accessibility_touchevent_injector_test") {
 }
 
 ################################################################################
+ohos_unittest("accessibility_mouse_autoclick_test") {
+  module_out_path = module_output_path
+  sources = [
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessible_ability_client_stub_impl.cpp",
+    "mock/src/mock_common_event_data.cpp",
+    "mock/src/mock_common_event_manager.cpp",
+    "mock/src/mock_common_event_subscribe_info.cpp",
+    "mock/src/mock_common_event_subscriber.cpp",
+    "mock/src/mock_common_event_support.cpp",
+    "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_system_ability.cpp",
+    "unittest/accessibility_mouse_autoclick_test.cpp",
+  ]
+  sources += aams_mock_distributeddatamgr_src
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+    "//foundation/window/window_manager/utils:libwmutil",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
+    "ability_runtime:runtime",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+}
+
+################################################################################
+ohos_unittest("accessibility_mouse_key_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../src/accessibility_mouse_key.cpp",
+    "../src/utils.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "unittest/accessibility_mouse_key_test.cpp",
+  ]
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "hisysevent_native:libhisysevent",
+    "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
+  ]
+}
+
+################################################################################
+ohos_unittest("accessibility_short_key_test") {
+  module_out_path = module_output_path
+  sources = [
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessible_ability_client_stub_impl.cpp",
+    "mock/src/mock_accessible_ability_manager_service.cpp",
+    "mock/src/mock_common_event_data.cpp",
+    "mock/src/mock_common_event_manager.cpp",
+    "mock/src/mock_common_event_subscribe_info.cpp",
+    "mock/src/mock_common_event_subscriber.cpp",
+    "mock/src/mock_common_event_support.cpp",
+    "mock/src/mock_matching_skill.cpp",
+    "mock/src/mock_system_ability.cpp",
+    "unittest/accessibility_short_key_test.cpp",
+  ]
+  sources += aams_mock_distributeddatamgr_src
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+    "//foundation/window/window_manager/utils:libwmutil",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
+    "ability_runtime:runtime",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+}
+
+################################################################################
+ohos_unittest("accessibility_settings_config_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../src/accessibility_settings_config.cpp",
+    "mock/src/mock_preferences.cpp",
+    "mock/src/mock_preferences_helper.cpp",
+    "mock/src/mock_preferences_value.cpp",
+    "unittest/accessibility_settings_config_test.cpp",
+  ]
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
+    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
+    "//foundation/multimedia/image_standard/interfaces/innerkits:image_native",
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//foundation/window/window_manager/utils:libwmutil",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:runtime",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
+    "eventhandler:libeventhandler",
+    "hisysevent_native:libhisysevent",
+    "hitrace_native:hitrace_meter",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+  ]
+}
+
+################################################################################
 group("unittest") {
   testonly = true
   deps = []
@@ -661,6 +828,10 @@ group("unittest") {
     ":accessibility_display_manager_test",
     ":accessibility_input_interceptor_test",
     ":accessibility_keyevent_filter_test",
+    ":accessibility_mouse_autoclick_test",
+    ":accessibility_mouse_key_test",
+    ":accessibility_settings_config_test",
+    ":accessibility_short_key_test",
     ":accessibility_touch_guider_test",
     ":accessibility_touchevent_injector_test",
     ":accessibility_window_manager_test",
