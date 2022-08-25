@@ -1112,6 +1112,38 @@ float AccessibleAbilityManagerServiceProxy::GetAudioBalance()
     }
     return reply.ReadFloat();
 }
+void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData& configData)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return;
+    }
+    if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ALL_CONFIGS,
+        data, reply, option)) {
+        HILOG_ERROR("GetAllConfigs fail");
+        return;
+    }
+    configData.highContrastText_ = reply.ReadBool();
+    configData.invertColor_ = reply.ReadBool();
+    configData.animationOff_ = reply.ReadBool();
+    configData.audioMono_ = reply.ReadBool();
+    configData.mouseKey_ = reply.ReadBool();
+    configData.captionState_ = reply.ReadBool();
+    configData.screenMagnifier_ = reply.ReadBool();
+    configData.shortkey_ = reply.ReadBool();
+    configData.mouseAutoClick_ = reply.ReadInt32();
+    configData.daltonizationColorFilter_ = reply.ReadUint32();
+    configData.contentTimeout_ = reply.ReadUint32();
+    configData.brightnessDiscount_ = reply.ReadFloat();
+    configData.audioBalance_ = reply.ReadFloat();
+    configData.shortkeyTarget_ = reply.ReadString();
+    configData.captionProperty_ = *reply.ReadStrongParcelable<CaptionPropertyParcel>();
+}
 
 void AccessibleAbilityManagerServiceProxy::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)

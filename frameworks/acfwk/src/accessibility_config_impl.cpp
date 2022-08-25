@@ -1381,25 +1381,28 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
 
 void AccessibilityConfig::Impl::InitConfigValues()
 {
+    HILOG_DEBUG();
     if (!serviceProxy_) {
         HILOG_ERROR("Service is not connected");
         return;
     }
-    highContrastText_ = serviceProxy_->GetHighContrastTextState();
-    invertColor_ = serviceProxy_->GetInvertColorState();
-    animationOff_ = serviceProxy_->GetAnimationOffState();
-    audioMono_ = serviceProxy_->GetAudioMonoState();
-    mouseKey_ = serviceProxy_->GetMouseKeyState();
-    captionState_ = serviceProxy_->GetCaptionState();
-    screenMagnifier_ = serviceProxy_->GetScreenMagnificationState();
-    shortkey_ = serviceProxy_->GetShortKeyState();
-    mouseAutoClick_ = serviceProxy_->GetMouseAutoClick();
-    daltonizationColorFilter_ = serviceProxy_->GetDaltonizationColorFilter();
-    contentTimeout_ = serviceProxy_->GetContentTimeout();
-    brightnessDiscount_ = serviceProxy_->GetBrightnessDiscount();
-    audioBalance_ = serviceProxy_->GetAudioBalance();
-    shortkeyTarget_ = serviceProxy_->GetShortkeyTarget();
-    captionProperty_ = serviceProxy_->GetCaptionProperty();
+    Accessibility::AccessibilityConfigData configData;
+    serviceProxy_->GetAllConfigs(configData);
+    highContrastText_ = configData.highContrastText_;
+    invertColor_ = configData.invertColor_;
+    animationOff_ = configData.animationOff_;
+    audioMono_ = configData.audioMono_;
+    mouseKey_ = configData.mouseKey_;
+    captionState_ = configData.captionState_;
+    screenMagnifier_ = configData.screenMagnifier_;
+    shortkey_ = configData.shortkey_;
+    mouseAutoClick_ = configData.mouseAutoClick_;
+    daltonizationColorFilter_ = configData.daltonizationColorFilter_;
+    contentTimeout_ = configData.contentTimeout_;
+    brightnessDiscount_ = configData.brightnessDiscount_;
+    audioBalance_ = configData.audioBalance_;
+    shortkeyTarget_ = configData.shortkeyTarget_;
+    captionProperty_ = configData.captionProperty_;
 
     if (isInitialized_) {
         NotifyDefaultConfigs();

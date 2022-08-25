@@ -131,6 +131,7 @@ public:
     virtual uint32_t GetContentTimeout() override;
     virtual float GetBrightnessDiscount() override;
     virtual float GetAudioBalance() override;
+    virtual void GetAllConfigs(AccessibilityConfigData& configData) override;
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
 private:
     /**
