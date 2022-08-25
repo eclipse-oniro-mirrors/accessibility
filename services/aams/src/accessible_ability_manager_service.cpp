@@ -1860,7 +1860,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         configData.shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
         configData.captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
         syncPromise.set_value();
-        }), "TASK_GET_AUDIO_BALANCE");
+        }), "TASK_GET_ALL_CONFIGS");
 
     return syncFuture.get();
 }
