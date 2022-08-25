@@ -162,7 +162,11 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         return nullptr;
     }
 
-    enableAbilityListsObservers_->UnsubscribeObserver();
+    if (argc >= ARGS_SIZE_TWO) {
+        enableAbilityListsObservers_->UnsubscribeObserver(args[PARAM1]);
+    } else {
+        enableAbilityListsObservers_->UnsubscribeObservers();
+    }
     return nullptr;
 }
 
@@ -573,15 +577,21 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
 {
     HILOG_INFO();
     napi_value jsthis;
-    napi_get_cb_info(env, info, 0, nullptr, &jsthis, nullptr);
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value parameters[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
         return nullptr;
     }
+    if (argc >= ARGS_SIZE_ONE) {
+        configObservers_->UnsubscribeObserver(obj->GetConfigId(), parameters[PARAM0]);
+    } else {
+        configObservers_->UnsubscribeObservers(obj->GetConfigId());
+    }
 
-    configObservers_->UnsubscribeObserver(obj->GetConfigId());
     return nullptr;
 }
 
@@ -652,7 +662,25 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(const std::shared_ptr<Ena
     HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
 }
 
-void EnableAbilityListsObserverImpl::UnsubscribeObserver()
+void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_value observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
+        napi_value item = nullptr;
+        napi_status status;
+        bool equalFlag = false;
+        napi_get_reference_value((*iter)->env_, (*iter)->callback_, &item);
+        status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
+        if (status == napi_ok && equalFlag) {
+            iter = enableAbilityListsObservers_.erase(iter);
+        } else {
+            iter++;
+        }
+    }
+}
+
+void EnableAbilityListsObserverImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);

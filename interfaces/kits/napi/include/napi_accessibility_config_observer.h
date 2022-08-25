@@ -50,7 +50,8 @@ public:
         const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override;
     void SubscribeToFramework();
     void SubscribeObserver(const std::shared_ptr<NAccessibilityConfigObserver> &observer);
-    void UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id);
+    void UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer);
+    void UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id);
 
 private:
     std::mutex mutex_;

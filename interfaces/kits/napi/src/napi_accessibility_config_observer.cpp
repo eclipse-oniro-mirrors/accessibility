@@ -402,7 +402,29 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(const std::shared_ptr<N
     observers_.emplace_back(observer);
 }
 
-void NAccessibilityConfigObserverImpl::UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id)
+void NAccessibilityConfigObserverImpl::UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        if ((*iter)->configId_ == id) {
+            napi_value item = nullptr;
+            napi_status status;
+            bool equalFlag = false;
+            napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
+            status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
+            if (status == napi_ok && equalFlag) {
+                iter = observers_.erase(iter);
+            } else {
+                iter++;
+            }
+        } else {
+            iter++;
+        }
+    }
+}
+
+void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
