@@ -131,6 +131,8 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_AUDIO_BALANCE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAudioBalance;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ALL_CONFIGS)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAllConfigs;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::REGISTER_CONFIG_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback;
 }
@@ -699,6 +701,31 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel
 
     float result = GetAudioBalance();
     reply.WriteFloat(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    AccessibilityConfigData configData;
+    GetAllConfigs(configData);
+    CaptionPropertyParcel captionParcel(configData.captionProperty_);
+    reply.WriteBool(configData.highContrastText_);
+    reply.WriteBool(configData.invertColor_);
+    reply.WriteBool(configData.animationOff_);
+    reply.WriteBool(configData.audioMono_);
+    reply.WriteBool(configData.mouseKey_);
+    reply.WriteBool(configData.captionState_);
+    reply.WriteBool(configData.screenMagnifier_);
+    reply.WriteBool(configData.shortkey_);
+    reply.WriteInt32(configData.mouseAutoClick_);
+    reply.WriteUint32(configData.daltonizationColorFilter_);
+    reply.WriteUint32(configData.contentTimeout_);
+    reply.WriteFloat(configData.brightnessDiscount_);
+    reply.WriteFloat(configData.audioBalance_);
+    reply.WriteString(configData.shortkeyTarget_);
+    reply.WriteParcelable(&captionParcel);
     return NO_ERROR;
 }
 

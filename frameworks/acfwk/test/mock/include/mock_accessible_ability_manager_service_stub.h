@@ -98,6 +98,7 @@ public:
     uint32_t GetContentTimeout() override;
     float GetBrightnessDiscount() override;
     float GetAudioBalance() override;
+    void GetAllConfigs(AccessibilityConfigData &configData) override;
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
 };
 } // namespace Accessibility

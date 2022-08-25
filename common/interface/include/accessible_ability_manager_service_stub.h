@@ -134,6 +134,7 @@ private:
     ErrCode HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetAllConfigs(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleRegisterEnableAbilityListsObserver(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleRegisterConfigCallback(MessageParcel &data, MessageParcel &reply);

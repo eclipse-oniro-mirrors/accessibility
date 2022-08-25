@@ -1830,6 +1830,41 @@ float AccessibleAbilityManagerService::GetAudioBalance()
     return syncFuture.get();
 }
 
+void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
+{
+    HILOG_DEBUG();
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &configData]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value();
+            return;
+        }
+
+        configData.highContrastText_ = accountData->GetConfig()->GetHighContrastTextState();
+        configData.invertColor_ = accountData->GetConfig()->GetInvertColorState();
+        configData.animationOff_ = accountData->GetConfig()->GetAnimationOffState();
+        configData.audioMono_ = accountData->GetConfig()->GetAudioMonoState();
+        configData.mouseKey_ = accountData->GetConfig()->GetMouseKeyState();
+        configData.captionState_ = accountData->GetConfig()->GetCaptionState();
+        configData.screenMagnifier_ = accountData->GetConfig()->GetScreenMagnificationState();
+        configData.shortkey_ = accountData->GetConfig()->GetShortKeyState();
+        configData.mouseAutoClick_ = accountData->GetConfig()->GetMouseAutoClick();
+        configData.daltonizationColorFilter_ = accountData->GetConfig()->GetDaltonizationColorFilter();
+        configData.contentTimeout_ = accountData->GetConfig()->GetContentTimeout();
+        configData.brightnessDiscount_ = accountData->GetConfig()->GetBrightnessDiscount();
+        configData.audioBalance_ = accountData->GetConfig()->GetAudioBalance();
+        configData.shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
+        configData.captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
+        syncPromise.set_value();
+        }), "TASK_GET_AUDIO_BALANCE");
+
+    return syncFuture.get();
+}
+
 bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
 {
     HILOG_DEBUG();

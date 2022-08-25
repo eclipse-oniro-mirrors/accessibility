@@ -33,6 +33,24 @@ namespace Accessibility {
 /*
  * The class define the interface to call ABMS API.
  */
+struct AccessibilityConfigData {
+    bool highContrastText_ = false;
+    bool invertColor_ = false;
+    bool animationOff_ = false;
+    bool audioMono_ = false;
+    bool mouseKey_ = false;
+    bool captionState_ = false;
+    bool screenMagnifier_ = false;
+    bool shortkey_ = false;
+    int32_t mouseAutoClick_ = 0;
+    uint32_t daltonizationColorFilter_ = 0;
+    uint32_t contentTimeout_ = 0;
+    float brightnessDiscount_ = 0.0;
+    float audioBalance_ = 0.0;
+    std::string shortkeyTarget_ = "";
+    AccessibilityConfig::CaptionProperty captionProperty_ = {};
+};
+
 class IAccessibleAbilityManagerService : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.accessibility.IAccessibleAbilityManagerService");
@@ -131,6 +149,7 @@ public:
     virtual uint32_t GetContentTimeout() = 0;
     virtual float GetBrightnessDiscount() = 0;
     virtual float GetAudioBalance() = 0;
+    virtual void GetAllConfigs(AccessibilityConfigData& configData) = 0;
 
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
     enum class Message {
@@ -181,6 +200,7 @@ public:
         GET_CONTENT_TIMEOUT,
         GET_BRIGHTNESS_DISCOUNT,
         GET_AUDIO_BALANCE,
+        GET_ALL_CONFIGS,
         REGISTER_ENABLE_ABILITY_LISTS_OBSERVER,
         REGISTER_CONFIG_CALLBACK,
     };

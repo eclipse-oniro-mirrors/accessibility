@@ -294,6 +294,24 @@ float MockAccessibleAbilityManagerServiceStub::GetAudioBalance()
     return -1;
 }
 
+void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData &configData)
+{
+    configData.highContrastText_ = true;
+    configData.invertColor_ = true;
+    configData.animationOff_ = true;
+    configData.audioMono_ = true;
+    configData.mouseKey_ = true;
+    configData.captionState_ = true;
+    configData.screenMagnifier_ = true;
+    configData.shortkey_ = true;
+    configData.mouseAutoClick_ = MOUSE_AUTO_CLICK_VALUE;
+    configData.daltonizationColorFilter_ = 1;
+    configData.contentTimeout_ = CONTENT_TIMEOUT_VALUE;
+    configData.brightnessDiscount_ = BRIGHTNESS_DISCOUNT_VALUE;
+    configData.audioBalance_ = -1;
+    configData.shortkeyTarget_ = "test";
+}
+
 void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {

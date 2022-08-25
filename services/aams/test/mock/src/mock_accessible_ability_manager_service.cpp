@@ -349,6 +349,11 @@ float AccessibleAbilityManagerService::GetAudioBalance()
     return 0.0f;
 }
 
+void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
+{
+    (void)configData;
+}
+
 void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
