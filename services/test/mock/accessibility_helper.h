@@ -44,10 +44,21 @@ public:
     }
     std::vector<EventType>& GetEventType()
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         return mTeventType_;
+    }
+    EventType GetEventTypeOfTargetIndex(int32_t index)
+    {
+        std::lock_guard<std::mutex> lock(mtx_);
+        int32_t size = static_cast<int32_t>(mTeventType_.size());
+        if (size > index) {
+            return mTeventType_[index];
+        }
+        return TYPE_VIEW_INVALID;
     }
     void PushEventType(EventType eventType)
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         mTeventType_.push_back(eventType);
     }
 
@@ -155,7 +166,20 @@ public:
             }
         }
     }
-
+    bool WaitForLoop(const std::function<bool()> &compare, int32_t timeout)
+    {
+        constexpr int32_t SLEEP_TIME = 100;
+        int32_t count = timeout * 1000 / SLEEP_TIME;
+        while (count > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+            if (compare() == true) {
+                return true;
+            } else {
+                count--;
+            }
+        }
+        return false;
+    }
 public:
     static const int32_t accountId_ = 100;
 
@@ -167,14 +191,13 @@ private:
     int32_t testEventType_ = 0;
     int32_t testWindowChangeTypes_ = 0;
     int32_t testWindowId_ = 0;
-
     int32_t testChannalId_ = -1;
     int32_t testGesture_ = -1;
     int32_t testKeyPressEvent_ = -1;
     int32_t testDisplayId_ = -1;
     int32_t testGestureSimulateResult_ = -1;
-
     bool isServicePublished_ = false;
+    std::mutex mtx_;
 };
 } // namespace Accessibility
 } // namespace OHOS

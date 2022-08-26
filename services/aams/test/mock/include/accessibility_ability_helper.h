@@ -18,6 +18,8 @@
 
 #include <atomic>
 #include <chrono>
+#include <functional>
+#include <mutex>
 #include <thread>
 #include "accessibility_event_info.h"
 #include "hilog/log.h"
@@ -35,11 +37,13 @@ public:
 
     std::vector<int32_t> GetTouchEventActionVector()
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         return touchAction_;
     }
 
     int32_t GetTouchEventActionOfTargetIndex(int32_t index)
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         int32_t size = static_cast<int32_t>(touchAction_.size());
         if (size > index) {
             return touchAction_[index];
@@ -49,11 +53,13 @@ public:
 
     void ClearTouchEventActionVector()
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         touchAction_.clear();
     }
 
     void SetTouchEventActionVectors(int32_t touchAction)
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         touchAction_.push_back(touchAction);
     }
 
@@ -164,11 +170,13 @@ public:
 
     std::vector<EventType> GetEventTypeVector()
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         return eventType_;
     }
 
     EventType GetEventTypeOfTargetIndex(int32_t index)
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         int32_t size = static_cast<int32_t>(eventType_.size());
         if (size > index) {
             return eventType_[index];
@@ -178,11 +186,13 @@ public:
 
     void ClearEventTypeActionVector()
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         eventType_.clear();
     }
 
     void SetEventTypeVector(EventType eventType)
     {
+        std::lock_guard<std::mutex> lock(mtx_);
         eventType_.push_back(eventType);
     }
 
@@ -312,6 +322,31 @@ public:
         return enableShortKeyTargetAbility_;
     }
 
+    void SetZoomState(bool state)
+    {
+        zoomState_ = state;
+    }
+
+    bool GetZoomState() const
+    {
+        return zoomState_;
+    }
+
+    bool WaitForLoop(const std::function<bool()> &compare, int32_t timeout)
+    {
+        constexpr int32_t SLEEP_TIME = 100;
+        int32_t count = timeout * 1000 / SLEEP_TIME;
+        while (count > 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+            if (compare() == true) {
+                return true;
+            } else {
+                count--;
+            }
+        }
+        return false;
+    }
+
 public:
     static const int32_t accountId_ = 100;
 
@@ -339,6 +374,8 @@ private:
     uint32_t testSequence_ = 0;
     int32_t keyCode_ = 0;
     bool enableShortKeyTargetAbility_ = false;
+    bool zoomState_ = false;
+    std::mutex mtx_;
 };
 } // namespace Accessibility
 } // namespace OHOS
