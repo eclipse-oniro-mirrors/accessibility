@@ -39,7 +39,8 @@ public:
     void OnEnableAbilityListsStateChanged() override;
     void SubscribeToFramework();
     void SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer);
-    void UnsubscribeObserver();
+    void UnsubscribeObserver(napi_value observer);
+    void UnsubscribeObservers();
 
 private:
     std::mutex mutex_;

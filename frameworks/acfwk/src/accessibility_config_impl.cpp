@@ -354,7 +354,14 @@ void AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
         configObservers_.find(id);
     if (it != configObservers_.end()) {
-        configObservers_.erase(it);
+        for (auto iter = it->second.begin(); iter != it->second.end(); iter++) {
+            if (*iter == observer) {
+                HILOG_DEBUG("erase observer");
+                it->second.erase(iter);
+                HILOG_DEBUG("observer's size is %{public}zu", it->second.size());
+                return;
+            }
+        }
     } else {
         HILOG_DEBUG("%{public}d has not subscribed ", id);
     }
