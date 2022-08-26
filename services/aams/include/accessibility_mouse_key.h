@@ -67,7 +67,7 @@ private:
     void SendMouseClickEvent(CLICK_TYPE clickType);
     int64_t GetSystemTime() const;
     void PerformMouseAction(int32_t buttonId, int32_t actionType);
-    int32_t ParseMetaKey(int32_t metaKey1, int32_t metaKey2);
+    int32_t ParseMetaKey(int32_t metaKey1, int32_t metaKey2) const;
 
     std::shared_ptr<MMI::PointerEvent> lastMouseMoveEvent_ = nullptr;
     SELECTED_KEY_TYPE selectedKeyType_ = LEFT_KEY;

@@ -191,7 +191,7 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
     return false;
 }
 
-int32_t AccessibilityMouseKey::ParseMetaKey(int32_t metaKey1, int32_t metaKey2)
+int32_t AccessibilityMouseKey::ParseMetaKey(int32_t metaKey1, int32_t metaKey2) const
 {
     HILOG_DEBUG();
     for (int32_t i = 0; i < ROW_COUNT; i++) {
