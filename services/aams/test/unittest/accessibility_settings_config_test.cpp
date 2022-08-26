@@ -177,6 +177,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyState
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetShortKeyState
  * @tc.desc: Test function SetShortKeyState GetShortKeyState
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyState, TestSize.Level1)
 {
@@ -191,6 +192,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseKeyState
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetMouseKeyState
  * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseKeyState, TestSize.Level1)
 {
@@ -205,6 +207,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick
  * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ * @tc.require: issueI5NTXC
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick, TestSize.Level1)
 {
@@ -219,6 +222,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget
  * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortkeyTarget, TestSize.Level1)
 {
@@ -233,6 +237,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState
  * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
+ * @tc.require: issueI5NTX9
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState,
     TestSize.Level1)
@@ -248,6 +253,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetInvertColorState
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetInvertColorState
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
+ * @tc.require: issueI5NTX7
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState, TestSize.Level1)
 {
@@ -262,6 +268,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetAnimationOffState
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetAnimationOffState
  * @tc.desc: Test function SetAnimationOffState GetAnimationOffState
+ * @tc.require: issueI5NTXG
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAnimationOffState, TestSize.Level1)
 {
@@ -290,6 +297,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter
  * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter,
     TestSize.Level1)
@@ -305,6 +313,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetContentTimeout
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetContentTimeout
  * @tc.desc: Test function SetContentTimeout GetContentTimeout
+ * @tc.require: issueI5NTXF
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout, TestSize.Level1)
 {
@@ -319,6 +328,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount
  * @tc.name: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount
  * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
+ * @tc.require: issueI5NTXE
  */
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount, TestSize.Level1)
 {

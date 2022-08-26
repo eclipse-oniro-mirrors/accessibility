@@ -79,6 +79,7 @@ std::shared_ptr<MMI::KeyEvent> AccessibilityShortKeyUnitTest::CreateKeyEvent(int
  * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_001
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(press '5' key)
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_001, TestSize.Level1)
 {
@@ -106,6 +107,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_002
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_002, TestSize.Level1)
 {
@@ -130,6 +132,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_003
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(Long press the power key)
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_003, TestSize.Level1)
 {
@@ -158,6 +161,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_004
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(Press the power button 3 times)
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_004, TestSize.Level1)
 {
