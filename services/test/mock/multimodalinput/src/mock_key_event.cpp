@@ -17,6 +17,7 @@
 
 namespace OHOS {
 namespace MMI {
+const int32_t KeyEvent::KEYCODE_UNKNOWN = -1;
 const int32_t KeyEvent::KEYCODE_VOLUME_UP = 16;
 const int32_t KeyEvent::KEYCODE_VOLUME_DOWN = 17;
 const int32_t KeyEvent::KEYCODE_POWER = 18;
@@ -37,6 +38,10 @@ const int32_t KeyEvent::KEYCODE_NUMPAD_DIVIDE = 2113;
 const int32_t KeyEvent::KEYCODE_NUMPAD_MULTIPLY = 2114;
 const int32_t KeyEvent::KEYCODE_NUMPAD_SUBTRACT = 2115;
 const int32_t KeyEvent::KEYCODE_NUMPAD_ADD = 2116;
+const int32_t KeyEvent::KEYCODE_SHIFT_LEFT = 2047;
+const int32_t KeyEvent::KEYCODE_SHIFT_RIGHT = 2048;
+const int32_t KeyEvent::KEYCODE_CTRL_LEFT = 2072;
+const int32_t KeyEvent::KEYCODE_CTRL_RIGHT = 2073;
 
 KeyEvent::KeyItem::KeyItem()
 {}
