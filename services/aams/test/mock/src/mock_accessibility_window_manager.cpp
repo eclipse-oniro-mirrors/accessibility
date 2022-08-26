@@ -133,5 +133,9 @@ void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
         }
     }
 }
+
+void AccessibilityWindowManager::ClearAccessibilityFocused()
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

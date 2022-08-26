@@ -196,9 +196,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
     if (windowId == INVALID_WINDOW_ID) {
-        if (a11yWindows_.count(activeWindowId_)) {
-            a11yWindows_[activeWindowId_].SetActive(false);
-        }
+        ClearOldActiveWindow();
         activeWindowId_ = INVALID_WINDOW_ID;
         return;
     }
@@ -209,9 +207,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
     }
 
     if (activeWindowId_ != windowId) {
-        if (a11yWindows_.count(activeWindowId_)) {
-            a11yWindows_[activeWindowId_].SetActive(false);
-        }
+        ClearOldActiveWindow();
         activeWindowId_ = windowId;
         a11yWindows_[activeWindowId_].SetActive(true);
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
@@ -225,9 +221,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
     HILOG_DEBUG("start");
     if (windowId == INVALID_WINDOW_ID) {
-        if (a11yWindows_.count(a11yFocusedWindowId_)) {
-            a11yWindows_[a11yFocusedWindowId_].SetAccessibilityFocused(false);
-        }
+        ClearAccessibilityFocused();
         a11yFocusedWindowId_ = INVALID_WINDOW_ID;
         return;
     }
@@ -238,9 +232,7 @@ void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
     }
 
     if (a11yFocusedWindowId_ != windowId) {
-        if (a11yWindows_.count(a11yFocusedWindowId_)) {
-            a11yWindows_[a11yFocusedWindowId_].SetAccessibilityFocused(false);
-        }
+        ClearAccessibilityFocused();
         a11yFocusedWindowId_ = windowId;
         a11yWindows_[a11yFocusedWindowId_].SetAccessibilityFocused(true);
     }
@@ -422,6 +414,59 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
             UpdateAccessibilityWindowInfo(a11yWindows_[windowInfo->wid_], windowInfo);
         }
     }
+}
+
+void AccessibilityWindowManager::ClearOldActiveWindow()
+{
+    HILOG_DEBUG("active window id is %{public}d", activeWindowId_);
+    if (activeWindowId_ == INVALID_WINDOW_ID) {
+        HILOG_DEBUG("active window id is invalid");
+        return;
+    }
+
+    if (a11yWindows_.count(activeWindowId_)) {
+        a11yWindows_[activeWindowId_].SetActive(false);
+    }
+    if (activeWindowId_ == a11yFocusedWindowId_) {
+        HILOG_DEBUG("Old active window is a11yFocused window.");
+        SetAccessibilityFocusedWindow(INVALID_WINDOW_ID);
+    }
+}
+
+void AccessibilityWindowManager::ClearAccessibilityFocused()
+{
+    HILOG_DEBUG("a11yFocused window id is %{public}d", a11yFocusedWindowId_);
+    if (a11yFocusedWindowId_ == INVALID_WINDOW_ID) {
+        HILOG_DEBUG("a11yFocused window id is invalid");
+        return;
+    }
+
+    if (a11yWindows_.count(a11yFocusedWindowId_)) {
+        a11yWindows_[a11yFocusedWindowId_].SetAccessibilityFocused(false);
+    }
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return;
+    }
+    sptr<AccessibilityWindowConnection> connection =
+        accountData->GetAccessibilityWindowConnection(a11yFocusedWindowId_);
+    if (!connection) {
+        HILOG_ERROR("windowId[%{public}d] has no connection", a11yFocusedWindowId_);
+        return;
+    }
+    if (!connection->GetProxy()) {
+        HILOG_ERROR("windowId[%{public}d] has no proxy", a11yFocusedWindowId_);
+        return;
+    }
+    connection->GetProxy()->ClearFocus();
+
+    // Send event
+    AccessibilityEventInfo eventInfo(TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT);
+    eventInfo.SetWindowId(a11yFocusedWindowId_);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 } // namespace Accessibility
 } // namespace OHOS
