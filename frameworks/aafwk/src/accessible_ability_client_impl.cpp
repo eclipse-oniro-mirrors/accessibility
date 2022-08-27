@@ -378,7 +378,7 @@ bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &pa
 
     int32_t windowId = parent.GetWindowId();
     std::vector<int32_t> childIds =  parent.GetChildIds();
-    HILOG_INFO("windowId[%{public}d], childIds.size[%{public}d]", windowId, childIds.size());
+    HILOG_INFO("windowId[%{public}d], childIds.size[%{public}zu]", windowId, childIds.size());
     for (auto &childId : childIds) {
         HILOG_DEBUG("childId[%{public}d]", childId);
         if (childId == -1) {
