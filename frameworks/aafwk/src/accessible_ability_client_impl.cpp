@@ -82,7 +82,7 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
 
 bool AccessibleAbilityClientImpl::RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (listener_) {
         HILOG_DEBUG("listener already exists.");
         return false;
@@ -290,7 +290,7 @@ bool AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessibilit
 
 bool AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return false;
@@ -378,9 +378,9 @@ bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &pa
 
     int32_t windowId = parent.GetWindowId();
     std::vector<int32_t> childIds =  parent.GetChildIds();
-    HILOG_DEBUG("The size of childIds is %{public}zu", childIds.size());
+    HILOG_INFO("windowId[%{public}d], childIds.size[%{public}zu]", windowId, childIds.size());
     for (auto &childId : childIds) {
-        HILOG_INFO("windowId[%{public}d], childId[%{public}d]", windowId, childId);
+        HILOG_DEBUG("childId[%{public}d]", childId);
         if (childId == -1) {
             HILOG_ERROR("childId is invalid");
             return false;
@@ -565,13 +565,13 @@ bool AccessibleAbilityClientImpl::GetCacheElementInfo(const int32_t windowId,
 {
     HILOG_DEBUG();
     if (cacheWindowId_ == -1 || cacheWindowId_ != windowId) {
-        HILOG_ERROR("cacheWindowId[%{public}d], windowId[%{public}d]", cacheWindowId_, windowId);
+        HILOG_DEBUG("cacheWindowId[%{public}d], windowId[%{public}d]", cacheWindowId_, windowId);
         return false;
     }
 
     auto iter = cacheElementInfos_.find(elementId);
     if (iter == cacheElementInfos_.end()) {
-        HILOG_ERROR("the element id[%{public}d] is not in cache", elementId);
+        HILOG_DEBUG("the element id[%{public}d] is not in cache", elementId);
         return false;
     }
 
