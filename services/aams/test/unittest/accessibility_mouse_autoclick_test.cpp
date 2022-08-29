@@ -68,6 +68,7 @@ void AccessibilityMouseAutoclickUnitTest::TearDown()
  * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001
  * @tc.name: OnPointerEvent
  * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXC
  */
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
@@ -93,6 +94,7 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
  * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002
  * @tc.name: OnPointerEvent
  * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXC
  */
 HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002, TestSize.Level1)
 {

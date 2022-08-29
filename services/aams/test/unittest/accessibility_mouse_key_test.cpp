@@ -65,6 +65,7 @@ void AccessibilityMouseKeyUnitTest::TearDown()
  * @tc.number: AccessibilityMouseKey_Unittest_OnPointerEvent_001
  * @tc.name: OnPointerEvent
  * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointerEvent_001, TestSize.Level1)
 {
@@ -89,6 +90,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
  * @tc.number: AccessibilityMouseKey_Unittest_OnPointerEvent_002
  * @tc.name: OnPointerEvent
  * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointerEvent_002, TestSize.Level1)
 {
@@ -113,6 +115,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_001
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(1 key down)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_001, TestSize.Level1)
 {
@@ -138,6 +141,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_002
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(1 key up)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_002, TestSize.Level1)
 {
@@ -163,6 +167,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_003
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(press '/', '5' key)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_003, TestSize.Level1)
 {
@@ -217,6 +222,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_004
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(press '-', '5' key)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_004, TestSize.Level1)
 {
@@ -271,6 +277,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_005
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(press '*', '5' key)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_005, TestSize.Level1)
 {
@@ -325,6 +332,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_006
  * @tc.name: OnKeyEvent
  * @tc.desc: Test function OnKeyEvent(press '/', '+' key)
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_006, TestSize.Level1)
 {

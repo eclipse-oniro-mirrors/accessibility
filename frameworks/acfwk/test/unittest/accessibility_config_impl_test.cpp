@@ -91,6 +91,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_001, TestSize.
  * @tc.number: SetShortKeyState_001
  * @tc.name: SetShortKeyState_001
  * @tc.desc: Test function SetShortKeyState
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_001, TestSize.Level1)
 {
@@ -107,6 +108,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_001, TestSize.Level1)
  * @tc.number: SetMouseKeyState_001
  * @tc.name: SetMouseKeyState_001
  * @tc.desc: Test function SetMouseKeyState
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_001, TestSize.Level1)
 {
@@ -138,6 +140,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_001, TestSize.Level1)
  * @tc.number: SetMouseAutoClick_001
  * @tc.name: SetMouseAutoClick_001
  * @tc.desc: Test function SetMouseAutoClick
+ * @tc.require: issueI5NTXC
  */
 HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
 {
@@ -154,6 +157,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
  * @tc.number: SetShortkeyTarget_001
  * @tc.name: SetShortkeyTarget_001
  * @tc.desc: Test function SetShortkeyTarget
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
 {
@@ -170,6 +174,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
  * @tc.number: SetHighContrastTextState_001
  * @tc.name: SetHighContrastTextState_001
  * @tc.desc: Test function SetHighContrastTextState
+ * @tc.require: issueI5NTX9
  */
 HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_001, TestSize.Level1)
 {
@@ -186,6 +191,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_001, TestSize.Lev
  * @tc.number: SetInvertColorState_001
  * @tc.name: SetInvertColorState_001
  * @tc.desc: Test function SetInvertColorState
+ * @tc.require: issueI5NTX7
  */
 HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_001, TestSize.Level1)
 {
@@ -202,6 +208,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_001, TestSize.Level1)
  * @tc.number: SetDaltonizationColorFilter_001
  * @tc.name: SetDaltonizationColorFilter_001
  * @tc.desc: Test function SetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
  */
 HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.Level1)
 {
@@ -218,6 +225,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.
  * @tc.number: SetContentTimeout_001
  * @tc.name: SetContentTimeout_001
  * @tc.desc: Test function SetContentTimeout
+ * @tc.require: issueI5NTXF
  */
 HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
 {
@@ -234,6 +242,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
  * @tc.number: SetAnimationOffState_001
  * @tc.name: SetAnimationOffState_001
  * @tc.desc: Test function SetAnimationOffState
+ * @tc.require: issueI5NTXG
  */
 HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
 {
@@ -250,6 +259,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
  * @tc.number: SetBrightnessDiscount_001
  * @tc.name: SetBrightnessDiscount_001
  * @tc.desc: Test function SetBrightnessDiscount
+ * @tc.require: issueI5NTXE
  */
 HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_001, TestSize.Level1)
 {
@@ -314,6 +324,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetScreenMagnificationState_001, TestSize.
  * @tc.number: GetShortKeyState_001
  * @tc.name: GetShortKeyState_001
  * @tc.desc: Test function GetShortKeyState
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityConfigImplTest, GetShortKeyState_001, TestSize.Level1)
 {
@@ -330,6 +341,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetShortKeyState_001, TestSize.Level1)
  * @tc.number: GetMouseKeyState_001
  * @tc.name: GetMouseKeyState_001
  * @tc.desc: Test function GetMouseKeyState
+ * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityConfigImplTest, GetMouseKeyState_001, TestSize.Level1)
 {
@@ -381,6 +393,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetCaptionsProperty_001, TestSize.Level1)
  * @tc.number: GetMouseAutoClick_001
  * @tc.name: GetMouseAutoClick_001
  * @tc.desc: Test function GetMouseAutoClick
+ * @tc.require: issueI5NTXC
  */
 HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_001, TestSize.Level1)
 {
@@ -399,6 +412,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_001, TestSize.Level1)
  * @tc.number: GetShortkeyTarget_001
  * @tc.name: GetShortkeyTarget_001
  * @tc.desc: Test function GetShortkeyTarget
+ * @tc.require: issueI5NTXH
  */
 HWTEST_F(AccessibilityConfigImplTest, GetShortkeyTarget_001, TestSize.Level1)
 {
@@ -416,6 +430,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetShortkeyTarget_001, TestSize.Level1)
  * @tc.number: GetInvertColorState_001
  * @tc.name: GetInvertColorState_001
  * @tc.desc: Test function GetInvertColorState
+ * @tc.require: issueI5NTX7
  */
 HWTEST_F(AccessibilityConfigImplTest, GetInvertColorState_001, TestSize.Level1)
 {
@@ -433,6 +448,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetInvertColorState_001, TestSize.Level1)
  * @tc.number:GetHighContrastTextState _001
  * @tc.name: GetHighContrastTextState_001
  * @tc.desc: Test function GetHighContrastTextState
+ * @tc.require: issueI5NTX9
  */
 HWTEST_F(AccessibilityConfigImplTest, GetHighContrastTextState_001, TestSize.Level1)
 {
@@ -450,6 +466,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetHighContrastTextState_001, TestSize.Lev
  * @tc.number: GetDaltonizationColorFilter_001
  * @tc.name: GetDaltonizationColorFilter_001
  * @tc.desc: Test function GetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
  */
 HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_001, TestSize.Level1)
 {
@@ -467,6 +484,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_001, TestSize.
  * @tc.number: GetContentTimeout_001
  * @tc.name: GetContentTimeout_001
  * @tc.desc: Test function GetContentTimeout
+ * @tc.require: issueI5NTXF
  */
 HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_001, TestSize.Level1)
 {
@@ -484,6 +502,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_001, TestSize.Level1)
  * @tc.number: GetAnimationOffState_001
  * @tc.name: GetAnimationOffState_001
  * @tc.desc: Test function GetAnimationOffState
+ * @tc.require: issueI5NTXG
  */
 HWTEST_F(AccessibilityConfigImplTest, GetAnimationOffState_001, TestSize.Level1)
 {
@@ -501,6 +520,7 @@ HWTEST_F(AccessibilityConfigImplTest, GetAnimationOffState_001, TestSize.Level1)
  * @tc.number: GetBrightnessDiscount_001
  * @tc.name: GetBrightnessDiscount_001
  * @tc.desc: Test function GetBrightnessDiscount
+ * @tc.require: issueI5NTXE
  */
 HWTEST_F(AccessibilityConfigImplTest, GetBrightnessDiscount_001, TestSize.Level1)
 {
