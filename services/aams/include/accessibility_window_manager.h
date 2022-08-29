@@ -40,6 +40,7 @@ public:
     std::vector<AccessibilityWindowInfo> GetAccessibilityWindows();
     bool GetAccessibilityWindow(int32_t windowId, AccessibilityWindowInfo &window);
     bool IsValidWindow(int32_t windowId);
+    void ClearAccessibilityFocused();
 
     // test for ut to resize a window
     void SetWindowSize(int32_t windowId, Rect rect);
@@ -73,6 +74,7 @@ private:
     void WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
     void WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos);
+    void ClearOldActiveWindow();
 
     sptr<AccessibilityWindowListener> windowListener_ = nullptr;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;

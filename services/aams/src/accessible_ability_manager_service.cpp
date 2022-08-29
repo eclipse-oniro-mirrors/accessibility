@@ -1179,6 +1179,9 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
         return;
     }
     uint32_t state = accountData->GetAccessibilityState();
+    if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
+        Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
+    }
     for (auto &callback : accountData->GetStateCallbacks()) {
         if (callback) {
             callback->OnStateChanged(state);
