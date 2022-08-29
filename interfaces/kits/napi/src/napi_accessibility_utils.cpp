@@ -303,7 +303,7 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
 
     napi_value nCapabilities;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nCapabilities));
-    uint32_t capabilitiesValue = info.GetCapabilityValues();
+    uint32_t capabilitiesValue = info.GetStaticCapabilityValues();
     std::vector<std::string> capabilities = ParseCapabilitiesToVec(capabilitiesValue);
     for (size_t idxCap = 0; idxCap < capabilities.size(); idxCap++) {
         napi_value nCap;

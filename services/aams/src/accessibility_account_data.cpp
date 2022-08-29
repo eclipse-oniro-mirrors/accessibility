@@ -497,13 +497,8 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
-    // Parse name to bundle name and ability name
-    std::string bundleName = name.substr(0, name.find("/"));
-    std::string abilityName = name.substr(name.find("/") + 1);
-    HILOG_DEBUG("bundleName[%{public}s], abilityName[%{public}s]", bundleName.c_str(), abilityName.c_str());
-
     // Parse config from bms according to bundle name and ability name
-    uint32_t configCapabilities = GetConfigCapabilitiesFromBms(bundleName, abilityName);
+    uint32_t configCapabilities = GetAbilityStaticCapabilities(name);
 
     // Judge capabilities
     uint32_t resultCapabilities = configCapabilities & capabilities;
@@ -529,37 +524,8 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
     enabledAbilities_.push_back(name);
     UpdateEnableAbilityListsState();
     UpdateAbilities();
-    Utils::RecordStartingA11yEvent(bundleName, abilityName);
+    Utils::RecordStartingA11yEvent(name);
     return true;
-}
-
-uint32_t AccessibilityAccountData::GetConfigCapabilitiesFromBms(const std::string &bundleName,
-    const std::string &abilityName) const
-{
-    HILOG_DEBUG("start");
-    sptr<AppExecFwk::IBundleMgr> bmsMgr =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
-    if (!bmsMgr) {
-        HILOG_ERROR("bmsMgr is nullptr.");
-        return 0;
-    }
-
-    uint32_t configCapabilities = 0;
-    std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
-    bmsMgr->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
-    HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
-    for (auto &info : extensionInfos) {
-        if (info.bundleName == bundleName && info.name == abilityName) {
-            AccessibilityAbilityInitParams initParams;
-            Utils::Parse(info, initParams);
-            configCapabilities = initParams.capabilities;
-            HILOG_DEBUG("configCapabilities is [%{public}d]", configCapabilities);
-            return configCapabilities;
-        }
-    }
-    HILOG_ERROR("Query ability from bms failed. bundleName[%{public}s] abilityName[%{public}s]",
-        bundleName.c_str(), abilityName.c_str());
-    return 0;
 }
 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
@@ -619,6 +585,18 @@ uint32_t AccessibilityAccountData::GetAbilityCapabilities(const std::string &nam
     for (auto &installedAbility : installedAbilities_) {
         if (installedAbility.GetId() == name) {
             return installedAbility.GetCapabilityValues();
+        }
+    }
+    HILOG_ERROR("not found the ability %{public}s", name.c_str());
+    return 0;
+}
+
+uint32_t AccessibilityAccountData::GetAbilityStaticCapabilities(const std::string &name) const
+{
+    HILOG_DEBUG("start. name[%{public}s]", name.c_str());
+    for (auto &installedAbility : installedAbilities_) {
+        if (installedAbility.GetId() == name) {
+            return installedAbility.GetStaticCapabilityValues();
         }
     }
     HILOG_ERROR("not found the ability %{public}s", name.c_str());

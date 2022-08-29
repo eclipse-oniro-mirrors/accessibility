@@ -92,8 +92,8 @@ void AamsKeyEventFilterTest::SetUp()
 
     // Add an ability connection client
     AccessibilityAbilityInitParams initParams;
-    initParams.capabilities = CAPABILITY_KEY_EVENT_OBSERVER;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_KEY_EVENT_OBSERVER);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
