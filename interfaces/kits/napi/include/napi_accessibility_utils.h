@@ -44,6 +44,13 @@ constexpr int32_t PARAM2 = 2;
 constexpr int32_t CODE_SUCCESS = 0;
 constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
+// key action
+enum KeyAction : int32_t {
+    CANCEL = 0,
+    DOWN = 1,
+    UP = 2,
+    UNKNOWN = 0xff,
+};
 
 std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
@@ -66,6 +73,10 @@ OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
 
+KeyAction TransformKeyActionValue(int32_t keyAction);
+bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode);
+void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::KeyItem* keyItem);
+void SetInputEventProperty(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
