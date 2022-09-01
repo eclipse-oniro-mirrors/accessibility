@@ -62,7 +62,7 @@ public:
         return elementName_;
     }
 
-    inline wptr<AccessibilityAccountData> GetAccountData()
+    inline sptr<AccessibilityAccountData> GetAccountData()
     {
         return accountData_;
     }
