@@ -96,7 +96,7 @@ void AccessibleAbilityManagerService::OnStart()
     }
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
 
-    HILOG_INFO("AddAbilityListener!");
+    HILOG_DEBUG("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
     AddSystemAbilityListener(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
@@ -137,7 +137,7 @@ void AccessibleAbilityManagerService::OnStop()
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_INFO("systemAbilityId:%{public}d added!", systemAbilityId);
+    HILOG_DEBUG("systemAbilityId:%{public}d added!", systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
         return;
@@ -175,7 +175,7 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
+    HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
 }
 
 int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
@@ -528,7 +528,6 @@ void AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConf
 
 void AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return;
