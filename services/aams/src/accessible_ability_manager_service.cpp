@@ -94,6 +94,7 @@ void AccessibleAbilityManagerService::OnStart()
             return;
         }
     }
+    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
 
     HILOG_INFO("AddAbilityListener!");
     AddSystemAbilityListener(ABILITY_MGR_SERVICE_ID);
@@ -166,6 +167,8 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
             HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
             return;
         }
+
+        SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
         HILOG_DEBUG("AAMS is ready!");
         }), "OnAddSystemAbility");
 }
@@ -896,7 +899,6 @@ bool AccessibleAbilityManagerService::Init()
         HILOG_DEBUG("Query account information success, account id:%{public}d", accountIds[0]);
         SwitchedUser(accountIds[0]);
     }
-    SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
 
     return true;
 }
