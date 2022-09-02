@@ -68,7 +68,7 @@ void AccessibleAbilityChannel::InnerSearchElementInfoByAccessibilityId(const int
 {
     HILOG_DEBUG();
 
-    wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    sptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
         HILOG_ERROR("accountData is nullptr");
         return;
@@ -114,7 +114,7 @@ void AccessibleAbilityChannel::InnerSearchElementInfosByText(const int32_t acces
     const int32_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    sptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
         HILOG_ERROR("accountData is nullptr");
         return;
@@ -160,7 +160,7 @@ void AccessibleAbilityChannel::InnerFindFocusedElementInfo(const int32_t accessi
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    sptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
         HILOG_ERROR("accountData is nullptr");
         return;
@@ -204,7 +204,7 @@ bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindow
 void AccessibleAbilityChannel::InnerFocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    sptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
         HILOG_ERROR("accountData is nullptr");
         return;
@@ -251,7 +251,7 @@ void AccessibleAbilityChannel::InnerExecuteAction(const int32_t accessibilityWin
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG("ExecuteAction accessibilityWindowId = %{public}d", accessibilityWindowId);
-    wptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
+    sptr<AccessibilityAccountData> accountData = connection_.GetAccountData();
     if (!accountData.GetRefPtr()) {
         HILOG_ERROR("accountData is nullptr");
         return;
