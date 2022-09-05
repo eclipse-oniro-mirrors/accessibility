@@ -80,6 +80,7 @@ void AccessibilityAccountData::OnAccountSwitched()
     for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
         itr->second->Disconnect();
     }
+    connectedA11yAbilities_.clear();
     enabledAbilities_.clear();
 }
 
