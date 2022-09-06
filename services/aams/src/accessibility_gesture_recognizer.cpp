@@ -174,6 +174,7 @@ bool AccessibilityGestureRecognizer::HandleTouchMoveEvent(MMI::PointerEvent &eve
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(event.GetPointerId(), pointerIterm)) {
         HILOG_ERROR("get GetPointerItem(%d) failed", event.GetPointerId());
+        return false;
     }
     int64_t eventTime = event.GetActionTime();
     float offsetX = startPointer_.GetDisplayX() - pointerIterm.GetDisplayX();
