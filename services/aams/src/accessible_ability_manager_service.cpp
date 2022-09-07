@@ -931,6 +931,17 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     return accountData;
 }
 
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(const int32_t accountId) const
+{
+    HILOG_DEBUG("accountId is %{public}d ", accountId);
+    auto iter = a11yAccountsData_.find(accountId);
+    if (iter != a11yAccountsData_.end()) {
+        return iter->second;
+    }
+    HILOG_ERROR("There is no account[%{public}d]", accountId);
+    return nullptr;
+}
+
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
 {
     HILOG_DEBUG();

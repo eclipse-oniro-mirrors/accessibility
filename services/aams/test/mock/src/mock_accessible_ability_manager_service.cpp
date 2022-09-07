@@ -130,6 +130,15 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     return accountData;
 }
 
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(const int32_t accountId) const
+{
+    auto iter = a11yAccountsData_.find(accountId);
+    if (iter != a11yAccountsData_.end()) {
+        return iter->second;
+    }
+    return nullptr;
+}
+
 AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
 {
     AccessibilityConfig::CaptionProperty cp;

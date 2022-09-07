@@ -25,7 +25,7 @@ namespace Accessibility {
 class AccessibleAbilityConnection;
 class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
-    AccessibleAbilityChannel(AccessibleAbilityConnection &connection);
+    AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
     ~AccessibleAbilityChannel() = default;
     bool SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -87,7 +87,10 @@ private:
     void InnerSetEventTypeFilter(std::promise<bool> &syncPromise, const uint32_t filter);
     void InnerSetTargetBundleName(std::promise<bool> &syncPromise, const std::vector<std::string> &targetBundleNames);
 
-    AccessibleAbilityConnection &connection_;
+    sptr<AccessibleAbilityConnection> GetConnection() const;
+
+    std::string clientName_ = "";
+    int32_t accountId_ = -1;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
 } // namespace Accessibility

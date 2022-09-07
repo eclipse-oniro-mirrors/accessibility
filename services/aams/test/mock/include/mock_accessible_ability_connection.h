@@ -23,7 +23,7 @@ namespace OHOS {
 namespace Accessibility {
 class MockAccessibleAbilityChannel : public AccessibleAbilityChannel {
 public:
-    MockAccessibleAbilityChannel(AccessibleAbilityConnection& connection);
+    MockAccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
     ~MockAccessibleAbilityChannel();
 
     MOCK_METHOD5(SearchElementInfoByAccessibilityId,

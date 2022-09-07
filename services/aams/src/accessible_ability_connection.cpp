@@ -123,7 +123,7 @@ void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::El
     accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
 
-    channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
+    channel_ = new(std::nothrow) AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo_.GetId());
     if (!channel_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
             A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);

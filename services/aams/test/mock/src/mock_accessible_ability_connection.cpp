@@ -18,6 +18,7 @@
 #include <map>
 #include <vector>
 #include "accessibility_account_data.h"
+#include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -33,10 +34,9 @@ MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(const sptr<Acce
 MockAccessibleAbilityConnection::~MockAccessibleAbilityConnection()
 {}
 
-AccessibleAbilityChannel::AccessibleAbilityChannel(AccessibleAbilityConnection& connection)
-    : connection_(connection)
+AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
+    : clientName_(clientName), accountId_(accountId)
 {
-    (void)connection;
 }
 
 bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
@@ -102,7 +102,13 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
 bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)windows;
-    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection();
+    if (!clientConnection) {
+        HILOG_ERROR("There is no client connection");
+        return false;
+    }
+
+    if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
         return false;
     }
@@ -133,7 +139,13 @@ bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
 {
     (void)displayId;
     (void)windows;
-    if (!(connection_.GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
+
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection();
+    if (!clientConnection) {
+        HILOG_ERROR("There is no client connection");
+        return false;
+    }
+    if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
         return false;
     }
@@ -157,6 +169,18 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
 {
     (void)gesturePath;
     return true;
+}
+
+sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection() const
+{
+    sptr<AccessibilityAccountData> accountData = 
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return nullptr;
+    }
+
+    return accountData->GetAccessibleAbilityConnection(clientName_);
 }
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(

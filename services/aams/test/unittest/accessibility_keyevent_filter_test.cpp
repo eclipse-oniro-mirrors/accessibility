@@ -87,7 +87,7 @@ void KeyEventFilterUnitTest::AddConnection()
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    aastub_ = new AccessibleAbilityChannel(*connection);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
     sleep(SLEEP_TIME_3);
 }
