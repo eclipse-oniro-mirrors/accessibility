@@ -102,7 +102,7 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
 bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)windows;
-    sptr<AccessibleAbilityConnection> clientConnection = GetConnection();
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
     if (!clientConnection) {
         HILOG_ERROR("There is no client connection");
         return false;
@@ -140,7 +140,7 @@ bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     (void)displayId;
     (void)windows;
 
-    sptr<AccessibleAbilityConnection> clientConnection = GetConnection();
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
     if (!clientConnection) {
         HILOG_ERROR("There is no client connection");
         return false;
@@ -171,16 +171,16 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
     return true;
 }
 
-sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection() const
+sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId, const std::string &clientName)
 {
     sptr<AccessibilityAccountData> accountData = 
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
         return nullptr;
     }
 
-    return accountData->GetAccessibleAbilityConnection(clientName_);
+    return accountData->GetAccessibleAbilityConnection(clientName);
 }
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(

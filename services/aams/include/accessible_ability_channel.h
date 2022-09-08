@@ -63,31 +63,7 @@ public:
     bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
 private:
-    void InnerSearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode);
-    void InnerSearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
-        const std::string &text, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback);
-    void InnerFindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
-        const int32_t focusType, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback);
-    void InnerFocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
-        const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
-    void InnerExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
-        const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
-        const sptr<IAccessibilityElementOperatorCallback> &callback);
-    void InnerGetWindow(std::promise<bool> &syncPromise, const int32_t windowId,
-        AccessibilityWindowInfo &windowInfo);
-    void InnerGetWindowsByDisplayId(std::promise<bool> &syncPromise, const uint64_t displayId,
-        std::vector<AccessibilityWindowInfo> &windows);
-    void InnerExecuteCommonAction(const int32_t action);
-    void InnerSetOnKeyPressEventResult(const bool handled, const int32_t sequence);
-    void InnerSendSimulateGesturePath(std::promise<bool> &syncPromise,
-        const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath);
-    void InnerSetEventTypeFilter(std::promise<bool> &syncPromise, const uint32_t filter);
-    void InnerSetTargetBundleName(std::promise<bool> &syncPromise, const std::vector<std::string> &targetBundleNames);
-
-    sptr<AccessibleAbilityConnection> GetConnection() const;
+    static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;
