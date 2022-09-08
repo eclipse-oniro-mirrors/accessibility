@@ -57,7 +57,7 @@ bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t 
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSearchElementInfoByAccessibilityId,
-        this, accessibilityWindowId, elementId, requestId, callback, mode);
+        sptr<AccessibleAbilityChannel>(this), accessibilityWindowId, elementId, requestId, callback, mode);
 
     eventHandler_->PostTask(task, TASK_SEARCH_ELEMENTINFO_BY_ACCESSIBILITYID);
     return true;
@@ -112,7 +112,7 @@ bool AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibil
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSearchElementInfosByText,
-        this, accessibilityWindowId, elementId, text, requestId, callback);
+        sptr<AccessibleAbilityChannel>(this), accessibilityWindowId, elementId, text, requestId, callback);
 
     eventHandler_->PostTask(task, TASK_SEARCH_ELEMENTINFOS_BY_TEXT);
     return true;
@@ -164,7 +164,7 @@ bool AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilit
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerFindFocusedElementInfo,
-        this, accessibilityWindowId, elementId, focusType, requestId, callback);
+        sptr<AccessibleAbilityChannel>(this), accessibilityWindowId, elementId, focusType, requestId, callback);
 
     eventHandler_->PostTask(task, TASK_FIND_FOCUSED_ELEMENTINFO);
     return true;
@@ -215,7 +215,7 @@ bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindow
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerFocusMoveSearch,
-        this, accessibilityWindowId, elementId, direction, requestId, callback);
+        sptr<AccessibleAbilityChannel>(this), accessibilityWindowId, elementId, direction, requestId, callback);
 
     eventHandler_->PostTask(task, TASK_FOCUS_MOVE_SEARCH);
     return true;
@@ -266,7 +266,8 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerExecuteAction,
-        this, accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+        sptr<AccessibleAbilityChannel>(this), accessibilityWindowId, elementId, action,
+        actionArguments, requestId, callback);
 
     eventHandler_->PostTask(task, TASK_EXECUTE_ACTION);
     return true;
@@ -319,7 +320,7 @@ bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWi
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindow,
-        this, std::ref(syncPromise), windowId, std::ref(windowInfo));
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), windowId, std::ref(windowInfo));
 
     eventHandler_->PostTask(task, TASK_GET_WINDOW);
     return syncFuture.get();
@@ -361,7 +362,7 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindowsByDisplayId,
-        this, std::ref(syncPromise), displayId, std::ref(windows));
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), displayId, std::ref(windows));
 
     eventHandler_->PostTask(task, TASK_GET_WINDOWS);
     bool ret = syncFuture.get();
@@ -381,7 +382,7 @@ bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerGetWindowsByDisplayId,
-        this, std::ref(syncPromise), displayId, std::ref(windows));
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), displayId, std::ref(windows));
 
     eventHandler_->PostTask(task, TASK_GET_WINDOWS_BY_DISPLAY_ID);
     bool ret = syncFuture.get();
@@ -427,7 +428,8 @@ bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
         return false;
     }
 
-    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerExecuteCommonAction, this, action);
+    std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerExecuteCommonAction,
+        sptr<AccessibleAbilityChannel>(this), action);
 
     eventHandler_->PostTask(task, TASK_EXECUTE_COMMON_ACTION);
     return true;
@@ -471,7 +473,7 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     }
 
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetOnKeyPressEventResult,
-        this, handled, sequence);
+        sptr<AccessibleAbilityChannel>(this), handled, sequence);
 
     eventHandler_->PostTask(task, TASK_SET_ON_KEY_PRESS_EVENT_RESULT);
 }
@@ -501,7 +503,7 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSendSimulateGesturePath,
-        this, std::ref(syncPromise), gesturePath);
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), gesturePath);
     eventHandler_->PostTask(task, TASK_SEND_SIMULATE_GESTURE_PATH);
     bool ret = syncFuture.get();
     return ret;
@@ -545,7 +547,7 @@ bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetEventTypeFilter,
-        this, std::ref(syncPromise), filter);
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), filter);
 
     eventHandler_->PostTask(task, TASK_SET_EVENT_TYPE_FILTER);
     bool ret = syncFuture.get();
@@ -578,7 +580,7 @@ bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     std::function<void()> task = std::bind(&AccessibleAbilityChannel::InnerSetTargetBundleName,
-        this, std::ref(syncPromise), targetBundleNames);
+        sptr<AccessibleAbilityChannel>(this), std::ref(syncPromise), targetBundleNames);
 
     eventHandler_->PostTask(task, TASK_SET_TARGET_BUNDLE_NAME);
     bool ret = syncFuture.get();
@@ -603,6 +605,7 @@ void AccessibleAbilityChannel::InnerSetTargetBundleName(std::promise<bool> &sync
 
 sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection() const
 {
+    HILOG_DEBUG();
     sptr<AccessibilityAccountData> accountData = 
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
     if (!accountData) {
@@ -610,6 +613,7 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection() cons
         return nullptr;
     }
 
+    HILOG_DEBUG("accountId_[%{public}d] clientName_[%{public}s]", accountId_, clientName_.c_str());
     return accountData->GetAccessibleAbilityConnection(clientName_);
 }
 } // namespace Accessibility
