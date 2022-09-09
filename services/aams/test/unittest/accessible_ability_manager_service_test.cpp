@@ -277,5 +277,423 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.L
     EXPECT_EQ(1, int(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 end";
 }
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001
+ * @tc.name: SetScreenMagnificationState
+ * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetScreenMagnificationState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetScreenMagnificationState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_002
+ * @tc.name: SetScreenMagnificationState
+ * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetScreenMagnificationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetScreenMagnificationState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_001
+ * @tc.name: SetShortKeyState
+ * @tc.desc: Test function SetShortKeyState GetShortKeyState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortKeyState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002
+ * @tc.name: SetShortKeyState
+ * @tc.desc: Test function SetShortKeyState GetShortKeyState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortKeyState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortKeyState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortKeyState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001
+ * @tc.name: SetMouseKeyState
+ * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseKeyState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseKeyState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseKeyState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_002
+ * @tc.name: SetMouseKeyState
+ * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseKeyState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseKeyState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseKeyState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_001
+ * @tc.name: SetMouseAutoClick
+ * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    int32_t time = 3;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(time);
+    EXPECT_EQ(time, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002
+ * @tc.name: SetMouseAutoClick
+ * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetMouseAutoClick_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 start";
+    int32_t time = 3;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetMouseAutoClick(time);
+    EXPECT_EQ(time, Singleton<AccessibleAbilityManagerService>::GetInstance().GetMouseAutoClick());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetMouseAutoClick_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001
+ * @tc.name: SetShortkeyTarget
+ * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string name = "test";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name);
+    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget();
+    EXPECT_STREQ("test", str.c_str());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002
+ * @tc.name: SetShortkeyTarget
+ * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 start";
+    std::string name = "test";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name);
+    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget();
+    EXPECT_STREQ("test", str.c_str());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_001
+ * @tc.name: SetHighContrastTextState
+ * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002
+ * @tc.name: SetHighContrastTextState
+ * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001
+ * @tc.name: SetInvertColorState
+ * @tc.desc: Test function SetInvertColorState GetInvertColorState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetInvertColorState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetInvertColorState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetInvertColorState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_002
+ * @tc.name: SetInvertColorState
+ * @tc.desc: Test function SetInvertColorState GetInvertColorState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetInvertColorState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetInvertColorState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetInvertColorState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_001
+ * @tc.name: SetAnimationOffState
+ * @tc.desc: Test function SetAnimationOffState GetAnimationOffState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAnimationOffState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAnimationOffState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAnimationOffState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_002
+ * @tc.name: SetAnimationOffState
+ * @tc.desc: Test function SetAnimationOffState GetAnimationOffState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAnimationOffState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAnimationOffState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAnimationOffState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAnimationOffState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_001
+ * @tc.name: SetAudioMonoState
+ * @tc.desc: Test function SetAudioMonoState GetAudioMonoState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioMonoState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioMonoState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioMonoState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_002
+ * @tc.name: SetAudioMonoState
+ * @tc.desc: Test function SetAudioMonoState GetAudioMonoState
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioMonoState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioMonoState(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioMonoState());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioMonoState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_001
+ * @tc.name: SetDaltonizationColorFilter
+ * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationColorFilter_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    uint32_t filter = 2;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationColorFilter(filter);
+    EXPECT_EQ(filter, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationColorFilter());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_002
+ * @tc.name: SetDaltonizationColorFilter
+ * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationColorFilter_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_002 start";
+    uint32_t filter = 2;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationColorFilter(filter);
+    EXPECT_EQ(filter, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationColorFilter());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationColorFilter_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_001
+ * @tc.name: SetContentTimeout
+ * @tc.desc: Test function SetContentTimeout GetContentTimeout
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetContentTimeout_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    uint32_t time = 10;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetContentTimeout(time);
+    EXPECT_EQ(time, Singleton<AccessibleAbilityManagerService>::GetInstance().GetContentTimeout());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_002
+ * @tc.name: SetContentTimeout
+ * @tc.desc: Test function SetContentTimeout GetContentTimeout
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetContentTimeout_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_002 start";
+    uint32_t time = 10;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetContentTimeout(time);
+    EXPECT_EQ(time, Singleton<AccessibleAbilityManagerService>::GetInstance().GetContentTimeout());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetContentTimeout_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001
+ * @tc.name: SetBrightnessDiscount
+ * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    float discount = 0.1;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetBrightnessDiscount(discount);
+    EXPECT_EQ(discount, Singleton<AccessibleAbilityManagerService>::GetInstance().GetBrightnessDiscount());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_002
+ * @tc.name: SetBrightnessDiscount
+ * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_002 start";
+    float discount = 0.1;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetBrightnessDiscount(discount);
+    EXPECT_EQ(discount, Singleton<AccessibleAbilityManagerService>::GetInstance().GetBrightnessDiscount());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001
+ * @tc.name: SetAudioBalance
+ * @tc.desc: Test function SetAudioBalance GetAudioBalance
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001 start";
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioBalance(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioBalance());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_002
+ * @tc.name: SetAudioBalance
+ * @tc.desc: Test function SetAudioBalance GetAudioBalance
+ */
+
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_002 start";
+    bool state = true;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SetAudioBalance(state);
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetAudioBalance());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_002 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

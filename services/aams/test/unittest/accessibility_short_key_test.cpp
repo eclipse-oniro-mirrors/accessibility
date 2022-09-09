@@ -227,5 +227,55 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
 
     GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_004 end";
 }
+
+/**
+ * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_005
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(power key up)
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_005 start";
+    if (!shortKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
+        MMI::KeyEvent::KEY_ACTION_UP);
+    if (!event) {
+        return;
+    }
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    shortKey_->OnKeyEvent(*event);
+    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
+    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
+
+    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_005 end";
+}
+
+/**
+ * @tc.number: AccessibilityShortKey_Unittest_OnKeyEvent_006
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(power key cancel)
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEvent_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_006 start";
+    if (!shortKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
+        MMI::KeyEvent::KEY_ACTION_CANCEL);
+    if (!event) {
+        return;
+    }
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    shortKey_->OnKeyEvent(*event);
+    int32_t keyCode = AccessibilityAbilityHelper::GetInstance().GetKeyCode();
+    EXPECT_EQ(keyCode, MMI::KeyEvent::KEYCODE_POWER);
+
+    GTEST_LOG_(INFO) << "AccessibilityShortKey_Unittest_OnKeyEvent_006 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
