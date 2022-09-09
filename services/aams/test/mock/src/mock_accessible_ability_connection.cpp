@@ -263,28 +263,5 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
 {
     (void)eventInfo;
 }
-
-void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
-    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
-{
-    (void)element;
-    (void)remoteObject;
-    (void)resultCode;
-    sptr<AccessibleAbilityConnection> pointer = this;
-    if (accountData_ != nullptr) {
-        accountData_->AddConnectedAbility(pointer);
-    }
-}
-
-void AccessibleAbilityConnection::InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element,
-    int32_t resultCode)
-{
-    (void)element;
-    (void)resultCode;
-    sptr<AccessibleAbilityConnection> pointer = this;
-    if (accountData_ != nullptr) {
-        accountData_->RemoveConnectedAbility(pointer);
-    }
-}
 } // namespace Accessibility
 } // namespace OHOS

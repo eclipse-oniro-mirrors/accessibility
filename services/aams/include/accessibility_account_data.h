@@ -66,15 +66,15 @@ public:
 
     /**
      * @brief Remove connected accessibility services.
-     * @param connection Accessible ability connection.
+     * @param element The element name of ability.
      */
-    void RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
+    void RemoveConnectedAbility(const AppExecFwk::ElementName &element);
 
     /**
      * @brief Remove connecting accessibility services.
-     * @param name bundle name + / + ability name.
+     * @param uri bundle name + / + ability name.
      */
-    void RemoveConnectingA11yAbility(const std::string &name);
+    void RemoveConnectingA11yAbility(const std::string &uri);
 
     /**
      * @brief Add accessibility monitoring connection.
@@ -112,9 +112,10 @@ public:
 
     /**
      * @brief Add connecting accessibility.
-     * @param elementName Accessibility corresponding elementName.
+     * @param uri The uri of ability
+     * @param connection The connection of ability
      */
-    void AddConnectingA11yAbility(const std::string &bundleName);
+    void AddConnectingA11yAbility(const std::string &uri, const sptr<AccessibleAbilityConnection> &connection);
 
     void AddEnabledAbility(const std::string &name); // For UT
 
@@ -174,9 +175,10 @@ public:
 
     /**
      * @brief Get connecting abilities list.
-     * @return Store map of connecting abilities.
+     * @param uri The name of ability.
+     * @return Strong point of connecting ability.
      */
-    const std::vector<std::string> &GetConnectingA11yAbilities();
+    sptr<AccessibleAbilityConnection> GetConnectingA11yAbility(const std::string &uri);
 
     /**
      * @brief Get the accessibility ability info of the corresponding state according to the
@@ -329,13 +331,13 @@ private:
     bool isGesturesSimulation_ = false;
     uint32_t connectCounter_ = 1;
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectingA11yAbilities_; // key: bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
     std::vector<std::string> enabledAbilities_; // bundleName/abilityName
-    std::vector<std::string> connectingA11yAbilities_; // bundleName/abilityName
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };

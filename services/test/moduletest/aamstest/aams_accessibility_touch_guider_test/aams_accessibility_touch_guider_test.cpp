@@ -106,7 +106,7 @@ void AamsTouchGuideTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
-    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
+    connection->OnAbilityConnectDoneSync(elementName, aastub_);
 
     AddAccessibilityWindowConnection();
 }

@@ -87,7 +87,7 @@ void AccessibleAbilityChannelUnitTest::SetUp()
     AppExecFwk::ElementName elementName("testDeviceId", "testBundleName", "testAbilityName");
     channel_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     ASSERT_TRUE(channel_);
-    connection_->OnAbilityConnectDoneSync(elementName, channel_, 0);
+    connection_->OnAbilityConnectDoneSync(elementName, channel_);
 
     // Add window connection
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
@@ -119,7 +119,6 @@ bool AccessibleAbilityChannelUnitTest::TestElementId()
         if (elementId == ELEMENT_ID) {
             GTEST_LOG_(INFO) << "element id is true";
             return true;
-            break;
         }
         retryCount++;
     }

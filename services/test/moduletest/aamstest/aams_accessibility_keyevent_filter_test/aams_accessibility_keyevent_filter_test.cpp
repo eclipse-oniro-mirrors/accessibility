@@ -99,7 +99,7 @@ void AamsKeyEventFilterTest::SetUp()
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
-    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
+    connection->OnAbilityConnectDoneSync(elementName, aastub_);
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
     MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);
 }

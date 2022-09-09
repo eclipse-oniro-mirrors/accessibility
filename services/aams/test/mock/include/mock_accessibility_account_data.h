@@ -29,8 +29,8 @@ public:
     MOCK_METHOD0(GetAccountId, int32_t());
     MOCK_METHOD0(OnAccountSwitched, uint32_t());
     MOCK_METHOD1(AddConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
-    MOCK_METHOD1(RemoveConnectedAbility, void(sptr<AccessibleAbilityConnection>& connection));
-    MOCK_METHOD1(RemoveConnectingA11yAbility, void(const AppExecFwk::ElementName& elementName));
+    MOCK_METHOD1(RemoveConnectedAbility, void(const AppExecFwk::ElementName &element));
+    MOCK_METHOD1(RemoveConnectingA11yAbility, void(const std::string &uri));
     MOCK_METHOD1(AddStateCallback, void(const sptr<AccessibleAbilityManagerServiceStub>& callback));
     MOCK_METHOD1(RemoveStateCallback, void(const wptr<IRemoteObject>& callback));
     MOCK_METHOD1(AddCaptionPropertyCallback, void(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback));
@@ -51,7 +51,7 @@ public:
     MOCK_METHOD1(
         GetAccessibleAbilityConnection, const sptr<AccessibleAbilityConnection>(const std::string &elementName));
     MOCK_METHOD1(GetAccessibilityWindowConnection, const sptr<AccessibilityWindowConnection>(const int32_t windowId));
-    MOCK_METHOD0(GetConnectingA11yAbilities, const std::map<std::string, AppExecFwk::ElementName>());
+    MOCK_METHOD1(GetConnectingA11yAbility, sptr<AccessibleAbilityConnection>(const std::string &uri));
     MOCK_METHOD2(GetAbilitiesByState, void(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities));
     MOCK_METHOD0(GetEnabledAbilities, const std::map<std::string, AppExecFwk::ElementName> &());
     MOCK_METHOD0(GetInstalledAbilities, const std::vector<AccessibilityAbilityInfo> &());
