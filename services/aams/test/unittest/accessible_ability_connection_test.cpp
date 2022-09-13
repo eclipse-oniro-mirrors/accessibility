@@ -234,10 +234,12 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 start";
     if (connection_ != nullptr) {
-        AppExecFwk::ElementName element;
+        AppExecFwk::ElementName element("deviceId", "bundleName", "abilityName");
         connection_->Connect(element);
+        sptr<AccessibleAbilityClientStub> obj = new MockAccessibleAbilityClientStubImpl();
+        connection_->OnAbilityConnectDoneSync(element, obj);
         auto accountData = connection_->GetAccountData();
-        EXPECT_TRUE(accountData->GetConnectingA11yAbility(Utils::GetUri(
+        EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(Utils::GetUri(
             element.GetBundleName(), element.GetAbilityName())));
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";

@@ -931,7 +931,7 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     return accountData;
 }
 
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(const int32_t accountId) const
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
 {
     HILOG_DEBUG("accountId is %{public}d ", accountId);
     auto iter = a11yAccountsData_.find(accountId);

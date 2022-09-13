@@ -130,7 +130,7 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     return accountData;
 }
 
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(const int32_t accountId) const
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
 {
     auto iter = a11yAccountsData_.find(accountId);
     if (iter != a11yAccountsData_.end()) {
