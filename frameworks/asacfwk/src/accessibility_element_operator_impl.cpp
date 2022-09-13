@@ -44,6 +44,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
@@ -56,6 +57,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t el
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->SearchElementInfosByText(elementId, text, mRequestId, operatorCallback_);
     } else {
@@ -68,6 +70,7 @@ void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elem
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->FindFocusedElementInfo(elementId, focusType, mRequestId, operatorCallback_);
     } else {
@@ -80,6 +83,7 @@ void AccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId,
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->FocusMoveSearch(elementId, direction, mRequestId, operatorCallback_);
     } else {
@@ -93,6 +97,7 @@ void AccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId,
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
+    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->ExecuteAction(elementId, action, actionArguments, mRequestId, operatorCallback_);
     } else {
@@ -132,7 +137,7 @@ int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     uint32_t compositionRequestId = static_cast<uint32_t>(requestId) & REQUEST_ID_MASK;
 
     if (windowId_ < REQUEST_WINDOW_ID_MAX && windowId_ > 0) {
-        compositionRequestId &= static_cast<uint32_t>(windowId_) << REQUEST_ID_MASK_BIT;
+        compositionRequestId |= static_cast<uint32_t>(windowId_) << REQUEST_ID_MASK_BIT;
     } else {
         HILOG_ERROR("window id[%{public}d] is wrong", windowId_);
         return -1;
