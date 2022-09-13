@@ -14,8 +14,9 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_input_interceptor.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_accessible_ability_manager_service.h"
@@ -61,7 +62,7 @@ void AccessibilityInputInterceptorTest::SetUp()
     MMI::MockInputManager::ClearInputEventConsumer();
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }

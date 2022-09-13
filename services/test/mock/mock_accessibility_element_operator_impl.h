@@ -53,7 +53,7 @@ public:
      *              PREFETCH_CHILDREN: Need to make the child node info also.
      *              otherwise: Make the node information by elementId only.
      */
-    virtual void SearchElementInfoByAccessibilityId(const int32_t elementId, const int32_t requestId,
+    void SearchElementInfoByAccessibilityId(const int32_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
 
     /**
@@ -63,7 +63,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param text  Filter for the child components to matched with the text
      */
-    virtual void SearchElementInfosByText(const int32_t elementId, const std::string& text, const int32_t requestId,
+    void SearchElementInfosByText(const int32_t elementId, const std::string& text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -74,7 +74,7 @@ public:
      * @param focusType FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
      */
-    virtual void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -84,7 +84,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      */
-    virtual void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
+    void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -108,7 +108,7 @@ public:
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      */
-    virtual void ExecuteAction(const int32_t elementId, const int32_t action,
+    void ExecuteAction(const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
@@ -117,14 +117,14 @@ public:
      * to the id of active window when sendAccessibility.
      */
 
-    virtual void ClearFocus() override;
+    void ClearFocus() override;
 
     /**
      * @brief the low layer is notified by the function called while accessibility system execute
      * the function of executeAction from AS to check the all low windows cared the outside event.
      * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
      */
-    virtual void OutsideTouch() override;
+    void OutsideTouch() override;
 
     /**
      * @brief Get the window id related with operator object
@@ -152,7 +152,7 @@ public:
          * @param infos The element info searched by accessibility id.
          * @param requestId The request id from AA, it is used to match with request and response.
          */
-        virtual void SetSearchElementInfoByAccessibilityIdResult(
+        void SetSearchElementInfoByAccessibilityIdResult(
             const std::list<AccessibilityElementInfo>& infos, const int32_t requestId) override;
 
         /**
@@ -160,7 +160,7 @@ public:
          * @param infos The element information searched matched with text.
          * @param requestId The request id from AA, it is used to match with request and response.
          */
-        virtual void SetSearchElementInfoByTextResult(
+        void SetSearchElementInfoByTextResult(
             const std::list<AccessibilityElementInfo>& infos, const int32_t requestId) override;
 
         /**
@@ -168,7 +168,7 @@ public:
          * @param info The element information searched matched with focus type.
          * @param requestId The request id from AA, it is used to match with request and response.
          */
-        virtual void SetFindFocusedElementInfoResult(
+        void SetFindFocusedElementInfoResult(
             const AccessibilityElementInfo& info, const int32_t requestId) override;
 
         /**
@@ -176,14 +176,14 @@ public:
          * @param info The element information searched by focus direction.
          * @param requestId The request id from AA, it is used to match with request and response.
          */
-        virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo& info, const int32_t requestId) override;
+        void SetFocusMoveSearchResult(const AccessibilityElementInfo& info, const int32_t requestId) override;
 
         /**
          * @brief Set the result of action executed to AA.
          * @param succeeded True: The action is executed successfully; otherwise is false.
          * @param requestId The request id from AA, it is used to match with request and response.
          */
-        virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+        void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
 
     private:
         std::mutex mutex_;

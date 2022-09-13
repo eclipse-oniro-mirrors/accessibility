@@ -15,9 +15,10 @@
 
 #include <gtest/gtest.h>
 #include <optional>
-#include "accessibility_ability_helper.h"
 #include "accessibility_ability_info.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_display_manager.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_accessible_ability_client_stub_impl.h"
@@ -64,7 +65,7 @@ void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     stub_ = new MockAccessibleAbilityClientStubImpl();
 }

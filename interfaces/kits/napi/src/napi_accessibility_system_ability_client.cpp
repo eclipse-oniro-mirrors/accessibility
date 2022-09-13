@@ -957,10 +957,9 @@ void StateListenerImpl::UnsubscribeObserver(napi_value observer)
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         napi_value item = nullptr;
-        napi_status status;
         bool equalFlag = false;
         napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-        status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
+        napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
         if (status == napi_ok && equalFlag) {
             iter = observers_.erase(iter);
         } else {

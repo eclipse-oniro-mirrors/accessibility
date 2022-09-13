@@ -15,7 +15,7 @@
 
 #include "mock_accessible_ability_client_stub_impl.h"
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
+#include "accessibility_ut_helper.h"
 
 namespace OHOS {
 namespace Accessibility {

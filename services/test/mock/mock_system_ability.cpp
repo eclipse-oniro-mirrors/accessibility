@@ -14,7 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_helper.h"
+#include "accessibility_common_helper.h"
+#include "accessibility_mt_helper.h"
 #include "system_ability.h"
 
 namespace OHOS {
@@ -39,7 +40,7 @@ SystemAbility::~SystemAbility()
 bool SystemAbility::MakeAndRegisterAbility(SystemAbility* systemAbility)
 {
     (void)systemAbility;
-    Accessibility::AccessibilityHelper::GetInstance().SetIsServicePublished(false);
+    Accessibility::AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
     return true;
 }
 
@@ -59,7 +60,7 @@ bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
 {
     (void)systemAbility;
     systemAbility.ForceSetRefPtr(nullptr);
-    Accessibility::AccessibilityHelper::GetInstance().SetIsServicePublished(true);
+    Accessibility::AccessibilityCommonHelper::GetInstance().SetIsServicePublished(true);
     return true;
 }
 
