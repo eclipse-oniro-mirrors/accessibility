@@ -181,11 +181,6 @@ bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want& want, AbilityInfo& ab
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfoByUri(const std::string& uri, AbilityInfo& abilityInfo)
-{
-    return false;
-}
-
 bool BundleMgrService::GetApplicationInfo(
     const std::string& appName, const ApplicationFlag flag, const int userId, ApplicationInfo& appInfo)
 {
@@ -225,32 +220,6 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abi
     }
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------5");
     return false;
-}
-
-bool BundleMgrService::QueryAbilityInfos(const Want& want, std::vector<AbilityInfo>& abilityInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetFormsInfoByApp(const std::string& bundleName, std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetFormsInfoByModule(
-    const std::string& bundleName, const std::string& moduleName, std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos)
-{
-    return true;
 }
 
 BundleMgrClient::BundleMgrClient()
