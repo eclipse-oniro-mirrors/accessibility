@@ -16,8 +16,9 @@
 #include <gtest/gtest.h>
 #include <map>
 #include <memory>
-#include "accessibility_ability_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_mouse_autoclick.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 
 using namespace testing;
@@ -54,7 +55,7 @@ void AccessibilityMouseAutoclickUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     mouseAutoclick_ = std::make_shared<AccessibilityMouseAutoclick>();
 }
 

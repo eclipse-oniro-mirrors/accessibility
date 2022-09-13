@@ -142,7 +142,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
     if (pressedKeyCount == ITEM_COUNT_1) {
         if (std::find(MOUSE_KEYCODE_V.begin(), MOUSE_KEYCODE_V.end(), pressedKeys[0]) != MOUSE_KEYCODE_V.end()) {
             actionKey = pressedKeys[0];
-            HILOG_DEBUG("actionKey:%d", actionKey);
             return true;
         }
     } else if (pressedKeyCount == ITEM_COUNT_2) {
@@ -152,7 +151,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
                 continue;
             }
             actionKey = pressedKeys[i];
-            HILOG_DEBUG("actionKey:%d", actionKey);
             size_t Index = (i + 1) % ITEM_COUNT_2;
             if (Index > 1) {
                 return false;
@@ -160,7 +158,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
             if (std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index]) !=
                 CTRL_SHIFT_KEYCODE_V.end()) {
                 metaKey1 = pressedKeys[Index];
-                HILOG_DEBUG("metaKey1:%d", metaKey1);
                 return true;
             }
         }
@@ -171,7 +168,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
                 continue;
             }
             actionKey = pressedKeys[i];
-            HILOG_DEBUG("actionKey:%d", actionKey);
             size_t Index1 = (i + 1) % ITEM_COUNT_3;
             size_t Index2 = (i + 2) % ITEM_COUNT_3;
             if ((Index1 > (ITEM_COUNT_3 - 1)) || (Index2 > (ITEM_COUNT_3 - 1))) {
@@ -183,7 +179,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
                 CTRL_SHIFT_KEYCODE_V.end())) {
                 metaKey1 = pressedKeys[Index1];
                 metaKey2 = pressedKeys[Index2];
-                HILOG_DEBUG("metaKey1:%d, metaKey2:%d", metaKey1, metaKey2);
                 return true;
             }
         }

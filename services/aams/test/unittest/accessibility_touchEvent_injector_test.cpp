@@ -14,8 +14,9 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_touchEvent_injector.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_client_proxy.h"
 #include "mock_accessible_ability_client_stub_impl.h"
 #include "mock_accessible_ability_manager_service.h"
@@ -55,7 +56,7 @@ void TouchEventInjectorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "TouchEventInjectorTest SetUpTestCase";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 

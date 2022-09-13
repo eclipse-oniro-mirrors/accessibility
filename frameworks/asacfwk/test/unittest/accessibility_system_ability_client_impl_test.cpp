@@ -15,8 +15,8 @@
 
 #include <gtest/gtest.h>
 #include <memory>
-#include "accessibility_ability_helper.h"
 #include "accessibility_system_ability_client_impl.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "mock_accessibility_element_operator.h"
 #include "system_ability_definition.h"

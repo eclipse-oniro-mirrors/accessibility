@@ -17,6 +17,11 @@
 #include "window/window_manager/utils/include/display_info.h"
 
 namespace OHOS::Rosen {
+namespace {
+    const int32_t HEIGHT_VALUE = 1000;
+    const int32_t WEIGHT_VALUE = 600;
+} // namespace
+
 class Display::Impl : public RefBase {
 public:
     Impl(const std::string& name, sptr<DisplayInfo> info)
@@ -43,12 +48,12 @@ DisplayId Display::GetId() const
 
 int32_t Display::GetWidth() const
 {
-    return 600;
+    return WEIGHT_VALUE;
 }
 
 int32_t Display::GetHeight() const
 {
-    return 1000;
+    return HEIGHT_VALUE;
 }
 
 uint32_t Display::GetRefreshRate() const
