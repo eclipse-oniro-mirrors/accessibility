@@ -28,7 +28,8 @@ namespace Accessibility {
 using StateArray = std::array<bool, AccessibilityStateEventType::EVENT_TYPE_MAX>;
 using StateObserverVector = std::vector<std::shared_ptr<AccessibilityStateObserver>>;
 using StateObserversArray = std::array<StateObserverVector, AccessibilityStateEventType::EVENT_TYPE_MAX>;
-class AccessibilitySystemAbilityClientImpl : public AccessibilitySystemAbilityClient {
+class AccessibilitySystemAbilityClientImpl
+    : public AccessibilitySystemAbilityClient, public AccessibilityElementOperatorCallback {
 public:
     /**
      * @brief Construct.
@@ -142,6 +143,45 @@ public:
      *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED
      */
     void OnAccessibleAbilityManagerStateChanged(const uint32_t stateType);
+
+    /**
+     * @brief Set the element information by accessibility id to AA.
+     * @param infos The element info searched by accessibility id.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Set the element information matched with text to AA.
+     * @param infos The element information searched matched with text.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetSearchElementInfoByTextResult(const std::list<AccessibilityElementInfo> &infos,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Set the element information matched with focus type to AA.
+     * @param info The element information searched matched with focus type.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
+        const int32_t requestId) override;
+
+    /**
+     * @brief Set the element information by focus direction to AA.
+     * @param info The element information searched by focus direction.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
+
+    /**
+     * @brief Set the result of action executed to AA.
+     * @param succeeded True: The action is executed successfully; otherwise is false.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+
 private:
     class AccessibleAbilityManagerStateObserverImpl : public AccessibleAbilityManagerStateObserverStub {
     public:
@@ -205,7 +245,7 @@ private:
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;
 
-    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> interactionOperators_;
+    std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
 
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
 

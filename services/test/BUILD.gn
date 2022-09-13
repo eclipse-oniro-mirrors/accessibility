@@ -582,9 +582,9 @@ group("moduletest") {
   if (is_phone_product) {
     deps += [
       ":aams_accessibility_keyevent_filter_test",
-      ":aams_accessibility_touchEvent_injector_test",
-      ":aams_accessibility_touch_guider_test",
-      ":aams_accessible_ability_channel_test",
+      # ":aams_accessibility_touchEvent_injector_test",
+      # ":aams_accessibility_touch_guider_test",
+      # ":aams_accessible_ability_channel_test",
       ":aams_common_event_registry_test",
       ":aams_server_test",
     ]
