@@ -68,6 +68,7 @@ ohos_unittest("asac_unit_test") {
     "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_caption_parcel.cpp",
     "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_element_info_parcel.cpp",
     "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_event_info_parcel.cpp",
+    "//foundation/barrierfree/accessibility/frameworks/aafwk/src/accessibility_element_operator_callback_impl.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_constants.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
@@ -129,6 +130,6 @@ group("unittest") {
   testonly = true
   deps = []
 
-  # deps += [ ":asac_unit_test" ]
+  deps += [ ":asac_unit_test" ]
 }
 ###############################################################################
