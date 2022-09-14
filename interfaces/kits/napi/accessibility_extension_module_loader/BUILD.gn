@@ -42,20 +42,17 @@ ohos_shared_library("accessibility_extension_module") {
   configs = [ ":accessibility_extension_module_config" ]
 
   deps = [
-    "//foundation/ability/ability_runtime/frameworks/native/appkit:app_context",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
   ]
 
   external_deps = [
-    "ability_base:want",
     "ability_runtime:ability_context_native",
     "ability_runtime:abilitykit_native",
+    "ability_runtime:app_context",
     "ability_runtime:runtime",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
-    "input:libmmi-client",
   ]
 
   subsystem_name = "barrierfree"

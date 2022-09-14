@@ -16,11 +16,14 @@ import("//build/ohos.gni")
 config("accessibility_interface_private_config") {
   visibility = [ ":*" ]
 
-  include_dirs = [ "//foundation/barrierfree/accessibility/common/log/include" ]
+  include_dirs = [
+    "include/parcel",
+    "//foundation/barrierfree/accessibility/common/log/include",
+  ]
 
   defines = [
     "AAMS_LOG_TAG = \"accessibility_interface\"",
-    "AAMS_LOG_DOMAIN = 0xD001D02",
+    "AAMS_LOG_DOMAIN = 0xD001D05",
   ]
 
   if (target_cpu == "arm") {
@@ -31,7 +34,7 @@ config("accessibility_interface_private_config") {
 config("accessibility_interface_public_config") {
   include_dirs = [
     "include",
-    "include/parcel",
+    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
   ]
 }
 
@@ -76,7 +79,6 @@ ohos_shared_library("accessibility_interface") {
   deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
-    "ability_base:want",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",

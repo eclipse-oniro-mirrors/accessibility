@@ -20,6 +20,7 @@ config("accessibilityconfig_private_config") {
 
   include_dirs = [
     "${acfwk_path}/include",
+    "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/barrierfree/accessibility/common/log/include",
   ]
 
@@ -50,7 +51,6 @@ ohos_shared_library("accessibilityconfig") {
   public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
-    "ability_base:want",
     "c_utils:utils",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
@@ -58,7 +58,6 @@ ohos_shared_library("accessibilityconfig") {
     "init:libbeget_proxy",
     "init:libbegetutil",
     "ipc:ipc_core",
-    "power_manager:powermgr_client",
     "samgr:samgr_proxy",
   ]
 

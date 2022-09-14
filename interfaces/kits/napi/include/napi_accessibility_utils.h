@@ -25,7 +25,6 @@
 #include "accessibility_event_info.h"
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
-#include "element_name.h"
 #include "key_event.h"
 #include "accessibility_config.h"
 #include "napi/native_api.h"

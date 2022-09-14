@@ -14,7 +14,6 @@
  */
 
 #include "accessibility_system_ability_client_impl.h"
-#include "ability_context.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"

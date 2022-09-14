@@ -21,7 +21,6 @@
 #include <sstream>
 #include <vector>
 
-#include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"

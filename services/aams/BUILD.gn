@@ -74,7 +74,6 @@ ohos_shared_library("accessibleabilityms") {
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
-    "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
@@ -82,7 +81,6 @@ ohos_shared_library("accessibleabilityms") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
-    "init:libbeget_proxy",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
