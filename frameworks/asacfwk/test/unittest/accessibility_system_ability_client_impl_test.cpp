@@ -267,6 +267,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetInstalledAbilities_001, Te
     }
     std::vector<AccessibilityAbilityInfo> installedAbilities;
     impl_->GetInstalledAbilities(installedAbilities);
+    EXPECT_EQ(0, installedAbilities.size());
     GTEST_LOG_(INFO) << "GetInstalledAbilities_001 end";
 }
 
@@ -284,6 +285,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetEnabledAbilities_001, Test
     }
     std::vector<std::string> enabledAbilities;
     impl_->GetEnabledAbilities(enabledAbilities);
+    EXPECT_EQ(0, enabledAbilities.size());
     GTEST_LOG_(INFO) << "GetEnabledAbilities_001 end";
 }
 } // namespace Accessibility
