@@ -26,7 +26,7 @@
 using namespace OHOS::AAFwk;
 namespace OHOS {
 namespace {
-    const std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
+    const std::string ACCESSIBLE_ABILITY_JSON_FILE_PAT = "/system/app/dummy_accessibility_ability_config.json";
 } // namespace
 
 namespace AppExecFwk {
@@ -232,7 +232,7 @@ bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo& extensionInfo
     std::vector<std::string>& profileInfos) const
 {
     std::ifstream jsonFileStream;
-    jsonFileStream.open(AccessibleAbility_JSON_FILE_PATH, std::ios::in);
+    jsonFileStream.open(ACCESSIBLE_ABILITY_JSON_FILE_PAT, std::ios::in);
     if (!jsonFileStream.is_open()) {
         HILOG_ERROR("Open json file failed.");
         return false;

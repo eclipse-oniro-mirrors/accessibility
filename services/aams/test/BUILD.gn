@@ -34,6 +34,7 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
     "//foundation/barrierfree/accessibility/services/aams/include",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
+    "//foundation/barrierfree/accessibility/services/test/mock/common",
     "//foundation/barrierfree/accessibility/common/interface/include",
     "//foundation/barrierfree/accessibility/common/interface/include/parcel",
     "//foundation/barrierfree/accessibility/util/include",

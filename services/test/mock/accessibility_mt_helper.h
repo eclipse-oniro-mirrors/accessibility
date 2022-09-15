@@ -13,11 +13,9 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_HELPER_H
-#define ACCESSIBILITY_HELPER_H
+#ifndef ACCESSIBILITY_MT_HELPER_H
+#define ACCESSIBILITY_MT_HELPER_H
 
-#include <chrono>
-#include <thread>
 #include <vector>
 #include "accessibility_def.h"
 #include "hilog/log.h"
@@ -33,7 +31,6 @@ public:
         static AccessibilityHelper helper;
         return helper;
     }
-
     int32_t GetTestWindowId()
     {
         return testWindowId_;
@@ -61,7 +58,6 @@ public:
         std::lock_guard<std::mutex> lock(mtx_);
         mTeventType_.push_back(eventType);
     }
-
     int32_t GetGestureId()
     {
         return mTgestureId_;
@@ -102,7 +98,6 @@ public:
     {
         testWindowChangeTypes_ = testWindowChangeTypes;
     }
-
     int32_t GetTestChannalId()
     {
         return testChannalId_;
@@ -111,7 +106,6 @@ public:
     {
         testChannalId_ = testChannalId;
     }
-
     int32_t GetTestKeyPressEvent()
     {
         return testKeyPressEvent_;
@@ -120,7 +114,6 @@ public:
     {
         testKeyPressEvent_ = testKeyPressEvent;
     }
-
     int32_t GetTestDisplayId()
     {
         return testDisplayId_;
@@ -129,7 +122,6 @@ public:
     {
         testDisplayId_ = testDisplayId;
     }
-
     int32_t GetTestGesture()
     {
         return testGesture_;
@@ -138,7 +130,6 @@ public:
     {
         testGesture_ = testGesture;
     }
-
     int32_t GetTestGestureSimulateResult()
     {
         return testGestureSimulateResult_;
@@ -146,39 +137,6 @@ public:
     void SetTestGestureSimulateResult(int32_t testGestureSimulateResult)
     {
         testGestureSimulateResult_ = testGestureSimulateResult;
-    }
-
-    bool GetIsServicePublished()
-    {
-        return isServicePublished_;
-    }
-    void SetIsServicePublished(bool publish)
-    {
-        isServicePublished_ = publish;
-    }
-    void WaitForServicePublish()
-    {
-        int32_t sleepTime = 10;
-        while (1) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
-            if (isServicePublished_) {
-                return;
-            }
-        }
-    }
-    bool WaitForLoop(const std::function<bool()> &compare, int32_t timeout)
-    {
-        constexpr int32_t SLEEP_TIME = 100;
-        int32_t count = timeout * 1000 / SLEEP_TIME;
-        while (count > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-            if (compare() == true) {
-                return true;
-            } else {
-                count--;
-            }
-        }
-        return false;
     }
 public:
     static const int32_t accountId_ = 100;
@@ -196,9 +154,8 @@ private:
     int32_t testKeyPressEvent_ = -1;
     int32_t testDisplayId_ = -1;
     int32_t testGestureSimulateResult_ = -1;
-    bool isServicePublished_ = false;
     std::mutex mtx_;
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_HELPER_H
+#endif // ACCESSIBILITY_MT_HELPER_H

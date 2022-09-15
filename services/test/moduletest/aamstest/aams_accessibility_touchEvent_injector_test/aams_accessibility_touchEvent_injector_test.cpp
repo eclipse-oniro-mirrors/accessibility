@@ -14,10 +14,11 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_common_helper.h"
 #include "accessibility_display_manager.h"
 #include "accessibility_element_operator_stub.h"
-#include "accessibility_helper.h"
 #include "accessibility_input_interceptor.h"
+#include "accessibility_mt_helper.h"
 #include "accessibility_touch_guider.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_window_manager.h"
@@ -73,7 +74,7 @@ void AamsInjectorTest::SetUp()
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp";
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 

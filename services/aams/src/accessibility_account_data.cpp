@@ -183,7 +183,8 @@ void AccessibilityAccountData::AddAccessibilityWindowConnection(
     const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
-    if (!asacConnections_.count(windowId)) {
+    auto iter = asacConnections_.find(windowId);
+    if (iter == asacConnections_.end()) {
         asacConnections_.insert(std::make_pair(windowId, interactionConnection));
     }
 }
