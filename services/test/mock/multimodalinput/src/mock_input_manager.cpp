@@ -22,7 +22,7 @@ static int mockKeyCode = -1;
 static std::vector<int32_t> mockTouchActions;
 static std::function<void(std::shared_ptr<MMI::KeyEvent>)> mockKeyEventCallback = nullptr;
 static std::shared_ptr<MMI::IInputEventConsumer> mockInputEventConsumer = nullptr;
-static std::mutex mtx_;
+static std::mutex g_mtx;
 
 int MockInputManager::GetKeyCode()
 {
@@ -31,19 +31,19 @@ int MockInputManager::GetKeyCode()
 
 void MockInputManager::ClearTouchActions()
 {
-    std::lock_guard<std::mutex> lock(mtx_);
+    std::lock_guard<std::mutex> lock(g_mtx);
     mockTouchActions.clear();
 }
 
 std::vector<int32_t> MockInputManager::GetTouchActions()
 {
-    std::lock_guard<std::mutex> lock(mtx_);
+    std::lock_guard<std::mutex> lock(g_mtx);
     return mockTouchActions;
 }
 
 int32_t MockInputManager::GetTouchActionOfTargetIndex(int32_t index)
 {
-    std::lock_guard<std::mutex> lock(mtx_);
+    std::lock_guard<std::mutex> lock(g_mtx);
     int32_t size = static_cast<int32_t>(mockTouchActions.size());
     if (size > index) {
         return mockTouchActions[index];
@@ -80,7 +80,7 @@ void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
 
 void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent)
 {
-    std::lock_guard<std::mutex> lock(mtx_);
+    std::lock_guard<std::mutex> lock(g_mtx);
     int32_t touchAction = pointerEvent->GetPointerAction();
     mockTouchActions.push_back(touchAction);
 }

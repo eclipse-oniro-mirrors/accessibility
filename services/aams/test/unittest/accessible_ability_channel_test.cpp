@@ -15,9 +15,9 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_ability_info.h"
-#include "accessibility_ability_helper.h"
 #include "accessibility_account_data.h"
 #include "accessibility_element_operator_proxy.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
@@ -73,10 +73,10 @@ void AccessibleAbilityChannelUnitTest::SetUp()
 
     // Add AA client
     AccessibilityAbilityInitParams initParams;
-    initParams.capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     ASSERT_TRUE(abilityInfo);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
+    abilityInfo->SetCapabilityValues(CAPABILITY_RETRIEVE | CAPABILITY_GESTURE);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(ACCOUNT_ID);
     ASSERT_TRUE(accountData);
     connection_ = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
@@ -114,7 +114,6 @@ bool AccessibleAbilityChannelUnitTest::TestElementId()
         if (elementId == ELEMENT_ID) {
             GTEST_LOG_(INFO) << "element id is true";
             return true;
-            break;
         }
         retryCount++;
     }

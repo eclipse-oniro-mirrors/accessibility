@@ -36,7 +36,7 @@ public:
     /**
      * @brief destruct function
      */
-    virtual ~AccessibilityElementOperatorProxy() override;
+    virtual ~AccessibilityElementOperatorProxy() = default;
 
     /**
      * @brief Make the node information by accessibility ID and set the result by callback.

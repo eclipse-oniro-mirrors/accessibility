@@ -28,7 +28,7 @@ struct AccessibilityAbilityInitParams {
     std::string name = "";
     std::string rationale = "";
     std::string settingsAbility = "";
-    uint32_t capabilities = 0;
+    uint32_t staticCapabilities = 0;
     uint32_t abilityTypes = ACCESSIBILITY_ABILITY_TYPE_INVALID;
     bool isImportant = false;
 };
@@ -159,12 +159,19 @@ public:
      */
     bool IsImportant() const;
 
+    /**
+     * @brief Obtains the capability types of static configuration.
+     * @return Return the capability types of static configuration.
+     */
+    uint32_t GetStaticCapabilityValues() const;
+
 protected:
     std::string bundleName_;
     std::string moduleName_;
     std::string name_;
     std::string description_;
 
+    uint32_t staticCapabilities_ = 0;
     uint32_t capabilities_ = 0;
     std::string rationale_ = "";
     std::string settingsAbility_;

@@ -16,8 +16,8 @@
 #include <gtest/gtest.h>
 #include <map>
 #include <memory>
-#include "accessibility_ability_helper.h"
 #include "accessibility_mouse_key.h"
+#include "accessibility_ut_helper.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -114,7 +114,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
 /**
  * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_001
  * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent(1 key down)
+ * @tc.desc: Test function OnKeyEvent(1~4,6~9 key down)
  * @tc.require: issueI5NTXA
  */
 HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_001, TestSize.Level1)
@@ -127,11 +127,69 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     if (!event) {
         return;
     }
+    // presss 1
     event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item;
     item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    item.SetPressed(true);
     event->AddKeyItem(item);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 2
+    event->RemoveReleasedKeyItems(item);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 3
+    event->RemoveReleasedKeyItems(item1);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    item2.SetPressed(true);
+    event->AddKeyItem(item2);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 4
+    event->RemoveReleasedKeyItems(item2);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    MMI::KeyEvent::KeyItem item3;
+    item3.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    item3.SetPressed(true);
+    event->AddKeyItem(item3);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 6
+    event->RemoveReleasedKeyItems(item3);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    MMI::KeyEvent::KeyItem item4;
+    item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    item4.SetPressed(true);
+    event->AddKeyItem(item4);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 7
+    event->RemoveReleasedKeyItems(item4);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
+    MMI::KeyEvent::KeyItem item5;
+    item5.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
+    item5.SetPressed(true);
+    event->AddKeyItem(item5);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 8
+    event->RemoveReleasedKeyItems(item5);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
+    MMI::KeyEvent::KeyItem item6;
+    item6.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
+    item6.SetPressed(true);
+    event->AddKeyItem(item6);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 9
+    event->RemoveReleasedKeyItems(item6);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
+    MMI::KeyEvent::KeyItem item7;
+    item7.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
+    item7.SetPressed(true);
+    event->AddKeyItem(item7);
     mouseKey_->OnKeyEvent(*event);
 
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_001 end";
@@ -381,6 +439,181 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_BUTTON_DOWN;
     EXPECT_EQ(touchAction, expectValue);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_006 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_007
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(press 1->left shift in same time)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_007 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    // presss 1
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    // presss left shift
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_SHIFT_LEFT);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_007 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_008
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(press left crtl->2 in same time)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_008, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_008 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    // presss left ctrl
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_CTRL_LEFT);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    // presss 2
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_008 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_009
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(press 3->left shift->right shift in same time)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_009, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_009 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    // presss 1
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    // presss left shift
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_SHIFT_LEFT);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    // presss right shift
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_SHIFT_RIGHT);
+    item2.SetPressed(true);
+    event->AddKeyItem(item2);
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_009 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_010
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(press left ctrl->4->right ctrl in same time)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_010, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_010 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    // presss left ctrl
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_CTRL_LEFT);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    // presss 4
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    // presss right ctrl
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_CTRL_RIGHT);
+    item2.SetPressed(true);
+    event->AddKeyItem(item2);
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_010 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseKey_Unittest_OnKeyEvent_011
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(press left ctrl->6->right shift in same time)
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEvent_011, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_011 start";
+    if (!mouseKey_) {
+        return;
+    }
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    // presss left ctrl
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_CTRL_LEFT);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    // presss 4
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    // presss right shift
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_SHIFT_RIGHT);
+    item2.SetPressed(true);
+    event->AddKeyItem(item2);
+    mouseKey_->OnKeyEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_011 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

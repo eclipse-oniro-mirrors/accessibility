@@ -18,8 +18,9 @@
 #include <memory>
 #include <unistd.h>
 #include "accessibility_account_data.h"
-#include "accessibility_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_input_interceptor.h"
+#include "accessibility_mt_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
@@ -86,14 +87,14 @@ void AamsKeyEventFilterTest::SetUp()
     GTEST_LOG_(INFO) << "AamsKeyEventFilterTest ModuleTest SetUp";
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     // Add an ability connection client
     AccessibilityAbilityInitParams initParams;
-    initParams.capabilities = CAPABILITY_KEY_EVENT_OBSERVER;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_KEY_EVENT_OBSERVER);
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);

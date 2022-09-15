@@ -25,6 +25,19 @@ namespace {
 } // namespace
 MockAccessibleAbilityManagerServiceStub::MockAccessibleAbilityManagerServiceStub()
 {
+    if (!runner_) {
+        runner_ = AppExecFwk::EventRunner::Create("accessibility.config.unittest");
+        if (!runner_) {
+            return;
+        }
+    }
+
+    if (!handler_) {
+        handler_ = std::make_shared<AppExecFwk::EventHandler>(runner_);
+        if (!handler_) {
+            return;
+        }
+    }
 }
 
 MockAccessibleAbilityManagerServiceStub::~MockAccessibleAbilityManagerServiceStub()
@@ -93,7 +106,7 @@ AccessibilityConfig::CaptionProperty MockAccessibleAbilityManagerServiceStub::Ge
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &client)
 {
-    (void)client;
+    captionObserver_ = client;
     return 0;
 }
 
@@ -227,6 +240,19 @@ void MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(const float 
 void MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balance)
 {
     (void)balance;
+    if (handler_) {
+        handler_->PostTask(std::bind([this]() {
+            observer_->OnConfigStateChanged(0);
+            observer_->OnAudioBalanceChanged(0);
+            observer_->OnBrightnessDiscountChanged(0);
+            observer_->OnContentTimeoutChanged(0);
+            observer_->OnMouseAutoClickChanged(0);
+            observer_->OnDaltonizationColorFilterChanged(0);
+            observer_->OnShortkeyTargetChanged("test_target");
+            AccessibilityConfig::CaptionProperty testProperty;
+            captionObserver_->OnPropertyChanged(testProperty);
+            }), "NotifyAll");
+    }
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState()
@@ -322,7 +348,7 @@ void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
     const sptr<IAccessibleAbilityManagerConfigObserver> &client)
 {
-    (void)client;
+    observer_ = client;
     return 0;
 }
 } // namespace Accessibility
