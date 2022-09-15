@@ -91,8 +91,8 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("name", "bundleName", "id");
-    aastub_ = new AccessibleAbilityChannel(*AAConnection_);
-    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_, 0);
+    aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
+    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
 
@@ -112,7 +112,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEvent_ModuleTe
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_ModuleTest_PackageChanged_001 end";
 }
