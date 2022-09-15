@@ -121,8 +121,8 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoC
     accountData_->Init();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName(deviceId, initParams.bundleName, initParams.name);
-    aastub_ = new AccessibleAbilityChannel(*AAConnection_);
-    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_, 0);
+    aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
+    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
 
@@ -164,7 +164,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     EXPECT_EQ(0, proxy_->testChannelMode_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001 end";
 }
 
@@ -193,7 +193,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     EXPECT_EQ(-1, proxy_->testChannelMode_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 end";
 }
 
@@ -221,7 +221,7 @@ HWTEST_F(
     EXPECT_EQ(text, proxy_->testText_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001 end";
 }
 
@@ -250,7 +250,7 @@ HWTEST_F(
     EXPECT_NE(text, proxy_->testText_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 end";
 }
 
@@ -278,7 +278,7 @@ HWTEST_F(
     EXPECT_EQ(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001 end";
 }
 
@@ -307,7 +307,7 @@ HWTEST_F(
     EXPECT_NE(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 end";
 }
 
@@ -335,7 +335,7 @@ HWTEST_F(
     EXPECT_EQ(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003 end";
 }
 
@@ -362,7 +362,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_EQ(direction, proxy_->testDirection_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001 end";
 }
 
@@ -390,7 +390,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_NE(direction, proxy_->testDirection_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 end";
 }
 
@@ -420,7 +420,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     EXPECT_EQ(actionArguments, proxy_->testActionArguments_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_001 end";
 }
 
@@ -450,7 +450,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     EXPECT_EQ(0, proxy_->testAction_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_002 end";
 }
 
@@ -474,7 +474,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, windows.size());
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_002 end";
 }
 
@@ -501,7 +501,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
     sleep(2);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001 end";
 }
 
@@ -531,7 +531,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     EXPECT_EQ(-1, proxy_->testChannelMode_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001 end";
 }
 
@@ -559,7 +559,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     EXPECT_NE(text, proxy_->testText_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001 end";
 }
 
@@ -587,7 +587,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_NE(focusType, proxy_->testFocusType_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 end";
 }
 
@@ -615,7 +615,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     EXPECT_NE(direction, proxy_->testDirection_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 end";
 }
 
@@ -646,7 +646,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     EXPECT_NE(actionArguments, proxy_->testActionArguments_);
     EXPECT_TRUE(result);
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 end";
 }
 
@@ -672,7 +672,7 @@ HWTEST_F(
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, windows.size());
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 end";
 }
 
@@ -700,7 +700,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
     sleep(2);
     GTEST_LOG_(INFO) << "clear end";
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001 end";
 }
 } // namespace Accessibility
