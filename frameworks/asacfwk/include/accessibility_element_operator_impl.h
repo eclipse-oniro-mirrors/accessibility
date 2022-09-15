@@ -34,7 +34,8 @@ public:
     /**
      * @brief construct function
      * @param windowId The window id.
-     * @param operation
+     * @param operation The object implemented by ACE.
+     * @param callback The callback which is to transfer the result from ACE.
      */
     explicit AccessibilityElementOperatorImpl(int32_t windowId,
         const std::shared_ptr<AccessibilityElementOperator> &operation,
