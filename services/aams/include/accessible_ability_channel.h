@@ -19,6 +19,7 @@
 #include <future>
 #include "accessible_ability_channel_stub.h"
 #include "event_handler.h"
+#include "i_accessibility_element_operator.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -64,6 +65,8 @@ public:
 
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
+    static sptr<IAccessibilityElementOperator> GetElementOperator(
+        int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName);
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;

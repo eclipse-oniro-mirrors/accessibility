@@ -174,7 +174,7 @@ public:
     const sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(const int32_t windowId);
 
     /**
-     * @brief Get connecting abilities list.
+     * @brief Get connecting ability of specified uri.
      * @param uri The name of ability.
      * @return Strong point of connecting ability.
      */

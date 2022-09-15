@@ -41,34 +41,14 @@ bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t 
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        sptr<AccessibilityAccountData> accountData =
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator =
+            GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name);
+        if (!elementOperator) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             return;
         }
-        int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
-            accessibilityWindowId, FOCUS_TYPE_INVALID);
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-        if (!connection) {
-            HILOG_ERROR("SearchElementInfoByAccessibilityId failed: windowId[%{public}d] has no connection", realId);
-            return;
-        }
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
-            return;
-        }
-
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            return;
-        }
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId failed: no capability");
-            return;
-        }
-        connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
+        elementOperator->SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
         HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         }, accountId_, clientName_), "SearchElementInfoByAccessibilityId");
     return true;
@@ -86,34 +66,14 @@ bool AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibil
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        sptr<AccessibilityAccountData> accountData = 
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator =
+            GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name);
+        if (!elementOperator) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             return;
         }
-        int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
-            accessibilityWindowId, FOCUS_TYPE_INVALID);
-
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-        if (!connection) {
-            HILOG_ERROR("SearchElementInfosByText failed: windowId[%{public}d] has no connection", realId);
-            return;
-        }
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
-            return;
-        }
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            return;
-        }
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("AccessibleAbilityChannel::SearchElementInfosByText failed: no capability");
-            return;
-        }
-        connection->GetProxy()->SearchElementInfosByText(elementId, text, requestId, callback);
+        elementOperator->SearchElementInfosByText(elementId, text, requestId, callback);
         }, accountId_, clientName_), "SearchElementInfosByText");
     return true;
 }
@@ -130,34 +90,14 @@ bool AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilit
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        sptr<AccessibilityAccountData> accountData = 
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator =
+            GetElementOperator(accountId, accessibilityWindowId, focusType, name);
+        if (!elementOperator) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             return;
         }
-        int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
-            accessibilityWindowId, focusType);
-
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-        if (!connection) {
-            HILOG_ERROR("FindFocusedElementInfo failed: windowId[%{public}d] has no connection", realId);
-            return;
-        }
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
-            return;
-        }
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            return;
-        }
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("AccessibleAbilityChannel::FindFocusedElementInfo failed: no capability");
-            return;
-        }
-        connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, requestId, callback);
+        elementOperator->FindFocusedElementInfo(elementId, focusType, requestId, callback);
         }, accountId_, clientName_), "FindFocusedElementInfo");
     return true;
 }
@@ -173,34 +113,14 @@ bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindow
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        sptr<AccessibilityAccountData> accountData = 
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator =
+            GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name);
+        if (!elementOperator) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             return;
         }
-        int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
-            accessibilityWindowId, FOCUS_TYPE_INVALID);
-
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-        if (!connection) {
-            HILOG_ERROR("FocusMoveSearch failed: windowId[%{public}d] has no connection", realId);
-            return;
-        }
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
-            return;
-        }
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            return;
-        }
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("AccessibleAbilityChannel::FocusMoveSearch failed: no capability");
-            return;
-        }
-        connection->GetProxy()->FocusMoveSearch(elementId, direction, requestId, callback);
+        elementOperator->FocusMoveSearch(elementId, direction, requestId, callback);
         }, accountId_, clientName_), "FocusMoveSearch");
     return true;
 }
@@ -217,35 +137,14 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG("ExecuteAction accessibilityWindowId = %{public}d", accessibilityWindowId);
-        sptr<AccessibilityAccountData> accountData = 
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
+        HILOG_DEBUG("accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        sptr<IAccessibilityElementOperator> elementOperator =
+            GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name);
+        if (!elementOperator) {
+            HILOG_ERROR("Get elementOperator failed! accessibilityWindowId[%{public}d]", accessibilityWindowId);
             return;
         }
-        int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(
-            accessibilityWindowId, FOCUS_TYPE_INVALID);
-
-        sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
-        if (!connection) {
-            HILOG_ERROR("ExecuteAction failed: windowId[%{public}d] has no connection", realId);
-            return;
-        }
-        if (!connection->GetProxy()) {
-            HILOG_ERROR("windowId[%{public}d] has no proxy", realId);
-            return;
-        }
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            return;
-        }
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("AccessibleAbilityChannel::ExecuteAction failed: no capability");
-            return;
-        }
-        connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, requestId, callback);
+        elementOperator->ExecuteAction(elementId, action, actionArguments, requestId, callback);
         }, accountId_, clientName_), "ExecuteAction");
     return true;
 }
@@ -529,6 +428,35 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(
 
     HILOG_DEBUG("accountId[%{public}d] clientName[%{public}s]", accountId, clientName.c_str());
     return accountData->GetAccessibleAbilityConnection(clientName);
+}
+
+sptr<IAccessibilityElementOperator> AccessibleAbilityChannel::GetElementOperator(
+    int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, clientName);
+    if (!clientConnection) {
+        HILOG_ERROR("There is no client connection");
+        return nullptr;
+    }
+    if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
+        HILOG_ERROR("the client has no retieve capability");
+        return nullptr;
+    }
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+        return nullptr;
+    }
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+    if (!connection) {
+        HILOG_ERROR("windowId[%{public}d] has no connection", realId);
+        return nullptr;
+    }
+    return connection->GetProxy();
 }
 } // namespace Accessibility
 } // namespace OHOS
