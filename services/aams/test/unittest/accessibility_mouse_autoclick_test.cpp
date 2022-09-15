@@ -26,6 +26,10 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t DELAY_TIME = 100;
+} // namespace
+
 class AccessibilityMouseAutoclickUnitTest : public ::testing::Test {
 public:
     AccessibilityMouseAutoclickUnitTest()
@@ -81,12 +85,18 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     if (!event) {
         return;
     }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return;
+    }
+    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseAutoclick_->OnPointerEvent(*event);
-    sleep(3);
+    sleep(2);
 
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001 end";
 }
@@ -107,13 +117,89 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     if (!event) {
         return;
     }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return;
+    }
+    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
+    event->SetPointerId(1);
+    MMI::PointerEvent::PointerItem item;
+    item.SetPointerId(1);
+    event->AddPointerItem(item);
+    mouseAutoclick_->OnPointerEvent(*event);
+    
+    MMI::PointerEvent::PointerItem item1;
+    item1.SetPointerId(1);
+    item1.SetDisplayX(1);
+    item1.SetDisplayY(1);
+    event->UpdatePointerItem(1, item1);
+    mouseAutoclick_->OnPointerEvent(*event);
+    sleep(2);
+
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003
+ * @tc.name: OnPointerEvent
+ * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003 start";
+    if (!mouseAutoclick_) {
+        return;
+    }
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    if (!event) {
+        return;
+    }
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return;
+    }
+    accountData->GetConfig()->SetMouseAutoClick(DELAY_TIME);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
+    event->SetPointerId(1);
+    MMI::PointerEvent::PointerItem item;
+    item.SetPointerId(1);
+    event->AddPointerItem(item);
+    mouseAutoclick_->OnPointerEvent(*event);
+    mouseAutoclick_->OnPointerEvent(*event);
+    sleep(2);
+
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004
+ * @tc.name: OnPointerEvent
+ * @tc.desc: Test function OnPointerEvent
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004 start";
+    if (!mouseAutoclick_) {
+        return;
+    }
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    if (!event) {
+        return;
+    }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseAutoclick_->OnPointerEvent(*event);
 
-    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002 end";
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -182,7 +182,7 @@ void Utils::Parse(const AppExecFwk::ExtensionAbilityInfo &abilityInfo, Accessibi
         HILOG_ERROR("Get accessibilityCapabilities from json failed.");
         return;
     }
-    initParams.capabilities = PraseVecUtils::ParseCapabilitiesFromVec(capabilities);
+    initParams.staticCapabilities = PraseVecUtils::ParseCapabilitiesFromVec(capabilities);
 
     // accessibilityAbilityTypes
     std::vector<std::string> abilityTypes;
@@ -292,11 +292,10 @@ void Utils::RecordStartingA11yEvent(uint32_t flag)
     }
 }
 
-void Utils::RecordStartingA11yEvent(const std::string &bundleName, const std::string &abilityName)
+void Utils::RecordStartingA11yEvent(const std::string &name)
 {
     std::ostringstream oss;
-    oss << "starting accessibility: " << "event: " << "extension"
-        << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
+    oss << "starting accessibility: " << "event: " << "extension" << ", name: " << name << ";";
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
     int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,

@@ -73,10 +73,10 @@ void AccessibleAbilityChannelUnitTest::SetUp()
 
     // Add AA client
     AccessibilityAbilityInitParams initParams;
-    initParams.capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     ASSERT_TRUE(abilityInfo);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
+    abilityInfo->SetCapabilityValues(CAPABILITY_RETRIEVE | CAPABILITY_GESTURE);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(ACCOUNT_ID);
     ASSERT_TRUE(accountData);
     connection_ = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);

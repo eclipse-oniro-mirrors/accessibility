@@ -36,6 +36,7 @@ bool AccessibilityAbilityInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
 
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, capabilities_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, staticCapabilities_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, rationale_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, abilityTypes_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, eventTypes_);
@@ -54,6 +55,7 @@ bool AccessibilityAbilityInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
 
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, capabilities_);
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, staticCapabilities_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, rationale_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, abilityTypes_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, eventTypes_);

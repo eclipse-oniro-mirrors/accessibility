@@ -18,6 +18,7 @@
 
 #include <map>
 #include "i_accessible_ability_manager_service.h"
+#include "accessibility_config_impl.h"
 #include "iremote_stub.h"
 
 namespace OHOS {
@@ -100,6 +101,12 @@ public:
     float GetAudioBalance() override;
     void GetAllConfigs(AccessibilityConfigData &configData) override;
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
+
+private:
+    std::shared_ptr<AppExecFwk::EventRunner> runner_;
+    std::shared_ptr<AppExecFwk::EventHandler> handler_;
+    sptr<IAccessibleAbilityManagerConfigObserver> observer_ = nullptr;
+    sptr<IAccessibleAbilityManagerCaptionObserver> captionObserver_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -51,7 +51,6 @@ void AccessibilitySettingsConfigTest::SetUp()
 {
     int32_t accountId = 1;
     settingConfig_ = std::make_shared<AccessibilitySettingsConfig>(accountId);
-    settingConfig_->Init();
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfigTest SetUp";
 }
 
@@ -74,333 +73,650 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_I
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetEnabled
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetEnabled
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetEnabled_001
+ * @tc.name: SetEnabled
  * @tc.desc: Test function SetEnabled GetEnabledState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetEnabled, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetEnabled_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetEnabled(state);
+    EXPECT_TRUE(settingConfig_->GetEnabledState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetEnabled_002
+ * @tc.name: SetEnabled
+ * @tc.desc: Test function SetEnabled GetEnabledState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetEnabled_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_002 start";
     bool state = true;
     settingConfig_->SetEnabled(state);
     EXPECT_TRUE(settingConfig_->GetEnabledState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetEnabled_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetTouchGuideState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetTouchGuideState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetTouchGuideState_001
+ * @tc.name: SetTouchGuideState
  * @tc.desc: Test function SetTouchGuideState GetTouchGuideState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetTouchGuideState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetTouchGuideState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetTouchGuideState(state);
+    EXPECT_TRUE(settingConfig_->GetTouchGuideState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002
+ * @tc.name: SetTouchGuideState
+ * @tc.desc: Test function SetTouchGuideState GetTouchGuideState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002 start";
     bool state = true;
     settingConfig_->SetTouchGuideState(state);
     EXPECT_TRUE(settingConfig_->GetTouchGuideState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetTouchGuideState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetGestureState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetGestureState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetGestureState_001
+ * @tc.name: SetGestureState
  * @tc.desc: Test function SetGestureState GetGestureState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetGestureState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetGestureState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetGestureState(state);
+    EXPECT_TRUE(settingConfig_->GetGestureState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetGestureState_002
+ * @tc.name: SetGestureState
+ * @tc.desc: Test function SetGestureState GetGestureState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetGestureState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_002 start";
     bool state = true;
     settingConfig_->SetGestureState(state);
     EXPECT_TRUE(settingConfig_->GetGestureState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetGestureState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_001
+ * @tc.name: SetKeyEventObserverState
  * @tc.desc: Test function SetKeyEventObserverState GetKeyEventObserverState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState,
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_001,
     TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetKeyEventObserverState(state);
+    EXPECT_TRUE(settingConfig_->GetKeyEventObserverState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002
+ * @tc.name: SetKeyEventObserverState
+ * @tc.desc: Test function SetKeyEventObserverState GetKeyEventObserverState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002 start";
     bool state = true;
     settingConfig_->SetKeyEventObserverState(state);
     EXPECT_TRUE(settingConfig_->GetKeyEventObserverState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetKeyEventObserverState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionProperty
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetCaptionProperty
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionProperty_001
+ * @tc.name: SetCaptionProperty
  * @tc.desc: Test function SetCaptionProperty GetCaptionProperty
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionProperty, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionProperty_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_001 start";
+    AccessibilityConfig::CaptionProperty caption;
+    settingConfig_->Init();
+    settingConfig_->SetCaptionProperty(caption);
+    settingConfig_->GetCaptionProperty();
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionProperty_002
+ * @tc.name: SetCaptionProperty
+ * @tc.desc: Test function SetCaptionProperty GetCaptionProperty
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionProperty_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_002 start";
     AccessibilityConfig::CaptionProperty caption;
     settingConfig_->SetCaptionProperty(caption);
     settingConfig_->GetCaptionProperty();
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetCaptionState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionState_001
+ * @tc.name: SetCaptionState
  * @tc.desc: Test function SetCaptionState GetCaptionState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetCaptionState(state);
+    EXPECT_TRUE(settingConfig_->GetCaptionState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetCaptionState_002
+ * @tc.name: SetCaptionState
+ * @tc.desc: Test function SetCaptionState GetCaptionState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetCaptionState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_002 start";
     bool state = true;
     settingConfig_->SetCaptionState(state);
     EXPECT_TRUE(settingConfig_->GetCaptionState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_001
+ * @tc.name: SetScreenMagnificationState
  * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState,
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_001,
     TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetScreenMagnificationState(state);
+    EXPECT_TRUE(settingConfig_->GetScreenMagnificationState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002
+ * @tc.name: SetScreenMagnificationState
+ * @tc.desc: Test function SetScreenMagnificationState GetScreenMagnificationState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002 start";
     bool state = true;
     settingConfig_->SetScreenMagnificationState(state);
     EXPECT_TRUE(settingConfig_->GetScreenMagnificationState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002 end";
 }
 
+
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetShortKeyState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyState_001
+ * @tc.name: SetShortKeyState
  * @tc.desc: Test function SetShortKeyState GetShortKeyState
  * @tc.require: issueI5NTXH
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetShortKeyState(state);
+    EXPECT_TRUE(settingConfig_->GetShortKeyState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyState_002
+ * @tc.name: SetShortKeyState
+ * @tc.desc: Test function SetShortKeyState GetShortKeyState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_002 start";
     bool state = true;
     settingConfig_->SetShortKeyState(state);
     EXPECT_TRUE(settingConfig_->GetShortKeyState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortKeyState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseKeyState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetMouseKeyState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseKeyState_001
+ * @tc.name: SetMouseKeyState
  * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
  * @tc.require: issueI5NTXA
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseKeyState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseKeyState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetMouseKeyState(state);
+    EXPECT_TRUE(settingConfig_->GetMouseKeyState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002
+ * @tc.name: SetMouseKeyState
+ * @tc.desc: Test function SetMouseKeyState GetMouseKeyState
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002 start";
     bool state = true;
     settingConfig_->SetMouseKeyState(state);
     EXPECT_TRUE(settingConfig_->GetMouseKeyState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseKeyState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001
+ * @tc.name: SetMouseAutoClick
  * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
  * @tc.require: issueI5NTXC
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001 start";
+    int32_t time = 2;
+    settingConfig_->Init();
+    settingConfig_->SetMouseAutoClick(time);
+    EXPECT_EQ(time, settingConfig_->GetMouseAutoClick());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002
+ * @tc.name: SetMouseAutoClick
+ * @tc.desc: Test function SetMouseAutoClick GetMouseAutoClick
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
     int32_t time = 2;
     settingConfig_->SetMouseAutoClick(time);
     EXPECT_EQ(time, settingConfig_->GetMouseAutoClick());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_001
+ * @tc.name: SetShortkeyTarget
  * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
  * @tc.require: issueI5NTXH
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortkeyTarget, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_001 start";
+    std::string name = "TEST";
+    settingConfig_->Init();
+    settingConfig_->SetShortkeyTarget(name);
+    EXPECT_STREQ("TEST", settingConfig_->GetShortkeyTarget().c_str());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002
+ * @tc.name: SetShortkeyTarget
+ * @tc.desc: Test function SetShortkeyTarget GetShortkeyTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 start";
     std::string name = "TEST";
     settingConfig_->SetShortkeyTarget(name);
     EXPECT_STREQ("TEST", settingConfig_->GetShortkeyTarget().c_str());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetShortkeyTarget_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_001
+ * @tc.name: SetHighContrastTextState
  * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
  * @tc.require: issueI5NTX9
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState,
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_001,
     TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetHighContrastTextState(state);
+    EXPECT_TRUE(settingConfig_->GetHighContrastTextState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002
+ * @tc.name: SetHighContrastTextState
+ * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002 start";
     bool state = true;
     settingConfig_->SetHighContrastTextState(state);
     EXPECT_TRUE(settingConfig_->GetHighContrastTextState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetHighContrastTextState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetInvertColorState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetInvertColorState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetInvertColorState_001
+ * @tc.name: SetInvertColorState
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
  * @tc.require: issueI5NTX7
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetInvertColorState(state);
+    EXPECT_TRUE(settingConfig_->GetInvertColorState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetInvertColorState_002
+ * @tc.name: SetInvertColorState
+ * @tc.desc: Test function SetInvertColorState GetInvertColorState
+ * @tc.require: issueI5NTX7
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_002 start";
     bool state = true;
     settingConfig_->SetInvertColorState(state);
     EXPECT_TRUE(settingConfig_->GetInvertColorState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetAnimationOffState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetAnimationOffState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAnimationOffState_001
+ * @tc.name: SetAnimationOffState
  * @tc.desc: Test function SetAnimationOffState GetAnimationOffState
  * @tc.require: issueI5NTXG
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAnimationOffState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAnimationOffState_001,
+    TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetAnimationOffState(state);
+    EXPECT_TRUE(settingConfig_->GetAnimationOffState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002
+ * @tc.name: SetAnimationOffState
+ * @tc.desc: Test function SetAnimationOffState GetAnimationOffState
+ * @tc.require: issueI5NTXG
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002 start";
     bool state = true;
     settingConfig_->SetAnimationOffState(state);
     EXPECT_TRUE(settingConfig_->GetAnimationOffState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAnimationOffState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioMonoState
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetAudioMonoState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioMonoState_001
+ * @tc.name: SetAudioMonoState
  * @tc.desc: Test function SetAudioMonoState GetAudioMonoState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioMonoState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioMonoState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetAudioMonoState(state);
+    EXPECT_TRUE(settingConfig_->GetAudioMonoState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002
+ * @tc.name: SetAudioMonoState
+ * @tc.desc: Test function SetAudioMonoState GetAudioMonoState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002 start";
     bool state = true;
     settingConfig_->SetAudioMonoState(state);
     EXPECT_TRUE(settingConfig_->GetAudioMonoState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioMonoState_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_001
+ * @tc.name: SetDaltonizationColorFilter
  * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
  * @tc.require: issueI5NTX8
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter,
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_001,
     TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_001 start";
+    uint32_t filter = 1;
+    settingConfig_->Init();
+    settingConfig_->SetDaltonizationColorFilter(filter);
+    EXPECT_TRUE(settingConfig_->GetDaltonizationColorFilter());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002
+ * @tc.name: SetDaltonizationColorFilter
+ * @tc.desc: Test function SetDaltonizationColorFilter GetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002 start";
     uint32_t filter = 1;
     settingConfig_->SetDaltonizationColorFilter(filter);
     EXPECT_TRUE(settingConfig_->GetDaltonizationColorFilter());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationColorFilter_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetContentTimeout
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetContentTimeout
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetContentTimeout_001
+ * @tc.name: SetContentTimeout
  * @tc.desc: Test function SetContentTimeout GetContentTimeout
  * @tc.require: issueI5NTXF
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_001 start";
+    uint32_t time = 10;
+    settingConfig_->Init();
+    settingConfig_->SetContentTimeout(time);
+    EXPECT_EQ(time, settingConfig_->GetContentTimeout());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetContentTimeout_002
+ * @tc.name: SetContentTimeout
+ * @tc.desc: Test function SetContentTimeout GetContentTimeout
+ * @tc.require: issueI5NTXF
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 start";
     uint32_t time = 10;
     settingConfig_->SetContentTimeout(time);
     EXPECT_EQ(time, settingConfig_->GetContentTimeout());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001
+ * @tc.name: SetBrightnessDiscount
  * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
  * @tc.require: issueI5NTXE
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001 start";
+    float discount = 0.1;
+    settingConfig_->Init();
+    settingConfig_->SetBrightnessDiscount(discount);
+    EXPECT_EQ(discount, settingConfig_->GetBrightnessDiscount());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002
+ * @tc.name: SetBrightnessDiscount
+ * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
+ * @tc.require: issueI5NTXE
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 start";
     float discount = 0.1;
     settingConfig_->SetBrightnessDiscount(discount);
     EXPECT_EQ(discount, settingConfig_->GetBrightnessDiscount());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioBalance
- * @tc.name: AccessibilitySettingsConfig_Unittest_SetAudioBalance
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioBalance_001
+ * @tc.name: SetAudioBalance
  * @tc.desc: Test function SetAudioBalance GetAudioBalance
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioBalance, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioBalance_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_001 start";
+    float balance = 0.1;
+    settingConfig_->Init();
+    settingConfig_->SetAudioBalance(balance);
+    EXPECT_EQ(balance, settingConfig_->GetAudioBalance());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetAudioBalance_002
+ * @tc.name: SetAudioBalance
+ * @tc.desc: Test function SetAudioBalance GetAudioBalance
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioBalance_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 start";
     float balance = 0.1;
     settingConfig_->SetAudioBalance(balance);
     EXPECT_EQ(balance, settingConfig_->GetAudioBalance());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities
- * @tc.name: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities
+ * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001
+ * @tc.name: UpdateEnabledAbilities
  * @tc.desc: Test function UpdateEnabledAbilities
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001 start";
+    std::vector<std::string> vecvalue {};
+    settingConfig_->Init();
+    settingConfig_->UpdateEnabledAbilities(vecvalue);
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002
+ * @tc.name: UpdateEnabledAbilities
+ * @tc.desc: Test function UpdateEnabledAbilities
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 start";
     std::vector<std::string> vecvalue {};
     settingConfig_->UpdateEnabledAbilities(vecvalue);
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos
- * @tc.name: AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos
+ * @tc.number: AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001
+ * @tc.name: GetEnabledAbilityInfos
  * @tc.desc: Test function GetEnabledAbilityInfos
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001 start";
     settingConfig_->GetEnabledAbilityInfos();
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_GetConfigState
- * @tc.name: AccessibilitySettingsConfig_Unittest_GetConfigState
+ * @tc.number: AccessibilitySettingsConfig_Unittest_GetConfigState_001
+ * @tc.name: GetConfigState
  * @tc.desc: Test function GetConfigState
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_GetConfigState, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_GetConfigState_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetConfigState start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetConfigState_001 start";
     uint32_t state = 0x00000000;
     EXPECT_EQ(state, settingConfig_->GetConfigState());
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetConfigState end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetConfigState_001 end";
 }
 
 /**
- * @tc.number: AccessibilitySettingsConfig_Unittest_ClearData
- * @tc.name: AccessibilitySettingsConfig_Unittest_ClearData
+ * @tc.number: AccessibilitySettingsConfig_Unittest_ClearData_001
+ * @tc.name: ClearData
  * @tc.desc: Test function ClearData
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_ClearData, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_ClearData_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData start";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 start";
+    settingConfig_->Init();
     settingConfig_->ClearData();
-    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData end";
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_ClearData_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

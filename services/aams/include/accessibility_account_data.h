@@ -317,9 +317,9 @@ private:
     void RemoveEnabledFromPref(const std::string &name);
     void UpdateEnabledFromPref();
 
-    uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
     uint32_t GetAbilityCapabilities(const std::string &name) const;
+    uint32_t GetAbilityStaticCapabilities(const std::string &name) const;
     void GetCapabilitiesFromConfig(std::map<std::string, uint32_t> &abilityCapabilities);
 
     int32_t id_;
