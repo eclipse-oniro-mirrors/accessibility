@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include <memory>
+#include "accessibility_element_operator_callback_impl.h"
 #include "accessibility_element_operator_impl.h"
 #include "mock_accessibility_element_operator.h"
 
@@ -27,6 +28,7 @@ namespace {
     const std::string TEST = "test";
     constexpr int32_t ELEMENT_ID = 1;
     constexpr int32_t REQUEST_ID = 1;
+    constexpr int32_t REQUEST_ID_2 = 2;
     constexpr int32_t MODE = 0;
     constexpr int32_t FOCUS_TYPE = 1;
     constexpr int32_t DIRECTION = 1;
@@ -231,6 +233,29 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByAccessi
 }
 
 /**
+ * @tc.number: SetSearchElementInfoByAccessibilityIdResult_002
+ * @tc.name: SetSearchElementInfoByAccessibilityIdResult
+ * @tc.desc: Test function SetSearchElementInfoByAccessibilityIdResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByAccessibilityIdResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+        return;
+    }
+
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    callback_.AddRequest(REQUEST_ID_2, elementOperator);
+    std::list<AccessibilityElementInfo> infos;
+    AccessibilityElementInfo info {};
+    infos.push_back(info);
+    callback_.SetSearchElementInfoByAccessibilityIdResult(infos, REQUEST_ID_2);
+    GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_002 end";
+}
+
+/**
  * @tc.number: SetSearchElementInfoByTextResult_001
  * @tc.name: SetSearchElementInfoByTextResult
  * @tc.desc: Test function SetSearchElementInfoByTextResult
@@ -247,6 +272,28 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextRes
     infos.push_back(info);
     callback_.SetSearchElementInfoByTextResult(infos, REQUEST_ID);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_001 end";
+}
+
+/**
+ * @tc.number: SetSearchElementInfoByTextResult_002
+ * @tc.name: SetSearchElementInfoByTextResult
+ * @tc.desc: Test function SetSearchElementInfoByTextResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+        return;
+    }
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    callback_.AddRequest(REQUEST_ID_2, elementOperator);
+    std::list<AccessibilityElementInfo> infos;
+    AccessibilityElementInfo info {};
+    infos.push_back(info);
+    callback_.SetSearchElementInfoByTextResult(infos, REQUEST_ID_2);
+    GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 end";
 }
 
 /**
@@ -267,6 +314,26 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResu
 }
 
 /**
+ * @tc.number: SetFindFocusedElementInfoResult_002
+ * @tc.name: SetFindFocusedElementInfoResult
+ * @tc.desc: Test function SetFindFocusedElementInfoResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+        return;
+    }
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    callback_.AddRequest(REQUEST_ID_2, elementOperator);
+    AccessibilityElementInfo info {};
+    callback_.SetFindFocusedElementInfoResult(info, REQUEST_ID_2);
+    GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
+}
+
+/**
  * @tc.number: SetFocusMoveSearchResult_001
  * @tc.name: SetFocusMoveSearchResult
  * @tc.desc: Test function SetFocusMoveSearchResult
@@ -284,6 +351,26 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_001,
 }
 
 /**
+ * @tc.number: SetFocusMoveSearchResult_002
+ * @tc.name: SetFocusMoveSearchResult
+ * @tc.desc: Test function SetFocusMoveSearchResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+        return;
+    }
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    callback_.AddRequest(REQUEST_ID_2, elementOperator);
+    AccessibilityElementInfo info {};
+    callback_.SetFocusMoveSearchResult(info, REQUEST_ID_2);
+    GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
+}
+
+/**
  * @tc.number: SetExecuteActionResult_001
  * @tc.name: SetExecuteActionResult
  * @tc.desc: Test function SetExecuteActionResult
@@ -297,6 +384,25 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetExecuteActionResult_001, T
     }
     callback_.SetExecuteActionResult(true, REQUEST_ID);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
+}
+
+/**
+ * @tc.number: SetExecuteActionResult_002
+ * @tc.name: SetExecuteActionResult
+ * @tc.desc: Test function SetExecuteActionResult
+ */
+HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetExecuteActionResult_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetExecuteActionResult_002 start";
+    if (!mockStub_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityElementOperatorImpl mockStub_";
+        return;
+    }
+    sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
+        new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
+    callback_.AddRequest(REQUEST_ID_2, elementOperator);
+    callback_.SetExecuteActionResult(true, REQUEST_ID_2);
+    GTEST_LOG_(INFO) << "SetExecuteActionResult_002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
