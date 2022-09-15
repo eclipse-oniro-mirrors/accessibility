@@ -14,8 +14,9 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_input_interceptor.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
 #include "mock_accessible_ability_manager_service.h"
@@ -61,7 +62,7 @@ void AccessibilityInputInterceptorTest::SetUp()
     MMI::MockInputManager::ClearInputEventConsumer();
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
@@ -135,6 +136,24 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005
+ * @tc.name: SetAvailableFunctions
+ * @tc.desc: Check the set available Functions.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION |
+        AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK |
+        AccessibilityInputInterceptor::FEATURE_SHORT_KEY |
+        AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005 end";
 }
 
 /**
@@ -308,7 +327,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002
- * @tc.name: OnKeyEvent
+ * @tc.name: OnInputEvent
  * @tc.desc: Check the on key event.
  */
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002, TestSize.Level1)
@@ -321,6 +340,11 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     item.SetPressed(true);
     keyEvent->AddKeyItem(item);
     keyEvent->SetKeyCode(1);
+
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(keyEvent);
+    }
 
     /* wait ProcessKeyEvent */
     sleep(SLEEP_TIME_3);
@@ -365,6 +389,46 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     inputInterceptor_->NotifyAccessibilityEvent(event);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001
+ * @tc.name: OnMoveMouse
+ * @tc.desc: Check the OnMoveMouse.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 start";
+    if (!inputInterceptor_) {
+        return;
+    }
+    inputInterceptor_->OnMoveMouse(1, 1);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_ClearEvents001
+ * @tc.name: ClearEvents
+ * @tc.desc: Check the ClearEvents.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_ClearEvents001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ClearEvents001 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+    if (!inputInterceptor_) {
+        return;
+    }
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+    sptr<TouchEventInjector> eventInjector =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
+    if (eventInjector) {
+        eventInjector->ClearEvents(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    }
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ClearEvents001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

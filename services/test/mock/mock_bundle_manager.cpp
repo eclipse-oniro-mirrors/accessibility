@@ -26,7 +26,7 @@
 using namespace OHOS::AAFwk;
 namespace OHOS {
 namespace {
-    const std::string AccessibleAbility_JSON_FILE_PATH = "/system/app/dummy_accessibility_ability_config.json";
+    const std::string ACCESSIBLE_ABILITY_JSON_FILE_PAT = "/system/app/dummy_accessibility_ability_config.json";
 } // namespace
 
 namespace AppExecFwk {
@@ -61,7 +61,7 @@ auto HiMusicInfo = [](std::string bundleName, AbilityInfo& abilityInfo, ElementN
     }
     if (elementTemp.GetAbilityName() == "MusicTopAbility") {
         abilityInfo.process = "p1";
-        abilityInfo.launchMode = LaunchMode::SINGLETOP;
+        abilityInfo.launchMode = LaunchMode::STANDARD;
     }
     if (elementTemp.GetAbilityName() == "MusicSAbility") {
         abilityInfo.process = "p2";
@@ -181,11 +181,6 @@ bool BundleMgrService::QueryAbilityInfo(const AAFwk::Want& want, AbilityInfo& ab
     return true;
 }
 
-bool BundleMgrService::QueryAbilityInfoByUri(const std::string& uri, AbilityInfo& abilityInfo)
-{
-    return false;
-}
-
 bool BundleMgrService::GetApplicationInfo(
     const std::string& appName, const ApplicationFlag flag, const int userId, ApplicationInfo& appInfo)
 {
@@ -227,32 +222,6 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abi
     return false;
 }
 
-bool BundleMgrService::QueryAbilityInfos(const Want& want, std::vector<AbilityInfo>& abilityInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetAllFormsInfo(std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetFormsInfoByApp(const std::string& bundleName, std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetFormsInfoByModule(
-    const std::string& bundleName, const std::string& moduleName, std::vector<FormInfo>& formInfos)
-{
-    return true;
-}
-
-bool BundleMgrService::GetShortcutInfos(const std::string& bundleName, std::vector<ShortcutInfo>& shortcutInfos)
-{
-    return true;
-}
-
 BundleMgrClient::BundleMgrClient()
 {}
 
@@ -263,7 +232,7 @@ bool BundleMgrClient::GetResConfigFile(const ExtensionAbilityInfo& extensionInfo
     std::vector<std::string>& profileInfos) const
 {
     std::ifstream jsonFileStream;
-    jsonFileStream.open(AccessibleAbility_JSON_FILE_PATH, std::ios::in);
+    jsonFileStream.open(ACCESSIBLE_ABILITY_JSON_FILE_PAT, std::ios::in);
     if (!jsonFileStream.is_open()) {
         HILOG_ERROR("Open json file failed.");
         return false;

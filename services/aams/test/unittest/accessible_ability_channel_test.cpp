@@ -15,9 +15,9 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_ability_info.h"
-#include "accessibility_ability_helper.h"
 #include "accessibility_account_data.h"
 #include "accessibility_element_operator_proxy.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"

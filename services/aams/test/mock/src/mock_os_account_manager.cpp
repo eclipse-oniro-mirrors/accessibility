@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "accessibility_ability_helper.h"
+#include "accessibility_ut_helper.h"
 #include "os_account_manager.h"
 
 namespace OHOS {

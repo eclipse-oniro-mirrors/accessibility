@@ -38,6 +38,7 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
     "//foundation/barrierfree/accessibility/services/aams/include",
     "//foundation/barrierfree/accessibility/services/test/mock",
+    "//foundation/barrierfree/accessibility/services/test/mock/common",
     "//foundation/barrierfree/accessibility/util/include",
     "//base/account/os_account/frameworks/common/account_error/include",
     "//base/account/os_account/frameworks/common/database/include",

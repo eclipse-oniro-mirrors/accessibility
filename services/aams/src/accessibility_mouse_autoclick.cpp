@@ -157,9 +157,9 @@ bool AccessibilityMouseAutoclick::IsMouseMovement(MMI::PointerEvent &event)
     int32_t oldX = item.GetDisplayX();
     int32_t oldY = item.GetDisplayY();
     if ((newX != oldX) || (newY != oldY)) {
+        HILOG_DEBUG("Mouse is moving.");
         return true;
     }
-
     return false;
 }
 

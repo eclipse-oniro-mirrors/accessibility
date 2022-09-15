@@ -668,14 +668,14 @@ void TouchGuider::ClearReceivedEventRecorder()
 {
     HILOG_DEBUG();
 
-    memset_s(receivedRecorder_.pointerDownX,
-        sizeof(receivedRecorder_.pointerDownX),
-        0,
-        sizeof(receivedRecorder_.pointerDownX));
-    memset_s(receivedRecorder_.pointerDownY,
-        sizeof(receivedRecorder_.pointerDownY),
-        0,
-        sizeof(receivedRecorder_.pointerDownY));
+    (void)memset_s(receivedRecorder_.pointerDownX,
+                   sizeof(receivedRecorder_.pointerDownX),
+                   0,
+                   sizeof(receivedRecorder_.pointerDownX));
+    (void)memset_s(receivedRecorder_.pointerDownY,
+                   sizeof(receivedRecorder_.pointerDownY),
+                   0,
+                   sizeof(receivedRecorder_.pointerDownY));
     receivedRecorder_.lastEvent = nullptr;
 }
 

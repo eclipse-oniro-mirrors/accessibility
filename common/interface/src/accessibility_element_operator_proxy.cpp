@@ -22,9 +22,6 @@ AccessibilityElementOperatorProxy::AccessibilityElementOperatorProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperator>(impl)
 {}
 
-AccessibilityElementOperatorProxy::~AccessibilityElementOperatorProxy()
-{}
-
 bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
 {
     HILOG_DEBUG();

@@ -14,7 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_helper.h"
+#include "accessibility_common_helper.h"
+#include "accessibility_mt_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
@@ -62,7 +63,7 @@ void AccessibilityCommonEventRegistryTest::SetUp()
 
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
