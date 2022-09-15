@@ -230,18 +230,6 @@ bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
     }
 }
 
-bool AccessibilitySystemAbilityClientImpl::CheckActionType(ActionType actionType)
-{
-    if ((actionType < ActionType::ACCESSIBILITY_ACTION_FOCUS) ||
-        ((actionType > ActionType::ACCESSIBILITY_ACTION_DELETED) &&
-         (actionType != ActionType::ACCESSIBILITY_ACTION_TYPE_MASK))) {
-        HILOG_ERROR("action type is invalid");
-        return false;
-    } else {
-        return true;
-    }
-}
-
 bool AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int32_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}d], eventType[%{public}d]", componentId, eventType);

@@ -13,14 +13,10 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_ABILILTY_HELPER_H
-#define ACCESSIBILITY_ABILILTY_HELPER_H
+#ifndef ACCESSIBILITY_UT_HELPER_H
+#define ACCESSIBILITY_UT_HELPER_H
 
-#include <atomic>
-#include <chrono>
-#include <functional>
 #include <mutex>
-#include <thread>
 #include "accessibility_event_info.h"
 #include "hilog/log.h"
 #include "iremote_object.h"
@@ -266,27 +262,6 @@ public:
         testKeyEvent_ = true;
     }
 
-    bool GetIsServicePublished()
-    {
-        return isServicePublished_;
-    }
-
-    void SetIsServicePublished(bool publish)
-    {
-        isServicePublished_ = publish;
-    }
-
-    void WaitForServicePublish()
-    {
-        while (1) {
-            constexpr int32_t SLEEP_TIME = 10;
-            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-            if (isServicePublished_) {
-                return;
-            }
-        }
-    }
-
     int GetSendEventTimes()
     {
         return sendEventTimes_;
@@ -331,22 +306,6 @@ public:
     {
         return zoomState_;
     }
-
-    bool WaitForLoop(const std::function<bool()> &compare, int32_t timeout)
-    {
-        constexpr int32_t SLEEP_TIME = 100;
-        int32_t count = timeout * 1000 / SLEEP_TIME;
-        while (count > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
-            if (compare() == true) {
-                return true;
-            } else {
-                count--;
-            }
-        }
-        return false;
-    }
-
 public:
     static const int32_t accountId_ = 100;
 
@@ -369,7 +328,6 @@ private:
     int testDisplayId_ = -1;
     int testStateType_ = -1;
     bool testKeyEvent_ = false;
-    bool isServicePublished_ = false;
     std::atomic<int> sendEventTimes_ = 0;
     uint32_t testSequence_ = 0;
     int32_t keyCode_ = 0;
@@ -379,4 +337,4 @@ private:
 };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_ABILILTY_HELPER_H
+#endif // ACCESSIBILITY_UT_HELPER_H

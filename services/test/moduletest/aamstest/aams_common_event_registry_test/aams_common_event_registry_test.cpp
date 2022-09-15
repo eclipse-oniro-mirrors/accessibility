@@ -14,7 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_helper.h"
+#include "accessibility_common_helper.h"
+#include "accessibility_mt_helper.h"
 #include "accessible_ability_channel.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
@@ -62,7 +63,7 @@ void AccessibilityCommonEventRegistryTest::SetUp()
 
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
@@ -91,8 +92,8 @@ void AccessibilityCommonEventRegistryTest::AddAccessibleAbilityConnection()
     accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("name", "bundleName", "id");
-    aastub_ = new AccessibleAbilityChannel(*AAConnection_);
-    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_, 0);
+    aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
+    AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
     accountData_->AddInstalledAbility(*abilityInfo);
 }
 
@@ -112,7 +113,7 @@ HWTEST_F(AccessibilityCommonEventRegistryTest, AccessibilityCommonEvent_ModuleTe
     Singleton<AccessibleAbilityManagerService>::GetInstance().PackageChanged(bundleName);
     EXPECT_EQ(1, int(accountData_->GetInstalledAbilities().size()));
 
-    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
 
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_ModuleTest_PackageChanged_001 end";
 }

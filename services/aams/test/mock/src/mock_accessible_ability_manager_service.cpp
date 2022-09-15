@@ -15,9 +15,9 @@
 
 #include <gtest/gtest.h>
 #include "ability_info.h"
-#include "accessibility_ability_helper.h"
 #include "accessibility_display_manager.h"
 #include "accessibility_event_info.h"
+#include "accessibility_ut_helper.h"
 #include "accessibility_window_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
@@ -128,6 +128,15 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     accountData->Init();
     a11yAccountsData_[ACCOUNT_ID] = accountData;
     return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
+{
+    auto iter = a11yAccountsData_.find(accountId);
+    if (iter != a11yAccountsData_.end()) {
+        return iter->second;
+    }
+    return nullptr;
 }
 
 AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()

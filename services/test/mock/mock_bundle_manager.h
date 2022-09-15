@@ -37,7 +37,7 @@ const std::string COM_IX_HIDATA = "com.ix.hiData";
 class BundleMgrStub : public IRemoteStub<IBundleMgr> {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"IBundleMgr");
-    virtual int OnRemoteRequest(
+    int OnRemoteRequest(
         uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option) override;
 };
 

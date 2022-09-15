@@ -14,8 +14,8 @@
  */
 
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
 #include "accessibility_event_transmission.h"
+#include "accessibility_ut_helper.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {

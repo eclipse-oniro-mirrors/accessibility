@@ -24,13 +24,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-namespace {
-    const std::string TASK_ON_ABILITY_CONNECT_DONE = "OnAbilityConnectDone";
-    const std::string TASK_ON_ABILITY_DISCONNECT_DONE = "OnAbilityDisconnectDone";
-} // namespace
-
-std::mutex AccessibleAbilityConnection::mutex_;
-
 AccessibleAbilityConnection::AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData,
     int32_t connectionId, AccessibilityAbilityInfo &abilityInfo)
     : connectionId_(connectionId), abilityInfo_(abilityInfo), accountData_(accountData)
@@ -51,86 +44,53 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
 void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementName &element,
     const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
     }
-    std::function<void()> abilityConnectDoneFunc = std::bind(&AccessibleAbilityConnection::InnerOnAbilityConnectDone,
-        this, element, remoteObject, resultCode);
-    eventHandler_->PostTask(abilityConnectDoneFunc, TASK_ON_ABILITY_CONNECT_DONE);
-}
 
-void AccessibleAbilityConnection::InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
-    const sptr<IRemoteObject> &remoteObject, int32_t resultCode)
-{
-    HILOG_DEBUG("ResultCode is %{public}d", resultCode);
-    FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
-        static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
-    std::string bundleName = element.GetBundleName();
-    std::string abilityName = element.GetAbilityName();
-    if (!accountData_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-        HILOG_ERROR("accountData_ is nullptr.");
-        return;
-    }
-    elementName_ = element;
-
-    if (resultCode != NO_ERROR) {
-        accountData_->RemoveEnabledAbility(Utils::GetUri(elementName_));
-        accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
-        accountData_->UpdateAbilities();
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-        return;
-    }
-
-    if (!remoteObject) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
-        return;
-    }
-
-    if (!abilityClient_) {
-        abilityClient_ = new(std::nothrow) AccessibleAbilityClientProxy(remoteObject);
-        if (!abilityClient_) {
+    eventHandler_->PostTask(std::bind([element, remoteObject, resultCode](
+        sptr<AccessibilityAccountData> &accountData) -> void {
+        HILOG_DEBUG("ResultCode is %{public}d", resultCode);
+        FinishAsyncTrace(HITRACE_TAG_ACCESSIBILITY_MANAGER, "AccessibleAbilityConnect",
+            static_cast<int32_t>(TraceTaskId::ACCESSIBLE_ABILITY_CONNECT));
+        std::string bundleName = element.GetBundleName();
+        std::string abilityName = element.GetAbilityName();
+        if (!accountData) {
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                 A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-            HILOG_ERROR("abilityClient_ is null");
+            HILOG_ERROR("accountData is nullptr.");
             return;
         }
-    }
 
-    if (!deathRecipient_) {
-        deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(
-            accountData_, elementName_, eventHandler_);
-        if (!deathRecipient_) {
+        if (resultCode != NO_ERROR) {
+            accountData->RemoveEnabledAbility(Utils::GetUri(element));
+            accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+            accountData->UpdateAbilities();
             Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
                 A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-            HILOG_ERROR("deathRecipient_ is null");
             return;
         }
-    }
 
-    if (!abilityClient_->AsObject() || !abilityClient_->AsObject()->AddDeathRecipient(deathRecipient_)) {
-        HILOG_ERROR("Failed to add death recipient");
-    }
+        if (!remoteObject) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+            HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
+            return;
+        }    
 
-    sptr<AccessibleAbilityConnection> pointer = this;
-    accountData_->AddConnectedAbility(pointer);
-    accountData_->RemoveConnectingA11yAbility(Utils::GetUri(elementName_));
-    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
+        sptr<AccessibleAbilityConnection> connection = accountData->GetConnectingA11yAbility(Utils::GetUri(element));
+        if (!connection) {
+            HILOG_ERROR("connection is nullptr");
+            return;
+        }
 
-    channel_ = new(std::nothrow) AccessibleAbilityChannel(*pointer);
-    if (!channel_) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
-        HILOG_ERROR("channel_ is null");
-        return;
-    }
-    abilityClient_->Init(channel_, connectionId_);
+        accountData->AddConnectedAbility(connection);
+        accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
+        connection->InitAbilityClient(remoteObject);
+        }, accountData_), "OnAbilityConnectDone");
 }
 
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode)
@@ -155,8 +115,6 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
             eventInfo.GetWindowId(), eventInfo.GetEventType(), eventInfo.GetWindowChangeTypes(),
             eventInfo.GetGestureType());
     }
-
-    return;
 }
 
 bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence)
@@ -278,7 +236,6 @@ void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName &element
         HILOG_ERROR("ConnectAbility failed!");
         return;
     }
-    accountData_->AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName));
 }
 
 int32_t AccessibleAbilityConnection::GetChannelId()
@@ -287,8 +244,86 @@ int32_t AccessibleAbilityConnection::GetChannelId()
     return connectionId_;
 }
 
+void AccessibleAbilityConnection::OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject)
+{
+    HILOG_DEBUG();
+    if (!accountData_) {
+        HILOG_ERROR("accountData_ is nullptr.");
+        return;
+    }
+    if (!remoteObject) {
+        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
+        return;
+    }
+    elementName_ = element;
+
+    sptr<AccessibleAbilityConnection> pointer = this;
+    accountData_->AddConnectedAbility(pointer);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
+    InitAbilityClient(remoteObject);
+}
+
+void AccessibleAbilityConnection::OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element)
+{
+    HILOG_DEBUG();
+    if (!accountData_) {
+        HILOG_ERROR("accountData_ is nullptr.");
+        return;
+    }
+    accountData_->RemoveConnectedAbility(element);
+
+    if (accountData_->GetAccountId() ==
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId()) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
+    }
+
+    if (!abilityClient_) {
+        HILOG_ERROR("abilityClient_ is nullptr");
+        return;
+    }
+    abilityClient_->Disconnect(connectionId_);
+}
+
+void AccessibleAbilityConnection::InitAbilityClient(const sptr<IRemoteObject> &remoteObject)
+{
+    std::string bundleName = elementName_.GetBundleName();
+    std::string abilityName = elementName_.GetAbilityName();
+    abilityClient_ = new(std::nothrow) AccessibleAbilityClientProxy(remoteObject);
+    if (!abilityClient_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+        HILOG_ERROR("abilityClient_ is null");
+        return;
+    }
+
+    if (!deathRecipient_) {
+        deathRecipient_ = new(std::nothrow) AccessibleAbilityConnectionDeathRecipient(
+            accountData_, elementName_, eventHandler_);
+        if (!deathRecipient_) {
+            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+            HILOG_ERROR("deathRecipient_ is null");
+            return;
+        }
+    }
+
+    if (!abilityClient_->AsObject() || !abilityClient_->AsObject()->AddDeathRecipient(deathRecipient_)) {
+        HILOG_ERROR("Failed to add death recipient");
+    }
+
+    channel_ = new(std::nothrow) AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo_.GetId());
+    if (!channel_) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
+        HILOG_ERROR("channel_ is null");
+        return;
+    }
+    abilityClient_->Init(channel_, connectionId_);
+}
+
 void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnRemoteDied(
-    const wptr<IRemoteObject>& remote)
+    const wptr<IRemoteObject> &remote)
 {
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_A11Y_APPLICATION_DISCONNECT_ABNORMALLY,
@@ -297,31 +332,32 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         HILOG_ERROR("handler_ is nullptr");
         return;
     }
-    handler_->PostTask(std::bind([=]() -> void {
+    handler_->PostTask(std::bind(
+        [](sptr<AccessibilityAccountData> &accountData, AppExecFwk::ElementName &elementName) -> void {
         HILOG_DEBUG();
-        if (!recipientAccountData_) {
-            HILOG_ERROR("recipientAccountData_ is null.");
+        if (!accountData) {
+            HILOG_ERROR("accountData is null.");
             return;
         }
 
-        std::string uri = Utils::GetUri(recipientElementName_);
-        sptr<AccessibleAbilityConnection> connection = recipientAccountData_->GetAccessibleAbilityConnection(uri);
+        std::string uri = Utils::GetUri(elementName);
+        sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uri);
         if (!connection) {
             HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
             return;
         }
-        recipientAccountData_->RemoveConnectedAbility(connection);
-        recipientAccountData_->RemoveEnabledAbility(Utils::GetUri(recipientElementName_));
+        accountData->RemoveConnectedAbility(elementName);
+        accountData->RemoveEnabledAbility(uri);
 
         std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
         if (uri == uiTestUri) {
-            recipientAccountData_->RemoveInstalledAbility("ohos.uitest");
+            accountData->RemoveInstalledAbility("ohos.uitest");
         }
 
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-        recipientAccountData_->UpdateAbilities();
+        accountData->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
-        }), "OnRemoteDied");
+        }, recipientAccountData_, recipientElementName_), "OnRemoteDied");
 }
 } // namespace Accessibility
 } // namespace OHOS

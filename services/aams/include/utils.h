@@ -53,7 +53,7 @@ public:
     static void RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordStartingA11yEvent(uint32_t flag);
-    static void RecordStartingA11yEvent(const std::string &bundleName, const std::string &abilityName);
+    static void RecordStartingA11yEvent(const std::string &name);
 
 private:
     static std::string TransferUnavailableEventToString(A11yUnavailableEvent type);

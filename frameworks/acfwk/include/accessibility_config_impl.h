@@ -229,19 +229,19 @@ private:
     sptr<AccessibilityEnableAbilityListsObserverImpl> enableAbilityListsObserver_ = nullptr;
 
     bool isInitialized_ = false;
+    bool shortkey_ = false;
     bool highContrastText_ = false;
+    bool screenMagnifier_ = false;
     bool invertColor_ = false;
+    bool captionState_ = false;
     bool animationOff_ = false;
     bool audioMono_ = false;
     bool mouseKey_ = false;
-    bool captionState_ = false;
-    bool screenMagnifier_ = false;
-    bool shortkey_ = false;
     int32_t mouseAutoClick_ = 0;
-    uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;
-    float brightnessDiscount_ = 0.0;
+    uint32_t daltonizationColorFilter_ = 0;
     float audioBalance_ = 0.0;
+    float brightnessDiscount_ = 0.0;
     std::string shortkeyTarget_ = "";
     CaptionProperty captionProperty_ = {};
 
