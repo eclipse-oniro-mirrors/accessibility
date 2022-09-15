@@ -24,7 +24,7 @@ namespace {
     public:
         AccessibilityConfigObserverImpl() = default;
 
-        virtual void OnConfigChanged(const CONFIG_ID id, const ConfigValue &value) override
+        void OnConfigChanged(const CONFIG_ID id, const ConfigValue &value) override
         {
             complete_.set_value();
         }

@@ -30,7 +30,27 @@
 using namespace OHOS;
 using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityConfig;
+namespace {
+    const uint32_t COLOR_TRANSPARENT = 0x00000000;
+    const uint32_t COLOR_WHITE = 0xffffffff;
+    const uint32_t COLOR_BLACK = 0xff000000;
+    const uint32_t COLOR_RED = 0xffff0000;
+    const uint32_t COLOR_GREEN = 0xff00ff00;
+    const uint32_t COLOR_BLUE = 0xff0000ff;
+    const uint32_t COLOR_GRAY = 0xffc0c0c0;
 
+    constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
+    constexpr uint32_t COLOR_STRING_BASE = 16;
+    const std::regex COLOR_WITH_MAGIC("#[0-9A-Fa-f]{6,8}");
+    const std::regex COLOR_WITH_MAGIC_MINI("#[0-9A-Fa-f]{3,4}");
+    constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
+
+    constexpr int32_t RGB_LENGTH = 6;
+    constexpr int32_t ALPHA_LENGTH = 2;
+    constexpr int32_t ALPHA_MOVE = 24;
+    constexpr int32_t COLOR_MOVE = 8;
+    const char UNICODE_BODY = '0';
+} // namespace
 std::string GetStringFromNAPI(napi_env env, napi_value value)
 {
     std::string result;
@@ -1351,26 +1371,6 @@ void ConvertCaptionPropertyToJS(
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, colorStr.c_str(), NAPI_AUTO_LENGTH, &value));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "windowColor", value));
 }
-
-const uint32_t COLOR_TRANSPARENT = 0x00000000;
-const uint32_t COLOR_WHITE = 0xffffffff;
-const uint32_t COLOR_BLACK = 0xff000000;
-const uint32_t COLOR_RED = 0xffff0000;
-const uint32_t COLOR_GREEN = 0xff00ff00;
-const uint32_t COLOR_BLUE = 0xff0000ff;
-const uint32_t COLOR_GRAY = 0xffc0c0c0;
-
-constexpr uint32_t COLOR_STRING_SIZE_STANDARD = 8;
-constexpr uint32_t COLOR_STRING_BASE = 16;
-const std::regex COLOR_WITH_MAGIC("#[0-9A-Fa-f]{6,8}");
-const std::regex COLOR_WITH_MAGIC_MINI("#[0-9A-Fa-f]{3,4}");
-constexpr uint32_t COLOR_ALPHA_MASK = 0xff000000;
-
-constexpr int32_t RGB_LENGTH = 6;
-constexpr int32_t ALPHA_LENGTH = 2;
-constexpr int32_t ALPHA_MOVE = 24;
-constexpr int32_t COLOR_MOVE = 8;
-const char UNICODE_BODY = '0';
 
 uint32_t ConvertColorStringToNumer(std::string colorStr)
 {

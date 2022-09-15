@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "accessibility_ability_helper.h"
+#include "accessibility_ut_helper.h"
 #include "window_accessibility_controller.h"
 
 namespace OHOS::Rosen {

@@ -14,16 +14,13 @@
  */
 
 #include "accessibility_element_operator_proxy.h"
-#include "accessibility_ability_helper.h"
+#include "accessibility_ut_helper.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
 AccessibilityElementOperatorProxy::AccessibilityElementOperatorProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperator>(impl)
-{}
-
-AccessibilityElementOperatorProxy::~AccessibilityElementOperatorProxy()
 {}
 
 bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)

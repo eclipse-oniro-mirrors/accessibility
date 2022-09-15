@@ -26,19 +26,19 @@ namespace {
         AccessibleAbilityListenerImpl() = default;
         ~AccessibleAbilityListenerImpl() = default;
 
-        virtual void OnAbilityConnected() override
+        void OnAbilityConnected() override
         {
             complete_.set_value();
         }
 
-        virtual void OnAbilityDisconnected() override
+        void OnAbilityDisconnected() override
         {
             complete_.set_value();
         }
 
-        virtual void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override {}
+        void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override {}
 
-        virtual bool OnKeyPressEvent(const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent) override
+        bool OnKeyPressEvent(const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent) override
         {
             return false;
         }
