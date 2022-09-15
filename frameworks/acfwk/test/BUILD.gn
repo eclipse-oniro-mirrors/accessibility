@@ -50,7 +50,10 @@ ohos_unittest("ac_unit_test") {
     "unittest/accessibility_config_impl_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",

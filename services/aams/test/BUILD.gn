@@ -90,7 +90,10 @@ ohos_unittest("accessibility_account_data_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
@@ -142,7 +145,10 @@ ohos_unittest("accessible_ability_manager_service_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -208,7 +214,10 @@ ohos_unittest("accessibility_touch_guider_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -264,7 +273,10 @@ ohos_unittest("accessibility_common_event_registry_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -334,7 +346,10 @@ ohos_unittest("accessibility_input_interceptor_test") {
   sources += aams_mock_distributeddatamgr_src
   sources += aams_mock_multimodalinput_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
@@ -389,7 +404,10 @@ ohos_unittest("accessibility_window_manager_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
@@ -454,7 +472,10 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -533,7 +554,10 @@ ohos_unittest("accessible_ability_connection_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -576,7 +600,10 @@ ohos_unittest("accessibility_display_manager_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -636,7 +663,10 @@ ohos_unittest("accessibility_dumper_test") {
   ]
   sources += aams_mock_multimodalinput_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -678,7 +708,10 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -739,7 +772,10 @@ ohos_unittest("accessible_ability_channel_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -781,7 +817,10 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -820,7 +859,10 @@ ohos_unittest("accessibility_mouse_key_test") {
     "unittest/accessibility_mouse_key_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
@@ -858,7 +900,10 @@ ohos_unittest("accessibility_short_key_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
@@ -898,7 +943,10 @@ ohos_unittest("accessibility_settings_config_test") {
     "unittest/accessibility_settings_config_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_inner_api_path}/ability_manager:ability_manager",
@@ -950,7 +998,10 @@ ohos_unittest("accessibility_zoom_gesture_test") {
   ]
   sources += aams_mock_distributeddatamgr_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",

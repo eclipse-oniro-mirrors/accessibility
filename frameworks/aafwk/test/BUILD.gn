@@ -102,7 +102,10 @@ ohos_unittest("accessible_ability_test") {
   ]
   sources += aams_mock_multimodalinput_src
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//base/global/resource_management/frameworks/resmgr:global_resmgr",

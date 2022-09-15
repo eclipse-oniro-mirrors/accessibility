@@ -42,7 +42,10 @@ ohos_unittest("accessibility_common_test") {
     "unittest/accessibility_window_info_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",

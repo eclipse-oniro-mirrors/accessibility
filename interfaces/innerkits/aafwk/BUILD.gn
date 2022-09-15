@@ -46,7 +46,10 @@ ohos_shared_library("accessibleability") {
 
   configs = [ ":accessibleability_private_config" ]
 
-  public_configs = [ ":accessibleability_public_config" ]
+  public_configs = [
+    ":accessibleability_public_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
