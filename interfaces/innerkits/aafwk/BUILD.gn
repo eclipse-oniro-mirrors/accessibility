@@ -31,7 +31,10 @@ config("accessibleability_private_config") {
 }
 
 config("accessibleability_public_config") {
-  include_dirs = [ "include" ]
+  include_dirs = [
+    "include",
+    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
+  ]
 }
 
 aafwk_files = [
@@ -48,19 +51,10 @@ ohos_shared_library("accessibleability") {
 
   public_configs = [ ":accessibleability_public_config" ]
 
-  deps = [
-    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
 
   external_deps = [
-    "ability_base:want",
-    "ability_runtime:ability_manager",
-    "ability_runtime:runtime",
-    "bundle_framework:appexecfwk_base",
-    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
-    "eventhandler:libeventhandler",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
@@ -68,11 +62,7 @@ ohos_shared_library("accessibleability") {
     "samgr:samgr_proxy",
   ]
 
-  public_deps = [
-    "//base/global/i18n/frameworks/intl:intl_util",
-    "//base/global/resource_management/frameworks/resmgr:global_resmgr",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-  ]
+  public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   install_enable = true
 

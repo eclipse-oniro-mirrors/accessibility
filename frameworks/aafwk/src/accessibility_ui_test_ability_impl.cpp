@@ -17,7 +17,6 @@
 
 #include <mutex>
 #include "accessible_ability_client.h"
-#include "display_manager.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"

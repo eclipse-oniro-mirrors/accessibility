@@ -15,11 +15,11 @@
 
 #include "accessible_ability_client_impl.h"
 
-#include <thread>
 #include <chrono>
+#include <inttypes.h>
+#include <thread>
 
 #include "accessible_ability_client.h"
-#include "display_manager.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
