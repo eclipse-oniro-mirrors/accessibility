@@ -26,11 +26,18 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t REQUEST_WINDOW_ID_MAX = 0x00007FFF;
+    constexpr uint32_t REQUEST_ID_MASK = 0x0000FFFF;
+    constexpr int32_t REQUEST_ID_MASK_BIT = 16;
+} // namespaces
+
 using AccessibilityElementOperatorCallbacks =
     std::map<const int32_t, const sptr<IAccessibilityElementOperatorCallback>>;
-MockAccessibilityElementOperatorImpl::MockAccessibilityElementOperatorImpl(
-    int32_t windowId, const std::shared_ptr<AccessibilityElementOperator>& operation)
-    : windowId_(windowId), operator_(operation)
+MockAccessibilityElementOperatorImpl::MockAccessibilityElementOperatorImpl(int32_t windowId,
+    const std::shared_ptr<AccessibilityElementOperator> &operation,
+    AccessibilityElementOperatorCallback &callback)
+    : windowId_(windowId), operatorCallback_(callback), operator_(operation)
 {}
 
 MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
@@ -39,9 +46,9 @@ MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
 void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode)
 {
-    operatorCallback_.AddRequest(requestId, callback);
+    int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->SearchElementInfoByAccessibilityId(elementId, requestId, operatorCallback_, mode);
+        operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
         HILOG_ERROR("Operator is nullptr");
     }
@@ -51,9 +58,9 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(co
 void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t elementId, const std::string& text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
-    operatorCallback_.AddRequest(requestId, callback);
+    int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->SearchElementInfosByText(elementId, text, requestId, operatorCallback_);
+        operator_->SearchElementInfosByText(elementId, text, mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }
@@ -63,9 +70,9 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_
 void MockAccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elementId, const int32_t focusType,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
-    operatorCallback_.AddRequest(requestId, callback);
+    int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->FindFocusedElementInfo(elementId, focusType, requestId, operatorCallback_);
+        operator_->FindFocusedElementInfo(elementId, focusType, mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }
@@ -75,9 +82,9 @@ void MockAccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t 
 void MockAccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId, const int32_t direction,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
-    operatorCallback_.AddRequest(requestId, callback);
+    int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->FocusMoveSearch(elementId, direction, requestId, operatorCallback_);
+        operator_->FocusMoveSearch(elementId, direction, mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }
@@ -88,9 +95,9 @@ void MockAccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId
     const std::map<std::string, std::string> &actionArguments, int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
-    operatorCallback_.AddRequest(requestId, callback);
+    int32_t mRequestId = AddRequest(requestId, callback);
     if (operator_) {
-        operator_->ExecuteAction(elementId, action, actionArguments, requestId, operatorCallback_);
+        operator_->ExecuteAction(elementId, action, actionArguments, mRequestId, operatorCallback_);
     } else {
         HILOG_DEBUG("Can not find interaction object");
     }
@@ -121,18 +128,28 @@ int32_t MockAccessibilityElementOperatorImpl::GetWindowId()
     return windowId_;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::AddRequest(
-    const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+int32_t MockAccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     std::lock_guard<std::mutex> lock(mutex_);
+    uint32_t compositionRequestId = static_cast<uint32_t>(requestId) & REQUEST_ID_MASK;
+
+    if (windowId_ < REQUEST_WINDOW_ID_MAX && windowId_ > 0) {
+        compositionRequestId &= static_cast<uint32_t>(windowId_) << REQUEST_ID_MASK_BIT;
+    } else {
+        HILOG_ERROR("window id[%{public}d] is wrong", windowId_);
+        return -1;
+    }
+
+    requestId = static_cast<int32_t>(compositionRequestId);
     auto iter = requests_.find(requestId);
     if (iter == requests_.end()) {
         requests_[requestId] = callback;
     }
-    return;
+    return requestId;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
+void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -149,7 +166,7 @@ void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElemen
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElementInfoByTextResult(
+void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
     const std::list<AccessibilityElementInfo>& infos, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -166,7 +183,7 @@ void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetSearchElemen
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFindFocusedElementInfoResult(
+void MockAccessibilityElementOperatorImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -182,7 +199,7 @@ void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFindFocusedE
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFocusMoveSearchResult(
+void MockAccessibilityElementOperatorImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -198,7 +215,7 @@ void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetFocusMoveSea
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::OperatorCallbackImpl::SetExecuteActionResult(
+void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);

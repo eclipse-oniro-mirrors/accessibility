@@ -28,6 +28,7 @@
 #include "mock_accessible_ability_client_stub_impl.h"
 #include "mock_accessible_ability_manager_service.h"
 #include "mock_bundle_manager.h"
+#include "utils.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -94,7 +95,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new MockAccessibleAbilityClientStubImpl();
     if (obj_ != nullptr && connection_ != nullptr) {
-        connection_->OnAbilityConnectDoneSync(*elementName_, obj_, 0);
+        connection_->OnAbilityConnectDoneSync(*elementName_, obj_);
     }
 }
 
@@ -104,7 +105,7 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
     // Deregister ElementOperator
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     if (connection_ != nullptr) {
-        connection_->OnAbilityDisconnectDoneSync(*elementName_, 0);
+        connection_->OnAbilityDisconnectDoneSync(*elementName_);
     } else {
         return;
     }
@@ -234,10 +235,13 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 start";
     if (connection_ != nullptr) {
-        AppExecFwk::ElementName element;
+        AppExecFwk::ElementName element("deviceId", "bundleName", "abilityName");
         connection_->Connect(element);
+        sptr<AccessibleAbilityClientStub> obj = new MockAccessibleAbilityClientStubImpl();
+        connection_->OnAbilityConnectDoneSync(element, obj);
         auto accountData = connection_->GetAccountData();
-        EXPECT_EQ(int(accountData->GetConnectingA11yAbilities().size()), 1);
+        EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(Utils::GetUri(
+            element.GetBundleName(), element.GetAbilityName())));
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";
 }

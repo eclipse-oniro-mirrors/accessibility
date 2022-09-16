@@ -79,15 +79,14 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
 }
 
 // remove connect ability.
-void AccessibilityAccountData::RemoveConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
+void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
-    std::string uri = Utils::GetUri(connection->GetElementName());
-    HILOG_DEBUG("URI is %{public}s", uri.c_str());
-    HILOG_DEBUG("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
-    auto iter = connectedA11yAbilities_.find(uri);
-    if (iter != connectedA11yAbilities_.end()) {
-        connectedA11yAbilities_.erase(iter);
+    std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it =
+        connectedA11yAbilities_.find(Utils::GetUri(element));
+    if (it != connectedA11yAbilities_.end()) {
+        connectedA11yAbilities_.erase(it);
     }
+    HILOG_INFO("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback)
@@ -134,31 +133,24 @@ void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t
     }
 }
 
-void AccessibilityAccountData::AddConnectingA11yAbility(const std::string& bundleName)
+void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
+    const sptr<AccessibleAbilityConnection> &connection)
 {
-    HILOG_DEBUG("start.");
-    for (auto& ability : connectingA11yAbilities_) {
-        if (ability == bundleName) {
-            HILOG_ERROR("The ability is already connecting, and it's bundle name is %{public}s", bundleName.c_str());
-            return;
-        }
+    auto iter = connectingA11yAbilities_.find(uri);
+    if (iter != connectingA11yAbilities_.end()) {
+        HILOG_ERROR("The ability is already connecting, and it's uri is %{public}s", uri.c_str());
+        return;
     }
-    connectingA11yAbilities_.push_back(bundleName);
-    HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
+    connectingA11yAbilities_[uri] = connection;
 }
 
-void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string& bundleName)
+void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("start");
-    for (auto it = connectingA11yAbilities_.begin(); it != connectingA11yAbilities_.end(); it++) {
-        if (*it == bundleName) {
-            HILOG_DEBUG("Removed %{public}s from ConnectingA11yAbility: ", bundleName.c_str());
-            connectingA11yAbilities_.erase(it);
-            HILOG_DEBUG("Remove ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
-            return;
-        }
+    auto iter = connectingA11yAbilities_.find(uri);
+    if (iter != connectingA11yAbilities_.end()) {
+        connectingA11yAbilities_.erase(iter);
+        return;
     }
-    HILOG_ERROR("The ability(%{public}s) is not connecting.", bundleName.c_str());
 }
 
 // For UT
@@ -248,10 +240,13 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
     return captionPropertyCallbacks_;
 }
 
-const std::vector<std::string>& AccessibilityAccountData::GetConnectingA11yAbilities()
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("start.");
-    return connectingA11yAbilities_;
+    auto iter = connectingA11yAbilities_.find(uri);
+    if (iter != connectingA11yAbilities_.end()) {
+        return iter->second;
+    }
+    return nullptr;
 }
 
 const std::vector<std::string>& AccessibilityAccountData::GetEnabledAbilities()

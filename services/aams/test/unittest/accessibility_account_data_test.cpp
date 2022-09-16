@@ -135,23 +135,12 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
-    EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
-    /* add connecting A11y ability */
     const std::string bundleName = "bbb";
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
+    /* add connecting A11y ability */
 
-    accountData->AddConnectingA11yAbility(bundleName);
-
-    std::vector<std::string> res;
-    res = accountData->GetConnectingA11yAbilities();
-
-    std::vector<string>::iterator iter;
-    iter = find(res.begin(), res.end(), bundleName);
-    bool test = false;
-    if (iter != res.end()) {
-        test = true;
-    }
-    EXPECT_TRUE(test);
-    EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
+    accountData->AddConnectingA11yAbility(bundleName, connection);
+    EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
 
     accountData->Init();
     accountData->GetConfig()->SetKeyEventObserverState(true);
@@ -183,7 +172,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     /* add connecting A11y ability */
 
     const std::string bundleName = "bbb";
-    accountData->AddConnectingA11yAbility(bundleName);
+    accountData->AddConnectingA11yAbility(bundleName, connection);
 
     accountData->Init();
     accountData->GetConfig()->SetGestureState(true);
@@ -242,7 +231,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveC
     const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     /* remove */
-    accountData->RemoveConnectedAbility(connection);
+    accountData->RemoveConnectedAbility(connection->GetElementName());
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectedAbility001 end";
@@ -270,9 +259,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementNameURI));
 
-    EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(elementNameURI));
     /* disconnect */
-    accountData->RemoveConnectedAbility(connection);
+    accountData->RemoveConnectedAbility(connection->GetElementName());
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AbilityDisconnected001 end";
 }
@@ -289,23 +278,18 @@ HWTEST_F(
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const std::string bundleName = "bbb";
-    EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     /* add connecting A11y ability */
-    accountData->AddConnectingA11yAbility(bundleName);
-    EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
-    std::vector<std::string> res;
-    res = accountData->GetConnectingA11yAbilities();
 
-    std::vector<string>::iterator iter;
-    iter = find(res.begin(), res.end(), bundleName);
-    bool test = false;
-    if (iter != res.end()) {
-        test = true;
-    }
-    EXPECT_TRUE(test);
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    accountData->AddConnectingA11yAbility(bundleName, connection);
+    EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
     /* remove */
     accountData->RemoveConnectingA11yAbility(bundleName);
-    EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveConnectingA11yAbility001 end";
 }
@@ -761,7 +745,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
     GTEST_LOG_(INFO) << "OnAbilityConnectDoneSync start !!!!!";
     const AppExecFwk::ElementName elementName("aaa", "bbb", "ccc");
-    AAConnection->OnAbilityConnectDoneSync(elementName, aastub, 0);
+    AAConnection->OnAbilityConnectDoneSync(elementName, aastub);
     GTEST_LOG_(INFO) << "add connected A11y Ability";
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     /* CapabilityValues */
@@ -777,7 +761,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_OnAccou
     /* Account Switched */
     GTEST_LOG_(INFO) << "OnAccountSwitched";
     accountData->OnAccountSwitched();
-    AAConnection->OnAbilityDisconnectDoneSync(elementName, 0);
+    AAConnection->OnAbilityDisconnectDoneSync(elementName);
     accountData->UpdateAccountCapabilities();
     /* initialization */
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
@@ -803,21 +787,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     const std::string bundleName = "bbb";
-    EXPECT_EQ(0, (int)accountData->GetConnectingA11yAbilities().size());
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     /* add connecting A11y ability */
-    accountData->AddConnectingA11yAbility(bundleName);
-    EXPECT_EQ(1, (int)accountData->GetConnectingA11yAbilities().size());
-    std::vector<std::string> res;
-    res = accountData->GetConnectingA11yAbilities();
-
-    std::vector<string>::iterator iter;
-    iter = find(res.begin(), res.end(), bundleName);
-    bool test = false;
-    if (iter != res.end()) {
-        test = true;
-    }
-    EXPECT_TRUE(test);
-
+    accountData->AddConnectingA11yAbility(bundleName, nullptr);
+    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectingA11yAbility001 end";
 }
 
