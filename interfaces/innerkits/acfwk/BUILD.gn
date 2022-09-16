@@ -42,7 +42,10 @@ acfwk_src = [
 ohos_shared_library("accessibilityconfig") {
   sources = acfwk_src
 
-  configs = [ ":accessibilityconfig_private_config" ]
+  configs = [
+    ":accessibilityconfig_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 

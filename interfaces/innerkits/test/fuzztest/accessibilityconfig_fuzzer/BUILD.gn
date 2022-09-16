@@ -20,11 +20,9 @@ ohos_fuzztest("AccessibilityConfigFuzzTest") {
   module_out_path = "accessibility/acfwk"
   fuzz_config_file = "../../fuzztest/accessibilityconfig_fuzzer"
 
-  cflags = [
-    "-g",
-    "-O0",
-    "-Wno-unused-variable",
-    "-fno-omit-frame-pointer",
+  configs = [
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:configs_cc_ld",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
   ]
   sources = [ "accessibilityconfig_fuzzer.cpp" ]
   deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig" ]

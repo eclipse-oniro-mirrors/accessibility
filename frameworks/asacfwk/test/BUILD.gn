@@ -106,7 +106,10 @@ ohos_unittest("asac_unit_test") {
     "unittest/accessibility_system_ability_client_impl_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   deps = [
     "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",

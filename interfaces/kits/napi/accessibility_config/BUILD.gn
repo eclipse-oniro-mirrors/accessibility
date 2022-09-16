@@ -31,7 +31,7 @@ ohos_shared_library("config_napi") {
     "./src/native_module.cpp",
   ]
 
-  configs = []
+  configs = [ "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags" ]
 
   deps = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",

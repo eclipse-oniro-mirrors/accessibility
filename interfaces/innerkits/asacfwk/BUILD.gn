@@ -41,7 +41,10 @@ asacfwk_src = [
 ohos_shared_library("accessibilityclient") {
   sources = asacfwk_src
 
-  configs = [ ":accessibilityclient_private_config" ]
+  configs = [
+    ":accessibilityclient_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
 
   public_configs = [ ":accessibilityclient_public_config" ]
 
