@@ -135,6 +135,7 @@ public:
         return runner_;
     }
 
+    sptr<AccessibilityAccountData> GetAccountData(int32_t accountId) const;
     sptr<AccessibilityAccountData> GetCurrentAccountData();
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
