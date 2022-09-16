@@ -234,13 +234,6 @@ private:
      */
     bool CheckEventType(EventType eventType);
 
-    /**
-     * @brief Check the action type is valid or not.
-     * @param eventType The data of event type.
-     * @return True: The data of event type is valid; otherwise is not.
-     */
-    bool CheckActionType(ActionType actionType);
-
     std::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;

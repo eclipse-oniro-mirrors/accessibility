@@ -769,6 +769,7 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
   sources = [
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessibility_settings_config.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_common_event_data.cpp",
     "mock/src/mock_common_event_manager.cpp",
