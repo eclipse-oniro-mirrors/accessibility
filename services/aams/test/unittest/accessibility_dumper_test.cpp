@@ -178,7 +178,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
     int ret = dumper_->Dump(fd_, args);
     EXPECT_EQ(0, ret);
 
-    currentAccount->RemoveConnectedAbility(connection);
+    currentAccount->RemoveConnectedAbility(connection->GetElementName());
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_005 end";
 }
 

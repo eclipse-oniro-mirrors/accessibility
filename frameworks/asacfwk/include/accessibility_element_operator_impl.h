@@ -34,10 +34,12 @@ public:
     /**
      * @brief construct function
      * @param windowId The window id.
-     * @param operation
+     * @param operation The object implemented by ACE.
+     * @param callback The callback which is to transfer the result from ACE.
      */
     explicit AccessibilityElementOperatorImpl(int32_t windowId,
-        const std::shared_ptr<AccessibilityElementOperator> &operation);
+        const std::shared_ptr<AccessibilityElementOperator> &operation,
+        AccessibilityElementOperatorCallback &callback);
 
     /**
      * @brief destruct function
@@ -134,72 +136,50 @@ public:
     int32_t GetWindowId();
 
     /**
-     * Implement the function to set the result to AA when ACE complete the request.
+     * @brief Set the element information by accessibility id to AA.
+     * @param infos The element info searched by accessibility id.
+     * @param requestId The request id from AA, it is used to match with request and response.
      */
-    class OperatorCallbackImpl : public AccessibilityElementOperatorCallback {
-    public:
-        enum CALL_API_NUM : uint32_t {
-            CALLBACK_BY_ACCESSIBILITY_ID = 0x00000001,
-            CALLBACK_BY_TEXT = 0x00000002,
-            CALLBACK_FIND_FOCUS = 0x00000004,
-            CALLBACK_BY_FOCUS_MOVE = 0x00000008,
-            CALLBACK_PERFORM_ACTION = 0x00000010,
-        };
+    void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
+        const int32_t requestId);
 
-        /**
-         * @brief Add request.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         * @param callback To transfer the node info to ASAC and it defined by ASAC.
-         */
-        void AddRequest(const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
+    /**
+     * @brief Set the element information matched with text to AA.
+     * @param infos The element information searched matched with text.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetSearchElementInfoByTextResult(const std::list<AccessibilityElementInfo> &infos,
+        const int32_t requestId);
 
-        /**
-         * @brief Set the element information by accessibility id to AA.
-         * @param infos The element info searched by accessibility id.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         */
-        virtual void SetSearchElementInfoByAccessibilityIdResult(const std::list<AccessibilityElementInfo> &infos,
-            const int32_t requestId) override;
+    /**
+     * @brief Set the element information matched with focus type to AA.
+     * @param info The element information searched matched with focus type.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info, const int32_t requestId);
 
-        /**
-         * @brief Set the element information matched with text to AA.
-         * @param infos The element information searched matched with text.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         */
-        virtual void SetSearchElementInfoByTextResult(const std::list<AccessibilityElementInfo> &infos,
-            const int32_t requestId) override;
+    /**
+     * @brief Set the element information by focus direction to AA.
+     * @param info The element information searched by focus direction.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId);
 
-        /**
-         * @brief Set the element information matched with focus type to AA.
-         * @param info The element information searched matched with focus type.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         */
-        virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
-            const int32_t requestId) override;
-
-        /**
-         * @brief Set the element information by focus direction to AA.
-         * @param info The element information searched by focus direction.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         */
-        virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
-
-        /**
-         * @brief Set the result of action executed to AA.
-         * @param succeeded True: The action is executed successfully; otherwise is false.
-         * @param requestId The request id from AA, it is used to match with request and response.
-         */
-        virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
-
-    private:
-        std::mutex mutex_;
-        std::unordered_map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requests_;
-    };
+    /**
+     * @brief Set the result of action executed to AA.
+     * @param succeeded True: The action is executed successfully; otherwise is false.
+     * @param requestId The request id from AA, it is used to match with request and response.
+     */
+    void SetExecuteActionResult(const bool succeeded, const int32_t requestId);
 
 private:
+    int32_t AddRequest(int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback);
+
+    std::mutex mutex_;
     int32_t windowId_ = 0;
-    OperatorCallbackImpl operatorCallback_;
+    AccessibilityElementOperatorCallback &operatorCallback_;
     std::shared_ptr<AccessibilityElementOperator> operator_ = nullptr;
+    std::unordered_map<int32_t, sptr<IAccessibilityElementOperatorCallback>> requests_;
     DISALLOW_COPY_AND_MOVE(AccessibilityElementOperatorImpl);
 };
 

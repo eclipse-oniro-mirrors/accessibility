@@ -78,16 +78,8 @@ public:
 
     int32_t GetChannelId();
 
-    void OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject,
-        int32_t resultCode)
-    {
-        InnerOnAbilityConnectDone(element, remoteObject, resultCode);
-    }
-
-    void OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element, int32_t resultCode)
-    {
-        InnerOnAbilityDisconnectDone(element, resultCode);
-    }
+    void OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element, const sptr<IRemoteObject> &remoteObject);
+    void OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element);
 
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -106,10 +98,7 @@ private:
     };
 
     bool IsWantedEvent(int32_t eventType);
-
-    void InnerOnAbilityConnectDone(const AppExecFwk::ElementName &element,
-        const sptr<IRemoteObject> &remoteObject, int32_t resultCode);
-    void InnerOnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode);
+    void InitAbilityClient(const sptr<IRemoteObject> &remoteObject);
 
     int32_t connectionId_ = -1;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;

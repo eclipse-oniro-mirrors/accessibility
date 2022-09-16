@@ -25,6 +25,7 @@
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
+#include "mock_accessibility_element_operator_callback.h"
 #include "mock_accessibility_element_operator_impl.h"
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_input_manager.h"
@@ -105,8 +106,8 @@ void AamsTouchGuideTest::SetUp()
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
     sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
-    aastub_ = new AccessibleAbilityChannel(*connection);
-    connection->OnAbilityConnectDoneSync(elementName, aastub_, 0);
+    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
+    connection->OnAbilityConnectDoneSync(elementName, aastub_);
 
     AddAccessibilityWindowConnection();
 }
@@ -176,8 +177,10 @@ void AamsTouchGuideTest::AddAccessibilityWindowConnection()
     GTEST_LOG_(INFO) << "aamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
     // accessibility interaction connection
     int32_t windowId = 0;
-    std::shared_ptr<AccessibilityElementOperator> operation = nullptr;
-    sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorImpl(windowId, operation);
+    std::shared_ptr<MockAccessibilityElementOperatorCallback> mockCallback =
+        std::make_shared<MockAccessibilityElementOperatorCallback>();
+    sptr<AccessibilityElementOperatorStub> stub =
+        new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
     Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy);
