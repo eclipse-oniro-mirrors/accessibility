@@ -15,9 +15,10 @@
 
 #include <cstdio>
 #include <gtest/gtest.h>
-#include "accessibility_ability_helper.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_connection.h"
 #include "accessible_ability_manager_service.h"
 #include "iservice_registry.h"
@@ -72,7 +73,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     GTEST_LOG_(INFO) << "SetUp";
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityAbilityHelper::GetInstance().WaitForServicePublish();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 
     // new Interaction proxy

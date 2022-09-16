@@ -28,9 +28,6 @@ MockAccessibilityElementOperatorProxy::MockAccessibilityElementOperatorProxy(con
     GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy";
 }
 
-MockAccessibilityElementOperatorProxy::~MockAccessibilityElementOperatorProxy()
-{}
-
 bool MockAccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel& data)
 {
     return true;
