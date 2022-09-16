@@ -125,6 +125,8 @@ ohos_unittest("accessible_ability_test") {
   ]
 
   external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
