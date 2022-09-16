@@ -95,37 +95,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
 
 void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::ElementName &element, int32_t resultCode)
 {
-    HILOG_INFO();
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return;
-    }
-
-    eventHandler_->PostTask(std::bind([element, resultCode](sptr<AccessibilityAccountData> &accountData,
-        sptr<IAccessibleAbilityClient> &abilityClient, int32_t connectionId) -> void {
-        HILOG_DEBUG();
-        if (resultCode != NO_ERROR) {
-            HILOG_ERROR("Disconnect failed!");
-            return;
-        }
-
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            return;
-        }
-        accountData->RemoveConnectedAbility(element);
-
-        if (accountData->GetAccountId() ==
-            Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId()) {
-            Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
-        }
-
-        if (!abilityClient) {
-            HILOG_ERROR("abilityClient is nullptr");
-            return;
-        }
-        abilityClient->Disconnect(connectionId);
-        }, accountData_, abilityClient_, connectionId_), "OnAbilityDisconnectDone");
+    HILOG_INFO("resultCode[%{public}d]", resultCode);
 }
 
 void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
@@ -196,6 +166,23 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG();
+    if (!accountData_) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+    accountData_->RemoveConnectedAbility(elementName_);
+
+    if (accountData_->GetAccountId() ==
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId()) {
+        Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
+    }
+
+    if (!abilityClient_) {
+        HILOG_ERROR("abilityClient is nullptr");
+        return;
+    }
+    abilityClient_->Disconnect(connectionId_);
+
     auto abilityManagerClient = AAFwk::AbilityManagerClient::GetInstance();
     if (!abilityManagerClient) {
         HILOG_ERROR("abilityManagerClient is nullptr");
