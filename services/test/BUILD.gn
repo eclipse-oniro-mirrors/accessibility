@@ -60,7 +60,7 @@ config("module_private_config") {
     "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk",
     "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
     "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
-    "//foundation/multimedia/image_standard/interfaces/kits/native/include",
+    "//foundation/multimedia/image_framework/interfaces/kits/native/include",
     "//foundation/multimodalinput/input/util/common/include",
     "//foundation/window/window_manager/dm/include",
     "//foundation/window/window_manager/interfaces/innerkits/dm",
