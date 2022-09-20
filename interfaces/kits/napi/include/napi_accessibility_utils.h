@@ -56,14 +56,12 @@ std::string GetStringFromNAPI(napi_env env, napi_value value);
 bool ParseBool(napi_env env, bool& param, napi_value args);
 bool ParseString(napi_env env, std::string& param, napi_value args);
 bool ParseNumber(napi_env env, napi_value args);
-bool ParseUint32(napi_env env, uint32_t& param, napi_value args);
 bool ParseInt32(napi_env env, int32_t& param, napi_value args);
 bool ParseDouble(napi_env env, double& param, napi_value args);
 napi_value GetErrorValue(napi_env env, int errCode);
 
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
-void ConvertOperationToJS(napi_env env, napi_value result, const OHOS::Accessibility::AccessibleAction& operation);
 void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid);
 void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const OHOS::Accessibility::GridItemInfo& gridItem);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
@@ -87,16 +85,11 @@ void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values);
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes);
 void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities);
-void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value);
-void ConvertStyleToJS(napi_env env, napi_value& captionsManager,
-    OHOS::AccessibilityConfig::CaptionProperty captionProperty_);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
 std::string ConvertColorToString(uint32_t color);
 
-OHOS::Accessibility::NotificationCategory ConvertStringToNotificationCategory(const std::string &type);
-OHOS::Accessibility::GestureType ConvertStringToGestureType(const std::string &type);
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
 OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
 OHOS::Accessibility::AbilityStateType ConvertStringToAbilityStateType(const std::string &type);
@@ -106,7 +99,6 @@ OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string 
 std::string ConvertTextMoveUnitToString(OHOS::Accessibility::TextMoveUnit type);
 std::string ConvertOperationTypeToString(OHOS::Accessibility::ActionType type);
 std::string CoverGestureTypeToString(OHOS::Accessibility::GestureType type);
-const std::string ConvertCategoryNotificationToString(OHOS::Accessibility::NotificationCategory category);
 const std::string ConvertWindowUpdateTypeToString(OHOS::Accessibility::WindowUpdateType type);
 const std::string ConvertAccessibilityEventTypeToString(OHOS::Accessibility::EventType type);
 void ConvertEventTypeToString(const OHOS::Accessibility::AccessibilityEventInfo &eventInfo,

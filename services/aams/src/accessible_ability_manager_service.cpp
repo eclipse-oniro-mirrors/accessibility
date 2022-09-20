@@ -151,11 +151,10 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
         }
 
         dependentServicesStatus_[systemAbilityId] = true;
-        for (auto &iter : dependentServicesStatus_) {
-            if (iter.second == false) {
-                HILOG_DEBUG("Not all the dependence is ready!");
-                return;
-            }
+        if (std::any_of(dependentServicesStatus_.begin(), dependentServicesStatus_.end(),
+            [](const std::map<int32_t, bool>::value_type &status) { return !status.second; })) {
+            HILOG_DEBUG("Not all the dependence is ready!");
+            return;
         }
 
         if (Init() == false) {

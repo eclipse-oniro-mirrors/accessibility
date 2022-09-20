@@ -142,7 +142,7 @@ bool AccessibilityShortKey::IsTriplePress()
     HILOG_DEBUG();
 
     uint32_t upEventCount = 0;
-    int32_t action = MMI::KeyEvent::KEY_ACTION_UNKNOWN;
+    int32_t action;
     for (auto &keyEvent : cachedKeyEvents_) {
         action = keyEvent->GetKeyAction();
         if (action == MMI::KeyEvent::KEY_ACTION_UP) {

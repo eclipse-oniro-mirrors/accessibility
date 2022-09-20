@@ -127,16 +127,6 @@ bool ParseNumber(napi_env env, napi_value args)
     return true;
 }
 
-bool ParseUint32(napi_env env, uint32_t& param, napi_value args)
-{
-    if (!ParseNumber(env, args)) {
-        return false;
-    }
-
-    napi_get_value_uint32(env, args, &param);
-    return true;
-}
-
 bool ParseInt32(napi_env env, int32_t& param, napi_value args)
 {
     if (!ParseNumber(env, args)) {
@@ -471,31 +461,6 @@ void ConvertEventTypeToString(const AccessibilityEventInfo &eventInfo, std::stri
     }
 }
 
-const std::string ConvertCategoryNotificationToString(NotificationCategory category)
-{
-    static const std::map<NotificationCategory, const std::string> categoryTable = {
-        {NotificationCategory::CATEGORY_CALL, "call"},
-        {NotificationCategory::CATEGORY_MSG, "msg"},
-        {NotificationCategory::CATEGORY_EMAIL, "email"},
-        {NotificationCategory::CATEGORY_EVENT, "event"},
-        {NotificationCategory::CATEGORY_PROMO, "promo"},
-        {NotificationCategory::CATEGORY_ALARM, "alarm"},
-        {NotificationCategory::CATEGORY_PROGRESS, "progress"},
-        {NotificationCategory::CATEGORY_SOCIAL, "social"},
-        {NotificationCategory::CATEGORY_ERR, "err"},
-        {NotificationCategory::CATEGORY_TRANSPORT, "transport"},
-        {NotificationCategory::CATEGORY_SYS, "sys"},
-        {NotificationCategory::CATEGORY_SERVICE, "service"},
-        {NotificationCategory::CATEGORY_OTHERS, ""},
-    };
-
-    if (categoryTable.find(category) == categoryTable.end()) {
-        return "";
-    }
-
-    return categoryTable.at(category);
-}
-
 std::string ConvertOperationTypeToString(ActionType type)
 {
     static const std::map<ActionType, const std::string> triggerActionTable = {
@@ -522,21 +487,6 @@ std::string ConvertOperationTypeToString(ActionType type)
     }
 
     return triggerActionTable.at(type);
-}
-
-void ConvertOperationToJS(napi_env env, napi_value result, const AccessibleAction& operation)
-{
-    napi_value nType;
-    ActionType type = operation.GetActionType();
-    std::string strType = ConvertOperationTypeToString(type);
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strType.c_str(), NAPI_AUTO_LENGTH, &nType));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "type", nType));
-    HILOG_DEBUG("operationType[%{public}s]", strType.c_str());
-
-    napi_value nDescription;
-    std::string strDescription = operation.GetDescriptionInfo();
-    NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, strDescription.c_str(), NAPI_AUTO_LENGTH, &nDescription));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "description", nDescription));
 }
 
 void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid)
@@ -773,57 +723,6 @@ std::string ConvertTextMoveUnitToString(TextMoveUnit type)
     return textMoveUnitTable.at(type);
 }
 
-NotificationCategory ConvertStringToNotificationCategory(const std::string &type)
-{
-    static const std::map<const std::string, NotificationCategory> notificationCategoryTable = {
-        {"call", NotificationCategory::CATEGORY_CALL},
-        {"msg", NotificationCategory::CATEGORY_MSG},
-        {"email", NotificationCategory::CATEGORY_EMAIL},
-        {"event", NotificationCategory::CATEGORY_EVENT},
-        {"promo", NotificationCategory::CATEGORY_PROMO},
-        {"alarm", NotificationCategory::CATEGORY_ALARM},
-        {"progress", NotificationCategory::CATEGORY_PROGRESS},
-        {"social", NotificationCategory::CATEGORY_SOCIAL},
-        {"err", NotificationCategory::CATEGORY_ERR},
-        {"transport", NotificationCategory::CATEGORY_TRANSPORT},
-        {"sys", NotificationCategory::CATEGORY_SYS},
-        {"service", NotificationCategory::CATEGORY_SERVICE}};
-
-    if (notificationCategoryTable.find(type) == notificationCategoryTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return CATEGORY_INVALID;
-    }
-
-    return notificationCategoryTable.at(type);
-}
-
-GestureType ConvertStringToGestureType(const std::string &type)
-{
-    static const std::map<const std::string, GestureType> gestureTypesTable = {
-        {"left", GestureType::GESTURE_SWIPE_LEFT},
-        {"leftThenRight", GestureType::GESTURE_SWIPE_LEFT_THEN_RIGHT},
-        {"leftThenUp", GestureType::GESTURE_SWIPE_LEFT_THEN_UP},
-        {"leftThenDown", GestureType::GESTURE_SWIPE_LEFT_THEN_DOWN},
-        {"right", GestureType::GESTURE_SWIPE_RIGHT},
-        {"rightThenLeft", GestureType::GESTURE_SWIPE_RIGHT_THEN_LEFT},
-        {"rightThenUp", GestureType::GESTURE_SWIPE_RIGHT_THEN_UP},
-        {"rightThenDown", GestureType::GESTURE_SWIPE_RIGHT_THEN_DOWN},
-        {"up", GestureType::GESTURE_SWIPE_UP},
-        {"upThenLeft", GestureType::GESTURE_SWIPE_UP_THEN_LEFT},
-        {"upThenRight", GestureType::GESTURE_SWIPE_UP_THEN_RIGHT},
-        {"upThenDown", GestureType::GESTURE_SWIPE_UP_THEN_DOWN},
-        {"down", GestureType::GESTURE_SWIPE_DOWN},
-        {"downThenLeft", GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT},
-        {"downThenRight", GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT},
-        {"downThenUp", GestureType::GESTURE_SWIPE_DOWN_THEN_UP}};
-
-    if (gestureTypesTable.find(type) == gestureTypesTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return GESTURE_INVALID;
-    }
-    return gestureTypesTable.at(type);
-}
-
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action)
 {
@@ -891,15 +790,14 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     int32_t dataValue = 0;
-    std::string str = "";
-    EventType eventType = TYPE_VIEW_INVALID;
+    std::string str;
     napi_create_string_utf8(env, "type", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value value = nullptr;
         napi_get_property(env, object, propertyNameValue, &value);
         str = GetStringFromNAPI(env, value);
-        eventType = ConvertStringToEventInfoTypes(str);
+        EventType eventType = ConvertStringToEventInfoTypes(str);
         eventInfo.SetEventType(eventType);
         if (eventType == TYPE_VIEW_INVALID) {
             return false;
@@ -1455,8 +1353,6 @@ std::string ConvertColorToString(uint32_t color)
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue)
 {
     uint32_t color = COLOR_TRANSPARENT;
-    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-    size_t outSize = 0;
     napi_valuetype valueType = napi_undefined;
     napi_value value = nullptr;
     napi_get_property(env, object, propertyNameValue, &value);
@@ -1470,6 +1366,8 @@ uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameV
         HILOG_DEBUG("valueType number, color is 0x%{public}x", color);
     }
     if (valueType == napi_string) {
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         color = ConvertColorStringToNumer(std::string(outBuffer));
     }
@@ -1480,8 +1378,6 @@ uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameV
 uint32_t GetColorValue(napi_env env, napi_value value)
 {
     uint32_t color = COLOR_TRANSPARENT;
-    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-    size_t outSize = 0;
     napi_valuetype valueType = napi_undefined;
     napi_status status = napi_typeof(env, value, &valueType);
     if (status != napi_ok) {
@@ -1493,6 +1389,8 @@ uint32_t GetColorValue(napi_env env, napi_value value)
         napi_get_value_uint32(env, value, &color);
     }
     if (valueType == napi_string) {
+        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+        size_t outSize = 0;
         napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
         color = ConvertColorStringToNumer(std::string(outBuffer));
     }
@@ -1627,26 +1525,6 @@ void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
         }
         capabilities |= capability;
     }
-}
-
-void ConvertEnabledToJS(napi_env env, napi_value& captionsManager, bool value)
-{
-    HILOG_DEBUG();
-    napi_value keyCode;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, value, &keyCode));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "enabled", keyCode));
-}
-
-void ConvertStyleToJS(
-    napi_env env, napi_value& captionsManager, OHOS::AccessibilityConfig::CaptionProperty captionProperty_)
-{
-    HILOG_DEBUG();
-    napi_value keyCode;
-    NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyCode));
-
-    ConvertCaptionPropertyToJS(env, keyCode, captionProperty_);
-
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, captionsManager, "style", keyCode));
 }
 
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values)

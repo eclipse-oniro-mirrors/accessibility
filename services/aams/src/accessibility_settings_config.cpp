@@ -614,7 +614,7 @@ void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, st
         vectorResult.push_back(stringIn);
     } else {
         int32_t startWrod = 0;
-        int32_t length = 0;
+        int32_t length;
         for (int32_t i = 0; i <= wrodCount; i++) {
             if (i == 0) {
                 length = position[i];

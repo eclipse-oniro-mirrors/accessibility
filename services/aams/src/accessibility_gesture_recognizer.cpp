@@ -375,8 +375,8 @@ std::vector<Pointer> AccessibilityGestureRecognizer::GetPointerPath(std::vector<
     Pointer newSeparation;
     float xUnitVector = 0;
     float yUnitVector = 0;
-    float xVector = 0;
-    float yVector = 0;
+    float xVector;
+    float yVector;
     float vectorLength = 0;
     int32_t numSinceFirstSep = 0;
 

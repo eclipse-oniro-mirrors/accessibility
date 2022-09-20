@@ -220,7 +220,7 @@ bool AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Accessibil
 
     std::vector<AccessibilityGesturePosition> positions = gesturePath->GetPositions();
 
-    if (positions.size() <= 0) {
+    if (positions.size() == 0) {
         HILOG_ERROR("The number of gesture path position is not allowed.");
         return false;
     }

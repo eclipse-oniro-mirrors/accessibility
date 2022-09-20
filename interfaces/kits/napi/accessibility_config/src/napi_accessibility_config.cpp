@@ -619,7 +619,7 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -637,6 +637,13 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute OnEnableAbilityListsStateChanged work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void EnableAbilityListsObserverImpl::SubscribeToFramework()

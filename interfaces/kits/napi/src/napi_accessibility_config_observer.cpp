@@ -103,7 +103,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -127,6 +127,13 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyStateChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption)
@@ -152,7 +159,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -176,6 +183,13 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyPropertyChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& value)
@@ -201,7 +215,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -229,6 +243,13 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyStringChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
@@ -254,7 +275,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -277,6 +298,13 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyIntChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
@@ -302,7 +330,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -325,6 +353,13 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyUintChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
@@ -350,7 +385,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -373,6 +408,13 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyFloatChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void NAccessibilityConfigObserverImpl::SubscribeToFramework()
