@@ -123,11 +123,9 @@ void AccessibilityZoomGesture::SendCacheEventsToNext()
     HILOG_DEBUG();
 
     bool isStartNewAction = false;
-    int32_t action = MMI::PointerEvent::POINTER_ACTION_UNKNOWN;
+    int32_t action;
     std::vector<std::shared_ptr<MMI::PointerEvent>> cacheEventsTmp;
-    for (auto &pointerEvent : cacheEvents_) {
-        cacheEventsTmp.emplace_back(pointerEvent);
-    }
+    std::copy(cacheEvents_.begin(), cacheEvents_.end(), std::back_inserter(cacheEventsTmp));
 
     ClearCacheEventsAndMsg();
 
@@ -383,7 +381,7 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
         count--;
     }
 
-    if (count <= 0) {
+    if (count == 0) {
         HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return;
     }
@@ -425,7 +423,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
         count--;
     }
 
-    if (count <= 0) {
+    if (count == 0) {
         HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return span;
     }
@@ -489,7 +487,7 @@ bool AccessibilityZoomGesture::IsTripleTaps()
     HILOG_DEBUG();
 
     uint32_t upEventCount = 0;
-    int32_t action = MMI::PointerEvent::POINTER_ACTION_UNKNOWN;
+    int32_t action;
     for (auto &pointerEvent : cacheEvents_) {
         action = pointerEvent->GetPointerAction();
         if (action == MMI::PointerEvent::POINTER_ACTION_UP) {

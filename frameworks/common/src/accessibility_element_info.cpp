@@ -929,17 +929,15 @@ ActionType AccessibilityElementInfo::GetTriggerAction() const
 void AccessibilityElementInfo::SetContentList(const std::vector<std::string> &contentList)
 {
     contentList_.clear();
-    for (auto &content : contentList) {
-        contentList_.emplace_back(content);
-    }
+    contentList_.resize(contentList.size());
+    std::copy(contentList.begin(), contentList.end(), contentList_.begin());
 }
 
 void AccessibilityElementInfo::GetContentList(std::vector<std::string> &contentList) const
 {
     contentList.clear();
-    for (auto &content : contentList_) {
-        contentList.emplace_back(content);
-    }
+    contentList.resize(contentList_.size());
+    std::copy(contentList_.begin(), contentList_.end(), contentList.begin());
 }
 
 void AccessibilityElementInfo::SetLatestContent(const std::string &content)
