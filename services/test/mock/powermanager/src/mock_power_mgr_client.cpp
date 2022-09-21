@@ -95,12 +95,12 @@ void PowerMgrClient::UnRegisterPowerModeCallback(const sptr<IPowerModeCallback>&
 void PowerMgrClient::SetDisplaySuspend(bool enable)
 {}
 
-void PowerMgrClient::SetDeviceMode(const uint32_t mode)
+void PowerMgrClient::SetDeviceMode(const PowerMode mode)
 {}
 
-uint32_t PowerMgrClient::GetDeviceMode()
+PowerMode PowerMgrClient::GetDeviceMode()
 {
-    return ERR_OK;
+    return PowerMode::NORMAL_MODE;
 }
 
 std::string PowerMgrClient::Dump(const std::vector<std::string>& args)
