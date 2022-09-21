@@ -18,6 +18,7 @@
 #include <map>
 #include <vector>
 #include "accessibility_account_data.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -238,6 +239,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG("start");
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(-1);
 }
 
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)

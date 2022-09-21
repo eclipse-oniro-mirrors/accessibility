@@ -306,6 +306,112 @@ public:
     {
         return zoomState_;
     }
+
+    void SetScrollState(bool state)
+    {
+        scrollState_ = state;
+    }
+
+    bool GetScrollState() const
+    {
+        return scrollState_;
+    }
+    
+    void AddUserId(int32_t id)
+    {
+        userIds_.emplace_back(id);
+    }
+
+    void RemoveUserId(int32_t id)
+    {
+        for (auto iter = userIds_.begin(); iter != userIds_.end();) {
+            if (*iter == id) {
+                userIds_.erase(iter);
+            } else {
+                iter++;
+            }
+        }
+    }
+
+    void GetUserIds(std::vector<int32_t> &userIds) const
+    {
+        for (auto& id : userIds_) {
+            userIds.emplace_back(id);
+        }
+    }
+
+    void AddPackage(const std::string &name)
+    {
+        packages_.emplace_back(name);
+    }
+
+    void RemovePackage(const std::string &name)
+    {
+        for (auto iter = packages_.begin(); iter != packages_.end();) {
+            if (*iter == name) {
+                packages_.erase(iter);
+            } else {
+                iter++;
+            }
+        }
+    }
+
+    void GetPackages(std::vector<std::string> &packages) const
+    {
+        for (auto& name : packages_) {
+            packages.emplace_back(name);
+        }
+    }
+
+    void SetCurrentUserId(int32_t id)
+    {
+        currentUserId_ = id;
+    }
+
+    int32_t GetCurrentUserId() const
+    {
+        return currentUserId_;
+    }
+
+    void ChangePackage(bool isChanged)
+    {
+        isPackageChanged_ = isChanged;
+    }
+
+    bool GetChangePackageFlag() const
+    {
+        return isPackageChanged_;
+    }
+
+    void SetNeedAccountDataNullFlag(bool flag)
+    {
+        needAccountDataNull_ = flag;
+    }
+
+    bool GetNeedAccountDataNullFlag() const
+    {
+        return needAccountDataNull_;
+    }
+
+    void SetEventWindowId(int32_t windowId)
+    {
+        eventWindowId_ = windowId;
+    }
+
+    int32_t GetEventWindowId() const
+    {
+        return eventWindowId_;
+    }
+
+    void SetEventWindowChangeType(WindowUpdateType type)
+    {
+        eventWindowChangeType_ = type;
+    }
+
+    WindowUpdateType GetEventWindowChangeType() const
+    {
+        return eventWindowChangeType_;
+    }
 public:
     static const int32_t accountId_ = 100;
 
@@ -333,7 +439,15 @@ private:
     int32_t keyCode_ = 0;
     bool enableShortKeyTargetAbility_ = false;
     bool zoomState_ = false;
+    bool scrollState_ = false;
     std::mutex mtx_;
+    std::vector<int32_t> userIds_;
+    std::vector<std::string> packages_;
+    int32_t currentUserId_ = -1;
+    bool isPackageChanged_ = false;
+    bool needAccountDataNull_ = false;
+    int32_t eventWindowId_ = -1;
+    WindowUpdateType eventWindowChangeType_ = WINDOW_UPDATE_INVALID;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1145,5 +1145,21 @@ HWTEST_F(AccessibleActionTest, AccessibleAction_002, TestSize.Level1)
     action = nullptr;
     GTEST_LOG_(INFO) << "AccessibleAction_002 end";
 }
+
+/**
+ * @tc.number: Rect_001
+ * @tc.name: Rect
+ * @tc.desc: Test function Rect
+ */
+HWTEST_F(AccessibilityElementInfoTest, Rect_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Rect_001 start";
+    Rect rect(1, 1, 1, 1);
+    EXPECT_EQ(rect.GetLeftTopXScreenPostion(), 1);
+    EXPECT_EQ(rect.GetLeftTopYScreenPostion(), 1);
+    EXPECT_EQ(rect.GetRightBottomXScreenPostion(), 1);
+    EXPECT_EQ(rect.GetRightBottomYScreenPostion(), 1);
+    GTEST_LOG_(INFO) << "Rect_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

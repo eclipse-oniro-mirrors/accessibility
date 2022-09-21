@@ -52,23 +52,13 @@ public:
     }
 };
 
-/**
- * @tc.number: SetCaptionProperty_001
- * @tc.name: SetCaptionProperty_001
- * @tc.desc: Test function SetCaptionsProperty
- */
-HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetCaptionProperty_001 start";
-
-    CaptionProperty caption;
-    caption.SetFontFamily("sansSerif");
-
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.InitializeContext();
-    instance.SetCaptionsProperty(caption);
-    GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
-}
+class MockAccessibilityConfigObserverImpl : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
+public:
+    MockAccessibilityConfigObserverImpl() = default;
+    virtual void OnConfigChanged(
+        const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override
+    {}
+};
 
 /**
  * @tc.number: SetCaptionProperty_002
@@ -88,6 +78,527 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetScreenMagnificationState_002
+ * @tc.name: SetScreenMagnificationState_002
+ * @tc.desc: Test function SetScreenMagnificationState
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetScreenMagnificationState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetScreenMagnificationState(state);
+    GTEST_LOG_(INFO) << "SetScreenMagnificationState_002 end";
+}
+
+/**
+ * @tc.number: SetShortKeyState_002
+ * @tc.name: SetShortKeyState_002
+ * @tc.desc: Test function SetShortKeyState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetShortKeyState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetShortKeyState(state);
+    GTEST_LOG_(INFO) << "SetShortKeyState_002 end";
+}
+
+/**
+ * @tc.number: SetMouseKeyState_002
+ * @tc.name: SetMouseKeyState_002
+ * @tc.desc: Test function SetMouseKeyState
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetMouseKeyState_002 start";
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetMouseKeyState(state);
+    GTEST_LOG_(INFO) << "SetMouseKeyState_002 end";
+}
+
+/**
+ * @tc.number: SetCaptionsState_002
+ * @tc.name: SetCaptionsState_002
+ * @tc.desc: Test function SetCaptionsState
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCaptionsState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetCaptionsState(state);
+    GTEST_LOG_(INFO) << "SetCaptionsState_002 end";
+}
+
+/**
+ * @tc.number: SetMouseAutoClick_002
+ * @tc.name: SetMouseAutoClick_002
+ * @tc.desc: Test function SetMouseAutoClick
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetMouseAutoClick_002 start";
+
+    int32_t time = 10;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetMouseAutoClick(time);
+    GTEST_LOG_(INFO) << "SetMouseAutoClick_002 end";
+}
+
+/**
+ * @tc.number: SetShortkeyTarget_002
+ * @tc.name: SetShortkeyTarget_002
+ * @tc.desc: Test function SetShortkeyTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetShortkeyTarget_002 start";
+
+    std::string name = "test";
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetShortkeyTarget(name);
+    GTEST_LOG_(INFO) << "SetShortkeyTarget_002 end";
+}
+
+/**
+ * @tc.number: SetHighContrastTextState_002
+ * @tc.name: SetHighContrastTextState_002
+ * @tc.desc: Test function SetHighContrastTextState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetHighContrastTextState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetHighContrastTextState(state);
+    GTEST_LOG_(INFO) << "SetHighContrastTextState_002 end";
+}
+
+/**
+ * @tc.number: SetInvertColorState_002
+ * @tc.name: SetInvertColorState_002
+ * @tc.desc: Test function SetInvertColorState
+ * @tc.require: issueI5NTX7
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetInvertColorState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetInvertColorState(state);
+    GTEST_LOG_(INFO) << "SetInvertColorState_002 end";
+}
+
+/**
+ * @tc.number: SetDaltonizationColorFilter_002
+ * @tc.name: SetDaltonizationColorFilter_002
+ * @tc.desc: Test function SetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_002 start";
+
+    DALTONIZATION_TYPE type = Protanomaly;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetDaltonizationColorFilter(type);
+    GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_002 end";
+}
+
+/**
+ * @tc.number: SetContentTimeout_002
+ * @tc.name: SetContentTimeout_002
+ * @tc.desc: Test function SetContentTimeout
+ * @tc.require: issueI5NTXF
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetContentTimeout_002 start";
+
+    uint32_t timer = 10;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetContentTimeout(timer);
+    GTEST_LOG_(INFO) << "SetContentTimeout_002 end";
+}
+
+/**
+ * @tc.number: SetAnimationOffState_002
+ * @tc.name: SetAnimationOffState_002
+ * @tc.desc: Test function SetAnimationOffState
+ * @tc.require: issueI5NTXG
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAnimationOffState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetAnimationOffState(state);
+    GTEST_LOG_(INFO) << "SetAnimationOffState_002 end";
+}
+
+/**
+ * @tc.number: SetBrightnessDiscount_002
+ * @tc.name: SetBrightnessDiscount_002
+ * @tc.desc: Test function SetBrightnessDiscount
+ * @tc.require: issueI5NTXE
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetBrightnessDiscount_002 start";
+
+    float brightness = 0.2;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetBrightnessDiscount(brightness);
+    GTEST_LOG_(INFO) << "SetBrightnessDiscount_002 end";
+}
+
+/**
+ * @tc.number: SetAudioMonoState_002
+ * @tc.name: SetAudioMonoState_002
+ * @tc.desc: Test function SetAudioMonoState
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAudioMonoState_002 start";
+
+    bool state = true;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetAudioMonoState(state);
+    GTEST_LOG_(INFO) << "SetAudioMonoState_002 end";
+}
+
+/**
+ * @tc.number: SetAudioBalance_002
+ * @tc.name: SetAudioBalance_002
+ * @tc.desc: Test function SetAudioBalance
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetAudioBalance_002 start";
+    float balance = -1.0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.SetAudioBalance(balance);
+    GTEST_LOG_(INFO) << "SetAudioBalance_002 end";
+}
+
+/**
+ * @tc.number: GetScreenMagnificationState_002
+ * @tc.name: GetScreenMagnificationState_002
+ * @tc.desc: Test function GetScreenMagnificationState
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetScreenMagnificationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetScreenMagnificationState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetScreenMagnificationState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetScreenMagnificationState_002 end";
+}
+
+/**
+ * @tc.number: GetShortKeyState_002
+ * @tc.name: GetShortKeyState_002
+ * @tc.desc: Test function GetShortKeyState
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetShortKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetShortKeyState_002 start";
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetShortKeyState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetShortKeyState_002 end";
+}
+
+/**
+ * @tc.number: GetMouseKeyState_002
+ * @tc.name: GetMouseKeyState_002
+ * @tc.desc: Test function GetMouseKeyState
+ * @tc.require: issueI5NTXA
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetMouseKeyState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetMouseKeyState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetMouseKeyState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetMouseKeyState_002 end";
+}
+
+/**
+ * @tc.number: GetCaptionsState_002
+ * @tc.name: GetCaptionsState_002
+ * @tc.desc: Test function GetCaptionsState
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetCaptionsState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetCaptionsState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetCaptionsState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetCaptionsState_002 end";
+}
+
+/**
+ * @tc.number: GetCaptionsProperty_002
+ * @tc.name: GetCaptionsProperty_002
+ * @tc.desc: Test function GetCaptionsProperty
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetCaptionsProperty_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetCaptionsProperty_002 start";
+
+    CaptionProperty value;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetCaptionsProperty(value);
+    GTEST_LOG_(INFO) << "GetCaptionsProperty_002 end";
+}
+
+/**
+ * @tc.number: GetMouseAutoClick_002
+ * @tc.name: GetMouseAutoClick_002
+ * @tc.desc: Test function GetMouseAutoClick
+ * @tc.require: issueI5NTXC
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetMouseAutoClick_002 start";
+
+    int32_t value = 0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetMouseAutoClick(value);
+    EXPECT_EQ(0, value);
+    GTEST_LOG_(INFO) << "GetMouseAutoClick_002 end";
+}
+
+/**
+ * @tc.number: GetShortkeyTarget_002
+ * @tc.name: GetShortkeyTarget_002
+ * @tc.desc: Test function GetShortkeyTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetShortkeyTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetShortkeyTarget_002 start";
+
+    std::string value = "";
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetShortkeyTarget(value);
+    EXPECT_STREQ(value.c_str(), "");
+    GTEST_LOG_(INFO) << "GetShortkeyTarget_002 end";
+}
+
+/**
+ * @tc.number: GetInvertColorState_002
+ * @tc.name: GetInvertColorState_002
+ * @tc.desc: Test function GetInvertColorState
+ * @tc.require: issueI5NTX7
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetInvertColorState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetInvertColorState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetInvertColorState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetInvertColorState_002 end";
+}
+
+/**
+ * @tc.number:GetHighContrastTextState_002
+ * @tc.name: GetHighContrastTextState_002
+ * @tc.desc: Test function GetHighContrastTextState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetHighContrastTextState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetHighContrastTextState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetHighContrastTextState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetHighContrastTextState_002 end";
+}
+
+/**
+ * @tc.number: GetDaltonizationColorFilter_002
+ * @tc.name: GetDaltonizationColorFilter_002
+ * @tc.desc: Test function GetDaltonizationColorFilter
+ * @tc.require: issueI5NTX8
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetDaltonizationColorFilter_002 start";
+
+    DALTONIZATION_TYPE value = Normal;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetDaltonizationColorFilter(value);
+    EXPECT_EQ(0, static_cast<uint32_t>(value));
+    GTEST_LOG_(INFO) << "GetDaltonizationColorFilter_002 end";
+}
+
+/**
+ * @tc.number: GetContentTimeout_002
+ * @tc.name: GetContentTimeout_002
+ * @tc.desc: Test function GetContentTimeout
+ * @tc.require: issueI5NTXF
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetContentTimeout_002 start";
+
+    uint32_t value = 0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetContentTimeout(value);
+    EXPECT_EQ(0, value);
+    GTEST_LOG_(INFO) << "GetContentTimeout_002 end";
+}
+
+/**
+ * @tc.number: GetAnimationOffState_002
+ * @tc.name: GetAnimationOffState_002
+ * @tc.desc: Test function GetAnimationOffState
+ * @tc.require: issueI5NTXG
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetAnimationOffState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetAnimationOffState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetAnimationOffState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetAnimationOffState_002 end";
+}
+
+/**
+ * @tc.number: GetBrightnessDiscount_002
+ * @tc.name: GetBrightnessDiscount_002
+ * @tc.desc: Test function GetBrightnessDiscount
+ * @tc.require: issueI5NTXE
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetBrightnessDiscount_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetBrightnessDiscount_002 start";
+
+    float value = 0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetBrightnessDiscount(value);
+    EXPECT_FLOAT_EQ(0, value);
+    GTEST_LOG_(INFO) << "GetBrightnessDiscount_002 end";
+}
+
+/**
+ * @tc.number: GetAudioMonoState_002
+ * @tc.name: GetAudioMonoState_002
+ * @tc.desc: Test function GetAudioMonoState
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetAudioMonoState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetAudioMonoState_002 start";
+
+    bool value = false;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetAudioMonoState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "GetAudioMonoState_002 end";
+}
+
+/**
+ * @tc.number: GetAudioBalance_002
+ * @tc.name: GetAudioBalance_002
+ * @tc.desc: Test function GetAudioBalance
+ */
+HWTEST_F(AccessibilityConfigImplTest, GetAudioBalance_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetAudioBalance_002 start";
+
+    float value = 0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.GetAudioBalance(value);
+    EXPECT_FLOAT_EQ(0, value);
+    GTEST_LOG_(INFO) << "GetAudioBalance_002 end";
+}
+
+/**
+ * @tc.number: ConnectToService_001
+ * @tc.name: ConnectToService_001
+ * @tc.desc: Test function ConnectToService
+ */
+HWTEST_F(AccessibilityConfigImplTest, ConnectToService_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ConnectToService_001 start";
+
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    WaitParameter(NULL, NULL, 1);
+    instance.InitializeContext();
+    WaitParameter(NULL, NULL, 0);
+    GTEST_LOG_(INFO) << "ConnectToService_001 end";
+}
+
+/**
+ * @tc.number: ConfigNotify_001
+ * @tc.name: ConfigNotify_001
+ * @tc.desc: Test function SetAudioBalance
+ */
+HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ConfigNotify_001 start";
+    float balance = -1.0;
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    std::shared_ptr<MockAccessibilityConfigObserverImpl> observer =
+        std::make_shared<MockAccessibilityConfigObserverImpl>();
+    instance.InitializeContext();
+    for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
+        instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), observer, false);
+    }
+    instance.SetAudioBalance(balance);
+    sleep(1);
+    GTEST_LOG_(INFO) << "ConfigNotify_001 end";
+}
+
+/**
+ * @tc.number: SetCaptionProperty_001
+ * @tc.name: SetCaptionProperty_001
+ * @tc.desc: Test function SetCaptionsProperty
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetCaptionProperty_001 start";
+
+    CaptionProperty caption;
+    caption.SetFontFamily("sansSerif");
+
+    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    instance.InitializeContext();
+    instance.SetCaptionsProperty(caption);
+    GTEST_LOG_(INFO) << "SetCaptionProperty_001 end";
+}
+
+/**
  * @tc.number: SetScreenMagnificationState_001
  * @tc.name: SetScreenMagnificationState_001
  * @tc.desc: Test function SetScreenMagnificationState
@@ -101,21 +612,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_001, TestSize.
     instance.InitializeContext();
     instance.SetScreenMagnificationState(state);
     GTEST_LOG_(INFO) << "SetScreenMagnificationState_001 end";
-}
-
-/**
- * @tc.number: SetScreenMagnificationState_002
- * @tc.name: SetScreenMagnificationState_002
- * @tc.desc: Test function SetScreenMagnificationState
- */
-HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetScreenMagnificationState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetScreenMagnificationState(state);
-    GTEST_LOG_(INFO) << "SetScreenMagnificationState_002 end";
 }
 
 /**
@@ -136,22 +632,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetShortKeyState_002
- * @tc.name: SetShortKeyState_002
- * @tc.desc: Test function SetShortKeyState
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetShortKeyState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetShortKeyState(state);
-    GTEST_LOG_(INFO) << "SetShortKeyState_002 end";
-}
-
-/**
  * @tc.number: SetMouseKeyState_001
  * @tc.name: SetMouseKeyState_001
  * @tc.desc: Test function SetMouseKeyState
@@ -168,21 +648,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetMouseKeyState_002
- * @tc.name: SetMouseKeyState_002
- * @tc.desc: Test function SetMouseKeyState
- * @tc.require: issueI5NTXA
- */
-HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetMouseKeyState_002 start";
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetMouseKeyState(state);
-    GTEST_LOG_(INFO) << "SetMouseKeyState_002 end";
-}
-
-/**
  * @tc.number: SetCaptionsState_001
  * @tc.name: SetCaptionsState_001
  * @tc.desc: Test function SetCaptionsState
@@ -196,21 +661,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetCaptionsState(state);
     GTEST_LOG_(INFO) << "SetCaptionsState_001 end";
-}
-
-/**
- * @tc.number: SetCaptionsState_002
- * @tc.name: SetCaptionsState_002
- * @tc.desc: Test function SetCaptionsState
- */
-HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetCaptionsState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetCaptionsState(state);
-    GTEST_LOG_(INFO) << "SetCaptionsState_002 end";
 }
 
 /**
@@ -231,22 +681,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetMouseAutoClick_002
- * @tc.name: SetMouseAutoClick_002
- * @tc.desc: Test function SetMouseAutoClick
- * @tc.require: issueI5NTXC
- */
-HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetMouseAutoClick_002 start";
-
-    int32_t time = 10;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetMouseAutoClick(time);
-    GTEST_LOG_(INFO) << "SetMouseAutoClick_002 end";
-}
-
-/**
  * @tc.number: SetShortkeyTarget_001
  * @tc.name: SetShortkeyTarget_001
  * @tc.desc: Test function SetShortkeyTarget
@@ -261,22 +695,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetShortkeyTarget(name);
     GTEST_LOG_(INFO) << "SetShortkeyTarget_001 end";
-}
-
-/**
- * @tc.number: SetShortkeyTarget_002
- * @tc.name: SetShortkeyTarget_002
- * @tc.desc: Test function SetShortkeyTarget
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetShortkeyTarget_002 start";
-
-    std::string name = "test";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetShortkeyTarget(name);
-    GTEST_LOG_(INFO) << "SetShortkeyTarget_002 end";
 }
 
 /**
@@ -297,22 +715,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_001, TestSize.Lev
 }
 
 /**
- * @tc.number: SetHighContrastTextState_002
- * @tc.name: SetHighContrastTextState_002
- * @tc.desc: Test function SetHighContrastTextState
- * @tc.require: issueI5NTX9
- */
-HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetHighContrastTextState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetHighContrastTextState(state);
-    GTEST_LOG_(INFO) << "SetHighContrastTextState_002 end";
-}
-
-/**
  * @tc.number: SetInvertColorState_001
  * @tc.name: SetInvertColorState_001
  * @tc.desc: Test function SetInvertColorState
@@ -327,22 +729,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetInvertColorState(state);
     GTEST_LOG_(INFO) << "SetInvertColorState_001 end";
-}
-
-/**
- * @tc.number: SetInvertColorState_002
- * @tc.name: SetInvertColorState_002
- * @tc.desc: Test function SetInvertColorState
- * @tc.require: issueI5NTX7
- */
-HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetInvertColorState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetInvertColorState(state);
-    GTEST_LOG_(INFO) << "SetInvertColorState_002 end";
 }
 
 /**
@@ -363,22 +749,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.
 }
 
 /**
- * @tc.number: SetDaltonizationColorFilter_002
- * @tc.name: SetDaltonizationColorFilter_002
- * @tc.desc: Test function SetDaltonizationColorFilter
- * @tc.require: issueI5NTX8
- */
-HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_002 start";
-
-    DALTONIZATION_TYPE type = Protanomaly;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetDaltonizationColorFilter(type);
-    GTEST_LOG_(INFO) << "SetDaltonizationColorFilter_002 end";
-}
-
-/**
  * @tc.number: SetContentTimeout_001
  * @tc.name: SetContentTimeout_001
  * @tc.desc: Test function SetContentTimeout
@@ -393,22 +763,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
     instance.InitializeContext();
     instance.SetContentTimeout(timer);
     GTEST_LOG_(INFO) << "SetContentTimeout_001 end";
-}
-
-/**
- * @tc.number: SetContentTimeout_002
- * @tc.name: SetContentTimeout_002
- * @tc.desc: Test function SetContentTimeout
- * @tc.require: issueI5NTXF
- */
-HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetContentTimeout_002 start";
-
-    uint32_t timer = 10;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetContentTimeout(timer);
-    GTEST_LOG_(INFO) << "SetContentTimeout_002 end";
 }
 
 /**
@@ -429,22 +783,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetAnimationOffState_002
- * @tc.name: SetAnimationOffState_002
- * @tc.desc: Test function SetAnimationOffState
- * @tc.require: issueI5NTXG
- */
-HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetAnimationOffState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetAnimationOffState(state);
-    GTEST_LOG_(INFO) << "SetAnimationOffState_002 end";
-}
-
-/**
  * @tc.number: SetBrightnessDiscount_001
  * @tc.name: SetBrightnessDiscount_001
  * @tc.desc: Test function SetBrightnessDiscount
@@ -459,22 +797,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_001, TestSize.Level1
     instance.InitializeContext();
     instance.SetBrightnessDiscount(brightness);
     GTEST_LOG_(INFO) << "SetBrightnessDiscount_001 end";
-}
-
-/**
- * @tc.number: SetBrightnessDiscount_002
- * @tc.name: SetBrightnessDiscount_002
- * @tc.desc: Test function SetBrightnessDiscount
- * @tc.require: issueI5NTXE
- */
-HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetBrightnessDiscount_002 start";
-
-    float brightness = 0.2;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetBrightnessDiscount(brightness);
-    GTEST_LOG_(INFO) << "SetBrightnessDiscount_002 end";
 }
 
 /**
@@ -494,21 +816,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetAudioMonoState_002
- * @tc.name: SetAudioMonoState_002
- * @tc.desc: Test function SetAudioMonoState
- */
-HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetAudioMonoState_002 start";
-
-    bool state = true;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetAudioMonoState(state);
-    GTEST_LOG_(INFO) << "SetAudioMonoState_002 end";
-}
-
-/**
  * @tc.number: SetAudioBalance_001
  * @tc.name: SetAudioBalance_001
  * @tc.desc: Test function SetAudioBalance
@@ -522,20 +829,6 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_001, TestSize.Level1)
     instance.SetAudioBalance(balance);
     sleep(1);
     GTEST_LOG_(INFO) << "SetAudioBalance_001 end";
-}
-
-/**
- * @tc.number: SetAudioBalance_002
- * @tc.name: SetAudioBalance_002
- * @tc.desc: Test function SetAudioBalance
- */
-HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetAudioBalance_002 start";
-    float balance = -1.0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.SetAudioBalance(balance);
-    GTEST_LOG_(INFO) << "SetAudioBalance_002 end";
 }
 
 /**
@@ -556,22 +849,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetScreenMagnificationState_001, TestSize.
 }
 
 /**
- * @tc.number: GetScreenMagnificationState_002
- * @tc.name: GetScreenMagnificationState_002
- * @tc.desc: Test function GetScreenMagnificationState
- */
-HWTEST_F(AccessibilityConfigImplTest, GetScreenMagnificationState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetScreenMagnificationState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetScreenMagnificationState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetScreenMagnificationState_002 end";
-}
-
-/**
  * @tc.number: GetShortKeyState_001
  * @tc.name: GetShortKeyState_001
  * @tc.desc: Test function GetShortKeyState
@@ -586,22 +863,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetShortKeyState_001, TestSize.Level1)
     instance.GetShortKeyState(value);
     EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "GetShortKeyState_001 end";
-}
-
-/**
- * @tc.number: GetShortKeyState_002
- * @tc.name: GetShortKeyState_002
- * @tc.desc: Test function GetShortKeyState
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityConfigImplTest, GetShortKeyState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetShortKeyState_002 start";
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetShortKeyState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetShortKeyState_002 end";
 }
 
 /**
@@ -623,23 +884,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetMouseKeyState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetMouseKeyState_002
- * @tc.name: GetMouseKeyState_002
- * @tc.desc: Test function GetMouseKeyState
- * @tc.require: issueI5NTXA
- */
-HWTEST_F(AccessibilityConfigImplTest, GetMouseKeyState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetMouseKeyState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetMouseKeyState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetMouseKeyState_002 end";
-}
-
-/**
  * @tc.number: GetCaptionsState_001
  * @tc.name: GetCaptionsState_001
  * @tc.desc: Test function GetCaptionsState
@@ -657,22 +901,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetCaptionsState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetCaptionsState_002
- * @tc.name: GetCaptionsState_002
- * @tc.desc: Test function GetCaptionsState
- */
-HWTEST_F(AccessibilityConfigImplTest, GetCaptionsState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetCaptionsState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetCaptionsState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetCaptionsState_002 end";
-}
-
-/**
  * @tc.number: GetCaptionsProperty_001
  * @tc.name: GetCaptionsProperty_001
  * @tc.desc: Test function GetCaptionsProperty
@@ -687,22 +915,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetCaptionsProperty_001, TestSize.Level1)
     instance.InitializeContext();
     instance.GetCaptionsProperty(value);
     GTEST_LOG_(INFO) << "GetCaptionsProperty_001 end";
-}
-
-/**
- * @tc.number: GetCaptionsProperty_002
- * @tc.name: GetCaptionsProperty_002
- * @tc.desc: Test function GetCaptionsProperty
- */
-HWTEST_F(AccessibilityConfigImplTest, GetCaptionsProperty_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetCaptionsProperty_002 start";
-
-
-    CaptionProperty value;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetCaptionsProperty(value);
-    GTEST_LOG_(INFO) << "GetCaptionsProperty_002 end";
 }
 
 /**
@@ -725,24 +937,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetMouseAutoClick_002
- * @tc.name: GetMouseAutoClick_002
- * @tc.desc: Test function GetMouseAutoClick
- * @tc.require: issueI5NTXC
- */
-HWTEST_F(AccessibilityConfigImplTest, GetMouseAutoClick_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetMouseAutoClick_002 start";
-
-
-    int32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetMouseAutoClick(value);
-    EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, value);
-    GTEST_LOG_(INFO) << "GetMouseAutoClick_002 end";
-}
-
-/**
  * @tc.number: GetShortkeyTarget_001
  * @tc.name: GetShortkeyTarget_001
  * @tc.desc: Test function GetShortkeyTarget
@@ -758,23 +952,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetShortkeyTarget_001, TestSize.Level1)
     instance.GetShortkeyTarget(value);
     EXPECT_STREQ(value.c_str(), "test");
     GTEST_LOG_(INFO) << "GetShortkeyTarget_001 end";
-}
-
-/**
- * @tc.number: GetShortkeyTarget_002
- * @tc.name: GetShortkeyTarget_002
- * @tc.desc: Test function GetShortkeyTarget
- * @tc.require: issueI5NTXH
- */
-HWTEST_F(AccessibilityConfigImplTest, GetShortkeyTarget_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetShortkeyTarget_002 start";
-
-    std::string value = "";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetShortkeyTarget(value);
-    EXPECT_STREQ(value.c_str(), "test");
-    GTEST_LOG_(INFO) << "GetShortkeyTarget_002 end";
 }
 
 /**
@@ -796,23 +973,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetInvertColorState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetInvertColorState_002
- * @tc.name: GetInvertColorState_002
- * @tc.desc: Test function GetInvertColorState
- * @tc.require: issueI5NTX7
- */
-HWTEST_F(AccessibilityConfigImplTest, GetInvertColorState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetInvertColorState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetInvertColorState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetInvertColorState_002 end";
-}
-
-/**
  * @tc.number:GetHighContrastTextState_001
  * @tc.name: GetHighContrastTextState_001
  * @tc.desc: Test function GetHighContrastTextState
@@ -828,23 +988,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetHighContrastTextState_001, TestSize.Lev
     instance.GetHighContrastTextState(value);
     EXPECT_TRUE(value);
     GTEST_LOG_(INFO) << "GetHighContrastTextState_001 end";
-}
-
-/**
- * @tc.number:GetHighContrastTextState_002
- * @tc.name: GetHighContrastTextState_002
- * @tc.desc: Test function GetHighContrastTextState
- * @tc.require: issueI5NTX9
- */
-HWTEST_F(AccessibilityConfigImplTest, GetHighContrastTextState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetHighContrastTextState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetHighContrastTextState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetHighContrastTextState_002 end";
 }
 
 /**
@@ -866,23 +1009,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_001, TestSize.
 }
 
 /**
- * @tc.number: GetDaltonizationColorFilter_002
- * @tc.name: GetDaltonizationColorFilter_002
- * @tc.desc: Test function GetDaltonizationColorFilter
- * @tc.require: issueI5NTX8
- */
-HWTEST_F(AccessibilityConfigImplTest, GetDaltonizationColorFilter_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetDaltonizationColorFilter_002 start";
-
-    DALTONIZATION_TYPE value = Normal;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetDaltonizationColorFilter(value);
-    EXPECT_EQ(1, static_cast<uint32_t>(value));
-    GTEST_LOG_(INFO) << "GetDaltonizationColorFilter_002 end";
-}
-
-/**
  * @tc.number: GetContentTimeout_001
  * @tc.name: GetContentTimeout_001
  * @tc.desc: Test function GetContentTimeout
@@ -898,23 +1024,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_001, TestSize.Level1)
     instance.GetContentTimeout(value);
     EXPECT_EQ(CONTENT_TIMEOUT_VALUE, value);
     GTEST_LOG_(INFO) << "GetContentTimeout_001 end";
-}
-
-/**
- * @tc.number: GetContentTimeout_002
- * @tc.name: GetContentTimeout_002
- * @tc.desc: Test function GetContentTimeout
- * @tc.require: issueI5NTXF
- */
-HWTEST_F(AccessibilityConfigImplTest, GetContentTimeout_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetContentTimeout_002 start";
-
-    uint32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetContentTimeout(value);
-    EXPECT_EQ(CONTENT_TIMEOUT_VALUE, value);
-    GTEST_LOG_(INFO) << "GetContentTimeout_002 end";
 }
 
 /**
@@ -936,23 +1045,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetAnimationOffState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetAnimationOffState_002
- * @tc.name: GetAnimationOffState_002
- * @tc.desc: Test function GetAnimationOffState
- * @tc.require: issueI5NTXG
- */
-HWTEST_F(AccessibilityConfigImplTest, GetAnimationOffState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetAnimationOffState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetAnimationOffState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetAnimationOffState_002 end";
-}
-
-/**
  * @tc.number: GetBrightnessDiscount_001
  * @tc.name: GetBrightnessDiscount_001
  * @tc.desc: Test function GetBrightnessDiscount
@@ -968,23 +1060,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetBrightnessDiscount_001, TestSize.Level1
     instance.GetBrightnessDiscount(value);
     EXPECT_FLOAT_EQ(BRIGHTNESS_DISCOUNT_VALUE, value);
     GTEST_LOG_(INFO) << "GetBrightnessDiscount_001 end";
-}
-
-/**
- * @tc.number: GetBrightnessDiscount_002
- * @tc.name: GetBrightnessDiscount_002
- * @tc.desc: Test function GetBrightnessDiscount
- * @tc.require: issueI5NTXE
- */
-HWTEST_F(AccessibilityConfigImplTest, GetBrightnessDiscount_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetBrightnessDiscount_002 start";
-
-    float value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetBrightnessDiscount(value);
-    EXPECT_FLOAT_EQ(BRIGHTNESS_DISCOUNT_VALUE, value);
-    GTEST_LOG_(INFO) << "GetBrightnessDiscount_002 end";
 }
 
 /**
@@ -1005,22 +1080,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetAudioMonoState_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: GetAudioMonoState_002
- * @tc.name: GetAudioMonoState_002
- * @tc.desc: Test function GetAudioMonoState
- */
-HWTEST_F(AccessibilityConfigImplTest, GetAudioMonoState_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetAudioMonoState_002 start";
-
-    bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetAudioMonoState(value);
-    EXPECT_TRUE(value);
-    GTEST_LOG_(INFO) << "GetAudioMonoState_002 end";
-}
-
-/**
  * @tc.number: GetAudioBalance_001
  * @tc.name: GetAudioBalance_001
  * @tc.desc: Test function GetAudioBalance
@@ -1035,22 +1094,6 @@ HWTEST_F(AccessibilityConfigImplTest, GetAudioBalance_001, TestSize.Level1)
     instance.GetAudioBalance(value);
     EXPECT_FLOAT_EQ(-1, value);
     GTEST_LOG_(INFO) << "GetAudioBalance_001 end";
-}
-
-/**
- * @tc.number: GetAudioBalance_002
- * @tc.name: GetAudioBalance_002
- * @tc.desc: Test function GetAudioBalance
- */
-HWTEST_F(AccessibilityConfigImplTest, GetAudioBalance_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetAudioBalance_002 start";
-
-    float value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
-    instance.GetAudioBalance(value);
-    EXPECT_FLOAT_EQ(-1, value);
-    GTEST_LOG_(INFO) << "GetAudioBalance_002 end";
 }
 
 /**

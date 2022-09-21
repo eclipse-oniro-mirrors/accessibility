@@ -45,9 +45,11 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 
 void AccessibleAbilityManagerService::OnStart()
 {
+    GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::OnStart";
     runner_ = AppExecFwk::EventRunner::Create("AccessibleAbilityManagerService");
     handler_ = std::make_shared<AAMSEventHandler>(runner_);
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(handler_);
+    Singleton<AccessibilityCommonEvent>::GetInstance().SubscriberEvent(handler_);
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -79,6 +81,8 @@ void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& ui
     EventType uTeventType = uiEvent.GetEventType();
     AccessibilityAbilityHelper::GetInstance().SetGestureId(uiEvent.GetGestureType());
     AccessibilityAbilityHelper::GetInstance().SetEventTypeVector(uTeventType);
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowId(uiEvent.GetWindowId());
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(uiEvent.GetWindowChangeTypes());
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::SendEvent GetGestureType="
                      << (int32_t)uiEvent.GetGestureType();
     GTEST_LOG_(INFO) << "###AccessibleAbilityManagerService::SendEvent uTeventType=0x" << std::hex
@@ -120,6 +124,10 @@ void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
+    bool needNullFlag = AccessibilityAbilityHelper::GetInstance().GetNeedAccountDataNullFlag();
+    if (needNullFlag) {
+        return nullptr;
+    }
     auto iter = a11yAccountsData_.find(ACCOUNT_ID);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
@@ -395,6 +403,37 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
 {
     AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);
     return true;
+}
+
+void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().AddUserId(accountId);
+}
+void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().RemoveUserId(accountId);
+}
+void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().SetCurrentUserId(accountId);
+}
+void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().ChangePackage(true);
+}
+void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().RemovePackage(bundleName);
+}
+void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);
 }
 } // namespace Accessibility
 } // namespace OHOS
