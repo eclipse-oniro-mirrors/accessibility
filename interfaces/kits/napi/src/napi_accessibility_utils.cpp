@@ -790,7 +790,7 @@ bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, AccessibilityEven
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     int32_t dataValue = 0;
-    std::string str;
+    std::string str = "";
     napi_create_string_utf8(env, "type", NAPI_AUTO_LENGTH, &propertyNameValue);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
