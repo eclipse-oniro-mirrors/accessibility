@@ -24,8 +24,8 @@
 #include "accessibility_event_info.h"
 #include "accessibility_window_manager.h"
 #include "hilog_wrapper.h"
-#include "iservice_registry.h"
 #include "input_manager.h"
+#include "iservice_registry.h"
 #include "os_account_manager.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
@@ -73,12 +73,6 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 void AccessibleAbilityManagerService::OnStart()
 {
     HILOG_INFO("AccessibleAbilityManagerService::OnStart start");
-
-    if (isRunning_) {
-        HILOG_DEBUG("AccessibleAbilityManagerService is already start.");
-        return;
-    }
-
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create(AAMS_SERVICE_NAME);
         if (!runner_) {
@@ -103,18 +97,11 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
-
-    isRunning_ = true;
 }
 
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
-
-    if (!isRunning_) {
-        HILOG_DEBUG("AccessibleAbilityManagerService is already stop.");
-        return;
-    }
 
     currentAccountId_ = -1;
     a11yAccountsData_.clear();
@@ -130,7 +117,8 @@ void AccessibleAbilityManagerService::OnStop()
         iter.second = false;
     }
 
-    isRunning_ = false;
+    isReady_ = false;
+    isPublished_ = false;
     SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
     HILOG_INFO("AccessibleAbilityManagerService::OnStop OK.");
 }
@@ -163,11 +151,15 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
             return;
         }
 
-        if (Publish(this) == false) {
-            HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
-            return;
+        if (!isPublished_) {
+            if (Publish(this) == false) {
+                HILOG_ERROR("AccessibleAbilityManagerService::Publish failed!");
+                return;
+            }
+            isPublished_ = true;
         }
 
+        isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
         HILOG_DEBUG("AAMS is ready!");
         }), "OnAddSystemAbility");
@@ -176,6 +168,29 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
     HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
+    if (!handler_) {
+        HILOG_DEBUG("Event handler is nullptr.");
+        return;
+    }
+
+    handler_->PostTask(std::bind([=]() -> void {
+        auto iter = dependentServicesStatus_.find(systemAbilityId);
+        if (iter == dependentServicesStatus_.end()) {
+            HILOG_ERROR("SystemAbilityId is not found!");
+            return;
+        }
+
+        dependentServicesStatus_[systemAbilityId] = false;
+        if (isReady_) {
+            SwitchedUser(-1);
+            Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+            Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+            Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+
+            isReady_ = false;
+            SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
+        }
+        }), "OnRemoveSystemAbility");
 }
 
 int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16string>& args)
