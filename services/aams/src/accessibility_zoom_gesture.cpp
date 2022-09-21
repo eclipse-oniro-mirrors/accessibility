@@ -381,7 +381,7 @@ void AccessibilityZoomGesture::CalcFocusCoordinate(MMI::PointerEvent &event, ZOO
         count--;
     }
 
-    if (count == 0) {
+    if (!count) {
         HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return;
     }
@@ -423,7 +423,7 @@ float AccessibilityZoomGesture::CalcScaleSpan(MMI::PointerEvent &event, ZOOM_FOC
         count--;
     }
 
-    if (count == 0) {
+    if (!count) {
         HILOG_DEBUG("The size of PointerIds(down) is invalid");
         return span;
     }
