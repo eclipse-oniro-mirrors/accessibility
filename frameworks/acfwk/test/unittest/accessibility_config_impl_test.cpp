@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_config.h"
+#include "parameter.h"
 #include "system_ability_definition.h"
 
 using namespace testing;
