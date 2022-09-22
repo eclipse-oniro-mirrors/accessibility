@@ -199,7 +199,7 @@ bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     return GetWindows(displayId, windows);
 }
 
-bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
+bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
