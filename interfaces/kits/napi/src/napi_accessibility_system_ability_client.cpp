@@ -403,7 +403,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -423,6 +423,13 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
             delete work;
             work = nullptr;
         });
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyJS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 void StateListener::OnStateChanged(const bool state)

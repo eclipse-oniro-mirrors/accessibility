@@ -234,7 +234,6 @@ bool TouchGuider::TouchGuideListener::OnDoubleTap(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
-    MMI::PointerEvent::PointerItem clickPoint = {};
     if (server_.currentState_ != static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING)) {
         return false;
     }

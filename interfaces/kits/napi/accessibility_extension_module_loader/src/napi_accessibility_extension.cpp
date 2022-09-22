@@ -142,7 +142,7 @@ void NAccessibilityExtension::OnAbilityConnected()
     }
     work->data = static_cast<void*>(callbackInfo);
 
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -154,6 +154,13 @@ void NAccessibilityExtension::OnAbilityConnected()
             delete work;
             work = nullptr;
         });
+    if (ret) {
+        HILOG_ERROR("Failed to execute OnAbilityConnected work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
     HILOG_INFO("end.");
 }
 
@@ -176,7 +183,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
     }
     work->data = static_cast<void*>(callbackInfo);
 
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -188,6 +195,13 @@ void NAccessibilityExtension::OnAbilityDisconnected()
             delete work;
             work = nullptr;
         });
+    if (ret) {
+        HILOG_ERROR("Failed to execute OnAbilityDisconnected work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
     HILOG_INFO("end.");
 }
 
@@ -303,7 +317,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -337,6 +351,13 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             delete work;
             work = nullptr;
         });
+    if (ret) {
+        HILOG_ERROR("Failed to execute OnAccessibilityEvent work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
 }
 
 bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
@@ -361,7 +382,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
     work->data = static_cast<void*>(callbackInfo);
     std::future syncFuture = callbackInfo->syncPromise_.get_future();
 
-    uv_queue_work(
+    int ret = uv_queue_work(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -401,6 +422,14 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             delete work;
             work = nullptr;
         });
+    if (ret) {
+        HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");
+        callbackInfo->syncPromise_.set_value(false);
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
     bool callbackResult = syncFuture.get();
     HILOG_INFO("OnKeyPressEvent callbackResult = %{public}d", callbackResult);
     return callbackResult;

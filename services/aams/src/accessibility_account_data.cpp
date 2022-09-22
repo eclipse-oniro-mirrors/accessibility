@@ -15,6 +15,7 @@
 
 #include "accessibility_account_data.h"
 
+#include <any>
 #include <hitrace_meter.h>
 
 #include "accessibility_display_manager.h"
@@ -151,11 +152,12 @@ void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
     HILOG_INFO();
-    for (auto &enableAbilityListsObserver : enableAbilityListsObservers_) {
-        if (enableAbilityListsObserver == observer) {
-            HILOG_ERROR("observer is already exist");
-            return;
-        }
+    if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
+        [observer](const sptr<IAccessibilityEnableAbilityListsObserver> &listObserver) {
+            return listObserver == observer;
+        })) {
+        HILOG_ERROR("observer is already exist");
+        return;
     }
     enableAbilityListsObservers_.push_back(observer);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
@@ -208,12 +210,12 @@ void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
 {
     HILOG_DEBUG("start.");
     auto iter = connectingA11yAbilities_.find(uri);
-    if (iter != connectingA11yAbilities_.end()) {
+    if (iter == connectingA11yAbilities_.end()) {
+        connectingA11yAbilities_[uri] = connection;
+        HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
+    } else {
         HILOG_ERROR("The ability is already connecting, and it's uri is %{public}s", uri.c_str());
-        return;
     }
-    connectingA11yAbilities_[uri] = connection;
-    HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
 }
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
@@ -230,11 +232,12 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &ur
 void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start.");
-    for (auto &ability : enabledAbilities_) {
-        if (ability == name) {
-            HILOG_DEBUG("The ability is already enabled, and it's name is %{public}s", name.c_str());
-            return;
-        }
+    if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
+        [name](const std::string &abilityName) {
+            return abilityName == name;
+        })) {
+        HILOG_DEBUG("The ability is already enabled, and it's name is %{public}s", name.c_str());
+        return;
     }
     enabledAbilities_.push_back(name);
     UpdateEnableAbilityListsState();
@@ -523,11 +526,12 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
     }
 
     // Add enabled ability
-    for (auto &enabledAbility : enabledAbilities_) {
-        if (enabledAbility == name) {
-            HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
-            return false;
-        }
+    if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
+        [name](const std::string &abilityName) {
+            return abilityName == name;
+        })) {
+        HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
+        return false;
     }
     enabledAbilities_.push_back(name);
     UpdateEnableAbilityListsState();

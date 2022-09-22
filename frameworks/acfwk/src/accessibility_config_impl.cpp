@@ -1111,11 +1111,12 @@ void AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
-    for (auto &enableAbilityListsObserver : enableAbilityListsObservers_) {
-        if (enableAbilityListsObserver == observer) {
-            HILOG_ERROR("the observer is exist");
-            return;
-        }
+    if (std::any_of(enableAbilityListsObservers_.begin(), enableAbilityListsObservers_.end(),
+        [&observer](const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &listObserver) {
+            return listObserver == observer;
+            })) {
+        HILOG_ERROR("the observer is exist");
+        return;
     }
     enableAbilityListsObservers_.push_back(observer);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());

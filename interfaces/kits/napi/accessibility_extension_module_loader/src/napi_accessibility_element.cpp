@@ -1132,10 +1132,11 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
         std::vector<AccessibleAction> operations =
             callbackInfo->accessibilityElement_.elementInfo_->GetActionList();
         HILOG_DEBUG("action list size is %{public}zu", operations.size());
-        for (auto &operation : operations) {
-            actionNames.push_back(ConvertOperationTypeToString(operation.GetActionType()));
-        }
-
+        actionNames.resize(operations.size());
+        std::transform(operations.begin(), operations.end(), actionNames.begin(),
+            [](const AccessibleAction operation) {
+                return ConvertOperationTypeToString(operation.GetActionType());
+            });
         napi_create_array(env, &result[PARAM1]);
         ConvertStringVecToJS(env, result[PARAM1], actionNames);
     } else {
@@ -1270,11 +1271,6 @@ void NAccessibilityElement::PerformActionComplete(napi_env env, napi_status stat
     napi_value callback = 0;
     napi_value undefined = 0;
     napi_get_undefined(env, &undefined);
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-
     napi_get_boolean(callbackInfo->env_, callbackInfo->ret_, &result[PARAM1]);
     if (callbackInfo->callback_) {
         // Callback mode
