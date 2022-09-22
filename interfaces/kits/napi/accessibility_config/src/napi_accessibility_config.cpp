@@ -406,12 +406,6 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return nullptr;
-    }
-
     size_t argc = ARGS_SIZE_TWO;
     napi_value parameters[ARGS_SIZE_TWO] = {0};
     napi_value jsthis;
@@ -421,11 +415,14 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
-        delete callbackInfo;
-        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
 
     switch (obj->GetConfigId()) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
@@ -506,12 +503,6 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
 napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return nullptr;
-    }
-
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_value jsthis;
@@ -521,11 +512,15 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
-        delete callbackInfo;
-        callbackInfo = nullptr;
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+    
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return nullptr;
+    }
     callbackInfo->id_ = obj->GetConfigId();
 
     // parse function if it needs
