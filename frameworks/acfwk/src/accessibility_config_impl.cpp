@@ -104,7 +104,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
             if (InitAccessibilityServiceProxy()) {
                 (void)RegisterToService();
                 InitConfigValues();
-                HILOG_INFO("ConnectToService Success");
+                HILOG_DEBUG("ConnectToService Success");
             }
             }), "ConnectToServiceAsync");
         return true;
@@ -1388,7 +1388,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     if (isInitialized_) {
         NotifyDefaultConfigs();
     }
-    HILOG_INFO("ConnectToService Success");
+    HILOG_DEBUG("ConnectToService Success");
 }
 
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
