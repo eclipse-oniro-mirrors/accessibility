@@ -254,9 +254,9 @@ std::vector<AccessibilityWindowInfo> AccessibilityWindowManager::GetAccessibilit
             UpdateAccessibilityWindowInfo(a11yWindows_[info->wid_], info);
         }
     }
-    for (auto &window : a11yWindows_) {
-        windows.emplace_back(window.second);
-    }
+    std::transform(a11yWindows_.begin(), a11yWindows_.end(), std::back_inserter(windows),
+        [](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) { return window.second; });
+
     HILOG_DEBUG("window size[%{public}zu]", windows.size());
     for (auto &logWindow : windows) {
         HILOG_DEBUG("logWindow id[%{public}d]", logWindow.GetWindowId());
@@ -268,7 +268,6 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
-    std::vector<AccessibilityWindowInfo> windows;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
     if (err != Rosen::WMError::WM_OK) {
         HILOG_ERROR("get window info from wms failed. err[%{public}d]", err);
@@ -289,10 +288,15 @@ bool AccessibilityWindowManager::GetAccessibilityWindow(int32_t windowId, Access
 bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
-    if (a11yWindows_.count(windowId)) {
-        return true;
+
+    auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
+        [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window)
+        { return window.first == windowId; });
+
+    if (it == a11yWindows_.end()) {
+        return false;
     }
-    return false;
+    return true;
 }
 
 void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)

@@ -385,8 +385,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
             HILOG_ERROR("Failed to create info.");
             return ERR_NULL_OBJECT;
         }
-        bool result = reply.WriteStrongParcelable(info);
-        if (!result) {
+        bool writeResult = reply.WriteStrongParcelable(info);
+        if (!writeResult) {
             HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return TRANSACTION_ERR;
         }
