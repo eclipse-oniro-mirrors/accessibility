@@ -1445,7 +1445,7 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
 void AccessibilityConfig::Impl::InitEventHandler()
 {
     if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create("accessibility.config");
+        runner_ = AppExecFwk::EventRunner::Create("Accessibility.Config");
         if (!runner_) {
             HILOG_ERROR("AccessibilityConfig::Impl::InitEventHandler create runner failed");
             return;
