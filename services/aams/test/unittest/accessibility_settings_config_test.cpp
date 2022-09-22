@@ -443,7 +443,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
  * @tc.require: issueI5NTX7
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState_001, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetInvertColorState_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_001 start";
     bool state = true;
@@ -459,7 +460,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
  * @tc.require: issueI5NTX7
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetInvertColorState_002, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetInvertColorState_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetInvertColorState_002 start";
     bool state = true;
@@ -600,7 +602,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
  * @tc.require: issueI5NTXE
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001 start";
     float discount = 0.1;
@@ -616,7 +619,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.desc: Test function SetBrightnessDiscount GetBrightnessDiscount
  * @tc.require: issueI5NTXE
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 start";
     float discount = 0.1;
@@ -659,7 +663,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
  * @tc.name: UpdateEnabledAbilities
  * @tc.desc: Test function UpdateEnabledAbilities
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001 start";
     std::vector<std::string> vecvalue {};
@@ -673,7 +678,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_U
  * @tc.name: UpdateEnabledAbilities
  * @tc.desc: Test function UpdateEnabledAbilities
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 start";
     std::vector<std::string> vecvalue {};
@@ -686,7 +692,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_U
  * @tc.name: GetEnabledAbilityInfos
  * @tc.desc: Test function GetEnabledAbilityInfos
  */
-HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001, TestSize.Level1)
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_GetEnabledAbilityInfos_001 start";
     settingConfig_->GetEnabledAbilityInfos();

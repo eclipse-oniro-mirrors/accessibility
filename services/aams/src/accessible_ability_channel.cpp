@@ -187,18 +187,30 @@ bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWi
 bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
+    uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
+    HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
+    return GetWindows(displayId, windows);
+}
+
+bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
+{
+    HILOG_DEBUG();
+    return GetWindows(displayId, windows);
+}
+
+bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
+{
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return false;
     }
 
-    uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
-    HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
     std::promise<bool> syncPromise;
     std::future syncFuture = syncPromise.get_future();
-
     eventHandler_->PostTask(std::bind([displayId, &windows, &syncPromise](
         int32_t accountId, const std::string &name) -> void {
+        HILOG_DEBUG();
         sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
         if (!clientConnection) {
             HILOG_ERROR("There is no client connection");
@@ -223,47 +235,6 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
         }
         syncPromise.set_value(true);
         }, accountId_, clientName_), "GetWindows");
-    return syncFuture.get();
-}
-
-bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
-{
-    HILOG_DEBUG();
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return false;
-    }
- 
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    eventHandler_->PostTask(std::bind([displayId, &windows, &syncPromise](
-        int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG();
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            syncPromise.set_value(false);
-            return;
-        }
-
-        if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-            HILOG_ERROR("GetWindowsByDisplayId failed: no capability");
-            syncPromise.set_value(false);
-            return;
-        }
-
-        std::vector<AccessibilityWindowInfo> windowInfos =
-            Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
-        int32_t currentChannelId = clientConnection->GetChannelId();
-        for (auto &window : windowInfos) {
-            if (window.GetDisplayId() == displayId) {
-                window.SetChannelId(currentChannelId);
-                windows.emplace_back(window);
-            }
-        }
-        syncPromise.set_value(true);
-        }, accountId_, clientName_), "GetWindowsByDisplayId");
     return syncFuture.get();
 }
 
@@ -419,7 +390,7 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(
     int32_t accountId, const std::string &clientName)
 {
     HILOG_DEBUG();
-    sptr<AccessibilityAccountData> accountData = 
+    sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
