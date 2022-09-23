@@ -78,7 +78,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
                 A11yError::ERROR_CONNECT_A11Y_APPLICATION_FAILED, bundleName, abilityName);
             HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
             return;
-        }    
+        }
 
         sptr<AccessibleAbilityConnection> connection = accountData->GetConnectingA11yAbility(Utils::GetUri(element));
         if (!connection) {

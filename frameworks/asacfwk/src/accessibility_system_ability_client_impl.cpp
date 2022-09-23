@@ -400,7 +400,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (requestId >= 0) {
-        auto iter = elementOperators_.find(requestId >> REQUEST_WINDOW_ID_MASK_BIT);
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
@@ -415,7 +415,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByTextResult(
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (requestId >= 0) {
-        auto iter = elementOperators_.find(requestId >> REQUEST_WINDOW_ID_MASK_BIT);
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetSearchElementInfoByTextResult(infos, requestId);
@@ -430,7 +430,7 @@ void AccessibilitySystemAbilityClientImpl::SetFindFocusedElementInfoResult(
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (requestId >= 0) {
-        auto iter = elementOperators_.find(requestId >> REQUEST_WINDOW_ID_MASK_BIT);
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetFindFocusedElementInfoResult(info, requestId);
@@ -445,7 +445,7 @@ void AccessibilitySystemAbilityClientImpl::SetFocusMoveSearchResult(
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (requestId >= 0) {
-        auto iter = elementOperators_.find(requestId >> REQUEST_WINDOW_ID_MASK_BIT);
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetFocusMoveSearchResult(info, requestId);
@@ -460,7 +460,7 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
     std::lock_guard<std::mutex> lock(mutex_);
     HILOG_DEBUG("requestId[%{public}d]", requestId);
     if (requestId >= 0) {
-        auto iter = elementOperators_.find(requestId >> REQUEST_WINDOW_ID_MASK_BIT);
+        auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {
             if (iter->second) {
                 iter->second->SetExecuteActionResult(succeeded, requestId);
