@@ -120,6 +120,11 @@ public:
     /* For DisplayResize */
     void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
 
+    inline bool IsServiceReady()
+    {
+        return isReady_;
+    }
+
     inline int32_t GetCurrentAccountId()
     {
         return currentAccountId_;
@@ -245,11 +250,6 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
-    void InitAccountDependence();
-    void InitBundleDependence();
-    void InitCommonEventDependence();
-    void InitDisplayDependence();
-    void InitWindowDependence();
     bool InnerEnableAbility(const std::string &name, const uint32_t capabilities);
     bool InnerDisableAbility(const std::string &name);
 
@@ -265,7 +265,8 @@ private:
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
 
-    bool isRunning_ = false;
+    bool isReady_ = false;
+    bool isPublished_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
     int32_t currentAccountId_ = -1;
     std::map<int32_t, sptr<AccessibilityAccountData>> a11yAccountsData_;

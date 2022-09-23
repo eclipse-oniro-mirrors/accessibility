@@ -74,6 +74,7 @@ void AccessibleAbilityManagerServiceUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest TearDown";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
     stub_ = nullptr;
 }
 

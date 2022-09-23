@@ -45,10 +45,8 @@ bool SystemAbility::RemoveSystemAbilityListener(int32_t systemAbilityId)
 
 bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
 {
-    printf("Publish mock start");
     systemAbility.ForceSetRefPtr(nullptr);
     Accessibility::AccessibilityCommonHelper::GetInstance().SetIsServicePublished(true);
-    printf("Publish mock end");
     return true;
 }
 
