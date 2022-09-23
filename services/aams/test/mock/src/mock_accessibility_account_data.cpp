@@ -167,24 +167,18 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-void AccessibilityAccountData::RemoveEnabledFromPref(const std::string &name)
-{
-    (void)name;
-}
-
-bool AccessibilityAccountData::RemoveEnabledAbility(const std::string& bundleName)
+bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
-        if (*it == bundleName) {
-            HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", bundleName.c_str());
+        if (*it == name) {
+            HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
-            RemoveEnabledFromPref(bundleName);
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
             return true;
         }
     }
-    HILOG_ERROR("The ability(%{public}s) is not enabled.", bundleName.c_str());
+    HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
     return false;
 }
 
@@ -212,7 +206,9 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int32_t windowId)
 {
-    (void)windowId;
+    if (asacConnections_.count(windowId) > 0) {
+        return asacConnections_[windowId];
+    }
     return nullptr;
 }
 
@@ -290,10 +286,6 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
-void AccessibilityAccountData::UpdateEnabledFromPref()
-{
-}
-
 bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
@@ -304,8 +296,6 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
         }
     }
     enabledAbilities_.push_back(name);
-
-    UpdateEnabledFromPref();
     return true;
 }
 
@@ -321,23 +311,6 @@ void AccessibilityAccountData::Init()
     if (!config_) {
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
     }
-}
-
-bool AccessibilityAccountData::DisableAbility(const std::string &name)
-{
-    HILOG_ERROR("disable ability[%{public}s] start", name.c_str());
-    for (auto iter = enabledAbilities_.begin(); iter != enabledAbilities_.end();) {
-        if (*iter == name) {
-            enabledAbilities_.erase(iter);
-            RemoveEnabledFromPref(name);
-            HILOG_DEBUG("Removed %{public}s and EnabledAbility size(%{public}zu)",
-                name.c_str(), enabledAbilities_.size());
-        } else {
-            iter++;
-        }
-    }
-
-    return true;
 }
 
 void AccessibilityAccountData::AddEnableAbilityListsObserver(

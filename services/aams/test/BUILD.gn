@@ -128,6 +128,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
   sources = [
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
+    "mock/src/mock_accessibility_window_manager.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
     "mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
@@ -243,16 +244,10 @@ ohos_unittest("accessibility_common_event_registry_test") {
   module_out_path = module_output_path
   sources = [
     "../src/accessibility_common_event.cpp",
-    "../src/accessibility_dumper.cpp",
-    "../src/accessible_ability_manager_service.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_manager_service_stub.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "mock/src/mock_accessibility_account_data.cpp",
+    "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_common_event_data.cpp",
     "mock/src/mock_common_event_manager.cpp",
     "mock/src/mock_common_event_subscribe_info.cpp",
@@ -713,6 +708,7 @@ ohos_unittest("accessible_ability_channel_test") {
   module_out_path = module_output_path
   sources = [
     "../src/accessibility_account_data.cpp",
+    "../src/accessibility_common_event.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_channel.cpp",
@@ -735,6 +731,12 @@ ohos_unittest("accessible_ability_channel_test") {
     "mock/src/mock_accessible_ability_client_proxy.cpp",
     "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_accessible_ability_manager_service_stub.cpp",
+    "mock/src/mock_common_event_data.cpp",
+    "mock/src/mock_common_event_manager.cpp",
+    "mock/src/mock_common_event_subscribe_info.cpp",
+    "mock/src/mock_common_event_subscriber.cpp",
+    "mock/src/mock_common_event_support.cpp",
+    "mock/src/mock_matching_skill.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessible_ability_channel_test.cpp",
   ]

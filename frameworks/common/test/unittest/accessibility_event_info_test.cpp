@@ -504,5 +504,36 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AddContent_001, TestSize.Level1)
     }
     GTEST_LOG_(INFO) << "AddContent_001 end";
 }
+
+/**
+ * @tc.number: AccessibilityEventInfo_001
+ * @tc.name: AccessibilityEventInfo
+ * @tc.desc: Test function AccessibilityEventInfo
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, AccessibilityEventInfo_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityEventInfo_001 start";
+    std::shared_ptr<AccessibilityEventInfo> eventInfo =
+        std::make_shared<AccessibilityEventInfo>(1, WINDOW_UPDATE_FOCUSED);
+    ASSERT_TRUE(eventInfo);
+    EXPECT_EQ(eventInfo->GetWindowId(), 1);
+    EXPECT_EQ(eventInfo->GetWindowChangeTypes(), WINDOW_UPDATE_FOCUSED);
+    GTEST_LOG_(INFO) << "AccessibilityEventInfo_001 end";
+}
+
+/**
+ * @tc.number: GetRecords_001
+ * @tc.name: GetRecords
+ * @tc.desc: Test function GetRecords
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, GetRecords_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRecords_001 start";
+    ASSERT_TRUE(eventInfo_);
+    AccessibilityEventInfo record;
+    eventInfo_->AddRecord(record);
+    EXPECT_EQ(static_cast<int>(eventInfo_->GetRecords().size()), 1);
+    GTEST_LOG_(INFO) << "GetRecords_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

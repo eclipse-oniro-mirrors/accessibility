@@ -22,6 +22,13 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr uint32_t CONTENT_TIMEOUT_VALUE = 10;
+    constexpr int32_t MOUSE_AUTO_CLICK_VALUE = 2;
+    constexpr float BRIGHTNESS_DISCOUNT_VALUE = 0.3f;
+    constexpr float AUDIO_BALANCE_VALUE = 0.1f;
+} // namespace
+
 class AccessibilitySettingsConfigTest : public testing::Test {
 public:
     AccessibilitySettingsConfigTest()
@@ -279,7 +286,6 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetScreenMagnificationState_002 end";
 }
 
-
 /**
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetShortKeyState_001
  * @tc.name: SetShortKeyState
@@ -351,10 +357,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001 start";
-    int32_t time = 2;
     settingConfig_->Init();
-    settingConfig_->SetMouseAutoClick(time);
-    EXPECT_EQ(time, settingConfig_->GetMouseAutoClick());
+    settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
+    EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_001 end";
 }
 
@@ -367,9 +372,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 start";
-    int32_t time = 2;
-    settingConfig_->SetMouseAutoClick(time);
-    EXPECT_EQ(time, settingConfig_->GetMouseAutoClick());
+    settingConfig_->SetMouseAutoClick(MOUSE_AUTO_CLICK_VALUE);
+    EXPECT_EQ(MOUSE_AUTO_CLICK_VALUE, settingConfig_->GetMouseAutoClick());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetMouseAutoClick_002 end";
 }
 
@@ -572,10 +576,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_001 start";
-    uint32_t time = 10;
     settingConfig_->Init();
-    settingConfig_->SetContentTimeout(time);
-    EXPECT_EQ(time, settingConfig_->GetContentTimeout());
+    settingConfig_->SetContentTimeout(CONTENT_TIMEOUT_VALUE);
+    EXPECT_EQ(CONTENT_TIMEOUT_VALUE, settingConfig_->GetContentTimeout());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_001 end";
 }
 
@@ -588,9 +591,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetContentTimeout_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 start";
-    uint32_t time = 10;
-    settingConfig_->SetContentTimeout(time);
-    EXPECT_EQ(time, settingConfig_->GetContentTimeout());
+    settingConfig_->SetContentTimeout(CONTENT_TIMEOUT_VALUE);
+    EXPECT_EQ(CONTENT_TIMEOUT_VALUE, settingConfig_->GetContentTimeout());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetContentTimeout_002 end";
 }
 
@@ -603,10 +605,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001 start";
-    float discount = 0.1;
     settingConfig_->Init();
-    settingConfig_->SetBrightnessDiscount(discount);
-    EXPECT_EQ(discount, settingConfig_->GetBrightnessDiscount());
+    settingConfig_->SetBrightnessDiscount(BRIGHTNESS_DISCOUNT_VALUE);
+    EXPECT_EQ(BRIGHTNESS_DISCOUNT_VALUE, settingConfig_->GetBrightnessDiscount());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_001 end";
 }
 
@@ -619,9 +620,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 start";
-    float discount = 0.1;
-    settingConfig_->SetBrightnessDiscount(discount);
-    EXPECT_EQ(discount, settingConfig_->GetBrightnessDiscount());
+    settingConfig_->SetBrightnessDiscount(BRIGHTNESS_DISCOUNT_VALUE);
+    EXPECT_EQ(BRIGHTNESS_DISCOUNT_VALUE, settingConfig_->GetBrightnessDiscount());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetBrightnessDiscount_002 end";
 }
 
@@ -633,10 +633,9 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioBalance_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_001 start";
-    float balance = 0.1;
     settingConfig_->Init();
-    settingConfig_->SetAudioBalance(balance);
-    EXPECT_EQ(balance, settingConfig_->GetAudioBalance());
+    settingConfig_->SetAudioBalance(AUDIO_BALANCE_VALUE);
+    EXPECT_EQ(AUDIO_BALANCE_VALUE, settingConfig_->GetAudioBalance());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_001 end";
 }
 
@@ -648,9 +647,8 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetAudioBalance_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 start";
-    float balance = 0.1;
-    settingConfig_->SetAudioBalance(balance);
-    EXPECT_EQ(balance, settingConfig_->GetAudioBalance());
+    settingConfig_->SetAudioBalance(AUDIO_BALANCE_VALUE);
+    EXPECT_EQ(AUDIO_BALANCE_VALUE, settingConfig_->GetAudioBalance());
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetAudioBalance_002 end";
 }
 
