@@ -67,6 +67,7 @@ private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
     static sptr<IAccessibilityElementOperator> GetElementOperator(
         int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName);
+    bool GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;
