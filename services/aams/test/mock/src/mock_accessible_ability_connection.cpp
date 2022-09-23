@@ -172,9 +172,10 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
     return true;
 }
 
-sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId, const std::string &clientName)
+sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId,
+    const std::string &clientName)
 {
-    sptr<AccessibilityAccountData> accountData = 
+    sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");

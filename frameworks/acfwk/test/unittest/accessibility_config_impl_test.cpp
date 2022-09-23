@@ -55,8 +55,8 @@ public:
 class MockAccessibilityConfigObserverImpl : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
 public:
     MockAccessibilityConfigObserverImpl() = default;
-    virtual void OnConfigChanged(
-        const OHOS::AccessibilityConfig::CONFIG_ID id, const OHOS::AccessibilityConfig::ConfigValue& value) override
+    void OnConfigChanged(const OHOS::AccessibilityConfig::CONFIG_ID id,
+        const OHOS::AccessibilityConfig::ConfigValue& value) override
     {}
 };
 
@@ -64,7 +64,7 @@ class MockAccessibilityEnableAbilityListsObserverImpl :
         public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
 public:
     MockAccessibilityEnableAbilityListsObserverImpl() = default;
-    virtual void OnEnableAbilityListsStateChanged() override
+    void OnEnableAbilityListsStateChanged() override
     {}
 };
 
@@ -766,7 +766,7 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeEnableAbilityListsObserver_001, T
 {
     GTEST_LOG_(INFO) << "SubscribeEnableAbilityListsObserver_001 start";
 
-    std::shared_ptr<AccessibilityEnableAbilityListsObserver> observer = 
+    std::shared_ptr<AccessibilityEnableAbilityListsObserver> observer =
         std::make_shared<MockAccessibilityEnableAbilityListsObserverImpl>();
     auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
     instance.InitializeContext();

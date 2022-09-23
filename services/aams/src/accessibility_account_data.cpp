@@ -732,7 +732,8 @@ void AccessibilityAccountData::UpdateAbilities()
         sptr<AccessibleAbilityConnection> connection =
             GetAccessibleAbilityConnection(Utils::GetUri(bundleName, abilityName));
 
-        auto iter = std::find(enabledAbilities_.begin(), enabledAbilities_.end(), Utils::GetUri(bundleName, abilityName));
+        auto iter = std::find(enabledAbilities_.begin(), enabledAbilities_.end(),
+            Utils::GetUri(bundleName, abilityName));
         if (iter != enabledAbilities_.end()) {
             if (connection) {
                 continue;

@@ -356,7 +356,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_001, TestSiz
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 start";
     std::string name = "test";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name);
-    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(); 
+    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget();
     EXPECT_STREQ("test", str.c_str());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_001 end";
 }
@@ -459,7 +459,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, Tes
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetBrightnessDiscount(BRIGHTNESS_DISCOUNT_VALUE);
-    EXPECT_EQ(BRIGHTNESS_DISCOUNT_VALUE, Singleton<AccessibleAbilityManagerService>::GetInstance().GetBrightnessDiscount());
+    EXPECT_EQ(BRIGHTNESS_DISCOUNT_VALUE,
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetBrightnessDiscount());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetBrightnessDiscount_001 end";
 }
 
@@ -575,7 +576,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_001, Tes
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 start";
     int32_t systemAbilityId = 1;
     std::string deviceId = "test";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(systemAbilityId,deviceId);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnRemoveSystemAbility(systemAbilityId, deviceId);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 end";
 }
 
@@ -1202,7 +1203,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetShortkeyTarget_002, TestSiz
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetShortkeyTarget(name);
-    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget(); 
+    auto str = Singleton<AccessibleAbilityManagerService>::GetInstance().GetShortkeyTarget();
     EXPECT_STREQ("", str.c_str());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetShortkeyTarget_002 end";
 }
