@@ -773,7 +773,7 @@ HWTEST_F(
 
     /* GetAccessibilityWindows */
     std::vector<AccessibilityWindowInfo> windows = mgr.GetAccessibilityWindows();
-    EXPECT_EQ(1, (int)windows.size());
+    ASSERT_EQ(1, (int)windows.size());
     static Accessibility::AccessibilityWindowType type = windows.begin()->GetAccessibilityWindowType();
     EXPECT_EQ(AccessibilityWindowType::TYPE_APPLICATION, type);
 

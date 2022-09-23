@@ -381,6 +381,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_rosen_window_info.cpp",
     "mock/src/mock_system_ability.cpp",
+    "mock/src/mock_window_manager.cpp",
     "unittest/accessibility_window_manager_test.cpp",
   ]
   sources += aams_mock_distributeddatamgr_src
