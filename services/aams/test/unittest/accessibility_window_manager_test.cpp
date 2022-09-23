@@ -89,6 +89,29 @@ sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType window
 }
 
 /**
+ * @tc.number: AccessibilityWindowManager_Unittest_DeInit001
+ * @tc.name: DeInit
+ * @tc.desc: Test function DeInit
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_DeInit001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 start";
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    int32_t windowId = WINDOW_ID;
+    AccessibilityWindowInfo winInfo;
+
+    windowInfoManager.activeWindowId_ = windowId;
+    windowInfoManager.a11yFocusedWindowId_ = windowId;
+    windowInfoManager.a11yWindows_.emplace(windowId, winInfo);
+    windowInfoManager.DeInit();
+
+    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
+    EXPECT_EQ(windowInfoManager.a11yFocusedWindowId_, INVALID_WINDOW_ID);
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 end";
+}
+
+/**
  * @tc.number: AccessibilityWindowManager_Unittest_ConvertToRealWindowId001
  * @tc.name: ConvertToRealWindowId
  * @tc.desc: Test function ConvertToRealWindowId

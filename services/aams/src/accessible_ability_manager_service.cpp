@@ -185,6 +185,7 @@ void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilit
             Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
             Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
             Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+            Singleton<AccessibilityWindowManager>::GetInstance().DeInit();
 
             isReady_ = false;
             SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false");
