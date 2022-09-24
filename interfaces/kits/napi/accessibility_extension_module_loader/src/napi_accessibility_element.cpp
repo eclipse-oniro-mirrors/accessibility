@@ -23,6 +23,7 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityNapi;
 namespace {
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",

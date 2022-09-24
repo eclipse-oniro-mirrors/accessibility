@@ -24,6 +24,7 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityNapi;
 using namespace OHOS::AccessibilityConfig;
 
 void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)

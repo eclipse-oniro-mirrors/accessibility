@@ -22,6 +22,7 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityNapi;
 
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::accessibilityStateListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED);
