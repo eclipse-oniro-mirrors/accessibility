@@ -165,7 +165,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
         return;
     }
     sptr<AccessibleAbilityConnection> connection =
-        new MockAccessibleAbilityConnection(currentAccount, 0, *abilityInfo);
+        new MockAccessibleAbilityConnection(currentAccount->GetAccountId(), 0, *abilityInfo);
     if (!connection) {
         GTEST_LOG_(ERROR) << "Connection is nullptr";
         return;

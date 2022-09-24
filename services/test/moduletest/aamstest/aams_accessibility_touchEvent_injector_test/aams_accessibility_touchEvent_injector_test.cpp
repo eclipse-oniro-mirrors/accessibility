@@ -87,7 +87,8 @@ void AamsInjectorTest::SetUp()
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
 
@@ -97,8 +98,8 @@ void AamsInjectorTest::SetUp()
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()->GetConnectedA11yAbilities();
     auto iter = connectionMaps.begin();
     sptr<AccessibleAbilityConnection> ptr_connect = iter->second;
-    if (ptr_connect && ptr_connect->GetAccountData()) {
-        aacs_ = new AccessibleAbilityChannel(ptr_connect->GetAccountData()->GetAccountId(),
+    if (ptr_connect) {
+        aacs_ = new AccessibleAbilityChannel(accountData->GetAccountId(),
             ptr_connect->GetAbilityInfo().GetId());
     }
     GTEST_LOG_(INFO) << "AamsInjectorTest SetUp end";

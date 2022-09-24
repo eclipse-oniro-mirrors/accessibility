@@ -717,7 +717,7 @@ void AccessibilityAccountData::UpdateAbilities()
                 continue;
             }
             AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
-            connection = new(std::nothrow) AccessibleAbilityConnection(this, connectCounter_++, installAbility);
+            connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
             if (connection) {
                 connection->Connect(element);
                 AddConnectingA11yAbility(Utils::GetUri(bundleName, abilityName), connection);
@@ -725,6 +725,7 @@ void AccessibilityAccountData::UpdateAbilities()
         } else {
             HILOG_DEBUG("not in enabledAbilites list .");
             if (connection) {
+                RemoveConnectedAbility(connection->GetElementName());
                 connection->Disconnect();
             }
         }
@@ -846,7 +847,7 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     elementName->SetBundleName(bundleName);
     elementName->SetAbilityName(abilityName);
     sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(
-        this, connectCounter_++, *abilityInfo);
+        id_, connectCounter_++, *abilityInfo);
     if (!connection) {
         HILOG_ERROR("connection is null");
         return;
@@ -863,6 +864,7 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
         return;
     }
     RemoveInstalledAbility(bundleName);
+    RemoveConnectedAbility(connection->GetElementName());
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName());
 }
 } // namespace Accessibility

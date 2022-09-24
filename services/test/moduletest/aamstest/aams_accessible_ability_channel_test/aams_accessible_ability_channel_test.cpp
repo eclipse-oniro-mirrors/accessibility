@@ -120,7 +120,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoC
     }
     accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData_->Init();
-    AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
+    AAConnection_ = new AccessibleAbilityConnection(accountData_->GetAccountId(), 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName(deviceId, initParams.bundleName, initParams.name);
     aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
     AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);
