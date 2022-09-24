@@ -30,27 +30,32 @@ AccessibilityDisplayManager::~AccessibilityDisplayManager()
 
 const sptr<Rosen::Display> AccessibilityDisplayManager::GetDisplay(uint64_t id)
 {
+    HILOG_DEBUG();
     return Rosen::DisplayManager::GetInstance().GetDisplayById(id);
 }
 
 std::vector<sptr<Rosen::Display>> AccessibilityDisplayManager::GetDisplays()
 {
+    HILOG_DEBUG();
     return Rosen::DisplayManager::GetInstance().GetAllDisplays();
 }
 
 const sptr<Rosen::Display> AccessibilityDisplayManager::GetDefaultDisplay()
 {
+    HILOG_DEBUG();
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplay();
 }
 
 uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
 {
+    HILOG_DEBUG();
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(
     const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {
+    HILOG_DEBUG();
     if (listener_) {
         HILOG_DEBUG("Display listener is already registed!");
         return;
@@ -66,6 +71,7 @@ void AccessibilityDisplayManager::RegisterDisplayListener(
 
 void AccessibilityDisplayManager::UnregisterDisplayListener()
 {
+    HILOG_DEBUG();
     if (listener_) {
         Rosen::DisplayManager::GetInstance().UnregisterDisplayListener(listener_);
         listener_ = nullptr;

@@ -35,6 +35,7 @@ namespace {
     constexpr int WINDOW_ID = 2;
     constexpr int WINDOWS_SIZE = 2;
     constexpr int SEND_EVENT_TIMES = 2;
+    constexpr int32_t ACCOUNT_ID = 100;
 } // namespace
 
 class AccessibilityWindowManagerTest : public testing::Test {
@@ -583,6 +584,33 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
 }
 
 /**
+ * @tc.number: AccessibilityWindowManager_Unittest_SetActiveWindow005
+ * @tc.name: SetActiveWindow
+ * @tc.desc: Test function SetActiveWindow
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_SetActiveWindow005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_SetActiveWindow005 start";
+    /* map insert value */
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    AccessibilityWindowInfo info1;
+    AccessibilityWindowInfo info2;
+    mgr.activeWindowId_ = ACTIVE_WINDOW_ID;
+    mgr.a11yFocusedWindowId_ = ACTIVE_WINDOW_ID;
+    int32_t windowId = ANY_WINDOW_ID;
+    EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
+    mgr.a11yWindows_.insert(std::make_pair(ACTIVE_WINDOW_ID, info1));
+    mgr.a11yWindows_.insert(std::make_pair(windowId, info2));
+    EXPECT_EQ(2, (int)mgr.a11yWindows_.size());
+    /* SetActiveWindow */
+    mgr.SetActiveWindow(windowId);
+    /* test */
+    EXPECT_EQ(INVALID_WINDOW_ID, mgr.a11yFocusedWindowId_);
+    mgr.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_SetActiveWindow005 end";
+}
+
+/**
  * @tc.number: AccessibilityWindowManager_Unittest_SetAccessibilityFocusedWindow001
  * @tc.name: SetAccessibilityFocusedWindow
  * @tc.desc: Test function SetAccessibilityFocusedWindow
@@ -745,7 +773,7 @@ HWTEST_F(
 
     /* GetAccessibilityWindows */
     std::vector<AccessibilityWindowInfo> windows = mgr.GetAccessibilityWindows();
-    EXPECT_EQ(1, (int)windows.size());
+    ASSERT_EQ(1, (int)windows.size());
     static Accessibility::AccessibilityWindowType type = windows.begin()->GetAccessibilityWindowType();
     EXPECT_EQ(AccessibilityWindowType::TYPE_APPLICATION, type);
 
@@ -913,6 +941,94 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Set
 
     mgr.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_SetWindowSize001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_ClearAccessibilityFocused001
+ * @tc.name: ClearAccessibilityFocused
+ * @tc.desc: Test function ClearAccessibilityFocused
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_ClearAccessibilityFocused001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused001 start";
+    /* map insert value */
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    AccessibilityWindowInfo info1;
+    mgr.a11yFocusedWindowId_ = ACTIVE_WINDOW_ID;
+    EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
+    mgr.a11yWindows_.insert(std::make_pair(ACTIVE_WINDOW_ID, info1));
+
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(true);
+    /* ClearAccessibilityFocused */
+    mgr.ClearAccessibilityFocused();
+    AccessibilityAbilityHelper::GetInstance().SetNeedAccountDataNullFlag(false);
+    /* test */
+    EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
+    mgr.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_ClearAccessibilityFocused002
+ * @tc.name: ClearAccessibilityFocused
+ * @tc.desc: Test function ClearAccessibilityFocused
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_ClearAccessibilityFocused002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused002 start";
+    /* map insert value */
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    AccessibilityWindowInfo info1;
+    mgr.a11yFocusedWindowId_ = ACTIVE_WINDOW_ID;
+    EXPECT_EQ(0, (int)mgr.a11yWindows_.size());
+    mgr.a11yWindows_.insert(std::make_pair(ACTIVE_WINDOW_ID, info1));
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    sptr<AccessibilityWindowConnection> windowConnection =
+        new(std::nothrow) AccessibilityWindowConnection(ACTIVE_WINDOW_ID, nullptr, ACCOUNT_ID);
+    accountData->RemoveAccessibilityWindowConnection(ACTIVE_WINDOW_ID);
+    accountData->AddAccessibilityWindowConnection(ACTIVE_WINDOW_ID, windowConnection);
+    /* ClearAccessibilityFocused */
+    mgr.ClearAccessibilityFocused();
+    /* test */
+    EXPECT_EQ(1, (int)mgr.a11yWindows_.size());
+    mgr.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused002 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003
+ * @tc.name: ClearAccessibilityFocused
+ * @tc.desc: Test function ClearAccessibilityFocused
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003 start";
+    AccessibilityWindowManager& mgr = Singleton<AccessibilityWindowManager>::GetInstance();
+    mgr.a11yFocusedWindowId_ = ACTIVE_WINDOW_ID;
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    sptr<IAccessibilityElementOperator> proxy = new(std::nothrow) AccessibilityElementOperatorProxy(nullptr);
+    sptr<AccessibilityWindowConnection> windowConnection =
+        new(std::nothrow) AccessibilityWindowConnection(ACTIVE_WINDOW_ID, proxy, ACCOUNT_ID);
+    accountData->RemoveAccessibilityWindowConnection(ACTIVE_WINDOW_ID);
+    accountData->AddAccessibilityWindowConnection(ACTIVE_WINDOW_ID, windowConnection);
+    /* ClearAccessibilityFocused */
+    mgr.ClearAccessibilityFocused();
+    /* test */
+    EXPECT_EQ(ACTIVE_WINDOW_ID, AccessibilityAbilityHelper::GetInstance().GetEventWindowId());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
