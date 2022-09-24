@@ -29,6 +29,7 @@ void WindowAccessibilityController::SetAnchorAndScale(int32_t x, int32_t y, floa
 
 void WindowAccessibilityController::SetAnchorOffset(int32_t deltaX, int32_t deltaY)
 {
+    Accessibility::AccessibilityAbilityHelper::GetInstance().SetScrollState(true);
 }
 
 void WindowAccessibilityController::OffWindowZoom()

@@ -61,12 +61,12 @@ void MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEvent
 
 void MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
-    (void)caption;
+    captionProperty_ = caption;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetCaptionState(const bool state)
 {
-    (void)state;
+    captionState_ = state;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
@@ -99,8 +99,7 @@ void MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const in
 
 AccessibilityConfig::CaptionProperty MockAccessibleAbilityManagerServiceStub::GetCaptionProperty()
 {
-    AccessibilityConfig::CaptionProperty property = {};
-    return property;
+    return captionProperty_;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
@@ -117,7 +116,7 @@ bool MockAccessibleAbilityManagerServiceStub::GetEnabledState()
 
 bool MockAccessibleAbilityManagerServiceStub::GetCaptionState()
 {
-    return true;
+    return captionState_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetTouchGuideState()
@@ -139,6 +138,11 @@ bool MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &n
 {
     (void)name;
     (void)capabilities;
+    if (handler_) {
+        handler_->PostTask(std::bind([this]() {
+            abilityObserver_->OnAccessibilityEnableAbilityListsChanged();
+            }), "NotifyEnableAbility");
+    }
     return true;
 }
 
@@ -179,76 +183,77 @@ bool MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
 
 void MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)
 {
-    (void)state;
+    screenMagnifier_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetShortKeyState(const bool state)
 {
-    (void)state;
+    shortkey_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetMouseKeyState(const bool state)
 {
-    (void)state;
+    mouseKey_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetMouseAutoClick(const int32_t time)
 {
-    (void)time;
+    mouseAutoClick_ = time;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::string &name)
 {
-    (void)name;
+    shortkeyTarget_ = name;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(const bool state)
 {
-    (void)state;
+    highContrastText_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetInvertColorState(const bool state)
 {
-    (void)state;
+    invertColor_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetAnimationOffState(const bool state)
 {
-    (void)state;
+    animationOff_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(const bool state)
 {
-    (void)state;
+    audioMono_ = state;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(const uint32_t filter)
 {
-    (void)filter;
+    daltonizationColorFilter_ = filter;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetContentTimeout(const uint32_t time)
 {
-    (void)time;
+    contentTimeout_ = time;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(const float discount)
 {
-    (void)discount;
+    brightnessDiscount_ = discount;
 }
 
 void MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balance)
 {
-    (void)balance;
+    audioBalance_ = balance;
+
     if (handler_) {
-        handler_->PostTask(std::bind([this]() {
-            observer_->OnConfigStateChanged(0);
-            observer_->OnAudioBalanceChanged(0);
-            observer_->OnBrightnessDiscountChanged(0);
-            observer_->OnContentTimeoutChanged(0);
-            observer_->OnMouseAutoClickChanged(0);
-            observer_->OnDaltonizationColorFilterChanged(0);
-            observer_->OnShortkeyTargetChanged("test_target");
+        handler_->PostTask(std::bind([this, balance]() {
+            observer_->OnConfigStateChanged(balance == 0 ? 0 : 0xFFFF);
+            observer_->OnAudioBalanceChanged(balance == 0 ? 0 : 1);
+            observer_->OnBrightnessDiscountChanged(balance == 0 ? 0 : 1);
+            observer_->OnContentTimeoutChanged(balance == 0 ? 0 : 1);
+            observer_->OnMouseAutoClickChanged(balance == 0 ? 0 : 1);
+            observer_->OnDaltonizationColorFilterChanged(balance == 0 ? 0 : 1);
+            observer_->OnShortkeyTargetChanged(balance == 0 ? "test_target1" : "test_target2");
             AccessibilityConfig::CaptionProperty testProperty;
             captionObserver_->OnPropertyChanged(testProperty);
             }), "NotifyAll");
@@ -257,67 +262,67 @@ void MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balanc
 
 bool MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState()
 {
-    return true;
+    return screenMagnifier_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetShortKeyState()
 {
-    return true;
+    return shortkey_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetMouseKeyState()
 {
-    return true;
+    return mouseKey_;
 }
 
 int32_t MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick()
 {
-    return MOUSE_AUTO_CLICK_VALUE;
+    return mouseAutoClick_;
 }
 
 std::string MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget()
 {
-    return "test";
+    return shortkeyTarget_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState()
 {
-    return true;
+    return highContrastText_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetInvertColorState()
 {
-    return true;
+    return invertColor_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetAnimationOffState()
 {
-    return true;
+    return animationOff_;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetAudioMonoState()
 {
-    return true;
+    return audioMono_;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter()
 {
-    return 1;
+    return daltonizationColorFilter_;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::GetContentTimeout()
 {
-    return CONTENT_TIMEOUT_VALUE;
+    return contentTimeout_;
 }
 
 float MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount()
 {
-    return BRIGHTNESS_DISCOUNT_VALUE;
+    return brightnessDiscount_;
 }
 
 float MockAccessibleAbilityManagerServiceStub::GetAudioBalance()
 {
-    return -1;
+    return audioBalance_;
 }
 
 void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData &configData)
@@ -341,7 +346,7 @@ void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigD
 void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver> &observer)
 {
-    (void)observer;
+    abilityObserver_ = observer;
     return;
 }
 

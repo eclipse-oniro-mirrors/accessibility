@@ -61,8 +61,6 @@ public:
     MOCK_METHOD0(GetFilteringKeyEventsFlag, bool());
     MOCK_METHOD0(GetGesturesSimulationFlag, bool());
     MOCK_METHOD0(GetInstalledAbilitiesFromBMS, bool());
-    MOCK_METHOD1(AddEventEnabled, void(EventType type));
-    MOCK_METHOD1(DeleteEventEnabled, void(EventType type));
     MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
     MOCK_METHOD1(SetCaptionProperty, bool(const AccessibilityConfig::CaptionProperty& caption));
     MOCK_METHOD1(SetCaptionState, bool(const bool state));

@@ -37,6 +37,7 @@ ohos_unittest("accessibility_common_test") {
   sources = [
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
+    "unittest/accessibility_ability_info_test.cpp",
     "unittest/accessibility_element_info_test.cpp",
     "unittest/accessibility_event_info_test.cpp",
     "unittest/accessibility_window_info_test.cpp",

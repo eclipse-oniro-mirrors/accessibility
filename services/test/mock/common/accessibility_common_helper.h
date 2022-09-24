@@ -23,6 +23,11 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr int32_t WAIT_PUBLISH_SLEEPTIME = 10;
+    constexpr int32_t WAIT_LOOP_SLEEPTIME = 100;
+} // namespace
+
 class AccessibilityCommonHelper {
 public:
     static AccessibilityCommonHelper& GetInstance()
@@ -44,8 +49,7 @@ public:
     void WaitForServicePublish()
     {
         while (1) {
-            constexpr int32_t sleepTime = 10;
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_PUBLISH_SLEEPTIME));
             if (isServicePublished_) {
                 return;
             }
@@ -54,10 +58,9 @@ public:
 
     bool WaitForLoop(const std::function<bool()> &compare, int32_t timeout)
     {
-        constexpr int32_t sleepTime = 100;
-        int32_t count = timeout * 1000 / sleepTime;
+        int32_t count = timeout * 1000 / WAIT_LOOP_SLEEPTIME;
         while (count > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_LOOP_SLEEPTIME));
             if (compare() == true) {
                 return true;
             } else {
