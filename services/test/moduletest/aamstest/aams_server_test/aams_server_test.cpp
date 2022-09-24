@@ -112,7 +112,7 @@ void AAMSServerTest::AddAccessibleAbilityConnection()
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
     accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    AAConnection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
+    AAConnection_ = new AccessibleAbilityConnection(accountData_->GetAccountId(), 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName(deviceId, initParams.bundleName, initParams.name);
     aastub_ = new AccessibleAbilityChannel(accountData_->GetAccountId(), abilityInfo->GetId());
     AAConnection_->OnAbilityConnectDoneSync(*elementName_, aastub_);

@@ -87,11 +87,11 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetEventTypes(EventType::TYPES_ALL_MASK);
-    accountData_ = new AccessibilityAccountData(0);
+    accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (accountData_ != nullptr) {
         accountData_->AddAccessibilityWindowConnection(0, connection);
     }
-    connection_ = new AccessibleAbilityConnection(accountData_, 0, *abilityInfo);
+    connection_ = new AccessibleAbilityConnection(AccessibilityAbilityHelper::accountId_, 0, *abilityInfo);
     elementName_ = new AppExecFwk::ElementName("1", "2", "3");
     obj_ = new MockAccessibleAbilityClientStubImpl();
     if (obj_ != nullptr && connection_ != nullptr) {
@@ -147,21 +147,6 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
         EXPECT_STREQ(ret.c_str(), "1");
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetElementName_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityConnection_Unittest_GetAccountData_001
- * @tc.name: GetAccountData
- * @tc.desc: Test function GetAccountData
- */
-HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_GetAccountData_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAccountData_001 start";
-    if (connection_ != nullptr) {
-        auto ret = connection_->GetAccountData();
-        EXPECT_TRUE(ret.GetRefPtr());
-    }
-    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_GetAccountData_001 end";
 }
 
 /**
@@ -239,8 +224,7 @@ HWTEST_F(AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unitte
         connection_->Connect(element);
         sptr<AccessibleAbilityClientStub> obj = new MockAccessibleAbilityClientStubImpl();
         connection_->OnAbilityConnectDoneSync(element, obj);
-        auto accountData = connection_->GetAccountData();
-        EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(Utils::GetUri(
+        EXPECT_TRUE(accountData_->GetAccessibleAbilityConnection(Utils::GetUri(
             element.GetBundleName(), element.GetAbilityName())));
     }
     GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_Connect_001 end";

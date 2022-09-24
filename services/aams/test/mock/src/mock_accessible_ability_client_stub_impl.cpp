@@ -76,6 +76,7 @@ void MockAccessibleAbilityClientStubImpl::Disconnect(const int32_t channelId)
 {
     (void)channelId;
     GTEST_LOG_(INFO) << "MockAccessibleAbilityClientStubImpl Disconnect";
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(INVALID_CHANNEL_ID);
 }
 void MockAccessibleAbilityClientStubImpl::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
 {

@@ -82,7 +82,7 @@ void AccessibleAbilityChannelUnitTest::SetUp()
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     ASSERT_TRUE(accountData);
-    connection_ = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    connection_ = new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     ASSERT_TRUE(connection_);
     AppExecFwk::ElementName elementName("testDeviceId", "testBundleName", "testAbilityName");
     channel_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
