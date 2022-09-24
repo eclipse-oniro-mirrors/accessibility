@@ -103,10 +103,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_value jsEvent;
@@ -159,10 +156,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
             napi_value jsEvent;
@@ -215,18 +209,12 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_value jsEvent;
-            napi_create_string_utf8(callbackInfo->env_,
-                callbackInfo->stringValue_.c_str(),
-                callbackInfo->stringValue_.length(),
-                &jsEvent);
-
+            napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(),
+                callbackInfo->stringValue_.length(), &jsEvent);
             napi_value handler = nullptr;
             napi_value callResult = nullptr;
             napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
