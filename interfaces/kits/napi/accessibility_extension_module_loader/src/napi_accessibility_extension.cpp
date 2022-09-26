@@ -29,6 +29,7 @@
 #include "napi_accessibility_element.h"
 
 using namespace OHOS::AbilityRuntime;
+using namespace OHOS::AccessibilityNapi;
 
 namespace OHOS {
 namespace Accessibility {

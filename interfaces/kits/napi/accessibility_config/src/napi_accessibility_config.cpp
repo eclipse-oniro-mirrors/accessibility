@@ -21,6 +21,7 @@
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
+using namespace OHOS::AccessibilityNapi;
 using namespace OHOS::AccessibilityConfig;
 
 std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configObservers_ =

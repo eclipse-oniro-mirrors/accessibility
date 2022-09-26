@@ -16,33 +16,21 @@
 #ifndef NAPI_ACCESSIBILITY_UTILS_H
 #define NAPI_ACCESSIBILITY_UTILS_H
 
-#include <cstdint>
 #include <map>
-#include <string>
 #include "accessibility_ability_info.h"
 #include "accessibility_caption.h"
+#include "accessibility_config.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_window_info.h"
 #include "key_event.h"
-#include "accessibility_config.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
+#include "napi_accessibility_def.h"
 
-constexpr size_t CALLBACK_SIZE = 1;
-constexpr size_t ARGS_SIZE_ZERO = 0;
-constexpr size_t ARGS_SIZE_ONE = 1;
-constexpr size_t ARGS_SIZE_TWO = 2;
-constexpr size_t ARGS_SIZE_THREE = 3;
-constexpr size_t ARGS_SIZE_FOUR = 4;
-constexpr int32_t DEFAULT_INT32 = 0;
-constexpr int32_t PARAM0 = 0;
-constexpr int32_t PARAM1 = 1;
-constexpr int32_t PARAM2 = 2;
-constexpr int32_t CODE_SUCCESS = 0;
-constexpr int32_t CODE_FAILED = -1;
-constexpr int32_t CHAE_BUFFER_MAX = 1024;
+namespace OHOS {
+namespace AccessibilityNapi {
 // key action
 enum KeyAction : int32_t {
     CANCEL = 0,
@@ -123,4 +111,6 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
 struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
     OHOS::AccessibilityConfig::CaptionProperty caption_;
 };
+} // namespace AccessibilityNapi
+} // OHOS
 #endif // NAPI_ACCESSIBILITY_UTILS_H
