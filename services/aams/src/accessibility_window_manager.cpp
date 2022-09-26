@@ -55,6 +55,14 @@ bool AccessibilityWindowManager::Init()
     return true;
 }
 
+void AccessibilityWindowManager::DeInit()
+{
+    HILOG_DEBUG("start");
+    a11yWindows_.clear();
+    activeWindowId_ = INVALID_WINDOW_ID;
+    a11yFocusedWindowId_ = INVALID_WINDOW_ID;
+}
+
 AccessibilityWindowManager::~AccessibilityWindowManager()
 {
     DeregisterWindowListener();
