@@ -18,16 +18,17 @@
 #include <map>
 #include <vector>
 #include "accessibility_account_data.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
-MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(const sptr<AccessibilityAccountData>& accountData,
-    const int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
-    : AccessibleAbilityConnection(accountData, connectionId, abilityInfo)
+MockAccessibleAbilityConnection::MockAccessibleAbilityConnection(int32_t accountId, int32_t connectionId,
+    AccessibilityAbilityInfo& abilityInfo)
+    : AccessibleAbilityConnection(accountId, connectionId, abilityInfo)
 {
-    (void)accountData;
+    (void)accountId;
     (void)connectionId;
     (void)abilityInfo;
 }
@@ -180,11 +181,11 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_
 }
 
 AccessibleAbilityConnection::AccessibleAbilityConnection(
-    const sptr<AccessibilityAccountData>& accountData, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
+    int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo& abilityInfo)
 {
+    accountId_ = accountId;
     connectionId_ = connectionId;
     abilityInfo_ = abilityInfo;
-    accountData_ = accountData;
 }
 
 AccessibleAbilityConnection::~AccessibleAbilityConnection()
@@ -198,9 +199,10 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(
     (void)element;
     (void)remoteObject;
     (void)resultCode;
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
     sptr<AccessibleAbilityConnection> pointer = this;
-    if (accountData_ != nullptr) {
-        accountData_->AddConnectedAbility(pointer);
+    if (accountData) {
+        accountData->AddConnectedAbility(pointer);
     }
 }
 
@@ -234,6 +236,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG("start");
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(-1);
 }
 
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)

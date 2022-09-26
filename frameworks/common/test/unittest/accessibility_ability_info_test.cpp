@@ -46,7 +46,7 @@ public:
         params.name = "name";
         params.rationale = "rationale";
         params.settingsAbility = "settingsAbility";
-        params.capabilities = 1;
+        params.staticCapabilities = 1;
         params.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
         params.isImportant = true;
         abilityInfo_ = std::make_shared<AccessibilityAbilityInfo>(params);
@@ -62,6 +62,19 @@ public:
 };
 
 /**
+ * @tc.number: AccessibilityAbilityInfo_001
+ * @tc.name: AccessibilityAbilityInfo
+ * @tc.desc: Test function AccessibilityAbilityInfo
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, AccessibilityAbilityInfo_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_001 start";
+    std::shared_ptr<AccessibilityAbilityInfo> info = std::make_shared<AccessibilityAbilityInfo>();
+    EXPECT_TRUE(info);
+    GTEST_LOG_(INFO) << "AccessibilityAbilityInfo_001 end";
+}
+
+/**
  * @tc.number: SetPackageName_001
  * @tc.name: SetPackageName
  * @tc.desc: Test function SetPackageName
@@ -75,7 +88,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetPackageName_001, TestSize.Level1)
     }
     std::string packageName = "packageName";
     abilityInfo_->SetPackageName(packageName);
-    EXPECT_EQ(abilityInfo_->GetPackageName(), packageName);
+    EXPECT_STREQ(abilityInfo_->GetPackageName().c_str(), packageName.c_str());
     GTEST_LOG_(INFO) << "SetPackageName_001 end";
 }
 
@@ -158,7 +171,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetDescription_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
         return;
     }
-    EXPECT_EQ(abilityInfo_->GetDescription(), "description");
+    EXPECT_STREQ(abilityInfo_->GetDescription().c_str(), "description");
     GTEST_LOG_(INFO) << "GetDescription_001 end";
 }
 
@@ -175,7 +188,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetId_001, TestSize.Level1)
         return;
     }
     std::string id = "bundleName/name";
-    EXPECT_EQ(abilityInfo_->GetId(), id);
+    EXPECT_STREQ(abilityInfo_->GetId().c_str(), id.c_str());
     GTEST_LOG_(INFO) << "GetId_001 end";
 }
 
@@ -191,7 +204,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetName_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
         return;
     }
-    EXPECT_EQ(abilityInfo_->GetName(), "name");
+    EXPECT_STREQ(abilityInfo_->GetName().c_str(), "name");
     GTEST_LOG_(INFO) << "GetName_001 end";
 }
 
@@ -207,7 +220,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetModuleName_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
         return;
     }
-    EXPECT_EQ(abilityInfo_->GetModuleName(), "moduleName");
+    EXPECT_STREQ(abilityInfo_->GetModuleName().c_str(), "moduleName");
     GTEST_LOG_(INFO) << "GetModuleName_001 end";
 }
 
@@ -228,9 +241,9 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, SetFilterBundleNames_001, TestSize.Le
     int32_t index = 0;
     for (auto &name : abilityInfo_->GetFilterBundleNames()) {
         if (!index) {
-            EXPECT_EQ(name, "BundleName1");
+            EXPECT_STREQ(name.c_str(), "BundleName1");
         } else {
-            EXPECT_EQ(name, "BundleName2");
+            EXPECT_STREQ(name.c_str(), "BundleName2");
         }
         index++;
     }
@@ -249,8 +262,24 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetSettingsAbility_001, TestSize.Leve
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
         return;
     }
-    EXPECT_EQ(abilityInfo_->GetSettingsAbility(), "settingsAbility");
+    EXPECT_STREQ(abilityInfo_->GetSettingsAbility().c_str(), "settingsAbility");
     GTEST_LOG_(INFO) << "GetSettingsAbility_001 end";
+}
+
+/**
+ * @tc.number: GetStaticCapabilityValues_001
+ * @tc.name: GetStaticCapabilityValues
+ * @tc.desc: Test function GetStaticCapabilityValues
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, GetStaticCapabilityValues_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 start";
+    if (!abilityInfo_) {
+        GTEST_LOG_(INFO) << "abilityInfo_ is null";
+        return;
+    }
+    EXPECT_EQ(abilityInfo_->GetStaticCapabilityValues(), 1);
+    GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
