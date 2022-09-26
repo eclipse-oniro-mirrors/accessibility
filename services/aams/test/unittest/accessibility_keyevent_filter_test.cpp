@@ -87,7 +87,8 @@ void KeyEventFilterUnitTest::AddConnection()
     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData->AddInstalledAbility(*abilityInfo);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
     connection->OnAbilityConnectDoneSync(elementName, aastub_);
     sleep(SLEEP_TIME_3);
@@ -144,7 +145,7 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     AccessibilityAbilityInfo abilityInfo;
     std::shared_ptr<AccessibleAbilityConnection> connection =
-        std::make_shared<AccessibleAbilityConnection>(accountData, connectionId, abilityInfo);
+        std::make_shared<AccessibleAbilityConnection>(accountId, connectionId, abilityInfo);
 
     AddConnection();
     keyEventFilter_->OnKeyEvent(*event);

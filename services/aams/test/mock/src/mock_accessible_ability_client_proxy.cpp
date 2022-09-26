@@ -45,7 +45,7 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel>& c
 
 void AccessibleAbilityClientProxy::Disconnect(const int32_t channelId)
 {
-    (void)channelId;
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(channelId);
 }
 
 void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)

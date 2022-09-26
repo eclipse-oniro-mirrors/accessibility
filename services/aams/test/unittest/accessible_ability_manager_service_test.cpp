@@ -99,7 +99,8 @@ void AccessibleAbilityManagerServiceUnitTest::RegisterAbilityConnectionClient(co
         return;
     }
     accountData->AddInstalledAbility(*abilityInfo);
-    sptr<AccessibleAbilityConnection> connection = new AccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
     connection->OnAbilityConnectDoneSync(elementName, obj);
     sleep(SLEEP_TIME_1);
 }

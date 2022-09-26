@@ -31,8 +31,7 @@ class AccessibilityAccountData;
 
 class AccessibleAbilityConnection : public AAFwk::AbilityConnectionStub {
 public:
-    AccessibleAbilityConnection(const sptr<AccessibilityAccountData> &accountData, const int32_t connectionId,
-        AccessibilityAbilityInfo &abilityInfo);
+    AccessibleAbilityConnection(int32_t accountId, int32_t connectionId, AccessibilityAbilityInfo &abilityInfo);
 
     virtual ~AccessibleAbilityConnection();
 
@@ -62,11 +61,6 @@ public:
         return elementName_;
     }
 
-    inline sptr<AccessibilityAccountData> GetAccountData()
-    {
-        return accountData_;
-    }
-
     inline sptr<IAccessibleAbilityClient> GetAbilityClient()
     {
         return abilityClient_;
@@ -84,15 +78,15 @@ public:
 private:
     class AccessibleAbilityConnectionDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
-        AccessibleAbilityConnectionDeathRecipient(sptr<AccessibilityAccountData> accountData,
+        AccessibleAbilityConnectionDeathRecipient(int32_t accountId,
             AppExecFwk::ElementName& elementName, std::shared_ptr<AppExecFwk::EventHandler> handler)
-            : recipientAccountData_(accountData), recipientElementName_(elementName), handler_(handler) {};
+            : accountId_(accountId), recipientElementName_(elementName), handler_(handler) {};
         ~AccessibleAbilityConnectionDeathRecipient() = default;
         DISALLOW_COPY_AND_MOVE(AccessibleAbilityConnectionDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject>& remote);
 
-        sptr<AccessibilityAccountData> recipientAccountData_;
+        int32_t accountId_ = -1;
         AppExecFwk::ElementName& recipientElementName_;
         std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
     };
@@ -100,14 +94,13 @@ private:
     bool IsWantedEvent(int32_t eventType);
     void InitAbilityClient(const sptr<IRemoteObject> &remoteObject);
 
+    int32_t accountId_ = -1;
     int32_t connectionId_ = -1;
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityClient> abilityClient_ = nullptr;
     sptr<AccessibleAbilityChannel> channel_ = nullptr;
     AccessibilityAbilityInfo abilityInfo_ {};
     AppExecFwk::ElementName elementName_ {};
-    sptr<AccessibilityAccountData> accountData_ = nullptr;
-    static std::mutex mutex_;
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
 } // namespace Accessibility
