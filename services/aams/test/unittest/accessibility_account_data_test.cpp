@@ -19,10 +19,13 @@
 #include "accessibility_constants.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_element_operator_stub.h"
+#include "accessibility_ut_helper.h"
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_accessibility_element_operator_stub.h"
 #include "mock_accessible_ability_client_stub_impl.h"
 #include "mock_accessible_ability_connection.h"
+#include "mock_accessible_ability_manager_service_config_observer_proxy.h"
+#include "mock_accessible_ability_manager_service_config_observer_stub.h"
 #include "mock_accessible_ability_manager_service_state_observer_proxy.h"
 #include "mock_accessible_ability_manager_service_state_observer_stub.h"
 #include "utils.h"
@@ -34,6 +37,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t SLEEP_TIME_1 = 1;
+    constexpr size_t IMPORTANT_ABILITIES_SIZE = 1;
 } // namespace
 
 class AccessibilityAccountDataTest : public testing::Test {
@@ -314,6 +318,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddEnab
     abilityInfo->SetCapabilityValues(1);
     accountData->AddInstalledAbility(*abilityInfo);
     accountData->AddEnabledAbility(bundleName);
+    accountData->AddEnabledAbility(bundleName);
     EXPECT_EQ(1, (int)accountData->GetEnabledAbilities().size());
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddEnabledAbility001 end";
 }
@@ -331,6 +336,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     const std::string bundleName = "/bbb";
     accountData->Init();
     EXPECT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
+
+    /* remove */
+    accountData->RemoveEnabledAbility(bundleName);
+    EXPECT_EQ(0, (int)accountData->GetEnabledAbilities().size());
+
     /* add */
     AccessibilityAbilityInitParams initParams;
     initParams.name = "bbb";
@@ -432,9 +442,10 @@ HWTEST_F(
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(accountData, connectCounter++, *abilityInfo);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+    std::string elementName = Utils::GetUri(connection->GetElementName());
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(elementName));
     accountData->AddConnectedAbility(connection);
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-    const std::string elementName = Utils::GetUri(connection->GetElementName());
     /* get */
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibleAbilityConnection001 end";
@@ -789,8 +800,13 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddConn
     const std::string bundleName = "bbb";
     EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
     /* add connecting A11y ability */
-    accountData->AddConnectingA11yAbility(bundleName, nullptr);
-    EXPECT_FALSE(accountData->GetConnectingA11yAbility(bundleName));
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    accountData->AddConnectingA11yAbility(bundleName, connection);
+    accountData->AddConnectingA11yAbility(bundleName, connection);
+    EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddConnectingA11yAbility001 end";
 }
 
@@ -886,9 +902,14 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility end";
 }
 
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility, TestSize.Level1)
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_EnableAbility_001
+ * @tc.name: EnableAbility
+ * @tc.desc: Enable specified ability with no capability
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility start";
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_001 start";
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     accountData->Init();
@@ -898,7 +919,479 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     EXPECT_FALSE(test);
     ASSERT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
 
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility end";
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_EnableAbility_002
+ * @tc.name: EnableAbility
+ * @tc.desc: Enable specified ability which is already enabled.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->Init();
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "bundle";
+    initParams.name = "ability";
+    initParams.capabilities = CAPABILITY_RETRIEVE;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    std::string name = "bundle/ability";
+    accountData->AddEnabledAbility(name);
+    EXPECT_FALSE(accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_EnableAbility_003
+ * @tc.name: EnableAbility
+ * @tc.desc: Enable specified ability successfully.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_003 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->Init();
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "bundle";
+    initParams.name = "ability";
+    initParams.capabilities = CAPABILITY_RETRIEVE;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    const std::string name = "bundle/ability";
+    EXPECT_TRUE(accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_001
+ * @tc.name: GetImportantEnabledAbilities
+ * @tc.desc: Get important enabled abilities when there is no installed ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_001 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    std::map<std::string, uint32_t> abilities;
+    accountData->GetImportantEnabledAbilities(abilities);
+    EXPECT_EQ(0, static_cast<int>(abilities.size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_002
+ * @tc.name: GetImportantEnabledAbilities
+ * @tc.desc: Get important enabled abilities when there is no enabled ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    std::map<std::string, uint32_t> abilities;
+    accountData->GetImportantEnabledAbilities(abilities);
+    EXPECT_EQ(0, static_cast<int>(abilities.size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_003
+ * @tc.name: GetImportantEnabledAbilities
+ * @tc.desc: Get important enabled abilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_003 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle1";
+    initParams.name = "testAbility1";
+    initParams.isImportant = false;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    initParams.bundleName = "testBundle2";
+    initParams.name = "testAbility2";
+    initParams.isImportant = true;
+    std::shared_ptr<AccessibilityAbilityInfo> importantAbilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*importantAbilityInfo);
+
+    accountData->AddEnabledAbility("testBundle1/testAbility1");
+    accountData->AddEnabledAbility("testBundle2/testAbility2");
+
+    std::map<std::string, uint32_t> abilities;
+    accountData->GetImportantEnabledAbilities(abilities);
+    EXPECT_EQ(IMPORTANT_ABILITIES_SIZE, abilities.size());
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetImportantEnabledAbilities_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateImportantEnabledAbilities
+ * @tc.name: UpdateImportantEnabledAbilities
+ * @tc.desc: Update important enabled abilities.
+ */
+HWTEST_F(AccessibilityAccountDataTest,
+    AccessibilityAccountData_Unittest_UpdateImportantEnabledAbilities, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateImportantEnabledAbilities start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    std::map<std::string, uint32_t> abilities;
+    accountData->UpdateImportantEnabledAbilities(abilities);
+
+    abilities.emplace(std::make_pair("testBundle/testAbility", CAPABILITY_RETRIEVE));
+    accountData->UpdateImportantEnabledAbilities(abilities);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    initParams.name = "testAbility";
+    initParams.isImportant = true;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    abilityInfo->SetCapabilityValues(CAPABILITY_RETRIEVE | CAPABILITY_GESTURE);
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    accountData->UpdateImportantEnabledAbilities(abilities);
+    ASSERT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    EXPECT_EQ(accountData->GetInstalledAbilities().front().GetCapabilityValues(), CAPABILITY_RETRIEVE);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateImportantEnabledAbilities end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAbilities_001
+ * @tc.name: UpdateAbilities
+ * @tc.desc: Update all abilities when there is an installed ability which is connecting.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateAbilities_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_001 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "connectingBundle";
+    initParams.name = "connectingAbility";
+    std::shared_ptr<AccessibilityAbilityInfo> connectingAbilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*connectingAbilityInfo);
+
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *connectingAbilityInfo);
+    accountData->AddConnectingA11yAbility("connectingBundle/connectingAbility", connection);
+    accountData->UpdateAbilities();
+    EXPECT_TRUE(accountData->GetConnectingA11yAbility("connectingBundle/connectingAbility"));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAbilities_002
+ * @tc.name: UpdateAbilities
+ * @tc.desc: Update all abilities when there is an ability which is already connected.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateAbilities_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
+    accountData->AddInstalledAbility(*abilityInfo);
+    accountData->AddEnabledAbility("testBundle/testAbility");
+
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    AppExecFwk::ElementName elementName("testDeviceId", "testBundle", "testAbility");
+    sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
+    connection->OnAbilityConnectDoneSync(elementName, aastub);
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection("testBundle/testAbility"));
+
+    accountData->UpdateAbilities();
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection("testBundle/testAbility"));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAbilities_003
+ * @tc.name: UpdateAbilities
+ * @tc.desc: Update all abilities when there is an enabled ability which is no connected.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateAbilities_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_003 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    initParams.name = "testAbility";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    accountData->AddEnabledAbility("testBundle/testAbility");
+
+    accountData->UpdateAbilities();
+    EXPECT_TRUE(accountData->GetConnectingA11yAbility("testBundle/testAbility"));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_003 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_UpdateAbilities_004
+ * @tc.name: UpdateAbilities
+ * @tc.desc: Update all abilities when there is an connected ability which is no enabled.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateAbilities_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_004 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    AppExecFwk::ElementName elementName("testDeviceId", "testBundle", "testAbility");
+    sptr<AccessibleAbilityClientStub> aastub = new MockAccessibleAbilityClientStubImpl();
+    connection->OnAbilityConnectDoneSync(elementName, aastub);
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection("testBundle/testAbility"));
+
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(0);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), 0);
+
+    accountData->UpdateAbilities();
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), -1);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_004 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveAbility_001
+ * @tc.name: RemoveAbility
+ * @tc.desc: Remove ability when there is no ability
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveAbility_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAbility_001 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    EXPECT_FALSE(accountData->RemoveAbility("bundle"));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAbility_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveAbility_002
+ * @tc.name: RemoveAbility
+ * @tc.desc: Remove ability successfully
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveAbility_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAbility_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    initParams.name = "testAbility";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+
+    accountData->AddEnabledAbility("testBundle/testAbility");
+
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+    accountData->AddConnectedAbility(connection);
+
+    EXPECT_TRUE(accountData->RemoveAbility("testBundle"));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveAbility_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_ChangeAbility_001
+ * @tc.name: ChangeAbility
+ * @tc.desc: Change ability when there is no ability
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ChangeAbility_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_001 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->ChangeAbility("bundle");
+    EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_ChangeAbility_002
+ * @tc.name: ChangeAbility
+ * @tc.desc: Change ability which is not installed.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ChangeAbility_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "testBundle";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    accountData->AddInstalledAbility(*abilityInfo);
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+
+    accountData->ChangeAbility("test");
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ChangeAbility_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_AddUITestClient
+ * @tc.name: AddUITestClient
+ * @tc.desc: Add ui test client
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddUITestClient, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddUITestClient start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->AddUITestClient(nullptr, "uitestBundle", "uitestAbility");
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddUITestClient end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveUITestClient_001
+ * @tc.name: RemoveUITestClient
+ * @tc.desc: Remove ui test client failed.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveUITestClient_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveUITestClient_001 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    accountData->AddUITestClient(nullptr, "uitestBundle", "uitestAbility");
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+
+    sptr<AccessibleAbilityConnection> connection = nullptr;
+    accountData->RemoveUITestClient(connection, "uitestBundle");
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveUITestClient_001 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveUITestClient_002
+ * @tc.name: RemoveUITestClient
+ * @tc.desc: Remove ui test client successfully.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveUITestClient_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveUITestClient_002 start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "uitestBundle";
+    initParams.name = "uitestAbility";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo =
+        std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountData, 0, *abilityInfo);
+
+    accountData->AddUITestClient(nullptr, "uitestBundle", "uitestAbility");
+    EXPECT_EQ(1, static_cast<int>(accountData->GetInstalledAbilities().size()));
+
+    accountData->RemoveUITestClient(connection, "uitestBundle");
+    EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveUITestClient_002 end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveStateCallback
+ * @tc.name: RemoveStateCallback
+ * @tc.desc: Check the function of RemoveStateCallback.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveStateCallback, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveStateCallback start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    sptr<AccessibleAbilityManagerStateObserverStub> stub = new MockAccessibleAbilityManagerStateObserverStub();
+    sptr<IAccessibleAbilityManagerStateObserver> state = new MockAccessibleAbilityManagerStateObserverProxy(stub);
+    EXPECT_EQ(0, static_cast<int>(accountData->GetStateCallbacks().size()));
+
+    accountData->AddStateCallback(state);
+    EXPECT_EQ(1, static_cast<int>(accountData->GetStateCallbacks().size()));
+
+    accountData->RemoveStateCallback(state->AsObject());
+    EXPECT_EQ(0, static_cast<int>(accountData->GetStateCallbacks().size()));
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveStateCallback end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_CaptionPropertyCallback
+ * @tc.name: CaptionPropertyCallback
+ * @tc.desc: Check the functions of AddCaptionPropertyCallback and RemoveCaptionPropertyCallback.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_CaptionPropertyCallback, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CaptionPropertyCallback start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    sptr<AccessibleAbilityManagerCaptionObserverStub> stub = new MockAccessibleAbilityManagerCaptionObserverStub();
+    sptr<IAccessibleAbilityManagerCaptionObserver> caption =
+        new MockAccessibleAbilityManagerCaptionObserverProxy(stub);
+    EXPECT_EQ(0, static_cast<int>(accountData->GetCaptionPropertyCallbacks().size()));
+
+    accountData->AddCaptionPropertyCallback(caption);
+    EXPECT_EQ(1, static_cast<int>(accountData->GetCaptionPropertyCallbacks().size()));
+
+    accountData->RemoveCaptionPropertyCallback(caption->AsObject());
+    EXPECT_EQ(0, static_cast<int>(accountData->GetCaptionPropertyCallbacks().size()));
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_CaptionPropertyCallback end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_EnableAbilityListsObserver
+ * @tc.name: EnableAbilityListsObserver
+ * @tc.desc: Check the functions of AddEnableAbilityListsObserver and RemoveEnableAbilityListsObserver.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbilityListsObserver, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilityListsObserver start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    sptr<AccessibilityEnableAbilityListsObserverStub> stub = new MockAccessibilityEnableAbilityListsObserverStub();
+    sptr<IAccessibilityEnableAbilityListsObserver> observer =
+        new MockAccessibilityEnableAbilityListsObserverProxy(stub);
+
+    accountData->AddEnableAbilityListsObserver(observer);
+    accountData->AddEnableAbilityListsObserver(observer);
+    accountData->RemoveEnableAbilityListsObserver(observer->AsObject());
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilityListsObserver end";
+}
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_ConfigCallback
+ * @tc.name: ConfigCallback
+ * @tc.desc: Check the functions of AddConfigCallback and RemoveConfigCallback.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ConfigCallback, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ConfigCallback start";
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
+    sptr<AccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
+    sptr<IAccessibleAbilityManagerConfigObserver> observer = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
+    EXPECT_EQ(0, static_cast<int>(accountData->GetConfigCallbacks().size()));
+
+    accountData->AddConfigCallback(observer);
+    EXPECT_EQ(1, static_cast<int>(accountData->GetConfigCallbacks().size()));
+
+    accountData->RemoveConfigCallback(observer->AsObject());
+    EXPECT_EQ(0, static_cast<int>(accountData->GetConfigCallbacks().size()));
+
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ConfigCallback end";
 }
 } // namespace Accessibility
 } // namespace OHOS

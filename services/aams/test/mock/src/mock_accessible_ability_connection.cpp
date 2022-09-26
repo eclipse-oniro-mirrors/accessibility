@@ -18,6 +18,7 @@
 #include <map>
 #include <vector>
 #include "accessibility_account_data.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -99,8 +100,9 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     return true;
 }
 
-bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
+    (void)displayId;
     (void)windows;
     sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
     if (!clientConnection) {
@@ -113,6 +115,12 @@ bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &
         return false;
     }
     return true;
+}
+
+bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+{
+    uint64_t displayId = 0;
+    return GetWindows(displayId, windows);
 }
 
 bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
@@ -137,19 +145,7 @@ bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string
 bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
-    (void)displayId;
-    (void)windows;
-
-    sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
-    if (!clientConnection) {
-        HILOG_ERROR("There is no client connection");
-        return false;
-    }
-    if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
-        HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
-        return false;
-    }
-    return true;
+    return GetWindows(displayId, windows);
 }
 
 bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
@@ -171,9 +167,10 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
     return true;
 }
 
-sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId, const std::string &clientName)
+sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId,
+    const std::string &clientName)
 {
-    sptr<AccessibilityAccountData> accountData = 
+    sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -238,6 +235,7 @@ AAFwk::Want CreateWant(AppExecFwk::ElementName& element)
 void AccessibleAbilityConnection::Disconnect()
 {
     HILOG_DEBUG("start");
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelId(-1);
 }
 
 void AccessibleAbilityConnection::Connect(const AppExecFwk::ElementName& element)

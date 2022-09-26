@@ -16,6 +16,8 @@
 #include "parameter.h"
 #include "securec.h"
 
+int ret = 0;
+
 int SetParameter(const char *key, const char *value)
 {
     (void)key;
@@ -35,6 +37,14 @@ int GetParameter(const char *key, const char *def, char *value, unsigned int len
 
 int WatchParameter(const char *keyprefix, ParameterChgPtr callback, void *context)
 {
-    callback(keyprefix, "true", context);
+    (void)keyprefix;
+    (void)callback;
+    (void)context;
+    return ret;
+}
+
+int WaitParameter(const char *key, const char *value, int timeout)
+{
+    ret = timeout;
     return 0;
 }

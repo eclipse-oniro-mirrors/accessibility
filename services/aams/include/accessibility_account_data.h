@@ -246,27 +246,11 @@ public:
     }
     bool GetInstalledAbilitiesFromBMS();
 
-    /**
-     * @brief Add enabled event which is needed by accessible ability.
-     * @param type EventType
-     * @return null.
-     */
-    void AddEventEnabled(EventType type);
-
-    /**
-     * @brief Delete enabled event which is needed by accessible ability.
-     * @param type EventType
-     * @return null.
-     */
-    void DeleteEventEnabled(EventType type);
-
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
     bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
-
-    bool DisableAbility(const std::string &name);
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
@@ -316,13 +300,8 @@ private:
 
     void UpdateEnableAbilityListsState();
 
-    void RemoveEnabledFromPref(const std::string &name);
-    void UpdateEnabledFromPref();
-
     uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
-    uint32_t GetAbilityCapabilities(const std::string &name) const;
-    void GetCapabilitiesFromConfig(std::map<std::string, uint32_t> &abilityCapabilities);
 
     int32_t id_;
     bool isEventTouchGuideState_ = false;

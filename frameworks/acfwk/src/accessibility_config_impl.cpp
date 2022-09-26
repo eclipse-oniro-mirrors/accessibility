@@ -104,7 +104,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
             if (InitAccessibilityServiceProxy()) {
                 (void)RegisterToService();
                 InitConfigValues();
-                HILOG_INFO("ConnectToService Success");
+                HILOG_DEBUG("ConnectToService Success");
             }
             }), "ConnectToServiceAsync");
         return true;
@@ -286,10 +286,6 @@ void AccessibilityConfig::Impl::NotifyCaptionStateChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -305,10 +301,6 @@ void AccessibilityConfig::Impl::NotifyCaptionChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const CaptionProperty &captionProperty)
 {
     HILOG_INFO();
-    if (!observers.size()) {
-        HILOG_DEBUG("observers is null");
-        return;
-    }
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -616,10 +608,6 @@ void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -635,11 +623,6 @@ void AccessibilityConfig::Impl::NotifyShortKeyChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -655,11 +638,6 @@ void AccessibilityConfig::Impl::NotifyMouseKeyChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -675,11 +653,6 @@ void AccessibilityConfig::Impl::NotifyInvertColorChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -695,11 +668,6 @@ void AccessibilityConfig::Impl::NotifyHighContrastTextChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -715,11 +683,6 @@ void AccessibilityConfig::Impl::NotifyAudioMonoChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -735,11 +698,6 @@ void AccessibilityConfig::Impl::NotifyAnimationOffChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -801,11 +759,6 @@ void AccessibilityConfig::Impl::NotifyShortkeyTargetChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const std::string &shortkey_target)
 {
     HILOG_INFO("shortkey_target = [%{public}s]", shortkey_target.c_str());
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -821,11 +774,6 @@ void AccessibilityConfig::Impl::NotifyMouseAutoClickChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t mouseAutoClick)
 {
     HILOG_INFO("mouseAutoClick = [%{public}u]", mouseAutoClick);
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -841,11 +789,6 @@ void AccessibilityConfig::Impl::NotifyAudioBalanceChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const float audioBalance)
 {
     HILOG_INFO("audioBalance = [%{public}f]", audioBalance);
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -861,11 +804,6 @@ void AccessibilityConfig::Impl::NotifyBrightnessDiscountChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const float brightnessDiscount)
 {
     HILOG_INFO("brightnessDiscount = [%{public}f]", brightnessDiscount);
-    if (!configObservers_.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -881,11 +819,6 @@ void AccessibilityConfig::Impl::NotifyContentTimeoutChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t contentTimeout)
 {
     HILOG_INFO("contentTimeout = [%{public}u]", contentTimeout);
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -901,11 +834,6 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t daltonizationColorFilter)
 {
     HILOG_INFO("daltonizationColorFilter = [%{public}u]", daltonizationColorFilter);
-    if (!observers.size()) {
-        HILOG_DEBUG("There is no observers");
-        return;
-    }
-
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
@@ -1365,10 +1293,6 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
 
 void AccessibilityConfig::Impl::InitConfigValues()
 {
-    if (!serviceProxy_) {
-        HILOG_ERROR("Service is not connected");
-        return;
-    }
     Accessibility::AccessibilityConfigData configData;
     serviceProxy_->GetAllConfigs(configData);
     highContrastText_ = configData.highContrastText_;
@@ -1389,7 +1313,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     if (isInitialized_) {
         NotifyDefaultConfigs();
     }
-    HILOG_INFO("ConnectToService Success");
+    HILOG_DEBUG("ConnectToService Success");
 }
 
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
