@@ -29,6 +29,7 @@ class AccessibilityWindowManager {
     DECLARE_SINGLETON(AccessibilityWindowManager)
 public:
     bool Init();
+    void DeInit();
     static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> windowInfo);

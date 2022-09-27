@@ -39,6 +39,13 @@ bool AccessibilityWindowManager::Init()
     return true;
 }
 
+void AccessibilityWindowManager::DeInit()
+{
+    a11yWindows_.clear();
+    activeWindowId_ = INVALID_WINDOW_ID;
+    a11yFocusedWindowId_ = INVALID_WINDOW_ID;
+}
+
 void AccessibilityWindowManager::RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {
     (void)handler;

@@ -55,6 +55,14 @@ bool AccessibilityWindowManager::Init()
     return true;
 }
 
+void AccessibilityWindowManager::DeInit()
+{
+    HILOG_DEBUG("start");
+    a11yWindows_.clear();
+    activeWindowId_ = INVALID_WINDOW_ID;
+    a11yFocusedWindowId_ = INVALID_WINDOW_ID;
+}
+
 AccessibilityWindowManager::~AccessibilityWindowManager()
 {
     DeregisterWindowListener();
@@ -291,7 +299,8 @@ bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 
     auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
         [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) {
-            return window.first == windowId; });
+            return window.first == windowId;
+        });
     if (it == a11yWindows_.end()) {
         return false;
     }
