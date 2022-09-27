@@ -300,8 +300,8 @@ private:
 
     void UpdateEnableAbilityListsState();
 
-    uint32_t GetConfigCapabilitiesFromBms(const std::string &bundleName, const std::string &abilityName) const;
     bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
+    uint32_t GetAbilityStaticCapabilities(const std::string &name) const;
 
     int32_t id_;
     bool isEventTouchGuideState_ = false;

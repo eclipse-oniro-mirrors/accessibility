@@ -938,7 +938,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     AccessibilityAbilityInitParams initParams;
     initParams.bundleName = "bundle";
     initParams.name = "ability";
-    initParams.capabilities = CAPABILITY_RETRIEVE;
+    initParams.staticCapabilities = CAPABILITY_RETRIEVE;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*abilityInfo);
     std::string name = "bundle/ability";
@@ -962,7 +962,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     AccessibilityAbilityInitParams initParams;
     initParams.bundleName = "bundle";
     initParams.name = "ability";
-    initParams.capabilities = CAPABILITY_RETRIEVE;
+    initParams.staticCapabilities = CAPABILITY_RETRIEVE;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*abilityInfo);
     const std::string name = "bundle/ability";
