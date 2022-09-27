@@ -46,7 +46,7 @@ public:
         params.name = "name";
         params.rationale = "rationale";
         params.settingsAbility = "settingsAbility";
-        params.capabilities = 1;
+        params.staticCapabilities = 1;
         params.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
         params.isImportant = true;
         abilityInfo_ = std::make_shared<AccessibilityAbilityInfo>(params);
@@ -264,6 +264,22 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, GetSettingsAbility_001, TestSize.Leve
     }
     EXPECT_STREQ(abilityInfo_->GetSettingsAbility().c_str(), "settingsAbility");
     GTEST_LOG_(INFO) << "GetSettingsAbility_001 end";
+}
+
+/**
+ * @tc.number: GetStaticCapabilityValues_001
+ * @tc.name: GetStaticCapabilityValues
+ * @tc.desc: Test function GetStaticCapabilityValues
+ */
+HWTEST_F(AccessibilityAbilityInfoUnitTest, GetStaticCapabilityValues_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 start";
+    if (!abilityInfo_) {
+        GTEST_LOG_(INFO) << "abilityInfo_ is null";
+        return;
+    }
+    EXPECT_EQ(abilityInfo_->GetStaticCapabilityValues(), 1);
+    GTEST_LOG_(INFO) << "GetStaticCapabilityValues_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

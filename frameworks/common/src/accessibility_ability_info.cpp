@@ -27,7 +27,7 @@ AccessibilityAbilityInfo::AccessibilityAbilityInfo(const AccessibilityAbilityIni
     bundleName_ = initParams.bundleName;
     moduleName_ = initParams.moduleName;
     description_ = initParams.description;
-    capabilities_ = initParams.capabilities;
+    staticCapabilities_ = initParams.staticCapabilities;
     settingsAbility_ = initParams.settingsAbility;
     abilityTypes_ = initParams.abilityTypes;
     isImportant_ = initParams.isImportant;
@@ -49,6 +49,12 @@ uint32_t AccessibilityAbilityInfo::GetCapabilityValues() const
 {
     HILOG_DEBUG();
     return capabilities_;
+}
+
+uint32_t AccessibilityAbilityInfo::GetStaticCapabilityValues() const
+{
+    HILOG_DEBUG("staticCapabilities(%{public}d).", staticCapabilities_);
+    return staticCapabilities_;
 }
 
 const std::string &AccessibilityAbilityInfo::GetDescription() const
