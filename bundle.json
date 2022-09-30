@@ -6,7 +6,7 @@
   "license": "Apache License 2.0",
   "publishAs": "code-segment",
   "segment": {
-    "destPath": "base/barrierfree/accessibility"
+    "destPath": "foundation/barrierfree/accessibility"
   },
   "dirs": {},
   "scripts": {},
