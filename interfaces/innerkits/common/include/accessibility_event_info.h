@@ -287,50 +287,6 @@ public:
     AccessibilityEventInfo(int32_t windowId, WindowUpdateType windowChangeTypes);
 
     /**
-     * @brief Gets the number of accessibility records.
-     * @return The number of the records that describe the information of current event
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetRecordCount() const;
-
-    /**
-     * @brief Set the number of accessibility records.
-     * @note It is same to setCount​(int32_t count)
-     * @param recordCount The number of the records that describe the information of current event
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetRecordCount(const int32_t recordCount);
-
-    /**
-     * @brief Adds an accessibility record to describe the information of the current event.
-     * @param record The record that describe the information of current event
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void AddRecord(const AccessibilityEventInfo &record);
-
-    /**
-     * @brief Get the record by index.
-     * @note Remained
-     * @param index The index of the record
-     * @param eventInfo(out) Information of the specified record
-     * @return Return true when the specified record is found, otherwise returns false.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    bool GetRecord(const int32_t index, AccessibilityEventInfo &eventInfo) const; // remained
-
-    /**
-     * @brief Get the accessibility record list.
-     * @return The accessibility record list
-     * @since 3
-     * @sysCap Accessibility
-     */
-    const std::vector<AccessibilityEventInfo> &GetRecords() const;
-
-    /**
      * @brief Get the type of the accessibility event.
      * @return The type of the accessibility event.
      * @since 3
@@ -516,8 +472,6 @@ protected:
     WindowsContentChangeTypes windowContentChangeTypes_ = CONTENT_CHANGE_TYPE_INVALID;
     WindowUpdateType windowChangeTypes_ = WINDOW_UPDATE_INVALID;
     GestureType gestureType_ = GESTURE_INVALID;
-    int32_t recordsCount_ = 0;
-    std::vector<AccessibilityEventInfo> records_;
     NotificationCategory category_ = CATEGORY_INVALID;
     int32_t pageId_ = 0;
     std::string notificationContent_ = "";
