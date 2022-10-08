@@ -66,7 +66,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-            auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+            auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo->capabilities_ != 0) {
                 callbackInfo->ret_ = instance.EnableAbility(
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
@@ -110,7 +110,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
         // Execute async to call c++ function
         [](napi_env env, void* data) {
             NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-            auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+            auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
             if (callbackInfo) {
                 callbackInfo->ret_ = instance.DisableAbility(callbackInfo->abilityName_);
             }
@@ -222,7 +222,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         HILOG_ERROR("check param error");
         return;
     }
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             instance.SetHighContrastTextState(callbackInfo->boolConfig_);
@@ -344,7 +344,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             instance.GetHighContrastTextState(callbackInfo->boolConfig_);
@@ -644,7 +644,7 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 
 void EnableAbilityListsObserverImpl::SubscribeToFramework()
 {
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SubscribeEnableAbilityListsObserver(shared_from_this());
 }
 

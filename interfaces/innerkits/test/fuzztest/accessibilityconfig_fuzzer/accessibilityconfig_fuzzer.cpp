@@ -73,7 +73,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         return false;
     }
 
-    auto &abConfig = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
 
     size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);

@@ -554,7 +554,7 @@ napi_value NAccessibilityClient::SetCaptionStateEnabled(napi_env env, napi_callb
         napi_get_value_bool(env, parameters[PARAM0], &captionState);
         HILOG_INFO("captionState = %{public}s", captionState ? "True" : "False");
 
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         instance.SetCaptionsState(captionState);
     } else {
         HILOG_ERROR("argc size Error");
@@ -570,7 +570,7 @@ napi_value NAccessibilityClient::GetCaptionStateEnabled(napi_env env, napi_callb
     HILOG_INFO();
     napi_value captionStateEnabled = nullptr;
 
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     bool captionState = false;
     instance.GetCaptionsState(captionState);
     napi_get_boolean(env, captionState, &captionStateEnabled);
@@ -589,7 +589,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         ConvertObjToCaptionProperty(env, parameters[PARAM0], &captionProperty);
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         instance.SetCaptionsProperty(captionProperty);
     } else {
         HILOG_ERROR("argc size Error");
@@ -716,7 +716,7 @@ napi_value NAccessibilityClient::GetCaptionsFontFamily(napi_env env, napi_callba
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     napi_create_string_utf8(env, captionProperty.GetFontFamily().c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -736,7 +736,7 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontFamily = %{public}s", outBuffer);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
@@ -754,7 +754,7 @@ napi_value NAccessibilityClient::GetCaptionsFontScale(napi_env env, napi_callbac
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     napi_create_int32(env, captionProperty.GetFontScale(), &returnValue);
@@ -773,7 +773,7 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
         napi_get_value_int32(env, parameters[PARAM0], &num);
         HILOG_INFO("FontScale = %{public}d", num);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
@@ -791,7 +791,7 @@ napi_value NAccessibilityClient::GetCaptionFrontColor(napi_env env, napi_callbac
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetFontColor();
@@ -809,7 +809,7 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
@@ -827,7 +827,7 @@ napi_value NAccessibilityClient::GetCaptionFontEdgeType(napi_env env, napi_callb
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     napi_create_string_utf8(env, captionProperty.GetFontEdgeType().c_str(), NAPI_AUTO_LENGTH, &returnValue);
@@ -848,7 +848,7 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
         napi_get_value_string_utf8(env, parameters[PARAM0], outBuffer, CHAE_BUFFER_MAX, &outSize);
         HILOG_INFO("FontEdgeType = %{public}s", outBuffer);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
@@ -866,7 +866,7 @@ napi_value NAccessibilityClient::GetCaptionBackgroundColor(napi_env env, napi_ca
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetBackgroundColor();
@@ -884,7 +884,7 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
@@ -902,7 +902,7 @@ napi_value NAccessibilityClient::GetCaptionWindowColor(napi_env env, napi_callba
 {
     HILOG_INFO();
     napi_value returnValue = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
     instance.GetCaptionsProperty(captionProperty);
     uint32_t color = captionProperty.GetWindowColor();
@@ -920,7 +920,7 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         // Get CaptionProperty
-        auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty = {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
