@@ -45,10 +45,8 @@ public:
     MOCK_METHOD2(GetWindow, bool(const int32_t windowId, AccessibilityWindowInfo &windowInfo));
     MOCK_METHOD1(GetWindows, bool(std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(GetWindowsByDisplayId, bool(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
-    MOCK_METHOD1(ExecuteCommonAction, bool(const int32_t action));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
     MOCK_METHOD1(SendSimulateGesture, bool(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
-    MOCK_METHOD1(SetEventTypeFilter, bool(const uint32_t filter));
     MOCK_METHOD1(SetTargetBundleName, bool(const std::vector<std::string> &targetBundleNames));
 };
 } // namespace Accessibility

@@ -246,25 +246,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: ExecuteCommonAction_001
- * @tc.name: ExecuteCommonAction
- * @tc.desc: Test function ExecuteCommonAction
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, ExecuteCommonAction_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    GlobalAction action = GLOBAL_ACTION_INVALID;
-    EXPECT_FALSE(instance_->ExecuteCommonAction(action));
-
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 end";
-}
-
-/**
  * @tc.number: GetNext_001
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext
@@ -303,26 +284,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_001, TestSize.Level1)
     EXPECT_FALSE(instance_->GetByContent(parent, TEST, elementInfos));
 
     GTEST_LOG_(INFO) << "GetByContent_001 end";
-}
-
-/**
- * @tc.number: GetAnchor_001
- * @tc.name: GetAnchor
- * @tc.desc: Test function GetAnchor
- */
-HWTEST_F(AccessibilityUITestAbilityImplTest, GetAnchor_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetAnchor_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
-        return;
-    }
-    AccessibilityWindowInfo windowInfo {};
-    AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetAnchor(windowInfo, elementInfo));
-
-    GTEST_LOG_(INFO) << "GetAnchor_001 end";
 }
 
 /**

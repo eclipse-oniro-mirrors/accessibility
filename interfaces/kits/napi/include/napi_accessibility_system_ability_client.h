@@ -92,7 +92,6 @@ public:
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
     static napi_value SendEvent(napi_env env, napi_callback_info info);
-    static napi_value GetInstalled(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);

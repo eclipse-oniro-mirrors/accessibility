@@ -145,21 +145,6 @@ namespace {
     }
 
     /**
-     * @tc.name: SetEventTypeFilterTestCase
-     * @tc.desc: Testcase for testing 'SetEventTypeFilter' function.
-     * @tc.type: FUNC
-     * @tc.require: Issue Number
-     */
-    BENCHMARK_F(AccessibleAbilityClientTest, SetEventTypeFilterTestCase)(
-        benchmark::State &state)
-    {
-        while (state.KeepRunning()) {
-            uint32_t filter = TYPES_ALL_MASK;
-            AccessibilityUITestAbility::GetInstance()->SetEventTypeFilter(filter);
-        }
-    }
-
-    /**
      * @tc.name: InjectGestureTestCase
      * @tc.desc: Testcase for testing 'InjectGesture' function.
      * @tc.type: FUNC

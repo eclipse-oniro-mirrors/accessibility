@@ -316,7 +316,6 @@ void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(MMI::PointerEvent &
         return;
     }
     Clear();
-    listener_->OnDoubleTapLongPress(event);
 }
 
 bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent &event)

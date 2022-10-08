@@ -196,22 +196,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_001, TestSize.Level
 }
 
 /**
- * @tc.number: ExecuteCommonAction_001
- * @tc.name: ExecuteCommonAction
- * @tc.desc: Test function ExecuteCommonAction
- */
-HWTEST_F(AccessibleAbilityChannelClientTest, ExecuteCommonAction_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityChannelClient instance_";
-        return;
-    }
-    EXPECT_FALSE(instance_->ExecuteCommonAction(ACTION));
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 end";
-}
-
-/**
  * @tc.number: SearchElementInfosByAccessibilityId_001
  * @tc.name: SearchElementInfosByAccessibilityId
  * @tc.desc: Test function SearchElementInfosByAccessibilityId

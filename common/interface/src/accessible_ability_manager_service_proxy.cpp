@@ -458,35 +458,6 @@ bool AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetInstalledAbilities(
-    std::vector<AccessibilityAbilityInfo> &installedAbilities)
-{
-    HILOG_DEBUG();
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token error");
-        return false;
-    }
-    if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_INSTALLED,
-        data, reply, option)) {
-        HILOG_ERROR("GetInstalledAbilities fail");
-        return false;
-    }
-    int32_t dev_num = reply.ReadInt32();
-    for (int32_t i = dev_num; i > 0; i--) {
-        sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
-        if (!info) {
-            HILOG_ERROR("ReadStrongParcelable<AccessibilityAbilityInfoParcel> failed");
-            return false;
-        }
-        installedAbilities.push_back(*info);
-    }
-    return reply.ReadBool();
-}
-
 bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG();

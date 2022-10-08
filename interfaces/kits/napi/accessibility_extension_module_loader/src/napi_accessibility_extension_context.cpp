@@ -92,12 +92,6 @@ public:
         std::unique_ptr<NAccessibilityExtensionContext>(static_cast<NAccessibilityExtensionContext*>(data));
     }
 
-    static NativeValue* SetEventTypeFilter(NativeEngine* engine, NativeCallbackInfo* info)
-    {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnSetEventTypeFilter(*engine, *info) : nullptr;
-    }
-
     static NativeValue* SetTargetBundleName(NativeEngine* engine, NativeCallbackInfo* info)
     {
         NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
@@ -122,12 +116,6 @@ public:
         return (me != nullptr) ? me->OnGetWindows(*engine, *info) : nullptr;
     }
 
-    static NativeValue* ExecuteCommonAction(NativeEngine* engine, NativeCallbackInfo* info)
-    {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnExecuteCommonAction(*engine, *info) : nullptr;
-    }
-
     static NativeValue* InjectGesture(NativeEngine* engine, NativeCallbackInfo* info)
     {
         NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
@@ -136,51 +124,6 @@ public:
 
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
-
-    NativeValue* OnSetEventTypeFilter(NativeEngine& engine, NativeCallbackInfo& info)
-    {
-        HILOG_INFO();
-        // Only support one or two params
-        if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
-            HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
-        }
-
-        // Unwrap event types
-        uint32_t filter = TYPE_VIEW_INVALID;
-        ConvertJSToEventTypes(reinterpret_cast<napi_env>(&engine),
-            reinterpret_cast<napi_value>(info.argv[PARAM0]), filter);
-        HILOG_INFO("filter = %{public}d", filter);
-
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, filter](NativeEngine& engine, AsyncTask& task, int32_t status) {
-                HILOG_INFO("SetEventTypeFilter begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
-                    return;
-                }
-                if (filter == TYPE_VIEW_INVALID) {
-                    HILOG_ERROR("filter is invalid");
-                    task.Reject(engine, CreateJsError(engine, PARAMETER_ERROR, "filter is invalid"));
-                    return;
-                }
-                bool ret = context->SetEventTypeFilter(filter);
-                if (ret) {
-                    task.Resolve(engine, engine.CreateUndefined());
-                } else {
-                    HILOG_ERROR("set event type failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set event type failed."));
-                }
-            };
-
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetEventTypeFilter",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
-        return result;
-    }
 
     NativeValue* OnSetTargetBundleName(NativeEngine& engine, NativeCallbackInfo& info)
     {
@@ -483,52 +426,6 @@ private:
 
         NativeValue* result = nullptr;
         AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
-        return result;
-    }
-
-    NativeValue* OnExecuteCommonAction(NativeEngine& engine, NativeCallbackInfo& info)
-    {
-        HILOG_INFO();
-        // Only support one or two params
-        if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
-            HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
-        }
-
-        // Unwrap actionType
-        std::string actionType;
-        if (!ConvertFromJsValue(engine, info.argv[PARAM0], actionType)) {
-            HILOG_ERROR("ConvertFromJsValue failed");
-            return engine.CreateUndefined();
-        }
-        HILOG_INFO("ExecuteCommonAction actionType = %{public}s", actionType.c_str());
-
-        GlobalAction action = ConvertStringToGlobalAction(actionType);
-        HILOG_INFO("ExecuteCommonAction action = %{public}d", action);
-
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, action](NativeEngine& engine, AsyncTask& task, int32_t status) {
-                HILOG_INFO("ExecuteCommonAction begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
-                    return;
-                }
-
-                bool ret = context->ExecuteCommonAction(action);
-                if (ret) {
-                    task.Resolve(engine, engine.CreateBoolean(ret));
-                } else {
-                    HILOG_ERROR("Perform common action failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Perform common action failed."));
-                }
-            };
-
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnExecuteCommonAction",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
         return result;
     }

@@ -741,32 +741,6 @@ bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::strin
     return true;
 }
 
-bool AccessibleAbilityManagerService::GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities)
-{
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return false;
-    }
-
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &installedAbilities]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value();
-            return;
-        }
-        installedAbilities = accountData->GetInstalledAbilities();
-        syncPromise.set_value();
-        }), "TASK_GET_INSTALLED_ABILITIES");
-    syncFuture.get();
-
-    return true;
-}
-
 bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG();

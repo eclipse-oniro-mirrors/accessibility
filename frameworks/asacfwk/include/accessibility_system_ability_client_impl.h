@@ -116,13 +116,6 @@ public:
         const uint32_t eventType) override;
 
     /**
-     * @brief Get installed abilities.
-     * @param installedAbilities The installed accessibility ability infos.
-     * @return Return true if get installed abilities successfully, else return false.
-     */
-    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
-
-    /**
      * @brief Get enabled abilities.
      * @param enabledAbilities The infos of enabled abilities.
      * @return Return true if get enabled abilities successfully, else return false.
@@ -239,9 +232,6 @@ private:
     StateObserversArray stateObserversArray_;
 
     std::map<int32_t, sptr<AccessibilityElementOperatorImpl>> elementOperators_;
-
-    std::vector<AccessibilityAbilityInfo> installedAbilities_;
-
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerStateObserverImpl> stateObserver_ = nullptr;

@@ -73,14 +73,6 @@ bool TouchEventInjector::OnPointerEvent(MMI::PointerEvent &event)
     return false;
 }
 
-void TouchEventInjector::ClearEvents(uint32_t inputSource)
-{
-    if (!handler_->HasInnerEvent(SEND_TOUCH_EVENT_MSG)) {
-        isGestureUnderway_ = false;
-    }
-    EventTransmission::ClearEvents(inputSource);
-}
-
 void TouchEventInjector::DestroyEvents()
 {
     HILOG_DEBUG();

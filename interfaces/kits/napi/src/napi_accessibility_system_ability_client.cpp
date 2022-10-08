@@ -438,68 +438,6 @@ void StateListener::OnStateChanged(const bool state)
     NotifyJS(env_, state, handlerRef_);
 }
 
-napi_value NAccessibilityClient::GetInstalled(napi_env env, napi_callback_info info)
-{
-    HILOG_INFO();
-    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
-    if (!callbackInfo) {
-        HILOG_ERROR("Failed to create callbackInfo.");
-        return nullptr;
-    }
-    size_t argc = ARGS_SIZE_ONE;
-    napi_value parameters[ARGS_SIZE_ONE] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-    napi_value promise = nullptr;
-
-    if (argc >= ARGS_SIZE_ONE) {
-        HILOG_DEBUG("GetInstalled callback mode");
-        napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
-    } else {
-        HILOG_DEBUG("GetInstalled promise mode");
-        napi_create_promise(env, &callbackInfo->deferred_, &promise);
-    }
-    napi_value resource = nullptr;
-    napi_create_string_utf8(env, "GetInstalled", NAPI_AUTO_LENGTH, &resource);
-
-    napi_create_async_work(env, nullptr, resource,
-        // Execute async to call c++ function
-        [](napi_env env, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
-            auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
-            if (asaClient) {
-                callbackInfo->result_ = asaClient->GetInstalledAbilities(callbackInfo->abilityList_);
-            }
-            HILOG_INFO("GetInstalled Executing GetInstalled[%{public}zu]", callbackInfo->abilityList_.size());
-        },
-        // Execute the complete function
-        [](napi_env env, napi_status status, void* data) {
-            NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
-            napi_value result[ARGS_SIZE_TWO] = {0};
-            napi_value callback = 0;
-            napi_value undefined = 0;
-            napi_get_undefined(env, &undefined);
-            napi_create_array(env, &result[PARAM1]);
-            ConvertAccessibleAbilityInfosToJS(env, result[PARAM1], callbackInfo->abilityList_);
-            if (callbackInfo->callback_ && callbackInfo->result_) {
-                result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-                napi_get_reference_value(env, callbackInfo->callback_, &callback);
-                napi_value returnVal;
-                napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
-                napi_delete_reference(env, callbackInfo->callback_);
-            } else {
-                napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-            }
-            napi_delete_async_work(env, callbackInfo->work_);
-            delete callbackInfo;
-            callbackInfo = nullptr;
-        },
-        (void*)callbackInfo,
-        &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
-    return promise;
-}
-
 void NAccessibilityClient::DefineJSCaptionsManager(napi_env env)
 {
     napi_property_descriptor captionsManagerDesc[] = {

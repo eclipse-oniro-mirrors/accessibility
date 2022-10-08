@@ -50,16 +50,6 @@ void EventTransmission::OnMoveMouse(int32_t offsetX, int32_t offsetY)
     }
 }
 
-void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo &event)
-{
-    HILOG_DEBUG();
-
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->OnAccessibilityEvent(event);
-    }
-}
-
 void EventTransmission::SetNext(const sptr<EventTransmission> &next)
 {
     HILOG_DEBUG();
@@ -72,16 +62,6 @@ sptr<EventTransmission> EventTransmission::GetNext()
     HILOG_DEBUG();
 
     return next_;
-}
-
-void EventTransmission::ClearEvents(uint32_t inputSource)
-{
-    HILOG_DEBUG();
-
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->ClearEvents(inputSource);
-    }
 }
 
 void EventTransmission::DestroyEvents()

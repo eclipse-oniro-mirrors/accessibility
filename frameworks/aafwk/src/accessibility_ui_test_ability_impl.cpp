@@ -194,17 +194,6 @@ bool AccessibilityUITestAbilityImpl::GetWindows(const uint64_t displayId,
     return aaClient->GetWindows(displayId, windows);
 }
 
-bool AccessibilityUITestAbilityImpl::ExecuteCommonAction(const GlobalAction action)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->ExecuteCommonAction(action);
-}
-
 bool AccessibilityUITestAbilityImpl::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
@@ -241,18 +230,6 @@ bool AccessibilityUITestAbilityImpl::GetByContent(const AccessibilityElementInfo
     return aaClient->GetByContent(elementInfo, text, elementInfos);
 }
 
-bool AccessibilityUITestAbilityImpl::GetAnchor(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->GetAnchor(windowInfo, elementInfo);
-}
-
 bool AccessibilityUITestAbilityImpl::GetSource(const AccessibilityEventInfo &eventInfo,
     AccessibilityElementInfo &elementInfo)
 {
@@ -287,17 +264,6 @@ bool AccessibilityUITestAbilityImpl::ExecuteAction(const AccessibilityElementInf
         return false;
     }
     return aaClient->ExecuteAction(elementInfo, action, actionArguments);
-}
-
-bool AccessibilityUITestAbilityImpl::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->SetEventTypeFilter(filter);
 }
 
 bool AccessibilityUITestAbilityImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)

@@ -352,18 +352,6 @@ bool AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::
     return serviceProxy_->GetEnabledAbilities(enabledAbilities);
 }
 
-bool AccessibilitySystemAbilityClientImpl::GetInstalledAbilities(
-    std::vector<AccessibilityAbilityInfo> &installedAbilities)
-{
-    HILOG_DEBUG();
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!serviceProxy_) {
-        HILOG_ERROR("Failed to get aams service");
-        return false;
-    }
-    return serviceProxy_->GetInstalledAbilities(installedAbilities);
-}
-
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChanged(const uint32_t stateType)
 {
     HILOG_DEBUG("stateType[%{public}d}", stateType);

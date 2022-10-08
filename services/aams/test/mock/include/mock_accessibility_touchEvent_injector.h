@@ -36,7 +36,6 @@ public:
     {}
 
     MOCK_METHOD1(OnPointerEvent, void(MMI::PointerEvent& event));
-    MOCK_METHOD1(ClearEvents, void(uint32_t inputSource));
     MOCK_METHOD0(DestroyEvents, void());
     MOCK_METHOD1(InjectEvents, void(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
     MOCK_METHOD1(SendPointerEvent, void(MMI::PointerEvent& event));

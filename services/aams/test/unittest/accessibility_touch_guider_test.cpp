@@ -637,61 +637,6 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_010, TestSize.Leve
 }
 
 /**
- * @tc.number: OnPointerEvent011
- * @tc.name: OnPointerEvent
- * @tc.desc: Check the accessibility event.
- */
-HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_011, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_011 start";
-
-    std::shared_ptr<MMI::PointerEvent> event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN);
-    touchGuider_->OnPointerEvent(*event);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(1) ==
-            EventType::TYPE_TOUCH_GUIDE_BEGIN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
-
-    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0) ==
-            MMI::PointerEvent::POINTER_ACTION_MOVE) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
-
-    event = CreateMoveEvent(1);
-    touchGuider_->OnPointerEvent(*event);
-    int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
-    EXPECT_EQ(touchAction, MMI::PointerEvent::POINTER_ACTION_MOVE);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP);
-    touchGuider_->OnPointerEvent(*event);
-    AccessibilityEventInfo accessibilityEvent;
-    accessibilityEvent.SetEventType(EventType::TYPE_VIEW_HOVER_EXIT_EVENT);
-    touchGuider_->OnAccessibilityEvent(accessibilityEvent);
-    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) == EventType::TYPE_TOUCH_END) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
-    EventType eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(2);
-    EXPECT_EQ(eventType, EventType::TYPE_TOUCH_GUIDE_END);
-
-    GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_011 end";
-}
-
-/**
  * @tc.number: OnPointerEvent012
  * @tc.name: OnPointerEvent
  * @tc.desc: Check cancel the second move event after onstart.
@@ -1107,24 +1052,20 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_017, TestSize.Leve
 }
 
 /**
- * @tc.number: ClearEvents
- * @tc.name: OnPointerEvent
- * @tc.desc: Check ClearEvents and DestroyEvents.
+ * @tc.number: DestroyEvents
+ * @tc.name: DestroyEvents
+ * @tc.desc: Check DestroyEvents.
  */
-HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_ClearEvents_001, TestSize.Level1)
+HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_DestroyEvents_001, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "TouchGuider_Unittest_ClearEvents_001 start";
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_DestroyEvents_001 start";
 
-    touchGuider_->ClearEvents(MMI::PointerEvent::SOURCE_TYPE_TOUCHPAD);
-    bool isClearEvents;
-    isClearEvents = AccessibilityAbilityHelper::GetInstance().GetClearState();
-    EXPECT_EQ(isClearEvents, true);
     touchGuider_->DestroyEvents();
     bool isDestroyEvents;
     isDestroyEvents = AccessibilityAbilityHelper::GetInstance().GetDestroyState();
     EXPECT_EQ(isDestroyEvents, true);
 
-    GTEST_LOG_(INFO) << "TouchGuider_Unittest_ClearEvents_001 end";
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_DestroyEvents_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -74,7 +74,6 @@ public:
     bool OnPointerEvent(MMI::PointerEvent &event) override;
     void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
-    void NotifyAccessibilityEvent(AccessibilityEventInfo &event) const;
 
 private:
     AccessibilityInputInterceptor();

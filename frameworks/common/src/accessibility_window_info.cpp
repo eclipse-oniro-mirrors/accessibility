@@ -45,17 +45,6 @@ void AccessibilityWindowInfo::SetWindowLayer(const int32_t layer)
     HILOG_DEBUG("window(%{public}d)Layer[%{public}d]", windowId_, windowLayer_);
 }
 
-void AccessibilityWindowInfo::SetAnchorId(const int32_t anchorId)
-{
-    anchorId_ = anchorId;
-    HILOG_DEBUG("anchorId_[%{public}d]", anchorId_);
-}
-
-int32_t AccessibilityWindowInfo::GetAnchorId() const
-{
-    HILOG_DEBUG("anchorId_[%{public}d]", anchorId_);
-    return anchorId_;
-}
 int32_t AccessibilityWindowInfo::GetWindowId() const
 {
     HILOG_DEBUG("windowId_[%{public}d]", windowId_);
@@ -66,18 +55,6 @@ void AccessibilityWindowInfo::SetWindowId(const int32_t id)
 {
     windowId_ = id;
     HILOG_DEBUG("windowId_[%{public}d]", windowId_);
-}
-
-void AccessibilityWindowInfo::SetChannelId(const int32_t channelId)
-{
-    channelId_ = channelId;
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-}
-
-int32_t AccessibilityWindowInfo::GetChannelId() const
-{
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-    return channelId_;
 }
 
 const Rect &AccessibilityWindowInfo::GetRectInScreen() const

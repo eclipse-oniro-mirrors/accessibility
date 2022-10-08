@@ -59,8 +59,6 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT)] =
         &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_INSTALLED)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
     memberFuncMap_[static_cast<uint32_t>(
@@ -361,33 +359,6 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessagePa
     for (auto &ability : enabledAbilities) {
         if (!reply.WriteString(ability)) {
             HILOG_ERROR("ability write error: %{public}s, ", ability.c_str());
-            return TRANSACTION_ERR;
-        }
-    }
-    reply.WriteBool(result);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceStub::HandleGetInstalledAbilities(
-    MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG();
-
-    std::vector<AccessibilityAbilityInfo> installedAbilities;
-    bool result = GetInstalledAbilities(installedAbilities);
-    int32_t num = static_cast<int32_t>(installedAbilities.size());
-
-    reply.WriteInt32(num);
-    for (int32_t i = 0; i < num; i++) {
-        sptr<AccessibilityAbilityInfoParcel> info =
-            new(std::nothrow) AccessibilityAbilityInfoParcel(installedAbilities[i]);
-        if (!info) {
-            HILOG_ERROR("Failed to create info.");
-            return ERR_NULL_OBJECT;
-        }
-        bool writeResult = reply.WriteStrongParcelable(info);
-        if (!writeResult) {
-            HILOG_ERROR("WriteStrongParcelable<AccessibilityAbilityInfoParcel> failed");
             return TRANSACTION_ERR;
         }
     }

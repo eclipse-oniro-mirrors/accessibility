@@ -53,13 +53,9 @@ public:
 
     bool GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
 
-    bool ExecuteCommonAction(const int32_t action) override;
-
     void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
     bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
-
-    bool SetEventTypeFilter(const uint32_t filter) override;
 
     bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 

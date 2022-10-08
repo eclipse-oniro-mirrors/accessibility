@@ -286,18 +286,6 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
     }
 }
 
-void AccessibilityInputInterceptor::NotifyAccessibilityEvent(AccessibilityEventInfo &event) const
-{
-    HILOG_DEBUG();
-
-    if (pointerEventTransmitters_ != nullptr) {
-        pointerEventTransmitters_->OnAccessibilityEvent(event);
-    }
-    if (keyEventTransmitters_ != nullptr) {
-        keyEventTransmitters_->OnAccessibilityEvent(event);
-    }
-}
-
 void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
 {
     HILOG_DEBUG();

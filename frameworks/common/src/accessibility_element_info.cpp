@@ -599,18 +599,6 @@ int32_t AccessibilityElementInfo::GetLabeledAccessibilityId() const
     return labeled_;
 }
 
-int32_t AccessibilityElementInfo::GetChannelId() const
-{
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-    return channelId_;
-}
-
-void AccessibilityElementInfo::SetChannelId(const int32_t channelId)
-{
-    channelId_ = channelId;
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-}
-
 void AccessibilityElementInfo::SetAccessibilityId(const int32_t componentId)
 {
     elementId_ = componentId;
