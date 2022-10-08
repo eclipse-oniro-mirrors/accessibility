@@ -55,6 +55,7 @@ ohos_shared_library("accessibility_extension_module") {
     "hiviewdfx_hilog_native:libhilog",
   ]
 
+  relative_install_dir = "extensionability/"
   subsystem_name = "barrierfree"
   part_name = "accessibility"
 }
