@@ -171,41 +171,6 @@ int32_t AccessibilityMemo::GetItemCounts() const
     return itemCounts_;
 }
 
-int32_t AccessibilityEventInfo::GetRecordCount() const
-{
-    HILOG_DEBUG("recordsCount_[%{public}d]", recordsCount_);
-    return recordsCount_;
-}
-
-void AccessibilityEventInfo::SetRecordCount(const int32_t recordCount)
-{
-    recordsCount_ = recordCount;
-    HILOG_DEBUG("recordsCount_[%{public}d]", recordsCount_);
-}
-
-void AccessibilityEventInfo::AddRecord(const AccessibilityEventInfo &record)
-{
-    HILOG_DEBUG();
-    records_.push_back(record);
-}
-
-bool AccessibilityEventInfo::GetRecord(const int32_t index, AccessibilityEventInfo &eventInfo) const
-{
-    HILOG_DEBUG();
-    if (index >= recordsCount_ || index < 0) {
-        HILOG_ERROR("[called] index[%{public}d] is invalid", index);
-        return false;
-    }
-    eventInfo = records_[index];
-    return true;
-}
-
-const std::vector<AccessibilityEventInfo> &AccessibilityEventInfo::GetRecords() const
-{
-    HILOG_DEBUG();
-    return records_;
-}
-
 EventType AccessibilityEventInfo::GetEventType() const
 {
     HILOG_DEBUG("eventType_[%{public}d]", eventType_);

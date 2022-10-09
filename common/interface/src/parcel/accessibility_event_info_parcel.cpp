@@ -51,18 +51,6 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     windowContentChangeTypes_ = static_cast<WindowsContentChangeTypes>(windowContentChangeTypes);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowChangeTypes);
     windowChangeTypes_ = static_cast<WindowUpdateType>(windowChangeTypes);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, recordsCount_);
-    int32_t recordSize = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, recordSize);
-    for (auto i = 0; i < recordSize; i++) {
-        sptr<AccessibilityEventInfoParcel> accessibilityRecord =
-            parcel.ReadStrongParcelable<AccessibilityEventInfoParcel>();
-        if (!accessibilityRecord) {
-            HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
-            return false;
-        }
-        records_.emplace_back(*accessibilityRecord);
-    }
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, category);
     category_ = static_cast<NotificationCategory>(category);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
@@ -124,12 +112,6 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(textMoveStep_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(windowContentChangeTypes_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(windowChangeTypes_));
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, recordsCount_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, records_.size());
-    for (auto &record : records_) {
-        AccessibilityEventInfoParcel recordParcel(record);
-        WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &recordParcel);
-    }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(category_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
 

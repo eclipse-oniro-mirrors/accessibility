@@ -52,50 +52,6 @@ public:
 };
 
 /**
- * @tc.number: SetRecordCount_001
- * @tc.name: SetRecordCount
- * @tc.desc: Test function SetRecordCount
- */
-HWTEST_F(AccessibilityEventInfoUnitTest, SetRecordCount_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetRecordCount_001 start";
-    if (!eventInfo_) {
-        GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
-    }
-    eventInfo_->SetRecordCount(1);
-    EXPECT_EQ(eventInfo_->GetRecordCount(), 1);
-    GTEST_LOG_(INFO) << "SetRecordCount_001 end";
-}
-
-/**
- * @tc.number: AddRecord_001
- * @tc.name: AddRecord
- * @tc.desc: Test function AddRecord
- */
-HWTEST_F(AccessibilityEventInfoUnitTest, AddRecord_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AddRecord_001 start";
-    if (!eventInfo_) {
-        GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
-    }
-    AccessibilityEventInfo record1;
-    record1.SetChannelId(1);
-    AccessibilityEventInfo record2;
-    record2.SetChannelId(2);
-    eventInfo_->AddRecord(record1);
-    eventInfo_->AddRecord(record2);
-    eventInfo_->SetRecordCount(2);
-    AccessibilityEventInfo record;
-    eventInfo_->GetRecord(0, record);
-    EXPECT_EQ(record.GetChannelId(), 1);
-    eventInfo_->GetRecord(1, record);
-    EXPECT_EQ(record.GetChannelId(), 2);
-    GTEST_LOG_(INFO) << "AddRecord_001 end";
-}
-
-/**
  * @tc.number: SetWindowChangeTypes_001
  * @tc.name: SetWindowChangeTypes
  * @tc.desc: Test function SetWindowChangeTypes
@@ -519,21 +475,6 @@ HWTEST_F(AccessibilityEventInfoUnitTest, AccessibilityEventInfo_001, TestSize.Le
     EXPECT_EQ(eventInfo->GetWindowId(), 1);
     EXPECT_EQ(eventInfo->GetWindowChangeTypes(), WINDOW_UPDATE_FOCUSED);
     GTEST_LOG_(INFO) << "AccessibilityEventInfo_001 end";
-}
-
-/**
- * @tc.number: GetRecords_001
- * @tc.name: GetRecords
- * @tc.desc: Test function GetRecords
- */
-HWTEST_F(AccessibilityEventInfoUnitTest, GetRecords_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetRecords_001 start";
-    ASSERT_TRUE(eventInfo_);
-    AccessibilityEventInfo record;
-    eventInfo_->AddRecord(record);
-    EXPECT_EQ(static_cast<int>(eventInfo_->GetRecords().size()), 1);
-    GTEST_LOG_(INFO) << "GetRecords_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -86,9 +86,6 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
     int32_t itemCounts = 0;
     position += GetObject<int32_t>(itemCounts, &data[position], size - position);
     eventInfo.SetItemCounts(itemCounts);
-    int32_t recordCount = 0;
-    position += GetObject<int32_t>(recordCount, &data[position], size - position);
-    eventInfo.SetRecordCount(recordCount);
     WindowsContentChangeTypes changeTypes;
     position += GetObject<WindowsContentChangeTypes>(changeTypes, &data[position], size - position);
     eventInfo.SetWindowContentChangeTypes(changeTypes);

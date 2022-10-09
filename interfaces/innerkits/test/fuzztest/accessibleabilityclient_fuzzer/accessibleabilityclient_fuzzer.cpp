@@ -289,7 +289,7 @@ static size_t GenerateAccessibilityWindowInfo(OHOS::Accessibility::Accessibility
     return position;
 }
 
-static size_t GenerateAccessibilityEventInfoPartial(OHOS::Accessibility::AccessibilityEventInfo &sourceEventInfo,
+static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityEventInfo &sourceEventInfo,
     const uint8_t* data, size_t size)
 {
     size_t position = 0;
@@ -327,9 +327,6 @@ static size_t GenerateAccessibilityEventInfoPartial(OHOS::Accessibility::Accessi
     sourceEventInfo.SetWindowChangeTypes(static_cast<OHOS::Accessibility::WindowUpdateType>(int32Data));
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceEventInfo.SetRecordCount(int32Data);
-
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceEventInfo.SetNotificationInfo(static_cast<OHOS::Accessibility::NotificationCategory>(int32Data));
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
@@ -339,20 +336,6 @@ static size_t GenerateAccessibilityEventInfoPartial(OHOS::Accessibility::Accessi
     position += GetObject<int64_t>(int64Data, &data[position], size - position);
     sourceEventInfo.SetTimeStamp(int64Data);
 
-    return position;
-}
-
-static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityEventInfo &sourceEventInfo,
-    const uint8_t* data, size_t size)
-{
-    size_t position = 0;
-    position += GenerateAccessibilityEventInfoPartial(sourceEventInfo, &data[position], size - position);
-
-    for (size_t i = 0; i < VEC_SIZE; i++) {
-        OHOS::Accessibility::AccessibilityEventInfo record;
-        position += GenerateAccessibilityEventInfoPartial(record, &data[position], size - position);
-        sourceEventInfo.AddRecord(record);
-    }
     return position;
 }
 
