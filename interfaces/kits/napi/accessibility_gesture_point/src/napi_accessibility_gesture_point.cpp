@@ -14,11 +14,10 @@
  */
 
 #include "napi_accessibility_gesture_point.h"
+#include "napi_accessibility_def.h"
 #include "hilog_wrapper.h"
-#include "napi_accessibility_utils.h"
 
 using namespace OHOS;
-using namespace OHOS::Accessibility;
 
 napi_value NAccessibilityGesturePoint::JSConstructor(napi_env env, napi_callback_info info)
 {

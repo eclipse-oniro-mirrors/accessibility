@@ -32,17 +32,11 @@ ohos_shared_library("gesturepoint_napi") {
 
   configs = []
 
-  deps = [
-    "//foundation/arkui/napi:ace_napi",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-  ]
+  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
-    "ability_base:want",
-    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
-    "input:libmmi-client",
+    "napi:ace_napi",
   ]
 
   relative_install_dir = "module/accessibility"
