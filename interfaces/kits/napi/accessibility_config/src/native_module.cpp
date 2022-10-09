@@ -363,7 +363,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
-    auto &instance = OHOS::Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)instance.InitializeContext();
     NAccessibilityConfig::configObservers_->SubscribeToFramework();
     NAccessibilityConfig::enableAbilityListsObservers_->SubscribeToFramework();

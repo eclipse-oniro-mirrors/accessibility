@@ -18,7 +18,7 @@
 
 #include <memory>
 #include "accessibility_caption.h"
-#include "singleton.h"
+#include "accessibility_singleton.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -95,7 +95,7 @@ public:
 };
 
 class AccessibilityConfig {
-    DECLARE_SINGLETON(AccessibilityConfig)
+    ACCESSIBILITY_DECLARE_SINGLETON(AccessibilityConfig)
 public:
     /**
      * @brief Initialize the run context.

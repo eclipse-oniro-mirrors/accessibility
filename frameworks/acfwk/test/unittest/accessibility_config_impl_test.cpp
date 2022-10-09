@@ -81,7 +81,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_002, TestSize.Level1)
     CaptionProperty value;
     caption.SetFontFamily("sansSerif");
 
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetCaptionsProperty(caption);
     instance.GetCaptionsProperty(value);
     EXPECT_STREQ(value.GetFontFamily().c_str(), "default");
@@ -99,7 +99,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_002, TestSize.
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetScreenMagnificationState(state);
     instance.GetScreenMagnificationState(value);
     EXPECT_FALSE(value);
@@ -118,7 +118,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_002, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetShortKeyState(state);
     instance.GetShortKeyState(value);
     EXPECT_FALSE(value);
@@ -136,7 +136,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetMouseKeyState_002 start";
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetMouseKeyState(state);
     instance.GetMouseKeyState(value);
     EXPECT_FALSE(value);
@@ -154,7 +154,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_002, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetCaptionsState(state);
     instance.GetCaptionsState(value);
     EXPECT_FALSE(value);
@@ -173,7 +173,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_002, TestSize.Level1)
 
     int32_t time = 10;
     int32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
     EXPECT_EQ(0, value);
@@ -192,7 +192,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
 
     std::string name = "test";
     std::string value = "";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetShortkeyTarget(name);
     instance.GetShortkeyTarget(value);
     EXPECT_STREQ(value.c_str(), "");
@@ -211,7 +211,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_002, TestSize.Lev
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetHighContrastTextState(state);
     instance.GetHighContrastTextState(value);
     EXPECT_FALSE(value);
@@ -230,7 +230,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_002, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetInvertColorState(state);
     instance.GetInvertColorState(value);
     EXPECT_FALSE(value);
@@ -249,7 +249,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_002, TestSize.
 
     DALTONIZATION_TYPE type = Protanomaly;
     DALTONIZATION_TYPE value = Normal;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetDaltonizationColorFilter(type);
     instance.GetDaltonizationColorFilter(value);
     EXPECT_EQ(0, static_cast<uint32_t>(value));
@@ -268,7 +268,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_002, TestSize.Level1)
 
     uint32_t timer = 10;
     uint32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
     EXPECT_EQ(0, value);
@@ -287,7 +287,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_002, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetAnimationOffState(state);
     instance.GetAnimationOffState(value);
     EXPECT_FALSE(value);
@@ -306,7 +306,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_002, TestSize.Level1
 
     float brightness = BRIGHTNESS_DISCOUNT_VALUE;
     float value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetBrightnessDiscount(brightness);
     instance.GetBrightnessDiscount(value);
     EXPECT_FLOAT_EQ(0, value);
@@ -324,7 +324,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_002, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetAudioMonoState(state);
     instance.GetAudioMonoState(value);
     EXPECT_FALSE(value);
@@ -341,7 +341,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_002, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetAudioBalance_002 start";
     float balance = -1.0;
     float value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetAudioBalance(balance);
     instance.GetAudioBalance(value);
     EXPECT_FLOAT_EQ(0, value);
@@ -357,7 +357,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConnectToService_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ConnectToService_001 start";
 
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     WaitParameter(NULL, NULL, 1);
     instance.InitializeContext();
     WaitParameter(NULL, NULL, 0);
@@ -377,7 +377,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionProperty_001, TestSize.Level1)
     caption.SetFontFamily("sansSerif");
     CaptionProperty value;
 
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetCaptionsProperty(caption);
     instance.GetCaptionsProperty(value);
@@ -396,7 +396,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetScreenMagnificationState_001, TestSize.
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetScreenMagnificationState(state);
     instance.GetScreenMagnificationState(value);
@@ -415,7 +415,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortKeyState_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetShortKeyState_001 start";
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetShortKeyState(state);
     instance.GetShortKeyState(value);
@@ -434,7 +434,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseKeyState_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetMouseKeyState_001 start";
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetMouseKeyState(state);
     instance.GetMouseKeyState(value);
@@ -453,7 +453,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetCaptionsState_001, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetCaptionsState(state);
     instance.GetCaptionsState(value);
@@ -473,7 +473,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_001, TestSize.Level1)
 
     int32_t time = 10;
     int32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
@@ -493,7 +493,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
 
     std::string name = "test";
     std::string value = "";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetShortkeyTarget(name);
     instance.GetShortkeyTarget(value);
@@ -513,7 +513,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetHighContrastTextState_001, TestSize.Lev
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetHighContrastTextState(state);
     instance.GetHighContrastTextState(value);
@@ -533,7 +533,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetInvertColorState_001, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetInvertColorState(state);
     instance.GetInvertColorState(value);
@@ -553,7 +553,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationColorFilter_001, TestSize.
 
     DALTONIZATION_TYPE type = Protanomaly;
     DALTONIZATION_TYPE value = Normal;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetDaltonizationColorFilter(type);
     instance.GetDaltonizationColorFilter(value);
@@ -573,7 +573,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_001, TestSize.Level1)
 
     uint32_t timer = 10;
     uint32_t value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
@@ -593,7 +593,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAnimationOffState_001, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetAnimationOffState(state);
     instance.GetAnimationOffState(value);
@@ -613,7 +613,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetBrightnessDiscount_001, TestSize.Level1
 
     float brightness = 0;
     float value = BRIGHTNESS_DISCOUNT_VALUE;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetBrightnessDiscount(brightness);
     instance.GetBrightnessDiscount(value);
@@ -632,7 +632,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioMonoState_001, TestSize.Level1)
 
     bool state = true;
     bool value = false;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetAudioMonoState(state);
     instance.GetAudioMonoState(value);
@@ -650,7 +650,7 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "SetAudioBalance_001 start";
     float balance = 0;
     float value = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SetAudioBalance(balance);
     instance.GetAudioBalance(value);
@@ -668,7 +668,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ConfigNotify_001 start";
     float balance = -1.0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     std::shared_ptr<MockAccessibilityConfigObserverImpl> observer =
         std::make_shared<MockAccessibilityConfigObserverImpl>();
     instance.InitializeContext();
@@ -694,7 +694,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ConfigNotify_002 start";
     float balance = 0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     std::shared_ptr<MockAccessibilityConfigObserverImpl> observer =
         std::make_shared<MockAccessibilityConfigObserverImpl>();
     instance.InitializeContext();
@@ -715,7 +715,7 @@ HWTEST_F(AccessibilityConfigImplTest, ConfigNotify_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ConfigNotify_003 start";
     float balance = -1.0;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     for (int32_t index = 0; index < static_cast<int32_t>(CONFIG_ID_MAX); index ++) {
         instance.SubscribeConfigObserver(static_cast<CONFIG_ID>(index), nullptr);
@@ -735,7 +735,7 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeConfigObserver_001, TestSize.Leve
     GTEST_LOG_(INFO) << "SubscribeConfigObserver_001 start";
 
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
     GTEST_LOG_(INFO) << "SubscribeConfigObserver_001 end";
@@ -751,7 +751,7 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeConfigObserver_001, TestSize.Le
     GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_001 start";
 
     std::shared_ptr<AccessibilityConfigObserver> observer = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.UnsubscribeConfigObserver(CONFIG_HIGH_CONTRAST_TEXT, observer);
     GTEST_LOG_(INFO) << "UnsubscribeConfigObserver_001 end";
@@ -768,7 +768,7 @@ HWTEST_F(AccessibilityConfigImplTest, SubscribeEnableAbilityListsObserver_001, T
 
     std::shared_ptr<AccessibilityEnableAbilityListsObserver> observer =
         std::make_shared<MockAccessibilityEnableAbilityListsObserverImpl>();
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SubscribeEnableAbilityListsObserver(observer);
     GTEST_LOG_(INFO) << "SubscribeEnableAbilityListsObserver_001 end";
@@ -784,7 +784,7 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_001,
     GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_001 start";
 
     std::shared_ptr<AccessibilityEnableAbilityListsObserver> observer = nullptr;
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     instance.SubscribeEnableAbilityListsObserver(observer);
     instance.UnsubscribeEnableAbilityListsObserver(observer);
@@ -802,7 +802,7 @@ HWTEST_F(AccessibilityConfigImplTest, EnableAbility_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "EnableAbility_001 start";
 
     std::string name = "test";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     EXPECT_TRUE(instance.EnableAbility(name, 0));
     sleep(1);
@@ -819,7 +819,7 @@ HWTEST_F(AccessibilityConfigImplTest, DisableAbility_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "DisableAbility_001 start";
 
     std::string name = "test";
-    auto &instance = Singleton<OHOS::AccessibilityConfig::AccessibilityConfig>::GetInstance();
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
     EXPECT_TRUE(instance.DisableAbility(name));
     GTEST_LOG_(INFO) << "DisableAbility_001 end";

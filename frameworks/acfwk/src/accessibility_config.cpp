@@ -25,6 +25,8 @@ namespace AccessibilityConfig {
         return ret_expr;                    \
     }
 
+ACCESSIBILITY_DEFINE_SINGLETON(AccessibilityConfig)
+
 AccessibilityConfig::AccessibilityConfig() : pImpl_(std::make_unique<Impl>())
 {
     if (!pImpl_) {
