@@ -33,6 +33,7 @@ namespace {
     constexpr int32_t FOCUS_TYPE = 1;
     constexpr int32_t DIRECTION = 1;
     constexpr int32_t ACTION = 1;
+    constexpr int32_t REQUEST_ID_MASK_BIT = 16;
 } // namespace
 
 class AccessibilityElementOperatorImplUnitTest : public ::testing::Test {
@@ -66,7 +67,16 @@ public:
         GTEST_LOG_(INFO) << "AccessibilityElementOperatorImplUnitTest TearDown()";
         mockStub_ = nullptr;
     }
+
+    int32_t CompositeId(int32_t requestId);
 };
+
+int32_t AccessibilityElementOperatorImplUnitTest::CompositeId(int32_t requestId)
+{
+    uint32_t compositionRequestId = static_cast<uint32_t>(requestId) |
+        (static_cast<uint32_t>(windowID_) << REQUEST_ID_MASK_BIT);
+    return static_cast<int32_t>(compositionRequestId);
+}
 
 /**
  * @tc.number: SearchElementInfoByAccessibilityId_001
@@ -183,8 +193,8 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, OutsideTouch_001, TestSize.Le
 
 /**
  * @tc.number: GetWindowId
- * @tc.name: OutsideTouch
- * @tc.desc: Test function OutsideTouch
+ * @tc.name: GetWindowId
+ * @tc.desc: Test function GetWindowId
  */
 HWTEST_F(AccessibilityElementOperatorImplUnitTest, GetWindowId, TestSize.Level1)
 {
@@ -235,7 +245,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByAccessi
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchElementInfoByAccessibilityIdResult(infos, REQUEST_ID_2);
+    mockStub_->SetSearchElementInfoByAccessibilityIdResult(infos, CompositeId(REQUEST_ID_2));
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_002 end";
 }
 
@@ -276,7 +286,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetSearchElementInfoByTextRes
     std::list<AccessibilityElementInfo> infos;
     AccessibilityElementInfo info {};
     infos.push_back(info);
-    mockStub_->SetSearchElementInfoByTextResult(infos, REQUEST_ID_2);
+    mockStub_->SetSearchElementInfoByTextResult(infos, CompositeId(REQUEST_ID_2));
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_002 end";
 }
 
@@ -313,7 +323,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFindFocusedElementInfoResu
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     mockStub_->FindFocusedElementInfo(ELEMENT_ID, FOCUS_TYPE, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFindFocusedElementInfoResult(info, REQUEST_ID_2);
+    mockStub_->SetFindFocusedElementInfoResult(info, CompositeId(REQUEST_ID_2));
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
 }
 
@@ -350,7 +360,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetFocusMoveSearchResult_002,
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     mockStub_->FocusMoveSearch(ELEMENT_ID, DIRECTION, REQUEST_ID_2, elementOperator);
     AccessibilityElementInfo info {};
-    mockStub_->SetFocusMoveSearchResult(info, REQUEST_ID_2);
+    mockStub_->SetFocusMoveSearchResult(info, CompositeId(REQUEST_ID_2));
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
 }
 
@@ -386,7 +396,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetExecuteActionResult_002, T
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     std::map<std::string, std::string> actionArguments;
     mockStub_->ExecuteAction(ELEMENT_ID, ACTION, actionArguments, REQUEST_ID_2, elementOperator);
-    mockStub_->SetExecuteActionResult(true, REQUEST_ID_2);
+    mockStub_->SetExecuteActionResult(true, CompositeId(REQUEST_ID_2));
     GTEST_LOG_(INFO) << "SetExecuteActionResult_002 end";
 }
 } // namespace Accessibility

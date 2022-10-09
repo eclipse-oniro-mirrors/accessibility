@@ -95,8 +95,8 @@ bool AccessibleAbilityClientImpl::RegisterAbilityListener(const std::shared_ptr<
 void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId)
 {
     HILOG_INFO("channelId[%{public}d]", channelId);
-    if (!channel && channelId == INVALID_CHANNEL_ID) {
-        HILOG_DEBUG("channel is nullptr, or channelId is invalid");
+    if (!channel || channelId == INVALID_CHANNEL_ID) {
+        HILOG_ERROR("channel is nullptr, or channelId is invalid");
         return;
     }
 

@@ -412,13 +412,32 @@ public:
     {
         return eventWindowChangeType_;
     }
+
+    void SetRealId(int32_t realId)
+    {
+        realId_ = realId;
+    }
+
+    int32_t GetRealId() const
+    {
+        return realId_;
+    }
+
+    void SetExecuteAction(int32_t action)
+    {
+        executeAction_ = action;
+    }
+
+    int32_t GetExecuteAction() const
+    {
+        return executeAction_;
+    }
 public:
     static const int32_t accountId_ = 100;
 
 private:
     std::vector<int32_t> touchAction_;
     bool isDestroyEvents_ = false;
-    bool isClearEvents_ = false;
     int testElementId_ = -1;
     int testClearFocus_ = -1;
     int testOutsideTouch_ = -1;
@@ -448,6 +467,8 @@ private:
     bool needAccountDataNull_ = false;
     int32_t eventWindowId_ = -1;
     WindowUpdateType eventWindowChangeType_ = WINDOW_UPDATE_INVALID;
+    int32_t realId_ = 0;
+    int32_t executeAction_ = ACCESSIBILITY_ACTION_INVALID;
 };
 } // namespace Accessibility
 } // namespace OHOS

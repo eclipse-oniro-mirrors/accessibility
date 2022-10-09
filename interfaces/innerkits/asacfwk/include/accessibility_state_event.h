@@ -28,7 +28,6 @@ enum AccessibilityStateEventType : uint32_t {
     EVENT_SCREEN_MAGNIFIER_CHANGED,
     EVENT_AUTO_CLICK_CHANGED,
     EVENT_SHORT_KEY_CHANGED,
-
     EVENT_TYPE_MAX,
 };
 

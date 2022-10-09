@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_window_manager.h"
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -67,7 +68,8 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
 {
     (void)windowId;
     (void)focusType;
-    return 0;
+    int32_t realId = AccessibilityAbilityHelper::GetInstance().GetRealId();
+    return realId;
 }
 
 AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)

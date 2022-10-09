@@ -51,18 +51,19 @@ public:
 void AccessibilityCommonEventUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventUnitTest Start ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityCommonEventUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityCommonEventUnitTest End ######################";
     Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityCommonEventUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityCommonEventUnitTest::TearDown()

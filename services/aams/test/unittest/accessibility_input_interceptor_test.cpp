@@ -50,20 +50,21 @@ public:
 void AccessibilityInputInterceptorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 
 void AccessibilityInputInterceptorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityInputInterceptorTest::SetUp()
 {
     MMI::MockInputManager::ClearInputEventConsumer();
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 
@@ -377,21 +378,6 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 }
 
 /**
- * @tc.number: AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001
- * @tc.name: NotifyAccessibilityEvent
- * @tc.desc: Check the NotifyAccessibilityEvent.
- */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001 start";
-    AccessibilityEventInfo event {};
-    inputInterceptor_->NotifyAccessibilityEvent(event);
-
-    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_NotifyAccessibilityEvent001 end";
-}
-
-/**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001
  * @tc.name: OnMoveMouse
  * @tc.desc: Check the OnMoveMouse.
@@ -406,29 +392,6 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     inputInterceptor_->OnMoveMouse(1, 1);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 end";
-}
-
-/**
- * @tc.number: AccessibilityInputInterceptorTest_Unittest_ClearEvents001
- * @tc.name: ClearEvents
- * @tc.desc: Check the ClearEvents.
- */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_ClearEvents001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ClearEvents001 start";
-    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
-    if (!inputInterceptor_) {
-        return;
-    }
-    inputInterceptor_->SetAvailableFunctions(availableFunctions);
-    sptr<TouchEventInjector> eventInjector =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
-    if (eventInjector) {
-        eventInjector->ClearEvents(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
-    }
-
-    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_ClearEvents001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_account_data.h"
+#include "accessibility_common_helper.h"
 #include "accessibility_element_operator_proxy.h"
 #include "accessibility_ut_helper.h"
 #include "accessibility_window_manager.h"
@@ -54,24 +55,24 @@ public:
 void AccessibilityWindowManagerTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibilityWindowManagerTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityWindowManagerTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityAbilityHelper::GetInstance().ClearSendEventTimes();
 }
 
 void AccessibilityWindowManagerTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest TearDown";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType windowType)
@@ -87,29 +88,6 @@ sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType window
         rosen_winInfo->focused_ = true;
     }
     return rosen_winInfo;
-}
-
-/**
- * @tc.number: AccessibilityWindowManager_Unittest_DeInit001
- * @tc.name: DeInit
- * @tc.desc: Test function DeInit
- */
-HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_DeInit001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 start";
-    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
-    int32_t windowId = WINDOW_ID;
-    AccessibilityWindowInfo winInfo;
-
-    windowInfoManager.activeWindowId_ = windowId;
-    windowInfoManager.a11yFocusedWindowId_ = windowId;
-    windowInfoManager.a11yWindows_.emplace(windowId, winInfo);
-    windowInfoManager.DeInit();
-
-    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
-    EXPECT_EQ(windowInfoManager.a11yFocusedWindowId_, INVALID_WINDOW_ID);
-    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 end";
 }
 
 /**
@@ -245,21 +223,6 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Reg
     Singleton<AccessibilityWindowManager>::GetInstance().RegisterWindowListener(nullptr);
 
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_RegisterWindowListener001 end";
-}
-
-/**
- * @tc.number: AccessibilityWindowManager_Unittest_DeregisterWindowListener001
- * @tc.name: RegisterWindowListener
- * @tc.desc: Test function RegisterWindowListener
- */
-HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_DeregisterWindowListener001,
-    TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeregisterWindowListener001 start";
-
-    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
-
-    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeregisterWindowListener001 end";
 }
 
 /**
@@ -476,6 +439,397 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
     windowInfoManager.a11yWindows_.clear();
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange004 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange005
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateBounds fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange005 start";
+
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED);
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS);
+    sleep(1);
+    EXPECT_EQ(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED,
+        AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange005 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange006
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateBounds success)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange006 start";
+
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED);
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    infos.emplace_back(winInfo);
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_BOUNDS) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange006 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange007
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateFocused fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange007 start";
+
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED);
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
+    sleep(1);
+    EXPECT_EQ(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED,
+        AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange007 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange008
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateFocused success(a11yWindows_ is not null))
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange008, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange008 start";
+
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED);
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    // Add a window
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = 1;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(1,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = 1;
+    infos.emplace_back(winInfo);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_FOCUSED) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange008 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange009
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateFocused success(a11yWindows_ is null))
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange009, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange009 start";
+
+    AccessibilityAbilityHelper::GetInstance().SetEventWindowChangeType(WINDOW_UPDATE_ACCESSIBILITY_FOCUSED);
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = 1;
+    infos.emplace_back(winInfo);
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_FOCUSED) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange009 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange010
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateProperty fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange010, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange010 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY);
+    sleep(1);
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_[WINDOW_ID].IsFocused());
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange010 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange011
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateProperty fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange011, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange011 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = 1;
+    winInfo->focused_ = true;
+    infos.emplace_back(winInfo);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY);
+    sleep(1);
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_[WINDOW_ID].IsFocused());
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange011 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange012
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateProperty success)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange012, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange012 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = WINDOW_ID;
+    winInfo->focused_ = true;
+    infos.emplace_back(winInfo);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (Singleton<AccessibilityWindowManager>::GetInstance().a11yWindows_[WINDOW_ID].IsFocused()) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange012 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange013
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(size of parameter(infos) is 0)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange013, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange013 start";
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    EXPECT_EQ(0, windowInfoManager.a11yWindows_.size());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange013 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange014
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateAdded fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange014, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange014 start";
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    sleep(1);
+    EXPECT_EQ(0, windowInfoManager.a11yWindows_.size());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange014 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange015
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateAdded success)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange015, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange015 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo1 = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo1->wid_ = WINDOW_ID;
+    rosenWinInfo1->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo1)));
+
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo2 = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo2->wid_ = 1;
+    rosenWinInfo2->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(1,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo2)));
+    windowInfoManager.activeWindowId_ = 1;
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = WINDOW_ID;
+    winInfo->focused_ = true;
+    infos.emplace_back(winInfo);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_ACTIVE) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange015 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange016
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateRemoved fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange016, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange016 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    sleep(1);
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange016 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange017
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateRemoved success)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange017, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange017 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+    windowInfoManager.a11yFocusedWindowId_ = WINDOW_ID;
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    sptr<Rosen::AccessibilityWindowInfo> winInfo = new(std::nothrow) Rosen::AccessibilityWindowInfo();
+    winInfo->wid_ = WINDOW_ID;
+    winInfo->focused_ = true;
+    infos.emplace_back(winInfo);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetEventWindowChangeType() == WINDOW_UPDATE_REMOVED) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(0, windowInfoManager.a11yWindows_.size());
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange017 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_OnWindowChange018
+ * @tc.name: OnWindowChange
+ * @tc.desc: Test function OnWindowChange(WindowUpdateActive fail)
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnWindowChange018, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange018 start";
+
+    // Add window
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfo = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfo->wid_ = WINDOW_ID;
+    rosenWinInfo->focused_ = false;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(WINDOW_ID,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfo)));
+    EXPECT_EQ(1, windowInfoManager.a11yWindows_.size());
+    windowInfoManager.activeWindowId_ = WINDOW_ID;
+
+    std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
+    infos.emplace_back(nullptr);
+    windowInfoManager.OnWindowUpdate(infos, Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE);
+    sleep(1);
+    EXPECT_EQ(WINDOW_ID, windowInfoManager.activeWindowId_);
+    windowInfoManager.a11yWindows_.clear();
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_OnWindowChange018 end";
 }
 
 /**
@@ -1052,6 +1406,44 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Cle
     /* test */
     EXPECT_EQ(ACTIVE_WINDOW_ID, AccessibilityAbilityHelper::GetInstance().GetEventWindowId());
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_ClearAccessibilityFocused003 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_DeregisterWindowListener001
+ * @tc.name: RegisterWindowListener
+ * @tc.desc: Test function RegisterWindowListener
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_DeregisterWindowListener001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeregisterWindowListener001 start";
+
+    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeregisterWindowListener001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_DeInit001
+ * @tc.name: DeInit
+ * @tc.desc: Test function DeInit
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_DeInit001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 start";
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    int32_t windowId = WINDOW_ID;
+    AccessibilityWindowInfo winInfo;
+
+    windowInfoManager.activeWindowId_ = windowId;
+    windowInfoManager.a11yFocusedWindowId_ = windowId;
+    windowInfoManager.a11yWindows_.emplace(windowId, winInfo);
+    windowInfoManager.DeInit();
+
+    EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
+    EXPECT_EQ(windowInfoManager.a11yFocusedWindowId_, INVALID_WINDOW_ID);
+    EXPECT_TRUE(!windowInfoManager.a11yWindows_.size());
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_DeInit001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

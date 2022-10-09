@@ -19,11 +19,7 @@
 #include "accessibility_common_helper.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_ut_helper.h"
-#include "accessible_ability_channel.h"
 #include "accessible_ability_manager_service.h"
-#include "iservice_registry.h"
-#include "mock_accessible_ability_manager_service.h"
-#include "mock_bundle_manager.h"
 
 using namespace testing;
 using namespace testing::ext;
@@ -32,6 +28,8 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t SLEEP_TIME_3 = 3;
+    constexpr int32_t ACCOUNT_ID = 100;
+    constexpr int32_t CONNECTION_ID = 1;
 } // namespace
 
 class KeyEventFilterUnitTest : public ::testing::Test {
@@ -46,27 +44,24 @@ public:
     void SetUp() override;
     void TearDown() override;
 
-    void AddConnection();
     std::shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
-    sptr<AccessibleAbilityChannel> aastub_ = nullptr;
 };
 
 void KeyEventFilterUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### KeyEventFilterUnitTest Start ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void KeyEventFilterUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### KeyEventFilterUnitTest End ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void KeyEventFilterUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     keyEventFilter_ = std::make_shared<KeyEventFilter>();
 }
 
@@ -74,38 +69,19 @@ void KeyEventFilterUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     keyEventFilter_ = nullptr;
-    aastub_ = nullptr;
-}
-
-void KeyEventFilterUnitTest::AddConnection()
-{
-    GTEST_LOG_(INFO) << "KeyEventFilterUnitTest AddConnection";
-
-    // add an ability connection client
-    AccessibilityAbilityInitParams initParams;
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    accountData->AddInstalledAbility(*abilityInfo);
-    sptr<AccessibleAbilityConnection> connection =
-        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
-    aastub_ = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
-    connection->OnAbilityConnectDoneSync(elementName, aastub_);
-    sleep(SLEEP_TIME_3);
 }
 
 /**
  * @tc.number: KeyEventFilter_Unittest_OnKeyEvent_001
  * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent
- *           Dispatch MMI::KeyEvent when there is no connection.
+ * @tc.desc: Test function OnKeyEvent(invalid key code)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_001 start";
 
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
+    EXPECT_FALSE(keyEventFilter_->OnKeyEvent(*event));
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_001 end";
 }
@@ -113,43 +89,131 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_001, TestSiz
 /**
  * @tc.number: KeyEventFilter_Unittest_OnKeyEvent_002
  * @tc.name: OnKeyEvent
- * @tc.desc: Test function OnKeyEvent
- *           Dispatch MMI::KeyEvent after connected.
+ * @tc.desc: Test function OnKeyEvent(volume up)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_002 start";
 
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    AddConnection();
-    keyEventFilter_->OnKeyEvent(*event);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_UP);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_002 end";
 }
 
 /**
+ * @tc.number: KeyEventFilter_Unittest_OnKeyEvent_003
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(volume down)
+ */
+HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_003 start";
+
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_003 end";
+}
+
+/**
+ * @tc.number: KeyEventFilter_Unittest_OnKeyEvent_004
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(volume down)
+ */
+HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_004 start";
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_UP);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    accountData->RemoveConnectedAbility(elementName);
+
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_004 end";
+}
+
+/**
+ * @tc.number: KeyEventFilter_Unittest_OnKeyEvent_005
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Test function OnKeyEvent(volume down)
+ */
+HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_OnKeyEvent_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_005 start";
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
+
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_OnKeyEvent_005 end";
+}
+
+/**
  * @tc.number: KeyEventFilter_Unittest_SetServiceOnKeyEventResult_001
  * @tc.name: SetServiceOnKeyEventResult
- * @tc.desc: Test function SetServiceOnKeyEventResult
- *           Set result when there is no processingEvent.
+ * @tc.desc: Test function SetServiceOnKeyEventResult(keyEvent is handled)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventResult_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_001 start";
 
-    bool isHandled = true;
-    uint32_t sequenceNum = 0;
-    int32_t connectionId = 0;
-    int32_t accountId = 0;
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
     AccessibilityAbilityInfo abilityInfo;
-    std::shared_ptr<AccessibleAbilityConnection> connection =
-        std::make_shared<AccessibleAbilityConnection>(accountId, connectionId, abilityInfo);
-
-    AddConnection();
-    keyEventFilter_->OnKeyEvent(*event);
-    keyEventFilter_->SetServiceOnKeyEventResult(*connection, isHandled, sequenceNum);
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    keyEventFilter_->SetServiceOnKeyEventResult(*connection, true, 1);
+    accountData->RemoveConnectedAbility(elementName);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_001 end";
 }
@@ -157,31 +221,32 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 /**
  * @tc.number: KeyEventFilter_Unittest_SetServiceOnKeyEventResult_002
  * @tc.name: SetServiceOnKeyEventResult
- * @tc.desc: Test function SetServiceOnKeyEventResult
- *           Find processing event failed and set result after connected.
+ * @tc.desc: Test function SetServiceOnKeyEventResult(keyEvent is not handled)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventResult_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_002 start";
 
-    AddConnection();
-
-    GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
-
-    GTEST_LOG_(INFO) << "Set result";
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
-            ->GetConnectedA11yAbilities();
-    EXPECT_EQ(connectionMaps.size(), 1);
-
-    if (connectionMaps.size() == 1) {
-        auto iter = connectionMaps.begin();
-        bool isHandled = true;
-        uint32_t sequenceNum = 0;
-        keyEventFilter_->SetServiceOnKeyEventResult(*(iter->second), isHandled, sequenceNum);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
     }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    keyEventFilter_->SetServiceOnKeyEventResult(*connection, false, 1);
+    EXPECT_EQ(MMI::KeyEvent::KEYCODE_VOLUME_DOWN, AccessibilityAbilityHelper::GetInstance().GetKeyCode());
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_002 end";
 }
@@ -189,31 +254,41 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 /**
  * @tc.number: KeyEventFilter_Unittest_SetServiceOnKeyEventResult_003
  * @tc.name: SetServiceOnKeyEventResult
- * @tc.desc: Test function SetServiceOnKeyEventResult
- *           Find processing event successfully and set result after connected.
+ * @tc.desc: Test function SetServiceOnKeyEventResult(connection is not same)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventResult_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_003 start";
 
-    AddConnection();
-
-    GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
-
-    GTEST_LOG_(INFO) << "Set result";
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
-            ->GetConnectedA11yAbilities();
-    EXPECT_EQ(connectionMaps.size(), 1);
-
-    if (connectionMaps.size() == 1) {
-        auto iter = connectionMaps.begin();
-        bool isHandled = true;
-        uint32_t sequenceNum = 1;
-        keyEventFilter_->SetServiceOnKeyEventResult(*(iter->second), isHandled, sequenceNum);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
     }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    sptr<AccessibleAbilityConnection> connection2 = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    keyEventFilter_->SetServiceOnKeyEventResult(*connection2, true, 1);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_003 end";
 }
@@ -221,62 +296,168 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
 /**
  * @tc.number: KeyEventFilter_Unittest_SetServiceOnKeyEventResult_004
  * @tc.name: SetServiceOnKeyEventResult
- * @tc.desc: Test function SetServiceOnKeyEventResult
- *           Find processing event successfully and set result after connected.
+ * @tc.desc: Test function SetServiceOnKeyEventResult(squence number is not same)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventResult_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_004 start";
 
-    AddConnection();
-
-    GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
-
-    GTEST_LOG_(INFO) << "Set result";
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
-            ->GetConnectedA11yAbilities();
-    EXPECT_EQ(connectionMaps.size(), 1);
-
-    if (connectionMaps.size() == 1) {
-        auto iter = connectionMaps.begin();
-        bool isHandled = false;
-        uint32_t sequenceNum = 1;
-        keyEventFilter_->SetServiceOnKeyEventResult(*(iter->second), isHandled, sequenceNum);
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
     }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    keyEventFilter_->SetServiceOnKeyEventResult(*connection, true, 2);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_004 end";
 }
 
 /**
+ * @tc.number: KeyEventFilter_Unittest_SetServiceOnKeyEventResult_005
+ * @tc.name: SetServiceOnKeyEventResult
+ * @tc.desc: Test function SetServiceOnKeyEventResult(handle one)
+ */
+HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventResult_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_005 start";
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    keyEventFilter_->SetServiceOnKeyEventResult(*connection, true, 2);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
+
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_SetServiceOnKeyEventResult_005 end";
+}
+
+/**
  * @tc.number: KeyEventFilter_Unittest_ClearServiceKeyEvents_001
  * @tc.name: ClearServiceKeyEvents
- * @tc.desc: Test function ClearServiceKeyEvents
+ * @tc.desc: Test function ClearServiceKeyEvents(connection is not same)
  */
 HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ClearServiceKeyEvents_001 start";
 
-    AddConnection();
-
-    GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
-
-    GTEST_LOG_(INFO) << "Clear service KeyEvents";
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMaps =
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()
-            ->GetConnectedA11yAbilities();
-    EXPECT_EQ(connectionMaps.size(), 1);
-
-    if (connectionMaps.size() == 1) {
-        auto iter = connectionMaps.begin();
-        keyEventFilter_->ClearServiceKeyEvents(*(iter->second));
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
     }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    sptr<AccessibleAbilityConnection> connection2 = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    keyEventFilter_->ClearServiceKeyEvents(*connection2);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetKeyCode() == MMI::KeyEvent::KEYCODE_VOLUME_DOWN) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ClearServiceKeyEvents_001 end";
+}
+
+/**
+ * @tc.number: KeyEventFilter_Unittest_ClearServiceKeyEvents_002
+ * @tc.name: ClearServiceKeyEvents
+ * @tc.desc: Test function ClearServiceKeyEvents(clear success)
+ */
+HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ClearServiceKeyEvents_002 start";
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+    AccessibilityAbilityInfo abilityInfo;
+    sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
+        CONNECTION_ID, abilityInfo);
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    connection->Connect(elementName);
+    accountData->AddConnectedAbility(connection);
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_VOLUME_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    EXPECT_TRUE(keyEventFilter_->OnKeyEvent(*event));
+    keyEventFilter_->ClearServiceKeyEvents(*connection);
+    EXPECT_EQ(MMI::KeyEvent::KEYCODE_VOLUME_DOWN, AccessibilityAbilityHelper::GetInstance().GetKeyCode());
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+        auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    if (!ret) {
+        GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown EventQueue is not empty";
+    }
+    AccessibilityAbilityHelper::GetInstance().ClearKeyCode();
+    accountData->RemoveConnectedAbility(elementName);
+
+    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ClearServiceKeyEvents_002 end";
 }
 
 /**
@@ -289,30 +470,9 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_DestroyEvents_001, Test
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_DestroyEvents_001 start";
 
     keyEventFilter_->DestroyEvents();
+    EXPECT_TRUE(AccessibilityAbilityHelper::GetInstance().GetDestroyState());
 
     GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_DestroyEvents_001 end";
-}
-
-/**
- * @tc.number: KeyEventFilter_Unittest_ProcessEvent_001
- * @tc.name: ProcessEvent
- * @tc.desc: Test function ProcessEvent
- */
-HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ProcessEvent_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 start";
-
-    GTEST_LOG_(INFO) << "Add connection";
-    AddConnection();
-
-    GTEST_LOG_(INFO) << "Dispatch MMI::KeyEvent";
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    keyEventFilter_->OnKeyEvent(*event);
-
-    GTEST_LOG_(INFO) << "Process event";
-    sleep(SLEEP_TIME_3);  // wait for ProcessEvent
-
-    GTEST_LOG_(INFO) << "KeyEventFilter_Unittest_ProcessEvent_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

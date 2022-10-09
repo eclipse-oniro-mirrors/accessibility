@@ -48,18 +48,19 @@ public:
 void AccessibilityMouseAutoclickUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest Start ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
 }
 
 void AccessibilityMouseAutoclickUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityMouseAutoclickUnitTest End ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityMouseAutoclickUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     mouseAutoclick_ = std::make_shared<AccessibilityMouseAutoclick>();
 }
 

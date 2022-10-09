@@ -54,6 +54,7 @@ void AccessibilityZoomGestureUnitTest::SetUpTestCase()
 void AccessibilityZoomGestureUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityZoomGestureUnitTest End ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityZoomGestureUnitTest::SetUp()
@@ -345,16 +346,16 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     event->AddPointerItem(item1);
 
     MMI::PointerEvent::PointerItem item2;
-    item1.SetPointerId(2);
+    item2.SetPointerId(2);
     item2.SetDisplayX(40);
     item2.SetDisplayY(20);
     event->AddPointerItem(item2);
 
     MMI::PointerEvent::PointerItem item3;
-    item1.SetPointerId(3);
+    item3.SetPointerId(3);
     item3.SetDisplayX(50);
     item3.SetDisplayY(25);
-    event->AddPointerItem(item1);
+    event->AddPointerItem(item3);
     zoomGesture_->OnPointerEvent(*event);
 
     // Pointer up
@@ -392,7 +393,7 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     event->AddPointerItem(item1);
 
     MMI::PointerEvent::PointerItem item2;
-    item1.SetPointerId(2);
+    item2.SetPointerId(2);
     item2.SetDisplayX(40);
     item2.SetDisplayY(20);
     event->AddPointerItem(item2);
@@ -491,7 +492,7 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     event->AddPointerItem(item1);
 
     MMI::PointerEvent::PointerItem item2;
-    item1.SetPointerId(2);
+    item2.SetPointerId(2);
     item2.SetDisplayX(40);
     item2.SetDisplayY(20);
     event->AddPointerItem(item2);

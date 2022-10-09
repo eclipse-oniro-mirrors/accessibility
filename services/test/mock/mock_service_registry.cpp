@@ -14,14 +14,17 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_common_helper.h"
 #include "iservice_registry.h"
 #include "mock_bundle_manager.h"
 #include "string_ex.h"
 #include "system_ability_definition.h"
 #include "system_ability_manager_proxy.h"
+#include "mock_accessible_ability_manager_service_stub.h"
 
 namespace OHOS {
 static sptr<AppExecFwk::BundleMgrService> g_bundleMgrService = nullptr;
+static sptr<OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub> g_MgrService = nullptr;
 
 SystemAbilityManagerClient& SystemAbilityManagerClient::GetInstance()
 {
@@ -50,6 +53,16 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAb
             }
             remote = g_bundleMgrService;
             break;
+        case ACCESSIBILITY_MANAGER_SERVICE_ID: {
+            bool notNullFlag = Accessibility::AccessibilityCommonHelper::GetInstance().GetRemoteObjectNotNullFlag();
+            if (notNullFlag) {
+                if (!g_MgrService) {
+                    g_MgrService = new OHOS::Accessibility::MockAccessibleAbilityManagerServiceStub();
+                }
+                remote = g_MgrService;
+            }
+            break;
+        }
         default:
             GTEST_LOG_(INFO) << "This service is not dummy!!!!" << systemAbilityId;
             break;

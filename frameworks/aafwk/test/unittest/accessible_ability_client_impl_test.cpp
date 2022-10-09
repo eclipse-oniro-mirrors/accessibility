@@ -14,6 +14,7 @@
  */
 
 #include <gtest/gtest.h>
+#include "accessibility_ut_helper.h"
 #include "accessible_ability_client_impl.h"
 #include "accessible_ability_manager_service.h"
 #include "mock_accessible_ability_channel_proxy.h"
@@ -29,7 +30,8 @@ namespace {
     const std::string TEST = "test";
     constexpr int32_t CHANNEL_ID = 1;
     constexpr int32_t SEQUENCE = 1;
-    constexpr int32_t FOCUS_TYPE = 1;
+    constexpr int32_t INVALID_CHILD_ID = -1;
+    constexpr int INVALID_ID = -1;
 } // namespace
 
 class AccessibleAbilityClientImplTest : public ::testing::Test {
@@ -40,6 +42,9 @@ public:
     {}
 
     std::shared_ptr<AccessibleAbilityClientImpl> instance_ = nullptr;
+    std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
+    sptr<MockAccessibleAbilityChannelStub> stub_ = nullptr;
+    sptr<IAccessibleAbilityChannel> channel_ = nullptr;
 
     static void SetUpTestCase()
     {
@@ -55,13 +60,35 @@ public:
     {
         GTEST_LOG_(INFO) << "AccessibleAbilityClientImplTest SetUp()";
         instance_ = std::make_shared<AccessibleAbilityClientImpl>();
+        ASSERT_TRUE(instance_);
+        listener_ = std::make_shared<MockAccessibleAbilityListener>();
+        ASSERT_TRUE(listener_);
+        stub_ = new MockAccessibleAbilityChannelStub();
+        ASSERT_TRUE(stub_);
+        channel_ = iface_cast<IAccessibleAbilityChannel>(stub_);
+        ASSERT_TRUE(channel_);
     };
     void TearDown()
     {
         GTEST_LOG_(INFO) << "AccessibleAbilityClientImplTest TearDown()";
+        AccessibilityAbilityHelper::GetInstance().SetTestChannelId(INVALID_CHANNEL_ID);
+        AccessibilityAbilityHelper::GetInstance().SetTestKeyPressEvent(INVALID_ID);
+        AccessibilityAbilityHelper::GetInstance().SetTestEventType(INVALID_ID);
+        stub_ = nullptr;
+        channel_ = nullptr;
+        listener_ = nullptr;
         instance_ = nullptr;
     }
+
+    void Connect();
 };
+
+void AccessibleAbilityClientImplTest::Connect()
+{
+    EXPECT_TRUE(instance_->RegisterAbilityListener(listener_));
+    instance_->Init(channel_, CHANNEL_ID);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
+}
 
 /**
  * @tc.number: Disconnect_001
@@ -71,14 +98,9 @@ public:
 HWTEST_F(AccessibleAbilityClientImplTest, Disconnect_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Disconnect_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-
+    Connect();
     instance_->Disconnect(CHANNEL_ID);
-
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(INVALID_CHANNEL_ID));
     GTEST_LOG_(INFO) << "Disconnect_001 end";
 }
 
@@ -86,51 +108,77 @@ HWTEST_F(AccessibleAbilityClientImplTest, Disconnect_001, TestSize.Level1)
  * @tc.number: OnAccessibilityEvent_001
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
+ * @tc.require: SR000H0CDT
  */
 HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnAccessibilityEvent_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
+    Connect();
     AccessibilityEventInfo eventInfo {};
+    eventInfo.SetEventType(EventType::TYPE_TOUCH_BEGIN);
     instance_->OnAccessibilityEvent(eventInfo);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestEventType(),
+        static_cast<int>(EventType::TYPE_TOUCH_BEGIN));
     GTEST_LOG_(INFO) << "OnAccessibilityEvent_001 end";
+}
+
+/**
+ * @tc.number: OnAccessibilityEvent_002
+ * @tc.name: OnAccessibilityEvent
+ * @tc.desc: Test function OnAccessibilityEvent
+ * @tc.require: SR000H0CDT
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "OnAccessibilityEvent_002 start";
+    AccessibilityEventInfo eventInfo;
+    eventInfo.SetEventType(EventType::TYPE_GESTURE_EVENT);
+    instance_->OnAccessibilityEvent(eventInfo);
+    EXPECT_NE(AccessibilityAbilityHelper::GetInstance().GetTestEventType(), static_cast<int>(TYPE_GESTURE_EVENT));
+    GTEST_LOG_(INFO) << "OnAccessibilityEvent_002 end";
 }
 
 /**
  * @tc.number: GetFocus_001
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetFocus_001 start";
-        std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get GetFocus instance_";
-        return;
-    }
-    std::vector<AccessibilityElementInfo> infos;
+    Connect();
     AccessibilityElementInfo info {};
-    EXPECT_FALSE(instance_->GetFocus(FOCUS_TYPE, info));
+    EXPECT_FALSE(instance_->GetFocus(FOCUS_TYPE_INPUT, info));
     GTEST_LOG_(INFO) << "GetFocus_001 end";
+}
+
+/**
+ * @tc.number: GetFocus_002
+ * @tc.name: GetFocus
+ * @tc.desc: Test function GetFocus
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocus_002 start";
+    AccessibilityElementInfo info {};
+    EXPECT_FALSE(instance_->GetFocus(FOCUS_TYPE_INVALID, info));
+    GTEST_LOG_(INFO) << "GetFocus_002 end";
+}
+
+/**
+ * @tc.number: GetFocus_003
+ * @tc.name: GetFocus
+ * @tc.desc: Test function GetFocus
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocus_003 start";
+    AccessibilityElementInfo info {};
+    EXPECT_FALSE(instance_->GetFocus(FOCUS_TYPE_INPUT, info));
+    GTEST_LOG_(INFO) << "GetFocus_003 end";
 }
 
 /**
@@ -141,14 +189,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, GetRemoteObject_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetRemoteObject_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    sptr<IRemoteObject> res = nullptr;
-    res = AccessibleAbilityClient::GetInstance()->GetRemoteObject();
-    EXPECT_NE(res, nullptr);
+    EXPECT_TRUE(AccessibleAbilityClient::GetInstance()->GetRemoteObject());
     GTEST_LOG_(INFO) << "GetRemoteObject_001 end";
 }
 
@@ -160,14 +201,9 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRemoteObject_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, RegisterAbilityListener_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "RegisterAbilityListener_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
     EXPECT_TRUE(instance_->RegisterAbilityListener(listener));
-
+    EXPECT_FALSE(instance_->RegisterAbilityListener(listener));
     GTEST_LOG_(INFO) << "RegisterAbilityListener_001 end";
 }
 
@@ -179,42 +215,89 @@ HWTEST_F(AccessibleAbilityClientImplTest, RegisterAbilityListener_001, TestSize.
 HWTEST_F(AccessibleAbilityClientImplTest, Init_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Init_001 start";
-
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
     sptr<IAccessibleAbilityChannel> channel = nullptr;
     instance_->Init(channel, CHANNEL_ID);
-
+    EXPECT_NE(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
     GTEST_LOG_(INFO) << "Init_001 end";
+}
+
+/**
+ * @tc.number: Init_002
+ * @tc.name: Init
+ * @tc.desc: Test function Init
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, Init_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Init_002 start";
+    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
+    EXPECT_TRUE(instance_->RegisterAbilityListener(listener));
+
+    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
+    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
+    instance_->Init(channel, CHANNEL_ID);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
+    GTEST_LOG_(INFO) << "Init_002 end";
+}
+
+/**
+ * @tc.number: Init_003
+ * @tc.name: Init
+ * @tc.desc: Test function Init
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, Init_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Init_003 start";
+    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
+    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
+    instance_->Init(channel, CHANNEL_ID);
+    EXPECT_NE(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
+    GTEST_LOG_(INFO) << "Init_003 end";
 }
 
 /**
  * @tc.number: GetFocusByElementInfo_001
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE, elementInfo));
-
+    EXPECT_FALSE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE_INPUT, elementInfo));
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_001 end";
+}
+
+/**
+ * @tc.number: GetFocusByElementInfo_002
+ * @tc.name: GetFocusByElementInfo
+ * @tc.desc: Test function GetFocusByElementInfo
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocusByElementInfo_002 start";
+    AccessibilityElementInfo sourceInfo {};
+    AccessibilityElementInfo elementInfo {};
+    EXPECT_FALSE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE_INVALID, elementInfo));
+    GTEST_LOG_(INFO) << "GetFocusByElementInfo_002 end";
+}
+
+/**
+ * @tc.number: GetFocusByElementInfo_003
+ * @tc.name: GetFocusByElementInfo
+ * @tc.desc: Test function GetFocusByElementInfo
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocusByElementInfo_003 start";
+    AccessibilityElementInfo sourceInfo {};
+    AccessibilityElementInfo elementInfo {};
+    EXPECT_FALSE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE_INPUT, elementInfo));
+    GTEST_LOG_(INFO) << "GetFocusByElementInfo_003 end";
 }
 
 /**
@@ -225,62 +308,97 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_001, TestSize.Le
 HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "InjectGesture_001 start";
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
     EXPECT_FALSE(instance_->InjectGesture(gesturePath));
-
     GTEST_LOG_(INFO) << "InjectGesture_001 end";
+}
+
+/**
+ * @tc.number: InjectGesture_002
+ * @tc.name: InjectGesture
+ * @tc.desc: Test function InjectGesture
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "InjectGesture_002 start";
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = nullptr;
+    EXPECT_FALSE(instance_->InjectGesture(gesturePath));
+    GTEST_LOG_(INFO) << "InjectGesture_002 end";
+}
+
+/**
+ * @tc.number: InjectGesture_003
+ * @tc.name: InjectGesture
+ * @tc.desc: Test function InjectGesture
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "InjectGesture_003 start";
+    EXPECT_CALL(*stub_, SendSimulateGesture(_)).Times(1).WillOnce(Return(true));
+    Connect();
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    AccessibilityGesturePosition position;
+    gesturePath->AddPosition(position);
+    EXPECT_TRUE(instance_->InjectGesture(gesturePath));
+    GTEST_LOG_(INFO) << "InjectGesture_003 end";
+}
+
+/**
+ * @tc.number: InjectGesture_004
+ * @tc.name: InjectGesture
+ * @tc.desc: Test function InjectGesture
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "InjectGesture_004 start";
+    std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
+    AccessibilityGesturePosition position;
+    gesturePath->AddPosition(position);
+    EXPECT_FALSE(instance_->InjectGesture(gesturePath));
+    GTEST_LOG_(INFO) << "InjectGesture_004 end";
 }
 
 /**
  * @tc.number: GetRoot_001
  * @tc.name: GetRoot
  * @tc.desc: Test function GetRoot
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetRoot_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo info {};
+    instance_->SetCacheMode(0);
     EXPECT_FALSE(instance_->GetRoot(info));
-
     GTEST_LOG_(INFO) << "GetRoot_001 end";
+}
+
+/**
+ * @tc.number: GetRoot_002
+ * @tc.name: GetRoot
+ * @tc.desc: Test function GetRoot
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRoot_002 start";
+    AccessibilityElementInfo info {};
+    instance_->SetCacheMode(INVALID_ID);
+    EXPECT_FALSE(instance_->GetRoot(info));
+    GTEST_LOG_(INFO) << "GetRoot_002 end";
 }
 
 /**
  * @tc.number: GetRootByWindow_001
  * @tc.name: GetRootByWindow
  * @tc.desc: Test function GetRootByWindow
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetRootByWindow_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo info {};
     AccessibilityWindowInfo windowInfo {};
     EXPECT_FALSE(instance_->GetRootByWindow(windowInfo, info));
@@ -289,165 +407,162 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: ExecuteCommonAction_001
- * @tc.name: ExecuteCommonAction
- * @tc.desc: Test function ExecuteCommonAction
+ * @tc.number: GetRootByWindow_002
+ * @tc.name: GetRootByWindow
+ * @tc.desc: Test function GetRootByWindow
+ * @tc.require: SR000H0CCR
  */
-HWTEST_F(AccessibleAbilityClientImplTest, ExecuteCommonAction_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
+    GTEST_LOG_(INFO) << "GetRootByWindow_002 start";
+    AccessibilityElementInfo info {};
+    AccessibilityWindowInfo windowInfo {};
+    EXPECT_FALSE(instance_->GetRootByWindow(windowInfo, info));
 
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    GlobalAction action = GLOBAL_ACTION_INVALID;
-    EXPECT_FALSE(instance_->ExecuteCommonAction(action));
-
-    GTEST_LOG_(INFO) << "ExecuteCommonAction_001 end";
+    GTEST_LOG_(INFO) << "GetRootByWindow_002 end";
 }
 
 /**
  * @tc.number: GetNext_001
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetNext_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetNext_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo info {};
     AccessibilityElementInfo nextElementInfo {};
     FocusMoveDirection direction = DIRECTION_INVALID;
     EXPECT_FALSE(instance_->GetNext(info, direction, nextElementInfo));
-
     GTEST_LOG_(INFO) << "GetNext_001 end";
+}
+
+/**
+ * @tc.number: GetNext_002
+ * @tc.name: GetNext
+ * @tc.desc: Test function GetNext
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetNext_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetNext_002 start";
+    AccessibilityElementInfo info {};
+    AccessibilityElementInfo nextElementInfo {};
+    FocusMoveDirection direction = UP;
+    EXPECT_FALSE(instance_->GetNext(info, direction, nextElementInfo));
+    GTEST_LOG_(INFO) << "GetNext_002 end";
+}
+
+/**
+ * @tc.number: GetNext_003
+ * @tc.name: GetNext
+ * @tc.desc: Test function GetNext
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetNext_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetNext_003 start";
+    Connect();
+    AccessibilityElementInfo info {};
+    AccessibilityElementInfo nextElementInfo {};
+    FocusMoveDirection direction = DOWN;
+    EXPECT_FALSE(instance_->GetNext(info, direction, nextElementInfo));
+    GTEST_LOG_(INFO) << "GetNext_003 end";
 }
 
 /**
  * @tc.number: GetByContent_001
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetByContent_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo elementInfo {};
     std::vector<AccessibilityElementInfo> inelementInfosfos;
     EXPECT_FALSE(instance_->GetByContent(elementInfo, TEST, inelementInfosfos));
-
     GTEST_LOG_(INFO) << "GetByContent_001 end";
 }
 
 /**
- * @tc.number: GetAnchor_001
- * @tc.name: GetAnchor
- * @tc.desc: Test function GetAnchor
+ * @tc.number: GetByContent_002
+ * @tc.name: GetByContent
+ * @tc.desc: Test function GetByContent
+ * @tc.require: SR000H0CCR
  */
-HWTEST_F(AccessibleAbilityClientImplTest, GetAnchor_001, TestSize.Level1)
+HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_002, TestSize.Level1)
 {
-    GTEST_LOG_(INFO) << "GetAnchor_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
-    AccessibilityWindowInfo windowInfo {};
+    GTEST_LOG_(INFO) << "GetByContent_002 start";
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetAnchor(windowInfo, elementInfo));
-
-    GTEST_LOG_(INFO) << "GetAnchor_001 end";
+    std::vector<AccessibilityElementInfo> inelementInfosfos;
+    EXPECT_FALSE(instance_->GetByContent(elementInfo, TEST, inelementInfosfos));
+    GTEST_LOG_(INFO) << "GetByContent_002 end";
 }
 
 /**
  * @tc.number: GetSource_001
  * @tc.name: GetSource
  * @tc.desc: Test function GetSource
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetSource_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetSource_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityEventInfo eventInfo {};
     AccessibilityElementInfo elementInfo {};
     EXPECT_FALSE(instance_->GetSource(eventInfo, elementInfo));
-
     GTEST_LOG_(INFO) << "GetSource_001 end";
+}
+
+/**
+ * @tc.number: GetSource_002
+ * @tc.name: GetSource
+ * @tc.desc: Test function GetSource
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetSource_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetSource_002 start";
+    AccessibilityEventInfo eventInfo {};
+    AccessibilityElementInfo elementInfo {};
+    EXPECT_FALSE(instance_->GetSource(eventInfo, elementInfo));
+    GTEST_LOG_(INFO) << "GetSource_002 end";
 }
 
 /**
  * @tc.number: GetParentElementInfo_001
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo
+ * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetParentElementInfo_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo parent {};
     AccessibilityElementInfo child {};
     EXPECT_FALSE(instance_->GetParentElementInfo(child, parent));
-
     GTEST_LOG_(INFO) << "GetParentElementInfo_001 end";
+}
+
+/**
+ * @tc.number: GetParentElementInfo_002
+ * @tc.name: GetParentElementInfo
+ * @tc.desc: Test function GetParentElementInfo
+ * @tc.require: SR000H0CCR
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetParentElementInfo_002 start";
+    AccessibilityElementInfo parent {};
+    AccessibilityElementInfo child {};
+    EXPECT_FALSE(instance_->GetParentElementInfo(child, parent));
+    GTEST_LOG_(INFO) << "GetParentElementInfo_002 end";
 }
 
 /**
@@ -458,24 +573,43 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_001, TestSize.Lev
 HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ExecuteAction_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     AccessibilityElementInfo elementInfo {};
     ActionType action = ACCESSIBILITY_ACTION_INVALID;
     std::map<std::string, std::string> actionArguments {};
     EXPECT_FALSE(instance_->ExecuteAction(elementInfo, action, actionArguments));
-
     GTEST_LOG_(INFO) << "ExecuteAction_001 end";
+}
+
+/**
+ * @tc.number: ExecuteAction_002
+ * @tc.name: ExecuteAction
+ * @tc.desc: Test function ExecuteAction
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ExecuteAction_002 start";
+    AccessibilityElementInfo elementInfo {};
+    ActionType action = ACCESSIBILITY_ACTION_SELECT;
+    std::map<std::string, std::string> actionArguments {};
+    EXPECT_FALSE(instance_->ExecuteAction(elementInfo, action, actionArguments));
+    GTEST_LOG_(INFO) << "ExecuteAction_002 end";
+}
+
+/**
+ * @tc.number: ExecuteAction_003
+ * @tc.name: ExecuteAction
+ * @tc.desc: Test function ExecuteAction
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ExecuteAction_003 start";
+    Connect();
+    AccessibilityElementInfo elementInfo {};
+    ActionType action = ACCESSIBILITY_ACTION_SELECT;
+    std::map<std::string, std::string> actionArguments {};
+    EXPECT_FALSE(instance_->ExecuteAction(elementInfo, action, actionArguments));
+    GTEST_LOG_(INFO) << "ExecuteAction_003 end";
 }
 
 /**
@@ -486,21 +620,12 @@ HWTEST_F(AccessibleAbilityClientImplTest, ExecuteAction_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, ResetAAClient_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "ResetAAClient_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    EXPECT_CALL(*stub_, GetWindows(_)).Times(1).WillOnce(Return(true));
+    Connect();
     wptr<IRemoteObject> remote = nullptr;
     instance_->ResetAAClient(remote);
-
+    std::vector<AccessibilityWindowInfo> infos;
+    EXPECT_TRUE(instance_->GetWindows(infos));
     GTEST_LOG_(INFO) << "ResetAAClient_001 end";
 }
 
@@ -512,22 +637,27 @@ HWTEST_F(AccessibleAbilityClientImplTest, ResetAAClient_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, OnKeyPressEvent_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "OnKeyPressEvent_001 start";
-    std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibleAbilityClientImpl instance_";
-        return;
-    }
+    Connect();
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(1);
     instance_->OnKeyPressEvent(*event, SEQUENCE);
-
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestKeyPressEvent(), 1);
     GTEST_LOG_(INFO) << "OnKeyPressEvent_001 end";
+}
+
+/**
+ * @tc.number: OnKeyPressEvent_002
+ * @tc.name: OnKeyPressEvent
+ * @tc.desc: Test function OnKeyPressEvent
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, OnKeyPressEvent_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "OnKeyPressEvent_002 start";
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    event->SetKeyCode(1);
+    instance_->OnKeyPressEvent(*event, SEQUENCE);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestKeyPressEvent(), INVALID_ID);
+    GTEST_LOG_(INFO) << "OnKeyPressEvent_002 end";
 }
 
 /**
@@ -538,22 +668,202 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnKeyPressEvent_001, TestSize.Level1)
 HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetWindows_001 start";
-        std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    instance_->RegisterAbilityListener(listener);
-
-    sptr<MockAccessibleAbilityChannelStub> stub = new MockAccessibleAbilityChannelStub();
-    sptr<IAccessibleAbilityChannel> channel = new MockAccessibleAbilityChannelProxy(stub->AsObject());
-
-    int32_t channelId = 1;
-    instance_->Init(channel, channelId);
-    if (!instance_) {
-        GTEST_LOG_(INFO) << "Cann't get GetFocus instance_";
-        return;
-    }
+    EXPECT_CALL(*stub_, GetWindows(_)).Times(1).WillOnce(Return(true));
+    Connect();
     std::vector<AccessibilityWindowInfo> infos;
-    instance_->GetWindows(infos);
-    EXPECT_EQ(0, infos.size());
+    EXPECT_TRUE(instance_->GetWindows(infos));
     GTEST_LOG_(INFO) << "GetWindows_001 end";
+}
+
+/**
+ * @tc.number: GetWindows_002
+ * @tc.name: GetWindows
+ * @tc.desc: Test function GetWindows
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetWindows_002 start";
+    EXPECT_CALL(*stub_, GetWindowsByDisplayId(_, _)).Times(1).WillOnce(Return(true));
+    Connect();
+    std::vector<AccessibilityWindowInfo> infos;
+    EXPECT_TRUE(instance_->GetWindows(0, infos));
+    GTEST_LOG_(INFO) << "GetWindows_002 end";
+}
+
+/**
+ * @tc.number: GetWindows_003
+ * @tc.name: GetWindows
+ * @tc.desc: Test function GetWindows
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetWindows_003 start";
+    std::vector<AccessibilityWindowInfo> infos;
+    EXPECT_FALSE(instance_->GetWindows(infos));
+    GTEST_LOG_(INFO) << "GetWindows_003 end";
+}
+
+/**
+ * @tc.number: GetWindows_004
+ * @tc.name: GetWindows
+ * @tc.desc: Test function GetWindows
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetWindows_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetWindows_004 start";
+    std::vector<AccessibilityWindowInfo> infos;
+    EXPECT_FALSE(instance_->GetWindows(0, infos));
+    GTEST_LOG_(INFO) << "GetWindows_004 end";
+}
+
+/**
+ * @tc.number: GetChildElementInfo_001
+ * @tc.name: GetChildElementInfo
+ * @tc.desc: Test function GetChildElementInfo
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildElementInfo_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildElementInfo_001 start";
+    AccessibilityElementInfo parent;
+    AccessibilityElementInfo child;
+    EXPECT_FALSE(instance_->GetChildElementInfo(0, parent, child));
+    GTEST_LOG_(INFO) << "GetChildElementInfo_001 end";
+}
+
+/**
+ * @tc.number: GetChildElementInfo_002
+ * @tc.name: GetChildElementInfo
+ * @tc.desc: Test function GetChildElementInfo
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildElementInfo_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildElementInfo_002 start";
+    Connect();
+    AccessibilityElementInfo parent;
+    AccessibilityElementInfo child;
+    EXPECT_FALSE(instance_->GetChildElementInfo(0, parent, child));
+    GTEST_LOG_(INFO) << "GetChildElementInfo_002 end";
+}
+
+/**
+ * @tc.number: GetChildElementInfo_003
+ * @tc.name: GetChildElementInfo
+ * @tc.desc: Test function GetChildElementInfo
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildElementInfo_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildElementInfo_003 start";
+    Connect();
+
+    AccessibilityElementInfo parent;
+    parent.AddChild(1);
+    AccessibilityElementInfo child;
+    EXPECT_FALSE(instance_->GetChildElementInfo(0, parent, child));
+    GTEST_LOG_(INFO) << "GetChildElementInfo_003 end";
+}
+
+/**
+ * @tc.number: GetChildren_001
+ * @tc.name: GetChildren
+ * @tc.desc: Test function GetChildren
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildren_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildren_001 start";
+    AccessibilityElementInfo parent;
+    std::vector<AccessibilityElementInfo> children;
+    EXPECT_FALSE(instance_->GetChildren(parent, children));
+    GTEST_LOG_(INFO) << "GetChildren_001 end";
+}
+
+/**
+ * @tc.number: GetChildren_002
+ * @tc.name: GetChildren
+ * @tc.desc: Test function GetChildren
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildren_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildren_002 start";
+    Connect();
+
+    AccessibilityElementInfo parent;
+    parent.AddChild(INVALID_CHILD_ID);
+    std::vector<AccessibilityElementInfo> children;
+    EXPECT_FALSE(instance_->GetChildren(parent, children));
+    GTEST_LOG_(INFO) << "GetChildren_002 end";
+}
+
+/**
+ * @tc.number: GetChildren_003
+ * @tc.name: GetChildren
+ * @tc.desc: Test function GetChildren
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetChildren_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetChildren_003 start";
+    Connect();
+
+    AccessibilityElementInfo parent;
+    parent.AddChild(1);
+    std::vector<AccessibilityElementInfo> children;
+    EXPECT_FALSE(instance_->GetChildren(parent, children));
+    GTEST_LOG_(INFO) << "GetChildren_003 end";
+}
+
+/**
+ * @tc.number: SetTargetBundleName_001
+ * @tc.name: SetTargetBundleName
+ * @tc.desc: Test function SetTargetBundleName
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, SetTargetBundleName_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetTargetBundleName_001 start";
+    std::vector<std::string> targetBundleNames;
+    EXPECT_FALSE(instance_->SetTargetBundleName(targetBundleNames));
+    GTEST_LOG_(INFO) << "SetTargetBundleName_001 end";
+}
+
+/**
+ * @tc.number: SetTargetBundleName_002
+ * @tc.name: SetTargetBundleName
+ * @tc.desc: Test function SetTargetBundleName
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, SetTargetBundleName_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetTargetBundleName_002 start";
+    EXPECT_CALL(*stub_, SetTargetBundleName(_)).Times(1).WillOnce(Return(true));
+    Connect();
+    std::vector<std::string> targetBundleNames;
+    EXPECT_TRUE(instance_->SetTargetBundleName(targetBundleNames));
+    GTEST_LOG_(INFO) << "SetTargetBundleName_002 end";
+}
+
+/**
+ * @tc.number: GetWindow_001
+ * @tc.name: GetWindow
+ * @tc.desc: Test function GetWindow
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetWindow_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetWindow_001 start";
+    AccessibilityWindowInfo windowInfo;
+    EXPECT_FALSE(instance_->GetWindow(0, windowInfo));
+    GTEST_LOG_(INFO) << "GetWindow_001 end";
+}
+
+/**
+ * @tc.number: GetWindow_002
+ * @tc.name: GetWindow
+ * @tc.desc: Test function GetWindow
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetWindow_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetWindow_002 start";
+    EXPECT_CALL(*stub_, GetWindow(_, _)).Times(1).WillOnce(Return(true));
+    Connect();
+    AccessibilityWindowInfo windowInfo;
+    EXPECT_TRUE(instance_->GetWindow(0, windowInfo));
+    GTEST_LOG_(INFO) << "GetWindow_002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
