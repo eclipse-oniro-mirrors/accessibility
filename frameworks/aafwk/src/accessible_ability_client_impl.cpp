@@ -200,11 +200,9 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
         return false;
     }
 
-    int32_t channelId = sourceInfo.GetChannelId();
     int32_t windowId = sourceInfo.GetWindowId();
     int32_t elementId = sourceInfo.GetAccessibilityId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], elementId[%{public}d], focusType[%{public}d]",
-        channelId, windowId, elementId, focusType);
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}d], focusType[%{public}d]", windowId, elementId, focusType);
 
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
 }
@@ -308,25 +306,11 @@ bool AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId, std::vect
     return channelClient_->GetWindows(displayId, windows);
 }
 
-bool AccessibleAbilityClientImpl::ExecuteCommonAction(const GlobalAction action)
-{
-    HILOG_INFO("action[%{public}d]", action);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return false;
-    }
-    if (action >= GLOBAL_ACTION_MAX) {
-        HILOG_ERROR("action is not allowed.");
-        return false;
-    }
-    return channelClient_->ExecuteCommonAction(action);
-}
-
 bool AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], elementId[%{public}d], direction[%{public}d]",
-        elementInfo.GetChannelId(), elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}d], direction[%{public}d]",
+        elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
         return false;
@@ -410,35 +394,10 @@ bool AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &e
         HILOG_ERROR("The channel is invalid.");
         return false;
     }
-    int32_t channelId = elementInfo.GetChannelId();
     int32_t windowId = elementInfo.GetWindowId();
     int32_t elementId = elementInfo.GetAccessibilityId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], elementId[%{public}d], text[%{public}s]",
-        channelId, windowId, elementId, text.c_str());
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}d], text[%{public}s]", windowId, elementId, text.c_str());
     return channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
-}
-
-bool AccessibleAbilityClientImpl::GetAnchor(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
-{
-    HILOG_DEBUG();
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return false;
-    }
-    int32_t windowId = windowInfo.GetWindowId();
-    int32_t anchorId = windowInfo.GetAnchorId();
-    HILOG_INFO("windowId[%{public}d], anchorId[%{public}d]", windowId, anchorId);
-    if (GetCacheElementInfo(windowId, anchorId, elementInfo)) {
-        HILOG_DEBUG("get element info from cache");
-        return true;
-    }
-
-    if (!SearchElementInfoFromAce(windowId, anchorId, cacheMode_, elementInfo)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
 }
 
 bool AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &eventInfo,
@@ -499,23 +458,11 @@ bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &
         HILOG_ERROR("action is invalid.");
         return false;
     }
-    int32_t channelId = elementInfo.GetChannelId();
     int32_t windowId = elementInfo.GetWindowId();
     int32_t elementId = elementInfo.GetAccessibilityId();
-    HILOG_INFO("channelId[%{public}d], windowId[%{public}d], elementId[%{public}d], action[%{public}d",
-        channelId, windowId, elementId, action);
+    HILOG_INFO("windowId[%{public}d], elementId[%{public}d], action[%{public}d", windowId, elementId, action);
     return channelClient_->ExecuteAction(windowId, elementId, action,
         const_cast<std::map<std::string, std::string> &>(actionArguments));
-}
-
-bool AccessibleAbilityClientImpl::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_INFO("filter[%{public}d]", filter);
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return false;
-    }
-    return channelClient_->SetEventTypeFilter(filter);
 }
 
 bool AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)

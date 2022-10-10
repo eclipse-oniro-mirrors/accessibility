@@ -152,13 +152,6 @@ bool MockAccessibleAbilityManagerServiceStub::GetEnabledAbilities(std::vector<st
     return true;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetInstalledAbilities(
-    std::vector<AccessibilityAbilityInfo> &installedAbilities)
-{
-    (void)installedAbilities;
-    return true;
-}
-
 bool MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::string &name)
 {
     (void)name;

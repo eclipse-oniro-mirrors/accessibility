@@ -54,12 +54,6 @@ bool TouchEventInjector::OnPointerEvent(MMI::PointerEvent& event)
     return false;
 }
 
-void TouchEventInjector::ClearEvents(uint32_t inputSource)
-{
-    (void)inputSource;
-    isGestureUnderway_ = false;
-}
-
 void TouchEventInjector::DestroyEvents()
 {
     isDestroyEvent_ = true;

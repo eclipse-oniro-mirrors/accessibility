@@ -37,8 +37,6 @@ public:
 
     MOCK_METHOD0(StartUp, void());
     MOCK_METHOD1(OnPointerEvent, void(MMI::PointerEvent& event));
-    MOCK_METHOD1(OnAccessibilityEvent, void(AccessibilityEventInfo& event));
-    MOCK_METHOD1(ClearEvents, void(uint32_t inputSource));
     MOCK_METHOD0(DestroyEvents, void());
     MOCK_METHOD2(SendEventToMultimodal, void(MMI::PointerEvent& event, int32_t action));
     MOCK_METHOD1(SendAccessibilityEventToAA, void(EventType eventType));

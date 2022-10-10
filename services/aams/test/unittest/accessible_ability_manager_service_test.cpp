@@ -732,19 +732,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_001, TestS
 }
 
 /*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetInstalledAbilities_001
- * @tc.name: GetInstalledAbilities
- * @tc.desc: Test function GetInstalledAbilities
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetInstalledAbilities_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetInstalledAbilities_001 start";
-    std::vector<AccessibilityAbilityInfo> installedAbilities;
-    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetInstalledAbilities(installedAbilities));
-    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetInstalledAbilities_001 end";
-}
-
-/*
  * @tc.number: AccessibleAbility_ManagerService_UnitTest_EnableUITestAbility_001
  * @tc.name: EnableUITestAbility
  * @tc.desc: Test function EnableUITestAbility
@@ -1030,20 +1017,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_002, TestS
     std::vector<std::string> enabledAbilities;
     EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_002 end";
-}
-
-/*
- * @tc.number: AccessibleAbility_ManagerService_UnitTest_GetInstalledAbilities_002
- * @tc.name: GetInstalledAbilities
- * @tc.desc: Test function GetInstalledAbilities
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetInstalledAbilities_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetInstalledAbilities_002 start";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    std::vector<AccessibilityAbilityInfo> installedAbilities;
-    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetInstalledAbilities(installedAbilities));
-    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_GetInstalledAbilities_002 end";
 }
 
 /*

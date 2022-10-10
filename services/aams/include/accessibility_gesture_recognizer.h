@@ -68,12 +68,6 @@ public:
     virtual ~AccessibilityGestureRecognizeListener() = default;
 
     /**
-     * @brief The callback function when performed a double tap and then held down the second tap.
-     * @param event  the touch event received.
-     */
-    virtual void OnDoubleTapLongPress(MMI::PointerEvent &event);
-
-    /**
      * @brief The callback function when lifted the finger on the second tap of a double tap.
      *
      * @param event  the touch event received.
@@ -153,7 +147,7 @@ public:
     void Clear();
 
     /**
-     * @brief If a double tap occurred, call OnDoubleTapLongPress callback.
+     * @brief Judge whether the double click and long press gesture is recognized.
      * @param event the touch event from touchguide
      */
     void MaybeRecognizeLongPress(MMI::PointerEvent &event);

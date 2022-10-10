@@ -295,19 +295,6 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 }
 
 /**
- * @tc.number: AccessibleAbilityChannel_Unittest_SetEventTypeFilter_001
- * @tc.name: SetEventTypeFilter
- * @tc.desc: Test function SetEventTypeFilter
- */
-HWTEST_F(AccessibleAbilityChannelUnitTest,
-    AccessibleAbilityChannel_Unittest_SetEventTypeFilter_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetEventTypeFilter_001 start";
-    EXPECT_TRUE(channel_->SetEventTypeFilter(TYPE_VIEW_CLICKED_EVENT));
-    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetEventTypeFilter_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityChannel_Unittest_SetTargetBundleName_001
  * @tc.name: SetTargetBundleName
  * @tc.desc: Test function SetTargetBundleName

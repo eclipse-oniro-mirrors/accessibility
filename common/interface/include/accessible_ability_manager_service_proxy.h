@@ -96,7 +96,6 @@ public:
 
     virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
-    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
 
     virtual bool DisableAbility(const std::string &name) override;
     virtual int32_t GetActiveWindow() override;

@@ -241,23 +241,6 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetPageId_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetChannelId_001
- * @tc.name: SetChannelId
- * @tc.desc: Test function SetChannelId
- */
-HWTEST_F(AccessibilityEventInfoUnitTest, SetChannelId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetChannelId_001 start";
-    if (!eventInfo_) {
-        GTEST_LOG_(INFO) << "eventInfo_ is null";
-        return;
-    }
-    eventInfo_->SetChannelId(1000);
-    EXPECT_EQ(eventInfo_->GetChannelId(), 1000);
-    GTEST_LOG_(INFO) << "SetChannelId_001 end";
-}
-
-/**
  * @tc.number: SetSource_001
  * @tc.name: SetSource
  * @tc.desc: Test function SetSource

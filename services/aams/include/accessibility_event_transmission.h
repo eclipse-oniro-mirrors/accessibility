@@ -31,10 +31,8 @@ public:
     virtual bool OnKeyEvent(MMI::KeyEvent &event);
     virtual bool OnPointerEvent(MMI::PointerEvent &event);
     virtual void OnMoveMouse(int32_t offsetX, int32_t offsetY);
-    virtual void OnAccessibilityEvent(AccessibilityEventInfo &event);
     void SetNext(const sptr<EventTransmission> &next);
     sptr<EventTransmission> GetNext();
-    virtual void ClearEvents(uint32_t inputSource);
     virtual void DestroyEvents();
 private:
     sptr<EventTransmission> next_ = nullptr;

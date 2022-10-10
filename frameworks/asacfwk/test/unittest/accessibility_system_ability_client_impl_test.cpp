@@ -254,24 +254,6 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManagerSta
 }
 
 /**
- * @tc.number: GetInstalledAbilities_001
- * @tc.name: GetInstalledAbilities
- * @tc.desc: Test function GetInstalledAbilities
- */
-HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetInstalledAbilities_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "GetInstalledAbilities_001 start";
-    if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
-        return;
-    }
-    std::vector<AccessibilityAbilityInfo> installedAbilities;
-    impl_->GetInstalledAbilities(installedAbilities);
-    EXPECT_EQ(0, installedAbilities.size());
-    GTEST_LOG_(INFO) << "GetInstalledAbilities_001 end";
-}
-
-/**
  * @tc.number: GetEnabledAbilities_001
  * @tc.name: GetEnabledAbilities
  * @tc.desc: Test function GetEnabledAbilities

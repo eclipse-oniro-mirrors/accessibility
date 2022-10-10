@@ -84,16 +84,6 @@ public:
         isDestroyEvents_ = true;
     }
 
-    bool GetClearState()
-    {
-        return isClearEvents_;
-    }
-
-    void SetClearState()
-    {
-        isClearEvents_ = true;
-    }
-
     int GetTestElementId()
     {
         return testElementId_;
@@ -418,7 +408,6 @@ public:
 private:
     std::vector<int32_t> touchAction_;
     bool isDestroyEvents_ = false;
-    bool isClearEvents_ = false;
     int testElementId_ = -1;
     int testClearFocus_ = -1;
     int testOutsideTouch_ = -1;

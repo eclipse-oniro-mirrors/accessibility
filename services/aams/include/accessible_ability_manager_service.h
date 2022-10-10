@@ -92,7 +92,6 @@ public:
 
     bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
     bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
-    bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) override;
     bool DisableAbility(const std::string &name) override;
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     bool DisableUITestAbility() override;

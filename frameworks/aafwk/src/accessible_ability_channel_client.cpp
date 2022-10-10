@@ -90,9 +90,6 @@ bool AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilit
     HILOG_INFO("Get result successfully from ace.");
 
     elementInfo = elementOperator->accessibilityInfoResult_;
-    elementInfo.SetChannelId(channelId_);
-    HILOG_DEBUG("[channelId:%{public}d] end", channelId_);
-
     return true;
 }
 
@@ -176,7 +173,6 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t
             HILOG_ERROR("The elementInfo from ace is wrong");
             return false;
         }
-        info.SetChannelId(channelId_);
     }
     HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
@@ -199,11 +195,7 @@ bool AccessibleAbilityChannelClient::GetWindows(std::vector<AccessibilityWindowI
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER(HITRACE_TAG_ACCESSIBILITY_MANAGER);
     if (proxy_) {
-        bool ret = proxy_->GetWindows(windows);
-        for (auto &window : windows) {
-            window.SetChannelId(channelId_);
-        }
-        return ret;
+        return proxy_->GetWindows(windows);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
@@ -216,11 +208,7 @@ bool AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
     HILOG_DEBUG("[channelId:%{public}d] [displayId:%{public}" PRIu64 "]", channelId_, displayId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "GetWindowsByDisplayId");
     if (proxy_) {
-        bool ret = proxy_->GetWindowsByDisplayId(displayId, windows);
-        for (auto &window : windows) {
-            window.SetChannelId(channelId_);
-        }
-        return ret;
+        return proxy_->GetWindowsByDisplayId(displayId, windows);
     } else {
         HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
         return false;
@@ -261,7 +249,6 @@ bool AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibil
             HILOG_ERROR("The elementInfo from ace is wrong");
             return false;
         }
-        info.SetChannelId(channelId_);
     }
     HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
@@ -304,30 +291,7 @@ bool AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindow
 
     HILOG_INFO("Get result successfully from ace");
     elementInfo = elementOperator->accessibilityInfoResult_;
-    elementInfo.SetChannelId(channelId_);
     return true;
-}
-
-bool AccessibleAbilityChannelClient::ExecuteCommonAction(const int32_t action)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->ExecuteCommonAction(action);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return false;
-    }
-}
-
-bool AccessibleAbilityChannelClient::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_INFO("[channelId:%{public}d]", channelId_);
-    if (proxy_) {
-        return proxy_->SetEventTypeFilter(filter);
-    } else {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
-        return false;
-    }
 }
 
 bool AccessibleAbilityChannelClient::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)

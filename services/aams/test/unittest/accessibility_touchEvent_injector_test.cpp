@@ -48,7 +48,6 @@ public:
 protected:
     MMI::PointerEvent CreateTouchEvent(int32_t action);
     int32_t pointId_ = -1;
-    bool isClearEvents_ = false;
     bool isDestroyEvents_ = false;
 };
 
@@ -133,11 +132,6 @@ HWTEST_F(TouchEventInjectorTest, TouchEventInjector_Unittest_TouchEventInjector_
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
     touchEventInjector_->SetNext(inputInterceptor_);
     touchEventInjector_->OnPointerEvent(*event);
-
-    touchEventInjector_->ClearEvents(1);
-    isClearEvents_ = AccessibilityAbilityHelper::GetInstance().GetClearState();
-    EXPECT_EQ(isClearEvents_, true);
-
     touchEventInjector_->DestroyEvents();
     isDestroyEvents_ = AccessibilityAbilityHelper::GetInstance().GetDestroyState();
     EXPECT_EQ(isDestroyEvents_, true);

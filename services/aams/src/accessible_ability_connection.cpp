@@ -109,7 +109,6 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     std::vector<std::string> filterBundleNames = abilityInfo_.GetFilterBundleNames();
     if (IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() || find(filterBundleNames.begin(),
         filterBundleNames.end(), eventInfo.GetBundleName()) != filterBundleNames.end())) {
-        eventInfo.SetChannelId(connectionId_);
         abilityClient_->OnAccessibilityEvent(eventInfo);
         HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
             eventInfo.GetWindowId(), eventInfo.GetEventType(), eventInfo.GetWindowChangeTypes(),
@@ -131,12 +130,6 @@ bool AccessibleAbilityConnection::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
 
     abilityClient_->OnKeyPressEvent(keyEvent, sequence);
     return true;
-}
-
-void AccessibleAbilityConnection::SetAbilityInfoEventTypeFilter(const uint32_t eventTypes)
-{
-    HILOG_DEBUG();
-    abilityInfo_.SetEventTypes(eventTypes);
 }
 
 void AccessibleAbilityConnection::SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames)

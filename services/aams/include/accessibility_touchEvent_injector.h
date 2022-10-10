@@ -70,12 +70,6 @@ public:
     bool OnPointerEvent(MMI::PointerEvent &event) override;
 
     /**
-     * @brief Clear event state from specific input source.
-     * @param inputSource the input source
-     */
-    void ClearEvents(uint32_t inputSource) override;
-
-    /**
      * @brief Destroy event state.
      */
     void DestroyEvents() override;

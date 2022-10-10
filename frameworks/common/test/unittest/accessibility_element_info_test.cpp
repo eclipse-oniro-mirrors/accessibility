@@ -741,19 +741,6 @@ HWTEST_F(AccessibilityElementInfoTest, SetLabeled_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetChannelId_001
- * @tc.name: SetChannelId
- * @tc.desc: Test function SetChannelId, GetChannelId
- */
-HWTEST_F(AccessibilityElementInfoTest, SetChannelId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetChannelId_001 start";
-    elementInfo_->SetChannelId(1);
-    EXPECT_EQ(elementInfo_->GetChannelId(), 1);
-    GTEST_LOG_(INFO) << "SetChannelId_001 end";
-}
-
-/**
  * @tc.number: SetAccessibilityId_001
  * @tc.name: SetAccessibilityId
  * @tc.desc: Test function SetAccessibilityId, GetAccessibilityId

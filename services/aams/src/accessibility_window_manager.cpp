@@ -106,7 +106,6 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
         return;
     }
     eventHandler_->PostTask(std::bind([=]() -> void {
-        HILOG_DEBUG("windowId[%{public}d] type[%{public}d]", infos[0]->wid_, type);
         switch (type) {
             case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED:
                 WindowUpdateAdded(infos);

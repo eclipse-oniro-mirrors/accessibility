@@ -63,22 +63,6 @@ public:
     void SetWindowLayer(const int32_t layer);
 
     /**
-     * @brief Set an anchor accessibility node that anchors this window to another window.
-     * @param anchorId The accessibility id of component.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetAnchorId(const int32_t anchorId);
-
-    /**
-     * @brief Get the anchor window
-     * @return The anchor id of the window.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetAnchorId() const;
-
-    /**
      * @brief Get the window id of current window.
      * @return The window id of current window.
      * @since 3
@@ -93,22 +77,6 @@ public:
      * @sysCap Accessibility
      */
     void SetWindowId(const int32_t id);
-
-    /**
-     * @brief AAMS called to set the id of the IAccessibleAbilityChannel.
-     * @param channelId The id of the IAccessibleAbilityChannel.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetChannelId(const int32_t channelId);
-
-    /**
-     * @brief Get the id of the IAccessibleAbilityChannel.
-     * @return The id of the IAccessibleAbilityChannel.
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetChannelId() const;
 
     /**
      * @brief Get the screen pixel coordinates
@@ -237,8 +205,6 @@ protected:
     AccessibilityWindowType accessibilityWindowType_ = TYPE_WINDOW_INVALID;
     int32_t windowLayer_ = INVALID_WINDOW_ID;
     int32_t windowId_ = INVALID_WINDOW_ID;
-    int32_t anchorId_ = -1;
-    int32_t channelId_ = INVALID_WINDOW_ID;
     bool active_ = false;
     bool focused_ = false;
     bool accessibilityFocused_ = false;

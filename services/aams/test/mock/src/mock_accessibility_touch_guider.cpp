@@ -109,35 +109,6 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent& event)
     return true;
 }
 
-void TouchGuider::OnAccessibilityEvent(AccessibilityEventInfo& event)
-{
-    HILOG_DEBUG();
-
-    EventType eventType = event.GetEventType();
-    HILOG_DEBUG("EventType is 0x%{public}x.", eventType);
-    if (eventType == EventType::TYPE_VIEW_HOVER_EXIT_EVENT) {
-        if (HasEventPending(SEND_TOUCH_GUIDE_END_MSG)) {
-            CancelPostEvent(SEND_TOUCH_GUIDE_END_MSG);
-            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_END);
-        }
-        if (HasEventPending(SEND_TOUCH_INTERACTION_END_MSG)) {
-            CancelPostEvent(SEND_TOUCH_INTERACTION_END_MSG);
-            SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
-        }
-    }
-    EventTransmission::OnAccessibilityEvent(event);
-}
-
-void TouchGuider::ClearEvents(uint32_t inputSource)
-{
-    HILOG_DEBUG();
-
-    if (inputSource == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
-        Clear();
-    }
-    EventTransmission::ClearEvents(inputSource);
-}
-
 void TouchGuider::DestroyEvents()
 {
     HILOG_DEBUG();
@@ -211,22 +182,6 @@ std::shared_ptr<MMI::PointerEvent> TouchGuider::getLastReceivedEvent()
     HILOG_DEBUG();
 
     return receivedRecorder_.lastEvent;
-}
-
-void TouchGuider::TouchGuideListener::OnDoubleTapLongPress(MMI::PointerEvent& event)
-{
-    (void)event;
-    HILOG_DEBUG();
-
-    MMI::PointerEvent::PointerItem clickPoint = {};
-    if (server_.currentState_ != static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING)) {
-        return;
-    }
-    MMI::PointerEvent::PointerItem eventPoint = {};
-    server_.longPressOffsetX_ = eventPoint.GetDisplayX() - clickPoint.GetDisplayX();
-    server_.longPressOffsetY_ = eventPoint.GetDisplayY() - clickPoint.GetDisplayY();
-
-    server_.currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
 }
 
 bool TouchGuider::TouchGuideListener::OnDoubleTap(MMI::PointerEvent& event)
@@ -303,26 +258,6 @@ bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent& event)
         default:
             return false;
     }
-    return true;
-}
-
-bool TouchGuider::TouchGuideListener::TransformToSingleTap(
-    MMI::PointerEvent& event, MMI::PointerEvent::PointerItem& point)
-{
-    HILOG_DEBUG();
-
-    std::vector<int32_t> pointerIds = event.GetPointerIds();
-    for (auto& pId : pointerIds) {
-        event.RemovePointerItem(pId);
-    }
-    point.SetPointerId(event.GetPointerId());
-    event.AddPointerItem(point);
-    event.SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
-    event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
-    server_.SendEventToMultimodal(event, POINTER_DOWN);
-    event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
-    server_.SendEventToMultimodal(event, POINTER_UP);
-
     return true;
 }
 

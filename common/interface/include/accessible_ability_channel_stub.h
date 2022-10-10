@@ -109,14 +109,6 @@ private:
     ErrCode HandleGetWindowsByDisplayId(MessageParcel &data, MessageParcel &reply);
 
     /**
-     * @brief Handle the IPC request for the function:HandleExecuteCommonAction.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleExecuteCommonAction(MessageParcel &data, MessageParcel &reply);
-
-    /**
      * @brief Handle the IPC request for the function:HandleSetOnKeyPressEventResult.
      * @param data The data of process communication
      * @param reply The response of IPC request
@@ -131,14 +123,6 @@ private:
      * @return NO_ERROR: successful; otherwise is failed.
      */
     ErrCode HandleSendSimulateGesturePath(MessageParcel &data, MessageParcel &reply);
-
-    /**
-     * @brief Handle the IPC request for the function:HandleSetEventTypeFilter.
-     * @param data The data of process communication
-     * @param reply The response of IPC request
-     * @return NO_ERROR: successful; otherwise is failed.
-     */
-    ErrCode HandleSetEventTypeFilter(MessageParcel &data, MessageParcel &reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleSetTargetBundleName.

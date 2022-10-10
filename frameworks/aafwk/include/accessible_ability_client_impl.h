@@ -140,13 +140,6 @@ public:
     virtual bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
-     * @brief Executes a specified action.
-     * @param action The action of OHOS::Accessibility::GlobalAction.
-     * @return Return true if executes action successfully, else return false.
-     */
-    virtual bool ExecuteCommonAction(const GlobalAction action) override;
-
-    /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
      * @param elementInfo The source info to get next info.
      * @param direction Indicates the direction to obtain the next focused node. Refer to FocusMoveDirection
@@ -184,14 +177,6 @@ public:
      */
     virtual bool GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
         std::vector<AccessibilityElementInfo> &elementInfos) override;
-
-    /**
-     * @brief Obtains an anchor accessibility node that anchors this window to another window.
-     * @param windowInfo The source window info to get anchor.
-     * @param elementInfo The anchor element info.
-     * @return Return true if gets elementInfos successfully, else return false.
-     */
-    virtual bool GetAnchor(const AccessibilityWindowInfo &windowInfo, AccessibilityElementInfo &elementInfo) override;
 
     /**
      * @brief Get the node information related with the event
@@ -233,13 +218,6 @@ public:
         const std::map<std::string, std::string> &actionArguments) override;
 
     /**
-     * @brief Set event types to filter.
-     * @param filter The event types which you want.
-     * @return Return true if sets event types successfully, else return false.
-     */
-    virtual bool SetEventTypeFilter(const uint32_t filter) override;
-
-    /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.
@@ -249,7 +227,7 @@ public:
     /**
      * @brief Set cache mode.
      *        The mode is used for functions: GetRoot, GetRootByWindow, GetChildElementInfo,
-     *        GetChildren, GetAnchor, GetSource, GetParentElementInfo.
+     *        GetChildren, GetSource, GetParentElementInfo.
      * @param cacheMode The cache mode. It includes:
      *             PREFETCH_PREDECESSORS: cache the parent node info also.
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.

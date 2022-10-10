@@ -155,20 +155,6 @@ public:
         int32_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo);
 
     /**
-     * @brief Execute common action.
-     * @param action The common action
-     * @return true: Perform successfully; otherwise is not.
-     */
-    bool ExecuteCommonAction(const int32_t action);
-
-    /**
-     * @brief Set event types to filter.
-     * @param filter The event types which you want.
-     * @return Return true if sets event types successfully, else return false.
-     */
-    bool SetEventTypeFilter(const uint32_t filter);
-
-    /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
      * @return Return true if sets target bundle names successfully, else return false.

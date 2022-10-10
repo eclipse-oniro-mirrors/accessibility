@@ -36,8 +36,6 @@ bool AccessibilityWindowInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowMode_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowLayer_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, anchorId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);
@@ -59,8 +57,6 @@ bool AccessibilityWindowInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, windowMode_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowLayer_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, anchorId_);
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, active_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focused_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, accessibilityFocused_);

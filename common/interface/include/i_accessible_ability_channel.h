@@ -127,13 +127,6 @@ public:
         std::vector<AccessibilityWindowInfo> &windows) = 0;
 
     /**
-     * @brief Executes a specified action.
-     * @param action The action of OHOS::Accessibility::GlobalAction.
-     * @return Return true if performs action successfully, else return false.
-     */
-    virtual bool ExecuteCommonAction(const int32_t action) = 0;
-
-    /**
      * @brief Set the result of key press event.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
      * @param sequence The sequence of key press event result.
@@ -146,13 +139,6 @@ public:
      * @return Return true if gesture injection is successfully, otherwise return false.
      */
     virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) = 0;
-
-    /**
-     * @brief Set event types to filter.
-     * @param filter The event types which you want.
-     * @return Return true if sets event types successfully, else return false.
-     */
-    virtual bool SetEventTypeFilter(const uint32_t filter) = 0;
 
     /**
      * @brief Set target bundle names.
@@ -170,11 +156,9 @@ public:
         GET_WINDOW,
         GET_WINDOWS,
         GET_WINDOWS_BY_DISPLAY_ID,
-        EXECUTE_COMMON_ACTION,
         DISABLE_ABILITY,
         SET_ON_KEY_PRESS_EVENT_RESULT,
         SEND_SIMULATE_GESTURE_PATH,
-        SET_EVENT_TYPE_FILTER,
         SET_TARGET_BUNDLE_NAME,
     };
 };

@@ -119,9 +119,6 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
     sourceElementInfo.SetTextLengthLimit(int32Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceElementInfo.SetChannelId(int32Data);
-
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetCurrentIndex(int32Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
@@ -273,12 +270,6 @@ static size_t GenerateAccessibilityWindowInfo(OHOS::Accessibility::Accessibility
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceWindowInfo.SetWindowId(int32Data);
 
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceWindowInfo.SetAnchorId(int32Data);
-
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceWindowInfo.SetChannelId(int32Data);
-
     sourceWindowInfo.SetActive(data[position++] & 0x01);
     sourceWindowInfo.SetFocused(data[position++] & 0x01);
     sourceWindowInfo.SetAccessibilityFocused(data[position++] & 0x01);
@@ -418,21 +409,6 @@ bool DoSomethingInterestingWithGetWindows(const uint8_t* data, size_t size)
     return true;
 }
 
-bool DoSomethingInterestingWithExecuteCommonAction(const uint8_t* data, size_t size)
-{
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
-    size_t startPos = 0;
-    uint32_t commonAction = 0;
-    startPos += GetObject<uint32_t>(commonAction, &data[startPos], size - startPos);
-    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->ExecuteCommonAction(
-        static_cast<OHOS::Accessibility::GlobalAction>(commonAction));
-
-    return true;
-}
-
 bool DoSomethingInterestingWithGetNext(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -504,21 +480,6 @@ bool DoSomethingInterestingWithGetByContent(const uint8_t* data, size_t size)
     return true;
 }
 
-bool DoSomethingInterestingWithGetAnchor(const uint8_t* data, size_t size)
-{
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
-    size_t startPos = 0;
-    OHOS::Accessibility::AccessibilityWindowInfo sourceWindowInfo;
-    OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
-    startPos += GenerateAccessibilityWindowInfo(sourceWindowInfo, &data[startPos], size - startPos);
-    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetAnchor(sourceWindowInfo, resultElementInfo);
-
-    return true;
-}
-
 bool DoSomethingInterestingWithGetSource(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -580,20 +541,6 @@ bool DoSomethingInterestingWithExecuteAction(const uint8_t* data, size_t size)
     return true;
 }
 
-bool DoSomethingInterestingWithSetEventTypeFilter(const uint8_t* data, size_t size)
-{
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
-    size_t startPos = 0;
-    uint32_t filter = 0;
-    startPos += GetObject<uint32_t>(filter, &data[startPos], size - startPos);
-    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SetEventTypeFilter(filter);
-
-    return true;
-}
-
 bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -625,16 +572,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithGetRootByWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindows(data, size);
-    OHOS::DoSomethingInterestingWithExecuteCommonAction(data, size);
     OHOS::DoSomethingInterestingWithGetNext(data, size);
     OHOS::DoSomethingInterestingWithGetChildElementInfo(data, size);
     OHOS::DoSomethingInterestingWithGetChildren(data, size);
     OHOS::DoSomethingInterestingWithGetByContent(data, size);
-    OHOS::DoSomethingInterestingWithGetAnchor(data, size);
     OHOS::DoSomethingInterestingWithGetSource(data, size);
     OHOS::DoSomethingInterestingWithGetParentElementInfo(data, size);
     OHOS::DoSomethingInterestingWithExecuteAction(data, size);
-    OHOS::DoSomethingInterestingWithSetEventTypeFilter(data, size);
     OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
     return 0;
 }

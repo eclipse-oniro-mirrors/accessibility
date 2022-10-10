@@ -107,17 +107,6 @@ bool AccessibilityExtensionContext::GetWindows(const uint64_t displayId, std::ve
     return aaClient->GetWindows(displayId, windows);
 }
 
-bool AccessibilityExtensionContext::ExecuteCommonAction(const GlobalAction action)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->ExecuteCommonAction(action);
-}
-
 bool AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
@@ -154,18 +143,6 @@ bool AccessibilityExtensionContext::GetByContent(const AccessibilityElementInfo 
     return aaClient->GetByContent(elementInfo, text, elementInfos);
 }
 
-bool AccessibilityExtensionContext::GetAnchor(const AccessibilityWindowInfo &windowInfo,
-    AccessibilityElementInfo &elementInfo)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->GetAnchor(windowInfo, elementInfo);
-}
-
 bool AccessibilityExtensionContext::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent)
 {
@@ -188,16 +165,6 @@ bool AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo
         return false;
     }
     return aaClient->ExecuteAction(elementInfo, action, actionArguments);
-}
-bool AccessibilityExtensionContext::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_DEBUG();
-    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return false;
-    }
-    return aaClient->SetEventTypeFilter(filter);
 }
 
 bool AccessibilityExtensionContext::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
