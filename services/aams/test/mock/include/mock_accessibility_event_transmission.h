@@ -28,12 +28,8 @@ public:
 
     MOCK_METHOD1(OnKeyEvent, void(MMI::KeyEvent& event));
     MOCK_METHOD1(OnPointerEvent, void(MMI::KeyEvent& event));
-    MOCK_METHOD1(OnAccessibilityEvent, void(AccessibilityEventInfo& event));
     MOCK_METHOD1(SetNext, void(const sptr<EventTransmission>& next));
-
     MOCK_METHOD0(GetNext, sptr<EventTransmission>());
-    MOCK_METHOD1(ClearEvents, void(uint32_t inputSource));
-
     MOCK_METHOD0(DestroyEvents, void());
 };
 } // namespace Accessibility

@@ -118,12 +118,6 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
-{
-    (void)action;
-    return true;
-}
-
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
     (void)handled;
@@ -134,12 +128,6 @@ bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     (void)gesturePath;
-    return true;
-}
-
-bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)
-{
-    (void)filter;
     return true;
 }
 

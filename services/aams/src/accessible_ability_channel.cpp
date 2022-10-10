@@ -226,51 +226,14 @@ bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Access
 
         std::vector<AccessibilityWindowInfo> windowInfos =
             Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
-        int32_t currentChannelId = clientConnection->GetChannelId();
         for (auto &window : windowInfos) {
             if (window.GetDisplayId() == displayId) {
-                window.SetChannelId(currentChannelId);
                 windows.emplace_back(window);
             }
         }
         syncPromise.set_value(true);
         }, accountId_, clientName_), "GetWindows");
     return syncFuture.get();
-}
-
-bool AccessibleAbilityChannel::ExecuteCommonAction(int32_t action)
-{
-    HILOG_DEBUG();
-
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr.");
-        return false;
-    }
-    eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG("ExecuteCommonAction action = %{public}d", action);
-        switch (action) {
-            case GlobalAction::GLOBAL_ACTION_BACK:
-                HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_BACK");
-                break;
-            case GlobalAction::GLOBAL_ACTION_HOME:
-                HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_HOME");
-                break;
-            case GlobalAction::GLOBAL_ACTION_RECENT:
-                HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_RECENT");
-                break;
-            case GlobalAction::GLOBAL_ACTION_NOTIFICATION:
-                HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_NOTIFICATION");
-                break;
-            case GlobalAction::GLOBAL_ACTION_LOCK_SCREEN:
-                HILOG_DEBUG("ExecuteCommonAction action = GLOBAL_ACTION_LOCK_SCREEN");
-                break;
-            default:
-                HILOG_DEBUG("The action is not exist. %{public}d", action);
-                break;
-        }
-        // Temp deal: need external dependence
-        }, accountId_, clientName_), "ExecuteCommonAction");
-    return true;
 }
 
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
@@ -333,30 +296,6 @@ bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<Accessi
         touchEventInjector->InjectEvents(gesturePath);
         syncPromise.set_value(true);
         }, accountId_, clientName_), "SendSimulateGesture");
-    return syncFuture.get();
-}
-
-bool AccessibleAbilityChannel::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_DEBUG();
-    if (!eventHandler_) {
-        HILOG_ERROR("eventHandler_ is nullptr");
-        return false;
-    }
-    std::promise<bool> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    eventHandler_->PostTask(std::bind([filter, &syncPromise](int32_t accountId, const std::string &name) -> void {
-        HILOG_DEBUG();
-        sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId, name);
-        if (!clientConnection) {
-            HILOG_ERROR("There is no client connection");
-            syncPromise.set_value(false);
-            return;
-        }
-
-        clientConnection->SetAbilityInfoEventTypeFilter(filter);
-        syncPromise.set_value(true);
-        }, accountId_, clientName_), "SetEventTypeFilter");
     return syncFuture.get();
 }
 

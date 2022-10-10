@@ -114,7 +114,6 @@ public:
 
     virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) = 0;
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
-    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) = 0;
 
     virtual bool DisableAbility(const std::string &name) = 0;
     virtual int32_t GetActiveWindow() = 0;
@@ -169,7 +168,6 @@ public:
         GET_KEY_EVENT_OBSERVE_STATE,
         ENABLE_ABILITIES,
         GET_ENABLED_OBJECT,
-        GET_INSTALLED,
         DISABLE_ABILITIES,
         ENABLE_UI_TEST_ABILITY,
         DISABLE_UI_TEST_ABILITY,

@@ -205,12 +205,6 @@ bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::strin
     return true;
 }
 
-bool AccessibleAbilityManagerService::GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities)
-{
-    (void)installedAbilities;
-    return true;
-}
-
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {

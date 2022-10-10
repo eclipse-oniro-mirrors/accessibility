@@ -141,19 +141,6 @@ public:
     bool OnPointerEvent(MMI::PointerEvent &event) override;
 
     /**
-     * @brief Handle accessibility events from previous event stream node.
-     *
-     * @param event  the accessibility event  to be handled.
-     */
-    void OnAccessibilityEvent(AccessibilityEventInfo &event) override;
-
-    /**
-     * @brief Clear event state from specific input source.
-     * @param inputSource  the input source.
-     */
-    void ClearEvents(uint32_t inputSource) override;
-
-    /**
      * @brief Destroy event state.
      */
     void DestroyEvents() override;
@@ -221,12 +208,6 @@ private:
         explicit TouchGuideListener(TouchGuider &server) : server_(server) {};
 
         /**
-         * @brief Prepare to send the event corresponding to the long press to the Multimodal.
-         * @param event the touch event from Multimodal
-         */
-        void OnDoubleTapLongPress(MMI::PointerEvent &event) override;
-
-        /**
          * @brief Prepare to send the event corresponding to the single tap to the Multimodal.
          * @param event the touch event from Multimodal
          */
@@ -250,13 +231,6 @@ private:
         bool OnCancelled(MMI::PointerEvent &event) override;
 
     private:
-        /**
-         * @brief Send the single tap events to the Multimodal.
-         * @param event the event prepared to send to Multimodal
-         * @param point the click point
-         * @return whether the message is successfully sent.
-         */
-        bool TransformToSingleTap(MMI::PointerEvent &event, MMI::PointerEvent::PointerItem &point);
         TouchGuider &server_;
     };
 

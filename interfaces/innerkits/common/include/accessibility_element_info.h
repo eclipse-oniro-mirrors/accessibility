@@ -1021,22 +1021,6 @@ public:
     int32_t GetLabeledAccessibilityId() const;
 
     /**
-     * @brief Get the id of the IAccessibleAbilityChannel
-     * @return The id of the IAccessibleAbilityChannel
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetChannelId() const;
-
-    /**
-     * @brief AAMS called to set the id of the IAccessibleAbilityChannel
-     * @param channelId The id of the IAccessibleAbilityChannel
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetChannelId(const int32_t channelId);
-
-    /**
      * @brief Set accessibility Id
      * @param componentId The id of component
      * @since 3
@@ -1330,7 +1314,6 @@ protected:
     int32_t childCount_ = 0;
     std::vector<AccessibleAction> operations_;
     int32_t textLengthLimit_ = -1;
-    int32_t channelId_ = UNDEFINED_CHANNEL_ID; // rename
     Rect bounds_ {};
     bool checkable_ = false;
     bool checked_ = false;

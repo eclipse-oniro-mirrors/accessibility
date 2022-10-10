@@ -80,11 +80,6 @@ void AccessibilityInputInterceptor::DestroyInterceptor()
 void AccessibilityInputInterceptor::DestroyTransmitters()
 {}
 
-void AccessibilityInputInterceptor::NotifyAccessibilityEvent(AccessibilityEventInfo& event) const
-{
-    (void)event;
-}
-
 void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
 {
     (void)event;

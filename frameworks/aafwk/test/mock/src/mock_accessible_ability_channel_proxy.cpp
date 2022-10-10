@@ -112,12 +112,6 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
-{
-    (void)action;
-    return true;
-}
-
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
     (void)handled;

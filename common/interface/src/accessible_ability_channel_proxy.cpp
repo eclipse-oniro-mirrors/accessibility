@@ -394,29 +394,6 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityChannelProxy::ExecuteCommonAction(const int32_t action)
-{
-    HILOG_DEBUG();
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!WriteInterfaceToken(data)) {
-        return false;
-    }
-    if (!data.WriteInt32(action)) {
-        HILOG_ERROR("action write error: %{public}d, ", action);
-        return false;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::EXECUTE_COMMON_ACTION, data, reply, option)) {
-        HILOG_ERROR("fail to perform common action");
-        return false;
-    }
-    return reply.ReadBool();
-}
-
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
     HILOG_DEBUG();
@@ -468,30 +445,6 @@ bool AccessibleAbilityChannelProxy::SendSimulateGesture(
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
         HILOG_ERROR("fail to send simulation gesture path");
-        return false;
-    }
-    return reply.ReadBool();
-}
-
-bool AccessibleAbilityChannelProxy::SetEventTypeFilter(const uint32_t filter)
-{
-    HILOG_DEBUG();
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option(MessageOption::TF_SYNC);
-
-    if (!WriteInterfaceToken(data)) {
-        return false;
-    }
-
-    if (!data.WriteUint32(filter)) {
-        HILOG_ERROR("filter write error: %{public}d, ", filter);
-        return false;
-    }
-
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_EVENT_TYPE_FILTER, data, reply, option)) {
-        HILOG_ERROR("fail to set event type filter");
         return false;
     }
     return reply.ReadBool();

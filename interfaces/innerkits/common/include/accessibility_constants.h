@@ -64,7 +64,6 @@ extern const int32_t PREFETCH_SIBLINGS;
 extern const int32_t PREFETCH_CHILDREN;
 extern const int32_t UNDEFINED;
 extern const int32_t GET_SOURCE_PREFETCH_MODE;
-extern const int32_t UNDEFINED_CHANNEL_ID;
 extern const int32_t UNDEFINED_SELECTION_INDEX;
 extern const int32_t UNDEFINED_ITEM_ID;
 extern const int32_t ROOT_ITEM_ID;

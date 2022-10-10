@@ -55,9 +55,6 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     category_ = static_cast<NotificationCategory>(category);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
 
-    int32_t channelId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, channelId);
-    SetChannelId(channelId);
     int32_t componentId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId);
     SetSource(componentId);
@@ -115,7 +112,6 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(category_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
 
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetChannelId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetViewId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetWindowId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetCurrentIndex());

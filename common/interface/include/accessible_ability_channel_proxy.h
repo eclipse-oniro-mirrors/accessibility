@@ -131,13 +131,6 @@ public:
         std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
-     * @brief Executes a specified action through the proxy object.
-     * @param action The action of OHOS::Accessibility::GlobalAction.
-     * @return Return true if performs action successfully, else return false.
-     */
-    virtual bool ExecuteCommonAction(const int32_t action) override;
-
-    /**
      * @brief Set the result of key press event through the proxy object.
      * @param handled The result of key press event, true if the event has been consumed, otherwise false.
      * @param sequence The sequence of key press event result.
@@ -150,13 +143,6 @@ public:
      * @return Return true if gesture injection is successfully, otherwise return false.
      */
     virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
-
-    /**
-     * @brief Set event types to filter.
-     * @param filter The event types which you want.
-     * @return Return true if sets event types successfully, else return false.
-     */
-    virtual bool SetEventTypeFilter(const uint32_t filter) override;
 
     /**
      * @brief Set target bundle names.

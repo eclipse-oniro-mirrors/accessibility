@@ -41,18 +41,6 @@ void EventTransmission::OnMoveMouse(int32_t offsetX, int32_t offsetY)
     (void)offsetY;
 }
 
-void EventTransmission::OnAccessibilityEvent(AccessibilityEventInfo& event)
-{
-    (void)event;
-    GTEST_LOG_(INFO) << "##########EventTransmission OnAccessibilityEvent event=" << (int32_t)(event.GetGestureType());
-}
-
-void EventTransmission::ClearEvents(uint32_t inputSource)
-{
-    (void)inputSource;
-    AccessibilityAbilityHelper::GetInstance().SetClearState();
-}
-
 void EventTransmission::DestroyEvents()
 {
     AccessibilityAbilityHelper::GetInstance().SetDestroyState();

@@ -86,23 +86,6 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowLayer_001, TestSize.Level1)
 }
 
 /**
- * @tc.number: SetAnchorId_001
- * @tc.name: SetAnchorId
- * @tc.desc: Test function SetAnchorId
- */
-HWTEST_F(AccessibilityWindowInfoUnitTest, SetAnchorId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetAnchorId_001 start";
-    if (!windowInfo_) {
-        GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
-    }
-    windowInfo_->SetAnchorId(1);
-    EXPECT_EQ(windowInfo_->GetAnchorId(), 1);
-    GTEST_LOG_(INFO) << "SetAnchorId_001 end";
-}
-
-/**
  * @tc.number: SetWindowId_001
  * @tc.name: SetWindowId
  * @tc.desc: Test function SetWindowId
@@ -117,23 +100,6 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowId_001, TestSize.Level1)
     windowInfo_->SetWindowId(1);
     EXPECT_EQ(windowInfo_->GetWindowId(), 1);
     GTEST_LOG_(INFO) << "SetWindowId_001 end";
-}
-
-/**
- * @tc.number: SetChannelId_001
- * @tc.name: SetChannelId
- * @tc.desc: Test function SetChannelId
- */
-HWTEST_F(AccessibilityWindowInfoUnitTest, SetChannelId_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "SetChannelId_001 start";
-    if (!windowInfo_) {
-        GTEST_LOG_(INFO) << "windowInfo_ is null";
-        return;
-    }
-    windowInfo_->SetChannelId(1);
-    EXPECT_EQ(windowInfo_->GetChannelId(), 1);
-    GTEST_LOG_(INFO) << "SetChannelId_001 end";
 }
 
 /**

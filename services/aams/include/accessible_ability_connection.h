@@ -46,8 +46,6 @@ public:
 
     bool OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence);
 
-    void SetAbilityInfoEventTypeFilter(const uint32_t eventTypes);
-
     void SetAbilityInfoTargetBundleName(const std::vector<std::string> &targetBundleNames);
 
     // Get Attribution

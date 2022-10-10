@@ -33,7 +33,6 @@ class MockAccessibilityGestureRecognizeListener : public AccessibilityGestureRec
 public:
     virtual ~MockAccessibilityGestureRecognizeListener() = default;
 
-    MOCK_METHOD1(OnDoubleTapLongPress, void(MMI::PointerEvent& event));
     MOCK_METHOD1(OnDoubleTap, bool(MMI::PointerEvent& event));
     MOCK_METHOD0(OnStarted, bool());
     MOCK_METHOD1(OnCompleted, bool(GestureType gestureId));

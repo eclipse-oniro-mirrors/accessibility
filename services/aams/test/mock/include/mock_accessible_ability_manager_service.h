@@ -93,7 +93,6 @@ public:
     MOCK_METHOD1(SetKeyEventObserverState, bool(const bool state));
     MOCK_METHOD1(SetEnabledObj, bool(std::map<std::string, AppExecFwk::ElementName> it));
     MOCK_METHOD1(GetEnabledAbilities, bool(std::vector<std::string> &enabledAbilities));
-    MOCK_METHOD1(GetInstalledAbilities, bool(std::vector<AccessibilityAbilityInfo> &installedAbilities));
     MOCK_METHOD1(RegisterUITestAbilityConnectionClient, bool(const sptr<IRemoteObject>& obj));
     MOCK_METHOD0(DeregisterUITestAbilityConnectionClient, bool());
     MOCK_METHOD0(GetActiveWindow, int32_t());

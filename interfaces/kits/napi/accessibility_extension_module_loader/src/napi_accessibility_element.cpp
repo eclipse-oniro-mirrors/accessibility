@@ -421,15 +421,6 @@ void NAccessibilityElement::GetElementInfoPageId(NAccessibilityElementData *call
         callbackInfo->accessibilityElement_.elementInfo_->GetPageId(), &value));
 }
 
-void NAccessibilityElement::GetElementInfoParentId(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetParentNodeId(), &value));
-}
-
 void NAccessibilityElement::GetElementInfoInspectorKey(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -500,23 +491,6 @@ void NAccessibilityElement::GetElementInfoResourceName(NAccessibilityElementData
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetComponentResourceId().c_str(), NAPI_AUTO_LENGTH, &value));
-}
-
-void NAccessibilityElement::GetElementInfoChildNodeIds(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    std::vector<int32_t> childIds = callbackInfo->accessibilityElement_.elementInfo_->GetChildIds();
-    HILOG_DEBUG("childIds size: [%{public}zu]", childIds.size());
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_array(callbackInfo->env_, &value));
-    size_t index = 0;
-    for (auto& childId : childIds) {
-        napi_value id = nullptr;
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_, childId, &id));
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_set_element(callbackInfo->env_, value, index, id));
-        index++;
-    }
 }
 
 void NAccessibilityElement::GetElementInfoTextLengthLimit(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -647,15 +621,6 @@ void NAccessibilityElement::GetElementInfoEditable(NAccessibilityElementData *ca
         callbackInfo->accessibilityElement_.elementInfo_->IsEditable(), &value));
 }
 
-void NAccessibilityElement::GetElementInfoPopupSupported(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->IsPopupSupported(), &value));
-}
-
 void NAccessibilityElement::GetElementInfoPluralLineSupported(
     NAccessibilityElementData *callbackInfo, napi_value &value)
 {
@@ -666,15 +631,6 @@ void NAccessibilityElement::GetElementInfoPluralLineSupported(
         callbackInfo->accessibilityElement_.elementInfo_->IsPluraLineSupported(), &value));
 }
 
-void NAccessibilityElement::GetElementInfoDeleteable(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->IsDeletable(), &value));
-}
-
 void NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -682,15 +638,6 @@ void NAccessibilityElement::GetElementInfoIsHint(NAccessibilityElementData *call
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->IsGivingHint(), &value));
-}
-
-void NAccessibilityElement::GetElementInfoIsEssential(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->IsEssential(), &value));
 }
 
 void NAccessibilityElement::GetElementInfoItemCount(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -756,45 +703,6 @@ void NAccessibilityElement::GetElementInfoValueNow(NAccessibilityElementData *ca
         callbackInfo->accessibilityElement_.elementInfo_->GetRange().GetCurrent(), &value));
 }
 
-void NAccessibilityElement::GetElementInfoGrid(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    OHOS::Accessibility::GridInfo gridInfo = callbackInfo->accessibilityElement_.elementInfo_->GetGrid();
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
-    ConvertGridInfoToJS(callbackInfo->env_, value, gridInfo);
-}
-
-void NAccessibilityElement::GetElementInfoGridItem(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    OHOS::Accessibility::GridItemInfo gridItemInfo =
-        callbackInfo->accessibilityElement_.elementInfo_->GetGridItem();
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
-    ConvertGridItemToJS(callbackInfo->env_, value, gridItemInfo);
-}
-
-void NAccessibilityElement::GetElementInfoActiveRegion(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetLiveRegion(), &value));
-}
-
-void NAccessibilityElement::GetElementInfoIsContentInvalid(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_boolean(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetContentInvalid(), &value));
-}
-
 void NAccessibilityElement::GetElementInfoError(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
     if (!CheckElementInfoParameter(callbackInfo, value)) {
@@ -802,33 +710,6 @@ void NAccessibilityElement::GetElementInfoError(NAccessibilityElementData *callb
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetError().c_str(), NAPI_AUTO_LENGTH, &value));
-}
-
-void NAccessibilityElement::GetElementInfoLabel(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetLabeledAccessibilityId(), &value));
-}
-
-void NAccessibilityElement::GetElementInfoBeginSelected(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetSelectedBegin(), &value));
-}
-
-void NAccessibilityElement::GetElementInfoEndSelected(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckElementInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
-        callbackInfo->accessibilityElement_.elementInfo_->GetSelectedEnd(), &value));
 }
 
 void NAccessibilityElement::GetElementInfoTextMoveUnit(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -1004,24 +885,6 @@ void NAccessibilityElement::GetWindowInfoType(NAccessibilityElementData *callbac
         callbackInfo->ret_ = true;
         NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
             accessibilityWindowType.c_str(), NAPI_AUTO_LENGTH, &value));
-    }
-}
-
-void NAccessibilityElement::GetWindowInfoAnchor(NAccessibilityElementData *callbackInfo, napi_value &value)
-{
-    if (!CheckWindowInfoParameter(callbackInfo, value)) {
-        return;
-    }
-    if (callbackInfo->ret_) {
-        napi_value constructor = nullptr;
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_get_reference_value(callbackInfo->env_,
-            NAccessibilityElement::consRef_, &constructor));
-        NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_new_instance(callbackInfo->env_,
-            constructor, 0, nullptr, &value));
-        ConvertElementInfoToJS(callbackInfo->env_, value, callbackInfo->nodeInfo_);
-    } else {
-        HILOG_ERROR("GetWindowInfoAnchor failed!");
-        napi_get_undefined(callbackInfo->env_, &value);
     }
 }
 

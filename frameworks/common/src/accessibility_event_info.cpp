@@ -21,18 +21,6 @@
 
 namespace OHOS {
 namespace Accessibility {
-void AccessibilityMemo::SetChannelId(const int32_t channelId)
-{
-    channelId_ = channelId;
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-}
-
-int32_t AccessibilityMemo::GetChannelId() const
-{
-    HILOG_DEBUG("channelId_[%{public}d]", channelId_);
-    return channelId_;
-}
-
 void AccessibilityMemo::SetSource(const int32_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}d]", componentId);

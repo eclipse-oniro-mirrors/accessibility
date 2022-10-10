@@ -49,8 +49,6 @@ napi_value GetErrorValue(napi_env env, int errCode);
 
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
-void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid);
-void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const OHOS::Accessibility::GridItemInfo& gridItem);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
@@ -80,7 +78,6 @@ std::string ConvertColorToString(uint32_t color);
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
 OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
 OHOS::Accessibility::AbilityStateType ConvertStringToAbilityStateType(const std::string &type);
-OHOS::Accessibility::GlobalAction ConvertStringToGlobalAction(const std::string &type);
 OHOS::Accessibility::TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type);
 
 std::string ConvertTextMoveUnitToString(OHOS::Accessibility::TextMoveUnit type);

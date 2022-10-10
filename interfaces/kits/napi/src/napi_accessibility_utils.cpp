@@ -490,48 +490,6 @@ std::string ConvertOperationTypeToString(ActionType type)
     return triggerActionTable.at(type);
 }
 
-void ConvertGridInfoToJS(napi_env env, napi_value nGrid, const OHOS::Accessibility::GridInfo& grid)
-{
-    napi_value nRowCount;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetRowCount(), &nRowCount));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "rowCount", nRowCount));
-
-    napi_value nColumnCount;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetColumnCount(), &nColumnCount));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "columnCount", nColumnCount));
-
-    napi_value nSelectionMode;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, grid.GetSelectionMode(), &nSelectionMode));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGrid, "selectionMode", nSelectionMode));
-}
-
-void ConvertGridItemToJS(napi_env env, napi_value nGridItem, const GridItemInfo& gridItem)
-{
-    napi_value nHeading;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsHeading(), &nHeading));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "heading", nHeading));
-
-    napi_value nColumnIndex;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetColumnIndex(), &nColumnIndex));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "columnIndex", nColumnIndex));
-
-    napi_value nRowIndex;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetRowIndex(), &nRowIndex));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "rowIndex", nRowIndex));
-
-    napi_value nColumnSpan;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetColumnSpan(), &nColumnSpan));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "columnSpan", nColumnSpan));
-
-    napi_value nRowSpan;
-    NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, gridItem.GetRowSpan(), &nRowSpan));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "rowSpan", nRowSpan));
-
-    napi_value nSelected;
-    NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, gridItem.IsSelected(), &nSelected));
-    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, nGridItem, "selected", nSelected));
-}
-
 static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)
 {
     static const std::map<const std::string, WindowUpdateType> windowsUpdateTypesTable = {
@@ -673,23 +631,6 @@ OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(
     }
 
     return daltonizationTTypesTable.at(type);
-}
-
-GlobalAction ConvertStringToGlobalAction(const std::string &type)
-{
-    std::map<const std::string, GlobalAction> globalActionTable = {
-        {"back", GlobalAction::GLOBAL_ACTION_BACK},
-        {"home", GlobalAction::GLOBAL_ACTION_HOME},
-        {"recent", GlobalAction::GLOBAL_ACTION_RECENT},
-        {"notification", GlobalAction::GLOBAL_ACTION_NOTIFICATION},
-        {"lockScreen", GlobalAction::GLOBAL_ACTION_LOCK_SCREEN}};
-
-    if (globalActionTable.find(type) == globalActionTable.end()) {
-        HILOG_WARN("invalid key[%{public}s]", type.c_str());
-        return GLOBAL_ACTION_INVALID;
-    }
-
-    return globalActionTable.at(type);
 }
 
 TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)

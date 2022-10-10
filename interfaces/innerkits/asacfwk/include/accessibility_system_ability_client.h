@@ -126,13 +126,6 @@ public:
         const uint32_t eventType) = 0;
 
     /**
-     * @brief Get installed abilities.
-     * @param installedAbilities The installed accessibility ability infos.
-     * @return Return true if get installed abilities successfully, else return false.
-     */
-    virtual bool GetInstalledAbilities(std::vector<AccessibilityAbilityInfo> &installedAbilities) = 0;
-
-    /**
      * @brief Get enabled abilities.
      * @param enabledAbilities The infos of enabled abilities.
      * @return Return true if get enabled abilities successfully, else return false.

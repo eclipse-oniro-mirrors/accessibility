@@ -67,9 +67,6 @@ public:
 static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size)
 {
     size_t position = 0;
-    int32_t channelId = 0;
-    position += GetObject<int32_t>(channelId, &data[position], size - position);
-    eventInfo.SetChannelId(channelId);
     int32_t componentId = 0;
     position += GetObject<int32_t>(componentId, &data[position], size - position);
     eventInfo.SetSource(componentId);

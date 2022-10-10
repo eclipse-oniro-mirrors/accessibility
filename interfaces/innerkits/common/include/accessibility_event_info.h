@@ -37,22 +37,6 @@ public:
     AccessibilityMemo() {}
 
     /**
-     * @brief AAMS called to set the id of the IAccessibleAbilityChannel
-     * @param channelId The id of the IAccessibleAbilityChannel
-     * @since 3
-     * @sysCap Accessibility
-     */
-    void SetChannelId(const int32_t channelId);
-
-    /**
-     * @brief Get the id of the IAccessibleAbilityChannel
-     * @return The id of the IAccessibleAbilityChannel
-     * @since 3
-     * @sysCap Accessibility
-     */
-    int32_t GetChannelId() const;
-
-    /**
      * @brief Set the component of the event related.
      * @param componentId The id of component.
      * @since 3
@@ -238,7 +222,6 @@ public:
     void SetDescription(const std::string &contentDescription);
 
 protected:
-    int32_t channelId_ = 0;
     int32_t componentId_ = 0;
     int32_t windowId_ = 0;
     int32_t currentIndex_ = 0;

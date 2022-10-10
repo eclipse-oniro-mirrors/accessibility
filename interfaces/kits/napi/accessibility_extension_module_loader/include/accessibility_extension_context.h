@@ -95,13 +95,6 @@ public:
     bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
 
     /**
-     * @brief Executes a specified action.
-     * @param action The action of OHOS::Accessibility::GlobalAction.
-     * @return Return true if executes action successfully, else return false.
-     */
-    bool ExecuteCommonAction(const GlobalAction action);
-
-    /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
      * @param elementInfo
      * @param direction Indicates the direction to obtain the next focused node. Refer to FocusMoveDirection
@@ -130,14 +123,6 @@ public:
      */
     bool GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
         std::vector<AccessibilityElementInfo> &elementInfos);
-
-    /**
-     * @brief Obtains an anchor accessibility node that anchors this window to another window.
-     * @param windowInfo
-     * @param elementInfo
-     * @return Return true if gets elementInfos successfully, else return false.
-     */
-    bool GetAnchor(const AccessibilityWindowInfo &windowInfo, AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Get Parent node information
@@ -169,13 +154,6 @@ public:
      */
     bool ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments);
-
-    /**
-     * @brief Set event types to filter.
-     * @param filter The event types which you want.
-     * @return Return true if sets event types successfully, else return false.
-     */
-    bool SetEventTypeFilter(const uint32_t filter);
 
     /**
      * @brief Set target bundle names.
