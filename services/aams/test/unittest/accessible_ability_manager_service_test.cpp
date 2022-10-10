@@ -505,18 +505,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionState_001, TestSize.
 }
 
 /**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001
- * @tc.name: GetEnabledState
- * @tc.desc: Test function GetEnabledState
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 start";
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledState());
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetTouchGuideState_001
  * @tc.name: GetTouchGuideState
  * @tc.desc: Test function GetTouchGuideState
