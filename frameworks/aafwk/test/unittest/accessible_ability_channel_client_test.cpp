@@ -105,7 +105,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SetOnKeyPressEventResult, TestSize.
  * @tc.number: FindFocusedElementInfo_001
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: Test function FindFocusedElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_001, TestSize.Level1)
 {
@@ -121,7 +120,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_001, TestSiz
  * @tc.number: FindFocusedElementInfo_002
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: Test function FindFocusedElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_002, TestSize.Level1)
 {
@@ -138,7 +136,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_002, TestSiz
  * @tc.number: FindFocusedElementInfo_003
  * @tc.name: FindFocusedElementInfo
  * @tc.desc: Test function FindFocusedElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FindFocusedElementInfo_003, TestSize.Level1)
 {
@@ -320,7 +317,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, GetWindows_004, TestSize.Level1)
  * @tc.number: SearchElementInfosByText_001
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_001, TestSize.Level1)
 {
@@ -337,7 +333,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_001, TestS
  * @tc.number: SearchElementInfosByText_002
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_002, TestSize.Level1)
 {
@@ -352,7 +347,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_002, TestS
  * @tc.number: SearchElementInfosByText_003
  * @tc.name: SearchElementInfosByText
  * @tc.desc: Test function SearchElementInfosByText
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_003, TestSize.Level1)
 {
@@ -367,7 +361,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByText_003, TestS
  * @tc.number: FocusMoveSearch_001
  * @tc.name: FocusMoveSearch
  * @tc.desc: Test function FocusMoveSearch
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_001, TestSize.Level1)
 {
@@ -384,7 +377,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_001, TestSize.Level
  * @tc.number: FocusMoveSearch_002
  * @tc.name: FocusMoveSearch
  * @tc.desc: Test function FocusMoveSearch
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_002, TestSize.Level1)
 {
@@ -399,7 +391,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_002, TestSize.Level
  * @tc.number: FocusMoveSearch_003
  * @tc.name: FocusMoveSearch
  * @tc.desc: Test function FocusMoveSearch
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, FocusMoveSearch_003, TestSize.Level1)
 {
@@ -444,7 +435,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SetTargetBundleName_002, TestSize.L
  * @tc.number: SearchElementInfosByAccessibilityId_001
  * @tc.name: SearchElementInfosByAccessibilityId
  * @tc.desc: Test function SearchElementInfosByAccessibilityId
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId_001, TestSize.Level1)
 {
@@ -459,7 +449,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId
  * @tc.number: SearchElementInfosByAccessibilityId_002
  * @tc.name: SearchElementInfosByAccessibilityId
  * @tc.desc: Test function SearchElementInfosByAccessibilityId
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId_002, TestSize.Level1)
 {
@@ -476,7 +465,6 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId
  * @tc.number: SearchElementInfosByAccessibilityId_003
  * @tc.name: SearchElementInfosByAccessibilityId
  * @tc.desc: Test function SearchElementInfosByAccessibilityId
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityChannelClientTest, SearchElementInfosByAccessibilityId_003, TestSize.Level1)
 {

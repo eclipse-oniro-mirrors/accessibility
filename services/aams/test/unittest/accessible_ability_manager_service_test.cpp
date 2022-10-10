@@ -467,7 +467,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, Tes
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001
  * @tc.name: SetAudioBalance
  * @tc.desc: Test function SetAudioBalance GetAudioBalance
- * @tc.require: SR000H09BB
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.Level1)
 {

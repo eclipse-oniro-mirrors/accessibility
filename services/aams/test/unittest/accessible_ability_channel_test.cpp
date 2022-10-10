@@ -432,7 +432,6 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
  * @tc.number: AccessibleAbilityChannel_Unittest_SetTargetBundleName_002
  * @tc.name: SetTargetBundleName
  * @tc.desc: Test function SetTargetBundleName
- * @tc.require: SR000H0CDV
  */
 HWTEST_F(AccessibleAbilityChannelUnitTest,
     AccessibleAbilityChannel_Unittest_SetTargetBundleName_002, TestSize.Level1)

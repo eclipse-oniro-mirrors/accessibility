@@ -170,7 +170,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, Disconnect_001, TestSize.Level1)
  * @tc.number: GetFocus_001
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_001, TestSize.Level1)
 {
@@ -192,7 +191,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_001, TestSize.Level1)
  * @tc.number: GetFocus_002
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_002, TestSize.Level1)
 {
@@ -212,7 +210,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_002, TestSize.Level1)
  * @tc.number: GetFocusByElementInfo_001
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_001, TestSize.Level1)
 {
@@ -235,7 +232,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_001, TestSize
  * @tc.number: GetFocusByElementInfo_002
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_002, TestSize.Level1)
 {
@@ -296,7 +292,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_002, TestSize.Level1)
  * @tc.number: GetRoot_001
  * @tc.name: GetRoot
  * @tc.desc: Test function GetRoot(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_001, TestSize.Level1)
 {
@@ -318,7 +313,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_001, TestSize.Level1)
  * @tc.number: GetRoot_002
  * @tc.name: GetRoot
  * @tc.desc: Test function GetRoot(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_002, TestSize.Level1)
 {
@@ -338,7 +332,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_002, TestSize.Level1)
  * @tc.number: GetRootByWindow_001
  * @tc.name: GetRootByWindow
  * @tc.desc: Test function GetRootByWindow(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindow_001, TestSize.Level1)
 {
@@ -361,7 +354,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindow_001, TestSize.Level
  * @tc.number: GetRootByWindow_002
  * @tc.name: GetRootByWindow
  * @tc.desc: Test function GetRootByWindow(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindow_002, TestSize.Level1)
 {
@@ -496,7 +488,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_004, TestSize.Level1)
  * @tc.number: GetNext_001
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_001, TestSize.Level1)
 {
@@ -520,7 +511,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_001, TestSize.Level1)
  * @tc.number: GetNext_002
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_002, TestSize.Level1)
 {
@@ -542,7 +532,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_002, TestSize.Level1)
  * @tc.number: GetChildElementInfo_001
  * @tc.name: GetChildElementInfo
  * @tc.desc: Test function GetChildElementInfo(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_001, TestSize.Level1)
 {
@@ -566,7 +555,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_001, TestSize.L
  * @tc.number: GetChildElementInfo_002
  * @tc.name: GetChildElementInfo
  * @tc.desc: Test function GetChildElementInfo(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_002, TestSize.Level1)
 {
@@ -588,7 +576,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_002, TestSize.L
  * @tc.number: GetByContent_001
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_001, TestSize.Level1)
 {
@@ -611,7 +598,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_001, TestSize.Level1)
  * @tc.number: GetByContent_002
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_002, TestSize.Level1)
 {
@@ -632,7 +618,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_002, TestSize.Level1)
  * @tc.number: GetSource_001
  * @tc.name: GetSource
  * @tc.desc: Test function GetSource(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_001, TestSize.Level1)
 {
@@ -655,7 +640,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_001, TestSize.Level1)
  * @tc.number: GetSource_002
  * @tc.name: GetSource
  * @tc.desc: Test function GetSource(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_002, TestSize.Level1)
 {
@@ -676,7 +660,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_002, TestSize.Level1)
  * @tc.number: GetParentElementInfo_001
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo(AccessibleAbilityClient is null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_001, TestSize.Level1)
 {
@@ -699,7 +682,6 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_001, TestSize.
  * @tc.number: GetParentElementInfo_002
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo(AccessibleAbilityClient is not null)
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_002, TestSize.Level1)
 {

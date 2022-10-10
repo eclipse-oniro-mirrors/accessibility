@@ -108,7 +108,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, Disconnect_001, TestSize.Level1)
  * @tc.number: OnAccessibilityEvent_001
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
- * @tc.require: SR000H0CDT
  */
 HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_001, TestSize.Level1)
 {
@@ -126,7 +125,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_001, TestSize.Lev
  * @tc.number: OnAccessibilityEvent_002
  * @tc.name: OnAccessibilityEvent
  * @tc.desc: Test function OnAccessibilityEvent
- * @tc.require: SR000H0CDT
  */
 HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_002, TestSize.Level1)
 {
@@ -142,7 +140,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, OnAccessibilityEvent_002, TestSize.Lev
  * @tc.number: GetFocus_001
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_001, TestSize.Level1)
 {
@@ -157,7 +154,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_001, TestSize.Level1)
  * @tc.number: GetFocus_002
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_002, TestSize.Level1)
 {
@@ -171,7 +167,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_002, TestSize.Level1)
  * @tc.number: GetFocus_003
  * @tc.name: GetFocus
  * @tc.desc: Test function GetFocus
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_003, TestSize.Level1)
 {
@@ -258,7 +253,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, Init_003, TestSize.Level1)
  * @tc.number: GetFocusByElementInfo_001
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_001, TestSize.Level1)
 {
@@ -274,7 +268,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_001, TestSize.Le
  * @tc.number: GetFocusByElementInfo_002
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_002, TestSize.Level1)
 {
@@ -289,7 +282,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_002, TestSize.Le
  * @tc.number: GetFocusByElementInfo_003
  * @tc.name: GetFocusByElementInfo
  * @tc.desc: Test function GetFocusByElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_003, TestSize.Level1)
 {
@@ -362,7 +354,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_004, TestSize.Level1)
  * @tc.number: GetRoot_001
  * @tc.name: GetRoot
  * @tc.desc: Test function GetRoot
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_001, TestSize.Level1)
 {
@@ -378,7 +369,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_001, TestSize.Level1)
  * @tc.number: GetRoot_002
  * @tc.name: GetRoot
  * @tc.desc: Test function GetRoot
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_002, TestSize.Level1)
 {
@@ -393,7 +383,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRoot_002, TestSize.Level1)
  * @tc.number: GetRootByWindow_001
  * @tc.name: GetRootByWindow
  * @tc.desc: Test function GetRootByWindow
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_001, TestSize.Level1)
 {
@@ -410,7 +399,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_001, TestSize.Level1)
  * @tc.number: GetRootByWindow_002
  * @tc.name: GetRootByWindow
  * @tc.desc: Test function GetRootByWindow
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_002, TestSize.Level1)
 {
@@ -426,7 +414,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootByWindow_002, TestSize.Level1)
  * @tc.number: GetNext_001
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetNext_001, TestSize.Level1)
 {
@@ -443,7 +430,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetNext_001, TestSize.Level1)
  * @tc.number: GetNext_002
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetNext_002, TestSize.Level1)
 {
@@ -459,7 +445,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetNext_002, TestSize.Level1)
  * @tc.number: GetNext_003
  * @tc.name: GetNext
  * @tc.desc: Test function GetNext
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetNext_003, TestSize.Level1)
 {
@@ -476,7 +461,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetNext_003, TestSize.Level1)
  * @tc.number: GetByContent_001
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_001, TestSize.Level1)
 {
@@ -492,7 +476,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_001, TestSize.Level1)
  * @tc.number: GetByContent_002
  * @tc.name: GetByContent
  * @tc.desc: Test function GetByContent
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_002, TestSize.Level1)
 {
@@ -507,7 +490,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_002, TestSize.Level1)
  * @tc.number: GetSource_001
  * @tc.name: GetSource
  * @tc.desc: Test function GetSource
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetSource_001, TestSize.Level1)
 {
@@ -523,7 +505,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetSource_001, TestSize.Level1)
  * @tc.number: GetSource_002
  * @tc.name: GetSource
  * @tc.desc: Test function GetSource
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetSource_002, TestSize.Level1)
 {
@@ -538,7 +519,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetSource_002, TestSize.Level1)
  * @tc.number: GetParentElementInfo_001
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_001, TestSize.Level1)
 {
@@ -554,7 +534,6 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_001, TestSize.Lev
  * @tc.number: GetParentElementInfo_002
  * @tc.name: GetParentElementInfo
  * @tc.desc: Test function GetParentElementInfo
- * @tc.require: SR000H0CCR
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetParentElementInfo_002, TestSize.Level1)
 {
