@@ -16,7 +16,7 @@
 import { AsyncCallback } from "../basic";
 import ExtensionContext from "./ExtensionContext";
 import accessibility from "../@ohos.accessibility";
-import { GesturePath } from "../@ohos.application.AccessibilityExtensionAbility";
+import { GesturePath } from "../@ohos.accessibility.GesturePath";
 
 /**
  * The accessibility extension context. Used to configure, query information, and inject gestures.
@@ -132,6 +132,9 @@ declare interface AccessibilityElement {
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  */
 type ElementAttributeValues = {
+    /**
+     * Indicates accessibility focus state.
+     */
     'accessibilityFocused': boolean;
     /**
      * Indicates the bundle name to which it belongs.
@@ -181,6 +184,9 @@ type ElementAttributeValues = {
      * Indicates the list index of the last item displayed on the screen.
      */
     'endIndex': number;
+    /**
+     * Indicates the string of error state.
+     */
     'error': string;
     /**
      * Indicates whether the element is focusable.
@@ -235,7 +241,9 @@ type ElementAttributeValues = {
      * Indicates whether the element is long clickable.
      */
     'longClickable': boolean;
-
+    /**
+     * Indicates the page id.
+     */
     'pageId': number;
     /**
      * Indicates the parent of the element.
@@ -293,9 +301,21 @@ type ElementAttributeValues = {
      * Indicates the window type of the element.
      */
     'type': WindowType;
+    /**
+     * Indicates the maximum value.
+     */
     'valueMax': number;
+    /**
+     * Indicates the minimum value.
+     */
     'valueMin': number;
+    /**
+     * Indicates the current value.
+     */
     'valueNow': number;
+    /**
+     * Indicates the window id.
+     */
     'windowId': number;
 }
 
