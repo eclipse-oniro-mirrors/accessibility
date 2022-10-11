@@ -295,7 +295,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetScreenMagnificationState_00
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 start";
     bool state = true;
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetScreenMagnificationState(state);
-    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState());
+    bool ret = false;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetScreenMagnificationState(ret);
+    EXPECT_TRUE(ret);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetScreenMagnificationState_001 end";
 }
 
@@ -589,7 +591,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionProperty_001, TestSi
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionProperty(caption);
 
     AccessibilityConfig::CaptionProperty res;
-    res = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionProperty(res);
     EXPECT_EQ(1, res.GetFontScale());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetCaptionProperty_001 end";
 }
