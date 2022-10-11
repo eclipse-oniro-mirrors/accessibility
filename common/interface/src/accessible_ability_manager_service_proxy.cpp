@@ -1185,6 +1185,7 @@ RetError AccessibleAbilityManagerServiceProxy::GetAudioBalance(float &balance)
     }
     return ret;
 }
+
 void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData& configData)
 {
     HILOG_DEBUG();

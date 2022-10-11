@@ -59,7 +59,8 @@ void MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEvent
     (void)uiEvent;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
+RetError MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
+    const AccessibilityConfig::CaptionProperty &caption)
 {
     captionProperty_ = caption;
     return RET_OK;

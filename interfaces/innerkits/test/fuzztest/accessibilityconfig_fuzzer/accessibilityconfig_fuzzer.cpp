@@ -25,7 +25,7 @@ namespace {
     constexpr size_t DATA_MIN_SIZE = 98;
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
-    bool flag = true;
+    bool g_flag = true;
 } // namespace
 using namespace OHOS::Security::AccessToken;
 
@@ -42,7 +42,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
 
 void AddPermission()
 {
-    if (flag) {
+    if (g_flag) {
         const char *perms[2];
         perms[0] = OHOS::Accessibility::OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str();
         perms[1] = OHOS::Accessibility::OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str();
@@ -59,7 +59,7 @@ void AddPermission()
         uint64_t tokenId = GetAccessTokenId(&infoInstance);
         SetSelfTokenID(tokenId);
         AccessTokenKit::ReloadNativeTokenInfo();
-        flag = false;
+        g_flag = false;
     }
 }
 

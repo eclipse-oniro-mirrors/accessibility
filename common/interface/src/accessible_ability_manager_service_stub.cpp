@@ -818,7 +818,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParc
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
-    uint32_t result =0;
+    uint32_t result = 0;
     RetError ret = GetContentTimeout(result);
     reply.WriteInt32(ret);
     if (ret == RET_OK) {

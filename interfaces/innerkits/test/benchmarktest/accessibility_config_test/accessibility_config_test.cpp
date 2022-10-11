@@ -42,10 +42,10 @@ namespace {
         std::promise<void> complete_;
     };
 
-    static bool flag = true;
+    static bool g_flag = true;
     void AddPermission()
     {
-        if (flag) {
+        if (g_flag) {
             const char *perms[2];
             perms[0] = OHOS::Accessibility::OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str();
             perms[1] = OHOS::Accessibility::OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str();
@@ -62,7 +62,7 @@ namespace {
             uint64_t tokenId = GetAccessTokenId(&infoInstance);
             SetSelfTokenID(tokenId);
             AccessTokenKit::ReloadNativeTokenInfo();
-            flag = false;
+            g_flag = false;
         }
     }
 
