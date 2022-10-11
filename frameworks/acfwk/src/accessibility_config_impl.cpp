@@ -39,7 +39,6 @@ bool AccessibilityConfig::Impl::InitializeContext()
         HILOG_DEBUG("Context has initialized");
         return true;
     }
-    InitEventHandler();
     isInitialized_ = ConnectToService();
 
     return isInitialized_;
@@ -83,13 +82,14 @@ bool AccessibilityConfig::Impl::ConnectToService()
         }
 
         InitConfigValues();
-    }
-
-    HILOG_DEBUG("Start watching accessibility service.");
-    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
-    if (retSysParam) {
-        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
-        return false;
+    } else {
+        HILOG_DEBUG("Start watching accessibility service.");
+        InitEventHandler();
+        retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+        if (retSysParam) {
+            HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+            return false;
+        }
     }
 
     return true;
