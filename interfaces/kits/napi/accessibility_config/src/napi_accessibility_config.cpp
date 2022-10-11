@@ -225,52 +225,52 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-            instance.SetHighContrastTextState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            instance.SetInvertColorState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetInvertColorState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            instance.SetAnimationOffState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetAnimationOffState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            instance.SetAudioMonoState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetAudioMonoState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            instance.SetMouseKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetMouseKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            instance.SetShortKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetShortKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            instance.SetCaptionsState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetCaptionsState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            instance.SetContentTimeout(callbackInfo->uint32Config_);
+            callbackInfo->ret_ = RET_OK == instance.SetContentTimeout(callbackInfo->uint32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            instance.SetMouseAutoClick(callbackInfo->int32Config_);
+            callbackInfo->ret_ = RET_OK == instance.SetMouseAutoClick(callbackInfo->int32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            instance.SetAudioBalance(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetAudioBalance(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
             {
                 auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
-                instance.SetDaltonizationColorFilter(filter);
+                callbackInfo->ret_ = RET_OK == instance.SetDaltonizationColorFilter(filter);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            instance.SetShortkeyTarget(callbackInfo->stringConfig_);
+            callbackInfo->ret_ = RET_OK == instance.SetShortkeyTarget(callbackInfo->stringConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            instance.SetCaptionsProperty(callbackInfo->captionProperty_);
+            callbackInfo->ret_ = RET_OK == instance.SetCaptionsProperty(callbackInfo->captionProperty_);
             break;
         default:
             break;
@@ -321,15 +321,22 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
             break;
     }
     if (callbackInfo->callback_) {
-        result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+        if (callbackInfo->ret_) {
+            result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
+        } else {
+            result[PARAM0] = GetErrorValue(env, CODE_FAILED);
+        }
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
         napi_value returnVal;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
         HILOG_DEBUG("complete function callback mode");
     } else {
-        napi_status retStatus = napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
-        HILOG_DEBUG("napi_resolve_deferred return: %{public}d", retStatus);
+        if (callbackInfo->ret_) {
+            napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
+        } else {
+            napi_reject_deferred(env, callbackInfo->deferred_, undefined);
+        }
     }
     napi_delete_async_work(env, callbackInfo->work_);
     delete callbackInfo;
@@ -347,57 +354,57 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-            instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            instance.GetInvertColorState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetInvertColorState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            instance.GetAnimationOffState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetAnimationOffState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            instance.GetAudioMonoState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetAudioMonoState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            instance.GetMouseKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetMouseKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            instance.GetShortKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetShortKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            instance.GetCaptionsState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetCaptionsState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
             {
                 uint32_t timeout = 0;
-                instance.GetContentTimeout(timeout);
+                callbackInfo->ret_ = RET_OK == instance.GetContentTimeout(timeout);
                 callbackInfo->int32Config_ = static_cast<int32_t>(timeout);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            instance.GetMouseAutoClick(callbackInfo->int32Config_);
+            callbackInfo->ret_ = RET_OK == instance.GetMouseAutoClick(callbackInfo->int32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            instance.GetAudioBalance(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetAudioBalance(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
             {
                 OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
-                instance.GetDaltonizationColorFilter(type);
+                callbackInfo->ret_ = RET_OK == instance.GetDaltonizationColorFilter(type);
                 callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+            callbackInfo->ret_ = RET_OK == instance.GetShortkeyTarget(callbackInfo->stringConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            instance.GetCaptionsProperty(callbackInfo->captionProperty_);
+            callbackInfo->ret_ = RET_OK == instance.GetCaptionsProperty(callbackInfo->captionProperty_);
             break;
         default:
             break;

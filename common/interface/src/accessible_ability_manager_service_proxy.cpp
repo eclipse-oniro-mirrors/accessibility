@@ -80,7 +80,7 @@ void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInf
     }
 }
 
-void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
+RetError AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -90,20 +90,22 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const Accessibilit
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteParcelable(&captionParcel)) {
         HILOG_ERROR("fail, connection write parcelable Caption Property ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CAPTION_PROPERTY, data, reply, option)) {
         HILOG_ERROR("SetCaptionProperty fail");
+        return RET_ERR_IPC_FAILED;
     }
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -112,17 +114,19 @@ void AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CAPTION_STATE, data, reply, option)) {
         HILOG_ERROR("SetCaptionState fail");
+        return RET_ERR_IPC_FAILED;
     }
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
@@ -257,7 +261,7 @@ void AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32
     }
 }
 
-AccessibilityConfig::CaptionProperty AccessibleAbilityManagerServiceProxy::GetCaptionProperty()
+RetError AccessibleAbilityManagerServiceProxy::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -266,15 +270,19 @@ AccessibilityConfig::CaptionProperty AccessibleAbilityManagerServiceProxy::GetCa
     AccessibilityConfig::CaptionProperty property = {};
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token error");
-        return property;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_CAPTION_PROPERTY,
         data, reply, option)) {
         HILOG_ERROR("GetCaptionProperty fail");
-        return property;
+        return RET_ERR_IPC_FAILED;
     }
-    return *reply.ReadStrongParcelable<CaptionPropertyParcel>();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        caption = *reply.ReadStrongParcelable<CaptionPropertyParcel>();
+    }
+    return ret;
 }
 
 uint32_t AccessibleAbilityManagerServiceProxy::RegisterCaptionObserver(
@@ -328,7 +336,7 @@ bool AccessibleAbilityManagerServiceProxy::GetEnabledState()
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetCaptionState()
+RetError AccessibleAbilityManagerServiceProxy::GetCaptionState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -337,14 +345,18 @@ bool AccessibleAbilityManagerServiceProxy::GetCaptionState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_CAPTION_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetCaptionState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
 bool AccessibleAbilityManagerServiceProxy::GetTouchGuideState()
@@ -549,7 +561,7 @@ bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
     return reply.ReadBool();
 }
 
-void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -558,20 +570,23 @@ void AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const boo
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SCREENMAGNIFIER_STATE, data, reply, option)) {
         HILOG_ERROR("SetScreenMagnificationState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -580,20 +595,23 @@ void AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_STATE, data, reply, option)) {
         HILOG_ERROR("SetShortKeyState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -602,20 +620,23 @@ void AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_STATE, data, reply, option)) {
         HILOG_ERROR("SetMouseKeyState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
+RetError AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -624,20 +645,23 @@ void AccessibleAbilityManagerServiceProxy::SetMouseAutoClick(const int32_t time)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(time)) {
         HILOG_ERROR("fail, connection write SetMouseAutoClick time");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_AUTOCLICK, data, reply, option)) {
         HILOG_ERROR("SetMouseAutoClick fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &name)
+RetError AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -646,20 +670,23 @@ void AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::string &
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteString(name)) {
         HILOG_ERROR("fail, connection write SetShortkeyTarget name");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_TARGET, data, reply, option)) {
         HILOG_ERROR("SetShortkeyTarget fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -668,20 +695,23 @@ void AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool s
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_HIGHCONTRASTTEXT_STATE, data, reply, option)) {
         HILOG_ERROR("SetHighContrastTextState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -690,20 +720,23 @@ void AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool state)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_INVERTCOLOR_STATE, data, reply, option)) {
         HILOG_ERROR("SetInvertColorState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -712,20 +745,23 @@ void AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool state
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_ANIMATIONOFF_STATE, data, reply, option)) {
         HILOG_ERROR("SetAnimationOffState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
+RetError AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -734,20 +770,23 @@ void AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool state)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
         HILOG_ERROR("fail, connection write parcelable Caption State ");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_AUDIOMONO_STATE, data, reply, option)) {
         HILOG_ERROR("SetAudioMonoState fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
+RetError AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -756,21 +795,24 @@ void AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uin
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteUint32(filter)) {
         HILOG_ERROR("fail, connection write SetDaltonizationColorFilter time");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER,
         data, reply, option)) {
         HILOG_ERROR("SetDaltonizationColorFilter fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time)
+RetError AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -779,20 +821,23 @@ void AccessibleAbilityManagerServiceProxy::SetContentTimeout(const uint32_t time
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteUint32(time)) {
         HILOG_ERROR("fail, connection write SetContentTimeout time");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_CONTENT_TIMEOUT, data, reply, option)) {
         HILOG_ERROR("SetContentTimeout fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float discount)
+RetError AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -801,20 +846,23 @@ void AccessibleAbilityManagerServiceProxy::SetBrightnessDiscount(const float dis
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteFloat(discount)) {
         HILOG_ERROR("fail, connection write SetBrightnessDiscount time");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_BRIGHTNESS_DISCOUNT, data, reply, option)) {
         HILOG_ERROR("SetBrightnessDiscount fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
+RetError AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -823,20 +871,23 @@ void AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balance)
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteFloat(balance)) {
         HILOG_ERROR("fail, connection write SetAudioBalance time");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SET_AUDIO_BALANCE, data, reply, option)) {
         HILOG_ERROR("SetAudioBalance fail");
+        return RET_ERR_IPC_FAILED;
     }
+
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState()
+RetError AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -845,17 +896,22 @@ bool AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_SCREENMAGNIFIER_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetScreenMagnificationState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetShortKeyState()
+RetError AccessibleAbilityManagerServiceProxy::GetShortKeyState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -864,17 +920,21 @@ bool AccessibleAbilityManagerServiceProxy::GetShortKeyState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetShortKeyState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetMouseKeyState()
+RetError AccessibleAbilityManagerServiceProxy::GetMouseKeyState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -883,17 +943,21 @@ bool AccessibleAbilityManagerServiceProxy::GetMouseKeyState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetMouseKeyState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-int32_t AccessibleAbilityManagerServiceProxy::GetMouseAutoClick()
+RetError AccessibleAbilityManagerServiceProxy::GetMouseAutoClick(int32_t &time)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -902,37 +966,43 @@ int32_t AccessibleAbilityManagerServiceProxy::GetMouseAutoClick()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_AUTOCLICK,
         data, reply, option)) {
         HILOG_ERROR("GetMouseAutoClick fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadInt32();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        time = reply.ReadInt32();
+    }
+    return ret;
 }
 
-std::string AccessibleAbilityManagerServiceProxy::GetShortkeyTarget()
+RetError AccessibleAbilityManagerServiceProxy::GetShortkeyTarget(std::string &name)
 {
     HILOG_DEBUG();
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    std::string str = "";
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-
-        return str;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_TARGET,
         data, reply, option)) {
         HILOG_ERROR("GetShortkeyTarget fail");
-        return str;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadString();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        name = reply.ReadString();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetHighContrastTextState()
+RetError AccessibleAbilityManagerServiceProxy::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -941,17 +1011,21 @@ bool AccessibleAbilityManagerServiceProxy::GetHighContrastTextState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_HIGHCONTRASTTEXT_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetHighContrastTextState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetInvertColorState()
+RetError AccessibleAbilityManagerServiceProxy::GetInvertColorState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -960,17 +1034,21 @@ bool AccessibleAbilityManagerServiceProxy::GetInvertColorState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_INVERTCOLOR_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetInvertColorState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetAnimationOffState()
+RetError AccessibleAbilityManagerServiceProxy::GetAnimationOffState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -979,17 +1057,21 @@ bool AccessibleAbilityManagerServiceProxy::GetAnimationOffState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ANIMATIONOFF_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetAnimationOffState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetAudioMonoState()
+RetError AccessibleAbilityManagerServiceProxy::GetAudioMonoState(bool &state)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -998,17 +1080,21 @@ bool AccessibleAbilityManagerServiceProxy::GetAudioMonoState()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_AUDIOMONO_STATE,
         data, reply, option)) {
         HILOG_ERROR("GetAudioMonoState fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
 }
 
-uint32_t AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter()
+RetError AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter(uint32_t &type)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1017,17 +1103,21 @@ uint32_t AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_DALTONIZATION_COLORFILTER,
         data, reply, option)) {
         HILOG_ERROR("GetDaltonizationColorFilter fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadUint32();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        type = reply.ReadUint32();
+    }
+    return ret;
 }
 
-uint32_t AccessibleAbilityManagerServiceProxy::GetContentTimeout()
+RetError AccessibleAbilityManagerServiceProxy::GetContentTimeout(uint32_t &timer)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1036,17 +1126,21 @@ uint32_t AccessibleAbilityManagerServiceProxy::GetContentTimeout()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_CONTENT_TIMEOUT,
         data, reply, option)) {
         HILOG_ERROR("GetContentTimeout fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadUint32();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        timer = reply.ReadUint32();
+    }
+    return ret;
 }
 
-float AccessibleAbilityManagerServiceProxy::GetBrightnessDiscount()
+RetError AccessibleAbilityManagerServiceProxy::GetBrightnessDiscount(float &brightness)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1055,17 +1149,21 @@ float AccessibleAbilityManagerServiceProxy::GetBrightnessDiscount()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_BRIGHTNESS_DISCOUNT,
         data, reply, option)) {
         HILOG_ERROR("GetBrightnessDiscount fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadFloat();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        brightness = reply.ReadFloat();
+    }
+    return ret;
 }
 
-float AccessibleAbilityManagerServiceProxy::GetAudioBalance()
+RetError AccessibleAbilityManagerServiceProxy::GetAudioBalance(float &balance)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1074,14 +1172,18 @@ float AccessibleAbilityManagerServiceProxy::GetAudioBalance()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_AUDIO_BALANCE,
         data, reply, option)) {
         HILOG_ERROR("GetAudioBalance fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadFloat();
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        balance = reply.ReadFloat();
+    }
+    return ret;
 }
 void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData& configData)
 {

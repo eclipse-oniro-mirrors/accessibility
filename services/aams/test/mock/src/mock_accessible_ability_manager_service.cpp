@@ -151,20 +151,22 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(i
     return nullptr;
 }
 
-AccessibilityConfig::CaptionProperty AccessibleAbilityManagerService::GetCaptionProperty()
-{
-    AccessibilityConfig::CaptionProperty cp;
-    return cp;
-}
-
-void AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
+RetError AccessibleAbilityManagerService::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
 {
     (void)caption;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetCaptionState(const bool state)
+RetError AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
+{
+    (void)caption;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
 bool AccessibleAbilityManagerService::GetEnabledState()
@@ -172,9 +174,10 @@ bool AccessibleAbilityManagerService::GetEnabledState()
     return true;
 }
 
-bool AccessibleAbilityManagerService::GetCaptionState()
+RetError AccessibleAbilityManagerService::GetCaptionState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
 bool AccessibleAbilityManagerService::GetTouchGuideState()
@@ -234,134 +237,160 @@ int32_t AccessibleAbilityManagerService::GetActiveWindow()
     return 0;
 }
 
-void AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
+RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetShortKeyState(const bool state)
+RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
+RetError AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
+RetError AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
     (void)time;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
+RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
     (void)name;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
+RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetInvertColorState(const bool state)
+RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
+RetError AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
+RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     (void)state;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_t filter)
+RetError AccessibleAbilityManagerService::SetDaltonizationColorFilter(const  uint32_t filter)
 {
     (void)filter;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
+RetError AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
     (void)time;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
+RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
     (void)discount;
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerService::SetAudioBalance(const float balance)
+RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     (void)balance;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetScreenMagnificationState()
+RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetShortKeyState()
+RetError AccessibleAbilityManagerService::GetShortKeyState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetMouseKeyState()
+RetError AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-int32_t AccessibleAbilityManagerService::GetMouseAutoClick()
+RetError AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 {
-    return 0;
+    time = 0;
+    return RET_OK;
 }
 
-std::string AccessibleAbilityManagerService::GetShortkeyTarget()
+RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 {
-    return "";
+    name = "";
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetHighContrastTextState()
+RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetInvertColorState()
+RetError AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetAnimationOffState()
+RetError AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityManagerService::GetAudioMonoState()
+RetError AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
-    return true;
+    state = true;
+    return RET_OK;
 }
 
-uint32_t AccessibleAbilityManagerService::GetDaltonizationColorFilter()
+RetError AccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
 {
-    return 0;
+    type = 0;
+    return RET_OK;
 }
 
-uint32_t AccessibleAbilityManagerService::GetContentTimeout()
+RetError AccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
 {
-    return 0;
+    timer = 0;
+    return RET_OK;
 }
 
-float AccessibleAbilityManagerService::GetBrightnessDiscount()
+RetError AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
 {
-    return 0.0f;
+    brightness = 0.0f;
+    return RET_OK;
 }
 
-float AccessibleAbilityManagerService::GetAudioBalance()
+RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
-    return 0.0f;
+    balance = 0.0f;
+    return RET_OK;
 }
 
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)

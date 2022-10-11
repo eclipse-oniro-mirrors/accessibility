@@ -37,9 +37,9 @@ public:
     MOCK_METHOD2(RegisterElementOperator,
         void(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation));
     MOCK_METHOD1(DeregisterElementOperator, void(const int32_t windowId));
-    MOCK_METHOD0(GetCaptionProperty, AccessibilityConfig::CaptionProperty());
-    MOCK_METHOD1(SetCaptionProperty, void(const AccessibilityConfig::CaptionProperty& caption));
-    MOCK_METHOD1(SetCaptionState, void(const bool state));
+    MOCK_METHOD1(GetCaptionProperty, RetError(AccessibilityConfig::CaptionProperty& caption));
+    MOCK_METHOD1(SetCaptionProperty, RetError(const AccessibilityConfig::CaptionProperty& caption));
+    MOCK_METHOD1(SetCaptionState, RetError(const bool state));
     MOCK_METHOD1(SetEnabled, bool(const bool state));
     MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 
@@ -84,7 +84,7 @@ public:
     MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
     MOCK_METHOD0(GetEnabledState, bool());
-    MOCK_METHOD0(GetCaptionState, bool());
+    MOCK_METHOD1(GetCaptionState, RetError(bool &state));
     MOCK_METHOD0(GetTouchGuideState, bool());
     MOCK_METHOD0(GetGestureState, bool());
     MOCK_METHOD0(GetKeyEventObserverState, bool());

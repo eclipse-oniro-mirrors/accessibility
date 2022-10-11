@@ -82,6 +82,7 @@ ohos_shared_library("accessibility_interface") {
   deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
+    "access_token:libaccesstoken_sdk",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",

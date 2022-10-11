@@ -58,148 +58,154 @@ bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 }
 
 
-void AccessibilitySettingsConfig::SetCaptionState(const bool state)
+RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isCaptionState_ = state;
-    SetStatePref(STATE::CAPTION);
+    return SetStatePref(STATE::CAPTION) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
+RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isScreenMagnificationState_ = state;
-    SetStatePref(STATE::SCREENMAGNIFIER);
+    return SetStatePref(STATE::SCREENMAGNIFIER) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetShortKeyState(const bool state)
+RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isShortKeyState_ = state;
-    SetStatePref(STATE::SHORTKEY);
+    return SetStatePref(STATE::SHORTKEY) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
+RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     isMouseKeyState_ = state;
-    SetStatePref(STATE::MOUSEKEY);
+    return SetStatePref(STATE::MOUSEKEY) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
+RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("time = [%{public}d]", time);
     mouseAutoClick_ = time;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutInt("MouseAutoClick", mouseAutoClick_);
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
+RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("name = [%{public}s]", name.c_str());
     shortkeyTarget_ = name;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutString("ShortkeyTarget", shortkeyTarget_);
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
+RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     highContrastTextState_ = state;
-    SetStatePref(STATE::HIGHCONTRASTTEXT);
+    return SetStatePref(STATE::HIGHCONTRASTTEXT) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetInvertColorState(const bool state)
+RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     invertColorState_ = state;
-    SetStatePref(STATE::INVERTCOLORSTATE);
+    return SetStatePref(STATE::INVERTCOLORSTATE) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
+RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     animationOffState_ = state;
-    SetStatePref(STATE::ANIMATIONOFF);
+    return SetStatePref(STATE::ANIMATIONOFF) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
+RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     audioMonoState_ = state;
-    SetStatePref(STATE::AUDIOMONO);
+    return SetStatePref(STATE::AUDIOMONO) ? RET_OK : RET_ERR_FAILED;
 }
 
-void AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
+RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("filter = [%{public}u]", filter);
     daltonizationColorFilter_ = filter;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutInt("daltonizationColorFilter", static_cast<int32_t>(daltonizationColorFilter_));
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
+RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("time = [%{public}u]", time);
     contentTimeout_ = time;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutInt("contentTimeout", static_cast<int32_t>(contentTimeout_));
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
+RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("discount = [%{public}f]", discount);
     brightnessDiscount_ = discount;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutFloat("brightnessDiscount", brightnessDiscount_);
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetAudioBalance(const float balance)
+RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("balance = [%{public}f]", balance);
     audioBalance_ = balance;
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
 
     pref_->PutFloat("audioBalance", audioBalance_);
     pref_->Flush();
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
+RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG();
     captionProperty_ = caption;
 
     if (!pref_) {
         HILOG_ERROR("pref_ is null!");
-        return;
+        return RET_ERR_NULLPTR;
     }
     const std::string& FONTFAMILY = captionProperty_.GetFontFamily();
     int32_t FONTSCALE = captionProperty_.GetFontScale();
@@ -215,6 +221,7 @@ void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::
     pref_->PutInt("windowColor", static_cast<int32_t>(WINDOWCOLOR));
     pref_->PutInt("fontScale", FONTSCALE);
     pref_->Flush();
+    return RET_OK;
 }
 
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)

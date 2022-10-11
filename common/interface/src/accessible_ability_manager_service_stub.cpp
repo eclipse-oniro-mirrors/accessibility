@@ -17,10 +17,14 @@
 #include "accessibility_ability_info_parcel.h"
 #include "accessibility_caption_parcel.h"
 #include "accessibility_event_info_parcel.h"
+#include "accesstoken_kit.h"
 #include "hilog_wrapper.h"
+#include "ipc_skeleton.h"
 
 namespace OHOS {
 namespace Accessibility {
+using namespace Security::AccessToken;
+
 AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
 {
     HILOG_DEBUG();
@@ -164,6 +168,28 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
+bool AccessibleAbilityManagerServiceStub::CheckPermission(const std::string &permission)
+{
+    HILOG_DEBUG();
+
+    uint32_t callerToken = IPCSkeleton::GetCallingTokenID();
+    int result = TypePermissionState::PERMISSION_GRANTED;
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType == TOKEN_INVALID) {
+        HILOG_WARN("AccessToken type:%{private}d, permission:%{private}d denied!", tokenType, callerToken);
+        return false;
+    } else {
+        result = AccessTokenKit::VerifyAccessToken(callerToken, permission);
+    }
+    if (result == TypePermissionState::PERMISSION_DENIED) {
+        HILOG_WARN("AccessTokenID:%{private}u, permission:%{private}s denied!", callerToken, permission.c_str());
+        return false;
+    }
+    HILOG_DEBUG("tokenType %{private}d dAccessTokenID:%{private}u, permission:%{private}s matched!",
+        tokenType, callerToken, permission.c_str());
+    return true;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
@@ -245,10 +271,13 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty(MessagePar
 {
     HILOG_DEBUG();
 
-    AccessibilityConfig::CaptionProperty caption = GetCaptionProperty();
-    CaptionPropertyParcel captionParcel(caption);
-
-    reply.WriteParcelable(&captionParcel);
+    AccessibilityConfig::CaptionProperty caption = {};
+    RetError ret = GetCaptionProperty(caption);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        CaptionPropertyParcel captionParcel(caption);
+        reply.WriteParcelable(&captionParcel);
+    }
 
     return NO_ERROR;
 }
@@ -256,13 +285,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty(MessagePar
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
     sptr<CaptionPropertyParcel> caption = data.ReadStrongParcelable<CaptionPropertyParcel>();
     if (!caption) {
         HILOG_DEBUG("ReadStrongParcelable<CaptionProperty> failed");
         return TRANSACTION_ERR;
     }
-    SetCaptionProperty(*caption);
+    reply.WriteInt32(SetCaptionProperty(*caption));
 
     return NO_ERROR;
 }
@@ -270,9 +298,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
     bool state = data.ReadBool();
-    SetCaptionState(state);
+    reply.WriteInt32(SetCaptionState(state));
 
     return NO_ERROR;
 }
@@ -304,9 +331,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabled(MessageParcel &dat
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetCaptionState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetCaptionState();
-    reply.WriteBool(result);
+    bool result = false;
+    RetError ret = GetCaptionState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
@@ -414,10 +444,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetScreenMagnificationState(state);
+    reply.WriteInt32(SetScreenMagnificationState(state));
 
     return NO_ERROR;
 }
@@ -425,10 +459,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState(
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetShortKeyState(state);
+    reply.WriteInt32(SetShortKeyState(state));
 
     return NO_ERROR;
 }
@@ -436,10 +474,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParce
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetMouseKeyState(state);
+    reply.WriteInt32(SetMouseKeyState(state));
 
     return NO_ERROR;
 }
@@ -447,10 +489,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParce
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     std::string name = data.ReadString();
 
-    SetShortkeyTarget(name);
+    reply.WriteInt32(SetShortkeyTarget(name));
 
     return NO_ERROR;
 }
@@ -458,10 +504,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParc
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     int32_t time = data.ReadInt32();
 
-    SetMouseAutoClick(time);
+    reply.WriteInt32(SetMouseAutoClick(time));
 
     return NO_ERROR;
 }
@@ -469,10 +519,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParc
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetInvertColorState(state);
+    reply.WriteInt32(SetInvertColorState(state));
 
     return NO_ERROR;
 }
@@ -480,10 +534,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessagePa
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetHighContrastTextState(state);
+    reply.WriteInt32(SetHighContrastTextState(state));
 
     return NO_ERROR;
 }
@@ -491,10 +549,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(Mess
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetAudioMonoState(state);
+    reply.WriteInt32(SetAudioMonoState(state));
 
     return NO_ERROR;
 }
@@ -503,10 +565,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState(MessageParc
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     bool state = data.ReadBool();
 
-    SetAnimationOffState(state);
+    reply.WriteInt32(SetAnimationOffState(state));
 
     return NO_ERROR;
 }
@@ -515,10 +581,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     uint32_t filter = data.ReadUint32();
 
-    SetDaltonizationColorFilter(filter);
+    reply.WriteInt32(SetDaltonizationColorFilter(filter));
 
     return NO_ERROR;
 }
@@ -526,10 +596,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     uint32_t time = data.ReadUint32();
 
-    SetContentTimeout(time);
+    reply.WriteInt32(SetContentTimeout(time));
 
     return NO_ERROR;
 }
@@ -537,10 +611,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParc
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     float discount = data.ReadFloat();
 
-    SetBrightnessDiscount(discount);
+    reply.WriteInt32(SetBrightnessDiscount(discount));
 
     return NO_ERROR;
 }
@@ -548,10 +626,14 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(Message
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     float balance = data.ReadFloat();
 
-    SetAudioBalance(balance);
+    reply.WriteInt32(SetAudioBalance(balance));
 
     return NO_ERROR;
 }
@@ -560,81 +642,153 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetScreenMagnificationState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetScreenMagnificationState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortKeyState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetShortKeyState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetShortKeyState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetMouseKeyState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetMouseKeyState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    std::string result = GetShortkeyTarget();
-    reply.WriteString(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    std::string result = "";
+    RetError ret = GetShortkeyTarget(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteString(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    int32_t result = GetMouseAutoClick();
-    reply.WriteInt32(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    int32_t result = 0;
+    RetError ret = GetMouseAutoClick(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteInt32(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetInvertColorState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetInvertColorState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetHighContrastTextState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetHighContrastTextState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetAudioMonoState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetAudioMonoState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    bool result = GetAnimationOffState();
-    reply.WriteBool(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetAnimationOffState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
     return NO_ERROR;
 }
 
@@ -642,36 +796,68 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
     HILOG_DEBUG();
-
-    uint32_t result = GetDaltonizationColorFilter();
-    reply.WriteUint32(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    uint32_t result = 0;
+    RetError ret = GetDaltonizationColorFilter(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteUint32(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    uint32_t result = GetContentTimeout();
-    reply.WriteUint32(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    uint32_t result =0;
+    RetError ret = GetContentTimeout(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteUint32(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    float result = GetBrightnessDiscount();
-    reply.WriteFloat(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    float result = 0;
+    RetError ret = GetBrightnessDiscount(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteFloat(result);
+    }
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-
-    float result = GetAudioBalance();
-    reply.WriteFloat(result);
+    if (!CheckPermission(OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    float result = 0;
+    RetError ret = GetAudioBalance(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteFloat(result);
+    }
     return NO_ERROR;
 }
 

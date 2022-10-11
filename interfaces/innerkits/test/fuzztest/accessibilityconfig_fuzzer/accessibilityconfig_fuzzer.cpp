@@ -15,14 +15,19 @@
 
 #include "accessibilityconfig_fuzzer.h"
 #include "accessibility_config.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
 #include "securec.h"
+#include "token_setproc.h"
 
 namespace OHOS {
 namespace {
     constexpr size_t DATA_MIN_SIZE = 98;
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
+    bool flag = true;
 } // namespace
+using namespace OHOS::Security::AccessToken;
 
 template<class T>
 size_t GetObject(T &object, const uint8_t *data, size_t size)
@@ -33,6 +38,29 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     }
     (void)memcpy_s(&object, objectSize, data, size);
     return objectSize;
+}
+
+void AddPermission()
+{
+    if (flag) {
+        const char *perms[2];
+        perms[0] = OHOS::Accessibility::OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str();
+        perms[1] = OHOS::Accessibility::OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str();
+        NativeTokenInfoParams infoInstance = {
+            .dcapsNum = 0,
+            .permsNum = 2,
+            .aclsNum = 0,
+            .dcaps = nullptr,
+            .perms = perms,
+            .acls = nullptr,
+            .processName = "com.accessibility.config.fuzzer.test",
+            .aplStr = "normal",
+        };
+        uint64_t tokenId = GetAccessTokenId(&infoInstance);
+        SetSelfTokenID(tokenId);
+        AccessTokenKit::ReloadNativeTokenInfo();
+        flag = false;
+    }
 }
 
 static size_t GenerateCaptionProperty(
@@ -74,6 +102,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     }
 
     auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    (void)abConfig.InitializeContext();
 
     size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
@@ -131,6 +160,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
+    OHOS::AddPermission();
     /* Run your code on data */
     OHOS::DoSomethingInterestingWithMyAPI(data, size);
     return 0;

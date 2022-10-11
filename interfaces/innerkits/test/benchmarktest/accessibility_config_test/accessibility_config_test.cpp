@@ -16,8 +16,12 @@
 #include <benchmark/benchmark.h>
 #include <future>
 #include "accessibility_config.h"
+#include "accesstoken_kit.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
 
 using namespace OHOS::AccessibilityConfig;
+using namespace OHOS::Security::AccessToken;
 
 namespace {
     class AccessibilityConfigObserverImpl : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
@@ -38,6 +42,30 @@ namespace {
         std::promise<void> complete_;
     };
 
+    static bool flag = true;
+    void AddPermission()
+    {
+        if (flag) {
+            const char *perms[2];
+            perms[0] = OHOS::Accessibility::OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG.c_str();
+            perms[1] = OHOS::Accessibility::OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG.c_str();
+            NativeTokenInfoParams infoInstance = {
+                .dcapsNum = 0,
+                .permsNum = 2,
+                .aclsNum = 0,
+                .dcaps = nullptr,
+                .perms = perms,
+                .acls = nullptr,
+                .processName = "com.accessibility.config.benchmark.test",
+                .aplStr = "normal",
+            };
+            uint64_t tokenId = GetAccessTokenId(&infoInstance);
+            SetSelfTokenID(tokenId);
+            AccessTokenKit::ReloadNativeTokenInfo();
+            flag = false;
+        }
+    }
+
     /**
      * @tc.name: BenchmarkTestForSetScreenMagnificationState
      * @tc.desc: Testcase for testing 'SetScreenMagnificationState' function.
@@ -51,6 +79,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
 
         config.SubscribeConfigObserver(CONFIG_SCREEN_MAGNIFICATION, configObserver, false);
         config.GetScreenMagnificationState(value);
@@ -77,6 +106,7 @@ namespace {
         bool value = false;
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetScreenMagnificationState in loop */
             (void)config.GetScreenMagnificationState(value);
@@ -96,6 +126,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
 
         config.SubscribeConfigObserver(CONFIG_SHORT_KEY_TARGET, configObserver, false);
 
@@ -125,6 +156,7 @@ namespace {
         std::string value = "";
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetShortkeyTarget in loop */
             (void)config.GetShortkeyTarget(value);
@@ -144,6 +176,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
 
         config.SubscribeConfigObserver(CONFIG_CONTENT_TIMEOUT, configObserver, false);
         config.GetContentTimeout(value);
@@ -170,6 +203,7 @@ namespace {
         uint32_t value = 0;
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
         for (auto _ : state) {
             /* @tc.steps: step1.call GetContentTimeout in loop */
             (void)config.GetContentTimeout(value);
@@ -188,6 +222,7 @@ namespace {
             std::make_shared<AccessibilityConfigObserverImpl>();
         auto &config = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         (void)config.InitializeContext();
+        AddPermission();
 
         for (auto _ : state) {
             /* @tc.steps: step1.call SubscribeConfigObserver in loop */

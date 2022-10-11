@@ -59,6 +59,9 @@ extern const std::string HTML_ITEM_H5;
 extern const std::string HTML_ITEM_H6;
 extern const std::string HTML_ITEM_UNKOWN;
 
+extern const std::string OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG;
+extern const std::string OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG;
+
 extern const int32_t PREFETCH_PREDECESSORS;
 extern const int32_t PREFETCH_SIBLINGS;
 extern const int32_t PREFETCH_CHILDREN;

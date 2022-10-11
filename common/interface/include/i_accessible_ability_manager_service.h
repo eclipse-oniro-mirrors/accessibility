@@ -102,15 +102,15 @@ public:
      */
     virtual void DeregisterElementOperator(const int32_t windowId) = 0;
 
-    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() = 0;
+    virtual RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) = 0;
     virtual bool GetEnabledState() = 0;
-    virtual bool GetCaptionState() = 0;
+    virtual RetError GetCaptionState(bool &state) = 0;
     virtual bool GetTouchGuideState() = 0;
     virtual bool GetGestureState() = 0;
     virtual bool GetKeyEventObserverState() = 0;
 
-    virtual void SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
-    virtual void SetCaptionState(const bool state) = 0;
+    virtual RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) = 0;
+    virtual RetError SetCaptionState(const bool state) = 0;
 
     virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) = 0;
     virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
@@ -121,33 +121,33 @@ public:
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) = 0;
     virtual bool DisableUITestAbility() = 0;
 
-    virtual void SetScreenMagnificationState(const bool state) = 0;
-    virtual void SetShortKeyState(const bool state) = 0;
-    virtual void SetMouseKeyState(const bool state) = 0;
-    virtual void SetMouseAutoClick(const int32_t time) = 0;
-    virtual void SetShortkeyTarget(const std::string &name) = 0;
-    virtual void SetHighContrastTextState(const bool state) = 0;
-    virtual void SetInvertColorState(const bool state) = 0;
-    virtual void SetAnimationOffState(const bool state) = 0;
-    virtual void SetAudioMonoState(const bool state) = 0;
-    virtual void SetDaltonizationColorFilter(const uint32_t filter) = 0;
-    virtual void SetContentTimeout(const uint32_t time) = 0;
-    virtual void SetBrightnessDiscount(const float discount) = 0;
-    virtual void SetAudioBalance(const float balance) = 0;
+    virtual RetError SetScreenMagnificationState(const bool state) = 0;
+    virtual RetError SetShortKeyState(const bool state) = 0;
+    virtual RetError SetMouseKeyState(const bool state) = 0;
+    virtual RetError SetMouseAutoClick(const int32_t time) = 0;
+    virtual RetError SetShortkeyTarget(const std::string &name) = 0;
+    virtual RetError SetHighContrastTextState(const bool state) = 0;
+    virtual RetError SetInvertColorState(const bool state) = 0;
+    virtual RetError SetAnimationOffState(const bool state) = 0;
+    virtual RetError SetAudioMonoState(const bool state) = 0;
+    virtual RetError SetDaltonizationColorFilter(const uint32_t filter) = 0;
+    virtual RetError SetContentTimeout(const uint32_t time) = 0;
+    virtual RetError SetBrightnessDiscount(const float discount) = 0;
+    virtual RetError SetAudioBalance(const float balance) = 0;
 
-    virtual bool GetScreenMagnificationState() = 0;
-    virtual bool GetShortKeyState() = 0;
-    virtual bool GetMouseKeyState() = 0;
-    virtual int32_t GetMouseAutoClick() = 0;
-    virtual std::string GetShortkeyTarget() = 0;
-    virtual bool GetHighContrastTextState() = 0;
-    virtual bool GetInvertColorState() = 0;
-    virtual bool GetAnimationOffState() = 0;
-    virtual bool GetAudioMonoState() = 0;
-    virtual uint32_t GetDaltonizationColorFilter() = 0;
-    virtual uint32_t GetContentTimeout() = 0;
-    virtual float GetBrightnessDiscount() = 0;
-    virtual float GetAudioBalance() = 0;
+    virtual RetError GetScreenMagnificationState(bool &state) = 0;
+    virtual RetError GetShortKeyState(bool &state) = 0;
+    virtual RetError GetMouseKeyState(bool &state) = 0;
+    virtual RetError GetMouseAutoClick(int32_t &time) = 0;
+    virtual RetError GetShortkeyTarget(std::string &name) = 0;
+    virtual RetError GetHighContrastTextState(bool &state) = 0;
+    virtual RetError GetInvertColorState(bool &state) = 0;
+    virtual RetError GetAnimationOffState(bool &state) = 0;
+    virtual RetError GetAudioMonoState(bool &state) = 0;
+    virtual RetError GetDaltonizationColorFilter(uint32_t &type) = 0;
+    virtual RetError GetContentTimeout(uint32_t &timer) = 0;
+    virtual RetError GetBrightnessDiscount(float &brightness) = 0;
+    virtual RetError GetAudioBalance(float &balance) = 0;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) = 0;
 
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
