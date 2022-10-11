@@ -61,10 +61,12 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
 void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
     (void)focusType;
-    (void)requestId;
-    (void)callback;
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
+    if (callback) {
+        AccessibilityElementInfo info;
+        callback->SetFindFocusedElementInfoResult(info, requestId);
+    }
 }
 
 void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
@@ -80,11 +82,12 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, c
     const std::map<std::string, std::string> &arguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
-    AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
-    (void)action;
     (void)arguments;
-    (void)requestId;
-    (void)callback;
+    AccessibilityAbilityHelper::GetInstance().SetExecuteAction(action);
+    AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
+    if (callback) {
+        callback->SetExecuteActionResult(true, requestId);
+    }
 }
 
 void AccessibilityElementOperatorProxy::ClearFocus()

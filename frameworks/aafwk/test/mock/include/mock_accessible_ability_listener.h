@@ -16,8 +16,7 @@
 #ifndef MOCK_ACCESSIBLE_ABILITY_LISTENER_H
 #define MOCK_ACCESSIBLE_ABILITY_LISTENER_H
 
-#include "accessibility_event_info.h"
-#include "gmock/gmock.h"
+#include "accessible_ability_listener.h"
 
 namespace OHOS {
 namespace MMI {
@@ -26,11 +25,13 @@ class KeyEvent;
 namespace Accessibility {
 class MockAccessibleAbilityListener : public AccessibleAbilityListener {
 public:
-    virtual ~MockAccessibleAbilityListener() = default;
-    MOCK_METHOD0(OnAbilityConnected, void());
-    MOCK_METHOD0(OnAbilityDisconnected, void());
-    MOCK_METHOD1(OnAccessibilityEvent, void(const AccessibilityEventInfo& eventInfo));
-    MOCK_METHOD1(OnKeyPressEvent, bool(const std::shared_ptr<MMI::KeyEvent>& keyEvent));
+    MockAccessibleAbilityListener() = default;
+    ~MockAccessibleAbilityListener() = default;
+
+    void OnAbilityConnected() override;
+    void OnAbilityDisconnected() override;
+    void OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo) override;
+    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override;
 };
 } // namespace Accessibility
 } // namespace OHOS

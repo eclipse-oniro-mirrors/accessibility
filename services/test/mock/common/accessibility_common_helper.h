@@ -70,8 +70,19 @@ public:
         return false;
     }
 
+    void SetRemoteObjectNotNullFlag(bool flag)
+    {
+        isRemoteObjectNotNulll_ = flag;
+    }
+
+    bool GetRemoteObjectNotNullFlag() const
+    {
+        return isRemoteObjectNotNulll_;
+    }
+
 private:
     bool isServicePublished_ = false;
+    bool isRemoteObjectNotNulll_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS

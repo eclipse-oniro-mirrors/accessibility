@@ -35,12 +35,12 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
     "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
+    "//foundation/barrierfree/accessibility/services/test/mock",
     "//foundation/barrierfree/accessibility/common/log/include",
     "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_base/include",
     "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include",
     "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include/bundlemgr",
     "//third_party/json/include",
-    "mock/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
@@ -53,8 +53,8 @@ ohos_unittest("ac_unit_test") {
   sources = [
     "../src/accessibility_config.cpp",
     "../src/accessibility_config_impl.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
-    "mock/src/mock_accessible_ability_manager_service_stub.cpp",
     "mock/src/mock_service_registry.cpp",
     "unittest/accessibility_config_impl_test.cpp",
   ]

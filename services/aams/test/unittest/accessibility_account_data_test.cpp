@@ -58,22 +58,23 @@ public:
 void AccessibilityAccountDataTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountDataTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 
 void AccessibilityAccountDataTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountDataTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityAccountDataTest::SetUp()
 {
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibilityAccountDataTest SetUp";
 }
 
 void AccessibilityAccountDataTest::TearDown()
 {
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     GTEST_LOG_(INFO) << "AccessibilityAccountDataTest TearDown";
 }
 
@@ -891,6 +892,11 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ClearInstalledAbility end";
 }
 
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_RemoveEnabledAbility
+ * @tc.name: RemoveEnabledAbility
+ * @tc.desc: Remove the enabled ability.
+ */
 HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveEnabledAbility, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility start";
@@ -1120,6 +1126,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateA
 
     accountData->UpdateAbilities();
     EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(Utils::GetUri(connection->GetElementName())));
+    accountData->OnAccountSwitched();
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_002 end";
 }
 
@@ -1172,6 +1179,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_UpdateA
 
     accountData->UpdateAbilities();
     EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), -1);
+    accountData->OnAccountSwitched();
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_UpdateAbilities_004 end";
 }
 

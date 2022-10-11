@@ -63,18 +63,20 @@ public:
 void AccessibleAbilityManagerServiceUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
 }
 
 void AccessibleAbilityManagerServiceUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
 }
 
 void AccessibleAbilityManagerServiceUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     stub_ = new MockAccessibleAbilityClientStubImpl();
 }
@@ -82,8 +84,6 @@ void AccessibleAbilityManagerServiceUnitTest::SetUp()
 void AccessibleAbilityManagerServiceUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest TearDown";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
-    AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
     stub_ = nullptr;
 }
 
@@ -197,7 +197,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_001,
  * @tc.name: SetTouchEventInjector
  * @tc.desc: Test function SetTouchEventInjector
  */
-
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 start";
@@ -214,7 +213,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, Tes
  * @tc.name: SetKeyEventFilter
  * @tc.desc: Test function SetKeyEventFilter
  */
-
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetKeyEventFilter_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetKeyEventFilter_001 start";
@@ -230,7 +228,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetKeyEventFilter_001, TestSiz
  * @tc.name: RemovedUser
  * @tc.desc: Test function RemovedUser
  */
-
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RemovedUser_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_RemovedUser_001 start";
@@ -261,7 +258,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetBundleMgrProxy_001, TestSiz
  * @tc.name: PackageChanged
  * @tc.desc: Test function PackageChanged
  */
-
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, PackageChanged_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_PackageChanged_001 start";
@@ -471,7 +467,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetBrightnessDiscount_001, Tes
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetAudioBalance_001
  * @tc.name: SetAudioBalance
  * @tc.desc: Test function SetAudioBalance GetAudioBalance
- * @tc.require: SR000H09BB
  */
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.Level1)
 {
@@ -506,18 +501,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionState_001, TestSize.
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetCaptionState(state);
     EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetCaptionState());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetCaptionState_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001
- * @tc.name: GetEnabledState
- * @tc.desc: Test function GetEnabledState
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 start";
-    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledState());
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 end";
 }
 
 /**
@@ -567,45 +550,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetActiveWindow_001, TestSize.
     Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(ACTIVE_WINDOW_VALUE);
     EXPECT_EQ(ACTIVE_WINDOW_VALUE, Singleton<AccessibleAbilityManagerService>::GetInstance().GetActiveWindow());
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetActiveWindow_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001
- * @tc.name: OnRemoveSystemAbility
- * @tc.desc: Test function OnRemoveSystemAbility
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 start";
-    int32_t systemAbilityId = SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN;
-    std::string deviceId = "test";
-    auto &ins = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    ins.OnRemoveSystemAbility(systemAbilityId, deviceId);
-    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (Singleton<AccessibleAbilityManagerService>::GetInstance().IsServiceReady() == false) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_1);
-    EXPECT_FALSE(ins.IsServiceReady());
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 end";
-}
-
-/**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002
- * @tc.name: OnRemoveSystemAbility
- * @tc.desc: Test function OnRemoveSystemAbility
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_002, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002 start";
-    int32_t systemAbilityId = 1;
-    std::string deviceId = "test";
-    auto &ins = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    ins.OnRemoveSystemAbility(systemAbilityId, deviceId);
-    EXPECT_TRUE(ins.IsServiceReady());
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002 end";
 }
 
 /**
@@ -1344,6 +1288,46 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAllConfigs_002, TestSize.Le
     AccessibilityConfigData data;
     Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllConfigs(data);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAllConfigs_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001
+ * @tc.name: OnRemoveSystemAbility
+ * @tc.desc: Test function OnRemoveSystemAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 start";
+    int32_t systemAbilityId = 1;
+    std::string deviceId = "test";
+    auto &ins = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    ins.OnRemoveSystemAbility(systemAbilityId, deviceId);
+    EXPECT_TRUE(ins.IsServiceReady());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002
+ * @tc.name: OnRemoveSystemAbility
+ * @tc.desc: Test function OnRemoveSystemAbility
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, OnRemoveSystemAbility_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002 start";
+    auto &ins = Singleton<AccessibleAbilityManagerService>::GetInstance();
+    EXPECT_TRUE(ins.IsServiceReady());
+    int32_t systemAbilityId = SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN;
+    std::string deviceId = "test";
+    ins.OnRemoveSystemAbility(systemAbilityId, deviceId);
+    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (Singleton<AccessibleAbilityManagerService>::GetInstance().IsServiceReady() == false) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_1);
+    EXPECT_FALSE(ins.IsServiceReady());
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_OnRemoveSystemAbility_002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

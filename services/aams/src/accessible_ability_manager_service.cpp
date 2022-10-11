@@ -103,6 +103,10 @@ void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
 
+    Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+    Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+
     currentAccountId_ = -1;
     a11yAccountsData_.clear();
     bundleManager_ = nullptr;

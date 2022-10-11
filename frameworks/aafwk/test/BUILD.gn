@@ -27,11 +27,12 @@ config("module_private_config") {
   include_dirs += [
     "${ability_runtime_inner_api_path}/ability_manager/include",
     "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/dummyData",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/include",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/include",
+    "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
     "//foundation/barrierfree/accessibility/frameworks/asacfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk/include",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
@@ -40,6 +41,7 @@ config("module_private_config") {
     "//foundation/barrierfree/accessibility/common/interface/include",
     "//foundation/barrierfree/accessibility/common/interface/include/parcel",
     "//foundation/barrierfree/accessibility/common/interface/include/parcel",
+    "//foundation/barrierfree/accessibility/services/test/mock/common",
     "//foundation/barrierfree/accessibility/services/test/mock/include/extern",
     "//foundation/barrierfree/accessibility/util/include",
     "//base/account/os_account/frameworks/common/account_error/include",
@@ -69,6 +71,44 @@ config("module_private_config") {
   ]
 }
 
+###############################################################################
+ohos_unittest("accessibility_ui_test_ability_impl_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../src/accessibility_ui_test_ability_impl.cpp",
+    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_client.cpp",
+    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_listener.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_bundle_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
+    "unittest/accessibility_ui_test_ability_impl_test.cpp",
+  ]
+  sources += aams_mock_multimodalinput_src
+
+  configs = [
+    ":module_private_config",
+    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+  ]
+
+  deps = [
+    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
+    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "//third_party/googletest:gmock_main",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "ability_runtime:ability_manager",
+    "c_utils:utils",
+    "eventhandler:libeventhandler",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "samgr:samgr_proxy",
+  ]
+}
+
+################################################################################
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
   sources = [
@@ -85,6 +125,7 @@ ohos_unittest("accessible_ability_test") {
     "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_event_info_parcel.cpp",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_channel_proxy.cpp",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_channel_stub.cpp",
+    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_listener.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_constants.cpp",
     "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
@@ -109,7 +150,6 @@ ohos_unittest("accessible_ability_test") {
     "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_os_account_manager.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "unittest/accessibility_element_operator_callback_impl_test.cpp",
-    "unittest/accessibility_ui_test_ability_impl_test.cpp",
     "unittest/accessible_ability_channel_client_test.cpp",
     "unittest/accessible_ability_client_impl_test.cpp",
   ]
@@ -148,6 +188,9 @@ group("unittest") {
   testonly = true
   deps = []
 
-  deps += [ ":accessible_ability_test" ]
+  deps += [
+    ":accessibility_ui_test_ability_impl_test",
+    ":accessible_ability_test",
+  ]
 }
 ###############################################################################

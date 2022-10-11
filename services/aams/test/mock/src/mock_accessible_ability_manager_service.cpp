@@ -54,6 +54,10 @@ void AccessibleAbilityManagerService::OnStart()
 
 void AccessibleAbilityManagerService::OnStop()
 {
+    Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+    runner_.reset();
+    handler_.reset();
 }
 
 void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)

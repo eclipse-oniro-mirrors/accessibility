@@ -80,6 +80,17 @@ void AamsAccessibleAbilityChannelTest::TearDown()
 
     // Deregister ElementOperator
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+        auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    if (!ret) {
+        GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown EventQueue is not empty";
+    }
     // Stop AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     accountData_ = nullptr;
@@ -139,6 +150,17 @@ void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
     sptr<MockAccessibilityElementOperatorProxy> proxy = new MockAccessibilityElementOperatorProxy(stub);
     proxy_ = proxy;
     Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
+        auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
+        if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {
+            return true;
+        } else {
+            return false;
+        }
+        }), 1);
+    if (!ret) {
+        GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest EventQueue is not empty";
+    }
 }
 
 /**
@@ -155,7 +177,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     bool result =
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
@@ -184,7 +205,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(
         ACTIVE_WINDOW_ID, 0, 0, nullptr, 0);
@@ -212,7 +232,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
@@ -240,7 +259,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(
@@ -269,7 +287,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
@@ -297,7 +314,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(
@@ -326,7 +342,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_ACCESSIBILITY;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
@@ -353,7 +368,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
@@ -380,7 +394,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
     bool result =
@@ -408,7 +421,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     std::map<std::string, std::string> actionArguments;
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
@@ -438,7 +450,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     std::map<std::string, std::string> actionArguments;
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
@@ -467,7 +478,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
 
     // Not add interaction connection,add accessibleAbility connection
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
     std::vector<AccessibilityWindowInfo> windows;
@@ -492,7 +502,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
 
     AccessibilityGesturePosition point {10.0f, 10.0f};
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
@@ -522,7 +531,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     bool result =
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
@@ -550,7 +558,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
@@ -578,7 +585,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
@@ -606,7 +612,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
     bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
@@ -634,7 +639,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
     std::map<std::string, std::string> actionArguments;
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
@@ -665,7 +669,6 @@ HWTEST_F(
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
-    sleep(2);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     uint64_t displayId = Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
     std::vector<AccessibilityWindowInfo> windows;
@@ -691,7 +694,6 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     // Add connection
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
-    sleep(2);
 
     AccessibilityGesturePosition point {10.0f, 10.0f};
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();

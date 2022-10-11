@@ -58,19 +58,18 @@ public:
 void AccessibleAbilityChannelUnitTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibleAbilityChannelUnitTest Start ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
 }
 
 void AccessibleAbilityChannelUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibleAbilityChannelUnitTest End ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibleAbilityChannelUnitTest::SetUp()
 {
     GTEST_LOG_(INFO) << "SetUp";
-    // Start AAMS
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-
     // Add AA client
     AccessibilityAbilityInitParams initParams;
     initParams.bundleName = "testBundleName";
@@ -216,6 +215,55 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 }
 
 /**
+ * @tc.number: AccessibleAbilityChannel_Unittest_GetWindow_002
+ * @tc.name: GetWindow
+ * @tc.desc: Test function GetWindow
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_GetWindow_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_002 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string ability = "testGetWindow";
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(ability));
+
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), ability);
+    AccessibilityWindowInfo windowInfo;
+    EXPECT_FALSE(channel->GetWindow(WINDOW_ID, windowInfo));
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_GetWindow_003
+ * @tc.name: GetWindow
+ * @tc.desc: Test function GetWindow
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_GetWindow_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_003 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+
+    // add a client which has no retieve capability
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    AppExecFwk::ElementName elementName("device", "bundle", "ability");
+    std::string ability = "bundle/ability";
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), ability);
+    connection->OnAbilityConnectDoneSync(elementName, channel);
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(ability));
+
+    AccessibilityWindowInfo windowInfo;
+    EXPECT_FALSE(channel->GetWindow(WINDOW_ID, windowInfo));
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_003 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityChannel_Unittest_GetWindows_001
  * @tc.name: GetWindows
  * @tc.desc: Test function GetWindows
@@ -228,6 +276,59 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_TRUE(channel_->GetWindows(windows));
     EXPECT_EQ(static_cast<int>(windows.size()), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_GetWindows_002
+ * @tc.name: GetWindows
+ * @tc.desc: Test function GetWindows
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_GetWindows_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_002 start";
+    std::string abilityName = "testGetWindows";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
+
+    std::vector<AccessibilityWindowInfo> windows;
+    EXPECT_FALSE(channel->GetWindows(windows));
+    EXPECT_EQ(static_cast<int>(windows.size()), 0);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_GetWindows_003
+ * @tc.name: GetWindows
+ * @tc.desc: Test function GetWindows
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_GetWindows_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_003 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+
+    // Add AA client which has no retieve capability
+    AccessibilityAbilityInitParams initParams;
+    initParams.bundleName = "bundle";
+    initParams.name = "ability";
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    AppExecFwk::ElementName elementName("device", "bundle", "ability");
+    sptr<AccessibleAbilityChannel> channel =
+        new AccessibleAbilityChannel(accountData->GetAccountId(), abilityInfo->GetId());
+    connection->OnAbilityConnectDoneSync(elementName, channel);
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(abilityInfo->GetId()));
+
+    std::vector<AccessibilityWindowInfo> windows;
+    EXPECT_FALSE(channel->GetWindows(windows));
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_003 end";
 }
 
 /**
@@ -295,6 +396,25 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 }
 
 /**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SendSimulateGesture_002
+ * @tc.name: SendSimulateGesture
+ * @tc.desc: Test function SendSimulateGesture
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SendSimulateGesture_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_002 start";
+    std::string abilityName = "testGesture";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
+    EXPECT_FALSE(channel->SendSimulateGesture(nullptr));
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_002 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityChannel_Unittest_SetTargetBundleName_001
  * @tc.name: SetTargetBundleName
  * @tc.desc: Test function SetTargetBundleName
@@ -306,6 +426,26 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     std::vector<std::string> targetBundleNames;
     EXPECT_TRUE(channel_->SetTargetBundleName(targetBundleNames));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SetTargetBundleName_002
+ * @tc.name: SetTargetBundleName
+ * @tc.desc: Test function SetTargetBundleName
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SetTargetBundleName_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_002 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ASSERT_TRUE(accountData);
+    std::string abilityName = "testSetTargetBundleName";
+    EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
+    std::vector<std::string> targetBundleNames;
+    EXPECT_FALSE(channel->SetTargetBundleName(targetBundleNames));
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_002 end";
 }
 } // namespace Accessibility
 } // namespace OHOS

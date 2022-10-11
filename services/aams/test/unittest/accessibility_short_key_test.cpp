@@ -50,6 +50,7 @@ void AccessibilityShortKeyUnitTest::SetUpTestCase()
 void AccessibilityShortKeyUnitTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "###################### AccessibilityShortKeyUnitTest End ######################";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityShortKeyUnitTest::SetUp()

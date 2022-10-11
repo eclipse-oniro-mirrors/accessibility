@@ -28,7 +28,6 @@ config("module_private_config") {
   include_dirs = aams_mock_include_dirs
   include_dirs += [
     "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/dummyData",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
@@ -120,6 +119,7 @@ ohos_unittest("accessibility_account_data_test") {
     "c_utils:utils",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
     "ipc:ipc_core",
   ]
 }
@@ -186,6 +186,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_element_operator_proxy.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "mock/src/mock_accessibility_input_interceptor.cpp",
     "mock/src/mock_accessibility_window_manager.cpp",
@@ -396,30 +397,11 @@ ohos_unittest("accessibility_window_manager_test") {
 ohos_unittest("accessibility_keyevent_filter_test") {
   module_out_path = module_output_path
   sources = [
-    "../src/accessibility_account_data.cpp",
-    "../src/accessibility_common_event.cpp",
-    "../src/accessibility_dumper.cpp",
-    "../src/accessibility_event_transmission.cpp",
     "../src/accessibility_keyevent_filter.cpp",
-    "../src/accessibility_window_connection.cpp",
-    "../src/accessible_ability_channel.cpp",
-    "../src/accessible_ability_connection.cpp",
-    "../src/accessible_ability_manager_service.cpp",
-    "../src/accessible_ability_manager_service_event_handler.cpp",
-    "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_manager_service_stub.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
-    "mock/src/aafwk/mock_bundle_manager.cpp",
-    "mock/src/mock_common_event_data.cpp",
-    "mock/src/mock_common_event_manager.cpp",
-    "mock/src/mock_common_event_subscribe_info.cpp",
-    "mock/src/mock_common_event_subscriber.cpp",
-    "mock/src/mock_common_event_support.cpp",
-    "mock/src/mock_matching_skill.cpp",
-    "mock/src/mock_os_account_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_account_data.cpp",
+    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
+    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
+    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_keyevent_filter_test.cpp",
   ]
@@ -449,7 +431,6 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "hiviewdfx_hilog_native:libhilog",
     "input:libmmi-client",
     "ipc:ipc_core",
-    "samgr:samgr_proxy",
   ]
 }
 

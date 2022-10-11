@@ -32,8 +32,7 @@ public:
 
     virtual ~MockAccessibleAbilityManagerServiceStub();
 
-    virtual int OnRemoteRequest(
-        uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+    int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
     void SendEvent(const AccessibilityEventInfo &uiEvent) override;
 

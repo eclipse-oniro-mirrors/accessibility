@@ -50,20 +50,21 @@ public:
 void AccessibilityInputInterceptorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 
 void AccessibilityInputInterceptorTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AccessibilityInputInterceptorTest::SetUp()
 {
     MMI::MockInputManager::ClearInputEventConsumer();
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
     inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 

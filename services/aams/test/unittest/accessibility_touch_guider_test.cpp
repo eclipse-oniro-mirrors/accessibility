@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
+#include "accessibility_element_operator_proxy.h"
 #include "accessibility_touch_guider.h"
 #include "accessibility_ut_helper.h"
 
@@ -26,6 +27,8 @@ namespace Accessibility {
 namespace {
     constexpr uint32_t SLEEP_TIME_3 = 3;
     constexpr int64_t MS_TO_US = 1000;
+    constexpr int32_t ACCOUNT_ID = 100;
+    constexpr int32_t WINDOW_ID = 2;
 } // namespace
 
 class TouchGuiderTest : public testing::Test {
@@ -59,6 +62,7 @@ void TouchGuiderTest::SetUpTestCase()
 void TouchGuiderTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "TouchGuiderTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void TouchGuiderTest::SetUp()
@@ -1049,6 +1053,67 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_017, TestSize.Leve
     EXPECT_EQ(uTgestureId, static_cast<int>(GestureType::GESTURE_SWIPE_LEFT));
 
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_017 end";
+}
+
+/**
+ * @tc.number: OnPointerEvent018
+ * @tc.name: OnPointerEvent
+ * @tc.desc: Check the DoubleTap gesture.
+ */
+HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_018, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_018 start";
+
+    if (!touchGuider_) {
+        GTEST_LOG_(INFO) << "touchGuider_ is null";
+        return;
+    }
+
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is null";
+        return;
+    }
+
+    AccessibilityAbilityHelper::GetInstance().SetRealId(WINDOW_ID);
+    sptr<IAccessibilityElementOperator> proxy = new(std::nothrow) AccessibilityElementOperatorProxy(nullptr);
+    sptr<AccessibilityWindowConnection> windowConnection =
+        new(std::nothrow) AccessibilityWindowConnection(WINDOW_ID, proxy, ACCOUNT_ID);
+    accountData->AddAccessibilityWindowConnection(WINDOW_ID, windowConnection);
+
+    // send down event
+    std::vector<MMI::PointerEvent::PointerItem> points = {};
+    MMI::PointerEvent::PointerItem point = {};
+    point.SetPointerId(1);
+    point.SetDisplayX(2500);
+    point.SetDisplayY(2500);
+    points.emplace_back(point);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
+    touchGuider_->OnPointerEvent(*event);
+
+    // send up event
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 1, 0, 0);
+    touchGuider_->OnPointerEvent(*event);
+
+    // send down event
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 200, 200);
+    touchGuider_->OnPointerEvent(*event);
+
+    // send up event
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 1, 200, 200);
+    touchGuider_->OnPointerEvent(*event);
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+        if (AccessibilityAbilityHelper::GetInstance().GetExecuteAction() == ACCESSIBILITY_ACTION_CLICK) {
+            return true;
+        } else {
+            return false;
+        }
+        }), SLEEP_TIME_3);
+    EXPECT_TRUE(ret);
+
+    GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_018 end";
 }
 
 /**
