@@ -49,6 +49,13 @@ public:
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 private:
     /**
+     * @brief Check the caller has permissions.
+     * @param permission The description of permission
+     * @return Check result.
+     */
+    bool CheckPermission(const std::string &permission);
+
+    /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
      * @param data The data of process communication
      * @param reply The response of IPC request

@@ -51,12 +51,12 @@ public:
 
     void DeregisterElementOperator(const int32_t windowId) override;
 
-    AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
-    void SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
-    void SetCaptionState(const bool state) override;
+    RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
+    RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
+    RetError SetCaptionState(const bool state) override;
 
     bool GetEnabledState() override;
-    bool GetCaptionState() override;
+    RetError GetCaptionState(bool &state) override;
     bool GetTouchGuideState() override;
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
@@ -70,33 +70,33 @@ public:
     RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
     bool DisableUITestAbility() override;
 
-    void SetScreenMagnificationState(const bool state) override;
-    void SetShortKeyState(const bool state) override;
-    void SetMouseKeyState(const bool state) override;
-    void SetMouseAutoClick(const int32_t time) override;
-    void SetShortkeyTarget(const std::string &name) override;
-    void SetHighContrastTextState(const bool state) override;
-    void SetInvertColorState(const bool state) override;
-    void SetAnimationOffState(const bool state) override;
-    void SetAudioMonoState(const bool state) override;
-    void SetDaltonizationColorFilter(const uint32_t filter) override;
-    void SetContentTimeout(const uint32_t time) override;
-    void SetBrightnessDiscount(const float discount) override;
-    void SetAudioBalance(const float balance) override;
+    RetError SetScreenMagnificationState(const bool state) override;
+    RetError SetShortKeyState(const bool state) override;
+    RetError SetMouseKeyState(const bool state) override;
+    RetError SetMouseAutoClick(const int32_t time) override;
+    RetError SetShortkeyTarget(const std::string &name) override;
+    RetError SetHighContrastTextState(const bool state) override;
+    RetError SetInvertColorState(const bool state) override;
+    RetError SetAnimationOffState(const bool state) override;
+    RetError SetAudioMonoState(const bool state) override;
+    RetError SetDaltonizationColorFilter(const uint32_t filter) override;
+    RetError SetContentTimeout(const uint32_t time) override;
+    RetError SetBrightnessDiscount(const float discount) override;
+    RetError SetAudioBalance(const float balance) override;
 
-    bool GetScreenMagnificationState() override;
-    bool GetShortKeyState() override;
-    bool GetMouseKeyState() override;
-    int32_t GetMouseAutoClick() override;
-    std::string GetShortkeyTarget() override;
-    bool GetHighContrastTextState() override;
-    bool GetInvertColorState() override;
-    bool GetAnimationOffState() override;
-    bool GetAudioMonoState() override;
-    uint32_t GetDaltonizationColorFilter() override;
-    uint32_t GetContentTimeout() override;
-    float GetBrightnessDiscount() override;
-    float GetAudioBalance() override;
+    RetError GetScreenMagnificationState(bool &state) override;
+    RetError GetShortKeyState(bool &state) override;
+    RetError GetMouseKeyState(bool &state) override;
+    RetError GetMouseAutoClick(int32_t &time) override;
+    RetError GetShortkeyTarget(std::string &name) override;
+    RetError GetHighContrastTextState(bool &state) override;
+    RetError GetInvertColorState(bool &state) override;
+    RetError GetAnimationOffState(bool &state) override;
+    RetError GetAudioMonoState(bool &state) override;
+    RetError GetDaltonizationColorFilter(uint32_t &type) override;
+    RetError GetContentTimeout(uint32_t &timer) override;
+    RetError GetBrightnessDiscount(float &brightness) override;
+    RetError GetAudioBalance(float &balance) override;
     void GetAllConfigs(AccessibilityConfigData &configData) override;
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
 

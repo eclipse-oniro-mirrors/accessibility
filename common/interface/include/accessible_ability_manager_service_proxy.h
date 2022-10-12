@@ -84,12 +84,12 @@ public:
      */
     virtual void DeregisterElementOperator(const int32_t windowId) override;
 
-    virtual AccessibilityConfig::CaptionProperty GetCaptionProperty() override;
-    virtual void SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
-    virtual void SetCaptionState(const bool state) override;
+    virtual RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
+    virtual RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
+    virtual RetError SetCaptionState(const bool state) override;
 
     virtual bool GetEnabledState() override;
-    virtual bool GetCaptionState() override;
+    virtual RetError GetCaptionState(bool &state) override;
     virtual bool GetTouchGuideState() override;
     virtual bool GetGestureState() override;
     virtual bool GetKeyEventObserverState() override;
@@ -103,33 +103,33 @@ public:
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
     virtual bool DisableUITestAbility() override;
 
-    virtual void SetScreenMagnificationState(const bool state) override;
-    virtual void SetShortKeyState(const bool state) override;
-    virtual void SetMouseKeyState(const bool state) override;
-    virtual void SetMouseAutoClick(const int32_t time) override;
-    virtual void SetShortkeyTarget(const std::string &name) override;
-    virtual void SetHighContrastTextState(const bool state) override;
-    virtual void SetInvertColorState(const bool state) override;
-    virtual void SetAnimationOffState(const bool state) override;
-    virtual void SetAudioMonoState(const bool state) override;
-    virtual void SetDaltonizationColorFilter(const uint32_t filter) override;
-    virtual void SetContentTimeout(const uint32_t time) override;
-    virtual void SetBrightnessDiscount(const float discount) override;
-    virtual void SetAudioBalance(const float balance) override;
+    virtual RetError SetScreenMagnificationState(const bool state) override;
+    virtual RetError SetShortKeyState(const bool state) override;
+    virtual RetError SetMouseKeyState(const bool state) override;
+    virtual RetError SetMouseAutoClick(const int32_t time) override;
+    virtual RetError SetShortkeyTarget(const std::string &name) override;
+    virtual RetError SetHighContrastTextState(const bool state) override;
+    virtual RetError SetInvertColorState(const bool state) override;
+    virtual RetError SetAnimationOffState(const bool state) override;
+    virtual RetError SetAudioMonoState(const bool state) override;
+    virtual RetError SetDaltonizationColorFilter(const uint32_t filter) override;
+    virtual RetError SetContentTimeout(const uint32_t time) override;
+    virtual RetError SetBrightnessDiscount(const float discount) override;
+    virtual RetError SetAudioBalance(const float balance) override;
 
-    virtual bool GetScreenMagnificationState() override;
-    virtual bool GetShortKeyState() override;
-    virtual bool GetMouseKeyState() override;
-    virtual int32_t GetMouseAutoClick() override;
-    virtual std::string GetShortkeyTarget() override;
-    virtual bool GetHighContrastTextState() override;
-    virtual bool GetInvertColorState() override;
-    virtual bool GetAnimationOffState() override;
-    virtual bool GetAudioMonoState() override;
-    virtual uint32_t GetDaltonizationColorFilter() override;
-    virtual uint32_t GetContentTimeout() override;
-    virtual float GetBrightnessDiscount() override;
-    virtual float GetAudioBalance() override;
+    virtual RetError GetScreenMagnificationState(bool &state) override;
+    virtual RetError GetShortKeyState(bool &state) override;
+    virtual RetError GetMouseKeyState(bool &state) override;
+    virtual RetError GetMouseAutoClick(int32_t &time) override;
+    virtual RetError GetShortkeyTarget(std::string &name) override;
+    virtual RetError GetHighContrastTextState(bool &state) override;
+    virtual RetError GetInvertColorState(bool &state) override;
+    virtual RetError GetAnimationOffState(bool &state) override;
+    virtual RetError GetAudioMonoState(bool &state) override;
+    virtual RetError GetDaltonizationColorFilter(uint32_t &type) override;
+    virtual RetError GetContentTimeout(uint32_t &timer) override;
+    virtual RetError GetBrightnessDiscount(float &brightness) override;
+    virtual RetError GetAudioBalance(float &balance) override;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) override;
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
 private:

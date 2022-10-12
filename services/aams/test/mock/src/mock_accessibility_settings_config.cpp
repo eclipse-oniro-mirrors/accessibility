@@ -53,94 +53,109 @@ bool AccessibilitySettingsConfig::SetKeyEventObserverState(const bool state)
 }
 
 
-void AccessibilitySettingsConfig::SetCaptionState(const bool state)
+RetError AccessibilitySettingsConfig::SetCaptionState(const bool state)
 {
     HILOG_DEBUG("start.");
     isCaptionState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
+RetError AccessibilitySettingsConfig::SetScreenMagnificationState(const bool state)
 {
     HILOG_DEBUG("start.");
     isScreenMagnificationState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetShortKeyState(const bool state)
+RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
 {
     HILOG_DEBUG("start.");
     isShortKeyState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
+RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("start.");
     isMouseKeyState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
+RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 {
     HILOG_DEBUG("start.");
     mouseAutoClick_ = time;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
+RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("start.");
     shortkeyTarget_ = name;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
+RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("start.");
     highContrastTextState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetInvertColorState(const bool state)
+RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("start.");
     invertColorState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
+RetError AccessibilitySettingsConfig::SetAnimationOffState(const bool state)
 {
     HILOG_DEBUG("start.");
     animationOffState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
+RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
 {
     HILOG_DEBUG("start.");
     audioMonoState_ = state;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
+RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("start.");
     daltonizationColorFilter_ = filter;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
+RetError AccessibilitySettingsConfig::SetContentTimeout(const uint32_t time)
 {
     HILOG_DEBUG("start.");
     contentTimeout_ = time;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
+RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount)
 {
     HILOG_DEBUG("start.");
     brightnessDiscount_ = discount;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetAudioBalance(const float balance)
+RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("start.");
     audioBalance_ = balance;
+    return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
+RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG("start.");
     captionProperty_ = caption;
+    return RET_OK;
 }
 
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)

@@ -55,6 +55,9 @@ const std::string HTML_ITEM_H5 = "h5";
 const std::string HTML_ITEM_H6 = "h6";
 const std::string HTML_ITEM_UNKOWN = "unknown";
 
+const std::string OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG = "ohos.permission.READ_ACCESSIBILITY_CONFIG";
+const std::string OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG = "ohos.permission.WRITE_ACCESSIBILITY_CONFIG";
+
 const int32_t PREFETCH_PREDECESSORS = 1 << 0;
 const int32_t PREFETCH_SIBLINGS = 1 << 1;
 const int32_t PREFETCH_CHILDREN = 1 << 2;

@@ -59,14 +59,17 @@ void MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEvent
     (void)uiEvent;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
+RetError MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
+    const AccessibilityConfig::CaptionProperty &caption)
 {
     captionProperty_ = caption;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetCaptionState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetCaptionState(const bool state)
 {
     captionState_ = state;
+    return RET_OK;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
@@ -97,9 +100,10 @@ void MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const in
     (void)windowId;
 }
 
-AccessibilityConfig::CaptionProperty MockAccessibleAbilityManagerServiceStub::GetCaptionProperty()
+RetError MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
 {
-    return captionProperty_;
+    caption = captionProperty_;
+    return RET_OK;
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
@@ -114,9 +118,10 @@ bool MockAccessibleAbilityManagerServiceStub::GetEnabledState()
     return true;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetCaptionState()
+RetError MockAccessibleAbilityManagerServiceStub::GetCaptionState(bool &state)
 {
-    return captionState_;
+    state = captionState_;
+    return RET_OK;
 }
 
 bool MockAccessibleAbilityManagerServiceStub::GetTouchGuideState()
@@ -174,67 +179,79 @@ bool MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
     return true;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)
 {
     screenMagnifier_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetShortKeyState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetShortKeyState(const bool state)
 {
     shortkey_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetMouseKeyState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetMouseKeyState(const bool state)
 {
     mouseKey_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetMouseAutoClick(const int32_t time)
+RetError MockAccessibleAbilityManagerServiceStub::SetMouseAutoClick(const int32_t time)
 {
     mouseAutoClick_ = time;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::string &name)
+RetError MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::string &name)
 {
     shortkeyTarget_ = name;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(const bool state)
 {
     highContrastText_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetInvertColorState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetInvertColorState(const bool state)
 {
     invertColor_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetAnimationOffState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetAnimationOffState(const bool state)
 {
     animationOff_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(const bool state)
+RetError MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(const bool state)
 {
     audioMono_ = state;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(const uint32_t filter)
+RetError MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(const uint32_t filter)
 {
     daltonizationColorFilter_ = filter;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetContentTimeout(const uint32_t time)
+RetError MockAccessibleAbilityManagerServiceStub::SetContentTimeout(const uint32_t time)
 {
     contentTimeout_ = time;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(const float discount)
+RetError MockAccessibleAbilityManagerServiceStub::SetBrightnessDiscount(const float discount)
 {
     brightnessDiscount_ = discount;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balance)
+RetError MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balance)
 {
     audioBalance_ = balance;
 
@@ -251,71 +268,85 @@ void MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float balanc
             captionObserver_->OnPropertyChanged(testProperty);
             }), "NotifyAll");
     }
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState()
+RetError MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState(bool &state)
 {
-    return screenMagnifier_;
+    state = screenMagnifier_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetShortKeyState()
+RetError MockAccessibleAbilityManagerServiceStub::GetShortKeyState(bool &state)
 {
-    return shortkey_;
+    state = shortkey_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetMouseKeyState()
+RetError MockAccessibleAbilityManagerServiceStub::GetMouseKeyState(bool &state)
 {
-    return mouseKey_;
+    state = mouseKey_;
+    return RET_OK;
 }
 
-int32_t MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick()
+RetError MockAccessibleAbilityManagerServiceStub::GetMouseAutoClick(int32_t &time)
 {
-    return mouseAutoClick_;
+    time = mouseAutoClick_;
+    return RET_OK;
 }
 
-std::string MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget()
+RetError MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget(std::string &name)
 {
-    return shortkeyTarget_;
+    name = shortkeyTarget_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState()
+RetError MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState(bool &state)
 {
-    return highContrastText_;
+    state = highContrastText_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetInvertColorState()
+RetError MockAccessibleAbilityManagerServiceStub::GetInvertColorState(bool &state)
 {
-    return invertColor_;
+    state = invertColor_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetAnimationOffState()
+RetError MockAccessibleAbilityManagerServiceStub::GetAnimationOffState(bool &state)
 {
-    return animationOff_;
+    state = animationOff_;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityManagerServiceStub::GetAudioMonoState()
+RetError MockAccessibleAbilityManagerServiceStub::GetAudioMonoState(bool &state)
 {
-    return audioMono_;
+    state = audioMono_;
+    return RET_OK;
 }
 
-uint32_t MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter()
+RetError MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter(uint32_t &type)
 {
-    return daltonizationColorFilter_;
+    type = daltonizationColorFilter_;
+    return RET_OK;
 }
 
-uint32_t MockAccessibleAbilityManagerServiceStub::GetContentTimeout()
+RetError MockAccessibleAbilityManagerServiceStub::GetContentTimeout(uint32_t &timer)
 {
-    return contentTimeout_;
+    timer = contentTimeout_;
+    return RET_OK;
 }
 
-float MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount()
+RetError MockAccessibleAbilityManagerServiceStub::GetBrightnessDiscount(float &brightness)
 {
-    return brightnessDiscount_;
+    brightness = brightnessDiscount_;
+    return RET_OK;
 }
 
-float MockAccessibleAbilityManagerServiceStub::GetAudioBalance()
+RetError MockAccessibleAbilityManagerServiceStub::GetAudioBalance(float &balance)
 {
-    return audioBalance_;
+    balance = audioBalance_;
+    return RET_OK;
 }
 
 void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData &configData)

@@ -22,11 +22,13 @@ namespace OHOS {
 namespace Accessibility {
 enum RetError : int32_t {
     RET_OK = 0,
+    RET_ERR_FAILED = -1,
     RET_ERR_INVALID_PARAM = 1,
     RET_ERR_NULLPTR = 2,
     RET_ERR_CONNECTION_EXIST = 3,
     RET_ERR_IPC_FAILED = 4,
     RET_ERR_SAMGR = 5,
+    RET_ERR_NO_PERMISSION = 6,
 };
 
 enum GlobalAction : uint32_t {
