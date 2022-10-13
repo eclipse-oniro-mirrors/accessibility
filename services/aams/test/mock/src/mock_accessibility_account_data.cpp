@@ -157,7 +157,7 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &ur
 void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
 {
     HILOG_DEBUG("start.");
-    for (auto& ability : enabledAbilities_) {
+    for (const auto& ability : enabledAbilities_) {
         if (ability == bundleName) {
             HILOG_ERROR("The ability is already enabled, and it's bundle name is %{public}s", bundleName.c_str());
             return;
@@ -289,7 +289,7 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
 bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
-    for (auto &enabledAbility : enabledAbilities_) {
+    for (const auto &enabledAbility : enabledAbilities_) {
         if (enabledAbility == name) {
             HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
             return false;

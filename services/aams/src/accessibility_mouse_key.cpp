@@ -152,9 +152,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
             }
             actionKey = pressedKeys[i];
             size_t Index = (i + 1) % ITEM_COUNT_2;
-            if (Index > 1) {
-                return false;
-            }
             if (std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index]) !=
                 CTRL_SHIFT_KEYCODE_V.end()) {
                 metaKey1 = pressedKeys[Index];
@@ -170,9 +167,6 @@ bool AccessibilityMouseKey::IsMouseKey(const std::vector<int32_t> &pressedKeys, 
             actionKey = pressedKeys[i];
             size_t Index1 = (i + 1) % ITEM_COUNT_3;
             size_t Index2 = (i + 2) % ITEM_COUNT_3;
-            if ((Index1 > (ITEM_COUNT_3 - 1)) || (Index2 > (ITEM_COUNT_3 - 1))) {
-                return false;
-            }
             if ((std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index1]) !=
                 CTRL_SHIFT_KEYCODE_V.end()) &&
                 (std::find(CTRL_SHIFT_KEYCODE_V.begin(), CTRL_SHIFT_KEYCODE_V.end(), pressedKeys[Index2]) !=

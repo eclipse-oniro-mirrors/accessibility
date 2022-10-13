@@ -16,7 +16,7 @@
 #include "accessible_ability_client_impl.h"
 
 #include <chrono>
-#include <inttypes.h>
+#include <cinttypes>
 #include <thread>
 
 #include "accessible_ability_client.h"

@@ -1243,7 +1243,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         colorStr.erase(0, 1);
         std::string newColorStr;
         // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
-        for (auto& c : colorStr) {
+        for (const auto& c : colorStr) {
             newColorStr += c;
             newColorStr += c;
         }
