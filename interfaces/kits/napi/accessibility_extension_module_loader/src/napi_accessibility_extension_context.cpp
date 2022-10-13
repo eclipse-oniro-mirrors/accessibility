@@ -150,8 +150,8 @@ private:
                     return;
                 }
 
-                bool ret = context->SetTargetBundleName(targetBundleNames);
-                if (ret) {
+                RetError ret = context->SetTargetBundleName(targetBundleNames);
+                if (ret == RET_OK) {
                     task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
@@ -212,8 +212,8 @@ private:
                 }
 
                 OHOS::Accessibility::AccessibilityElementInfo elementInfo;
-                bool ret = context->GetFocus(focus, elementInfo);
-                if (ret) {
+                RetError ret = context->GetFocus(focus, elementInfo);
+                if (ret == RET_OK) {
                     napi_value constructor = nullptr;
                     napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
                         &constructor);
@@ -283,7 +283,7 @@ private:
 
                 HILOG_DEBUG("isActiveWindow[%{public}d] windowId[%{public}d]", isActiveWindow, windowId);
                 OHOS::Accessibility::AccessibilityElementInfo elementInfo;
-                bool ret = false;
+                RetError ret = RET_OK;
                 if (isActiveWindow) {
                     ret = context->GetRoot(elementInfo);
                 } else {
@@ -291,7 +291,7 @@ private:
                     windowInfo.SetWindowId(windowId);
                     ret = context->GetRootByWindow(windowInfo, elementInfo);
                 }
-                if (ret) {
+                if (ret == RET_OK) {
                     napi_value constructor = nullptr;
                     napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
                         &constructor);
@@ -370,8 +370,8 @@ private:
                 }
 
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                bool ret = context->GetWindows(accessibilityWindows);
-                if (ret) {
+                RetError ret = context->GetWindows(accessibilityWindows);
+                if (ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
                     ConvertAccessibilityWindowInfosToJS(
@@ -410,8 +410,8 @@ private:
                 }
 
                 std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                bool ret = context->GetWindows(static_cast<uint64_t>(displayId), accessibilityWindows);
-                if (ret) {
+                RetError ret = context->GetWindows(static_cast<uint64_t>(displayId), accessibilityWindows);
+                if (ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
                     ConvertAccessibilityWindowInfosToJS(
@@ -457,13 +457,13 @@ private:
                     task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
                     return;
                 }
-                bool ret = false;
+                RetError ret = RET_OK;
                 if (isParameterArray) {
                     ret = context->InjectGesture(gesturePathArray);
                 } else {
                     ret = context->InjectGesture(gesturePath);
                 }
-                if (ret) {
+                if (ret == RET_OK) {
                     task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);

@@ -35,73 +35,73 @@ public:
      * @brief Obtains elementInfo of focus.
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
      * @param elementInfo The accessibilityElementInfo of focus.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    bool GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo);
+    RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Obtains elementInfo of focus.
      * @param sourceInfo
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
      * @param elementInfo The accessibilityElementInfo of focus.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    bool GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
+    RetError GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
         AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Sends simulate gestures to the screen.
      * @param gesturePath The gesture which need to send.
-     * @return Return true if the gesture sends successfully, else return false.
+     * @return Return RET_OK if the gesture sends successfully, otherwise failed.
      */
-    bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
+    RetError InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
     /**
      * @brief Sends simulate gestures to the screen.
      * @param gesturePaths The gesture which need to send.
-     * @return Return true if the gesture sends successfully, else return false.
+     * @return Return RET_OK if the gesture sends successfully, otherwise failed.
      */
-    bool InjectGesture(const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths);
+    RetError InjectGesture(const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths);
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
      * @param elementInfo The elementInfo of the accessible root node.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    bool GetRoot(AccessibilityElementInfo &elementInfo);
+    RetError GetRoot(AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
      * @param windowInfo The source window info to get root.
      * @param elementInfo The elementInfo of the accessible root node.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    bool GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+    RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
         AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows);
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
+    RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows);
 
     /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
      * @param elementInfo
      * @param direction Indicates the direction to obtain the next focused node. Refer to FocusMoveDirection
      * @param nextElementInfo The info of next element.
-     * @return Return true if gets next elementInfo successfully, else return false.
+     * @return Return RET_OK if gets next elementInfo successfully, otherwise failed.
      */
-    bool GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
+    RetError GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
         AccessibilityElementInfo &nextElementInfo);
 
     /**
@@ -109,9 +109,9 @@ public:
      * @param index
      * @param parent
      * @param child The element info of child
-     * @return Return true if gets child elementInfo successfully, else return false.
+     * @return Return RET_OK if gets child elementInfo successfully, otherwise failed.
      */
-    bool GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+    RetError GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
         AccessibilityElementInfo &child);
 
     /**
@@ -119,18 +119,18 @@ public:
      * @param elementInfo
      * @param text specified content
      * @param elementInfos
-     * @return Return true if gets elementInfos successfully, else return false.
+     * @return Return RET_OK if gets elementInfos successfully, otherwise failed.
      */
-    bool GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
+    RetError GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
         std::vector<AccessibilityElementInfo> &elementInfos);
 
     /**
      * @brief Get Parent node information
      * @param child
      * @param parent
-     * @return Return true if gets info successfully, else return false.
+     * @return Return RET_OK if gets info successfully, otherwise failed.
      */
-    bool GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent);
+    RetError GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent);
 
     /**
      * @brief Executes a specified action.
@@ -150,17 +150,17 @@ public:
      *                                  {ACTION_ARGU_SELECT_TEXT_END,"10"(end location)})
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
-     * @return true Perform action succeed, otherwise is not.
+     * @return Return RET_OK if performs action succeed, otherwise failed.
      */
-    bool ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
+    RetError ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
-     * @return Return true if sets target bundle names successfully, else return false.
+     * @return Return RET_OK if sets target bundle names successfully, otherwise failed.
      */
-    bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
+    RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
 };
 } // namespace Accessibility
 } // namespace OHOS

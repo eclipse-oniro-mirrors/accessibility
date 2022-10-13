@@ -124,7 +124,7 @@ public:
      * @param name bundle name + / + ability name.
      * @return return true if removes enabled ability successfully, else return false.
      */
-    bool RemoveEnabledAbility(const std::string &name);
+    RetError RemoveEnabledAbility(const std::string &name);
 
     void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo); // For UT
 
@@ -248,7 +248,7 @@ public:
 
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
-    bool EnableAbility(const std::string &name, const uint32_t capabilities);
+    RetError EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
 
@@ -300,7 +300,7 @@ private:
 
     void UpdateEnableAbilityListsState();
 
-    bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
+    RetError SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
     uint32_t GetAbilityStaticCapabilities(const std::string &name) const;
 
     int32_t id_;

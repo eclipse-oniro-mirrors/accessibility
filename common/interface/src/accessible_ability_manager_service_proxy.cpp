@@ -56,7 +56,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(IAccessibleAbilityMan
     return true;
 }
 
-void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent)
+RetError AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInfo &uiEvent)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -66,18 +66,19 @@ void AccessibleAbilityManagerServiceProxy::SendEvent(const AccessibilityEventInf
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteParcelable(&eventInfoParcel)) {
         HILOG_ERROR("fail, connection write parcelable AccessibilityEventInfo error");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::SEND_EVENT, data, reply, option)) {
         HILOG_ERROR("SendEvent fail");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
+    return RET_OK;
 }
 
 RetError AccessibleAbilityManagerServiceProxy::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
@@ -161,7 +162,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
     return reply.ReadUint32();
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+RetError AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
     std::vector<AccessibilityAbilityInfo> &infos)
 {
     HILOG_DEBUG();
@@ -171,23 +172,23 @@ bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t ability
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteUint32(abilityTypes)) {
         HILOG_ERROR("fail, connection write abilityTypes error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(stateType)) {
         HILOG_ERROR("fail, connection write stateType error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ABILITYLIST,
         data, reply, option)) {
         HILOG_ERROR("GetAbilityList fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     // read result
     int32_t abilityInfoSize = reply.ReadInt32();
@@ -195,14 +196,14 @@ bool AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t ability
         sptr<AccessibilityAbilityInfoParcel> info = reply.ReadStrongParcelable<AccessibilityAbilityInfoParcel>();
         if (!info) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityAbilityInfoParcel> failed");
-            return false;
+            return RET_ERR_IPC_FAILED;
         }
         infos.emplace_back(*info);
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-void AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
+RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
     int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
 {
     HILOG_DEBUG();
@@ -212,32 +213,33 @@ void AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
 
     if (!operation) {
         HILOG_ERROR("fail, Input operation is null");
-        return;
+        return RET_ERR_INVALID_PARAM;
     }
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(windowId)) {
         HILOG_ERROR("fail, connection write windowId error");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteRemoteObject(operation->AsObject())) {
         HILOG_ERROR("fail, connection write parcelable operation error");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::REGISTER_INTERACTION_CONNECTION,
         data, reply, option)) {
         HILOG_ERROR("RegisterElementOperator fail");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
+    return RET_OK;
 }
 
-void AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32_t windowId)
+RetError AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32_t windowId)
 {
     HILOG_DEBUG("windowId(%{public}d)", windowId);
     MessageParcel data;
@@ -246,19 +248,20 @@ void AccessibleAbilityManagerServiceProxy::DeregisterElementOperator(const int32
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(windowId)) {
         HILOG_ERROR("fail, connection write userId error");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::DEREGISTER_INTERACTION_CONNECTION,
         data, reply, option)) {
         HILOG_ERROR("DeregisterElementOperator fail");
-        return;
+        return RET_ERR_IPC_FAILED;
     }
+    return RET_OK;
 }
 
 RetError AccessibleAbilityManagerServiceProxy::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
@@ -416,7 +419,7 @@ bool AccessibleAbilityManagerServiceProxy::GetKeyEventObserverState()
     return reply.ReadBool();
 }
 
-bool AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -425,52 +428,28 @@ bool AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &name
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteString(name)) {
         HILOG_ERROR("name write error: %{public}s, ", name.c_str());
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteUint32(capabilities)) {
         HILOG_ERROR("capabilities write error: %{public}d, ", capabilities);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES,
         data, reply, option)) {
         HILOG_ERROR("EnableAbility fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
-{
-    HILOG_DEBUG();
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token error");
-        return false;
-    }
-    if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT,
-        data, reply, option)) {
-        HILOG_ERROR("GetEnabledAbilities fail");
-        return false;
-    }
-
-    int32_t dev_num = reply.ReadInt32();
-    for (int32_t i = 0; i < dev_num; i++) {
-        enabledAbilities.push_back(reply.ReadString());
-    }
-    return reply.ReadBool();
-}
-
-bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
+RetError AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -479,19 +458,19 @@ bool AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &nam
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteString(name)) {
         HILOG_ERROR("name write error: %{public}s, ", name.c_str());
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES,
         data, reply, option)) {
         HILOG_ERROR("DisableAbility fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
 int32_t AccessibleAbilityManagerServiceProxy::GetActiveWindow()
@@ -541,7 +520,7 @@ RetError AccessibleAbilityManagerServiceProxy::EnableUITestAbility(const sptr<IR
     return result;
 }
 
-bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
+RetError AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -550,15 +529,15 @@ bool AccessibleAbilityManagerServiceProxy::DisableUITestAbility()
 
     if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("fail, connection write Token");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::DISABLE_UI_TEST_ABILITY,
         data, reply, option)) {
         HILOG_ERROR("DisableUITestAbility fail");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
 RetError AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const bool state)

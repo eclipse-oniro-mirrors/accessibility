@@ -61,8 +61,6 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
     memberFuncMap_[static_cast<uint32_t>(
@@ -224,7 +222,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
     uint32_t abilityTypes = data.ReadUint32();
     int32_t stateType = data.ReadInt32();
     std::vector<AccessibilityAbilityInfo> abilityInfos {};
-    bool result = GetAbilityList(abilityTypes, stateType, abilityInfos);
+    RetError result = GetAbilityList(abilityTypes, stateType, abilityInfos);
 
     int32_t abilityInfoSize = static_cast<int32_t>(abilityInfos.size());
     reply.WriteInt32(abilityInfoSize);
@@ -239,7 +237,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAbilityList(MessageParcel 
             return TRANSACTION_ERR;
         }
     }
-    reply.WriteBool(result);
+    reply.WriteInt32(static_cast<int32_t>(result));
     return NO_ERROR;
 }
 
@@ -372,36 +370,29 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState(
 ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     std::string name = data.ReadString();
     uint32_t capabilities = data.ReadUint32();
-    bool result = EnableAbility(name, capabilities);
-    reply.WriteBool(result);
-    return NO_ERROR;
-}
-
-ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessageParcel &data, MessageParcel &reply)
-{
-    HILOG_DEBUG();
-
-    std::vector<std::string> enabledAbilities;
-    bool result = GetEnabledAbilities(enabledAbilities);
-    reply.WriteInt32(enabledAbilities.size());
-    for (auto &ability : enabledAbilities) {
-        if (!reply.WriteString(ability)) {
-            HILOG_ERROR("ability write error: %{public}s, ", ability.c_str());
-            return TRANSACTION_ERR;
-        }
-    }
-    reply.WriteBool(result);
+    RetError result = EnableAbility(name, capabilities);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
 ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
     std::string name = data.ReadString();
-    bool result = DisableAbility(name);
-    reply.WriteBool(result);
+    RetError result = DisableAbility(name);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -432,8 +423,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility(
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-    bool result = DisableUITestAbility();
-    if (!reply.WriteBool(result)) {
+    int32_t result = DisableUITestAbility();
+    if (!reply.WriteInt32(result)) {
         HILOG_ERROR("WriteBool failed");
         return TRANSACTION_ERR;
     }

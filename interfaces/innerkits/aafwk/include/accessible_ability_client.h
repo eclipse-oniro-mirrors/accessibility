@@ -50,74 +50,74 @@ public:
      * @brief Obtains elementInfo of focus.
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
      * @param elementInfo The accessibilityElementInfo of focus.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    virtual bool GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) = 0;
+    virtual RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) = 0;
 
     /**
      * @brief Obtains elementInfo of focus.
      * @param sourceInfo The source info to get focus.
      * @param focusType The type of focus. It contains FOCUS_TYPE_INPUT and FOCUS_TYPE_ACCESSIBILITY.
      * @param elementInfo The accessibilityElementInfo of focus.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    virtual bool GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
+    virtual RetError GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
         AccessibilityElementInfo &elementInfo) = 0;
 
     /**
      * @brief Sends simulate gestures to the screen.
      * @param gesturePath The gesture which need to send.
-     * @return Return true if the gesture sends successfully, else return false.
+     * @return Return RET_OK if the gesture sends successfully, otherwise failed.
      */
-    virtual bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) = 0;
+    virtual RetError InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) = 0;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
      * @param elementInfo The elementInfo of the accessible root node.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    virtual bool GetRoot(AccessibilityElementInfo &elementInfo) = 0;
+    virtual RetError GetRoot(AccessibilityElementInfo &elementInfo) = 0;
 
     /**
      * @brief Obtains elementInfo of the accessible root node.
      * @param windowInfo The source window info to get root.
      * @param elementInfo The elementInfo of the accessible root node.
-     * @return Return true if obtains elementInfo successfully, else return false.
+     * @return Return RET_OK if obtains elementInfo successfully, otherwise failed.
      */
-    virtual bool GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+    virtual RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
         AccessibilityElementInfo &elementInfo) = 0;
 
     /**
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) = 0;
+    virtual RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) = 0;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) = 0;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) = 0;
+    virtual RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) = 0;
 
     /**
      * @brief Gets the next focused node in the specified direction of the currently focused node.
      * @param elementInfo The source info to get next info.
      * @param direction Indicates the direction to obtain the next focused node. Refer to FocusMoveDirection
      * @param nextElementInfo The info of next element.
-     * @return Return true if gets next elementInfo successfully, else return false.
+     * @return Return RET_OK if gets next elementInfo successfully, otherwise failed.
      */
-    virtual bool GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
+    virtual RetError GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
         AccessibilityElementInfo &nextElementInfo) = 0;
 
     /**
@@ -125,18 +125,18 @@ public:
      * @param index The index of the child.
      * @param parent The parent info to get child.
      * @param child The element info of child.
-     * @return Return true if gets child elementInfo successfully, else return false.
+     * @return Return RET_OK if gets child elementInfo successfully, otherwise failed.
      */
-    virtual bool GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+    virtual RetError GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
         AccessibilityElementInfo &child) = 0;
 
     /**
      * @brief Get the children node information
      * @param parent The parent info to get children.
      * @param children The element info of children.
-     * @return Return true if gets children elementInfo successfully, else return false.
+     * @return Return RET_OK if gets children elementInfo successfully, otherwise failed.
      */
-    virtual bool GetChildren(const AccessibilityElementInfo &parent,
+    virtual RetError GetChildren(const AccessibilityElementInfo &parent,
         std::vector<AccessibilityElementInfo> &children) = 0;
 
     /**
@@ -144,26 +144,26 @@ public:
      * @param elementInfo The source info.
      * @param text specified content
      * @param elementInfos The element infos of specified content.
-     * @return Return true if gets elementInfos successfully, else return false.
+     * @return Return RET_OK if gets elementInfos successfully, otherwise failed.
      */
-    virtual bool GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
+    virtual RetError GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
         std::vector<AccessibilityElementInfo> &elementInfos) = 0;
 
     /**
      * @brief Get the node information related with the event
      * @param eventInfo The source info to get source.
      * @param elementInfo The element info of source.
-     * @return Return true if gets elementInfos successfully, else return false.
+     * @return Return RET_OK if gets elementInfos successfully, otherwise failed.
      */
-    virtual bool GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo) = 0;
+    virtual RetError GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo) = 0;
 
     /**
      * @brief Get Parent node information
      * @param child The child element info to get parent.
      * @param parent The parent element info.
-     * @return Return true if gets info successfully, else return false.
+     * @return Return RET_OK if gets info successfully, otherwise failed.
      */
-    virtual bool GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) = 0;
+    virtual RetError GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) = 0;
 
     /**
      * @brief Executes a specified action.
@@ -183,24 +183,24 @@ public:
      *                                  {ACTION_ARGU_SELECT_TEXT_END,"10"(end location)})
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
-     * @return true Perform action succeed, otherwise is not.
+     * @return Return RET_OK if performs action succeed, otherwise is not.
      */
-    virtual bool ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
+    virtual RetError ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments) = 0;
 
     /**
      * @brief Register ability listener.
      * @param listener The listener to add.
-     * @return Return true if registers listener successfully, else return false.
+     * @return Return RET_OK if registers listener successfully, otherwise failed.
      */
-    virtual bool RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener) = 0;
+    virtual RetError RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener) = 0;
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
-     * @return Return true if sets target bundle names successfully, else return false.
+     * @return Return RET_OK if sets target bundle names successfully, otherwise is not.
      */
-    virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) = 0;
+    virtual RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) = 0;
 
     /**
      * @brief Set cache mode.
@@ -211,8 +211,9 @@ public:
      *             PREFETCH_SIBLINGS: cache the sister/brothers node info also.
      *             PREFETCH_CHILDREN: cache the child node info also.
      *             otherwise: no cache.
+     * @return Return RET_OK if sets cache mode successfully, otherwise is not.
      */
-    virtual void SetCacheMode(const int32_t cacheMode) = 0;
+    virtual RetError SetCacheMode(const int32_t cacheMode) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

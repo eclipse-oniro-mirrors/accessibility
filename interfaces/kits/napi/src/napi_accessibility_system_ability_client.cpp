@@ -64,7 +64,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
             if (asaClient) {
-                callbackInfo->enabled_ = asaClient->IsEnabled();
+                asaClient->IsEnabled(callbackInfo->enabled_);
                 HILOG_INFO("IsOpenAccessibility Executing enabled[%{public}d]", callbackInfo->enabled_);
             }
         },
@@ -127,7 +127,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
             if (asaClient) {
-                callbackInfo->touchEnabled_ = asaClient->IsTouchExplorationEnabled();
+                asaClient->IsTouchExplorationEnabled(callbackInfo->touchEnabled_);
                 HILOG_INFO("IsOpenTouchExploration Executing touchEnabled[%{public}d]", callbackInfo->touchEnabled_);
             }
         },
@@ -197,7 +197,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
             if (asaClient) {
                 callbackInfo->result_ = asaClient->GetAbilityList(callbackInfo->abilityTypes_,
-                    callbackInfo->stateTypes_, callbackInfo->abilityList_);
+                    callbackInfo->stateTypes_, callbackInfo->abilityList_) == OHOS::Accessibility::RET_OK;
             }
         },
         // Execute the complete function
@@ -263,7 +263,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             NAccessibilitySystemAbilityClient* callbackInfo = static_cast<NAccessibilitySystemAbilityClient*>(data);
             auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
             if (callbackInfo->result_ && asaClient) {
-                callbackInfo->result_ = asaClient->SendEvent(callbackInfo->eventInfo_);
+                callbackInfo->result_ = asaClient->SendEvent(callbackInfo->eventInfo_) == OHOS::Accessibility::RET_OK;
             }
             HILOG_INFO("SendEvent result[%{public}d]", callbackInfo->result_);
         },
@@ -565,7 +565,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     if (!std::strcmp(eventType.c_str(), "enableChange")) {
         type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE;
     } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        type =  OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
+        type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
     } else {
         HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
         return nullptr;

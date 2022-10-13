@@ -318,21 +318,21 @@ void NAccessibilityElement::AttributeValueExecute(napi_env env, void* data)
     if (callbackInfo->attribute_ == "parent") {
         if (callbackInfo->accessibilityElement_.elementInfo_) {
             callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetParentElementInfo(
-                *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfo_);
+                *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfo_) == RET_OK;
         } else {
             HILOG_ERROR("elementInfo is nullptr");
         }
     } else if (callbackInfo->attribute_ == "children") {
         if (callbackInfo->accessibilityElement_.elementInfo_) {
             callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetChildren(
-                *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfos_);
+                *callbackInfo->accessibilityElement_.elementInfo_, callbackInfo->nodeInfos_) == RET_OK;
         } else {
             HILOG_ERROR("elementInfo is nullptr");
         }
     } else if (callbackInfo->attribute_ == "rootElement") {
         if (callbackInfo->accessibilityElement_.windowInfo_) {
             callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetRootByWindow(
-                *callbackInfo->accessibilityElement_.windowInfo_, callbackInfo->nodeInfo_);
+                *callbackInfo->accessibilityElement_.windowInfo_, callbackInfo->nodeInfo_) == RET_OK;
         } else {
             HILOG_ERROR("windowInfo is nullptr");
         }
@@ -1119,7 +1119,8 @@ void NAccessibilityElement::PerformActionExecute(napi_env env, void* data)
 
     ActionType action = ConvertStringToAccessibleOperationType(callbackInfo->actionName_);
     callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->ExecuteAction(
-        *callbackInfo->accessibilityElement_.elementInfo_, action, callbackInfo->actionArguments_);
+        *callbackInfo->accessibilityElement_.elementInfo_, action,
+        callbackInfo->actionArguments_) == RET_OK;
     HILOG_DEBUG("callbackInfo->ret_[%{public}d]", callbackInfo->ret_);
 }
 
@@ -1231,14 +1232,15 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
         case FindElementCondition::FIND_ELEMENT_CONDITION_CONTENT:
             callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetByContent(
                 *(callbackInfo->accessibilityElement_.elementInfo_), callbackInfo->condition_,
-                callbackInfo->nodeInfos_);
+                callbackInfo->nodeInfos_) == RET_OK;
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {
                 int32_t focusType = ConvertStringToFocusType(callbackInfo->condition_);
                 HILOG_INFO("focusType is %{public}d", focusType);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetFocusByElementInfo(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), focusType, callbackInfo->nodeInfo_);
+                    *(callbackInfo->accessibilityElement_.elementInfo_),
+                    focusType, callbackInfo->nodeInfo_) == RET_OK;
             }
             break;
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION:
@@ -1246,7 +1248,8 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
                 FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->condition_);
                 HILOG_INFO("direction is %{public}d", direction);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), direction, callbackInfo->nodeInfo_);
+                    *(callbackInfo->accessibilityElement_.elementInfo_), direction,
+                    callbackInfo->nodeInfo_) == RET_OK;
             }
             break;
         default:

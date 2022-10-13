@@ -44,9 +44,9 @@ public:
      *             PREFETCH_SIBLINGS: Need to make the sister/brothers element info also.
      *             PREFETCH_CHILDREN: Need to make the child element info also.
      *             otherwise: Make the element information by elementId only.
-     * @return Return true if search elementInfo successfully, else return false.
+     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
      */
-    virtual bool SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
+    virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
         const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode) override;
 
@@ -58,9 +58,9 @@ public:
      * @param text  Filter for the child components to matched with the text
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return true if search elementInfo successfully, else return false.
+     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
      */
-    virtual bool SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
         const std::string &text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -73,9 +73,9 @@ public:
      *                  FOCUS_TYPE_INPUT: text input focus
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return true if find elementInfo successfully, else return false.
+     * @return Return RET_OK if find elementInfo successfully, otherwise failed.
      */
-    virtual bool FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -86,9 +86,9 @@ public:
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return true if search elementInfo successfully, else return false.
+     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
      */
-    virtual bool FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -100,9 +100,9 @@ public:
      * @param actionArguments The parameter for action type.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
-     * @return Return true if perform action successfully, else return false.
+     * @return Return RET_OK if perform action successfully, otherwise failed.
      */
-    virtual bool ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
+    virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -110,24 +110,24 @@ public:
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
+    virtual RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
-     * @return Return true if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
      */
-    virtual bool GetWindowsByDisplayId(const uint64_t displayId,
+    virtual RetError GetWindowsByDisplayId(const uint64_t displayId,
         std::vector<AccessibilityWindowInfo> &windows) override;
 
     /**
@@ -140,16 +140,16 @@ public:
     /**
      * @brief Send simulation gesture through the proxy object.
      * @param gesturePath The gesture path to send.
-     * @return Return true if gesture injection is successfully, otherwise return false.
+     * @return Return RET_OK if gesture injection is successfully, otherwise failed.
      */
-    virtual bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+    virtual RetError SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
-     * @return Return true if sets target bundle names successfully, else return false.
+     * @return Return RET_OK if sets target bundle names successfully, otherwise failed.
      */
-    virtual bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
+    virtual RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
 private:
     /**

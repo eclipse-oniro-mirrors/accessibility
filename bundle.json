@@ -117,14 +117,6 @@
         }
       ],
       "test": [
-        "//foundation/barrierfree/accessibility/services/test:moduletest",
-        "//foundation/barrierfree/accessibility/services/aams/test:unittest",
-        "//foundation/barrierfree/accessibility/frameworks/aafwk/test:unittest",
-        "//foundation/barrierfree/accessibility/frameworks/acfwk/test:unittest",
-        "//foundation/barrierfree/accessibility/frameworks/asacfwk/test:unittest",
-        "//foundation/barrierfree/accessibility/frameworks/common/test:unittest",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:fuzztest",
-        "//foundation/barrierfree/accessibility/interfaces/innerkits/test/benchmarktest:benchmarktest"
       ]
     }
   }
