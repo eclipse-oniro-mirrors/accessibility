@@ -44,7 +44,8 @@ RetError AccessibilityExtensionContext::GetFocusByElementInfo(const Accessibilit
     return aaClient->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-RetError AccessibilityExtensionContext::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
+RetError AccessibilityExtensionContext::InjectGesture(
+    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();

@@ -286,7 +286,8 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
         }, accountId_, clientName_), "SetOnKeyPressEventResult");
 }
 
-RetError AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+RetError AccessibleAbilityChannel::SendSimulateGesture(
+    const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_INFO();
     if (!eventHandler_) {
