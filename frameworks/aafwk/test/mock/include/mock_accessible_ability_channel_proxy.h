@@ -36,8 +36,8 @@ public:
         RetError(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t focusType,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD5(FocusMoveSearch, RetError(const int32_t accessibilityWindowId, const int32_t elementId,
-        const int32_t direction,const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
-
+        const int32_t direction, const int32_t requestId,
+        const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD6(ExecuteAction, RetError(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));

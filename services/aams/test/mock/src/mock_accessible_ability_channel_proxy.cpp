@@ -63,8 +63,9 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
+    const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
     (void)elementId;

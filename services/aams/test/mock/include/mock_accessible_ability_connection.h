@@ -44,7 +44,8 @@ public:
         const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD1(GetWindows, RetError(std::vector<AccessibilityWindowInfo> &windows));
-    MOCK_METHOD2(GetWindowsByDisplayId, RetError(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
+    MOCK_METHOD2(GetWindowsByDisplayId, RetError(const uint64_t displayId,
+        std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
     MOCK_METHOD1(SendSimulateGesture, RetError(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
 };

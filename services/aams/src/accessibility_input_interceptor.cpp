@@ -46,7 +46,7 @@ AccessibilityInterceptorManager::AccessibilityInterceptorManager()
 {
     HILOG_DEBUG();
 
-	inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
+    inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
     inputInterceptor_ = std::make_shared<AccessibilityInputInterceptor>();
 }
 

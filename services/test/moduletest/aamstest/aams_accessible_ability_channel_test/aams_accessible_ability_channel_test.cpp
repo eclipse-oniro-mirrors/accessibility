@@ -232,7 +232,8 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
@@ -283,7 +284,8 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
@@ -334,7 +336,8 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_ACCESSIBILITY;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
@@ -409,7 +412,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(4, proxy_->testChannelElementId_);
@@ -534,7 +538,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
@@ -559,7 +564,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
@@ -611,7 +617,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    RetError result =
+        AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
