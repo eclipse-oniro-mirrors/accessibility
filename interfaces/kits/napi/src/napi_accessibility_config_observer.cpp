@@ -433,12 +433,18 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(const std::shared_ptr<N
     observers_.emplace_back(observer);
 }
 
-void NAccessibilityConfigObserverImpl::UnsubscribeObserver(OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
+void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
+    OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
+            if (env != (*iter)->env_) {
+                HILOG_WARN("Not same env");
+                iter++;
+                continue;
+            }
             napi_value item = nullptr;
             bool equalFlag = false;
             napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);

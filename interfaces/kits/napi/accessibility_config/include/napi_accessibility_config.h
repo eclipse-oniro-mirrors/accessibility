@@ -39,7 +39,7 @@ public:
     void OnEnableAbilityListsStateChanged() override;
     void SubscribeToFramework();
     void SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer);
-    void UnsubscribeObserver(napi_value observer);
+    void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
 
 private:

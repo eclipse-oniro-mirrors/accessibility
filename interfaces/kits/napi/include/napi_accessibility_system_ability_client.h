@@ -44,7 +44,7 @@ public:
     void OnStateChanged(const bool state) override;
     void SubscribeToFramework();
     void SubscribeObserver(const std::shared_ptr<StateListener> &observer);
-    void UnsubscribeObserver(napi_value observer);
+    void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
 
 private:

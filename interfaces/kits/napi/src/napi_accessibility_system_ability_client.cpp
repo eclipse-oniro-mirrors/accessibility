@@ -362,14 +362,14 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
             if (argc >= ARGS_SIZE_TWO) {
-                accessibilityStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                accessibilityStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
                 accessibilityStateListeners_->UnsubscribeObservers();
             }
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
             if (argc >= ARGS_SIZE_TWO) {
-                touchGuideStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
             } else {
                 touchGuideStateListeners_->UnsubscribeObservers();
             }
@@ -600,7 +600,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     }
 
     if (argc >= ARGS_SIZE_TWO) {
-        captionListeners_->UnsubscribeObserver(type, args[PARAM1]);
+        captionListeners_->UnsubscribeObserver(env, type, args[PARAM1]);
     } else {
         captionListeners_->UnsubscribeObservers(type);
     }
@@ -897,11 +897,16 @@ void StateListenerImpl::SubscribeObserver(const std::shared_ptr<StateListener> &
     HILOG_INFO("observer size%{public}zu", observers_.size());
 }
 
-void StateListenerImpl::UnsubscribeObserver(napi_value observer)
+void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
+        if (env != (*iter)->env_) {
+            HILOG_WARN("Not same env");
+            iter++;
+            continue;
+        }
         napi_value item = nullptr;
         bool equalFlag = false;
         napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
