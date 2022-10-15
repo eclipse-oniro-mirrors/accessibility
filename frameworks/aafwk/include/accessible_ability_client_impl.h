@@ -287,6 +287,7 @@ private:
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
+    std::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
