@@ -74,7 +74,7 @@ void AccessibilityShortKey::SendKeyEventToNext()
 {
     HILOG_DEBUG();
 
-    for (auto &keyEvent : cachedKeyEvents_) {
+    for (const auto &keyEvent : cachedKeyEvents_) {
         EventTransmission::OnKeyEvent(*keyEvent);
     }
 

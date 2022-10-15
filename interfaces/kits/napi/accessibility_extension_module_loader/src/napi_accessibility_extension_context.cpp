@@ -67,7 +67,7 @@ static void ConvertAccessibilityWindowInfosToJS(
     napi_value constructor = nullptr;
     napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
 
-    for (auto& windowInfo : accessibilityWindowInfos) {
+    for (const auto& windowInfo : accessibilityWindowInfos) {
         napi_value obj = nullptr;
         napi_new_instance(env, constructor, 0, nullptr, &obj);
         ConvertAccessibilityWindowInfoToJS(env, obj, windowInfo);

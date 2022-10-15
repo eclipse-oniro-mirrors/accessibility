@@ -211,7 +211,7 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         AttributeNamesComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -302,7 +302,7 @@ napi_value NAccessibilityElement::AttributeValue(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "AttributeValue", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource, NAccessibilityElement::AttributeValueExecute,
-        NAccessibilityElement::AttributeValueComplete, (void*)callbackInfo, &callbackInfo->work_);
+        NAccessibilityElement::AttributeValueComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -977,7 +977,7 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         ActionNamesComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -1108,7 +1108,7 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "PerformAction", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource, PerformActionExecute, PerformActionComplete,
-        (void*)callbackInfo, &callbackInfo->work_);
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -1224,7 +1224,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "FindElement", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementExecute,
-        FindElementComplete, (void*)callbackInfo, &callbackInfo->work_);
+        FindElementComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(callbackInfo->env_, callbackInfo->work_);
     return promise;
 }
@@ -1392,7 +1392,7 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;

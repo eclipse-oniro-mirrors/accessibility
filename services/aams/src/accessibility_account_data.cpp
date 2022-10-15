@@ -674,7 +674,6 @@ void AccessibilityAccountData::UpdateAbilities()
 {
     HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
     for (auto &installAbility : installedAbilities_) {
-        std::string deviceId = "";
         std::string bundleName = installAbility.GetPackageName();
         std::string abilityName = installAbility.GetName();
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
@@ -694,7 +693,7 @@ void AccessibilityAccountData::UpdateAbilities()
             if (connection) {
                 continue;
             }
-            AppExecFwk::ElementName element(deviceId, bundleName, abilityName);
+            AppExecFwk::ElementName element("", bundleName, abilityName);
             connection = new(std::nothrow) AccessibleAbilityConnection(id_, connectCounter_++, installAbility);
             if (connection) {
                 connection->Connect(element);
@@ -771,10 +770,6 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
             Utils::Parse(newAbility, initParams);
             std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
                 std::make_shared<AccessibilityAbilityInfo>(initParams);
-            if (!accessibilityInfo) {
-                HILOG_ERROR("accessibilityInfo is nullptr");
-                return;
-            }
             AddInstalledAbility(*accessibilityInfo);
             hasNewExtensionAbility = true;
             break;
@@ -805,10 +800,6 @@ void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,
     HILOG_DEBUG();
     // Add installed ability
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
-    if (!abilityInfo) {
-        HILOG_ERROR("abilityInfo is null");
-        return;
-    }
     abilityInfo->SetPackageName(bundleName);
     uint32_t capabilities = CAPABILITY_RETRIEVE | CAPABILITY_GESTURE;
     abilityInfo->SetCapabilityValues(capabilities);
