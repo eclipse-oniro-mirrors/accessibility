@@ -211,7 +211,7 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         AttributeNamesComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -302,7 +302,7 @@ napi_value NAccessibilityElement::AttributeValue(napi_env env, napi_callback_inf
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "AttributeValue", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource, NAccessibilityElement::AttributeValueExecute,
-        NAccessibilityElement::AttributeValueComplete, (void*)callbackInfo, &callbackInfo->work_);
+        NAccessibilityElement::AttributeValueComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -351,21 +351,26 @@ void NAccessibilityElement::AttributeValueComplete(napi_env env, napi_status sta
     }
     napi_value result[ARGS_SIZE_TWO] = {0};
 
-    std::map<std::string, AttributeNamesFunc>::iterator iter;
     if (callbackInfo->accessibilityElement_.isElementInfo_) {
         HILOG_DEBUG("It is element info");
-        iter = elementInfoCompleteMap.find(callbackInfo->attribute_);
+        auto elementIter = elementInfoCompleteMap.find(callbackInfo->attribute_);
+        if (elementIter == elementInfoCompleteMap.end()) {
+            HILOG_ERROR("There is no the attribute[%{public}s] in element info", callbackInfo->attribute_.c_str());
+            napi_get_undefined(callbackInfo->env_, &result[PARAM1]);
+            callbackInfo->ret_ = false;
+        } else {
+            (*elementIter->second)(callbackInfo, result[PARAM1]);
+        }
     } else {
         HILOG_DEBUG("It is window info");
-        iter = windowInfoCompleteMap.find(callbackInfo->attribute_);
-    }
-
-    if (iter == elementInfoCompleteMap.end() || iter == windowInfoCompleteMap.end() || iter->second == nullptr) {
-        HILOG_ERROR("There is no the attribute[%{public}s]", callbackInfo->attribute_.c_str());
-        napi_get_undefined(callbackInfo->env_, &result[PARAM1]);
-        callbackInfo->ret_ = false;
-    } else {
-        (*iter->second)(callbackInfo, result[PARAM1]);
+        auto windowIter = windowInfoCompleteMap.find(callbackInfo->attribute_);
+        if (windowIter == windowInfoCompleteMap.end()) {
+            HILOG_ERROR("There is no the attribute[%{public}s]", callbackInfo->attribute_.c_str());
+            napi_get_undefined(callbackInfo->env_, &result[PARAM1]);
+            callbackInfo->ret_ = false;
+        } else {
+            (*windowIter->second)(callbackInfo, result[PARAM1]);
+        }
     }
 
     HILOG_DEBUG("result is %{public}d", callbackInfo->ret_);
@@ -972,7 +977,7 @@ napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info i
     napi_create_async_work(env, nullptr, resource, [](napi_env env, void* data) {},
         // Execute the complete function
         ActionNamesComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -1103,7 +1108,7 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "PerformAction", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(env, nullptr, resource, PerformActionExecute, PerformActionComplete,
-        (void*)callbackInfo, &callbackInfo->work_);
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -1210,7 +1215,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
     napi_value resource = nullptr;
     napi_create_string_utf8(callbackInfo->env_, "FindElement", NAPI_AUTO_LENGTH, &resource);
     napi_create_async_work(callbackInfo->env_, nullptr, resource, FindElementExecute,
-        FindElementComplete, (void*)callbackInfo, &callbackInfo->work_);
+        FindElementComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(callbackInfo->env_, callbackInfo->work_);
     return promise;
 }
@@ -1376,7 +1381,7 @@ napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *call
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;

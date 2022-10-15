@@ -65,7 +65,7 @@ sptr<AccessibilityGestureInjectPathParcel> AccessibilityGestureInjectPathParcel:
         HILOG_ERROR("Failed to create path.");
         return nullptr;
     }
-    if (!path || !path->ReadFromParcel(parcel)) {
+    if (!path->ReadFromParcel(parcel)) {
         HILOG_ERROR("ReadFromParcel AccessibilityGestureInjectPathParcel failed.");
         path = nullptr;
         return nullptr;

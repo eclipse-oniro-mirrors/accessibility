@@ -293,13 +293,7 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
 std::string AccessibilitySettingsConfig::StateChange(bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
-    std::string STATE_TRUE = "on";
-    std::string STATE_FALSE = "off";
-    if (state) {
-        return STATE_TRUE;
-    } else {
-        return STATE_FALSE;
-    }
+    return state ? "on" : "off";
 }
 
 bool AccessibilitySettingsConfig::GetCaptionState() const

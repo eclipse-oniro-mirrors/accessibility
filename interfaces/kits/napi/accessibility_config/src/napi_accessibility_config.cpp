@@ -71,7 +71,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
                 callbackInfo->ret_ = instance.EnableAbility(
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
             }
-        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -114,7 +114,8 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             if (callbackInfo) {
                 callbackInfo->ret_ = instance.DisableAbility(callbackInfo->abilityName_);
             }
-        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete,
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -501,7 +502,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::SetConfigExecute,
         // Execute the complete function
         NAccessibilityConfig::AsyncWorkComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -547,7 +548,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::GetConfigExecute,
         // Execute the complete function
         NAccessibilityConfig::GetConfigComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;

@@ -92,7 +92,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo, &callbackInfo->work_);
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -155,7 +155,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo, &callbackInfo->work_);
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -226,7 +226,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -297,7 +297,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
             delete callbackInfo;
             callbackInfo = nullptr;
         },
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
 
