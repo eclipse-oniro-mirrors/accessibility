@@ -127,6 +127,13 @@ public:
      */
     virtual RetError UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
         const uint32_t eventType) = 0;
+
+    /**
+     * @brief Get enabled abilities.
+     * @param enabledAbilities The infos of enabled abilities.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

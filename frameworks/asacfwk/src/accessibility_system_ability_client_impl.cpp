@@ -345,6 +345,17 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
     HILOG_DEBUG("end");
 }
 
+RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    return serviceProxy_->GetEnabledAbilities(enabledAbilities);
+}
+
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChanged(const uint32_t stateType)
 {
     HILOG_DEBUG("stateType[%{public}d}", stateType);

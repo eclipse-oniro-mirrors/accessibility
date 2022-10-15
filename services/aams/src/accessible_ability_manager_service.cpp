@@ -65,7 +65,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 {
     HILOG_INFO("AccessibleAbilityManagerService::~AccessibleAbilityManagerService");
 
-    inputInterceptor_ = nullptr;
+    inputInterceptorManager_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
 }
@@ -110,7 +110,7 @@ void AccessibleAbilityManagerService::OnStop()
     currentAccountId_ = -1;
     a11yAccountsData_.clear();
     bundleManager_ = nullptr;
-    inputInterceptor_ = nullptr;
+    inputInterceptorManager_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
     stateCallbackDeathRecipient_ = nullptr;
@@ -716,6 +716,30 @@ RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &
     return accountData->EnableAbility(name, capabilities);
 }
 
+RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &enabledAbilities]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        enabledAbilities = accountData->GetEnabledAbilities();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_ENABLE_ABILITIES");
+    return syncFuture.get();
+}
+
 RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG();
@@ -975,13 +999,14 @@ void AccessibleAbilityManagerService::OutsideTouch(int32_t windowId)
     }
 }
 
-void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
+void AccessibleAbilityManagerService::SetTouchEventInjector(
+    const std::shared_ptr<TouchEventInjector> &touchEventInjector)
 {
     HILOG_DEBUG();
     touchEventInjector_ = touchEventInjector;
 }
 
-void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
+void AccessibleAbilityManagerService::SetKeyEventFilter(const std::shared_ptr<KeyEventFilter> &keyEventFilter)
 {
     HILOG_DEBUG();
     keyEventFilter_ = keyEventFilter;
@@ -1199,12 +1224,12 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     uint32_t flag = accountData->GetInputFilterFlag();
     HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
 
-    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
-    if (!inputInterceptor_) {
-        HILOG_ERROR("inputInterceptor_ is null.");
+    inputInterceptorManager_ = AccessibilityInterceptorManager::GetInstance();
+    if (!inputInterceptorManager_) {
+        HILOG_ERROR("inputInterceptorManager_ is null.");
         return;
     }
-    inputInterceptor_->SetAvailableFunctions(flag);
+    inputInterceptorManager_->SetAvailableFunctions(flag);
     Utils::RecordStartingA11yEvent(flag);
 }
 

@@ -114,6 +114,7 @@ public:
     virtual RetError SetCaptionState(const bool state) = 0;
 
     virtual RetError EnableAbility(const std::string &name, const uint32_t capabilities) = 0;
+    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
     virtual RetError DisableAbility(const std::string &name) = 0;
     virtual int32_t GetActiveWindow() = 0;
 
@@ -166,6 +167,7 @@ public:
         GET_GESTURE_STATE,
         GET_KEY_EVENT_OBSERVE_STATE,
         ENABLE_ABILITIES,
+        GET_ENABLED_OBJECT,
         DISABLE_ABILITIES,
         ENABLE_UI_TEST_ABILITY,
         DISABLE_UI_TEST_ABILITY,

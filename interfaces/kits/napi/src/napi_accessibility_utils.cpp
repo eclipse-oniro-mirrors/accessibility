@@ -148,13 +148,32 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
-napi_value GetErrorValue(napi_env env, int errCode)
+NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
+{
+    auto iter = ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.find(errorCode);
+    if (iter != ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.end()) {
+        return iter->second;
+    } else {
+        return ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(OHOS::Accessibility::RetError::RET_ERR_FAILED);
+    }
+}
+
+napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCode)
 {
     napi_value result = nullptr;
-    napi_value eCode = nullptr;
-    NAPI_CALL(env, napi_create_int32(env, errCode, &eCode));
-    NAPI_CALL(env, napi_create_object(env, &result));
-    NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+    if (errCode == OHOS::Accessibility::RetError::RET_OK) {
+        napi_get_undefined(env, &result);
+    } else {
+        napi_value eCode = nullptr;
+        NAccessibilityErrMsg errMsg = QueryRetMsg(errCode);
+        NAPI_CALL(env, napi_create_int32(env, static_cast<int32_t>(errMsg.errCode), &eCode));
+        NAPI_CALL(env, napi_create_object(env, &result));
+        NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+
+        napi_value eMsg = nullptr;
+        NAPI_CALL(env, napi_create_string_utf8(env, errMsg.message.c_str(), NAPI_AUTO_LENGTH, &eMsg));
+        NAPI_CALL(env, napi_set_named_property(env, result, "message", eMsg));
+    }
     return result;
 }
 

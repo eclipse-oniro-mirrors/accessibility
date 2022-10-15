@@ -449,6 +449,30 @@ RetError AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityManagerServiceProxy::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token error");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT,
+        data, reply, option)) {
+        HILOG_ERROR("GetEnabledAbilities fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    int32_t dev_num = reply.ReadInt32();
+    for (int32_t i = 0; i < dev_num; i++) {
+        enabledAbilities.push_back(reply.ReadString());
+    }
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string &name)
 {
     HILOG_DEBUG();

@@ -29,6 +29,8 @@ public:
     static void ClearInputEventConsumer();
     static std::shared_ptr<IInputEventConsumer> GetInputEventConsumer();
     static std::function<void(std::shared_ptr<KeyEvent>)> GetKeyEventInterceptor();
+    static void ResetMouseMoveFlag();
+    static bool GetMouseMoveFlag();
 };
 } // namespace MMI
 } // namespace OHOS

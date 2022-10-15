@@ -40,7 +40,7 @@ AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, cons
 {
 }
 
-bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
@@ -49,10 +49,10 @@ bool AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int32_t 
     (void)requestId;
     (void)callback;
     (void)mode;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -61,10 +61,10 @@ bool AccessibleAbilityChannel::SearchElementInfosByText(const int32_t accessibil
     (void)text;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -73,10 +73,10 @@ bool AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessibilit
     (void)focusType;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
@@ -84,10 +84,10 @@ bool AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindow
     (void)direction;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -97,46 +97,46 @@ bool AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWindowId
     (void)actionArguments;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
+RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
     (void)displayId;
     (void)windows;
     sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
     if (!clientConnection) {
         HILOG_ERROR("There is no client connection");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     if (!(clientConnection->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_RETRIEVE)) {
         HILOG_ERROR("AccessibleAbilityChannel::GetWindows failed: no capability");
-        return false;
+        return RET_ERR_NO_CAPABILITY;
     }
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     uint64_t displayId = 0;
     return GetWindows(displayId, windows);
 }
 
-bool AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     (void)windowId;
     (void)windowInfo;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     (void)targetBundleNames;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
+RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     return GetWindows(displayId, windows);
@@ -148,10 +148,10 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     (void)sequence;
 }
 
-bool AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
+RetError AccessibleAbilityChannel::SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     (void)gesturePath;
-    return true;
+    return RET_OK;
 }
 
 sptr<AccessibleAbilityConnection> AccessibleAbilityChannel::GetConnection(int32_t accountId,

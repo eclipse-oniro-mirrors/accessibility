@@ -20,22 +20,21 @@
 #include "accessibility_event_info.h"
 #include "key_event.h"
 #include "pointer_event.h"
-#include "refbase.h"
 
 namespace OHOS {
 namespace Accessibility {
-class EventTransmission : public RefBase {
+class EventTransmission {
 public:
     EventTransmission() {};
     virtual ~EventTransmission() {};
     virtual bool OnKeyEvent(MMI::KeyEvent &event);
     virtual bool OnPointerEvent(MMI::PointerEvent &event);
     virtual void OnMoveMouse(int32_t offsetX, int32_t offsetY);
-    void SetNext(const sptr<EventTransmission> &next);
-    sptr<EventTransmission> GetNext();
+    void SetNext(const std::shared_ptr<EventTransmission> &next);
+    std::shared_ptr<EventTransmission> GetNext();
     virtual void DestroyEvents();
 private:
-    sptr<EventTransmission> next_ = nullptr;
+    std::shared_ptr<EventTransmission> next_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

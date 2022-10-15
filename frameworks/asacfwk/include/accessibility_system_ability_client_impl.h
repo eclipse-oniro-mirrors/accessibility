@@ -119,6 +119,13 @@ public:
         const uint32_t eventType) override;
 
     /**
+     * @brief Get enabled abilities.
+     * @param enabledAbilities The infos of enabled abilities.
+     * @return Return RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+
+    /**
      * @brief Clean the AAMS object data.
      * @param remote The object access to AAMS.
      */

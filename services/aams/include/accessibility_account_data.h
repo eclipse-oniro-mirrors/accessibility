@@ -300,9 +300,6 @@ private:
 
     void UpdateEnableAbilityListsState();
 
-    RetError SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
-    uint32_t GetAbilityStaticCapabilities(const std::string &name) const;
-
     int32_t id_;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;

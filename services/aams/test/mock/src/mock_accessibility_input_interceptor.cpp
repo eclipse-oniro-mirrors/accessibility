@@ -25,21 +25,19 @@
 
 namespace OHOS {
 namespace Accessibility {
-sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::instance_ = nullptr;
-sptr<AccessibilityInputInterceptor> AccessibilityInputInterceptor::GetInstance()
+std::shared_ptr<AccessibilityInterceptorManager> AccessibilityInterceptorManager::instance_ = nullptr;
+std::shared_ptr<AccessibilityInterceptorManager> AccessibilityInterceptorManager::GetInstance()
 {
-    HILOG_DEBUG();
-
     if (!instance_) {
-        instance_ = new AccessibilityInputInterceptor();
+        instance_ = std::make_shared<AccessibilityInterceptorManager>();
     }
     return instance_;
 }
 
-AccessibilityInputInterceptor::AccessibilityInputInterceptor()
+AccessibilityInterceptorManager::AccessibilityInterceptorManager()
 {}
 
-AccessibilityInputInterceptor::~AccessibilityInputInterceptor()
+AccessibilityInterceptorManager::~AccessibilityInterceptorManager()
 {}
 
 bool AccessibilityInputInterceptor::OnKeyEvent(MMI::KeyEvent& event)
@@ -60,38 +58,38 @@ bool AccessibilityInputInterceptor::OnPointerEvent(MMI::PointerEvent& event)
     return true;
 }
 
-void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunctions)
+void AccessibilityInterceptorManager::SetAvailableFunctions(uint32_t availableFunctions)
 {
     availableFunctions_ = availableFunctions;
 }
 
-void AccessibilityInputInterceptor::CreateTransmitters()
+void AccessibilityInterceptorManager::CreateTransmitters()
 {}
 
-void AccessibilityInputInterceptor::UpdateInterceptor()
+void AccessibilityInterceptorManager::UpdateInterceptor()
 {
-    inputManager_ = nullptr;
     interceptorId_ = 0;
 }
 
-void AccessibilityInputInterceptor::DestroyInterceptor()
+void AccessibilityInterceptorManager::DestroyInterceptor()
 {}
 
-void AccessibilityInputInterceptor::DestroyTransmitters()
+void AccessibilityInterceptorManager::DestroyTransmitters()
 {}
 
-void AccessibilityInputInterceptor::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const
+void AccessibilityInterceptorManager::ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event)
 {
     (void)event;
 }
 
-void AccessibilityInputInterceptor::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const
+void AccessibilityInterceptorManager::ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event)
 {
     (void)event;
 }
 
-void AccessibilityInputInterceptor::SetNextEventTransmitter(
-    sptr<EventTransmission>& header, sptr<EventTransmission>& current, const sptr<EventTransmission>& next)
+void AccessibilityInterceptorManager::SetNextEventTransmitter(
+    std::shared_ptr<EventTransmission>& header, std::shared_ptr<EventTransmission>& current,
+    const std::shared_ptr<EventTransmission>& next)
 {
     (void)header;
     (void)current;

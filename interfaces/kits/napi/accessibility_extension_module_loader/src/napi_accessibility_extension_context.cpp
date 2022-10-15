@@ -29,10 +29,6 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-constexpr int32_t CONTEXT_ERROR = 1;
-constexpr int32_t PARAMETER_ERROR = 2;
-constexpr int32_t RESULT_ERROR = 3;
-
 static void ConvertAccessibilityWindowInfoToJS(
     napi_env env, napi_value result, const AccessibilityWindowInfo& accessibilityWindowInfo)
 {
@@ -146,7 +142,9 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
 
@@ -155,7 +153,9 @@ private:
                     task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "set target bundle name failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                 }
             };
 
@@ -207,7 +207,9 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
 
@@ -225,7 +227,9 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get focus elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
@@ -277,7 +281,9 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
 
@@ -305,7 +311,9 @@ private:
                     task.Resolve(engine, nativeElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get root elementInfo failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
@@ -365,7 +373,9 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
 
@@ -380,7 +390,9 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
@@ -399,13 +411,17 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
 
                 if (displayId < 0) {
                     HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
-                    task.Reject(engine, CreateJsError(engine, PARAMETER_ERROR, "displayId is error"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                        ERROR_MESSAGE_PARAMETER_ERROR));
                     return;
                 }
 
@@ -420,7 +436,9 @@ private:
                     task.Resolve(engine, nativeWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Get windowInfos failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
@@ -454,7 +472,9 @@ private:
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine, CONTEXT_ERROR, "Context is released"));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
                 RetError ret = RET_OK;
@@ -467,7 +487,9 @@ private:
                     task.Resolve(engine, engine.CreateUndefined());
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine, RESULT_ERROR, "Gesture inject failed."));
+                    task.Reject(engine, CreateJsError(engine,
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 

@@ -473,21 +473,25 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
-    // Parse config from bms according to bundle name and ability name
-    uint32_t configCapabilities = GetAbilityStaticCapabilities(name);
+    bool isInstalled = false;
+    for (auto itr = installedAbilities_.begin(); itr != installedAbilities_.end(); itr++) {
+        if (itr->GetId() == name) {
+            isInstalled = true;
 
-    // Judge capabilities
-    uint32_t resultCapabilities = configCapabilities & capabilities;
-    HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
-    if (resultCapabilities == 0) {
-        HILOG_ERROR("the result of capabilities is wrong");
-        return RET_ERR_NO_CAPABILITY;
+            // Judge capabilities
+            uint32_t resultCapabilities = itr->GetStaticCapabilityValues() & capabilities;
+            HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
+            if (resultCapabilities == 0) {
+                HILOG_ERROR("the result of capabilities is wrong");
+                return RET_ERR_NO_CAPABILITY;
+            }
+
+            itr->SetCapabilityValues(capabilities);
+        }
     }
-
-    RetError result = SetAbilityCapabilities(name, resultCapabilities);
-    if (result != RET_OK) {
-        HILOG_ERROR("Reset capabilities failed");
-        return result;
+    if (!isInstalled) {
+        HILOG_ERROR("the ability[%{public}s] is not installed", name.c_str());
+        return RET_ERR_NOT_INSTALLED;
     }
 
     // Add enabled ability
@@ -540,32 +544,6 @@ void AccessibilityAccountData::Init()
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
         config_->Init();
     }
-}
-
-RetError AccessibilityAccountData::SetAbilityCapabilities(const std::string &name, const uint32_t capabilities)
-{
-    HILOG_DEBUG("start. name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
-    for (auto &installedAbility : installedAbilities_) {
-        if (installedAbility.GetId() == name) {
-            HILOG_DEBUG("reset ability capabilities");
-            installedAbility.SetCapabilityValues(capabilities);
-            return RET_OK;
-        }
-    }
-    HILOG_ERROR("not found the ability %{public}s", name.c_str());
-    return RET_ERR_NOT_INSTALLED;
-}
-
-uint32_t AccessibilityAccountData::GetAbilityStaticCapabilities(const std::string &name) const
-{
-    HILOG_DEBUG("start. name[%{public}s]", name.c_str());
-    for (auto &installedAbility : installedAbilities_) {
-        if (installedAbility.GetId() == name) {
-            return installedAbility.GetStaticCapabilityValues();
-        }
-    }
-    HILOG_ERROR("not found the ability %{public}s", name.c_str());
-    return 0;
 }
 
 void AccessibilityAccountData::AddConfigCallback(
@@ -666,27 +644,27 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     uint32_t flag = 0;
     if (isScreenMagnification_ && config_->GetScreenMagnificationState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
+        flag |= AccessibilityInterceptorManager::FEATURE_SCREEN_MAGNIFICATION;
     }
     if (isEventTouchGuideState_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
+        flag |= AccessibilityInterceptorManager::FEATURE_TOUCH_EXPLORATION;
     }
     if (isFilteringKeyEvents_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
+        flag |= AccessibilityInterceptorManager::FEATURE_FILTER_KEY_EVENTS;
     }
     if (isGesturesSimulation_) {
-        flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+        flag |= AccessibilityInterceptorManager::FEATURE_INJECT_TOUCH_EVENTS;
     }
     if (config_->GetShortKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
+        flag |= AccessibilityInterceptorManager::FEATURE_SHORT_KEY;
     }
     if (config_->GetMouseKeyState()) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
+        flag |= AccessibilityInterceptorManager::FEATURE_MOUSE_KEY;
     }
 
     int32_t autoclickTime = config_->GetMouseAutoClick();
     if (autoclickTime >= AUTOCLICK_DELAY_TIME_MIN && autoclickTime <= AUTOCLICK_DELAY_TIME_MAX) {
-        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
+        flag |= AccessibilityInterceptorManager::FEATURE_MOUSE_AUTOCLICK;
     }
 
     return flag;

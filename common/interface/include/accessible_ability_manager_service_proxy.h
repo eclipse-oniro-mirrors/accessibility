@@ -96,6 +96,7 @@ public:
     virtual bool GetKeyEventObserverState() override;
 
     virtual RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     virtual RetError DisableAbility(const std::string &name) override;
     virtual int32_t GetActiveWindow() override;
 

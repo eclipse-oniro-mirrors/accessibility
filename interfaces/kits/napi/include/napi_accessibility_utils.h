@@ -45,7 +45,8 @@ bool ParseString(napi_env env, std::string& param, napi_value args);
 bool ParseNumber(napi_env env, napi_value args);
 bool ParseInt32(napi_env env, int32_t& param, napi_value args);
 bool ParseDouble(napi_env env, double& param, napi_value args);
-napi_value GetErrorValue(napi_env env, int errCode);
+NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
+napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCode);
 
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);

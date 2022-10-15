@@ -61,6 +61,8 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
+    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
     memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
     memberFuncMap_[static_cast<uint32_t>(
@@ -389,6 +391,23 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &
     std::string name = data.ReadString();
     uint32_t capabilities = data.ReadUint32();
     RetError result = EnableAbility(name, capabilities);
+    reply.WriteInt32(result);
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    std::vector<std::string> enabledAbilities;
+    RetError result = GetEnabledAbilities(enabledAbilities);
+    reply.WriteInt32(enabledAbilities.size());
+    for (auto &ability : enabledAbilities) {
+        if (!reply.WriteString(ability)) {
+            HILOG_ERROR("ability write error: %{public}s, ", ability.c_str());
+            return TRANSACTION_ERR;
+        }
+    }
     reply.WriteInt32(result);
     return NO_ERROR;
 }

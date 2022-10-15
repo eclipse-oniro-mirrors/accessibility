@@ -79,21 +79,21 @@ void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
 void AamsTouchGuideTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUpTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
+    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
 void AamsTouchGuideTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }
 
 void AamsTouchGuideTest::SetUp()
 {
     GTEST_LOG_(INFO) << "AamsTouchGuideTest SetUp";
-
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 
     interceptorId_ = std::make_shared<AccessibilityInputEventConsumer>();
     MMI::InputManager::GetInstance()->AddInterceptor(interceptorId_);

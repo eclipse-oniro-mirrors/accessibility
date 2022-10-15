@@ -167,7 +167,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
+RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
@@ -175,11 +175,11 @@ bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
-            return true;
+            return RET_OK;
         }
     }
     HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
-    return false;
+    return RET_ERR_NOT_ENABLED;
 }
 
 // For UT
@@ -286,17 +286,17 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
-bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
-    for (auto &enabledAbility : enabledAbilities_) {
+    for (const auto &enabledAbility : enabledAbilities_) {
         if (enabledAbility == name) {
             HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
-            return false;
+            return RET_ERR_CONNECTION_EXIST;
         }
     }
     enabledAbilities_.push_back(name);
-    return true;
+    return RET_OK;
 }
 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()

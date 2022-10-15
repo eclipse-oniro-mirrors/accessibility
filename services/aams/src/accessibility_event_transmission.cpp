@@ -50,14 +50,14 @@ void EventTransmission::OnMoveMouse(int32_t offsetX, int32_t offsetY)
     }
 }
 
-void EventTransmission::SetNext(const sptr<EventTransmission> &next)
+void EventTransmission::SetNext(const std::shared_ptr<EventTransmission> &next)
 {
     HILOG_DEBUG();
 
     next_ = next;
 }
 
-sptr<EventTransmission> EventTransmission::GetNext()
+std::shared_ptr<EventTransmission> EventTransmission::GetNext()
 {
     HILOG_DEBUG();
 
@@ -68,9 +68,9 @@ void EventTransmission::DestroyEvents()
 {
     HILOG_DEBUG();
 
-    auto next = GetNext();
-    if (next != nullptr) {
-        next->DestroyEvents();
+    if (next_ != nullptr) {
+        next_->DestroyEvents();
+        next_ = nullptr;
     }
 }
 } // namespace Accessibility
