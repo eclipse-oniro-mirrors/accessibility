@@ -202,7 +202,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_001,
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTouchEventInjector_001 start";
-    std::shared_ptr<TouchEventInjector> touchEventInjector = std::make_shared<TouchEventInjector>();
+    sptr<TouchEventInjector> touchEventInjector = new TouchEventInjector();
     sleep(SLEEP_TIME_1);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetTouchEventInjector(touchEventInjector);
     auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
@@ -218,7 +218,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTouchEventInjector_001, Tes
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetKeyEventFilter_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetKeyEventFilter_001 start";
-    std::shared_ptr<KeyEventFilter> keyEventFilter = std::make_shared<KeyEventFilter>();
+    sptr<KeyEventFilter> keyEventFilter = new KeyEventFilter();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetKeyEventFilter(keyEventFilter);
     auto ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventFilter();
     EXPECT_TRUE(ret);

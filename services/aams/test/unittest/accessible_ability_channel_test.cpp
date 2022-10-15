@@ -357,7 +357,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetOnKeyPressEventResult_001 start";
     AccessibilityAbilityHelper::GetInstance().SetTestSequence(INVALID_SEQUENCE);
     EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestSequence(), INVALID_SEQUENCE);
-    std::shared_ptr<KeyEventFilter> keyEventFilter = std::make_shared<KeyEventFilter>();
+    sptr<KeyEventFilter> keyEventFilter = new KeyEventFilter();
     ASSERT_TRUE(keyEventFilter);
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetKeyEventFilter(keyEventFilter);
 

@@ -423,7 +423,7 @@ sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy(
     return nullptr;
 }
 
-void AccessibleAbilityManagerService::SetKeyEventFilter(const std::shared_ptr<KeyEventFilter> &keyEventFilter)
+void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
 {
     HILOG_DEBUG();
     keyEventFilter_ = keyEventFilter;

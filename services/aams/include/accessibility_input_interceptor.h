@@ -45,15 +45,6 @@ private:
 
 class AccessibilityInputInterceptor : public EventTransmission {
 public:
-    AccessibilityInputInterceptor() = default;
-    ~AccessibilityInputInterceptor() = default;
-    bool OnKeyEvent(MMI::KeyEvent &event) override;
-    bool OnPointerEvent(MMI::PointerEvent &event) override;
-    void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
-};
-
-class AccessibilityInterceptorManager {
-public:
     // Feature flag for screen magnification.
     static constexpr uint32_t FEATURE_SCREEN_MAGNIFICATION = 0x00000001;
 
@@ -75,31 +66,35 @@ public:
     // Feature flag for mouse key.
     static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
 
-    static std::shared_ptr<AccessibilityInterceptorManager> GetInstance();
-    AccessibilityInterceptorManager();
-    ~AccessibilityInterceptorManager();
-    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event);
-    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event);
+    static sptr<AccessibilityInputInterceptor> GetInstance();
+    ~AccessibilityInputInterceptor();
+    void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;
+    void ProcessPointerEvent(std::shared_ptr<MMI::PointerEvent> event) const;
+    bool OnKeyEvent(MMI::KeyEvent &event) override;
+    bool OnPointerEvent(MMI::PointerEvent &event) override;
+    void OnMoveMouse(int32_t offsetX, int32_t offsetY) override;
     void SetAvailableFunctions(uint32_t availableFunctions);
 
 private:
+    AccessibilityInputInterceptor();
+    static sptr<AccessibilityInputInterceptor> instance_;
     void CreateTransmitters();
     void DestroyTransmitters();
     void CreatePointerEventTransmitters();
     void CreateKeyEventTransmitters();
-    void SetNextEventTransmitter(std::shared_ptr<EventTransmission> &header,
-        std::shared_ptr<EventTransmission> &current, const std::shared_ptr<EventTransmission> &next);
+    void SetNextEventTransmitter(sptr<EventTransmission> &header, sptr<EventTransmission> &current,
+        const sptr<EventTransmission> &next);
     void UpdateInterceptor();
     void DestroyInterceptor();
 
-    static std::shared_ptr<AccessibilityInterceptorManager> instance_;
-    std::shared_ptr<EventTransmission> pointerEventTransmitters_ = nullptr;
-    std::shared_ptr<EventTransmission> keyEventTransmitters_ = nullptr;
-    std::shared_ptr<EventTransmission> mouseKey_ = nullptr;
-    std::shared_ptr<EventTransmission> inputInterceptor_ = nullptr;
+    sptr<EventTransmission> pointerEventTransmitters_ = nullptr;
+    sptr<EventTransmission> keyEventTransmitters_ = nullptr;
+    sptr<EventTransmission> mouseKey_ = nullptr;
     uint32_t availableFunctions_ = 0;
     int32_t interceptorId_ = -1;
+    MMI::InputManager *inputManager_ = nullptr;
     std::shared_ptr<AccessibilityInputEventConsumer> inputEventConsumer_ = nullptr;
+    std::shared_ptr<AppExecFwk::EventHandler> eventHandler_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS

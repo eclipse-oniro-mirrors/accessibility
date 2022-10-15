@@ -144,10 +144,5 @@ int32_t KeyEvent::GetKeyAction() const
 {
     return keyAction_;
 }
-
-void KeyEvent::SetKeyAction(int32_t keyAction)
-{
-    keyAction_ = keyAction;
-}
 } // namespace MMI
 } // namespace OHOS

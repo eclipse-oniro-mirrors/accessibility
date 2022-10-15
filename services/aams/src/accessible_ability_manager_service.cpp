@@ -65,7 +65,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
 {
     HILOG_INFO("AccessibleAbilityManagerService::~AccessibleAbilityManagerService");
 
-    inputInterceptorManager_ = nullptr;
+    inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
 }
@@ -110,7 +110,7 @@ void AccessibleAbilityManagerService::OnStop()
     currentAccountId_ = -1;
     a11yAccountsData_.clear();
     bundleManager_ = nullptr;
-    inputInterceptorManager_ = nullptr;
+    inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
     stateCallbackDeathRecipient_ = nullptr;
@@ -999,14 +999,13 @@ void AccessibleAbilityManagerService::OutsideTouch(int32_t windowId)
     }
 }
 
-void AccessibleAbilityManagerService::SetTouchEventInjector(
-    const std::shared_ptr<TouchEventInjector> &touchEventInjector)
+void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
 {
     HILOG_DEBUG();
     touchEventInjector_ = touchEventInjector;
 }
 
-void AccessibleAbilityManagerService::SetKeyEventFilter(const std::shared_ptr<KeyEventFilter> &keyEventFilter)
+void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter)
 {
     HILOG_DEBUG();
     keyEventFilter_ = keyEventFilter;
@@ -1224,12 +1223,12 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     uint32_t flag = accountData->GetInputFilterFlag();
     HILOG_DEBUG("InputInterceptor flag is %{public}d", flag);
 
-    inputInterceptorManager_ = AccessibilityInterceptorManager::GetInstance();
-    if (!inputInterceptorManager_) {
-        HILOG_ERROR("inputInterceptorManager_ is null.");
+    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
+    if (!inputInterceptor_) {
+        HILOG_ERROR("inputInterceptor_ is null.");
         return;
     }
-    inputInterceptorManager_->SetAvailableFunctions(flag);
+    inputInterceptor_->SetAvailableFunctions(flag);
     Utils::RecordStartingA11yEvent(flag);
 }
 

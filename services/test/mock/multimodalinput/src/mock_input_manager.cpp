@@ -23,7 +23,6 @@ static int mockKeyCode = -1;
 static std::vector<int32_t> mockTouchActions;
 static std::function<void(std::shared_ptr<MMI::KeyEvent>)> mockKeyEventCallback = nullptr;
 static std::shared_ptr<MMI::IInputEventConsumer> mockInputEventConsumer = nullptr;
-static bool g_isMouseMove = false;
 static std::mutex g_mtx;
 
 int MockInputManager::GetKeyCode()
@@ -65,18 +64,6 @@ std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
     return mockInputEventConsumer;
 }
 
-void MockInputManager::ResetMouseMoveFlag()
-{
-    HILOG_DEBUG();
-    g_isMouseMove = false;
-}
-
-bool MockInputManager::GetMouseMoveFlag()
-{
-    HILOG_DEBUG();
-    return g_isMouseMove;
-}
-
 InputManager *InputManager::instance_ = new(std::nothrow) InputManager();
 InputManager *InputManager::GetInstance()
 {
@@ -89,7 +76,6 @@ void InputManager::MoveMouse(int32_t offsetX, int32_t offsetY)
     HILOG_DEBUG();
     (void)offsetX;
     (void)offsetY;
-    g_isMouseMove = true;
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
@@ -129,7 +115,6 @@ std::function<void(std::shared_ptr<KeyEvent>)> MockInputManager::GetKeyEventInte
 void InputManager::RemoveInterceptor(int32_t interceptorId)
 {
     HILOG_DEBUG();
-    mockInputEventConsumer = nullptr;
 }
 } // namespace MMI
 } // namespace OHOS

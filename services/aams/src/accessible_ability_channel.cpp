@@ -271,7 +271,7 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
     }
 
     eventHandler_->PostTask(std::bind([=](int32_t accountId, const std::string &name) -> void {
-        std::shared_ptr<KeyEventFilter> keyEventFilter =
+        sptr<KeyEventFilter> keyEventFilter =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetKeyEventFilter();
         if (!keyEventFilter) {
             return;
@@ -312,7 +312,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
             return;
         }
 
-        std::shared_ptr<TouchEventInjector> touchEventInjector =
+        sptr<TouchEventInjector> touchEventInjector =
             Singleton<AccessibleAbilityManagerService>::GetInstance().GetTouchEventInjector();
         if (!touchEventInjector) {
             HILOG_ERROR("touchEventInjector is null");

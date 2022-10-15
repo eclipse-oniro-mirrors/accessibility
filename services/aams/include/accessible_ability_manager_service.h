@@ -102,19 +102,19 @@ public:
     bool EnableShortKeyTargetAbility();
     bool DisableShortKeyTargetAbility();
 
-    void SetTouchEventInjector(const std::shared_ptr<TouchEventInjector> &touchEventInjector);
+    void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
-    inline std::shared_ptr<TouchEventInjector> GetTouchEventInjector()
+    inline sptr<TouchEventInjector> GetTouchEventInjector()
     {
         return touchEventInjector_;
     }
 
-    inline std::shared_ptr<KeyEventFilter> GetKeyEventFilter()
+    inline sptr<KeyEventFilter> GetKeyEventFilter()
     {
         return keyEventFilter_;
     }
 
-    void SetKeyEventFilter(const std::shared_ptr<KeyEventFilter> &keyEventFilter);
+    void SetKeyEventFilter(const sptr<KeyEventFilter> &keyEventFilter);
 
     /* For DisplayResize */
     void NotifyDisplayResizeStateChanged(int32_t displayId, Rect& rect, float scale, float centerX, float centerY);
@@ -271,9 +271,9 @@ private:
     std::map<int32_t, sptr<AccessibilityAccountData>> a11yAccountsData_;
     sptr<AppExecFwk::IBundleMgr> bundleManager_ = nullptr;
 
-    std::shared_ptr<AccessibilityInterceptorManager> inputInterceptorManager_ = nullptr;
-    std::shared_ptr<TouchEventInjector> touchEventInjector_ = nullptr;
-    std::shared_ptr<KeyEventFilter> keyEventFilter_ = nullptr;
+    sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
+    sptr<TouchEventInjector> touchEventInjector_ = nullptr;
+    sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     sptr<AccessibilityDumper> accessibilityDumper_ = nullptr;
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

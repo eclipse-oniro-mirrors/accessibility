@@ -644,27 +644,27 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
     }
     uint32_t flag = 0;
     if (isScreenMagnification_ && config_->GetScreenMagnificationState()) {
-        flag |= AccessibilityInterceptorManager::FEATURE_SCREEN_MAGNIFICATION;
+        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
     }
     if (isEventTouchGuideState_) {
-        flag |= AccessibilityInterceptorManager::FEATURE_TOUCH_EXPLORATION;
+        flag |= AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
     }
     if (isFilteringKeyEvents_) {
-        flag |= AccessibilityInterceptorManager::FEATURE_FILTER_KEY_EVENTS;
+        flag |= AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
     }
     if (isGesturesSimulation_) {
-        flag |= AccessibilityInterceptorManager::FEATURE_INJECT_TOUCH_EVENTS;
+        flag |= AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
     }
     if (config_->GetShortKeyState()) {
-        flag |= AccessibilityInterceptorManager::FEATURE_SHORT_KEY;
+        flag |= AccessibilityInputInterceptor::FEATURE_SHORT_KEY;
     }
     if (config_->GetMouseKeyState()) {
-        flag |= AccessibilityInterceptorManager::FEATURE_MOUSE_KEY;
+        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
     }
 
     int32_t autoclickTime = config_->GetMouseAutoClick();
     if (autoclickTime >= AUTOCLICK_DELAY_TIME_MIN && autoclickTime <= AUTOCLICK_DELAY_TIME_MAX) {
-        flag |= AccessibilityInterceptorManager::FEATURE_MOUSE_AUTOCLICK;
+        flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
     }
 
     return flag;

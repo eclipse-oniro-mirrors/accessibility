@@ -44,7 +44,7 @@ public:
     void SetUp() override;
     void TearDown() override;
 
-    std::shared_ptr<AccessibilityInterceptorManager> inputInterceptor_ = nullptr;
+    sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
 };
 
 void AccessibilityInputInterceptorTest::SetUpTestCase()
@@ -61,8 +61,9 @@ void AccessibilityInputInterceptorTest::TearDownTestCase()
 
 void AccessibilityInputInterceptorTest::SetUp()
 {
+    MMI::MockInputManager::ClearInputEventConsumer();
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUp";
-    inputInterceptor_ = AccessibilityInterceptorManager::GetInstance();
+    inputInterceptor_ = AccessibilityInputInterceptor::GetInstance();
 }
 
 void AccessibilityInputInterceptorTest::TearDown()
@@ -81,7 +82,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001 start";
 
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_FILTER_KEY_EVENTS;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions001 94";
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
@@ -98,7 +99,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002 start";
 
-    uint32_t availableFunctions2 = AccessibilityInterceptorManager::FEATURE_INJECT_TOUCH_EVENTS;
+    uint32_t availableFunctions2 = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
     inputInterceptor_->SetAvailableFunctions(availableFunctions2);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions002 end";
@@ -114,7 +115,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions003 start";
 
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_TOUCH_EXPLORATION;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
 
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
@@ -130,7 +131,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004 start";
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_SCREEN_MAGNIFICATION;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION;
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions004 end";
@@ -145,13 +146,138 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005 start";
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_SCREEN_MAGNIFICATION |
-        AccessibilityInterceptorManager::FEATURE_MOUSE_AUTOCLICK |
-        AccessibilityInterceptorManager::FEATURE_SHORT_KEY |
-        AccessibilityInterceptorManager::FEATURE_MOUSE_KEY;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_SCREEN_MAGNIFICATION |
+        AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK |
+        AccessibilityInputInterceptor::FEATURE_SHORT_KEY |
+        AccessibilityInputInterceptor::FEATURE_MOUSE_KEY;
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_SetAvailableFunctions005 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001
+ * @tc.name: OnTouchEvent
+ * @tc.desc: Check the on touch event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001 start";
+
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    inputInterceptor_->OnPointerEvent(*event);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002
+ * @tc.name: InterceptPointerEventCallBack
+ * @tc.desc: Check the on touch event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    MMI::PointerEvent::PointerItem item = {};
+
+    item.SetPointerId(1);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+    event->AddPointerItem(item);
+
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
+    }
+    /* wait ProcessTouchEvent */
+    sleep(SLEEP_TIME_3);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003
+ * @tc.name: InterceptPointerEventCallBack
+ * @tc.desc: Check the on touch event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    MMI::PointerEvent::PointerItem item = {};
+
+    item.SetPointerId(1);
+    item.SetDisplayX(1);
+    item.SetDisplayY(1);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+    event->AddPointerItem(item);
+
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
+    }
+    /* wait ProcessTouchEvent */
+    sleep(SLEEP_TIME_3);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1
+ * @tc.name: OnMouseEvent
+ * @tc.desc: Check the on mouse event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1 start";
+
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    MMI::PointerEvent::PointerItem item = {};
+
+    item.SetPointerId(1);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+    event->AddPointerItem(item);
+
+    inputInterceptor_->OnPointerEvent(*event);
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002
+ * @tc.name: InterceptPointerEventCallBack
+ * @tc.desc: Check the on mouse event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002 start";
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_INJECT_TOUCH_EVENTS;
+    inputInterceptor_->SetAvailableFunctions(availableFunctions);
+
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    MMI::PointerEvent::PointerItem item = {};
+
+    item.SetPointerId(1);
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
+    event->AddPointerItem(item);
+
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (inputEventConsumer != nullptr) {
+        inputEventConsumer->OnInputEvent(event);
+    }
+    /* wait ProcessMouseEvent */
+    sleep(SLEEP_TIME_3);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002 end";
 }
 
 /**
@@ -162,36 +288,40 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003 start";
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_TOUCH_EXPLORATION;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_TOUCH_EXPLORATION;
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
-    if (!event) {
-        return;
-    }
-    MMI::PointerEvent::PointerItem item;
+    MMI::PointerEvent::PointerItem item = {};
+
     item.SetPointerId(1);
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
-    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(event);
     }
-
-    MMI::MockInputManager::ClearTouchActions();
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (MMI::MockInputManager::GetTouchActionOfTargetIndex(0) == MMI::PointerEvent::POINTER_ACTION_CANCEL) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
-    MMI::MockInputManager::ClearTouchActions();
+    /* wait ProcessMouseEvent */
+    sleep(SLEEP_TIME_3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003 end";
+}
+
+/**
+ * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001
+ * @tc.name: OnKeyEvent
+ * @tc.desc: Check the on key event.
+ */
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001 start";
+
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    inputInterceptor_->OnKeyEvent(*event);
+
+    GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001 end";
 }
 
 /**
@@ -202,31 +332,21 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002 start";
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_TOUCH_EXPLORATION;
-    inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
-    if (!keyEvent) {
-        return;
-    }
-    MMI::KeyEvent::KeyItem item;
+    MMI::KeyEvent::KeyItem item = {};
+
     item.SetPressed(true);
     keyEvent->AddKeyItem(item);
-    keyEvent->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    keyEvent->SetKeyCode(1);
 
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (inputEventConsumer != nullptr) {
         inputEventConsumer->OnInputEvent(keyEvent);
     }
 
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (MMI::MockInputManager::GetKeyCode() == MMI::KeyEvent::KEYCODE_NUMPAD_1) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
+    /* wait ProcessKeyEvent */
+    sleep(SLEEP_TIME_3);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002 end";
 }
@@ -239,71 +359,35 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003 start";
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_FILTER_KEY_EVENTS;
+    uint32_t availableFunctions = AccessibilityInputInterceptor::FEATURE_FILTER_KEY_EVENTS;
     inputInterceptor_->SetAvailableFunctions(availableFunctions);
 
     std::shared_ptr<MMI::KeyEvent> keyEvent = MMI::KeyEvent::Create();
-    if (!keyEvent) {
-        return;
-    }
-    MMI::KeyEvent::KeyItem item;
+    MMI::KeyEvent::KeyItem item = {};
+
     item.SetPressed(true);
     keyEvent->AddKeyItem(item);
-    keyEvent->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    keyEvent->SetKeyCode(1);
 
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        inputEventConsumer->OnInputEvent(keyEvent);
-    }
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (MMI::MockInputManager::GetKeyCode() == MMI::KeyEvent::KEYCODE_NUMPAD_2) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
+    /* wait ProcessKeyEvent */
+    sleep(SLEEP_TIME_3);
+
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003 end";
 }
 
 /**
  * @tc.number: AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001
- * @tc.name: OnInputEvent
- * @tc.desc: Check the on key event.
+ * @tc.name: OnMoveMouse
+ * @tc.desc: Check the OnMoveMouse.
  */
-HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001, TestSize.Level1)
+HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001,
+    TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 start";
-
-    uint32_t availableFunctions = AccessibilityInterceptorManager::FEATURE_MOUSE_KEY;
-    inputInterceptor_->SetAvailableFunctions(availableFunctions);
-
-    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
-    if (!event) {
+    if (!inputInterceptor_) {
         return;
     }
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
-    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    MMI::KeyEvent::KeyItem item;
-    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
-    item.SetPressed(true);
-    event->AddKeyItem(item);
-
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (inputEventConsumer != nullptr) {
-        GTEST_LOG_(INFO) << "inputEventConsumer is null";
-        inputEventConsumer->OnInputEvent(event);
-    }
-
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (MMI::MockInputManager::GetMouseMoveFlag()) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
-    MMI::MockInputManager::ResetMouseMoveFlag();
+    inputInterceptor_->OnMoveMouse(1, 1);
 
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMoveMouse001 end";
 }

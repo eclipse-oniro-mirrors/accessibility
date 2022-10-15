@@ -41,19 +41,19 @@ public:
     MOCK_METHOD1(SetCaptionProperty, RetError(const AccessibilityConfig::CaptionProperty& caption));
     MOCK_METHOD1(SetCaptionState, RetError(const bool state));
     MOCK_METHOD1(SetEnabled, bool(const bool state));
-    MOCK_METHOD1(SetTouchEventInjector, void(const std::shared_ptr<TouchEventInjector>& touchEventInjector));
+    MOCK_METHOD1(SetTouchEventInjector, void(const sptr<TouchEventInjector>& touchEventInjector));
 
-    inline std::shared_ptr<TouchEventInjector> GetTouchEventInjector()
+    inline sptr<TouchEventInjector> GetTouchEventInjector()
     {
         return nullptr;
     }
 
-    inline std::shared_ptr<KeyEventFilter> GetKeyEventFilter()
+    inline sptr<KeyEventFilter> GetKeyEventFilter()
     {
         return nullptr;
     }
 
-    MOCK_METHOD1(SetKeyEventFilter, void(const std::shared_ptr<KeyEventFilter>& keyEventFilter));
+    MOCK_METHOD1(SetKeyEventFilter, void(const sptr<KeyEventFilter>& keyEventFilter));
     MOCK_METHOD5(NotifyDisplayResizeStateChanged,
         void(int32_t displayId, Rect& rect, float scale, float centerX, float centerY));
 
