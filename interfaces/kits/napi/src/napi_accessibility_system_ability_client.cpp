@@ -48,9 +48,15 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
 
     napi_value promise = nullptr;
     if (argc > 0) {
-        HILOG_DEBUG("IsOpenAccessibility callback mode");
-        napi_create_reference(env, argv, 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, argv, &valueType);
+        if (valueType == napi_function) {
+            HILOG_DEBUG("IsOpenAccessibility callback mode");
+            napi_create_reference(env, argv, 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         HILOG_DEBUG("IsOpenAccessibility promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
@@ -114,9 +120,15 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
 
     napi_value promise = nullptr;
     if (argc > 0) {
-        HILOG_DEBUG("IsOpenTouchExploration callback mode");
-        napi_create_reference(env, argv, 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, argv, &valueType);
+        if (valueType == napi_function) {
+            HILOG_DEBUG("IsOpenTouchExploration callback mode");
+            napi_create_reference(env, argv, 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         HILOG_DEBUG("IsOpenTouchExploration promise mode");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
@@ -314,17 +326,48 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     if (status != napi_ok) {
         HILOG_ERROR("Failed to get event type");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
         return nullptr;
     }
 
-    std::string eventType = GetStringFromNAPI(env, args[0]);
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
     uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
-        type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    } else if (!std::strcmp(eventType.c_str(), "touchGuideStateChange")) {
-        type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
-    } else {
-        HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string eventType = "";
+        if (!ParseString(env, eventType, args[PARAM0])) {
+            HILOG_ERROR("eventType type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
+            } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
+            } else {
+                HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, args[PARAM1], &valueType);
+        if (valueType != napi_function) {
+            HILOG_ERROR("args[PARAM1] format is wrong");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -351,27 +394,60 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    std::string eventType = GetStringFromNAPI(env, args[PARAM0]);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
     uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    if (!std::strcmp(eventType.c_str(), "accessibilityStateChange")) {
-        type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
-    } else if (!std::strcmp(eventType.c_str(), "touchGuideStateChange")) {
-        type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
-    } else {
-        HILOG_ERROR("UnsubscribeState eventType[%{public}s] is error", eventType.c_str());
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string eventType = "";
+        if (!ParseString(env, eventType, args[PARAM0])) {
+            HILOG_ERROR("eventType type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(eventType.c_str(), "accessibilityStateChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
+            } else if (std::strcmp(eventType.c_str(), "touchGuideStateChange") == 0) {
+                type = AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED;
+            } else {
+                HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
             if (argc >= ARGS_SIZE_TWO) {
-                accessibilityStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                napi_valuetype valueType = napi_null;
+                napi_typeof(env, args[PARAM1], &valueType);
+                if (valueType == napi_function) {
+                    accessibilityStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                } else {
+                    accessibilityStateListeners_->UnsubscribeObservers();
+                }
             } else {
                 accessibilityStateListeners_->UnsubscribeObservers();
             }
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
             if (argc >= ARGS_SIZE_TWO) {
-                touchGuideStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                napi_valuetype valueType = napi_null;
+                napi_typeof(env, args[PARAM1], &valueType);
+                if (valueType == napi_function) {
+                    touchGuideStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                } else {
+                    touchGuideStateListeners_->UnsubscribeObservers();
+                }
             } else {
                 touchGuideStateListeners_->UnsubscribeObservers();
             }
@@ -578,18 +654,48 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     if (status != napi_ok) {
         HILOG_ERROR("Failed to get event type");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
         return nullptr;
     }
 
-    std::string eventType = GetStringFromNAPI(env, args[0]);
-    OHOS::AccessibilityConfig::CONFIG_ID type =
-       OHOS::AccessibilityConfig::CONFIG_ID_MAX;
-    if (!std::strcmp(eventType.c_str(), "enableChange")) {
-        type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE;
-    } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
-    } else {
-        HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    OHOS::AccessibilityConfig::CONFIG_ID type = OHOS::AccessibilityConfig::CONFIG_ID_MAX;
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string eventType = "";
+        if (!ParseString(env, eventType, args[PARAM0])) {
+            HILOG_ERROR("eventType type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(eventType.c_str(), "enableChange") == 0) {
+                type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE;
+            } else if (std::strcmp(eventType.c_str(), "styleChange") == 0) {
+                type =  OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
+            } else {
+                HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, args[PARAM1], &valueType);
+        if (valueType != napi_function) {
+            HILOG_ERROR("args[PARAM1] format is wrong");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -608,21 +714,46 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    std::string eventType = GetStringFromNAPI(env, args[0]);
 
-    OHOS::AccessibilityConfig::CONFIG_ID type =
-        OHOS::AccessibilityConfig::CONFIG_ID_MAX;
-    if (!std::strcmp(eventType.c_str(), "enableChange")) {
-        type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE;
-    } else if (!std::strcmp(eventType.c_str(), "styleChange")) {
-        type =  OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
-    } else {
-        HILOG_ERROR("DeregisterCaptionStateCallback eventType[%{public}s] is error", eventType.c_str());
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    OHOS::AccessibilityConfig::CONFIG_ID type = OHOS::AccessibilityConfig::CONFIG_ID_MAX;
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string eventType = "";
+        if (!ParseString(env, eventType, args[PARAM0])) {
+            HILOG_ERROR("eventType type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(eventType.c_str(), "enableChange") == 0) {
+                type = OHOS::AccessibilityConfig::CONFIG_CAPTION_STATE;
+            } else if (std::strcmp(eventType.c_str(), "styleChange") == 0) {
+                type =  OHOS::AccessibilityConfig::CONFIG_CAPTION_STYLE;
+            } else {
+                HILOG_ERROR("SubscribeState eventType[%{public}s] is error", eventType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
     if (argc >= ARGS_SIZE_TWO) {
-        captionListeners_->UnsubscribeObserver(type, args[PARAM1]);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, args[PARAM1], &valueType);
+        if (valueType == napi_function) {
+            captionListeners_->UnsubscribeObserver(type, args[PARAM1]);
+        } else {
+            captionListeners_->UnsubscribeObservers(type);
+        }
     } else {
         captionListeners_->UnsubscribeObservers(type);
     }
