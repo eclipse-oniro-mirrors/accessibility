@@ -122,7 +122,7 @@ public:
     /**
      * @brief Remove accessibility that have been opened.
      * @param name bundle name + / + ability name.
-     * @return return true if removes enabled ability successfully, else return false.
+     * @return return true if removes enabled ability successfully, otherwise refer to the RetError for the failure.
      */
     RetError RemoveEnabledAbility(const std::string &name);
 

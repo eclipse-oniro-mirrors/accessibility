@@ -57,7 +57,7 @@ public:
      *                  FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
      * @param elementInfo[out] The components information matched conditions searched.
-     * @return Return RET_OK if finds focus element info successfully, otherwise failed.
+     * @return Return RET_OK if finds focus element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError FindFocusedElementInfo(int32_t accessibilityWindowId, int32_t elementId,
         int32_t focusType, AccessibilityElementInfo &elementInfo);
@@ -65,7 +65,7 @@ public:
     /**
      * @brief Send simulate gesture to aams.
      * @param gesturePath The path of gesture.
-     * @return Return RET_OK if gesture injection is successfully, otherwise failed.
+     * @return Return RET_OK if gesture injection is successfully, otherwise refer to the RetError for the failure.
      */
     RetError SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
@@ -89,7 +89,7 @@ public:
      *                                  {ACTION_ARGU_SELECT_TEXT_END,"10"(end location)})
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
-     * @return RET_OK: execute action successfully; otherwise is not.
+     * @return RET_OK: execute action successfully; otherwise refer to the RetError for the failure.
      */
     RetError ExecuteAction(int32_t accessibilityWindowId,
         int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
@@ -103,7 +103,7 @@ public:
      *              PREFETCH_CHILDREN: Need to make the child node info also.
      *              otherwise: Make the node information by elementId only.
      * @param elementInfos[out] The components information matched conditions searched.
-     * @return Return RET_OK if search element info successfully, else return false.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int32_t elementId,
         int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos);
@@ -112,14 +112,14 @@ public:
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
-     * @return Return RET_OK if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo);
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
-     * @return Return RET_OK if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows);
 
@@ -127,7 +127,7 @@ public:
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
-     * @return Return RET_OK if obtains windowInfo successfully, else return false.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
 
@@ -137,7 +137,7 @@ public:
      * @param elementId: The unique id of the component ID.
      * @param text The filter text.
      * @param elementInfos[out] The components information matched conditions searched.
-     * @return Return RET_OK if search element info successfully, else return false.
+     * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError SearchElementInfosByText(int32_t accessibilityWindowId, int32_t elementId,
         const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos);
@@ -149,7 +149,7 @@ public:
      * @param direction The direction of focus move direction.
      *                  Refer to FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD).
      * @param elementInfo[out] The components information matched conditions searched.
-     * @return Return RET_OK if find element info successfully, else return false.
+     * @return Return RET_OK if find element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError FocusMoveSearch(int32_t accessibilityWindowId,
         int32_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo);
@@ -157,7 +157,7 @@ public:
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
-     * @return Return RET_OK if sets target bundle names successfully, else return false.
+     * @return Return RET_OK if sets target bundle names successfully, otherwise refer to the RetError for the failure.
      */
     RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames);
 

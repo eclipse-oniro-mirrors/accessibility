@@ -44,7 +44,7 @@ public:
      *             PREFETCH_SIBLINGS: Need to make the sister/brothers element info also.
      *             PREFETCH_CHILDREN: Need to make the child element info also.
      *             otherwise: Make the element information by elementId only.
-     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
+     * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
         const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
@@ -58,7 +58,7 @@ public:
      * @param text  Filter for the child components to matched with the text
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
+     * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
         const std::string &text, const int32_t requestId,
@@ -73,7 +73,7 @@ public:
      *                  FOCUS_TYPE_INPUT: text input focus
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return RET_OK if find elementInfo successfully, otherwise failed.
+     * @return Return RET_OK if find elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t focusType, const int32_t requestId,
@@ -86,7 +86,7 @@ public:
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
-     * @return Return RET_OK if search elementInfo successfully, otherwise failed.
+     * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t direction, const int32_t requestId,
@@ -100,7 +100,7 @@ public:
      * @param actionArguments The parameter for action type.
      * @param requestId Matched the request and response. It needn't cared by ACE, transfer it by callback only.
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
-     * @return Return RET_OK if perform action successfully, otherwise failed.
+     * @return Return RET_OK if perform action successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
@@ -110,14 +110,14 @@ public:
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.
-     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
 
     /**
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param windows The information of windows.
-     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
 
@@ -125,7 +125,7 @@ public:
      * @brief Obtains the list of interactive windows on the device, in the layers they are visible to users.
      * @param displayId the id of display
      * @param windows The information of windows.
-     * @return Return RET_OK if obtains windowInfo successfully, otherwise failed.
+     * @return Return RET_OK if obtains windowInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetWindowsByDisplayId(const uint64_t displayId,
         std::vector<AccessibilityWindowInfo> &windows) override;
@@ -140,14 +140,14 @@ public:
     /**
      * @brief Send simulation gesture through the proxy object.
      * @param gesturePath The gesture path to send.
-     * @return Return RET_OK if gesture injection is successfully, otherwise failed.
+     * @return Return RET_OK if gesture injection is successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
     /**
      * @brief Set target bundle names.
      * @param targetBundleNames The target bundle name
-     * @return Return RET_OK if sets target bundle names successfully, otherwise failed.
+     * @return Return RET_OK if sets target bundle names successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 

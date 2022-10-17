@@ -487,6 +487,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
             }
 
             itr->SetCapabilityValues(capabilities);
+            break;
         }
     }
     if (!isInstalled) {

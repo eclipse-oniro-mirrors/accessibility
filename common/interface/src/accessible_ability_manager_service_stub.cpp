@@ -292,7 +292,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
     }
     sptr<CaptionPropertyParcel> caption = data.ReadStrongParcelable<CaptionPropertyParcel>();
     if (!caption) {
-        HILOG_DEBUG("ReadStrongParcelable<CaptionProperty> failed");
+        HILOG_ERROR("ReadStrongParcelable<CaptionProperty> failed");
         reply.WriteInt32(RET_ERR_IPC_FAILED);
         return TRANSACTION_ERR;
     }
