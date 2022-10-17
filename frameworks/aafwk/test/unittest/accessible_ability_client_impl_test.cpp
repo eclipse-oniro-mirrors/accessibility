@@ -844,5 +844,20 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetWindow_002, TestSize.Level1)
     EXPECT_EQ(instance_->GetWindow(0, windowInfo), RET_OK);
     GTEST_LOG_(INFO) << "GetWindow_002 end";
 }
+
+/**
+ * @tc.number: NotifyServiceDied_001
+ * @tc.name: NotifyServiceDied
+ * @tc.desc: Test function NotifyServiceDied
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, NotifyServiceDied_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "NotifyServiceDied_001 start";
+    Connect();
+    wptr<IRemoteObject> remote = nullptr;
+    instance_->NotifyServiceDied(remote);
+    EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTestChannelId(), static_cast<int>(CHANNEL_ID));
+    GTEST_LOG_(INFO) << "NotifyServiceDied_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
