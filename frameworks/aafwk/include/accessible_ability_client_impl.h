@@ -17,6 +17,7 @@
 #define ACCESSIBLE_ABILITY_CLIENT_IMPL_H
 
 #include <memory>
+#include <mutex>
 #include "accessible_ability_channel_client.h"
 #include "accessible_ability_client.h"
 #include "accessible_ability_client_stub.h"
@@ -34,7 +35,7 @@ public:
     /**
      * @brief The deconstructor of AccessibleAbilityClientImpl.
      */
-    ~AccessibleAbilityClientImpl() = default;
+    ~AccessibleAbilityClientImpl();
 
     /**
      * @brief Gets remote object.
@@ -242,12 +243,29 @@ public:
      */
     void ResetAAClient(const wptr<IRemoteObject> &remote);
 
+    /**
+     * @brief Notify AA client and clean data when service is died.
+     * @param remote The object access to AAMS.
+     */
+    void NotifyServiceDied(const wptr<IRemoteObject> &remote);
+
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         AccessibleAbilityDeathRecipient(AccessibleAbilityClientImpl &client) : client_(client) {}
         ~AccessibleAbilityDeathRecipient() = default;
         DISALLOW_COPY_AND_MOVE(AccessibleAbilityDeathRecipient);
+
+        void OnRemoteDied(const wptr<IRemoteObject> &remote);
+    private:
+        AccessibleAbilityClientImpl &client_;
+    };
+
+    class AccessibilityServiceDeathRecipient final : public IRemoteObject::DeathRecipient {
+    public:
+        AccessibilityServiceDeathRecipient(AccessibleAbilityClientImpl &client) : client_(client) {}
+        ~AccessibilityServiceDeathRecipient() = default;
+        DISALLOW_COPY_AND_MOVE(AccessibilityServiceDeathRecipient);
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote);
     private:
@@ -262,12 +280,14 @@ private:
         const uint32_t mode, AccessibilityElementInfo &info);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
+    sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;
     sptr<IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     std::shared_ptr<AccessibleAbilityListener> listener_ = nullptr;
     std::shared_ptr<AccessibleAbilityChannelClient> channelClient_ = nullptr;
     uint32_t cacheMode_ = 0;
     int32_t cacheWindowId_ = -1;
     std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
+    std::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
