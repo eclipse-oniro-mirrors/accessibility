@@ -72,6 +72,10 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
     // Add death recipient
     if (!accessibilityServiceDeathRecipient_) {
         accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
+        if (!accessibilityServiceDeathRecipient_) {
+            HILOG_ERROR("Failed to create service deathRecipient.");
+            return;
+        }
     }
 
     if (serviceProxy_->AsObject()) {
