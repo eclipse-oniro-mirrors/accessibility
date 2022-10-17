@@ -441,10 +441,10 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             if (env != (*iter)->env_) {
-                HILOG_WARN("Not same env");
                 iter++;
                 continue;
             }
+            HILOG_DEBUG("Same env, begin check observer equal");
             napi_value item = nullptr;
             bool equalFlag = false;
             napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);

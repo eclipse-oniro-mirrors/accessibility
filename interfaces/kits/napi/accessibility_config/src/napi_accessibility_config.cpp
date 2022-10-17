@@ -678,10 +678,10 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_valu
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (env != (*iter)->env_) {
-            HILOG_WARN("Not same env");
             iter++;
             continue;
         }
+        HILOG_DEBUG("Same env, begin check observer equal");
         napi_value item = nullptr;
         napi_status status;
         bool equalFlag = false;

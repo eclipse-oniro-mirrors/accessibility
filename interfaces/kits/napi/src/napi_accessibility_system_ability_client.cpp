@@ -903,10 +903,10 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (env != (*iter)->env_) {
-            HILOG_WARN("Not same env");
             iter++;
             continue;
         }
+        HILOG_DEBUG("Same env, begin check observer equal");
         napi_value item = nullptr;
         bool equalFlag = false;
         napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
