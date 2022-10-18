@@ -931,7 +931,8 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
         napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
         napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
         if (status == napi_ok && equalFlag) {
-            iter = observers_.erase(iter);
+            observers_.erase(iter);
+            return;
         } else {
             iter++;
         }

@@ -708,7 +708,8 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_valu
         napi_get_reference_value((*iter)->env_, (*iter)->callback_, &item);
         status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
         if (status == napi_ok && equalFlag) {
-            iter = enableAbilityListsObservers_.erase(iter);
+            enableAbilityListsObservers_.erase(iter);
+            return;
         } else {
             iter++;
         }
