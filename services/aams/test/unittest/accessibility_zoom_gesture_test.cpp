@@ -99,11 +99,11 @@ void AccessibilityZoomGestureUnitTest::TripleTaps()
         // Pointer up
         std::shared_ptr<MMI::PointerEvent> eventUp = CreatePointerEvent(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN,
             MMI::PointerEvent::POINTER_ACTION_UP);
-        MMI::PointerEvent::PointerItem item1;
-        eventUp->AddPointerItem(item1);
         if (!eventUp) {
             return;
         }
+        MMI::PointerEvent::PointerItem item1;
+        eventUp->AddPointerItem(item1);
         zoomGesture_->OnPointerEvent(*eventUp);
     }
 }

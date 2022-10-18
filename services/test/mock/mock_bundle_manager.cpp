@@ -201,13 +201,14 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abi
 
     auto find = false;
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------2");
-    for (const auto& entity : entityVector) {
-        if (entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
-            element.GetBundleName().empty()) {
-            find = true;
-            break;
-        }
+    if (std::any_of(entityVector.begin(), entityVector.end(),
+        [element, find](const std::string &entity) {
+            return entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
+                element.GetBundleName().empty();
+        })) {
+        find = true;
     }
+
     HILOG_DEBUG(" mock BundleMgrService QueryAbilityInfo CheckWantEntity ------------ start---------3");
     auto bundleName = element.GetBundleName();
     auto abilityName = element.GetAbilityName();

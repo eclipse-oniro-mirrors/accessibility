@@ -73,9 +73,9 @@ RetError MockAccessibleAbilityManagerServiceStub::SetCaptionState(const bool sta
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &client)
+    const sptr<IAccessibleAbilityManagerStateObserver> &callback)
 {
-    (void)client;
+    (void)callback;
     return 0;
 }
 
@@ -107,9 +107,9 @@ RetError MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(Accessibili
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterCaptionObserver(
-    const sptr<IAccessibleAbilityManagerCaptionObserver> &client)
+    const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
 {
-    captionObserver_ = client;
+    captionObserver_ = callback;
     return 0;
 }
 
@@ -375,9 +375,9 @@ void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver
 }
 
 uint32_t MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
-    const sptr<IAccessibleAbilityManagerConfigObserver> &client)
+    const sptr<IAccessibleAbilityManagerConfigObserver> &callback)
 {
-    observer_ = client;
+    observer_ = callback;
     return 0;
 }
 } // namespace Accessibility
