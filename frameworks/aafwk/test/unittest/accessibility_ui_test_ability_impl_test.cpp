@@ -85,7 +85,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, RegisterAbilityListener_001, TestSi
         return;
     }
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
-    EXPECT_FALSE(instance_->RegisterAbilityListener(listener));
+    EXPECT_EQ(instance_->RegisterAbilityListener(listener), RET_ERR_INVALID_PARAM);
 
     GTEST_LOG_(INFO) << "RegisterAbilityListener_001 end";
 }
@@ -105,7 +105,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, RegisterAbilityListener_002, TestSi
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    EXPECT_FALSE(instance_->RegisterAbilityListener(listener));
+    EXPECT_EQ(instance_->RegisterAbilityListener(listener), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "RegisterAbilityListener_002 end";
@@ -125,7 +125,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, RegisterAbilityListener_003, TestSi
         return;
     }
     std::shared_ptr<AccessibleAbilityListener> listener = std::make_shared<MockAccessibleAbilityListener>();
-    EXPECT_TRUE(instance_->RegisterAbilityListener(listener));
+    EXPECT_EQ(instance_->RegisterAbilityListener(listener), RET_OK);
 
     GTEST_LOG_(INFO) << "RegisterAbilityListener_003 end";
 }
@@ -161,7 +161,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, Disconnect_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
         return;
     }
-    EXPECT_FALSE(instance_->Disconnect());
+    EXPECT_EQ(instance_->Disconnect(), RET_ERR_SAMGR);
 
     GTEST_LOG_(INFO) << "Disconnect_001 end";
 }
@@ -181,7 +181,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_001, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetFocus(FOCUS_TYPE, elementInfo));
+    EXPECT_EQ(instance_->GetFocus(FOCUS_TYPE, elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetFocus_001 end";
@@ -201,7 +201,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocus_002, TestSize.Level1)
         return;
     }
     AccessibilityElementInfo elementInfo {};
-    EXPECT_TRUE(instance_->GetFocus(FOCUS_TYPE, elementInfo));
+    EXPECT_EQ(instance_->GetFocus(FOCUS_TYPE, elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetFocus_002 end";
 }
@@ -222,7 +222,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_001, TestSize
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE, elementInfo));
+    EXPECT_EQ(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE, elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_001 end";
@@ -243,7 +243,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetFocusByElementInfo_002, TestSize
     }
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_TRUE(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE, elementInfo));
+    EXPECT_EQ(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE, elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_002 end";
 }
@@ -263,7 +263,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_001, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    EXPECT_FALSE(instance_->InjectGesture(gesturePath));
+    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "InjectGesture_001 end";
@@ -283,7 +283,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, InjectGesture_002, TestSize.Level1)
         return;
     }
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    EXPECT_TRUE(instance_->InjectGesture(gesturePath));
+    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_OK);
 
     GTEST_LOG_(INFO) << "InjectGesture_002 end";
 }
@@ -303,7 +303,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_001, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetRoot(elementInfo));
+    EXPECT_EQ(instance_->GetRoot(elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetRoot_001 end";
@@ -323,7 +323,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRoot_002, TestSize.Level1)
         return;
     }
     AccessibilityElementInfo elementInfo {};
-    EXPECT_TRUE(instance_->GetRoot(elementInfo));
+    EXPECT_EQ(instance_->GetRoot(elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetRoot_002 end";
 }
@@ -344,7 +344,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindow_001, TestSize.Level
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo windowInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetRootByWindow(windowInfo, elementInfo));
+    EXPECT_EQ(instance_->GetRootByWindow(windowInfo, elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetRootByWindow_001 end";
@@ -365,7 +365,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindow_002, TestSize.Level
     }
     AccessibilityWindowInfo windowInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_TRUE(instance_->GetRootByWindow(windowInfo, elementInfo));
+    EXPECT_EQ(instance_->GetRootByWindow(windowInfo, elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetRootByWindow_002 end";
 }
@@ -385,7 +385,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindow_001, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityWindowInfo winInfo {};
-    EXPECT_FALSE(instance_->GetWindow(WINDOW_ID, winInfo));
+    EXPECT_EQ(instance_->GetWindow(WINDOW_ID, winInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
     GTEST_LOG_(INFO) << "GetWindow_001 end";
 }
@@ -404,7 +404,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindow_002, TestSize.Level1)
         return;
     }
     AccessibilityWindowInfo winInfo {};
-    EXPECT_TRUE(instance_->GetWindow(WINDOW_ID, winInfo));
+    EXPECT_EQ(instance_->GetWindow(WINDOW_ID, winInfo), RET_OK);
     GTEST_LOG_(INFO) << "GetWindow_002 end";
 }
 
@@ -423,7 +423,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_001, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     std::vector<AccessibilityWindowInfo> res {};
-    EXPECT_FALSE(instance_->GetWindows(res));
+    EXPECT_EQ(instance_->GetWindows(res), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
     GTEST_LOG_(INFO) << "GetWindows_001 end";
 }
@@ -442,7 +442,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_002, TestSize.Level1)
         return;
     }
     std::vector<AccessibilityWindowInfo> res {};
-    EXPECT_TRUE(instance_->GetWindows(res));
+    EXPECT_EQ(instance_->GetWindows(res), RET_OK);
     GTEST_LOG_(INFO) << "GetWindows_002 end";
 }
 
@@ -461,7 +461,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_003, TestSize.Level1)
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     std::vector<AccessibilityWindowInfo> res {};
-    EXPECT_FALSE(instance_->GetWindows(DISPLAY_ID, res));
+    EXPECT_EQ(instance_->GetWindows(DISPLAY_ID, res), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
     GTEST_LOG_(INFO) << "GetWindows_003 end";
 }
@@ -480,7 +480,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetWindows_004, TestSize.Level1)
         return;
     }
     std::vector<AccessibilityWindowInfo> res {};
-    EXPECT_TRUE(instance_->GetWindows(DISPLAY_ID, res));
+    EXPECT_EQ(instance_->GetWindows(DISPLAY_ID, res), RET_OK);
     GTEST_LOG_(INFO) << "GetWindows_004 end";
 }
 
@@ -501,7 +501,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_001, TestSize.Level1)
     AccessibilityElementInfo nextElementInfo {};
     AccessibilityElementInfo elementInfo {};
     FocusMoveDirection direction = DIRECTION_INVALID;
-    EXPECT_FALSE(instance_->GetNext(elementInfo, direction, elementInfo));
+    EXPECT_EQ(instance_->GetNext(elementInfo, direction, elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetNext_001 end";
@@ -523,7 +523,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetNext_002, TestSize.Level1)
     AccessibilityElementInfo nextElementInfo {};
     AccessibilityElementInfo elementInfo {};
     FocusMoveDirection direction = DIRECTION_INVALID;
-    EXPECT_TRUE(instance_->GetNext(elementInfo, direction, elementInfo));
+    EXPECT_EQ(instance_->GetNext(elementInfo, direction, elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetNext_002 end";
 }
@@ -545,7 +545,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_001, TestSize.L
     AccessibilityElementInfo parent {};
     AccessibilityElementInfo child {};
     int32_t index = 1;
-    EXPECT_FALSE(instance_->GetChildElementInfo(index, parent, child));
+    EXPECT_EQ(instance_->GetChildElementInfo(index, parent, child), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetChildElementInfo_001 end";
@@ -567,7 +567,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildElementInfo_002, TestSize.L
     AccessibilityElementInfo parent {};
     AccessibilityElementInfo child {};
     int32_t index = 1;
-    EXPECT_TRUE(instance_->GetChildElementInfo(index, parent, child));
+    EXPECT_EQ(instance_->GetChildElementInfo(index, parent, child), RET_OK);
 
     GTEST_LOG_(INFO) << "GetChildElementInfo_002 end";
 }
@@ -588,7 +588,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_001, TestSize.Level1)
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo parent {};
     std::vector<AccessibilityElementInfo> elementInfos {};
-    EXPECT_FALSE(instance_->GetByContent(parent, TEST, elementInfos));
+    EXPECT_EQ(instance_->GetByContent(parent, TEST, elementInfos), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetByContent_001 end";
@@ -609,7 +609,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetByContent_002, TestSize.Level1)
     }
     AccessibilityElementInfo parent {};
     std::vector<AccessibilityElementInfo> elementInfos {};
-    EXPECT_TRUE(instance_->GetByContent(parent, TEST, elementInfos));
+    EXPECT_EQ(instance_->GetByContent(parent, TEST, elementInfos), RET_OK);
 
     GTEST_LOG_(INFO) << "GetByContent_002 end";
 }
@@ -630,7 +630,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_001, TestSize.Level1)
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityEventInfo eventInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_FALSE(instance_->GetSource(eventInfo, elementInfo));
+    EXPECT_EQ(instance_->GetSource(eventInfo, elementInfo), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetSource_001 end";
@@ -651,7 +651,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetSource_002, TestSize.Level1)
     }
     AccessibilityEventInfo eventInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_TRUE(instance_->GetSource(eventInfo, elementInfo));
+    EXPECT_EQ(instance_->GetSource(eventInfo, elementInfo), RET_OK);
 
     GTEST_LOG_(INFO) << "GetSource_002 end";
 }
@@ -672,7 +672,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_001, TestSize.
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     AccessibilityElementInfo child {};
     AccessibilityElementInfo parent {};
-    EXPECT_FALSE(instance_->GetParentElementInfo(child, parent));
+    EXPECT_EQ(instance_->GetParentElementInfo(child, parent), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "GetParentElementInfo_001 end";
@@ -693,7 +693,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetParentElementInfo_002, TestSize.
     }
     AccessibilityElementInfo child {};
     AccessibilityElementInfo parent {};
-    EXPECT_TRUE(instance_->GetParentElementInfo(child, parent));
+    EXPECT_EQ(instance_->GetParentElementInfo(child, parent), RET_OK);
 
     GTEST_LOG_(INFO) << "GetParentElementInfo_002 end";
 }
@@ -715,7 +715,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, ExecuteAction_001, TestSize.Level1)
     AccessibilityElementInfo elementInfo {};
     ActionType action = ACCESSIBILITY_ACTION_INVALID;
     std::map<std::string, std::string> actionArguments {};
-    EXPECT_FALSE(instance_->ExecuteAction(elementInfo, action, actionArguments));
+    EXPECT_EQ(instance_->ExecuteAction(elementInfo, action, actionArguments), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "ExecuteAction_001 end";
@@ -737,7 +737,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, ExecuteAction_002, TestSize.Level1)
     AccessibilityElementInfo elementInfo {};
     ActionType action = ACCESSIBILITY_ACTION_INVALID;
     std::map<std::string, std::string> actionArguments {};
-    EXPECT_TRUE(instance_->ExecuteAction(elementInfo, action, actionArguments));
+    EXPECT_EQ(instance_->ExecuteAction(elementInfo, action, actionArguments), RET_OK);
 
     GTEST_LOG_(INFO) << "ExecuteAction_002 end";
 }
@@ -757,7 +757,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, SetTargetBundleName_001, TestSize.L
     }
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
     std::vector<std::string> targetBundleNames;
-    EXPECT_FALSE(instance_->SetTargetBundleName(targetBundleNames));
+    EXPECT_EQ(instance_->SetTargetBundleName(targetBundleNames), RET_ERR_NULLPTR);
     AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
 
     GTEST_LOG_(INFO) << "SetTargetBundleName_001 end";
@@ -777,7 +777,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, SetTargetBundleName_002, TestSize.L
         return;
     }
     std::vector<std::string> targetBundleNames;
-    EXPECT_TRUE(instance_->SetTargetBundleName(targetBundleNames));
+    EXPECT_EQ(instance_->SetTargetBundleName(targetBundleNames), RET_OK);
 
     GTEST_LOG_(INFO) << "SetTargetBundleName_002 end";
 }
@@ -797,7 +797,7 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, GetChildren_001, TestSize.Level1)
     }
     AccessibilityElementInfo parent;
     std::vector<AccessibilityElementInfo> children;
-    EXPECT_TRUE(instance_->GetChildren(parent, children));
+    EXPECT_EQ(instance_->GetChildren(parent, children), RET_OK);
 
     GTEST_LOG_(INFO) << "GetChildren_001 end";
 }
