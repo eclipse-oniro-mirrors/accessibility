@@ -72,14 +72,14 @@ void AccessibilityWindowInfo::SetRectInScreen(const Rect &bounds)
 
 bool AccessibilityWindowInfo::IsActive() const
 {
-    HILOG_DEBUG("active_[%{public}d] windowId_[%{public}d]", active_, windowId_);
+    HILOG_DEBUG("active_[%{public}d]", active_);
     return active_;
 }
 
 void AccessibilityWindowInfo::SetActive(bool active)
 {
     active_ = active;
-    HILOG_DEBUG("active_[%{public}d] windowId_[%{public}d]", active_, windowId_);
+    HILOG_DEBUG("active_[%{public}d]", active_);
 }
 
 bool AccessibilityWindowInfo::IsFocused() const

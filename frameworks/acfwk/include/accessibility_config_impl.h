@@ -33,18 +33,16 @@ public:
 
     bool InitializeContext();
 
-    Accessibility::RetError SubscribeConfigObserver(const CONFIG_ID id,
-        const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag);
-    Accessibility::RetError UnsubscribeConfigObserver(const CONFIG_ID id,
-        const std::shared_ptr<AccessibilityConfigObserver> &observer);
+    void SubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer,
+        const bool retFlag);
+    void UnsubscribeConfigObserver(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
 
-    Accessibility::RetError SubscribeEnableAbilityListsObserver(
-        const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
-    Accessibility::RetError UnsubscribeEnableAbilityListsObserver(
+    void SubscribeEnableAbilityListsObserver(const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
+    void UnsubscribeEnableAbilityListsObserver(
         const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer);
 
-    Accessibility::RetError EnableAbility(const std::string &name, const uint32_t capabilities);
-    Accessibility::RetError DisableAbility(const std::string &name);
+    bool EnableAbility(const std::string &name, const uint32_t capabilities);
+    bool DisableAbility(const std::string &name);
 
     Accessibility::RetError SetScreenMagnificationState(const bool state);
     Accessibility::RetError SetShortKeyState(const bool state);

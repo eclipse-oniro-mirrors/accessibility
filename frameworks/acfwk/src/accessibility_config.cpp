@@ -44,43 +44,43 @@ bool AccessibilityConfig::InitializeContext()
     return pImpl_->InitializeContext();
 }
 
-Accessibility::RetError AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
+void AccessibilityConfig::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->SubscribeConfigObserver(id, observer, retFlag);
+    CHECK_IMPL_PTR()
+    pImpl_->SubscribeConfigObserver(id, observer, retFlag);
 }
 
-Accessibility::RetError AccessibilityConfig::UnsubscribeConfigObserver(const CONFIG_ID id,
+void AccessibilityConfig::UnsubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->UnsubscribeConfigObserver(id, observer);
+    CHECK_IMPL_PTR()
+    pImpl_->UnsubscribeConfigObserver(id, observer);
 }
 
-Accessibility::RetError AccessibilityConfig::SubscribeEnableAbilityListsObserver(
+void AccessibilityConfig::SubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->SubscribeEnableAbilityListsObserver(observer);
+    CHECK_IMPL_PTR()
+    pImpl_->SubscribeEnableAbilityListsObserver(observer);
 }
 
-Accessibility::RetError AccessibilityConfig::UnsubscribeEnableAbilityListsObserver(
+void AccessibilityConfig::UnsubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
-    return pImpl_->UnsubscribeEnableAbilityListsObserver(observer);
+    CHECK_IMPL_PTR()
+    pImpl_->UnsubscribeEnableAbilityListsObserver(observer);
 }
 
-Accessibility::RetError AccessibilityConfig::EnableAbility(const std::string &name, const uint32_t capabilities)
+bool AccessibilityConfig::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    CHECK_IMPL_PTR(false)
     return pImpl_->EnableAbility(name, capabilities);
 }
 
-Accessibility::RetError AccessibilityConfig::DisableAbility(const std::string &name)
+bool AccessibilityConfig::DisableAbility(const std::string &name)
 {
-    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    CHECK_IMPL_PTR(false)
     return pImpl_->DisableAbility(name);
 }
 

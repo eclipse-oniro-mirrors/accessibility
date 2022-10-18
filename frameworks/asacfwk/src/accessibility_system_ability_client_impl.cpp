@@ -42,8 +42,6 @@ std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClie
 
 AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 {
-    HILOG_DEBUG();
-    stateArray_.fill(false);
     if (!ConnectToService()) {
         HILOG_ERROR("Failed to connect to aams service");
         return;
@@ -58,7 +56,6 @@ AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
 
 bool AccessibilitySystemAbilityClientImpl::ConnectToService()
 {
-    HILOG_DEBUG();
     if (serviceProxy_) {
         HILOG_DEBUG("AAMS Service is connected");
         return true;
@@ -134,73 +131,70 @@ void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject
     }
 }
 
-RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
+int32_t AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     const int32_t windowId, const std::shared_ptr<AccessibilityElementOperator> &operation)
 {
     HILOG_INFO("Register windowId[%{public}d] start", windowId);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!operation) {
         HILOG_ERROR("Input operation is null");
-        return RET_ERR_INVALID_PARAM;
+        return -1;
     }
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return -1;
     }
 
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_ERROR("windowID[%{public}d] is exited", windowId);
-        return RET_ERR_CONNECTION_EXIST;
+        return 0;
     }
 
     sptr<AccessibilityElementOperatorImpl> aamsInteractionOperator =
         new(std::nothrow) AccessibilityElementOperatorImpl(windowId, operation, *this);
     if (!aamsInteractionOperator) {
         HILOG_ERROR("Failed to create aamsInteractionOperator.");
-        return RET_ERR_NULLPTR;
+        return -1;
     }
     elementOperators_[windowId] = aamsInteractionOperator;
-    return serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
+    serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
+
+    return 0;
 }
 
-RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId)
+void AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId)
 {
     HILOG_INFO("Deregister windowId[%{public}d] start", windowId);
     std::lock_guard<std::mutex> lock(mutex_);
 
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return;
     }
+    serviceProxy_->DeregisterElementOperator(windowId);
     auto iter = elementOperators_.find(windowId);
     if (iter != elementOperators_.end()) {
         HILOG_DEBUG("windowID[%{public}d] is erase", windowId);
         elementOperators_.erase(iter);
-    } else {
-        HILOG_WARN("Not find windowID[%{public}d]", windowId);
-        return RET_ERR_NO_REGISTER;
+        return;
     }
-    return serviceProxy_->DeregisterElementOperator(windowId);
+    HILOG_DEBUG("Not find windowID[%{public}d]", windowId);
 }
 
-RetError AccessibilitySystemAbilityClientImpl::IsEnabled(bool &isEnabled)
+bool AccessibilitySystemAbilityClientImpl::IsEnabled()
 {
-    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    isEnabled = stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED];
-    return RET_OK;
+    return stateArray_[AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED];
 }
 
-RetError AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled(bool &isEnabled)
+bool AccessibilitySystemAbilityClientImpl::IsTouchExplorationEnabled()
 {
-    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
-    isEnabled = stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
-    return RET_OK;
+    return stateArray_[AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED];
 }
 
-RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t accessibilityAbilityTypes,
+bool AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t accessibilityAbilityTypes,
     const AbilityStateType stateType, std::vector<AccessibilityAbilityInfo> &infos)
 {
     HILOG_DEBUG();
@@ -219,11 +213,11 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
     if (!check) {
         HILOG_ERROR("Invalid params: accessibilityAbilityTypes[%{public}d] stateType[%{public}d]",
             accessibilityAbilityTypes, stateType);
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return false;
     }
     return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
 }
@@ -239,85 +233,87 @@ bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
     }
 }
 
-RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int32_t componentId)
+bool AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int32_t componentId)
 {
     HILOG_DEBUG("componentId[%{public}d], eventType[%{public}d]", componentId, eventType);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!CheckEventType(eventType)) {
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
     AccessibilityEventInfo event;
     event.SetEventType(eventType);
     event.SetSource(componentId);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return false;
     }
-    return serviceProxy_->SendEvent(event);
+    serviceProxy_->SendEvent(event);
+    return true;
 }
 
-RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInfo &event)
+bool AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEventInfo &event)
 {
     HILOG_DEBUG("EventType[%{public}d]", event.GetEventType());
     std::lock_guard<std::mutex> lock(mutex_);
     if (!CheckEventType(event.GetEventType())) {
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return false;
     }
-    return serviceProxy_->SendEvent(event);
+    serviceProxy_->SendEvent(event);
+    return true;
 }
 
-RetError AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
+bool AccessibilitySystemAbilityClientImpl::SubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
     if (!observer) {
         HILOG_ERROR("Input observer is null");
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
 
     StateObserverVector &observerVector = stateObserversArray_[eventType];
     for (auto iter = observerVector.begin(); iter != observerVector.end(); ++iter) {
         if (*iter == observer) {
             HILOG_INFO("Observer has subscribed!");
-            return RET_ERR_REGISTER_EXIST;
+            return true;
         }
     }
     observerVector.push_back(observer);
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
+bool AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
     const std::shared_ptr<AccessibilityStateObserver> &observer, const uint32_t eventType)
 {
     HILOG_DEBUG("eventType is [%{public}d]", eventType);
     std::lock_guard<std::mutex> lock(mutex_);
     if (eventType >= AccessibilityStateEventType::EVENT_TYPE_MAX) {
         HILOG_ERROR("Input eventType is out of scope");
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
     if (!observer) {
         HILOG_ERROR("Input observer is null");
-        return RET_ERR_INVALID_PARAM;
+        return false;
     }
 
     StateObserverVector &observerVector = stateObserversArray_[eventType];
     for (auto iter = observerVector.begin(); iter != observerVector.end(); ++iter) {
         if (*iter == observer) {
             observerVector.erase(iter);
-            return RET_OK;
+            return true;
         }
     }
     HILOG_ERROR("The observer has not subscribed.");
-    return RET_ERR_NO_REGISTER;
+    return false;
 }
 
 void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType, bool value)
@@ -345,13 +341,13 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
     HILOG_DEBUG("end");
 }
 
-RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+bool AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get aams service");
-        return RET_ERR_SAMGR;
+        return false;
     }
     return serviceProxy_->GetEnabledAbilities(enabledAbilities);
 }

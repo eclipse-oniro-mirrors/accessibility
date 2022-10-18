@@ -54,10 +54,9 @@ int MockAccessibleAbilityManagerServiceStub::OnRemoteRequest(
     return 0;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfo &uiEvent)
+void MockAccessibleAbilityManagerServiceStub::SendEvent(const AccessibilityEventInfo &uiEvent)
 {
     (void)uiEvent;
-    return RET_OK;
 }
 
 RetError MockAccessibleAbilityManagerServiceStub::SetCaptionProperty(
@@ -80,27 +79,25 @@ uint32_t MockAccessibleAbilityManagerServiceStub::RegisterStateObserver(
     return 0;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+bool MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
     std::vector<AccessibilityAbilityInfo> &infos)
 {
     (void)abilityTypes;
     (void)stateType;
     (void)infos;
-    return RET_OK;
+    return true;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::RegisterElementOperator(
+void MockAccessibleAbilityManagerServiceStub::RegisterElementOperator(
     int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
 {
     (void)windowId;
     (void)operation;
-    return RET_OK;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const int32_t windowId)
+void MockAccessibleAbilityManagerServiceStub::DeregisterElementOperator(const int32_t windowId)
 {
     (void)windowId;
-    return RET_OK;
 }
 
 RetError MockAccessibleAbilityManagerServiceStub::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
@@ -142,7 +139,7 @@ bool MockAccessibleAbilityManagerServiceStub::GetKeyEventObserverState()
     return true;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities)
+bool MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     (void)name;
     (void)capabilities;
@@ -151,19 +148,19 @@ RetError MockAccessibleAbilityManagerServiceStub::EnableAbility(const std::strin
             abilityObserver_->OnAccessibilityEnableAbilityListsChanged();
             }), "NotifyEnableAbility");
     }
-    return RET_OK;
+    return true;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+bool MockAccessibleAbilityManagerServiceStub::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     (void)enabledAbilities;
-    return RET_OK;
+    return true;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::string &name)
+bool MockAccessibleAbilityManagerServiceStub::DisableAbility(const std::string &name)
 {
     (void)name;
-    return RET_OK;
+    return true;
 }
 
 int32_t MockAccessibleAbilityManagerServiceStub::GetActiveWindow()
@@ -177,9 +174,9 @@ RetError MockAccessibleAbilityManagerServiceStub::EnableUITestAbility(const sptr
     return RET_ERR_IPC_FAILED;
 }
 
-RetError MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
+bool MockAccessibleAbilityManagerServiceStub::DisableUITestAbility()
 {
-    return RET_OK;
+    return true;
 }
 
 RetError MockAccessibleAbilityManagerServiceStub::SetScreenMagnificationState(const bool state)

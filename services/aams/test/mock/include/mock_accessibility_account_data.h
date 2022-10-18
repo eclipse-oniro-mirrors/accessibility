@@ -40,7 +40,7 @@ public:
     MOCK_METHOD1(RemoveAccessibilityWindowConnection, void(const int32_t windowId));
     MOCK_METHOD1(AddConnectingA11yAbility, void(const AppExecFwk::ElementName& elementName));
     MOCK_METHOD1(AddEnabledAbility, void(const AppExecFwk::ElementName& elementName));
-    MOCK_METHOD1(RemoveEnabledAbility, RetError(const std::string& bundleName));
+    MOCK_METHOD1(RemoveEnabledAbility, bool(const std::string& bundleName));
     MOCK_METHOD1(AddInstalledAbility, void(AccessibilityAbilityInfo& abilityInfo));
     MOCK_METHOD1(RemoveInstalledAbility, void(const std::string &bundleName));
     MOCK_METHOD0(ClearInstalledAbility, void());

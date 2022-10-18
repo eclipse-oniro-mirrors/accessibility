@@ -60,7 +60,7 @@ struct NAccessibilityConfigData {
     OHOS::AccessibilityConfig::CaptionProperty captionProperty_ {};
     OHOS::AccessibilityConfig::CONFIG_ID id_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
     bool boolConfig_ = false;
-    OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
+    bool ret_ = false;
 };
 
 class NAccessibilityConfigClass {

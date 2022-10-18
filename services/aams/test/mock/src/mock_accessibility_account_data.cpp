@@ -168,7 +168,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
+bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
@@ -176,11 +176,11 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
-            return RET_OK;
+            return true;
         }
     }
     HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
-    return RET_ERR_NOT_ENABLED;
+    return false;
 }
 
 // For UT
