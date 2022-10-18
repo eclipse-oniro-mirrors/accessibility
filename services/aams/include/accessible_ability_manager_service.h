@@ -63,7 +63,7 @@ public:
 
 public:
     /* For AccessibleAbilityManagerServiceStub */
-    void SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -72,13 +72,13 @@ public:
     void RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
-    bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    RetError GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfo> &infos) override;
 
-    void RegisterElementOperator(const int32_t windowId,
+    RetError RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation) override;
 
-    void DeregisterElementOperator(const int32_t windowId) override;
+    RetError DeregisterElementOperator(const int32_t windowId) override;
 
     RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
@@ -90,11 +90,11 @@ public:
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
 
-    bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
-    bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
-    bool DisableAbility(const std::string &name) override;
+    RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    RetError DisableAbility(const std::string &name) override;
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
-    bool DisableUITestAbility() override;
+    RetError DisableUITestAbility() override;
     int32_t GetActiveWindow() override;
 
 public:
@@ -249,8 +249,8 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
-    bool InnerEnableAbility(const std::string &name, const uint32_t capabilities);
-    bool InnerDisableAbility(const std::string &name);
+    RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
+    RetError InnerDisableAbility(const std::string &name);
 
     sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(int32_t windowId);
     void ClearFocus(int32_t windowId);
