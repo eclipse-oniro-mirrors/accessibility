@@ -149,7 +149,7 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
             return activeWindowId_;
         }
     }
-    HILOG_DEBUG("After convert windowId[%{public}d]", windowId);
+    HILOG_DEBUG("After convert windowId[%{public}d] and activeId[%{public}d]", windowId, activeWindowId_);
     return windowId;
 }
 

@@ -28,42 +28,42 @@ class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
     AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
     ~AccessibleAbilityChannel() = default;
-    bool SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode) override;
 
-    bool SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
         const std::string &text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
+    RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
+    RetError ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
+    RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
 
-    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
 
-    bool GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetWindowsByDisplayId(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
 
     void SetOnKeyPressEventResult(const bool handled, const int32_t sequence) override;
 
-    bool SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
+    RetError SendSimulateGesture(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath) override;
 
-    bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
+    RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
 
 private:
     static sptr<AccessibleAbilityConnection> GetConnection(int32_t accountId, const std::string &clientName);
-    static sptr<IAccessibilityElementOperator> GetElementOperator(
-        int32_t accountId, int32_t windowId, int32_t focusType, const std::string &clientName);
-    bool GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
+    static RetError GetElementOperator(int32_t accountId, int32_t windowId, int32_t focusType,
+        const std::string &clientName, sptr<IAccessibilityElementOperator> &elementOperator);
+    RetError GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const;
 
     std::string clientName_ = "";
     int32_t accountId_ = -1;
