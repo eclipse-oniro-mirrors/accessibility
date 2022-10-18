@@ -204,7 +204,7 @@ bool BundleMgrService::CheckWantEntity(const AAFwk::Want& want, AbilityInfo& abi
     if (std::any_of(entityVector.begin(), entityVector.end(),
         [element, find](const std::string &entity) {
             return entity == Want::FLAG_HOME_INTENT_FROM_SYSTEM && element.GetAbilityName().empty() &&
-                element.GetBundleName().empty();
+            element.GetBundleName().empty();
         })) {
         find = true;
     }
