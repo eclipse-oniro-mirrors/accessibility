@@ -161,12 +161,11 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_001, TestSize.L
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperator_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     ASSERT_TRUE(accountData);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
     sleep(SLEEP_TIME_1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
@@ -183,10 +182,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, T
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DeregisterElementOperator_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     ASSERT_TRUE(accountData);
-    EXPECT_EQ(RET_OK, aams.DeregisterElementOperator(0));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(SLEEP_TIME_1);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
@@ -531,18 +529,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetCaptionState_001, TestSize.
 }
 
 /**
- * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001
- * @tc.name: GetEnabledState
- * @tc.desc: Test function GetEnabledState
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledState_001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 start";
-    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledState());
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetEnabledState_001 end";
-}
-
-/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetTouchGuideState_001
  * @tc.name: GetTouchGuideState
  * @tc.desc: Test function GetTouchGuideState
@@ -684,8 +670,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableAbility_001, TestSize.Le
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableAbility_001 start";
     std::string name = "test";
     uint32_t capabilities = 1;
-    EXPECT_EQ(RET_ERR_NOT_INSTALLED,
-        Singleton<AccessibleAbilityManagerService>::GetInstance().EnableAbility(name, capabilities));
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().EnableAbility(name, capabilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableAbility_001 end";
 }
 
@@ -698,7 +683,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 start";
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NOT_ENABLED, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_001 end";
 }
 
@@ -711,8 +696,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_001, TestS
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_001 start";
     std::vector<std::string> enabledAbilities;
-    EXPECT_EQ(RET_OK,
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_001 end";
 }
 
@@ -737,7 +721,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableUITestAbility_001, TestS
 HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 start";
-    EXPECT_EQ(RET_ERR_NO_CONNECTION, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_001 end";
 }
 
@@ -984,8 +968,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, EnableAbility_002, TestSize.Le
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
     uint32_t capabilities = 1;
-    EXPECT_EQ(RET_ERR_NULLPTR,
-        Singleton<AccessibleAbilityManagerService>::GetInstance().EnableAbility(name, capabilities));
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().EnableAbility(name, capabilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_EnableAbility_002 end";
 }
 
@@ -999,8 +982,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetEnabledAbilities_002, TestS
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_002 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::vector<std::string> enabledAbilities;
-    EXPECT_EQ(RET_ERR_NULLPTR,
-        Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
+    EXPECT_TRUE(Singleton<AccessibleAbilityManagerService>::GetInstance().GetEnabledAbilities(enabledAbilities));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetEnabledAbilities_002 end";
 }
 
@@ -1014,7 +996,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableAbility_002, TestSize.L
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
     std::string name = "test";
-    EXPECT_EQ(RET_ERR_NULLPTR, Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableAbility(name));
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableAbility_002 end";
 }
 
@@ -1041,7 +1023,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DisableUITestAbility_002, Test
 {
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    EXPECT_EQ(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility(), RET_ERR_NULLPTR);
+    EXPECT_FALSE(Singleton<AccessibleAbilityManagerService>::GetInstance().DisableUITestAbility());
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_DisableUITestAbility_002 end";
 }
 

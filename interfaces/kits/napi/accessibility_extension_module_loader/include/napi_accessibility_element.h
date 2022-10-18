@@ -16,7 +16,6 @@
 #ifndef NAPI_ACCESSIBILITY_ELEMENT_H
 #define NAPI_ACCESSIBILITY_ELEMENT_H
 
-#include "napi_accessibility_def.h"
 #include "accessibility_event_info.h"
 #include "accessibility_window_info.h"
 #include "napi/native_api.h"
@@ -56,7 +55,7 @@ struct NAccessibilityElementData {
     std::string attribute_ = "";
     std::string actionName_ = "";
     std::string condition_ = "";
-    OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RetError::RET_ERR_FAILED;
+    bool ret_ = false;
 };
 
 class NAccessibilityElement {

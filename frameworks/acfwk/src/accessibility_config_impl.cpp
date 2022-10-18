@@ -216,24 +216,24 @@ void AccessibilityConfig::Impl::ResetService(const wptr<IRemoteObject> &remote)
     }
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
+bool AccessibilityConfig::Impl::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_INFO("name = [%{private}s] capabilities = [%{private}u]", name.c_str(), capabilities);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get accessibility service");
-        return Accessibility::RET_ERR_SAMGR;
+        return false;
     }
     return serviceProxy_->EnableAbility(name, capabilities);
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::DisableAbility(const std::string &name)
+bool AccessibilityConfig::Impl::DisableAbility(const std::string &name)
 {
     HILOG_INFO("name = [%{private}s]", name.c_str());
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get accessibility service");
-        return Accessibility::RET_ERR_SAMGR;
+        return false;
     }
     return serviceProxy_->DisableAbility(name);
 }
@@ -314,7 +314,7 @@ void AccessibilityConfig::Impl::NotifyCaptionChanged(
     }
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
+void AccessibilityConfig::Impl::SubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer, const bool retFlag)
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
@@ -334,10 +334,9 @@ Accessibility::RetError AccessibilityConfig::Impl::SubscribeConfigObserver(const
     if (retFlag && observer) {
         NotifyImmediately(id, observer);
     }
-    return Accessibility::RET_OK;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
+void AccessibilityConfig::Impl::UnsubscribeConfigObserver(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(id));
@@ -350,13 +349,12 @@ Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeConfigObserver(con
                 HILOG_DEBUG("erase observer");
                 it->second.erase(iter);
                 HILOG_DEBUG("observer's size is %{public}zu", it->second.size());
-                return Accessibility::RET_OK;
+                return;
             }
         }
     } else {
         HILOG_DEBUG("%{public}d has not subscribed ", id);
     }
-    return Accessibility::RET_OK;
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty& property)
@@ -1053,7 +1051,7 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balanc
     return ret;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
+void AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_INFO();
@@ -1063,14 +1061,13 @@ Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityListsOb
             return listObserver == observer;
             })) {
         HILOG_ERROR("the observer is exist");
-        return Accessibility::RET_OK;
+        return;
     }
     enableAbilityListsObservers_.push_back(observer);
     HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
-    return Accessibility::RET_OK;
 }
 
-Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(
+void AccessibilityConfig::Impl::UnsubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
     HILOG_INFO();
@@ -1080,10 +1077,9 @@ Accessibility::RetError AccessibilityConfig::Impl::UnsubscribeEnableAbilityLists
             HILOG_DEBUG("erase observer");
             enableAbilityListsObservers_.erase(iter);
             HILOG_DEBUG("observer's size is %{public}zu", enableAbilityListsObservers_.size());
-            return Accessibility::RET_OK;
+            return;
         }
     }
-    return Accessibility::RET_OK;
 }
 
 void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
