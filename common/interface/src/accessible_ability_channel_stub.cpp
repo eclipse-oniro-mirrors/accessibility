@@ -99,9 +99,9 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     }
 
     int32_t mode = data.ReadInt32();
-    bool result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
+    RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
 
     return NO_ERROR;
 }
@@ -120,9 +120,9 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
 
-    bool result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
+    RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback);
     HILOG_DEBUG("SearchElementInfosByText ret = %{public}d", result);
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
 
     return NO_ERROR;
 }
@@ -140,9 +140,9 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
 
-    bool result = FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
+    RetError result = FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback);
     HILOG_DEBUG("FindFocusedElementInfo ret = %{public}d", result);
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
 
     return NO_ERROR;
 }
@@ -160,9 +160,9 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
     sptr<IAccessibilityElementOperatorCallback> callback =
         iface_cast<IAccessibilityElementOperatorCallback>(remote);
 
-    bool result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
+    RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback);
     HILOG_DEBUG("FocusMoveSearch ret = %{public}d", result);
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
 
     return NO_ERROR;
 }
@@ -203,9 +203,9 @@ ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, M
         return ERR_INVALID_VALUE;
     }
 
-    bool result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
+    RetError result = ExecuteAction(accessibilityWindowId, elementId, action, actionArguments, requestId, callback);
     HILOG_DEBUG("ExecuteAction ret = %{public}d", result);
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -220,13 +220,13 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindow(MessageParcel &data, Messa
         return ERR_NULL_OBJECT;
     }
 
-    bool result = GetWindow(windowId, *windowInfoParcel);
+    RetError result = GetWindow(windowId, *windowInfoParcel);
     if (!reply.WriteStrongParcelable(windowInfoParcel)) {
         HILOG_ERROR("WriteStrongParcelable windows failed");
         return ERR_INVALID_VALUE;
     }
 
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -234,7 +234,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
 {
     HILOG_DEBUG();
     std::vector<AccessibilityWindowInfo> windows;
-    bool result = GetWindows(windows);
+    RetError result = GetWindows(windows);
     if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
         HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;
@@ -250,7 +250,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindows(MessageParcel &data, Mess
             return ERR_INVALID_VALUE;
         }
     }
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -260,7 +260,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
 
     uint64_t displayId = data.ReadUint64();
     std::vector<AccessibilityWindowInfo> windows;
-    bool result = GetWindowsByDisplayId(displayId, windows);
+    RetError result = GetWindowsByDisplayId(displayId, windows);
     if (!reply.WriteInt32(static_cast<int32_t>(windows.size()))) {
         HILOG_ERROR("windows.size() write error: %{public}zu, ", windows.size());
         return ERR_INVALID_VALUE;
@@ -276,7 +276,7 @@ ErrCode AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId(MessageParcel 
             return ERR_INVALID_VALUE;
         }
     }
-    reply.WriteBool(result);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -304,8 +304,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSendSimulateGesturePath(MessageParce
  
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
         std::make_shared<AccessibilityGestureInjectPath>(*positions);
-    bool result = SendSimulateGesture(gesturePath);
-    reply.WriteBool(result);
+    RetError result = SendSimulateGesture(gesturePath);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 
@@ -318,8 +318,8 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);
     }
-    bool result = SetTargetBundleName(targetBundleNames);
-    reply.WriteBool(result);
+    RetError result = SetTargetBundleName(targetBundleNames);
+    reply.WriteInt32(result);
     return NO_ERROR;
 }
 } // namespace Accessibility

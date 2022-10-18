@@ -244,7 +244,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
 
-bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
+RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
@@ -253,11 +253,11 @@ bool AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
             enabledAbilities_.erase(it);
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
-            return true;
+            return RET_OK;
         }
     }
     HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
-    return false;
+    return RET_ERR_NOT_ENABLED;
 }
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
@@ -469,25 +469,30 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
-bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
+RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
 
-    // Parse config from bms according to bundle name and ability name
-    uint32_t configCapabilities = GetAbilityStaticCapabilities(name);
+    bool isInstalled = false;
+    for (auto itr = installedAbilities_.begin(); itr != installedAbilities_.end(); itr++) {
+        if (itr->GetId() == name) {
+            isInstalled = true;
 
-    // Judge capabilities
-    uint32_t resultCapabilities = configCapabilities & capabilities;
-    HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
-    if (resultCapabilities == 0) {
-        HILOG_ERROR("the result of capabilities is wrong");
-        return false;
+            // Judge capabilities
+            uint32_t resultCapabilities = itr->GetStaticCapabilityValues() & capabilities;
+            HILOG_DEBUG("resultCapabilities is [%{public}d]", resultCapabilities);
+            if (resultCapabilities == 0) {
+                HILOG_ERROR("the result of capabilities is wrong");
+                return RET_ERR_NO_CAPABILITY;
+            }
+
+            itr->SetCapabilityValues(capabilities);
+            break;
+        }
     }
-
-    bool result = SetAbilityCapabilities(name, resultCapabilities);
-    if (!result) {
-        HILOG_ERROR("Reset capabilities failed");
-        return false;
+    if (!isInstalled) {
+        HILOG_ERROR("the ability[%{public}s] is not installed", name.c_str());
+        return RET_ERR_NOT_INSTALLED;
     }
 
     // Add enabled ability
@@ -496,13 +501,13 @@ bool AccessibilityAccountData::EnableAbility(const std::string &name, const uint
             return abilityName == name;
         })) {
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
-        return false;
+        return RET_ERR_CONNECTION_EXIST;
     }
     enabledAbilities_.push_back(name);
     UpdateEnableAbilityListsState();
     UpdateAbilities();
     Utils::RecordStartingA11yEvent(name);
-    return true;
+    return RET_OK;
 }
 
 bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
@@ -540,32 +545,6 @@ void AccessibilityAccountData::Init()
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
         config_->Init();
     }
-}
-
-bool AccessibilityAccountData::SetAbilityCapabilities(const std::string &name, const uint32_t capabilities)
-{
-    HILOG_DEBUG("start. name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
-    for (auto &installedAbility : installedAbilities_) {
-        if (installedAbility.GetId() == name) {
-            HILOG_DEBUG("reset ability capabilities");
-            installedAbility.SetCapabilityValues(capabilities);
-            return true;
-        }
-    }
-    HILOG_ERROR("not found the ability %{public}s", name.c_str());
-    return false;
-}
-
-uint32_t AccessibilityAccountData::GetAbilityStaticCapabilities(const std::string &name) const
-{
-    HILOG_DEBUG("start. name[%{public}s]", name.c_str());
-    for (auto &installedAbility : installedAbilities_) {
-        if (installedAbility.GetId() == name) {
-            return installedAbility.GetStaticCapabilityValues();
-        }
-    }
-    HILOG_ERROR("not found the ability %{public}s", name.c_str());
-    return 0;
 }
 
 void AccessibilityAccountData::AddConfigCallback(

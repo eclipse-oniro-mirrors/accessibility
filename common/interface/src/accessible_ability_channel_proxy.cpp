@@ -58,188 +58,189 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::M
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
     const int32_t mode)
 {
     HILOG_DEBUG();
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_INVALID_PARAM;
+    }
 
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(accessibilityWindowId)) {
         HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("elementId write error: %{public}d, ", elementId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return false;
-    }
-    if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(mode)) {
         HILOG_ERROR("mode write error: %{public}d, ", mode);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int32_t elementId, const std::string &text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
 
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_INVALID_PARAM;
+    }
+
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(accessibilityWindowId)) {
         HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("elementId write error: %{public}d, ", elementId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteString(text)) {
         HILOG_ERROR("text write error: %{public}s, ", text.c_str());
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return false;
-    }
-    if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by text");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_INVALID_PARAM;
+    }
 
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(accessibilityWindowId)) {
         HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("elementId write error: %{public}d, ", elementId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(focusType)) {
         HILOG_ERROR("focusType write error: %{public}d, ", focusType);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return false;
-    }
-    if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO, data, reply, option)) {
         HILOG_ERROR("fail to gain focus");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
+    if (!callback) {
+        HILOG_ERROR("callback is nullptr.");
+        return RET_ERR_INVALID_PARAM;
+    }
 
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(accessibilityWindowId)) {
         HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("elementId write error: %{public}d, ", elementId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(direction)) {
         HILOG_ERROR("direction write error: %{public}d, ", direction);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return false;
-    }
-    if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH, data, reply, option)) {
         HILOG_ERROR("fail to search focus");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
@@ -250,19 +251,19 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(accessibilityWindowId)) {
         HILOG_ERROR("accessibilityWindowId write error: %{public}d, ", accessibilityWindowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("elementId write error: %{public}d, ", elementId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(action)) {
         HILOG_ERROR("action write error: %{public}d, ", action);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     std::vector<std::string> actionArgumentsKey {};
@@ -273,31 +274,31 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     }
     if (!data.WriteStringVector(actionArgumentsKey)) {
         HILOG_ERROR("actionArgumentsKey write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteStringVector(actionArgumentsValue)) {
         HILOG_ERROR("actionArgumentsValue write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(requestId)) {
         HILOG_ERROR("requestId write error: %{public}d, ", requestId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!callback || !data.WriteRemoteObject(callback->AsObject())) {
         HILOG_ERROR("callback write error");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::PERFORM_ACTION,
         data, reply, option)) {
         HILOG_ERROR("fail to perform accessibility action");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG();
 
@@ -306,30 +307,30 @@ bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, Accessibil
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteInt32(windowId)) {
         HILOG_ERROR("windowId write error: %{public}d, ", windowId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOW, data, reply, option)) {
         HILOG_ERROR("fail to get window");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     sptr<AccessibilityWindowInfoParcel> windowInfoParcel = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
     if (!windowInfoParcel) {
         HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     windowInfo = *windowInfoParcel;
 
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -337,12 +338,12 @@ bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowIn
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     int32_t windowsSize = reply.ReadInt32();
@@ -350,15 +351,15 @@ bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowIn
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
         if (!window) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
-            return false;
+            return RET_ERR_IPC_FAILED;
         }
         windows.emplace_back(*window);
     }
 
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
+RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
@@ -368,17 +369,17 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteUint64(displayId)) {
         HILOG_ERROR("displayId write error: %{public}" PRIu64 ", ", displayId);
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     int32_t windowsSize = reply.ReadInt32();
@@ -386,12 +387,12 @@ bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t display
         sptr<AccessibilityWindowInfoParcel> window = reply.ReadStrongParcelable<AccessibilityWindowInfoParcel>();
         if (!window) {
             HILOG_ERROR("ReadStrongParcelable<AccessibilityWindowInfoParcel> failed");
-            return false;
+            return RET_ERR_IPC_FAILED;
         }
         windows.emplace_back(*window);
     }
 
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
@@ -419,7 +420,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     }
 }
 
-bool AccessibleAbilityChannelProxy::SendSimulateGesture(
+RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
@@ -427,7 +428,7 @@ bool AccessibleAbilityChannelProxy::SendSimulateGesture(
         new(std::nothrow) AccessibilityGestureInjectPathParcel(*gesturePath);
     if (!path) {
         HILOG_ERROR("Failed to create path.");
-        return false;
+        return RET_ERR_NULLPTR;
     }
 
     MessageParcel data;
@@ -435,22 +436,22 @@ bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     MessageOption option(MessageOption::TF_SYNC);
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteStrongParcelable(path)) {
         HILOG_ERROR("WriteStrongParcelable<AccessibilityGestureInjectPathParcel> failed");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
 
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
         HILOG_ERROR("fail to send simulation gesture path");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 
-bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG();
 
@@ -459,23 +460,23 @@ bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::s
     MessageOption option(MessageOption::TF_SYNC);
 
     if (!WriteInterfaceToken(data)) {
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(targetBundleNames.size())) {
         HILOG_ERROR("targetBundleNames.size() write error: %{public}zu, ", targetBundleNames.size());
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
     for (auto &targetBundleName : targetBundleNames) {
         if (!data.WriteString(targetBundleName)) {
             HILOG_ERROR("targetBundleName write error: %{public}s, ", targetBundleName.c_str());
-            return false;
+            return RET_ERR_IPC_FAILED;
         }
     }
     if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_TARGET_BUNDLE_NAME, data, reply, option)) {
         HILOG_ERROR("fail to set target bundle name filter");
-        return false;
+        return RET_ERR_IPC_FAILED;
     }
-    return reply.ReadBool();
+    return static_cast<RetError>(reply.ReadInt32());
 }
 } // namespace Accessibility
 } // namespace OHOS

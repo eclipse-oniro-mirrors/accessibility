@@ -25,29 +25,31 @@ public:
     MockAccessibleAbilityClient();
     ~MockAccessibleAbilityClient() = default;
     sptr<IRemoteObject> GetRemoteObject() override;
-    bool RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener) override;
-    bool GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) override;
-    bool GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
+    RetError RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener) override;
+    RetError GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo) override;
+    RetError GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo, const int32_t focusType,
         AccessibilityElementInfo &elementInfo) override;
-    bool InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) override;
-    bool GetRoot(AccessibilityElementInfo &elementInfo) override;
-    bool GetRootByWindow(const AccessibilityWindowInfo &windowInfo, AccessibilityElementInfo &elementInfo) override;
-    bool GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
-    bool GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
-    bool GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
-    bool GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
+    RetError InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath) override;
+    RetError GetRoot(AccessibilityElementInfo &elementInfo) override;
+    RetError GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+        AccessibilityElementInfo &elementInfo) override;
+    RetError GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo) override;
+    RetError GetWindows(std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) override;
+    RetError GetNext(const AccessibilityElementInfo &elementInfo, const FocusMoveDirection direction,
         AccessibilityElementInfo &nextElementInfo) override;
-    bool GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+    RetError GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
         AccessibilityElementInfo &child) override;
-    bool GetChildren(const AccessibilityElementInfo &parent, std::vector<AccessibilityElementInfo> &children) override;
-    bool GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
+    RetError GetChildren(const AccessibilityElementInfo &parent,
+        std::vector<AccessibilityElementInfo> &children) override;
+    RetError GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
         std::vector<AccessibilityElementInfo> &elementInfos) override;
-    bool GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo) override;
-    bool GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) override;
-    bool ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
+    RetError GetSource(const AccessibilityEventInfo &eventInfo, AccessibilityElementInfo &elementInfo) override;
+    RetError GetParentElementInfo(const AccessibilityElementInfo &child, AccessibilityElementInfo &parent) override;
+    RetError ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
         const std::map<std::string, std::string> &actionArguments) override;
-    bool SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
-    void SetCacheMode(const int32_t cacheMode) override;
+    RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) override;
+    RetError SetCacheMode(const int32_t cacheMode) override;
 };
 } // namespace Accessibility
 } // namespace OHOS
