@@ -1442,8 +1442,7 @@ bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;
-            napi_status status;
-            status = napi_get_element(env, arrayValue, i, &value);
+            napi_status status = napi_get_element(env, arrayValue, i, &value);
             if (status != napi_ok) {
                 return false;
             }

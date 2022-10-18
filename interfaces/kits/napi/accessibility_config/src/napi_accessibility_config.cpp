@@ -125,7 +125,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO - 1) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
-        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;;
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
     if (errCode == OHOS::Accessibility::RET_OK) {
