@@ -430,6 +430,25 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(const std::shared_ptr<N
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        if (observer->env_ != (*iter)->env_) {
+            iter++;
+            continue;
+        }
+        HILOG_DEBUG("Same env, begin check observer equal");
+        napi_value item = nullptr;
+        napi_value observerItem = nullptr;
+        bool equalFlag = false;
+        napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
+        napi_get_reference_value(observer->env_, observer->handlerRef_, &observerItem);
+        napi_status status = napi_strict_equals((*iter)->env_, item, observerItem, &equalFlag);
+        if (status == napi_ok && equalFlag) {
+            HILOG_DEBUG("Observer exist");
+            return;
+        } else {
+            iter++;
+        }
+    }
     observers_.emplace_back(observer);
 }
 

@@ -668,6 +668,26 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(const std::shared_ptr<Ena
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
+        if (observer->env_ != (*iter)->env_) {
+            iter++;
+            continue;
+        }
+        HILOG_DEBUG("Same env, begin check observer equal");
+        napi_value item = nullptr;
+        napi_value observerItem = nullptr;
+        napi_status status;
+        bool equalFlag = false;
+        napi_get_reference_value((*iter)->env_, (*iter)->callback_, &item);
+        napi_get_reference_value(observer->env_, observer->callback_, &observerItem);
+        status = napi_strict_equals((*iter)->env_, item, observerItem, &equalFlag);
+        if (status == napi_ok && equalFlag) {
+            HILOG_DEBUG("Observer exist");
+            return;
+        } else {
+            iter++;
+        }
+    }
     enableAbilityListsObservers_.emplace_back(observer);
     HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
 }
