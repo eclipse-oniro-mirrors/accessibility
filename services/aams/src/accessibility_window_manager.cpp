@@ -149,7 +149,7 @@ int32_t AccessibilityWindowManager::ConvertToRealWindowId(int32_t windowId, int3
             return activeWindowId_;
         }
     }
-    HILOG_DEBUG("After convert windowId[%{public}d]", windowId);
+    HILOG_DEBUG("After convert windowId[%{public}d] and activeId[%{public}d]", windowId, activeWindowId_);
     return windowId;
 }
 
@@ -309,11 +309,12 @@ bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
 {
     HILOG_DEBUG("start windowId(%{public}d)", windowId);
-    for (auto &window : a11yWindows_) {
-        if (window.first == windowId) {
-            window.second.SetRectInScreen(rect);
-            return;
-        }
+    auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
+        [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) {
+            return window.first == windowId;
+        });
+    if (it != a11yWindows_.end()) {
+        it->second.SetRectInScreen(rect);
     }
 }
 

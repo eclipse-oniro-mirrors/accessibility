@@ -82,7 +82,7 @@ int AccessibilityDumper::DumpAccessibilityWindowInfo(std::string& dumpInfo) cons
     size_t index = 0;
     std::map<int32_t, sptr<AccessibilityWindowConnection>> connectedWindowList = currentAccount->GetAsacConnections();
     oss << "connected window id: ";
-    for (auto &iter : connectedWindowList) {
+    for (const auto &iter : connectedWindowList) {
         index++;
         oss << iter.first;
 
@@ -95,7 +95,7 @@ int AccessibilityDumper::DumpAccessibilityWindowInfo(std::string& dumpInfo) cons
     const std::map<int32_t, AccessibilityWindowInfo> &windows = Singleton<AccessibilityWindowManager>::
         GetInstance().a11yWindows_;
     oss << std::endl << "a11yWindows_ id: ";
-    for (auto &iter : windows) {
+    for (const auto &iter : windows) {
         index++;
         oss << iter.first;
 
@@ -206,7 +206,7 @@ int AccessibilityDumper::DumpAccessibilityClientInfo(std::string& dumpInfo) cons
 
     // Dump client info details
     size_t index = 0;
-    for (auto &iter : connectedAbilities) {
+    for (const auto &iter : connectedAbilities) {
         oss << std::endl << "client[" << index++ << "] info details: " << std::endl;
         if (!iter.second) {
             HILOG_ERROR("The connected ability[%{public}s] is null", iter.first.c_str());
@@ -235,7 +235,7 @@ int AccessibilityDumper::DumpAccessibilityClientInfo(std::string& dumpInfo) cons
             oss << "    targetBundleNames: " << "all" << std::endl;
         } else {
             oss << "    targetBundleNames: " << std::endl;
-            for (auto &targetBundleName : targetBundleNames) {
+            for (const auto &targetBundleName : targetBundleNames) {
                 oss << "        " << targetBundleName << std::endl;
             }
         }

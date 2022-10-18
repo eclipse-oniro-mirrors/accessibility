@@ -78,6 +78,7 @@ struct NAccessibilitySystemAbilityClient {
     bool setKeyEvenReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
     bool result_ = false;
+    OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
     std::string eventType_ = "";
 
     std::map<std::string, std::vector<std::shared_ptr<StateListener>>> stateListeners_;

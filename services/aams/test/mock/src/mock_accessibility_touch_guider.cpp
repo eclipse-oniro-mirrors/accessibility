@@ -419,7 +419,6 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
 {
     HILOG_DEBUG();
 
-    std::shared_ptr<MMI::PointerEvent> lastInjectEvent = injectedRecorder_.lastHoverEvent;
     switch (event.GetPointerIds().size()) {
         case POINTER_COUNT_1:
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
@@ -641,7 +640,7 @@ void TouchGuider::SendUpForAllInjectedEvent(MMI::PointerEvent& event)
     HILOG_DEBUG();
 
     std::vector<int32_t> pIds = event.GetPointerIds();
-    for (auto& pId : pIds) {
+    for (const auto& pId : pIds) {
         if (!(injectedRecorder_.downPointers & (1 << pId))) {
             continue;
         }

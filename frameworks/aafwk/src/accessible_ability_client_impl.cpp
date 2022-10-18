@@ -16,7 +16,7 @@
 #include "accessible_ability_client_impl.h"
 
 #include <chrono>
-#include <inttypes.h>
+#include <cinttypes>
 #include <thread>
 
 #include "accessible_ability_client.h"
@@ -68,6 +68,29 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
         HILOG_ERROR("Get aams proxy failed");
         return;
     }
+
+    // Add death recipient
+    if (!accessibilityServiceDeathRecipient_) {
+        accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
+        if (!accessibilityServiceDeathRecipient_) {
+            HILOG_ERROR("Failed to create service deathRecipient.");
+            return;
+        }
+    }
+
+    if (serviceProxy_->AsObject()) {
+        HILOG_DEBUG("Add death recipient");
+        serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_);
+    }
+}
+
+AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
+{
+    HILOG_DEBUG();
+    if (serviceProxy_ && serviceProxy_->AsObject()) {
+        HILOG_DEBUG("Remove service death recipient");
+        serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
+    }
 }
 
 sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
@@ -80,16 +103,18 @@ sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
     return g_Instance->AsObject();
 }
 
-bool AccessibleAbilityClientImpl::RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener)
+RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
+    const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
     HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (listener_) {
         HILOG_DEBUG("listener already exists.");
-        return false;
+        return RET_ERR_REGISTER_EXIST;
     }
 
     listener_ = listener;
-    return true;
+    return RET_OK;
 }
 
 void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &channel, const int32_t channelId)
@@ -100,104 +125,131 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
         return;
     }
 
-    if (!listener_) {
-        HILOG_ERROR("listener_ is nullptr.");
-        return;
-    }
-
-    channelClient_ = std::make_shared<AccessibleAbilityChannelClient>(channelId, channel);
-
-    // Add death recipient
-    if (!deathRecipient_) {
-        deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
-        if (!deathRecipient_) {
-            HILOG_ERROR("Failed to create deathRecipient.");
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!listener_) {
+            HILOG_ERROR("listener_ is nullptr.");
             return;
+        }
+        listener = listener_;
+        channelClient_ = std::make_shared<AccessibleAbilityChannelClient>(channelId, channel);
+
+        // Add death recipient
+        if (!deathRecipient_) {
+            deathRecipient_ = new(std::nothrow) AccessibleAbilityDeathRecipient(*this);
+            if (!deathRecipient_) {
+                HILOG_ERROR("Failed to create deathRecipient.");
+                return;
+            }
+        }
+
+        if (channel->AsObject()) {
+            HILOG_DEBUG("Add death recipient");
+            channel->AsObject()->AddDeathRecipient(deathRecipient_);
         }
     }
 
-    auto object = channelClient_->GetRemote();
-    if (object) {
-        HILOG_DEBUG("Add death recipient");
-        object->AddDeathRecipient(deathRecipient_);
-    }
     std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_WINDOW_REGIST));
-    listener_->OnAbilityConnected();
+    if (listener) {
+        listener->OnAbilityConnected();
+    }
 }
 
 void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
 {
     HILOG_INFO("channelId[%{public}d]", channelId);
 
-    // Delete death recipient
-    if (channelClient_ && channelClient_->GetRemote()) {
-        HILOG_ERROR("Remove death recipient");
-        channelClient_->GetRemote()->RemoveDeathRecipient(deathRecipient_);
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        // Delete death recipient
+        if (channelClient_ && channelClient_->GetRemote()) {
+            HILOG_ERROR("Remove death recipient");
+            channelClient_->GetRemote()->RemoveDeathRecipient(deathRecipient_);
+        }
+
+        // Remove channel
+        channelClient_ = nullptr;
+        listener = listener_;
+        listener_ = nullptr;
     }
 
-    // Remove channel
-    channelClient_ = nullptr;
-
-    if (listener_) {
-        listener_->OnAbilityDisconnected();
-        listener_ = nullptr;
+    if (listener) {
+        listener->OnAbilityDisconnected();
     }
 }
 
 void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventInfo &eventInfo)
 {
     HILOG_INFO();
-    if (!channelClient_) {
-        HILOG_ERROR("The channel is invalid.");
-        return;
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!channelClient_) {
+            HILOG_ERROR("The channel is invalid.");
+            return;
+        }
+        listener = listener_;
     }
-    if (listener_) {
-        listener_->OnAccessibilityEvent(eventInfo);
+    if (listener) {
+        listener->OnAccessibilityEvent(eventInfo);
     }
 }
 
 void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence)
 {
     HILOG_INFO("sequence[%{public}d]", sequence);
-    if (!channelClient_) {
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    std::shared_ptr<AccessibleAbilityChannelClient> channel = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        listener = listener_;
+        channel = channelClient_;
+    }
+
+    if (!channel) {
         HILOG_ERROR("The channel is invalid.");
         return;
     }
-    if (listener_) {
+    bool handled = false;
+    if (listener) {
         std::shared_ptr<MMI::KeyEvent> tmp = std::make_shared<MMI::KeyEvent>(keyEvent);
-        bool handled = listener_->OnKeyPressEvent(tmp);
-        channelClient_->SetOnKeyPressEventResult(handled, sequence);
+        handled = listener->OnKeyPressEvent(tmp);
     }
+    channel->SetOnKeyPressEventResult(handled, sequence);
 }
 
-bool AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
+    std::lock_guard<std::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
 
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     return channelClient_->FindFocusedElementInfo(ANY_WINDOW_ID, ROOT_NODE_ID, focusType, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
+RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
+    std::lock_guard<std::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
 
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     int32_t windowId = sourceInfo.GetWindowId();
@@ -207,129 +259,135 @@ bool AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityEleme
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
+RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
 
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
 
     std::vector<AccessibilityGesturePosition> positions = gesturePath->GetPositions();
 
     if (positions.size() == 0) {
         HILOG_ERROR("The number of gesture path position is not allowed.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
 
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     return channelClient_->SendSimulateGesture(gesturePath);
 }
 
-bool AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
+RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
-    if (!channelClient_ || !serviceProxy_) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to connect to aams");
+        return RET_ERR_SAMGR;
+    }
+
+    if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     int32_t activeWindow = serviceProxy_->GetActiveWindow();
     HILOG_INFO("activeWindow[%{public}d]", activeWindow);
     if (GetCacheElementInfo(activeWindow, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
-        return true;
+        return RET_OK;
     }
 
-    if (!SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
+    return SearchElementInfoFromAce(activeWindow, ROOT_NONE_ID, cacheMode_, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     int32_t windowId = windowInfo.GetWindowId();
     HILOG_INFO("windowId[%{public}d]", windowId);
     if (GetCacheElementInfo(windowId, ROOT_NONE_ID, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
-        return true;
+        return RET_OK;
     }
 
-    if (!SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
+    return SearchElementInfoFromAce(windowId, ROOT_NONE_ID, cacheMode_, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_INFO("windowId[%{public}d]", windowId);
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     return channelClient_->GetWindow(windowId, windowInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     return channelClient_->GetWindows(windows);
 }
 
-bool AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_INFO("displayId[%{public}" PRIu64 "]", displayId);
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     return channelClient_->GetWindows(displayId, windows);
 }
 
-bool AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
+RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
     HILOG_INFO("windowId[%{public}d], elementId[%{public}d], direction[%{public}d]",
         elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     if (direction == DIRECTION_INVALID) {
         HILOG_ERROR("direction is invalid.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
     return channelClient_->FocusMoveSearch(elementInfo.GetWindowId(),
         elementInfo.GetAccessibilityId(), direction, nextElementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
     AccessibilityElementInfo &child)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     int32_t windowId = parent.GetWindowId();
@@ -337,27 +395,24 @@ bool AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, const
     HILOG_INFO("windowId[%{public}d], childId[%{public}d]", windowId, childId);
     if (childId == -1) {
         HILOG_ERROR("childId[%{public}d] is invalid", childId);
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
     if (GetCacheElementInfo(windowId, childId, child)) {
         HILOG_DEBUG("get element info from cache");
-        return true;
+        return RET_OK;
     }
 
-    if (!SearchElementInfoFromAce(windowId, childId, cacheMode_, child)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
+    return SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
 }
 
-bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
+RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &parent,
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     int32_t windowId = parent.GetWindowId();
@@ -367,7 +422,7 @@ bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &pa
         HILOG_DEBUG("childId[%{public}d]", childId);
         if (childId == -1) {
             HILOG_ERROR("childId is invalid");
-            return false;
+            return RET_ERR_INVALID_PARAM;
         }
 
         AccessibilityElementInfo child;
@@ -377,22 +432,24 @@ bool AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo &pa
             continue;
         }
 
-        if (!SearchElementInfoFromAce(windowId, childId, cacheMode_, child)) {
+        RetError ret = SearchElementInfoFromAce(windowId, childId, cacheMode_, child);
+        if (ret != RET_OK) {
             HILOG_ERROR("Get element info from ace failed");
-            return false;
+            return ret;
         }
         children.emplace_back(child);
     }
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
-    std::vector<AccessibilityElementInfo> &elementInfos)
+RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &elementInfo,
+    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     int32_t windowId = elementInfo.GetWindowId();
     int32_t elementId = elementInfo.GetAccessibilityId();
@@ -400,63 +457,57 @@ bool AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInfo &e
     return channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
 }
 
-bool AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &eventInfo,
+RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &eventInfo,
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     int32_t windowId = eventInfo.GetWindowId();
     int32_t elementId = eventInfo.GetAccessibilityId();
     HILOG_INFO("windowId[%{public}d], elementId[%{public}d]", windowId, elementId);
     if (GetCacheElementInfo(windowId, elementId, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
-        return true;
+        return RET_OK;
     }
-
-    if (!SearchElementInfoFromAce(windowId, elementId, cacheMode_, elementInfo)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
+    return SearchElementInfoFromAce(windowId, elementId, cacheMode_, elementInfo);
 }
 
-bool AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
+RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     int32_t windowId = child.GetWindowId();
     int32_t elementId = child.GetParentNodeId();
     HILOG_INFO("windowId[%{public}d], parentId[%{public}d]", windowId, elementId);
     if (GetCacheElementInfo(windowId, elementId, parent)) {
         HILOG_DEBUG("get element info from cache");
-        return true;
+        return RET_OK;
     }
 
-    if (!SearchElementInfoFromAce(windowId, elementId, cacheMode_, parent)) {
-        HILOG_ERROR("Get element info from ace failed");
-        return false;
-    }
-    return true;
+    return SearchElementInfoFromAce(windowId, elementId, cacheMode_, parent);
 }
 
-bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
-    const std::map<std::string, std::string> &actionArguments)
+RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &elementInfo,
+    const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     if (action == ACCESSIBILITY_ACTION_INVALID) {
         HILOG_ERROR("action is invalid.");
-        return false;
+        return RET_ERR_INVALID_PARAM;
     }
     int32_t windowId = elementInfo.GetWindowId();
     int32_t elementId = elementInfo.GetAccessibilityId();
@@ -465,12 +516,13 @@ bool AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementInfo &
         const_cast<std::map<std::string, std::string> &>(actionArguments));
 }
 
-bool AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_INFO("targetBundleNames size[%{public}zu]", targetBundleNames.size());
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
     return channelClient_->SetTargetBundleName(targetBundleNames);
 }
@@ -481,9 +533,41 @@ void AccessibleAbilityClientImpl::AccessibleAbilityDeathRecipient::OnRemoteDied(
     client_.ResetAAClient(remote);
 }
 
+void AccessibleAbilityClientImpl::AccessibilityServiceDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
+{
+    HILOG_ERROR();
+    client_.NotifyServiceDied(remote);
+}
+
+void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &remote)
+{
+    std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!serviceProxy_) {
+            HILOG_ERROR("serviceProxy_ is nullptr");
+            return;
+        }
+        sptr<IRemoteObject> object = serviceProxy_->AsObject();
+        if (object && (remote == object)) {
+            listener = listener_;
+            listener_ = nullptr;
+
+            object->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
+            channelClient_ = nullptr;
+            HILOG_DEBUG("ResetAAClient OK");
+        }
+    }
+
+    if (listener) {
+        listener->OnAbilityDisconnected();
+    }
+}
+
 void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remote)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (channelClient_) {
         sptr<IRemoteObject> object = channelClient_->GetRemote();
         if (object && (remote == object)) {
@@ -494,9 +578,10 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
     }
 }
 
-void AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
+RetError AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_INFO("set cache mode: [%{public}d]", cacheMode);
+    std::lock_guard<std::mutex> lock(mutex_);
     cacheWindowId_ = -1;
     cacheElementInfos_.clear();
     if (cacheMode < 0) {
@@ -505,6 +590,7 @@ void AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
         uint32_t mode = static_cast<uint32_t>(cacheMode);
         cacheMode_ = mode & static_cast<uint32_t>(GET_SOURCE_PREFETCH_MODE);
     }
+    return RET_OK;
 }
 
 bool AccessibleAbilityClientImpl::GetCacheElementInfo(const int32_t windowId,
@@ -537,30 +623,32 @@ void AccessibleAbilityClientImpl::SetCacheElementInfo(const int32_t windowId,
     }
 }
 
-bool AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
+RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
     const uint32_t mode, AccessibilityElementInfo &info)
 {
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
-        return false;
+        return RET_ERR_NO_CONNECTION;
     }
 
     std::vector<AccessibilityElementInfo> elementInfos {};
-    if (!channelClient_->SearchElementInfosByAccessibilityId(
-        windowId, elementId, static_cast<int32_t>(mode), elementInfos)) {
+
+    RetError ret = channelClient_->SearchElementInfosByAccessibilityId(
+        windowId, elementId, static_cast<int32_t>(mode), elementInfos);
+    if (ret != RET_OK) {
         HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}d] mode[%{public}d]",
             windowId, elementId, mode);
-        return false;
+        return ret;
     }
     if (elementInfos.empty()) {
         HILOG_ERROR("elementInfos from ace is empty");
-        return false;
+        return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
 
     HILOG_DEBUG("element [elementSize:%{public}zu]", elementInfos.size());
     SetCacheElementInfo(windowId, elementInfos);
     info = elementInfos.front();
-    return true;
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

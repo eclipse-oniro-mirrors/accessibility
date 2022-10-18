@@ -99,7 +99,7 @@ public:
         HILOG_DEBUG("start.");
         uint32_t abilityTypes = 0;
 
-        for (auto &ability : abilities) {
+        for (const auto &ability : abilities) {
             if (ability == ACCESSIBILITY_ABILITY_TYPES_JSON_VALUE_SPOKEN) {
                 abilityTypes |= AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_SPOKEN;
             }
@@ -132,7 +132,7 @@ public:
         HILOG_DEBUG("start.");
         uint32_t capabilitiesValue = 0;
 
-        for (auto &capability : capabilities) {
+        for (const auto &capability : capabilities) {
             if (capability == CAPABILITIES_JSON_VALUE_RETRIEVE) {
                 capabilitiesValue |= Capability::CAPABILITY_RETRIEVE;
             }

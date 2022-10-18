@@ -35,6 +35,8 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -42,23 +44,52 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
     napi_value parameters[ARGS_SIZE_THREE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
-    // parse name
-    std::string ability = "";
-    ParseString(env, ability, parameters[PARAM0]);
-    HILOG_INFO("ability = %{private}s", ability.c_str());
-    callbackInfo->abilityName_ = ability;
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_THREE - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
 
-    // parse capability
-    ConvertJSToCapabilities(env, parameters[PARAM1], callbackInfo->capabilities_);
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        // parse name
+        std::string ability = "";
+        if (ParseString(env, ability, parameters[PARAM0])) {
+            HILOG_INFO("ability = %{private}s", ability.c_str());
+            callbackInfo->abilityName_ = ability;
+        } else {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
 
-    // parse function if it needs
+        // parse capability
+        if (!ConvertJSToCapabilities(env, parameters[PARAM1], callbackInfo->capabilities_)) {
+            HILOG_ERROR("convert capabilities failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
+        return nullptr;
+    }
+
     napi_value promise = nullptr;
-    if (argc >= ARGS_SIZE_THREE) {
-        napi_create_reference(env, parameters[PARAM2], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+    if (argc > ARGS_SIZE_THREE - 1) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM2], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, parameters[PARAM2], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
+
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "EnableAbility", NAPI_AUTO_LENGTH, &resource);
 
@@ -71,7 +102,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
                 callbackInfo->ret_ = instance.EnableAbility(
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
             }
-        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -82,6 +113,8 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -89,20 +122,46 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     napi_value parameters[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
-    // parse name
-    std::string ability = "";
-    ParseString(env, ability, parameters[PARAM0]);
-    HILOG_INFO("ability = %{private}s", ability.c_str());
-    callbackInfo->abilityName_ = ability;
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
 
-    // parse function if it needs
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        // parse name
+        std::string ability = "";
+        if (ParseString(env, ability, parameters[PARAM0])) {
+            HILOG_INFO("ability = %{private}s", ability.c_str());
+            callbackInfo->abilityName_ = ability;
+        } else {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
+        return nullptr;
+    }
+
     napi_value promise = nullptr;
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+    if (argc > ARGS_SIZE_TWO - 1) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM1], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
+
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "DisableAbility", NAPI_AUTO_LENGTH, &resource);
 
@@ -114,7 +173,8 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             if (callbackInfo) {
                 callbackInfo->ret_ = instance.DisableAbility(callbackInfo->abilityName_);
             }
-        }, NAccessibilityConfig::AsyncWorkComplete, (void*)callbackInfo, &callbackInfo->work_);
+        }, NAccessibilityConfig::AsyncWorkComplete,
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
@@ -124,16 +184,40 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
     HILOG_INFO();
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
-    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if (status != napi_ok) {
-        HILOG_ERROR("Failed to get callback info");
-        return nullptr;
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
-    std::string observerType = "";
-    ParseString(env, observerType, args[PARAM0]);
-    if (std::strcmp(observerType.c_str(), "enableAbilityListsStateChanged")) {
-        HILOG_ERROR("args[PARAM0] is wrong[%{public}s]", observerType.c_str());
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string observerType = "";
+        if (!ParseString(env, observerType, args[PARAM0])) {
+            HILOG_ERROR("observer type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0) {
+                HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, args[PARAM1], &valueType);
+        if (valueType != napi_function) {
+            HILOG_ERROR("args[PARAM1] format is wrong");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -150,21 +234,42 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
     HILOG_INFO();
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
-    napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if (status != napi_ok) {
-        HILOG_ERROR("Failed to get callback info");
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        std::string observerType = "";
+        if (!ParseString(env, observerType, args[PARAM0])) {
+            HILOG_ERROR("observer type parse failed");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        } else {
+            if (std::strcmp(observerType.c_str(), "enabledAccessibilityExtensionListChange") != 0) {
+                HILOG_ERROR("args[PARAM0] is wrong[%{public}s", observerType.c_str());
+                errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            }
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
-    std::string observerType = "";
-    ParseString(env, observerType, args[PARAM0]);
-    if (std::strcmp(observerType.c_str(), "enableAbilityListsStateChanged")) {
-        HILOG_ERROR("args[PARAM0] is wrong[%{public}s]", observerType.c_str());
-        return nullptr;
-    }
-
-    if (argc >= ARGS_SIZE_TWO) {
-        enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
+    if (argc > ARGS_SIZE_TWO - 1) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, args[PARAM1], &valueType);
+        if (valueType == napi_function) {
+            enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
+        } else {
+            enableAbilityListsObservers_->UnsubscribeObservers();
+        }
     } else {
         enableAbilityListsObservers_->UnsubscribeObservers();
     }
@@ -179,29 +284,22 @@ void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, v
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
-    napi_value result[ARGS_SIZE_TWO] = {0};
+    napi_value result[ARGS_SIZE_ONE] = {0};
     napi_value callback = 0;
+    napi_value returnVal = 0;
     napi_value undefined = 0;
-    napi_value ret = 0;
     napi_get_undefined(env, &undefined);
-    napi_get_undefined(env, &ret);
+    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
-        if (callbackInfo->ret_) {
-            result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-        } else {
-            result[PARAM0] = GetErrorValue(env, CODE_FAILED);
-        }
-        result[PARAM1] = ret;
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
-        napi_value returnVal;
-        napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
+        napi_call_function(env, undefined, callback, ARGS_SIZE_ONE, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
         HILOG_DEBUG("complete function callback mode");
     } else {
-        if (callbackInfo->ret_) {
+        if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
             napi_resolve_deferred(env, callbackInfo->deferred_, undefined);
         } else {
-            napi_reject_deferred(env, callbackInfo->deferred_, undefined);
+            napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
         HILOG_DEBUG("complete function promise mode");
     }
@@ -218,59 +316,55 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
-    if (!callbackInfo->ret_) {
-        HILOG_ERROR("check param error");
-        return;
-    }
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-            callbackInfo->ret_ = RET_OK == instance.SetHighContrastTextState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            callbackInfo->ret_ = RET_OK == instance.SetInvertColorState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetInvertColorState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            callbackInfo->ret_ = RET_OK == instance.SetAnimationOffState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetAnimationOffState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            callbackInfo->ret_ = RET_OK == instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetScreenMagnificationState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            callbackInfo->ret_ = RET_OK == instance.SetAudioMonoState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetAudioMonoState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            callbackInfo->ret_ = RET_OK == instance.SetMouseKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetMouseKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            callbackInfo->ret_ = RET_OK == instance.SetShortKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetShortKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            callbackInfo->ret_ = RET_OK == instance.SetCaptionsState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.SetCaptionsState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            callbackInfo->ret_ = RET_OK == instance.SetContentTimeout(callbackInfo->uint32Config_);
+            callbackInfo->ret_ = instance.SetContentTimeout(callbackInfo->uint32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            callbackInfo->ret_ = RET_OK == instance.SetMouseAutoClick(callbackInfo->int32Config_);
+            callbackInfo->ret_ = instance.SetMouseAutoClick(callbackInfo->int32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            callbackInfo->ret_ = RET_OK == instance.SetAudioBalance(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = instance.SetAudioBalance(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            callbackInfo->ret_ = RET_OK == instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
             {
                 auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
-                callbackInfo->ret_ = RET_OK == instance.SetDaltonizationColorFilter(filter);
+                callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            callbackInfo->ret_ = RET_OK == instance.SetShortkeyTarget(callbackInfo->stringConfig_);
+            callbackInfo->ret_ = instance.SetShortkeyTarget(callbackInfo->stringConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            callbackInfo->ret_ = RET_OK == instance.SetCaptionsProperty(callbackInfo->captionProperty_);
+            callbackInfo->ret_ = instance.SetCaptionsProperty(callbackInfo->captionProperty_);
             break;
         default:
             break;
@@ -285,11 +379,8 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
-    napi_value result[ARGS_SIZE_TWO] = {0};
-    napi_value callback = 0;
-    napi_value undefined = 0;
-    napi_get_undefined(env, &undefined);
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    napi_value result[ARGS_SIZE_TWO] = {0};
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
@@ -320,22 +411,22 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
         default:
             break;
     }
+
+    napi_value returnVal = 0;
+    napi_value callback = 0;
+    napi_value undefined = 0;
+    napi_get_undefined(env, &undefined);
+    result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
-        if (callbackInfo->ret_) {
-            result[PARAM0] = GetErrorValue(env, CODE_SUCCESS);
-        } else {
-            result[PARAM0] = GetErrorValue(env, CODE_FAILED);
-        }
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
-        napi_value returnVal;
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
         napi_delete_reference(env, callbackInfo->callback_);
         HILOG_DEBUG("complete function callback mode");
     } else {
-        if (callbackInfo->ret_) {
+        if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
             napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
         } else {
-            napi_reject_deferred(env, callbackInfo->deferred_, undefined);
+            napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
     }
     napi_delete_async_work(env, callbackInfo->work_);
@@ -354,57 +445,57 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-            callbackInfo->ret_ = RET_OK == instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            callbackInfo->ret_ = RET_OK == instance.GetInvertColorState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            callbackInfo->ret_ = RET_OK == instance.GetAnimationOffState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetAnimationOffState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            callbackInfo->ret_ = RET_OK == instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetScreenMagnificationState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            callbackInfo->ret_ = RET_OK == instance.GetAudioMonoState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetAudioMonoState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            callbackInfo->ret_ = RET_OK == instance.GetMouseKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetMouseKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            callbackInfo->ret_ = RET_OK == instance.GetShortKeyState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetShortKeyState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            callbackInfo->ret_ = RET_OK == instance.GetCaptionsState(callbackInfo->boolConfig_);
+            callbackInfo->ret_ = instance.GetCaptionsState(callbackInfo->boolConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
             {
                 uint32_t timeout = 0;
-                callbackInfo->ret_ = RET_OK == instance.GetContentTimeout(timeout);
+                callbackInfo->ret_ = instance.GetContentTimeout(timeout);
                 callbackInfo->int32Config_ = static_cast<int32_t>(timeout);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            callbackInfo->ret_ = RET_OK == instance.GetMouseAutoClick(callbackInfo->int32Config_);
+            callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            callbackInfo->ret_ = RET_OK == instance.GetAudioBalance(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = instance.GetAudioBalance(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            callbackInfo->ret_ = RET_OK == instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
+            callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
             {
                 OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
-                callbackInfo->ret_ = RET_OK == instance.GetDaltonizationColorFilter(type);
+                callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
                 callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
             }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            callbackInfo->ret_ = RET_OK == instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+            callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            callbackInfo->ret_ = RET_OK == instance.GetCaptionsProperty(callbackInfo->captionProperty_);
+            callbackInfo->ret_ = instance.GetCaptionsProperty(callbackInfo->captionProperty_);
             break;
         default:
             break;
@@ -420,76 +511,113 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
     NAccessibilityConfigClass* obj;
-    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get unwrap obj");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+    bool ret = false;
 
-    switch (obj->GetConfigId()) {
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-            {
-                bool state = false;
-                callbackInfo->ret_ = ParseBool(env, state, parameters[PARAM0]);
-                callbackInfo->boolConfig_ = state;
-            }
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            {
-                int32_t timeout = 0;
-                callbackInfo->ret_ = ParseInt32(env, timeout, parameters[PARAM0]);
-                callbackInfo->uint32Config_ = static_cast<uint32_t>(timeout);
-            }
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            {
-                int32_t time = 0;
-                callbackInfo->ret_ = ParseInt32(env, time, parameters[PARAM0]);
-                callbackInfo->int32Config_ = time;
-            }
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-            {
-                double doubleTemp = 0;
-                callbackInfo->ret_ = ParseDouble(env, doubleTemp, parameters[PARAM0]);
-                callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
-            }
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-            {
-                std::string target = "";
-                callbackInfo->ret_ = ParseString(env, target, parameters[PARAM0]) && target.length() > 0;
-                callbackInfo->stringConfig_ = target;
-            }
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            callbackInfo->ret_ = ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
-            break;
-        default:
-            break;
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        switch (obj->GetConfigId()) {
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+                {
+                    bool state = false;
+                    ret = ParseBool(env, state, parameters[PARAM0]);
+                    callbackInfo->boolConfig_ = state;
+                }
+                break;
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+                {
+                    int32_t timeout = 0;
+                    ret = ParseInt32(env, timeout, parameters[PARAM0]);
+                    callbackInfo->uint32Config_ = static_cast<uint32_t>(timeout);
+                }
+                break;
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+                {
+                    int32_t time = 0;
+                    ret = ParseInt32(env, time, parameters[PARAM0]);
+                    callbackInfo->int32Config_ = time;
+                }
+                break;
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+                {
+                    double doubleTemp = 0;
+                    ret = ParseDouble(env, doubleTemp, parameters[PARAM0]);
+                    callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
+                }
+                break;
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+                {
+                    std::string target = "";
+                    ret = ParseString(env, target, parameters[PARAM0]) && target.length() > 0;
+                    callbackInfo->stringConfig_ = target;
+                }
+                break;
+            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+                ret = ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
+                break;
+            default:
+                break;
+        }
+        if (!ret) {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete obj;
+        obj = nullptr;
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
+        return nullptr;
     }
     callbackInfo->id_ = obj->GetConfigId();
 
     // parse function if it needs
     napi_value promise = nullptr;
     if (argc >= ARGS_SIZE_TWO) {
-        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM1], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -501,7 +629,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::SetConfigExecute,
         // Execute the complete function
         NAccessibilityConfig::AsyncWorkComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -517,9 +645,17 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
     NAccessibilityConfigClass* obj;
-    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get unwrap obj");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
@@ -527,6 +663,8 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     callbackInfo->id_ = obj->GetConfigId();
@@ -534,8 +672,14 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
     // parse function if it needs
     napi_value promise = nullptr;
     if (argc >= ARGS_SIZE_ONE) {
-        napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
-        napi_get_undefined(env, &promise);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM0], &valueType);
+        if (valueType == napi_function) {
+            napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else {
+            napi_create_promise(env, &callbackInfo->deferred_, &promise);
+        }
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -547,7 +691,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::GetConfigExecute,
         // Execute the complete function
         NAccessibilityConfig::GetConfigComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
@@ -561,9 +705,41 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     napi_value jsthis;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
-    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get unwrap obj");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    if (argc < ARGS_SIZE_ONE) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM0], &valueType);
+        if (valueType != napi_function) {
+            HILOG_ERROR("parameters[PARAM1] format is wrong");
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
+        delete obj;
+        obj = nullptr;
+        napi_value err = CreateBusinessError(env, errCode);
+        HILOG_ERROR("invalid param");
+        napi_throw(env, err);
         return nullptr;
     }
 
@@ -584,13 +760,27 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
     NAccessibilityConfigClass* obj;
-    NAPI_CALL(env, napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)));
+    napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
+    if (status != napi_ok) {
+        HILOG_ERROR("Failed to get unwrap obj");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
+        napi_throw(env, err);
+        return nullptr;
+    }
     if (!obj) {
         HILOG_ERROR("obj is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
     if (argc >= ARGS_SIZE_ONE) {
-        configObservers_->UnsubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
+        napi_valuetype valueType = napi_null;
+        napi_typeof(env, parameters[PARAM0], &valueType);
+        if (valueType == napi_function) {
+            configObservers_->UnsubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
+        } else {
+            configObservers_->UnsubscribeObservers(obj->GetConfigId());
+        }
     } else {
         configObservers_->UnsubscribeObservers(obj->GetConfigId());
     }

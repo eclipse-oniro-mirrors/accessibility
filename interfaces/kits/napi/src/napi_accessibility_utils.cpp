@@ -148,13 +148,32 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
-napi_value GetErrorValue(napi_env env, int errCode)
+NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
+{
+    auto iter = ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.find(errorCode);
+    if (iter != ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.end()) {
+        return iter->second;
+    } else {
+        return ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(OHOS::Accessibility::RetError::RET_ERR_FAILED);
+    }
+}
+
+napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCode)
 {
     napi_value result = nullptr;
-    napi_value eCode = nullptr;
-    NAPI_CALL(env, napi_create_int32(env, errCode, &eCode));
-    NAPI_CALL(env, napi_create_object(env, &result));
-    NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+    if (errCode == OHOS::Accessibility::RetError::RET_OK) {
+        napi_get_undefined(env, &result);
+    } else {
+        napi_value eCode = nullptr;
+        NAccessibilityErrMsg errMsg = QueryRetMsg(errCode);
+        NAPI_CALL(env, napi_create_int32(env, static_cast<int32_t>(errMsg.errCode), &eCode));
+        NAPI_CALL(env, napi_create_object(env, &result));
+        NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+
+        napi_value eMsg = nullptr;
+        NAPI_CALL(env, napi_create_string_utf8(env, errMsg.message.c_str(), NAPI_AUTO_LENGTH, &eMsg));
+        NAPI_CALL(env, napi_set_named_property(env, result, "message", eMsg));
+    }
     return result;
 }
 
@@ -964,7 +983,7 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
     }
 }
 
-void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
+bool ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
     std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePathArray,
     bool &isParameterArray)
@@ -972,21 +991,21 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     HILOG_DEBUG();
     if (napi_is_array(env, object, &isParameterArray) != napi_ok) {
         HILOG_ERROR("judge array error.");
-        return;
+        return false;
     }
 
     if (isParameterArray) {
         uint32_t dataLen = 0;
         if (napi_get_array_length(env, object, &dataLen) != napi_ok) {
             HILOG_ERROR("get array length failed.");
-            return;
+            return false;
         }
         napi_value gesturePathJs = nullptr;
         for (uint32_t i = 0; i < dataLen; i++) {
             gesturePathJs = nullptr;
             if (napi_get_element(env, object, i, &gesturePathJs) != napi_ok) {
                 HILOG_ERROR("get element of paths failed and i = %{public}d", i);
-                return;
+                return false;
             }
             std::shared_ptr<AccessibilityGestureInjectPath> path = std::make_shared<AccessibilityGestureInjectPath>();
             ConvertGesturePathJSToNAPI(env, gesturePathJs, path);
@@ -995,6 +1014,7 @@ void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     } else {
         ConvertGesturePathJSToNAPI(env, object, gesturePath);
     }
+    return true;
 }
 
 KeyAction TransformKeyActionValue(int32_t keyAction)
@@ -1243,7 +1263,7 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
         colorStr.erase(0, 1);
         std::string newColorStr;
         // Translate #rgb or #rgba to #rrggbb or #rrggbbaa
-        for (auto& c : colorStr) {
+        for (const auto& c : colorStr) {
             newColorStr += c;
             newColorStr += c;
         }
@@ -1412,7 +1432,7 @@ bool ConvertObjToCaptionProperty(
     return true;
 }
 
-void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string>& values)
+bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string>& values)
 {
     HILOG_DEBUG();
     values.clear();
@@ -1422,15 +1442,22 @@ void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::
         napi_has_element(env, arrayValue, i, &hasElement);
         if (hasElement) {
             napi_value value = nullptr;
-            napi_get_element(env, arrayValue, i, &value);
+            napi_status status = napi_get_element(env, arrayValue, i, &value);
+            if (status != napi_ok) {
+                return false;
+            }
 
             char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
             size_t outSize = 0;
-            napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+            status = napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+            if (status != napi_ok) {
+                return false;
+            }
 
             values.push_back(std::string(outBuffer));
         }
     }
+    return true;
 }
 
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes)
@@ -1451,7 +1478,7 @@ void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventT
     }
 }
 
-void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities)
+bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities)
 {
     HILOG_DEBUG();
     capabilities = 0;
@@ -1463,10 +1490,11 @@ void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
         if (capability == 0) {
             HILOG_ERROR("the capability is invalid");
             capabilities = 0;
-            return;
+            return false;
         }
         capabilities |= capability;
     }
+    return true;
 }
 
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values)
