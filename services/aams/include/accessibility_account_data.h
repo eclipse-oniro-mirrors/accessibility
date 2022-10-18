@@ -122,9 +122,9 @@ public:
     /**
      * @brief Remove accessibility that have been opened.
      * @param name bundle name + / + ability name.
-     * @return return true if removes enabled ability successfully, otherwise refer to the RetError for the failure.
+     * @return return true if removes enabled ability successfully, else return false.
      */
-    RetError RemoveEnabledAbility(const std::string &name);
+    bool RemoveEnabledAbility(const std::string &name);
 
     void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo); // For UT
 
@@ -248,7 +248,7 @@ public:
 
     std::shared_ptr<AccessibilitySettingsConfig> GetConfig();
 
-    RetError EnableAbility(const std::string &name, const uint32_t capabilities);
+    bool EnableAbility(const std::string &name, const uint32_t capabilities);
 
     void Init();
 
@@ -299,6 +299,9 @@ private:
     void UpdateMagnificationCapability();
 
     void UpdateEnableAbilityListsState();
+
+    bool SetAbilityCapabilities(const std::string &name, const uint32_t capabilities);
+    uint32_t GetAbilityStaticCapabilities(const std::string &name) const;
 
     int32_t id_;
     bool isEventTouchGuideState_ = false;

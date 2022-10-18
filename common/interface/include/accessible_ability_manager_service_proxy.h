@@ -40,9 +40,9 @@ public:
     /**
      * @brief Sends information about an accessibility event.
      * @param uiEvent Indicates the accessibility event information specified by AccessibilityEventInfo.
-     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     * @return true: send ok; otherwise is refused.
      */
-    virtual RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    virtual void SendEvent(const AccessibilityEventInfo &uiEvent) override;
 
     /**
      * @brief Register the state observer of AAMS.
@@ -64,26 +64,25 @@ public:
      *                  2 indicates that the ability is disabled;
      *                  3 indicates that the ability has been installed.
      * @param infos accessibility ability infos by specified types.
-     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     * @return Return true if get ability lists successfully, else return false.
      */
-    virtual RetError GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    virtual bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfo> &infos) override;
 
     /**
      * @brief Register the element operator, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     * @return 0: Succeed ; otherwise is failed.
      */
-    virtual RetError RegisterElementOperator(const int32_t windowId,
+    virtual void RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation) override;
 
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
-     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError DeregisterElementOperator(const int32_t windowId) override;
+    virtual void DeregisterElementOperator(const int32_t windowId) override;
 
     virtual RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
     virtual RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
@@ -95,13 +94,14 @@ public:
     virtual bool GetGestureState() override;
     virtual bool GetKeyEventObserverState() override;
 
-    virtual RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
-    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
-    virtual RetError DisableAbility(const std::string &name) override;
+    virtual bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+
+    virtual bool DisableAbility(const std::string &name) override;
     virtual int32_t GetActiveWindow() override;
 
     virtual RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
-    virtual RetError DisableUITestAbility() override;
+    virtual bool DisableUITestAbility() override;
 
     virtual RetError SetScreenMagnificationState(const bool state) override;
     virtual RetError SetShortKeyState(const bool state) override;

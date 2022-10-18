@@ -34,11 +34,9 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("isOpenAccessibility", NAccessibilityClient::IsOpenAccessibility),
         DECLARE_NAPI_FUNCTION("isOpenTouchGuide", NAccessibilityClient::IsOpenTouchExploration),
         DECLARE_NAPI_FUNCTION("getAbilityLists", NAccessibilityClient::GetAbilityList),
-        DECLARE_NAPI_FUNCTION("getAccessibilityExtensionList", NAccessibilityClient::GetAbilityList),
         DECLARE_NAPI_FUNCTION("on", NAccessibilityClient::SubscribeState),
         DECLARE_NAPI_FUNCTION("off", NAccessibilityClient::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("sendEvent", NAccessibilityClient::SendEvent),
-        DECLARE_NAPI_FUNCTION("sendAccessibilityEvent", NAccessibilityClient::SendEvent),
         DECLARE_NAPI_FUNCTION("getCaptionsManager", NAccessibilityClient::GetCaptionsManager),
     };
 
