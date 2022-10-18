@@ -39,7 +39,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(
     return true;
 }
 
-RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
+bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
@@ -48,10 +48,10 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     (void)requestId;
     (void)callback;
     (void)mode;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
+bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -60,22 +60,21 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
     (void)requestId;
     (void)callback;
     (void)text;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
-    const int32_t elementId, const int32_t focusType, const int32_t requestId,
-    const sptr<IAccessibilityElementOperatorCallback>& callback)
+bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
+    const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
     (void)elementId;
     (void)requestId;
     (void)callback;
     (void)focusType;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
@@ -83,10 +82,10 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
     (void)requestId;
     (void)callback;
     (void)direction;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
+bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -95,28 +94,28 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     (void)requestId;
     (void)callback;
     (void)actionArguments;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+bool AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     (void)windowId;
     (void)windowInfo;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)windows;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
+bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)displayId;
     (void)windows;
-    return RET_OK;
+    return true;
 }
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
@@ -125,17 +124,17 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     (void)sequence;
 }
 
-RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
+bool AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     (void)gesturePath;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+bool AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     (void)targetBundleNames;
-    return RET_OK;
+    return true;
 }
 } // namespace Accessibility
 } // namespace OHOS

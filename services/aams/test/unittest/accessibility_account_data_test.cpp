@@ -921,17 +921,10 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     const int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     accountData->Init();
-
-    AccessibilityAbilityInitParams initParams;
-    initParams.bundleName = "bundle";
-    initParams.name = "ability";
-    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
-    accountData->AddInstalledAbility(*abilityInfo);
-
     const std::string name = "bundle/ability";
     uint32_t capabilities = 0;
-    RetError test = accountData->EnableAbility(name, capabilities);
-    EXPECT_EQ(test, RET_ERR_NO_CAPABILITY);
+    bool test = accountData->EnableAbility(name, capabilities);
+    EXPECT_FALSE(test);
     ASSERT_EQ(0, (int)accountData->GetConfig()->GetEnabledAbilityInfos().size());
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_001 end";
@@ -956,7 +949,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     accountData->AddInstalledAbility(*abilityInfo);
     std::string name = "bundle/ability";
     accountData->AddEnabledAbility(name);
-    EXPECT_EQ(RET_ERR_CONNECTION_EXIST, accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
+    EXPECT_FALSE(accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_002 end";
 }
@@ -979,22 +972,9 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     accountData->AddInstalledAbility(*abilityInfo);
     const std::string name = "bundle/ability";
-    EXPECT_EQ(RET_OK, accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
+    EXPECT_TRUE(accountData->EnableAbility(name, CAPABILITY_RETRIEVE));
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_003 end";
-}
-
-/**
- * @tc.number: AccessibilityAccountData_Unittest_EnableAbility_004
- * @tc.name: EnableAbility
- * @tc.desc: Enable specified ability which is not installed.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableAbility_004, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_004 start";
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
-    EXPECT_EQ(RET_ERR_NOT_INSTALLED, accountData->EnableAbility("bundle/ability", 0));
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbility_004 end";
 }
 
 /**

@@ -210,7 +210,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_001 start";
     AccessibilityWindowInfo windowInfo;
-    EXPECT_EQ(channel_->GetWindow(WINDOW_ID, windowInfo), RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_FALSE(channel_->GetWindow(WINDOW_ID, windowInfo));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_001 end";
 }
 
@@ -231,7 +231,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 
     sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), ability);
     AccessibilityWindowInfo windowInfo;
-    EXPECT_EQ(channel->GetWindow(WINDOW_ID, windowInfo), RET_ERR_NO_CONNECTION);
+    EXPECT_FALSE(channel->GetWindow(WINDOW_ID, windowInfo));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_002 end";
 }
 
@@ -259,7 +259,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(ability));
 
     AccessibilityWindowInfo windowInfo;
-    EXPECT_EQ(channel->GetWindow(WINDOW_ID, windowInfo), RET_ERR_NO_CAPABILITY);
+    EXPECT_FALSE(channel->GetWindow(WINDOW_ID, windowInfo));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindow_003 end";
 }
 
@@ -273,7 +273,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_001 start";
     std::vector<AccessibilityWindowInfo> windows;
-    EXPECT_EQ(channel_->GetWindows(windows), RET_OK);
+    EXPECT_TRUE(channel_->GetWindows(windows));
     EXPECT_EQ(static_cast<int>(windows.size()), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_001 end";
 }
@@ -295,7 +295,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
 
     std::vector<AccessibilityWindowInfo> windows;
-    EXPECT_EQ(channel->GetWindows(windows), RET_ERR_NO_CONNECTION);
+    EXPECT_FALSE(channel->GetWindows(windows));
     EXPECT_EQ(static_cast<int>(windows.size()), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_002 end";
 }
@@ -327,7 +327,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(abilityInfo->GetId()));
 
     std::vector<AccessibilityWindowInfo> windows;
-    EXPECT_EQ(channel->GetWindows(windows), RET_ERR_NO_CAPABILITY);
+    EXPECT_FALSE(channel->GetWindows(windows));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindows_003 end";
 }
 
@@ -341,7 +341,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindowsByDisplayId_001 start";
     std::vector<AccessibilityWindowInfo> windows;
-    EXPECT_EQ(channel_->GetWindowsByDisplayId(DISPLAY_ID, windows), RET_OK);
+    EXPECT_TRUE(channel_->GetWindowsByDisplayId(DISPLAY_ID, windows));
     EXPECT_EQ(static_cast<int>(windows.size()), 0);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_GetWindowsByDisplayId_001 end";
 }
@@ -391,7 +391,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     AccessibleAbilityChannel_Unittest_SendSimulateGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_001 start";
-    EXPECT_EQ(channel_->SendSimulateGesture(nullptr), RET_ERR_NO_INJECTOR);
+    EXPECT_FALSE(channel_->SendSimulateGesture(nullptr));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_001 end";
 }
 
@@ -410,7 +410,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     ASSERT_TRUE(accountData);
     EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
     sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
-    EXPECT_EQ(channel->SendSimulateGesture(nullptr), RET_ERR_NO_CONNECTION);
+    EXPECT_FALSE(channel->SendSimulateGesture(nullptr));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_002 end";
 }
 
@@ -424,7 +424,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_001 start";
     std::vector<std::string> targetBundleNames;
-    EXPECT_EQ(channel_->SetTargetBundleName(targetBundleNames), RET_OK);
+    EXPECT_TRUE(channel_->SetTargetBundleName(targetBundleNames));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_001 end";
 }
 
@@ -444,7 +444,7 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
     EXPECT_FALSE(accountData->GetAccessibleAbilityConnection(abilityName));
     sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), abilityName);
     std::vector<std::string> targetBundleNames;
-    EXPECT_EQ(channel->SetTargetBundleName(targetBundleNames), RET_ERR_NO_CONNECTION);
+    EXPECT_FALSE(channel->SetTargetBundleName(targetBundleNames));
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SetTargetBundleName_002 end";
 }
 } // namespace Accessibility

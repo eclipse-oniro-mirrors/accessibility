@@ -45,8 +45,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args);
 bool ParseNumber(napi_env env, napi_value args);
 bool ParseInt32(napi_env env, int32_t& param, napi_value args);
 bool ParseDouble(napi_env env, double& param, napi_value args);
-NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
-napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCode);
+napi_value GetErrorValue(napi_env env, int errCode);
 
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
@@ -67,10 +66,10 @@ void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
 bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty);
-bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string> &values);
+void ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string> &values);
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values);
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes);
-bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities);
+void ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capabilities);
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
@@ -88,7 +87,7 @@ const std::string ConvertWindowUpdateTypeToString(OHOS::Accessibility::WindowUpd
 const std::string ConvertAccessibilityEventTypeToString(OHOS::Accessibility::EventType type);
 void ConvertEventTypeToString(const OHOS::Accessibility::AccessibilityEventInfo &eventInfo,
     std::string &eventTypeString);
-bool ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
+void ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath,
     std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>>& gesturePathArray,
     bool &isParameterArray);

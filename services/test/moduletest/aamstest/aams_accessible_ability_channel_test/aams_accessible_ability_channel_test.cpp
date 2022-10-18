@@ -56,6 +56,17 @@ public:
 void AamsAccessibleAbilityChannelTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest SetUpTestCase";
+}
+
+void AamsAccessibleAbilityChannelTest::TearDownTestCase()
+{
+    GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDownTestCase";
+}
+
+void AamsAccessibleAbilityChannelTest::SetUp()
+{
+    GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest SetUp";
+
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
@@ -63,23 +74,10 @@ void AamsAccessibleAbilityChannelTest::SetUpTestCase()
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
-void AamsAccessibleAbilityChannelTest::TearDownTestCase()
-{
-    GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDownTestCase";
-    // Stop AAMS
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
-}
-
-void AamsAccessibleAbilityChannelTest::SetUp()
-{
-    GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest SetUp";
-}
-
 void AamsAccessibleAbilityChannelTest::TearDown()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown";
 
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData()->OnAccountSwitched();
     // Deregister ElementOperator
     Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
@@ -93,6 +91,8 @@ void AamsAccessibleAbilityChannelTest::TearDown()
     if (!ret) {
         GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDown EventQueue is not empty";
     }
+    // Stop AAMS
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     accountData_ = nullptr;
     aastub_ = nullptr;
     elementName_ = nullptr;
@@ -125,12 +125,10 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoC
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     abilityInfo->SetAccessibilityAbilityType(AccessibilityAbilityTypes::ACCESSIBILITY_ABILITY_TYPE_ALL);
-    uint32_t capabilities = 0;
     if (!isNoCapability) {
-        capabilities = Capability::CAPABILITY_RETRIEVE | Capability::CAPABILITY_TOUCH_GUIDE |
-            Capability::CAPABILITY_GESTURE | Capability::CAPABILITY_KEY_EVENT_OBSERVER;
+        abilityInfo->SetCapabilityValues(Capability::CAPABILITY_RETRIEVE | Capability::CAPABILITY_TOUCH_GUIDE |
+                                         Capability::CAPABILITY_GESTURE | Capability::CAPABILITY_KEY_EVENT_OBSERVER);
     }
-    abilityInfo->SetCapabilityValues(capabilities);
     accountData_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     accountData_->Init();
     AAConnection_ = new AccessibleAbilityConnection(accountData_->GetAccountId(), 0, *abilityInfo);
@@ -180,14 +178,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result =
+    bool result =
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
     EXPECT_EQ(0, proxy_->testChannelRequestId_);
     EXPECT_EQ(0, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_001 end";
 }
 
@@ -206,14 +206,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(
         ACTIVE_WINDOW_ID, 0, 0, nullptr, 0);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(-1, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_002 end";
 }
 
@@ -232,14 +234,15 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
     EXPECT_EQ(0, proxy_->testChannelRequestId_);
     EXPECT_EQ(text, proxy_->testText_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_001 end";
 }
 
@@ -258,14 +261,16 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(
         ACTIVE_WINDOW_ID, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(text, proxy_->testText_);
-    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_002 end";
 }
 
@@ -284,14 +289,15 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
     EXPECT_EQ(0, proxy_->testChannelRequestId_);
     EXPECT_EQ(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_001 end";
 }
 
@@ -310,14 +316,16 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(
         ACTIVE_WINDOW_ID, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_002 end";
 }
 
@@ -336,14 +344,15 @@ HWTEST_F(
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_ACCESSIBILITY;
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 1, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
     EXPECT_EQ(1, proxy_->testChannelRequestId_);
     EXPECT_EQ(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_003 end";
 }
 
@@ -361,13 +370,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, proxy_->testChannelElementId_);
     EXPECT_EQ(0, proxy_->testChannelRequestId_);
     EXPECT_EQ(direction, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_001 end";
 }
 
@@ -385,14 +396,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     AddAccessibleAbilityConnection();
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
-    RetError result =
+    bool result =
         AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(ACTIVE_WINDOW_ID, 0, direction, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(direction, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_002 end";
 }
 
@@ -412,15 +425,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(4, proxy_->testChannelElementId_);
     EXPECT_EQ(0, proxy_->testChannelRequestId_);
     EXPECT_EQ(3, proxy_->testAction_);
     EXPECT_EQ(actionArguments, proxy_->testActionArguments_);
-    EXPECT_EQ(result, RET_OK);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_001 end";
 }
 
@@ -440,14 +454,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(
         ACTIVE_WINDOW_ID, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(0, proxy_->testAction_);
-    EXPECT_EQ(result, RET_ERR_NO_WINDOW_CONNECTION);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_002 end";
 }
 
@@ -469,6 +485,8 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, windows.size());
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_002 end";
 }
 
@@ -491,8 +509,10 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     gesturePath->SetDurationTime(100);
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
-    EXPECT_EQ(result, RET_OK);
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
+    sleep(2);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_001 end";
 }
 
@@ -512,14 +532,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AddAccessibilityWindowConnection();
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result =
+    bool result =
         AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfoByAccessibilityId(0, 0, 0, nullptr, 0);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(-1, proxy_->testChannelMode_);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfoByAccessibilityId_NoCapability_001 end";
 }
 
@@ -538,14 +560,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest,
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     string text = "text";
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->SearchElementInfosByText(0, 0, text, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(text, proxy_->testText_);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SearchElementInfosByText_NoCapability_001 end";
 }
 
@@ -564,14 +587,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t focusType = OHOS::Accessibility::FOCUS_TYPE_INPUT;
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FindFocusedElementInfo(0, 0, focusType, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(focusType, proxy_->testFocusType_);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FindFocusedElementInfo_NoCapability_001 end";
 }
 
@@ -590,13 +614,15 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_F
     AddAccessibleAbilityConnection(true);
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
     int32_t direction = FocusMoveDirection::UP;
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->FocusMoveSearch(0, 0, direction, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_NE(direction, proxy_->testDirection_);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_FocusMoveSearch_NoCapability_001 end";
 }
 
@@ -617,15 +643,16 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_E
     actionArguments.insert(std::make_pair("invalid", "invalid"));
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result =
-        AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
+    bool result = AccessibilityHelper::GetInstance().GetTestStub()->ExecuteAction(0, 4, 3, actionArguments, 0, nullptr);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(-1, proxy_->testChannelElementId_);
     EXPECT_EQ(-1, proxy_->testChannelRequestId_);
     EXPECT_EQ(0, proxy_->testAction_);
     EXPECT_NE(actionArguments, proxy_->testActionArguments_);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    EXPECT_TRUE(result);
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_ExecuteAction_NoCapability_001 end";
 }
 
@@ -649,6 +676,8 @@ HWTEST_F(
 
     GTEST_LOG_(INFO) << "Test result";
     EXPECT_EQ(0, windows.size());
+
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 end";
 }
 
@@ -672,8 +701,10 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_S
     gesturePath->SetDurationTime(100);
 
     ASSERT_TRUE(AccessibilityHelper::GetInstance().GetTestStub());
-    RetError result = AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
-    EXPECT_EQ(result, RET_ERR_NO_CAPABILITY);
+    AccessibilityHelper::GetInstance().GetTestStub()->SendSimulateGesture(gesturePath);
+    sleep(2);
+    GTEST_LOG_(INFO) << "clear end";
+    AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_SendSimulateGesture_NoCapability_001 end";
 }
 } // namespace Accessibility
