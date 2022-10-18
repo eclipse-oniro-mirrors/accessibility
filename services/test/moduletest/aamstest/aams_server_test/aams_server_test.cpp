@@ -156,8 +156,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 start";
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto ret = aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE, infos);
-    EXPECT_EQ(RET_OK, ret);
+    aams.GetAbilityList(0, AbilityStateType::ABILITY_STATE_ENABLE, infos);
     EXPECT_EQ(infos.size(), 0);
 
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_001 end";
@@ -275,17 +274,16 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest RegisterElementOperator_001 start";
     AddAccessibleAbilityConnection();
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr));
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
     sleep(1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
-    aams.DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(1);
     AAConnection_->OnAbilityDisconnectDoneSync(*elementName_);
     accountData_->ClearInstalledAbility();
@@ -301,26 +299,25 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest DeregisterElementOperator_001 start";
-    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
-    auto accountData = aams.GetCurrentAccountData();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
 
     AddAccessibleAbilityConnection();
     sleep(1);
-    aams.RegisterElementOperator(0, nullptr);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // wrong windowId
-    aams.DeregisterElementOperator(1);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(1);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
 
     // true windowId
-    aams.DeregisterElementOperator(0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);

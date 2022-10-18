@@ -27,27 +27,26 @@ public:
     ~MockAccessibleAbilityChannel();
 
     MOCK_METHOD5(SearchElementInfoByAccessibilityId,
-        RetError(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t requestId,
+        bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t requestId,
             const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode));
 
     MOCK_METHOD5(SearchElementInfosByText,
-        RetError(const int32_t accessibilityWindowId, const int32_t elementId, const std::string& text,
+        bool(const int32_t accessibilityWindowId, const int32_t elementId, const std::string& text,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD5(FindFocusedElementInfo,
-        RetError(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t focusType,
+        bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t focusType,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
 
     MOCK_METHOD5(
-        FocusMoveSearch, RetError(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
+        FocusMoveSearch, bool(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
                              const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
-    MOCK_METHOD6(ExecuteAction, RetError(const int32_t accessibilityWindowId, const int32_t elementId,
+    MOCK_METHOD6(ExecuteAction, bool(const int32_t accessibilityWindowId, const int32_t elementId,
         const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback));
-    MOCK_METHOD1(GetWindows, RetError(std::vector<AccessibilityWindowInfo> &windows));
-    MOCK_METHOD2(GetWindowsByDisplayId, RetError(const uint64_t displayId,
-        std::vector<AccessibilityWindowInfo> &windows));
+    MOCK_METHOD1(GetWindows, bool(std::vector<AccessibilityWindowInfo> &windows));
+    MOCK_METHOD2(GetWindowsByDisplayId, bool(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows));
     MOCK_METHOD2(SetOnKeyPressEventResult, void(const bool handled, const int32_t sequence));
-    MOCK_METHOD1(SendSimulateGesture, RetError(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
+    MOCK_METHOD1(SendSimulateGesture, bool(const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath));
 };
 
 class MockAccessibleAbilityConnection : public AccessibleAbilityConnection {

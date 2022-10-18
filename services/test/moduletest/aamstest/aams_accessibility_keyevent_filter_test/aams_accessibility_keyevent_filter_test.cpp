@@ -79,21 +79,17 @@ public:
 };
 
 void AamsKeyEventFilterTest::SetUpTestCase(void)
+{}
+void AamsKeyEventFilterTest::TearDownTestCase(void)
+{}
+void AamsKeyEventFilterTest::SetUp()
 {
+    GTEST_LOG_(INFO) << "AamsKeyEventFilterTest ModuleTest SetUp";
+
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityHelper::accountId_);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
-}
-
-void AamsKeyEventFilterTest::TearDownTestCase(void)
-{
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
-}
-
-void AamsKeyEventFilterTest::SetUp()
-{
-    GTEST_LOG_(INFO) << "AamsKeyEventFilterTest ModuleTest SetUp";
 
     // Add an ability connection client
     AccessibilityAbilityInitParams initParams;

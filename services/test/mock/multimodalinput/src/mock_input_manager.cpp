@@ -15,7 +15,6 @@
 
 #include <mutex>
 #include "mock_input_manager.h"
-#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace MMI {
@@ -54,39 +53,33 @@ int32_t MockInputManager::GetTouchActionOfTargetIndex(int32_t index)
 
 void MockInputManager::ClearInputEventConsumer()
 {
-    HILOG_DEBUG();
     mockInputEventConsumer = nullptr;
 }
 
 std::shared_ptr<IInputEventConsumer> MockInputManager::GetInputEventConsumer()
 {
-    HILOG_DEBUG();
     return mockInputEventConsumer;
 }
 
 InputManager *InputManager::instance_ = new(std::nothrow) InputManager();
 InputManager *InputManager::GetInstance()
 {
-    HILOG_DEBUG();
     return instance_;
 }
 
 void InputManager::MoveMouse(int32_t offsetX, int32_t offsetY)
 {
-    HILOG_DEBUG();
     (void)offsetX;
     (void)offsetY;
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<KeyEvent> keyEvent)
 {
-    HILOG_DEBUG();
     mockKeyCode = keyEvent->GetKeyCode();
 }
 
 void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent)
 {
-    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(g_mtx);
     int32_t touchAction = pointerEvent->GetPointerAction();
     mockTouchActions.push_back(touchAction);
@@ -94,27 +87,22 @@ void InputManager::SimulateInputEvent(std::shared_ptr<PointerEvent> pointerEvent
 
 int32_t InputManager::AddInterceptor(std::shared_ptr<IInputEventConsumer> interceptorId)
 {
-    HILOG_DEBUG();
     mockInputEventConsumer = interceptorId;
     return 0;
 }
 
 int32_t InputManager::AddInterceptor(std::function<void(std::shared_ptr<KeyEvent>)> interceptor)
 {
-    HILOG_DEBUG();
     mockKeyEventCallback = interceptor;
     return 0;
 }
 
 std::function<void(std::shared_ptr<KeyEvent>)> MockInputManager::GetKeyEventInterceptor()
 {
-    HILOG_DEBUG();
     return mockKeyEventCallback;
 }
 
 void InputManager::RemoveInterceptor(int32_t interceptorId)
-{
-    HILOG_DEBUG();
-}
+{}
 } // namespace MMI
 } // namespace OHOS
