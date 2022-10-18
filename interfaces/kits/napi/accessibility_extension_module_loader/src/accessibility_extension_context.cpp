@@ -21,161 +21,159 @@ using namespace std;
 
 namespace OHOS {
 namespace Accessibility {
-RetError AccessibilityExtensionContext::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+bool AccessibilityExtensionContext::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetFocus(focusType, elementInfo);
 }
 
-RetError AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
+bool AccessibilityExtensionContext::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetFocusByElementInfo(sourceInfo, focusType, elementInfo);
 }
 
-RetError AccessibilityExtensionContext::InjectGesture(
-    const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
+bool AccessibilityExtensionContext::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->InjectGesture(gesturePath);
 }
 
-RetError AccessibilityExtensionContext::InjectGesture(
+bool AccessibilityExtensionContext::InjectGesture(
     const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths)
 {
     HILOG_DEBUG("This method is temporarily not implemented!");
-    return RET_ERR_NOT_SUPPORT;
+    return false;
 }
 
-RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
+bool AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetRoot(elementInfo);
 }
 
-RetError AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+bool AccessibilityExtensionContext::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetRootByWindow(windowInfo, elementInfo);
 }
 
-RetError AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+bool AccessibilityExtensionContext::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetWindows(windows);
 }
 
-RetError AccessibilityExtensionContext::GetWindows(const uint64_t displayId,
-    std::vector<AccessibilityWindowInfo> &windows)
+bool AccessibilityExtensionContext::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetWindows(displayId, windows);
 }
 
-RetError AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elementInfo,
+bool AccessibilityExtensionContext::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetNext(elementInfo, direction, nextElementInfo);
 }
 
-RetError AccessibilityExtensionContext::GetChildElementInfo(const int32_t index,
-    const AccessibilityElementInfo &parent, AccessibilityElementInfo &child)
+bool AccessibilityExtensionContext::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+    AccessibilityElementInfo &child)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetChildElementInfo(index, parent, child);
 }
 
-RetError AccessibilityExtensionContext::GetByContent(const AccessibilityElementInfo &elementInfo,
-    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+bool AccessibilityExtensionContext::GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
+    std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetByContent(elementInfo, text, elementInfos);
 }
 
-RetError AccessibilityExtensionContext::GetParentElementInfo(const AccessibilityElementInfo &child,
+bool AccessibilityExtensionContext::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->GetParentElementInfo(child, parent);
 }
 
-RetError AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo &elementInfo,
-    const ActionType action, const std::map<std::string, std::string> &actionArguments)
+bool AccessibilityExtensionContext::ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
+    const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->ExecuteAction(elementInfo, action, actionArguments);
 }
 
-RetError AccessibilityExtensionContext::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+bool AccessibilityExtensionContext::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG();
     sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+        return false;
     }
     return aaClient->SetTargetBundleName(targetBundleNames);
 }

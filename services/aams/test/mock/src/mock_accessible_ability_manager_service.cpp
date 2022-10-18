@@ -79,7 +79,7 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
     return 0;
 }
 
-RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& uiEvent)
+void AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo& uiEvent)
 {
     HILOG_INFO("AccessibleAbilityManagerService::SendEvent successfully");
     EventType uTeventType = uiEvent.GetEventType();
@@ -96,7 +96,6 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
         HILOG_DEBUG("start");
         AccessibilityAbilityHelper::GetInstance().AddSendEventTimes();
         }), "TASK_SEND_EVENT");
-    return RET_OK;
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
@@ -106,27 +105,25 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     return 0;
 }
 
-RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+bool AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
     std::vector<AccessibilityAbilityInfo> &infos)
 {
     (void)abilityTypes;
     (void)stateType;
     (void)infos;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityManagerService::RegisterElementOperator(
+void AccessibleAbilityManagerService::RegisterElementOperator(
     const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation)
 {
     (void)windowId;
     (void)operation;
-    return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
+void AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
 {
     (void)windowId;
-    return RET_OK;
 }
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
@@ -198,17 +195,17 @@ bool AccessibleAbilityManagerService::GetKeyEventObserverState()
     return true;
 }
 
-RetError AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
+bool AccessibleAbilityManagerService::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     (void)name;
     (void)capabilities;
-    return RET_OK;
+    return true;
 }
 
-RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
+bool AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
 {
     (void)enabledAbilities;
-    return RET_OK;
+    return true;
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
@@ -218,10 +215,10 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     return NO_ERROR;
 }
 
-RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name)
+bool AccessibleAbilityManagerService::DisableAbility(const std::string &name)
 {
     (void)name;
-    return RET_OK;
+    return true;
 }
 
 RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemoteObject>& obj)
@@ -230,9 +227,9 @@ RetError AccessibleAbilityManagerService::EnableUITestAbility(const sptr<IRemote
     return RET_OK;
 }
 
-RetError AccessibleAbilityManagerService::DisableUITestAbility()
+bool AccessibleAbilityManagerService::DisableUITestAbility()
 {
-    return RET_OK;
+    return true;
 }
 
 int32_t AccessibleAbilityManagerService::GetActiveWindow()

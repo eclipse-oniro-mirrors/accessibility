@@ -34,7 +34,7 @@ public:
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
-    RetError SendEvent(const AccessibilityEventInfo &uiEvent) override;
+    void SendEvent(const AccessibilityEventInfo &uiEvent) override;
 
     uint32_t RegisterStateObserver(const sptr<IAccessibleAbilityManagerStateObserver> &callback) override;
 
@@ -43,13 +43,13 @@ public:
     void RegisterEnableAbilityListsObserver(
         const sptr<IAccessibilityEnableAbilityListsObserver> &observer) override;
 
-    RetError GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
+    bool GetAbilityList(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfo> &infos) override;
 
-    RetError RegisterElementOperator(const int32_t windowId,
+    void RegisterElementOperator(const int32_t windowId,
         const sptr<IAccessibilityElementOperator> &operation) override;
 
-    RetError DeregisterElementOperator(const int32_t windowId) override;
+    void DeregisterElementOperator(const int32_t windowId) override;
 
     RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption) override;
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption) override;
@@ -61,14 +61,14 @@ public:
     bool GetGestureState() override;
     bool GetKeyEventObserverState() override;
 
-    RetError EnableAbility(const std::string &name, const uint32_t capabilities) override;
-    RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
+    bool EnableAbility(const std::string &name, const uint32_t capabilities) override;
+    bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
 
-    RetError DisableAbility(const std::string &name) override;
+    bool DisableAbility(const std::string &name) override;
     int32_t GetActiveWindow() override;
 
     RetError EnableUITestAbility(const sptr<IRemoteObject> &obj) override;
-    RetError DisableUITestAbility() override;
+    bool DisableUITestAbility() override;
 
     RetError SetScreenMagnificationState(const bool state) override;
     RetError SetShortKeyState(const bool state) override;
