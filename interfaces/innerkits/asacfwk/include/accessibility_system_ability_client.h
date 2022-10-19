@@ -55,28 +55,31 @@ public:
      * @brief Register the element operator, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
-     * @return 0: Succeed ; otherwise is failed.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual int32_t RegisterElementOperator(const int32_t windowId,
+    virtual RetError RegisterElementOperator(const int32_t windowId,
         const std::shared_ptr<AccessibilityElementOperator> &operation) = 0;
 
     /**
      * @brief Deregister the element operator.
      * @param windowId Window ID
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual void DeregisterElementOperator(const int32_t windowId) = 0;
+    virtual RetError DeregisterElementOperator(const int32_t windowId) = 0;
 
     /**
      * @brief Checks whether accessibility ability is enabled.
-     * @return true: enabled; false: disabled
+     * @param isEnabled true: enabled; false: disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool IsEnabled() = 0;
+    virtual RetError IsEnabled(bool &isEnabled)= 0;
 
     /**
      * @brief Checks whether touch exploration ability is enabled.
-     * @return true: enabled; false: disabled
+     * @param isEnabled true: enabled; false: disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool IsTouchExplorationEnabled() = 0;
+    virtual RetError IsTouchExplorationEnabled(bool &isEnabled) = 0;
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -86,51 +89,51 @@ public:
      *                  2 indicates that the ability is disabled;
      *                  3 indicates that the ability has been installed.
      * @param infos accessibility ability infos by specified types.
-     * @return Return true if get ability lists successfully, else return false.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
+    virtual RetError GetAbilityList(const uint32_t accessibilityAbilityTypes, const AbilityStateType stateType,
         std::vector<AccessibilityAbilityInfo> &infos) = 0;
 
     /**
      * @brief Sends an accessibility event.
      * @param eventType  Identifies the accessibility event specified by AccessibilityEventInfo.
      * @param componentId Indicates the ID of the component to be associated with the event.
-     * @return true: send ok; otherwise is refused.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool SendEvent(const EventType eventType, const int32_t componentId) = 0;
+    virtual RetError SendEvent(const EventType eventType, const int32_t componentId) = 0;
 
     /**
      * @brief Sends information about an accessibility event.
      * @param event Indicates the accessibility event information specified by AccessibilityEventInfo.
-     * @return true: send ok; otherwise is refused.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool SendEvent(const AccessibilityEventInfo &event) = 0;
+    virtual RetError SendEvent(const AccessibilityEventInfo &event) = 0;
 
     /**
      * @brief Subscribes to the specified type of accessibility status change events.
      * @param observer Indicates the observer for listening to status events, which is specified
      *              by AccessibilityStateObserver.
      * @param eventType Indicates the status type, which is specified by AccessibilityStateEventType.
-     * @return true: send ok; otherwise is refused.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
+    virtual RetError SubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
         const uint32_t eventType) = 0;
 
     /**
      * @brief Unsubscribe the specified type of accessibility status change events.
      * @param observer Indicates the registered accessibility status event observer.
      * @param eventType Indicates the status type, which is specified by AccessibilityStateEventType.
-     * @return true: send ok; otherwise is refused.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
+    virtual RetError UnsubscribeStateObserver(const std::shared_ptr<AccessibilityStateObserver> &observer,
         const uint32_t eventType) = 0;
 
     /**
      * @brief Get enabled abilities.
      * @param enabledAbilities The infos of enabled abilities.
-     * @return Return true if get enabled abilities successfully, else return false.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual bool GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
+    virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

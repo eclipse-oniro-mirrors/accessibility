@@ -39,7 +39,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
@@ -48,10 +48,10 @@ bool AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int
     (void)requestId;
     (void)callback;
     (void)mode;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
+RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
     const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -60,21 +60,22 @@ bool AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t acces
     (void)text;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
-    const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
+RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
+    const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
     (void)elementId;
     (void)focusType;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     (void)accessibilityWindowId;
@@ -82,10 +83,10 @@ bool AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityW
     (void)direction;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
+RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
@@ -95,21 +96,21 @@ bool AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWin
     (void)actionArguments;
     (void)requestId;
     (void)callback;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)windows;
-    return true;
+    return RET_OK;
 }
 
-bool AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
+RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     (void)displayId;
     (void)windows;
-    return true;
+    return RET_OK;
 }
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
@@ -118,11 +119,11 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
     (void)sequence;
 }
 
-bool AccessibleAbilityChannelProxy::SendSimulateGesture(
+RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     (void)gesturePath;
-    return true;
+    return RET_OK;
 }
 
 MockAccessibleAbilityChannelProxy::MockAccessibleAbilityChannelProxy(const sptr<IRemoteObject>& object)

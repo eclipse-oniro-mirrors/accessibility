@@ -791,7 +791,6 @@ HWTEST_F(AccessibilityConfigImplTest, UnsubscribeEnableAbilityListsObserver_001,
     GTEST_LOG_(INFO) << "UnsubscribeEnableAbilityListsObserver_001 end";
 }
 
-
 /**
  * @tc.number: EnableAbility_001
  * @tc.name: EnableAbility_001
@@ -804,7 +803,7 @@ HWTEST_F(AccessibilityConfigImplTest, EnableAbility_001, TestSize.Level1)
     std::string name = "test";
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    EXPECT_TRUE(instance.EnableAbility(name, 0));
+    EXPECT_EQ(Accessibility::RET_OK, instance.EnableAbility(name, 0));
     sleep(1);
     GTEST_LOG_(INFO) << "EnableAbility_001 end";
 }
@@ -821,7 +820,7 @@ HWTEST_F(AccessibilityConfigImplTest, DisableAbility_001, TestSize.Level1)
     std::string name = "test";
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.InitializeContext();
-    EXPECT_TRUE(instance.DisableAbility(name));
+    EXPECT_EQ(Accessibility::RET_OK, instance.DisableAbility(name));
     GTEST_LOG_(INFO) << "DisableAbility_001 end";
 }
 } // namespace AccessibilityConfig
