@@ -171,6 +171,7 @@ ohos_unittest("accessible_ability_test") {
     "ability_base:want",
     "ability_runtime:ability_manager",
     "c_utils:utils",
+    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",

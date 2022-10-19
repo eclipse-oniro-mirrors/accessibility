@@ -23,6 +23,7 @@
 #include "ability_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_window_manager.h"
+#include "display_power_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "input_manager.h"
 #include "iservice_registry.h"
@@ -1522,7 +1523,11 @@ RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float disc
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-
+    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
+    if (!displayPowerMgrClient.DiscountBrightness(discount)) {
+        HILOG_ERROR("Failed to set brightness discount");
+        return Accessibility::RET_ERR_FAILED;
+    }
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, discount]() -> void {
