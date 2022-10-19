@@ -22,6 +22,7 @@
 #include "hilog_wrapper.h"
 #include "napi_accessibility_element.h"
 #include "napi_accessibility_utils.h"
+#include "native_engine/native_value.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -124,17 +125,29 @@ private:
     NativeValue* OnSetTargetBundleName(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
-        // Only support one or two params
-        if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
+        NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
+        if (info.argc < ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
+            errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
         }
 
-        // Unwrap target bundle names
         std::vector<std::string> targetBundleNames;
-        ConvertJSToStringVec(reinterpret_cast<napi_env>(&engine),
-            reinterpret_cast<napi_value>(info.argv[PARAM0]), targetBundleNames);
-        HILOG_INFO("targetBundleNames's size = %{public}zu", targetBundleNames.size());
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
+            if (ConvertJSToStringVec(reinterpret_cast<napi_env>(&engine),
+                reinterpret_cast<napi_value>(info.argv[PARAM0]), targetBundleNames)) {
+                HILOG_INFO("targetBundleNames's size = %{public}zu", targetBundleNames.size());
+            } else {
+                errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
+            }
+        }
+
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
+            HILOG_ERROR("invalid param");
+            engine.Throw(CreateJsError(engine,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                "Input parameter is missing or invalid")) ;
+            return engine.CreateUndefined();;
+        }
 
         AsyncTask::CompleteCallback complete =
             [weak = context_, targetBundleNames](NativeEngine& engine, AsyncTask& task, int32_t status) {
@@ -159,7 +172,9 @@ private:
                 }
             };
 
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
+        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) ?
+            info.argv[PARAM1] : nullptr);
         NativeValue* result = nullptr;
         AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
@@ -169,33 +184,39 @@ private:
     NativeValue* OnGetFocusElement(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
-        // Support 0 ~ 2 params
-        if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
-            HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
-        }
-
         bool isAccessibilityFocus = false;
         NativeValue* lastParam = nullptr;
-        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            lastParam = info.argv[PARAM0];
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-            if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
-                HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
-                return engine.CreateUndefined();
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
+                info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
+                    info.argv[PARAM1] : nullptr;
+            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 1");
+                lastParam = info.argv[PARAM1];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 2");
+                lastParam = info.argv[PARAM0];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+                ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+                HILOG_INFO("argc is one, use promise");
+            } else {
+                lastParam = nullptr;
+                HILOG_INFO("argc is more than two, use promise");
             }
-            lastParam = info.argv[PARAM1];
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            if (!ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus)) {
-                HILOG_ERROR("Convert isAccessibilityFocus from js value failed");
-                return engine.CreateUndefined();
+        } else if (info.argc == ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                lastParam = info.argv[PARAM0];
+            } else {
+                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+                    ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+                }
+                lastParam = nullptr;
+                HILOG_INFO("argc is one, use promise");
             }
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
-                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            // Use default value.
         } else {
-            HILOG_ERROR("Params is wrong");
-            return engine.CreateUndefined();
+            lastParam = nullptr;
+            HILOG_INFO("argc is others, use promise");
         }
 
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
@@ -242,37 +263,47 @@ private:
     NativeValue* OnGetWindowRootElement(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
-        // Support 0 ~ 2 params
-        if (info.argc < ARGS_SIZE_ZERO || info.argc > ARGS_SIZE_TWO) {
-            HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
-        }
-
         int32_t windowId = INVALID_WINDOW_ID;
         bool isActiveWindow = true;
         NativeValue* lastParam = nullptr;
-        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            lastParam = info.argv[PARAM0];
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-            if (!ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
-                HILOG_ERROR("Convert windowId failed");
-                return engine.CreateUndefined();
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
+                info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                if (ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
+                    lastParam = info.argv[PARAM1];
+                    isActiveWindow = false;
+                } else {
+                    HILOG_ERROR("argc is more than two, convert window id failed");
+                    lastParam = info.argv[PARAM1];
+                }
+            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 1");
+                lastParam = info.argv[PARAM1];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 2");
+                lastParam = info.argv[PARAM0];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                HILOG_INFO("argc is one, use promise");
+                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
+            } else {
+                lastParam = nullptr;
+                HILOG_INFO("argc is two, use promise");
             }
-            lastParam = info.argv[PARAM1];
-            isActiveWindow = false;
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            bool ret = ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
-            if (!ret) {
-                HILOG_ERROR("Convert windowId failed. ret[%{public}d] windowId[%{public}d]", ret, windowId);
-                return engine.CreateUndefined();
+        } else if (info.argc == ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                lastParam = info.argv[PARAM0];
+            } else {
+                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                    if (ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
+                        isActiveWindow = false;
+                    }
+                }
+                lastParam = nullptr;
+                HILOG_INFO("argc is one, use promise");
             }
-            isActiveWindow = false;
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
-                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            // Use default value.
         } else {
-            HILOG_ERROR("Params is wrong");
-            return engine.CreateUndefined();
+            lastParam = nullptr;
+            HILOG_INFO("argc is others, use promise");
         }
 
         AsyncTask::CompleteCallback complete =
@@ -326,38 +357,48 @@ private:
     NativeValue* OnGetWindows(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
-        // Support 0 ~ 2 params
-        if (info.argc < ARGS_SIZE_ZERO && info.argc > ARGS_SIZE_TWO) {
-            HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
-        }
 
         int64_t displayId = 0;
         bool hasDisplayId = false;
         NativeValue* lastParam = nullptr;
-
-        if (info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            hasDisplayId = false;
-            lastParam = info.argv[PARAM0];
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-            hasDisplayId = true;
-            if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                HILOG_ERROR("Convert displayId from js value failed");
-                return engine.CreateUndefined();
+        if (info.argc >= ARGS_SIZE_TWO) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
+                info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                if (ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
+                    lastParam = info.argv[PARAM1];
+                    hasDisplayId = true;
+                } else {
+                    HILOG_ERROR("Convert displayId from js value failed");
+                    lastParam = info.argv[PARAM1];
+                }
+            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 1");
+                lastParam = info.argv[PARAM1];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                HILOG_INFO("argc is more than two, use callback: situation 2");
+                lastParam = info.argv[PARAM0];
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                HILOG_INFO("argc is one, use promise");
+                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
+            } else {
+                lastParam = nullptr;
+                HILOG_INFO("argc is more than two, use promise");
             }
-            lastParam = info.argv[PARAM1];
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            hasDisplayId = true;
-            if (!ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                HILOG_ERROR("Convert displayId from js value failed");
-                return engine.CreateUndefined();
+        } else if (info.argc == ARGS_SIZE_ONE) {
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+                lastParam = info.argv[PARAM0];
+            } else {
+                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                    if (ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
+                        hasDisplayId = true;
+                    }
+                }
+                lastParam = nullptr;
+                HILOG_INFO("argc is one, use promise");
             }
-        } else if (info.argv[PARAM0]->TypeOf() == NATIVE_UNDEFINED &&
-                   info.argv[PARAM1]->TypeOf() == NATIVE_UNDEFINED) {
-            hasDisplayId = false;
         } else {
-            HILOG_ERROR("Params is wrong");
-            return engine.CreateUndefined();
+            lastParam = nullptr;
+            HILOG_INFO("argc is others, use promise");
         }
 
         return hasDisplayId ? GetWindowsByDisplayIdAsync(engine, lastParam, displayId) :
@@ -451,20 +492,31 @@ private:
     NativeValue* OnGestureInject(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
-        // Only support two or three params
-        if (info.argc != ARGS_SIZE_ONE && info.argc != ARGS_SIZE_TWO) {
+        NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
+        if (info.argc < ARGS_SIZE_ONE) {
             HILOG_ERROR("Not enough params");
-            return engine.CreateUndefined();
+            errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
         }
 
-        // Unwrap gesturePaths
         bool isParameterArray = false;
         napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
         std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
             std::make_shared<AccessibilityGestureInjectPath>();
         std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> gesturePathArray;
-        ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths,
-            gesturePath, gesturePathArray, isParameterArray);
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
+            if (!ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, 
+                gesturePath, gesturePathArray, isParameterArray)) {
+                errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
+            }
+        }
+
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
+            HILOG_ERROR("invalid param");
+            engine.Throw(CreateJsError(engine,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                "Input parameter is missing or invalid")) ;
+            return engine.CreateUndefined();;
+        }
 
         AsyncTask::CompleteCallback complete =
             [weak = context_, gesturePath, gesturePathArray, isParameterArray](
@@ -493,7 +545,9 @@ private:
                 }
             };
 
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr : info.argv[PARAM1];
+        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) ?
+            info.argv[PARAM1] : nullptr);
         NativeValue* result = nullptr;
         AsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
             engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));

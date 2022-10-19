@@ -177,6 +177,16 @@ napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCo
     return result;
 }
 
+napi_value GetErrorValue(napi_env env, int errCode)
+{
+    napi_value result = nullptr;
+    napi_value eCode = nullptr;
+    NAPI_CALL(env, napi_create_int32(env, errCode, &eCode));
+    NAPI_CALL(env, napi_create_object(env, &result));
+    NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
+    return result;
+}
+
 /**********************************************************
  * Convert native object to js object
  *********************************************************/
