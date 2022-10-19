@@ -30,14 +30,14 @@ namespace {
         if (!asaClient) {
             return;
         }
+        bool isEnable = false;
         for (auto _ : state) {
             /* @tc.steps: step1.call IsEnabled in loop */
-            (void)asaClient->IsEnabled();
+            (void)asaClient->IsEnabled(isEnable);
         }
     }
 
-
-    /**
+	/**
      * @tc.name: BenchmarkTestForGetEnabledAbilities
      * @tc.desc: Testcase for testing 'GetEnabledAbilities' function.
      * @tc.type: FUNC

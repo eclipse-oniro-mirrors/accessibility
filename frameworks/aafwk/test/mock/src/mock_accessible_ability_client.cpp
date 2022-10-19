@@ -48,24 +48,25 @@ sptr<IRemoteObject> MockAccessibleAbilityClient::GetRemoteObject()
     return nullptr;
 }
 
-bool MockAccessibleAbilityClient::RegisterAbilityListener(const std::shared_ptr<AccessibleAbilityListener> &listener)
+RetError MockAccessibleAbilityClient::RegisterAbilityListener(
+    const std::shared_ptr<AccessibleAbilityListener> &listener)
 {
     HILOG_DEBUG();
 
     (void)listener;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
+RetError MockAccessibleAbilityClient::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
 
     (void)focusType;
     (void)elementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
+RetError MockAccessibleAbilityClient::GetFocusByElementInfo(const AccessibilityElementInfo &sourceInfo,
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
@@ -73,62 +74,63 @@ bool MockAccessibleAbilityClient::GetFocusByElementInfo(const AccessibilityEleme
     (void)sourceInfo;
     (void)focusType;
     (void)elementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
+RetError MockAccessibleAbilityClient::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO();
 
     (void)gesturePath;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetRoot(AccessibilityElementInfo &elementInfo)
+RetError MockAccessibleAbilityClient::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
 
     (void)elementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
+RetError MockAccessibleAbilityClient::GetRootByWindow(const AccessibilityWindowInfo &windowInfo,
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
 
     (void)windowInfo;
     (void)elementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+RetError MockAccessibleAbilityClient::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG();
 
     (void)windowId;
     (void)windowInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
+RetError MockAccessibleAbilityClient::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
 
     (void)windows;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetWindows(const uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows)
+RetError MockAccessibleAbilityClient::GetWindows(const uint64_t displayId,
+    std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
 
     (void)displayId;
     (void)windows;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetNext(const AccessibilityElementInfo &elementInfo,
+RetError MockAccessibleAbilityClient::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
     HILOG_DEBUG();
@@ -136,10 +138,10 @@ bool MockAccessibleAbilityClient::GetNext(const AccessibilityElementInfo &elemen
     (void)elementInfo;
     (void)direction;
     (void)nextElementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
+RetError MockAccessibleAbilityClient::GetChildElementInfo(const int32_t index, const AccessibilityElementInfo &parent,
     AccessibilityElementInfo &child)
 {
     HILOG_DEBUG();
@@ -147,73 +149,74 @@ bool MockAccessibleAbilityClient::GetChildElementInfo(const int32_t index, const
     (void)index;
     (void)parent;
     (void)child;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetChildren(const AccessibilityElementInfo &parent,
+RetError MockAccessibleAbilityClient::GetChildren(const AccessibilityElementInfo &parent,
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
 
     (void)parent;
     (void)children;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetByContent(const AccessibilityElementInfo &elementInfo, const std::string &text,
-    std::vector<AccessibilityElementInfo> &elementInfos)
+RetError MockAccessibleAbilityClient::GetByContent(const AccessibilityElementInfo &elementInfo,
+    const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
     
     (void)elementInfo;
     (void)text;
     (void)elementInfos;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetSource(const AccessibilityEventInfo &eventInfo,
+RetError MockAccessibleAbilityClient::GetSource(const AccessibilityEventInfo &eventInfo,
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
 
     (void)eventInfo;
     (void)elementInfo;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::GetParentElementInfo(const AccessibilityElementInfo &child,
+RetError MockAccessibleAbilityClient::GetParentElementInfo(const AccessibilityElementInfo &child,
     AccessibilityElementInfo &parent)
 {
     HILOG_DEBUG();
 
     (void)child;
     (void)parent;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::ExecuteAction(const AccessibilityElementInfo &elementInfo, const ActionType action,
-    const std::map<std::string, std::string> &actionArguments)
+RetError MockAccessibleAbilityClient::ExecuteAction(const AccessibilityElementInfo &elementInfo,
+    const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG();
 
     (void)elementInfo;
     (void)action;
     (void)actionArguments;
-    return true;
+    return RET_OK;
 }
 
-bool MockAccessibleAbilityClient::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+RetError MockAccessibleAbilityClient::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_DEBUG();
 
     (void)targetBundleNames;
-    return true;
+    return RET_OK;
 }
 
-void MockAccessibleAbilityClient::SetCacheMode(const int32_t cacheMode)
+RetError MockAccessibleAbilityClient::SetCacheMode(const int32_t cacheMode)
 {
     HILOG_DEBUG();
     AccessibilityAbilityUtHelper::GetInstance().SetCacheMode(cacheMode);
+    return RET_OK;
 }
 } // namespace Accessibility
 } // namespace OHOS

@@ -107,7 +107,6 @@ private:
 
     ErrCode HandleEnableAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetEnabledAbilities(MessageParcel &data, MessageParcel &reply);
-
     ErrCode HandleDisableAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleEnableUITestAbility(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleDisableUITestAbility(MessageParcel &data, MessageParcel &reply);

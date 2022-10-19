@@ -17,17 +17,19 @@ import { GesturePoint } from "./@ohos.accessibility.GesturePoint";
 
 /**
  * Indicates the path of the gesture.
- * @since 9
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
- export declare class GesturePath {
+export declare class GesturePath {
     constructor(durationTime: number);
     /**
      * Indicates the position of the points that make up the gesture.
+     * @type {Array<GesturePoint>}
      */
     points: Array<GesturePoint>;
     /**
      * Indicates the duration of the gesture.
+     * @type {number}
      */
     durationTime: number;
 }
