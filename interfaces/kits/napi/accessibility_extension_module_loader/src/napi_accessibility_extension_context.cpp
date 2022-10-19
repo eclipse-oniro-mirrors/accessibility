@@ -198,8 +198,9 @@ private:
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
             } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+                HILOG_INFO("argc is more than two, use promise: situation 3");
+                lastParam = nullptr;
                 ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
-                HILOG_INFO("argc is one, use promise");
             } else {
                 lastParam = nullptr;
                 HILOG_INFO("argc is more than two, use promise");
@@ -283,7 +284,8 @@ private:
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
             } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                HILOG_INFO("argc is one, use promise");
+                HILOG_INFO("argc is more than two, use promise: situation 3");
+                lastParam = nullptr;
                 isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
             } else {
                 lastParam = nullptr;
@@ -378,7 +380,8 @@ private:
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
             } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                HILOG_INFO("argc is one, use promise");
+                HILOG_INFO("argc is more than two, use promise: situation 3");
+                lastParam = nullptr;
                 hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
             } else {
                 lastParam = nullptr;
