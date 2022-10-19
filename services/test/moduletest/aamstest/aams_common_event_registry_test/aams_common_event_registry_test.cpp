@@ -50,17 +50,6 @@ public:
 void AccessibilityCommonEventRegistryTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest SetUpTestCase";
-}
-
-void AccessibilityCommonEventRegistryTest::TearDownTestCase()
-{
-    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest TearDownTestCase";
-}
-
-void AccessibilityCommonEventRegistryTest::SetUp()
-{
-    GTEST_LOG_(INFO) << "SetUp";
-
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
@@ -68,10 +57,20 @@ void AccessibilityCommonEventRegistryTest::SetUp()
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerService is published";
 }
 
+void AccessibilityCommonEventRegistryTest::TearDownTestCase()
+{
+    GTEST_LOG_(INFO) << "AccessibilityCommonEventRegistryTest TearDownTestCase";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
+}
+
+void AccessibilityCommonEventRegistryTest::SetUp()
+{
+    GTEST_LOG_(INFO) << "SetUp";
+}
+
 void AccessibilityCommonEventRegistryTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
     accountData_ = nullptr;
     aastub_ = nullptr;
     elementName_ = nullptr;

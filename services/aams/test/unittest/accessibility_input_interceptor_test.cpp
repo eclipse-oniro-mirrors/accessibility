@@ -51,8 +51,6 @@ void AccessibilityInputInterceptorTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest SetUpTestCase";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
-    AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(AccessibilityAbilityHelper::accountId_);
 }
 
 void AccessibilityInputInterceptorTest::TearDownTestCase()
