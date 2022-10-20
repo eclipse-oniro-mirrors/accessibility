@@ -426,30 +426,46 @@ void NAccessibilityConfigObserverImpl::OnConfigChanged(
     }
 }
 
-void NAccessibilityConfigObserverImpl::SubscribeObserver(const std::shared_ptr<NAccessibilityConfigObserver> &observer)
+bool NAccessibilityConfigObserverImpl::CheckEqual(napi_env env, napi_value observer,
+    std::vector<std::shared_ptr<NAccessibilityConfigObserver>>::const_iterator iter)
+{
+    HILOG_INFO();
+    if (env != (*iter)->env_) {
+        return false;
+    }
+    HILOG_DEBUG("Same env, begin check observer equal");
+    napi_value item = nullptr;
+    bool equalFlag = false;
+    napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
+    napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
+    if (status == napi_ok && equalFlag) {
+        HILOG_DEBUG("Observer exist");
+        return true;
+    }
+    return false;
+}
+
+
+void NAccessibilityConfigObserverImpl::SubscribeObserver(napi_env env,
+    OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (observer->env_ != (*iter)->env_) {
-            iter++;
-            continue;
-        }
-        HILOG_DEBUG("Same env, begin check observer equal");
-        napi_value item = nullptr;
-        napi_value observerItem = nullptr;
-        bool equalFlag = false;
-        napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-        napi_get_reference_value(observer->env_, observer->handlerRef_, &observerItem);
-        napi_status status = napi_strict_equals((*iter)->env_, item, observerItem, &equalFlag);
-        if (status == napi_ok && equalFlag) {
+        if (CheckEqual(env, observer, iter)) {
             HILOG_DEBUG("Observer exist");
             return;
         } else {
             iter++;
         }
     }
-    observers_.emplace_back(observer);
+
+    napi_ref handler = nullptr;
+    napi_create_reference(env, observer, 1, &handler);
+    std::shared_ptr<NAccessibilityConfigObserver> observerPtr =
+        std::make_shared<NAccessibilityConfigObserver>(env, handler, id);
+
+    observers_.emplace_back(observerPtr);
 }
 
 void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
@@ -459,16 +475,7 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObserver(napi_env env,
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
-            if (env != (*iter)->env_) {
-                iter++;
-                continue;
-            }
-            HILOG_DEBUG("Same env, begin check observer equal");
-            napi_value item = nullptr;
-            bool equalFlag = false;
-            napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-            napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-            if (status == napi_ok && equalFlag) {
+            if (CheckEqual(env, observer, iter)) {
                 observers_.erase(iter);
                 return;
             } else {

@@ -38,11 +38,13 @@ public:
     EnableAbilityListsObserverImpl() = default;
     void OnEnableAbilityListsStateChanged() override;
     void SubscribeToFramework();
-    void SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer);
+    void SubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
 
 private:
+    bool CheckEqual(napi_env env, napi_value observer,
+        std::vector<std::shared_ptr<EnableAbilityListsObserver>>::const_iterator iter);
     std::mutex mutex_;
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_ = {};
 };

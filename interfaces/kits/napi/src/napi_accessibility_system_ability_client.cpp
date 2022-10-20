@@ -371,16 +371,12 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
 
-    napi_ref ref;
-    napi_create_reference(env, args[1], 1, &ref);
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
-
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
-            accessibilityStateListeners_->SubscribeObserver(stateListener);
+            accessibilityStateListeners_->SubscribeObserver(env, args[1]);
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
-            touchGuideStateListeners_->SubscribeObserver(stateListener);
+            touchGuideStateListeners_->SubscribeObserver(env, args[1]);
             break;
         default:
             break;
@@ -699,11 +695,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         return nullptr;
     }
 
-    napi_ref ref;
-    napi_create_reference(env, args[PARAM1], 1, &ref);
-    std::shared_ptr<NAccessibilityConfigObserver> captionListener =
-        std::make_shared<NAccessibilityConfigObserver>(env, ref, type);
-    captionListeners_->SubscribeObserver(captionListener);
+    captionListeners_->SubscribeObserver(env, type, args[PARAM1]);
 
     return nullptr;
 }
@@ -1085,30 +1077,43 @@ void StateListenerImpl::OnStateChanged(const bool state)
     }
 }
 
-void StateListenerImpl::SubscribeObserver(const std::shared_ptr<StateListener> &observer)
+bool StateListenerImpl::CheckEqual(napi_env env, napi_value observer,
+    std::vector<std::shared_ptr<StateListener>>::const_iterator iter)
+{
+    HILOG_INFO();
+    if (env != (*iter)->env_) {
+        return false;
+    }
+    HILOG_DEBUG("Same env, begin check observer equal");
+    napi_value item = nullptr;
+    bool equalFlag = false;
+    napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
+    napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
+    if (status == napi_ok && equalFlag) {
+        HILOG_DEBUG("Observer exist");
+        return true;
+    }
+    return false;
+}
+
+void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (observer->env_ != (*iter)->env_) {
-            iter++;
-            continue;
-        }
-        HILOG_DEBUG("Same env, begin check observer equal");
-        napi_value item = nullptr;
-        napi_value observerItem = nullptr;
-        bool equalFlag = false;
-        napi_get_reference_value(observer->env_, observer->handlerRef_, &observerItem);
-        napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-        napi_status status = napi_strict_equals((*iter)->env_, item, observerItem, &equalFlag);
-        if (status == napi_ok && equalFlag) {
+        if (CheckEqual(env, observer, iter)) {
             HILOG_DEBUG("Observer exist");
             return;
         } else {
             iter++;
         }
     }
-    observers_.emplace_back(observer);
+
+    napi_ref ref;
+    napi_create_reference(env, observer, 1, &ref);
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
+
+    observers_.emplace_back(stateListener);
     HILOG_INFO("observer size%{public}zu", observers_.size());
 }
 
@@ -1117,16 +1122,7 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (env != (*iter)->env_) {
-            iter++;
-            continue;
-        }
-        HILOG_DEBUG("Same env, begin check observer equal");
-        napi_value item = nullptr;
-        bool equalFlag = false;
-        napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-        napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-        if (status == napi_ok && equalFlag) {
+        if (CheckEqual(env, observer, iter)) {
             observers_.erase(iter);
             return;
         } else {

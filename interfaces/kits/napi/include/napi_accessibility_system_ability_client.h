@@ -43,11 +43,13 @@ public:
     StateListenerImpl(OHOS::Accessibility::AccessibilityStateEventType type) : type_(type) {};
     void OnStateChanged(const bool state) override;
     void SubscribeToFramework();
-    void SubscribeObserver(const std::shared_ptr<StateListener> &observer);
+    void SubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObserver(napi_env env, napi_value observer);
     void UnsubscribeObservers();
 
 private:
+    bool CheckEqual(napi_env env, napi_value observer,
+        std::vector<std::shared_ptr<StateListener>>::const_iterator iter);
     std::mutex mutex_;
     OHOS::Accessibility::AccessibilityStateEventType type_;
     std::vector<std::shared_ptr<StateListener>> observers_ = {};
