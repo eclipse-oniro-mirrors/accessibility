@@ -145,8 +145,8 @@ private:
             HILOG_ERROR("invalid param");
             engine.Throw(CreateJsError(engine,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                ERROR_MESSAGE_PARAMETER_ERROR)) ;
-            return engine.CreateUndefined();;
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return engine.CreateUndefined();
         }
 
         AsyncTask::CompleteCallback complete =
@@ -295,10 +295,9 @@ private:
             if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 lastParam = info.argv[PARAM0];
             } else {
-                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                    if (ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
-                        isActiveWindow = false;
-                    }
+                if ((info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) &&
+                    ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
+                    isActiveWindow = false;
                 }
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
@@ -391,10 +390,9 @@ private:
             if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 lastParam = info.argv[PARAM0];
             } else {
-                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                    if (ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                        hasDisplayId = true;
-                    }
+                if ((info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) &&
+                    ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
+                    hasDisplayId = true;
                 }
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
@@ -514,8 +512,8 @@ private:
             HILOG_ERROR("invalid param");
             engine.Throw(CreateJsError(engine,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                ERROR_MESSAGE_PARAMETER_ERROR)) ;
-            return engine.CreateUndefined();;
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return engine.CreateUndefined();
         }
 
         AsyncTask::CompleteCallback complete =

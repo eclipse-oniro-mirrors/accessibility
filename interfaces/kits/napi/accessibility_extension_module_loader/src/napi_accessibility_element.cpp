@@ -1146,10 +1146,10 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
                 ConvertStringToAccessibleOperationType(actionName));
             napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
-        } else if (thirdParamType == napi_function){
+        } else if (thirdParamType == napi_function) {
             napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
-        } else if (secondParamType == napi_function){
+        } else if (secondParamType == napi_function) {
             napi_create_reference(env, argv[PARAM1], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
         } else {
