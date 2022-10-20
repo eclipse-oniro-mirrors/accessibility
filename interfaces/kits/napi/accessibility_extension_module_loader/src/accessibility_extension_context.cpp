@@ -56,13 +56,6 @@ RetError AccessibilityExtensionContext::InjectGesture(
     return aaClient->InjectGesture(gesturePath);
 }
 
-RetError AccessibilityExtensionContext::InjectGesture(
-    const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths)
-{
-    HILOG_DEBUG("This method is temporarily not implemented!");
-    return RET_ERR_NOT_SUPPORT;
-}
-
 RetError AccessibilityExtensionContext::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();

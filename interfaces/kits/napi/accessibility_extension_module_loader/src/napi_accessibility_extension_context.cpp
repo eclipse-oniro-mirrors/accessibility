@@ -145,7 +145,7 @@ private:
             HILOG_ERROR("invalid param");
             engine.Throw(CreateJsError(engine,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                "Input parameter is missing or invalid")) ;
+                ERROR_MESSAGE_PARAMETER_ERROR)) ;
             return engine.CreateUndefined();;
         }
 
@@ -501,14 +501,11 @@ private:
             errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
         }
 
-        bool isParameterArray = false;
         napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
         std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
             std::make_shared<AccessibilityGestureInjectPath>();
-        std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> gesturePathArray;
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
-            if (!ConvertGesturePathsJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, 
-                gesturePath, gesturePathArray, isParameterArray)) {
+            if (!ConvertGesturePathJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePath)) {
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
             }
         }
@@ -517,12 +514,12 @@ private:
             HILOG_ERROR("invalid param");
             engine.Throw(CreateJsError(engine,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                "Input parameter is missing or invalid")) ;
+                ERROR_MESSAGE_PARAMETER_ERROR)) ;
             return engine.CreateUndefined();;
         }
 
         AsyncTask::CompleteCallback complete =
-            [weak = context_, gesturePath, gesturePathArray, isParameterArray](
+            [weak = context_, gesturePath](
             NativeEngine& engine, AsyncTask& task, int32_t status) {
                 auto context = weak.lock();
                 if (!context) {
@@ -532,12 +529,7 @@ private:
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
-                RetError ret = RET_OK;
-                if (isParameterArray) {
-                    ret = context->InjectGesture(gesturePathArray);
-                } else {
-                    ret = context->InjectGesture(gesturePath);
-                }
+                RetError ret = context->InjectGesture(gesturePath);
                 if (ret == RET_OK) {
                     task.Resolve(engine, engine.CreateUndefined());
                 } else {

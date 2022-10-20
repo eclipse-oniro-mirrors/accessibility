@@ -88,10 +88,8 @@ const std::string ConvertWindowUpdateTypeToString(OHOS::Accessibility::WindowUpd
 const std::string ConvertAccessibilityEventTypeToString(OHOS::Accessibility::EventType type);
 void ConvertEventTypeToString(const OHOS::Accessibility::AccessibilityEventInfo &eventInfo,
     std::string &eventTypeString);
-bool ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
-    std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath,
-    std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>>& gesturePathArray,
-    bool &isParameterArray);
+bool ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
+    std::shared_ptr<OHOS::Accessibility::AccessibilityGestureInjectPath>& gesturePath);
 
 struct AccessibilityCallbackInfo {
     napi_env env_;
