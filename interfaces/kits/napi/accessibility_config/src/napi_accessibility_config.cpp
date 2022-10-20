@@ -598,8 +598,6 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         delete callbackInfo;
         callbackInfo = nullptr;
-        delete obj;
-        obj = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
         HILOG_ERROR("invalid param");
         napi_throw(env, err);
@@ -735,8 +733,6 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     }
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
-        delete obj;
-        obj = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
         HILOG_ERROR("invalid param");
         napi_throw(env, err);
