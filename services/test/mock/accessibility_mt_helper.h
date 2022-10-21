@@ -31,7 +31,7 @@ public:
         static AccessibilityHelper helper;
         return helper;
     }
-    int32_t GetTestWindowId()
+    int32_t GetTestWindowId() const
     {
         return testWindowId_;
     }
@@ -58,7 +58,7 @@ public:
         std::lock_guard<std::mutex> lock(mtx_);
         mTeventType_.push_back(eventType);
     }
-    int32_t GetGestureId()
+    int32_t GetGestureId() const
     {
         return mTgestureId_;
     }
@@ -74,7 +74,7 @@ public:
     {
         testStub_ = stub;
     }
-    uint32_t GetTestStateType()
+    uint32_t GetTestStateType() const
     {
         return testStateType_;
     }
@@ -82,7 +82,7 @@ public:
     {
         testStateType_ = stateType;
     }
-    int32_t GetTestEventType()
+    int32_t GetTestEventType() const
     {
         return testEventType_;
     }
@@ -90,7 +90,7 @@ public:
     {
         testEventType_ = testEventType;
     }
-    int32_t GetTestWindowChangeTypes()
+    int32_t GetTestWindowChangeTypes() const
     {
         return testWindowChangeTypes_;
     }
@@ -98,7 +98,7 @@ public:
     {
         testWindowChangeTypes_ = testWindowChangeTypes;
     }
-    int32_t GetTestChannalId()
+    int32_t GetTestChannalId() const
     {
         return testChannalId_;
     }
@@ -106,7 +106,7 @@ public:
     {
         testChannalId_ = testChannalId;
     }
-    int32_t GetTestKeyPressEvent()
+    int32_t GetTestKeyPressEvent() const
     {
         return testKeyPressEvent_;
     }
@@ -114,7 +114,7 @@ public:
     {
         testKeyPressEvent_ = testKeyPressEvent;
     }
-    int32_t GetTestDisplayId()
+    int32_t GetTestDisplayId() const
     {
         return testDisplayId_;
     }
@@ -122,7 +122,7 @@ public:
     {
         testDisplayId_ = testDisplayId;
     }
-    int32_t GetTestGesture()
+    int32_t GetTestGesture() const
     {
         return testGesture_;
     }
@@ -130,7 +130,7 @@ public:
     {
         testGesture_ = testGesture;
     }
-    int32_t GetTestGestureSimulateResult()
+    int32_t GetTestGestureSimulateResult() const
     {
         return testGestureSimulateResult_;
     }

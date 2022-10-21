@@ -22,8 +22,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-MockAccessibilityElementOperatorProxy::MockAccessibilityElementOperatorProxy(const sptr<IRemoteObject>& impl)
-    : IRemoteProxy<IAccessibilityElementOperator>(impl)
+MockAccessibilityElementOperatorProxy::MockAccessibilityElementOperatorProxy(const sptr<IRemoteObject>& object)
+    : IRemoteProxy<IAccessibilityElementOperator>(object)
 {
     GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy";
 }
@@ -78,13 +78,13 @@ void MockAccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elemen
 }
 
 void MockAccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, const int32_t action,
-    const std::map<std::string, std::string> &arguments, const int32_t requestId,
+    const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     GTEST_LOG_(INFO) << "MockAccessibilityElementOperatorProxy ExecuteAction";
     testElementId_ = elementId;
     testChannelElementId_ = elementId;
-    testActionArguments_ = arguments;
+    testActionArguments_ = actionArguments;
     testChannelRequestId_ = requestId;
     testAction_ = action;
     return;

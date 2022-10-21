@@ -339,7 +339,7 @@ bool DoSomethingInterestingWithGetFocus(const uint8_t* data, size_t size)
     size_t startPos = 0;
     int32_t focusType = 0;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
-    startPos += GetObject<int32_t>(focusType, &data[startPos], size - startPos);
+    GetObject<int32_t>(focusType, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetFocus(focusType, resultElementInfo);
 
     return true;
@@ -356,7 +356,7 @@ bool DoSomethingInterestingWithGetFocusByElementInfo(const uint8_t* data, size_t
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
     startPos += GetObject<int32_t>(focusType, &data[startPos], size - startPos);
-    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetFocusByElementInfo(
         sourceElementInfo, focusType, resultElementInfo);
 
@@ -372,7 +372,7 @@ bool DoSomethingInterestingWithGetRootByWindow(const uint8_t* data, size_t size)
     size_t startPos = 0;
     OHOS::Accessibility::AccessibilityWindowInfo sourceWindowInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
-    startPos += GenerateAccessibilityWindowInfo(sourceWindowInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityWindowInfo(sourceWindowInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRootByWindow(
         sourceWindowInfo, resultElementInfo);
 
@@ -388,7 +388,7 @@ bool DoSomethingInterestingWithGetWindow(const uint8_t* data, size_t size)
     size_t startPos = 0;
     int32_t windowId = 0;
     OHOS::Accessibility::AccessibilityWindowInfo resultWindowInfo;
-    startPos += GetObject<int32_t>(windowId, &data[startPos], size - startPos);
+    GetObject<int32_t>(windowId, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetWindow(windowId, resultWindowInfo);
 
     return true;
@@ -403,7 +403,7 @@ bool DoSomethingInterestingWithGetWindows(const uint8_t* data, size_t size)
     size_t startPos = 0;
     uint64_t displayId = 0;
     std::vector<OHOS::Accessibility::AccessibilityWindowInfo> resultWindowInfos;
-    startPos += GetObject<uint64_t>(displayId, &data[startPos], size - startPos);
+    GetObject<uint64_t>(displayId, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetWindows(displayId, resultWindowInfos);
 
     return true;
@@ -420,7 +420,7 @@ bool DoSomethingInterestingWithGetNext(const uint8_t* data, size_t size)
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
     startPos += GetObject<int32_t>(direction, &data[startPos], size - startPos);
-    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetNext(sourceElementInfo,
         static_cast<OHOS::Accessibility::FocusMoveDirection>(direction), resultElementInfo);
 
@@ -438,7 +438,7 @@ bool DoSomethingInterestingWithGetChildElementInfo(const uint8_t* data, size_t s
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
     startPos += GetObject<int32_t>(index, &data[startPos], size - startPos);
-    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChildElementInfo(
         index, sourceElementInfo, resultElementInfo);
     return true;
@@ -453,7 +453,7 @@ bool DoSomethingInterestingWithGetChildren(const uint8_t* data, size_t size)
     size_t startPos = 0;
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     std::vector<OHOS::Accessibility::AccessibilityElementInfo> resultElementInfos;
-    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetChildren(sourceElementInfo, resultElementInfos);
 
     return true;
@@ -473,7 +473,6 @@ bool DoSomethingInterestingWithGetByContent(const uint8_t* data, size_t size)
     name[LEN] = END_CHAR;
     (void)memcpy_s(&name, LEN, &data[startPos], LEN);
     std::string text(name);
-    startPos += LEN;
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetByContent(
         sourceElementInfo, text, resultElementInfos);
 
@@ -489,7 +488,7 @@ bool DoSomethingInterestingWithGetSource(const uint8_t* data, size_t size)
     size_t startPos = 0;
     OHOS::Accessibility::AccessibilityEventInfo sourceEventInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
-    startPos += GenerateAccessibilityEventInfo(sourceEventInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityEventInfo(sourceEventInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetSource(sourceEventInfo, resultElementInfo);
 
     return true;
@@ -504,7 +503,7 @@ bool DoSomethingInterestingWithGetParentElementInfo(const uint8_t* data, size_t 
     size_t startPos = 0;
     OHOS::Accessibility::AccessibilityElementInfo sourceElementInfo;
     OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
-    startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
+    GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetParentElementInfo(
         sourceElementInfo, resultElementInfo);
 
