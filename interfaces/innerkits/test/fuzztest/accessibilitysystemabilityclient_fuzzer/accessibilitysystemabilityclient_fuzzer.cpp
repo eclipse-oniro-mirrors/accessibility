@@ -168,7 +168,7 @@ bool RegisterElementOperatorFuzzTest(const uint8_t* data, size_t size)
     std::shared_ptr<ElementOperatorForFuzzTest> elementOperator = std::make_shared<ElementOperatorForFuzzTest>();
     instance->RegisterElementOperator(windowId, elementOperator);
 
-    position += GetObject<int32_t>(windowId, &data[position], size - position);
+    GetObject<int32_t>(windowId, &data[position], size - position);
     instance->DeregisterElementOperator(windowId);
     return true;
 }
@@ -188,7 +188,7 @@ bool GetAbilityListFuzzTest(const uint8_t* data, size_t size)
     uint32_t abilityTypes = 0;
     position += GetObject<uint32_t>(abilityTypes, &data[position], size - position);
     AbilityStateType stateType;
-    position += GetObject<AbilityStateType>(stateType, &data[position], size - position);
+    GetObject<AbilityStateType>(stateType, &data[position], size - position);
     std::vector<AccessibilityAbilityInfo> infos;
     instance->GetAbilityList(abilityTypes, stateType, infos);
     return true;
@@ -235,7 +235,7 @@ bool SubscribeStateObserverFuzzTest(const uint8_t* data, size_t size)
     std::shared_ptr<StateObserverForFuzzTest> observer = std::make_shared<StateObserverForFuzzTest>();
     instance->SubscribeStateObserver(observer, eventTypes);
 
-    position += GetObject<uint32_t>(eventTypes, &data[position], size - position);
+    GetObject<uint32_t>(eventTypes, &data[position], size - position);
     instance->UnsubscribeStateObserver(observer, eventTypes);
     return true;
 }

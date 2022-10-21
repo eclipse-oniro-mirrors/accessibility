@@ -203,6 +203,24 @@ napi_value GetErrorValue(napi_env env, int errCode)
     return result;
 }
 
+bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, napi_ref iterRef)
+{
+    HILOG_INFO();
+    if (env != iterEnv) {
+        return false;
+    }
+    HILOG_DEBUG("Same env, begin check observer equal");
+    napi_value item = nullptr;
+    bool equalFlag = false;
+    napi_get_reference_value(iterEnv, iterRef, &item);
+    napi_status status = napi_strict_equals(iterEnv, item, observer, &equalFlag);
+    if (status == napi_ok && equalFlag) {
+        HILOG_DEBUG("Observer exist");
+        return true;
+    }
+    return false;
+}
+
 /**********************************************************
  * Convert native object to js object
  *********************************************************/
