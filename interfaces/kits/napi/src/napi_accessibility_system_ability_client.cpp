@@ -373,10 +373,10 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
-            accessibilityStateListeners_->SubscribeObserver(env, args[1]);
+            accessibilityStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
-            touchGuideStateListeners_->SubscribeObserver(env, args[1]);
+            touchGuideStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         default:
             break;
