@@ -1043,6 +1043,7 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
             });
         napi_create_array(env, &result[PARAM1]);
         ConvertStringVecToJS(env, result[PARAM1], actionNames);
+        callbackInfo->ret_ = RET_OK;
     } else {
         HILOG_ERROR("no elementInfo_");
         callbackInfo->ret_ = RET_ERR_FAILED;
