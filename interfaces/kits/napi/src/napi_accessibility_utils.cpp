@@ -148,6 +148,24 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
+bool CheckJsFunction(napi_env env, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_function) {
+        HILOG_DEBUG("Wrong argument type. function expected.");
+        return false;
+    }
+
+    return true;
+}
+
 NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
 {
     auto iter = ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.find(errorCode);
