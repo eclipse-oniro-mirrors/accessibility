@@ -157,11 +157,12 @@ void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &ur
 void AccessibilityAccountData::AddEnabledAbility(const std::string& bundleName)
 {
     HILOG_DEBUG("start.");
-    for (const auto& ability : enabledAbilities_) {
-        if (ability == bundleName) {
-            HILOG_ERROR("The ability is already enabled, and it's bundle name is %{public}s", bundleName.c_str());
-            return;
-        }
+    if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
+        [bundleName](const std::string &enabledAbility) {
+            return enabledAbility == bundleName;
+        })) {
+        HILOG_ERROR("The ability is already enabled, and it's bundle name is %{public}s", bundleName.c_str());
+        return;
     }
     enabledAbilities_.push_back(bundleName);
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
@@ -289,11 +290,12 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start.");
-    for (const auto &enabledAbility : enabledAbilities_) {
-        if (enabledAbility == name) {
-            HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
-            return RET_ERR_CONNECTION_EXIST;
-        }
+    if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
+        [name](const std::string &enabledAbility) {
+            return enabledAbility == name;
+        })) {
+        HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
+        return RET_ERR_CONNECTION_EXIST;
     }
     enabledAbilities_.push_back(name);
     return RET_OK;
