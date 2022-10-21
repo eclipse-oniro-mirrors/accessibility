@@ -1043,6 +1043,7 @@ void NAccessibilityElement::ActionNamesComplete(napi_env env, napi_status status
             });
         napi_create_array(env, &result[PARAM1]);
         ConvertStringVecToJS(env, result[PARAM1], actionNames);
+        callbackInfo->ret_ = RET_OK;
     } else {
         HILOG_ERROR("no elementInfo_");
         callbackInfo->ret_ = RET_ERR_FAILED;
@@ -1136,15 +1137,21 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
 
     napi_value promise = nullptr;
     std::map<std::string, std::string> actionArguments {};
-    if (argc == ARGS_SIZE_THREE) {
+    if (argc >= ARGS_SIZE_THREE) {
         napi_valuetype secondParamType = napi_null;
         napi_typeof(env, argv[PARAM1], &secondParamType);
         napi_valuetype thirdParamType = napi_null;
         napi_typeof(env, argv[PARAM2], &thirdParamType);
-        if (secondParamType == napi_undefined && thirdParamType == napi_function) {
+        if (secondParamType == napi_object && thirdParamType == napi_function) {
             ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
                 ConvertStringToAccessibleOperationType(actionName));
             napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else if (thirdParamType == napi_function) {
+            napi_create_reference(env, argv[PARAM2], 1, &callbackInfo->callback_);
+            napi_get_undefined(env, &promise);
+        } else if (secondParamType == napi_function) {
+            napi_create_reference(env, argv[PARAM1], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
         } else {
             HILOG_INFO("argc is three, use promise");
@@ -1157,7 +1164,7 @@ napi_value NAccessibilityElement::PerformAction(napi_env env, napi_callback_info
             napi_create_reference(env, argv[PARAM1], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
         } else {
-            if (valueType == napi_undefined) {
+            if (valueType == napi_object) {
                 ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
                     ConvertStringToAccessibleOperationType(actionName));
             }

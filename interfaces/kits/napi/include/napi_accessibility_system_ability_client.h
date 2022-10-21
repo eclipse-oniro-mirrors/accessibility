@@ -90,9 +90,11 @@ public:
     static napi_value IsOpenAccessibility(napi_env env, napi_callback_info info);
     static napi_value IsOpenTouchExploration(napi_env env, napi_callback_info info);
     static napi_value GetAbilityList(napi_env env, napi_callback_info info);
+    static napi_value GetAccessibilityExtensionList(napi_env env, napi_callback_info info);
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
     static napi_value SendEvent(napi_env env, napi_callback_info info);
+    static napi_value SendAccessibilityEvent(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsManager(napi_env env);
     static napi_value AccessibleAbilityConstructor(napi_env env, napi_callback_info info);
@@ -126,6 +128,12 @@ public:
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
+    static void GetAbilityListExecute(napi_env env, void* data);
+    static void GetAbilityListComplete(napi_env env, napi_status status, void* data);
+    static void SendEventExecute(napi_env env, void* data);
+    static void SendEventComplete(napi_env env, napi_status status, void* data);
+    static bool CheckAbilityType(const std::string& abilityType);
+    static bool CheckStateType(const std::string& stateType);
     NAccessibilityClient() = default;
     ~NAccessibilityClient() = default;
 };
