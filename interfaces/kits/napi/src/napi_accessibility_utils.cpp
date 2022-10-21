@@ -148,6 +148,24 @@ bool ParseDouble(napi_env env, double& param, napi_value args)
     return true;
 }
 
+bool CheckJsFunction(napi_env env, napi_value args)
+{
+    napi_status status;
+    napi_valuetype valuetype;
+    status = napi_typeof(env, args, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_function) {
+        HILOG_DEBUG("Wrong argument type. function expected.");
+        return false;
+    }
+
+    return true;
+}
+
 NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
 {
     auto iter = ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.find(errorCode);
@@ -164,16 +182,24 @@ napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCo
     if (errCode == OHOS::Accessibility::RetError::RET_OK) {
         napi_get_undefined(env, &result);
     } else {
-        napi_value eCode = nullptr;
         NAccessibilityErrMsg errMsg = QueryRetMsg(errCode);
-        NAPI_CALL(env, napi_create_int32(env, static_cast<int32_t>(errMsg.errCode), &eCode));
-        NAPI_CALL(env, napi_create_object(env, &result));
-        NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
-
+        napi_value eCode = nullptr;
+        napi_create_int32(env, static_cast<int32_t>(errMsg.errCode), &eCode);
         napi_value eMsg = nullptr;
-        NAPI_CALL(env, napi_create_string_utf8(env, errMsg.message.c_str(), NAPI_AUTO_LENGTH, &eMsg));
-        NAPI_CALL(env, napi_set_named_property(env, result, "message", eMsg));
+        napi_create_string_utf8(env, errMsg.message.c_str(), NAPI_AUTO_LENGTH, &eMsg);
+        napi_create_error(env, nullptr, eMsg, &result);
+        napi_set_named_property(env, result, "code", eCode);
     }
+    return result;
+}
+
+napi_value GetErrorValue(napi_env env, int errCode)
+{
+    napi_value result = nullptr;
+    napi_value eCode = nullptr;
+    NAPI_CALL(env, napi_create_int32(env, errCode, &eCode));
+    NAPI_CALL(env, napi_create_object(env, &result));
+    NAPI_CALL(env, napi_set_named_property(env, result, "code", eCode));
     return result;
 }
 
@@ -935,7 +961,7 @@ static bool ConvertGesturePointJSToNAPI(
     return true;
 }
 
-static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
+bool ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
     std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
     HILOG_DEBUG();
@@ -952,24 +978,30 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
         uint32_t dataLen = 0;
         if (napi_is_array(env, positionValue, &isArray) != napi_ok || isArray == false) {
             HILOG_ERROR("object is not an array.");
-            return;
+            return false;
         }
         if (napi_get_array_length(env, positionValue, &dataLen) != napi_ok) {
             HILOG_ERROR("get array length failed.");
-            return;
+            return false;
         }
         for (uint32_t i = 0; i < dataLen; i++) {
             jsValue = nullptr;
             AccessibilityGesturePosition path;
             if (napi_get_element(env, positionValue, i, &jsValue) != napi_ok) {
                 HILOG_ERROR("get element of paths failed and i = %{public}d", i);
-                return;
+                return false;
             }
             bool result = ConvertGesturePointJSToNAPI(env, jsValue, path);
             if (result) {
                 gesturePath->AddPosition(path);
+            } else {
+                HILOG_ERROR("Parse gesture point error.");
+                return false;
             }
         }
+    } else {
+        HILOG_ERROR("No points property.");
+        return false;
     }
 
     int64_t durationTime = 0;
@@ -980,41 +1012,9 @@ static void ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
         napi_get_property(env, object, propertyNameValue, &timeValue);
         napi_get_value_int64(env, timeValue, &durationTime);
         gesturePath->SetDurationTime(durationTime);
+        return true;
     }
-}
-
-bool ConvertGesturePathsJSToNAPI(napi_env env, napi_value object,
-    std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath,
-    std::vector<std::shared_ptr<AccessibilityGestureInjectPath>>& gesturePathArray,
-    bool &isParameterArray)
-{
-    HILOG_DEBUG();
-    if (napi_is_array(env, object, &isParameterArray) != napi_ok) {
-        HILOG_ERROR("judge array error.");
-        return false;
-    }
-
-    if (isParameterArray) {
-        uint32_t dataLen = 0;
-        if (napi_get_array_length(env, object, &dataLen) != napi_ok) {
-            HILOG_ERROR("get array length failed.");
-            return false;
-        }
-        napi_value gesturePathJs = nullptr;
-        for (uint32_t i = 0; i < dataLen; i++) {
-            gesturePathJs = nullptr;
-            if (napi_get_element(env, object, i, &gesturePathJs) != napi_ok) {
-                HILOG_ERROR("get element of paths failed and i = %{public}d", i);
-                return false;
-            }
-            std::shared_ptr<AccessibilityGestureInjectPath> path = std::make_shared<AccessibilityGestureInjectPath>();
-            ConvertGesturePathJSToNAPI(env, gesturePathJs, path);
-            gesturePathArray.emplace_back(path);
-        }
-    } else {
-        ConvertGesturePathJSToNAPI(env, object, gesturePath);
-    }
-    return true;
+    return false;
 }
 
 KeyAction TransformKeyActionValue(int32_t keyAction)
