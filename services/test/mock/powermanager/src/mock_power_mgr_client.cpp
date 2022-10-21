@@ -14,6 +14,7 @@
  */
 
 #include "mock_power_mgr_client.h"
+#include "power_errors.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -33,17 +34,25 @@ void PowerMgrClient::ResetProxy(const wptr<IRemoteObject>& remote)
 void PowerMgrClient::PowerMgrDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {}
 
-void PowerMgrClient::RebootDevice(const std::string& reason)
-{}
+PowerErrors PowerMgrClient::RebootDevice(const std::string& reason)
+{
+    return PowerErrors::ERR_OK;
+}
 
-void PowerMgrClient::ShutDownDevice(const std::string& reason)
-{}
+PowerErrors PowerMgrClient::ShutDownDevice(const std::string& reason)
+{
+    return PowerErrors::ERR_OK;
+}
 
-void PowerMgrClient::SuspendDevice(SuspendDeviceType reason, bool suspendImmed)
-{}
+PowerErrors PowerMgrClient::SuspendDevice(SuspendDeviceType reason, bool suspendImmed)
+{
+    return PowerErrors::ERR_OK;
+}
 
-void PowerMgrClient::WakeupDevice(WakeupDeviceType reason, const std::string& detail)
-{}
+PowerErrors PowerMgrClient::WakeupDevice(WakeupDeviceType reason, const std::string& detail)
+{
+    return PowerErrors::ERR_OK;
+}
 
 void PowerMgrClient::RefreshActivity(UserActivityType type)
 {}
@@ -95,8 +104,10 @@ void PowerMgrClient::UnRegisterPowerModeCallback(const sptr<IPowerModeCallback>&
 void PowerMgrClient::SetDisplaySuspend(bool enable)
 {}
 
-void PowerMgrClient::SetDeviceMode(const PowerMode mode)
-{}
+PowerErrors PowerMgrClient::SetDeviceMode(const PowerMode mode)
+{
+    return PowerErrors::ERR_OK;
+}
 
 PowerMode PowerMgrClient::GetDeviceMode()
 {
