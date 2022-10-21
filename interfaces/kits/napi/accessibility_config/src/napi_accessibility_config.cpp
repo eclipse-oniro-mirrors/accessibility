@@ -209,11 +209,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
 
-    napi_ref callback = nullptr;
-    napi_create_reference(env, args[PARAM1], 1, &callback);
-    std::shared_ptr<EnableAbilityListsObserver> observer = std::make_shared<EnableAbilityListsObserver>(env, callback);
-
-    enableAbilityListsObservers_->SubscribeObserver(observer);
+    enableAbilityListsObservers_->SubscribeObserver(env, args[PARAM1]);
     return nullptr;
 }
 
@@ -709,12 +705,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
         return nullptr;
     }
 
-    napi_ref handler = nullptr;
-    napi_create_reference(env, parameters[PARAM0], 1, &handler);
-    std::shared_ptr<NAccessibilityConfigObserver> observer =
-        std::make_shared<NAccessibilityConfigObserver>(env, handler, obj->GetConfigId());
-    
-    configObservers_->SubscribeObserver(observer);
+    configObservers_->SubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
     return nullptr;
 }
 
@@ -814,26 +805,36 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
     }
 }
 
-void EnableAbilityListsObserverImpl::SubscribeObserver(const std::shared_ptr<EnableAbilityListsObserver> &observer)
-{
-    HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
-    enableAbilityListsObservers_.emplace_back(observer);
-    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
-}
-
-void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_value observer)
+void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
-        napi_value item = nullptr;
-        napi_status status;
-        bool equalFlag = false;
-        napi_get_reference_value((*iter)->env_, (*iter)->callback_, &item);
-        status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-        if (status == napi_ok && equalFlag) {
-            iter = enableAbilityListsObservers_.erase(iter);
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
+            HILOG_DEBUG("Observer exist");
+            return;
+        } else {
+            iter++;
+        }
+    }
+
+    napi_ref callback = nullptr;
+    napi_create_reference(env, observer, 1, &callback);
+    std::shared_ptr<EnableAbilityListsObserver> observerPtr =
+        std::make_shared<EnableAbilityListsObserver>(env, callback);
+
+    enableAbilityListsObservers_.emplace_back(observerPtr);
+    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
+}
+
+void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
+            enableAbilityListsObservers_.erase(iter);
+            return;
         } else {
             iter++;
         }

@@ -49,6 +49,7 @@ bool CheckJsFunction(napi_env env, napi_value args);
 NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode);
 napi_value CreateBusinessError(napi_env env, OHOS::Accessibility::RetError errCode);
 napi_value GetErrorValue(napi_env env, int errCode);
+bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, napi_ref iterRef);
 std::string ConvertWindowTypeToString(OHOS::Accessibility::AccessibilityWindowType type);
 std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZATION_TYPE type);
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
