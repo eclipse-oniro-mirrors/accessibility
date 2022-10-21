@@ -48,8 +48,6 @@ public:
     void UnsubscribeObservers();
 
 private:
-    bool CheckEqual(napi_env env, napi_value observer,
-        std::vector<std::shared_ptr<StateListener>>::const_iterator iter);
     std::mutex mutex_;
     OHOS::Accessibility::AccessibilityStateEventType type_;
     std::vector<std::shared_ptr<StateListener>> observers_ = {};

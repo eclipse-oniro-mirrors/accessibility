@@ -54,8 +54,6 @@ public:
     void UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id);
 
 private:
-    bool CheckEqual(napi_env env, napi_value observer,
-        std::vector<std::shared_ptr<NAccessibilityConfigObserver>>::const_iterator iter);
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };

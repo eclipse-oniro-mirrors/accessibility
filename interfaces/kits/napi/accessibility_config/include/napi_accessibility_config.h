@@ -43,8 +43,6 @@ public:
     void UnsubscribeObservers();
 
 private:
-    bool CheckEqual(napi_env env, napi_value observer,
-        std::vector<std::shared_ptr<EnableAbilityListsObserver>>::const_iterator iter);
     std::mutex mutex_;
     std::vector<std::shared_ptr<EnableAbilityListsObserver>> enableAbilityListsObservers_ = {};
 };

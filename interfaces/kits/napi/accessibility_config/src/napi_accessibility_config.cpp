@@ -845,31 +845,12 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
     }
 }
 
-bool EnableAbilityListsObserverImpl::CheckEqual(napi_env env, napi_value observer,
-    std::vector<std::shared_ptr<EnableAbilityListsObserver>>::const_iterator iter)
-{
-    HILOG_INFO();
-    if (env != (*iter)->env_) {
-        return false;
-    }
-    HILOG_DEBUG("Same env, begin check observer equal");
-    napi_value item = nullptr;
-    bool equalFlag = false;
-    napi_get_reference_value((*iter)->env_, (*iter)->callback_, &item);
-    napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-    if (status == napi_ok && equalFlag) {
-        HILOG_DEBUG("Observer exist");
-        return true;
-    }
-    return false;
-}
-
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
-        if (CheckEqual(env, observer, iter)) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             HILOG_DEBUG("Observer exist");
             return;
         } else {
@@ -891,7 +872,7 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_valu
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
-        if (CheckEqual(env, observer, iter)) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
             enableAbilityListsObservers_.erase(iter);
             return;
         } else {

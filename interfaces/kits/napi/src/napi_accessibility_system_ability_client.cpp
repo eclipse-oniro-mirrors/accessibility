@@ -1077,31 +1077,12 @@ void StateListenerImpl::OnStateChanged(const bool state)
     }
 }
 
-bool StateListenerImpl::CheckEqual(napi_env env, napi_value observer,
-    std::vector<std::shared_ptr<StateListener>>::const_iterator iter)
-{
-    HILOG_INFO();
-    if (env != (*iter)->env_) {
-        return false;
-    }
-    HILOG_DEBUG("Same env, begin check observer equal");
-    napi_value item = nullptr;
-    bool equalFlag = false;
-    napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-    napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-    if (status == napi_ok && equalFlag) {
-        HILOG_DEBUG("Observer exist");
-        return true;
-    }
-    return false;
-}
-
 void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (CheckEqual(env, observer, iter)) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             HILOG_DEBUG("Observer exist");
             return;
         } else {
@@ -1122,7 +1103,7 @@ void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if (CheckEqual(env, observer, iter)) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
             observers_.erase(iter);
             return;
         } else {
