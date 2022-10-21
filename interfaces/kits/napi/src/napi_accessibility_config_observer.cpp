@@ -445,7 +445,6 @@ bool NAccessibilityConfigObserverImpl::CheckEqual(napi_env env, napi_value obser
     return false;
 }
 
-
 void NAccessibilityConfigObserverImpl::SubscribeObserver(napi_env env,
     OHOS::AccessibilityConfig::CONFIG_ID id, napi_value observer)
 {
