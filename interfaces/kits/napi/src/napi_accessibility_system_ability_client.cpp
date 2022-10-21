@@ -371,16 +371,12 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
         return nullptr;
     }
 
-    napi_ref ref;
-    napi_create_reference(env, args[1], 1, &ref);
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
-
     switch (type) {
         case AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED:
-            accessibilityStateListeners_->SubscribeObserver(stateListener);
+            accessibilityStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         case AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED:
-            touchGuideStateListeners_->SubscribeObserver(stateListener);
+            touchGuideStateListeners_->SubscribeObserver(env, args[PARAM1]);
             break;
         default:
             break;
@@ -431,7 +427,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
                 napi_valuetype valueType = napi_null;
                 napi_typeof(env, args[PARAM1], &valueType);
                 if (valueType == napi_function) {
-                    accessibilityStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                    accessibilityStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
                 } else {
                     accessibilityStateListeners_->UnsubscribeObservers();
                 }
@@ -444,7 +440,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
                 napi_valuetype valueType = napi_null;
                 napi_typeof(env, args[PARAM1], &valueType);
                 if (valueType == napi_function) {
-                    touchGuideStateListeners_->UnsubscribeObserver(args[PARAM1]);
+                    touchGuideStateListeners_->UnsubscribeObserver(env, args[PARAM1]);
                 } else {
                     touchGuideStateListeners_->UnsubscribeObservers();
                 }
@@ -699,11 +695,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         return nullptr;
     }
 
-    napi_ref ref;
-    napi_create_reference(env, args[PARAM1], 1, &ref);
-    std::shared_ptr<NAccessibilityConfigObserver> captionListener =
-        std::make_shared<NAccessibilityConfigObserver>(env, ref, type);
-    captionListeners_->SubscribeObserver(captionListener);
+    captionListeners_->SubscribeObserver(env, type, args[PARAM1]);
 
     return nullptr;
 }
@@ -750,7 +742,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
         napi_valuetype valueType = napi_null;
         napi_typeof(env, args[PARAM1], &valueType);
         if (valueType == napi_function) {
-            captionListeners_->UnsubscribeObserver(type, args[PARAM1]);
+            captionListeners_->UnsubscribeObserver(env, type, args[PARAM1]);
         } else {
             captionListeners_->UnsubscribeObservers(type);
         }
@@ -1085,25 +1077,35 @@ void StateListenerImpl::OnStateChanged(const bool state)
     }
 }
 
-void StateListenerImpl::SubscribeObserver(const std::shared_ptr<StateListener> &observer)
-{
-    HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
-    observers_.emplace_back(observer);
-    HILOG_INFO("observer size%{public}zu", observers_.size());
-}
-
-void StateListenerImpl::UnsubscribeObserver(napi_value observer)
+void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
-        napi_value item = nullptr;
-        bool equalFlag = false;
-        napi_get_reference_value((*iter)->env_, (*iter)->handlerRef_, &item);
-        napi_status status = napi_strict_equals((*iter)->env_, item, observer, &equalFlag);
-        if (status == napi_ok && equalFlag) {
-            iter = observers_.erase(iter);
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+            HILOG_DEBUG("Observer exist");
+            return;
+        } else {
+            iter++;
+        }
+    }
+
+    napi_ref ref;
+    napi_create_reference(env, observer, 1, &ref);
+    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, ref);
+
+    observers_.emplace_back(stateListener);
+    HILOG_INFO("observer size%{public}zu", observers_.size());
+}
+
+void StateListenerImpl::UnsubscribeObserver(napi_env env, napi_value observer)
+{
+    HILOG_INFO();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
+        if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+            observers_.erase(iter);
+            return;
         } else {
             iter++;
         }
