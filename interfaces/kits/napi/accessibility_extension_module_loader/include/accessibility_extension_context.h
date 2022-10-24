@@ -57,13 +57,6 @@ public:
     RetError InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath);
 
     /**
-     * @brief Sends simulate gestures to the screen.
-     * @param gesturePaths The gesture which need to send.
-     * @return Return RET_OK if the gesture sends successfully, otherwise refer to the RetError for the failure.
-     */
-    RetError InjectGesture(const std::vector<std::shared_ptr<AccessibilityGestureInjectPath>> &gesturePaths);
-
-    /**
      * @brief Obtains elementInfo of the accessible root node.
      * @param elementInfo The elementInfo of the accessible root node.
      * @return Return RET_OK if obtains elementInfo successfully, otherwise refer to the RetError for the failure.

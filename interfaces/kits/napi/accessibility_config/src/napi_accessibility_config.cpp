@@ -77,15 +77,9 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
     }
 
     napi_value promise = nullptr;
-    if (argc > ARGS_SIZE_THREE - 1) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, parameters[PARAM2], &valueType);
-        if (valueType == napi_function) {
-            napi_create_reference(env, parameters[PARAM2], 1, &callbackInfo->callback_);
-            napi_get_undefined(env, &promise);
-        } else {
-            napi_create_promise(env, &callbackInfo->deferred_, &promise);
-        }
+    if (argc > ARGS_SIZE_THREE - 1 && CheckJsFunction(env, parameters[PARAM2])) {
+        napi_create_reference(env, parameters[PARAM2], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -149,15 +143,9 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     }
 
     napi_value promise = nullptr;
-    if (argc > ARGS_SIZE_TWO - 1) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, parameters[PARAM1], &valueType);
-        if (valueType == napi_function) {
-            napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-            napi_get_undefined(env, &promise);
-        } else {
-            napi_create_promise(env, &callbackInfo->deferred_, &promise);
-        }
+    if (argc > ARGS_SIZE_TWO - 1 && CheckJsFunction(env, parameters[PARAM1])) {
+        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -258,14 +246,8 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
         return nullptr;
     }
 
-    if (argc > ARGS_SIZE_TWO - 1) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, args[PARAM1], &valueType);
-        if (valueType == napi_function) {
-            enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
-        } else {
-            enableAbilityListsObservers_->UnsubscribeObservers();
-        }
+    if (argc > ARGS_SIZE_TWO - 1 && CheckJsFunction(env, args[PARAM1])) {
+        enableAbilityListsObservers_->UnsubscribeObserver(env, args[PARAM1]);
     } else {
         enableAbilityListsObservers_->UnsubscribeObservers();
     }
@@ -594,8 +576,6 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         delete callbackInfo;
         callbackInfo = nullptr;
-        delete obj;
-        obj = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
         HILOG_ERROR("invalid param");
         napi_throw(env, err);
@@ -605,15 +585,9 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
 
     // parse function if it needs
     napi_value promise = nullptr;
-    if (argc >= ARGS_SIZE_TWO) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, parameters[PARAM1], &valueType);
-        if (valueType == napi_function) {
-            napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
-            napi_get_undefined(env, &promise);
-        } else {
-            napi_create_promise(env, &callbackInfo->deferred_, &promise);
-        }
+    if (argc >= ARGS_SIZE_TWO && CheckJsFunction(env, parameters[PARAM1])) {
+        napi_create_reference(env, parameters[PARAM1], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -667,15 +641,9 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
 
     // parse function if it needs
     napi_value promise = nullptr;
-    if (argc >= ARGS_SIZE_ONE) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, parameters[PARAM0], &valueType);
-        if (valueType == napi_function) {
-            napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
-            napi_get_undefined(env, &promise);
-        } else {
-            napi_create_promise(env, &callbackInfo->deferred_, &promise);
-        }
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, parameters[PARAM0])) {
+        napi_create_reference(env, parameters[PARAM0], 1, &callbackInfo->callback_);
+        napi_get_undefined(env, &promise);
     } else {
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
@@ -731,8 +699,6 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
     }
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
-        delete obj;
-        obj = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
         HILOG_ERROR("invalid param");
         napi_throw(env, err);
@@ -764,14 +730,8 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
         napi_throw(env, err);
         return nullptr;
     }
-    if (argc >= ARGS_SIZE_ONE) {
-        napi_valuetype valueType = napi_null;
-        napi_typeof(env, parameters[PARAM0], &valueType);
-        if (valueType == napi_function) {
-            configObservers_->UnsubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
-        } else {
-            configObservers_->UnsubscribeObservers(obj->GetConfigId());
-        }
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, parameters[PARAM0])) {
+        configObservers_->UnsubscribeObserver(env, obj->GetConfigId(), parameters[PARAM0]);
     } else {
         configObservers_->UnsubscribeObservers(obj->GetConfigId());
     }
