@@ -378,6 +378,18 @@ const std::string &AccessibilityElementInfo::GetInspectorKey() const
     return inspectorKey_;
 }
 
+void AccessibilityElementInfo::SetPagePath(const std::string &path)
+{
+    HILOG_DEBUG("pagePath_[%{public}s]", path.c_str());
+    pagePath_ = path;
+}
+
+const std::string &AccessibilityElementInfo::GetPagePath() const
+{
+    HILOG_DEBUG("pagePath_[%{public}s]", pagePath_.c_str());
+    return pagePath_;
+}
+
 bool AccessibilityElementInfo::IsValidElement() const
 {
     HILOG_DEBUG("validElement_[%{public}d]", validElement_);
