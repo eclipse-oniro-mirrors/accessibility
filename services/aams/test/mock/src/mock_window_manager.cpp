@@ -24,12 +24,14 @@ class WindowManager::Impl {
 
 WindowManager::WindowManager() : pImpl_(std::make_unique<Impl>()) {}
 
-void WindowManager::RegisterWindowUpdateListener(const sptr<IWindowUpdateListener> &listener)
+bool WindowManager::RegisterWindowUpdateListener(const sptr<IWindowUpdateListener> &listener)
 {
+    return true;
 }
 
-void WindowManager::UnregisterWindowUpdateListener(const sptr<IWindowUpdateListener>& listener)
+bool WindowManager::UnregisterWindowUpdateListener(const sptr<IWindowUpdateListener>& listener)
 {
+    return true;
 }
 
 WMError WindowManager::GetAccessibilityWindowInfo(std::vector<sptr<AccessibilityWindowInfo>>& infos) const
