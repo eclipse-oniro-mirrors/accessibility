@@ -1213,6 +1213,20 @@ public:
     const std::string &GetInspectorKey() const;
 
     /**
+     * @brief Set the path of page.
+     * @param path The unique identification of one page.
+     * @sysCap Accessibility
+     */
+    void SetPagePath(const std::string &path);
+
+    /**
+     * @brief Get the path of page
+     * @return Page path
+     * @sysCap Accessibility
+     */
+    const std::string &GetPagePath() const;
+
+    /**
      * @brief Set page id
      * @param pageId page id.
      * @sysCap Accessibility
@@ -1310,6 +1324,7 @@ protected:
     std::string contentDescription_ = "";
     std::string resourceName_ = "";
     std::string inspectorKey_ = "";
+    std::string pagePath_ = "";
     std::vector<int32_t> childNodeIds_;
     int32_t childCount_ = 0;
     std::vector<AccessibleAction> operations_;
