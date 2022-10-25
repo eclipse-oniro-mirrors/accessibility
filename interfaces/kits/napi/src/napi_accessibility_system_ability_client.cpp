@@ -413,7 +413,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
     napi_create_async_work(env, nullptr, resource,
         NAccessibilityClient::SendEventExecute,
         NAccessibilityClient::SendEventComplete,
-        (void*)callbackInfo,
+        reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
     napi_queue_async_work(env, callbackInfo->work_);
 
@@ -1050,13 +1050,12 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        OHOS::Accessibility::RetError ret = OHOS::Accessibility::RET_OK;
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetFontColor(color);
-        ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);
@@ -1139,13 +1138,12 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        OHOS::Accessibility::RetError ret = OHOS::Accessibility::RET_OK;
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetBackgroundColor(color);
-        ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);
@@ -1181,13 +1179,12 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
-        OHOS::Accessibility::RetError ret = OHOS::Accessibility::RET_OK;
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
         instance.GetCaptionsProperty(captionProperty);
         // Change the input info and then set the CaptionProperty
         captionProperty.SetWindowColor(color);
-        ret = instance.SetCaptionsProperty(captionProperty);
+        OHOS::Accessibility::RetError ret = instance.SetCaptionsProperty(captionProperty);
         if (ret != OHOS::Accessibility::RET_OK) {
             napi_value err = CreateBusinessError(env, ret);
             napi_throw(env, err);
