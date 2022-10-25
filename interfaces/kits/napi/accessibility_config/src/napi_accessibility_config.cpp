@@ -515,9 +515,8 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
-    bool ret = false;
-
     if (errCode == OHOS::Accessibility::RET_OK) {
+        bool ret = false;
         switch (obj->GetConfigId()) {
             case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:

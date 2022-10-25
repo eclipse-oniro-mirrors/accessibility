@@ -763,18 +763,19 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     }
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
-    for (auto &newAbility : extensionInfos) {
-        if (newAbility.bundleName == bundleName) {
-            HILOG_DEBUG("The package added is an extension ability and\
-                extension ability's name is %{public}s", newAbility.name.c_str());
-            AccessibilityAbilityInitParams initParams;
-            Utils::Parse(newAbility, initParams);
-            std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
-                std::make_shared<AccessibilityAbilityInfo>(initParams);
-            AddInstalledAbility(*accessibilityInfo);
-            hasNewExtensionAbility = true;
-            break;
-        }
+    auto it = std::find_if(extensionInfos.begin(), extensionInfos.end(),
+        [&bundleName](const AppExecFwk::ExtensionAbilityInfo &newAbility) {
+            return newAbility.bundleName == bundleName;
+        });
+    if (it != extensionInfos.end()) {
+        HILOG_DEBUG("The package added is an extension ability and\
+            extension ability's name is %{public}s", (*it).name.c_str());
+        AccessibilityAbilityInitParams initParams;
+        Utils::Parse(*it, initParams);
+        std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
+            std::make_shared<AccessibilityAbilityInfo>(initParams);
+        AddInstalledAbility(*accessibilityInfo);
+        hasNewExtensionAbility = true;
     }
 
     if (hasNewExtensionAbility) {
