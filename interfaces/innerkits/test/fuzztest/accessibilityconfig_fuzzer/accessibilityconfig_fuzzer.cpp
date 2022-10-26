@@ -22,12 +22,27 @@
 
 namespace OHOS {
 namespace {
-    constexpr size_t DATA_MIN_SIZE = 98;
+    constexpr size_t DATA_MIN_SIZE = 181;
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
     bool g_flag = true;
 } // namespace
 using namespace OHOS::Security::AccessToken;
+
+class ConfigObserver : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
+public:
+    virtual void OnConfigChanged(const OHOS::AccessibilityConfig::CONFIG_ID id,
+        const OHOS::AccessibilityConfig::ConfigValue &value) override
+    {
+    }
+};
+
+class EnableAbilityListObserver : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
+public:
+    virtual void OnEnableAbilityListsStateChanged() override
+    {
+    }
+};
 
 template<class T>
 size_t GetObject(T &object, const uint8_t *data, size_t size)
@@ -103,6 +118,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)abConfig.InitializeContext();
+    std::shared_ptr<ConfigObserver> cObserver = std::make_shared<ConfigObserver>();
+    std::shared_ptr<EnableAbilityListObserver> eObserver = std::make_shared<EnableAbilityListObserver>();
 
     size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
@@ -152,6 +169,57 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     std::string abilityName2(name);
     startPos += LEN;
     abConfig.DisableAbility(abilityName2);
+
+    bool flag = data[startPos++] & 0x01;
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.SubscribeConfigObserver(static_cast<OHOS::AccessibilityConfig::CONFIG_ID>(temp), cObserver, flag);
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.UnsubscribeConfigObserver(static_cast<OHOS::AccessibilityConfig::CONFIG_ID>(temp), cObserver);
+    abConfig.SubscribeEnableAbilityListsObserver(eObserver);
+    abConfig.UnsubscribeEnableAbilityListsObserver(eObserver);
+
+    flag = data[startPos++] & 0x01;
+    abConfig.GetScreenMagnificationState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetShortKeyState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetMouseKeyState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetCaptionsState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetHighContrastTextState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetInvertColorState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetAnimationOffState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetAudioMonoState(flag);
+
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    abConfig.GetContentTimeout(temp);
+
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    OHOS::AccessibilityConfig::DALTONIZATION_TYPE types = static_cast<OHOS::AccessibilityConfig::DALTONIZATION_TYPE>(temp);
+    abConfig.GetDaltonizationColorFilter(types);
+
+    startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
+    int32_t clicks = static_cast<int32_t>(temp);
+    abConfig.GetMouseAutoClick(clicks);
+
+    startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
+    abConfig.GetBrightnessDiscount(tempFloat);
+
+    startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
+    abConfig.GetAudioBalance(tempFloat);
+
+    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    std::string nameStrForGet(name);
+    abConfig.GetShortkeyTarget(nameStrForGet);
+    startPos += LEN;
+
+    OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
+    startPos += GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
+    abConfig.GetCaptionsProperty(propertyForGet);
 
     return true;
 }

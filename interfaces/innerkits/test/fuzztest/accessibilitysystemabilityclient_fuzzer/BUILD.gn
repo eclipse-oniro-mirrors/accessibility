@@ -20,7 +20,10 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
   module_out_path = "accessibility/asacfwk"
   fuzz_config_file = "../../fuzztest/accessibilitysystemabilityclient_fuzzer"
 
-  include_dirs = []
+  include_dirs = [
+    "//foundation/barrierfree/accessibility/common/interface/include",
+    "//foundation/barrierfree/accessibility/frameworks/asacfwk/include",
+  ]
   configs = [
     "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:configs_cc_ld",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
