@@ -14,7 +14,7 @@
  */
 
 #include "accessibilitysystemabilityclient_fuzzer.h"
-#include "accessibility_system_ability_client.h"
+#include "accessibility_system_ability_client_impl.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -24,6 +24,7 @@ namespace {
     constexpr char END_CHAR = '\0';
     constexpr size_t LEN = 10;
 }
+static AccessibilitySystemAbilityClientImpl g_asacImpl_;
 
 template<class T>
 size_t GetObject(T &object, const uint8_t *data, size_t size)
@@ -239,6 +240,128 @@ bool SubscribeStateObserverFuzzTest(const uint8_t* data, size_t size)
     instance->UnsubscribeStateObserver(observer, eventTypes);
     return true;
 }
+
+bool IsEnabledFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return false;
+    }
+
+    bool isEnabled = false;
+    GetObject<bool>(isEnabled, &data[0], size);
+    instance->IsEnabled(isEnabled);
+    return true;
+}
+
+bool IsTouchExplorationEnabledFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return false;
+    }
+
+    bool isEnabled = false;
+    GetObject<bool>(isEnabled, &data[0], size);
+    instance->IsTouchExplorationEnabled(isEnabled);
+    return true;
+}
+
+bool GetEnabledAbilitiesFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    auto instance = AccessibilitySystemAbilityClient::GetInstance();
+    if (!instance) {
+        return false;
+    }
+
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    (void)memcpy_s(&name, LEN, &data[0], LEN);
+    std::string enabledAbility(name);
+    std::vector<std::string> enabledAbilities;
+    enabledAbilities.emplace_back(enabledAbility);
+    instance->GetEnabledAbilities(enabledAbilities);
+    return true;
+}
+
+bool SetSearchElementInfoByAccessibilityIdResultFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    int32_t requestId = 0;
+    GetObject<int32_t>(requestId, &data[0], size);
+    std::list<AccessibilityElementInfo> infos;
+    g_asacImpl_.SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+    return true;
+}
+
+bool SetSearchElementInfoByTextResultFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    int32_t requestId = 0;
+    GetObject<int32_t>(requestId, &data[0], size);
+    std::list<AccessibilityElementInfo> infos;
+    g_asacImpl_.SetSearchElementInfoByTextResult(infos, requestId);
+    return true;
+}
+
+bool SetFindFocusedElementInfoResultFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    int32_t requestId = 0;
+    GetObject<int32_t>(requestId, &data[0], size);
+    AccessibilityElementInfo info;
+    g_asacImpl_.SetFindFocusedElementInfoResult(info, requestId);
+    return true;
+}
+
+bool SetFocusMoveSearchResultFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    int32_t requestId = 0;
+    GetObject<int32_t>(requestId, &data[0], size);
+    AccessibilityElementInfo info;
+    g_asacImpl_.SetFocusMoveSearchResult(info, requestId);
+    return true;
+}
+
+bool SetExecuteActionResultFuzzTest(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    bool succeeded = false;
+    int32_t requestId = 0;
+    position += GetObject<bool>(succeeded, &data[position], size - position);
+    GetObject<int32_t>(requestId, &data[position], size - position);
+    g_asacImpl_.SetExecuteActionResult(succeeded, requestId);
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
 
@@ -250,5 +373,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::Accessibility::GetAbilityListFuzzTest(data, size);
     OHOS::Accessibility::SendEventFuzzTest(data, size);
     OHOS::Accessibility::SubscribeStateObserverFuzzTest(data, size);
+    OHOS::Accessibility::IsEnabledFuzzTest(data, size);
+    OHOS::Accessibility::IsTouchExplorationEnabledFuzzTest(data, size);
+    OHOS::Accessibility::GetEnabledAbilitiesFuzzTest(data, size);
+    OHOS::Accessibility::SetSearchElementInfoByAccessibilityIdResultFuzzTest(data, size);
+    OHOS::Accessibility::SetSearchElementInfoByTextResultFuzzTest(data, size);
+    OHOS::Accessibility::SetFindFocusedElementInfoResultFuzzTest(data, size);
+    OHOS::Accessibility::SetFocusMoveSearchResultFuzzTest(data, size);
+    OHOS::Accessibility::SetExecuteActionResultFuzzTest(data, size);
     return 0;
 }

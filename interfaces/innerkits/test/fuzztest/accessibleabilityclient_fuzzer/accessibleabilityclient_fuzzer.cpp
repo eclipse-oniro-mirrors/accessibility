@@ -15,7 +15,9 @@
 
 #include "accessibleabilityclient_fuzzer.h"
 #include "accessibility_element_info.h"
+#include "accessibility_gesture_inject_path.h"
 #include "accessibility_ui_test_ability.h"
+#include "accessible_ability_listener.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -37,6 +39,18 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     (void)memcpy_s(&object, objectSize, data, size);
     return objectSize;
 }
+
+class AccessibleAbilityListenerForFuzzTest : public Accessibility::AccessibleAbilityListener {
+public:
+    virtual ~AccessibleAbilityListenerForFuzzTest() = default;
+    void OnAbilityConnected() override {}
+    void OnAbilityDisconnected() override {}
+    void OnAccessibilityEvent(const Accessibility::AccessibilityEventInfo &eventInfo) override {}
+    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override
+    {
+        return false;
+    }
+};
 
 static size_t GenerateRect(OHOS::Accessibility::Rect &bounds, const uint8_t* data, size_t size)
 {
@@ -330,6 +344,14 @@ static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityE
     return position;
 }
 
+bool DoSomethingInterestingWithRegisterAbilityListener(const uint8_t* data, size_t size)
+{
+    std::shared_ptr<AccessibleAbilityListenerForFuzzTest> listener =
+        std::make_shared<AccessibleAbilityListenerForFuzzTest>();
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
+    return true;
+}
+
 bool DoSomethingInterestingWithGetFocus(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -359,6 +381,46 @@ bool DoSomethingInterestingWithGetFocusByElementInfo(const uint8_t* data, size_t
     GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetFocusByElementInfo(
         sourceElementInfo, focusType, resultElementInfo);
+
+    return true;
+}
+
+bool DoSomethingInterestingWithInjectGesture(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    Accessibility::AccessibilityGesturePosition position;
+    float point = .0f;
+    startPos += GetObject<float>(point, &data[startPos], size - startPos);
+    position.positionX_ = point;
+
+    startPos += GetObject<float>(point, &data[startPos], size - startPos);
+    position.positionY_ = point;
+
+    std::shared_ptr<Accessibility::AccessibilityGestureInjectPath> gesturePath =
+        std::make_shared<Accessibility::AccessibilityGestureInjectPath>();
+    gesturePath->AddPosition(position);
+
+    int64_t int64Data = 0;
+    startPos += GetObject<int64_t>(int64Data, &data[startPos], size - startPos);
+    gesturePath->SetDurationTime(int64Data);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
+    return true;
+}
+
+bool DoSomethingInterestingWithGetRoot(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
+    GenerateAccessibilityElementInfo(resultElementInfo, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRoot(resultElementInfo);
 
     return true;
 }
@@ -395,6 +457,21 @@ bool DoSomethingInterestingWithGetWindow(const uint8_t* data, size_t size)
 }
 
 bool DoSomethingInterestingWithGetWindows(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> resultWindowInfos;
+    OHOS::Accessibility::AccessibilityWindowInfo windowInfo;
+    GenerateAccessibilityWindowInfo(windowInfo, &data[startPos], size - startPos);
+    resultWindowInfos.push_back(windowInfo);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetWindows(resultWindowInfos);
+    return true;
+}
+
+bool DoSomethingInterestingWithGetWindowsByDisplayId(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
         return false;
@@ -560,17 +637,35 @@ bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t s
 
     return true;
 }
+
+bool DoSomethingInterestingWithSetCacheMode(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    int32_t cacheMode = 0;
+    GetObject<int32_t>(cacheMode, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SetCacheMode(cacheMode);
+
+    return true;
+}
 } // namespace OHOS
 
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    OHOS::DoSomethingInterestingWithRegisterAbilityListener(data, size);
     OHOS::DoSomethingInterestingWithGetFocus(data, size);
     OHOS::DoSomethingInterestingWithGetFocusByElementInfo(data, size);
+    OHOS::DoSomethingInterestingWithInjectGesture(data, size);
+    OHOS::DoSomethingInterestingWithGetRoot(data, size);
     OHOS::DoSomethingInterestingWithGetRootByWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindows(data, size);
+    OHOS::DoSomethingInterestingWithGetWindowsByDisplayId(data, size);
     OHOS::DoSomethingInterestingWithGetNext(data, size);
     OHOS::DoSomethingInterestingWithGetChildElementInfo(data, size);
     OHOS::DoSomethingInterestingWithGetChildren(data, size);
@@ -579,5 +674,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithGetParentElementInfo(data, size);
     OHOS::DoSomethingInterestingWithExecuteAction(data, size);
     OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
+    OHOS::DoSomethingInterestingWithSetCacheMode(data, size);
     return 0;
 }
