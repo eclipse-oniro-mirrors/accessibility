@@ -31,7 +31,7 @@ using namespace OHOS::Security::AccessToken;
 
 class ConfigObserver : public OHOS::AccessibilityConfig::AccessibilityConfigObserver {
 public:
-    virtual void OnConfigChanged(const OHOS::AccessibilityConfig::CONFIG_ID id,
+    void OnConfigChanged(const OHOS::AccessibilityConfig::CONFIG_ID id,
         const OHOS::AccessibilityConfig::ConfigValue &value) override
     {
     }
@@ -39,7 +39,7 @@ public:
 
 class EnableAbilityListObserver : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver {
 public:
-    virtual void OnEnableAbilityListsStateChanged() override
+    void OnEnableAbilityListsStateChanged() override
     {
     }
 };
@@ -203,7 +203,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     abConfig.GetContentTimeout(temp);
 
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
-    OHOS::AccessibilityConfig::DALTONIZATION_TYPE types = static_cast<OHOS::AccessibilityConfig::DALTONIZATION_TYPE>(temp);
+    OHOS::AccessibilityConfig::DALTONIZATION_TYPE types =
+        static_cast<OHOS::AccessibilityConfig::DALTONIZATION_TYPE>(temp);
     abConfig.GetDaltonizationColorFilter(types);
 
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
