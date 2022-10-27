@@ -51,8 +51,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    (void)memcpy_s(&object, objectSize, data, size);
-    return objectSize;
+    return memcpy_s(&object, objectSize, data, objectSize) == EOK ? objectSize : 0;
 }
 
 void AddPermission()
@@ -97,15 +96,17 @@ static size_t GenerateCaptionProperty(
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string family(name);
     property.SetFontFamily(family);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string type(name);
     property.SetFontFamily(type);
-    position += LEN;
 
     return position;
 }
@@ -150,24 +151,27 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
     std::string nameStr(name);
     abConfig.SetShortkeyTarget(nameStr);
-    startPos += LEN;
 
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
     abConfig.SetCaptionsProperty(property);
 
-    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
     std::string abilityName1(name);
-    startPos += LEN;
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
     abConfig.EnableAbility(abilityName1, temp);
 
-    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
     std::string abilityName2(name);
-    startPos += LEN;
     abConfig.DisableAbility(abilityName2);
 
     bool flag = data[startPos++] & 0x01;
@@ -212,13 +216,14 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.GetAudioBalance(tempFloat);
 
-    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
     std::string nameStrForGet(name);
     abConfig.GetShortkeyTarget(nameStrForGet);
-    startPos += LEN;
 
     OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
-    startPos += GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
+    GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
     abConfig.GetCaptionsProperty(propertyForGet);
 
     return true;
