@@ -33,8 +33,7 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    (void)memcpy_s(&object, objectSize, data, size);
-    return objectSize;
+    return memcpy_s(&object, objectSize, data, objectSize) == EOK ? objectSize : 0;
 }
 
 class ElementOperatorForFuzzTest : public AccessibilityElementOperator {
@@ -114,40 +113,47 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string className(name);
     eventInfo.SetComponentType(className);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string beforeText(name);
     eventInfo.SetBeforeText(beforeText);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string content(name);
     eventInfo.AddContent(content);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string lastContent(name);
     eventInfo.SetLatestContent(lastContent);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string contentDescription(name);
     eventInfo.SetDescription(contentDescription);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string bundleName(name);
     eventInfo.SetBundleName(bundleName);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string notificationContent(name);
     eventInfo.SetNotificationContent(notificationContent);
-    position += LEN;
 
     return position;
 }
@@ -286,9 +292,12 @@ bool GetEnabledAbilitiesFuzzTest(const uint8_t* data, size_t size)
         return false;
     }
 
+    size_t position = 0;
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[0], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string enabledAbility(name);
     std::vector<std::string> enabledAbilities;
     enabledAbilities.emplace_back(enabledAbility);
