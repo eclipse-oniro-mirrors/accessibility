@@ -754,7 +754,7 @@ bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
 void AccessibilityAccountData::AddAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-    bool hasNewExtensionAbility = false;
+
     std::vector<AppExecFwk::ExtensionAbilityInfo> extensionInfos;
     sptr<AppExecFwk::IBundleMgr> bms = Singleton<AccessibleAbilityManagerService>::GetInstance().GetBundleMgrProxy();
     if (!bms) {
@@ -763,6 +763,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     }
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
+    bool hasNewExtensionAbility = false;
     auto it = std::find_if(extensionInfos.begin(), extensionInfos.end(),
         [&bundleName](const AppExecFwk::ExtensionAbilityInfo &newAbility) {
             return newAbility.bundleName == bundleName;
