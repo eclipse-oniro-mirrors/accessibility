@@ -15,7 +15,9 @@
 
 #include "accessibleabilityclient_fuzzer.h"
 #include "accessibility_element_info.h"
+#include "accessibility_gesture_inject_path.h"
 #include "accessibility_ui_test_ability.h"
+#include "accessible_ability_listener.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -34,9 +36,20 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
     if (objectSize > size) {
         return 0;
     }
-    (void)memcpy_s(&object, objectSize, data, size);
-    return objectSize;
+    return memcpy_s(&object, objectSize, data, objectSize) == EOK ? objectSize : 0;
 }
+
+class AccessibleAbilityListenerForFuzzTest : public Accessibility::AccessibleAbilityListener {
+public:
+    virtual ~AccessibleAbilityListenerForFuzzTest() = default;
+    void OnAbilityConnected() override {}
+    void OnAbilityDisconnected() override {}
+    void OnAccessibilityEvent(const Accessibility::AccessibilityEventInfo &eventInfo) override {}
+    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override
+    {
+        return false;
+    }
+};
 
 static size_t GenerateRect(OHOS::Accessibility::Rect &bounds, const uint8_t* data, size_t size)
 {
@@ -155,45 +168,53 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string bundleName(name);
     sourceElementInfo.SetBundleName(bundleName);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string componentType(name);
     sourceElementInfo.SetComponentType(componentType);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string text(name);
     sourceElementInfo.SetContent(text);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string hintText(name);
     sourceElementInfo.SetHint(hintText);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string contentDescription(name);
     sourceElementInfo.SetDescriptionInfo(contentDescription);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string resourceName(name);
     sourceElementInfo.SetComponentResourceId(resourceName);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string inspectorKey(name);
     sourceElementInfo.SetInspectorKey(inspectorKey);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string error(name);
     sourceElementInfo.SetError(error);
-    position += LEN;
 
     sourceElementInfo.SetCheckable(data[position++] & 0x01);
     sourceElementInfo.SetChecked(data[position++] & 0x01);
@@ -234,10 +255,10 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
 
     for (size_t i = 0; i < VEC_SIZE; i++) {
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
-        (void)memcpy_s(&name, LEN, &data[position], LEN);
-        position += LEN;
+        for (size_t i = 0; i < LEN; i++) {
+            position += GetObject<char>(name[i], &data[position], size - position);
+        }
         std::string description(name);
-
         OHOS::Accessibility::AccessibleAction action(
             static_cast<OHOS::Accessibility::ActionType>(int32Data), description);
         sourceElementInfo.AddAction(action);
@@ -293,15 +314,17 @@ static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityE
 
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string bundleName(name);
     sourceEventInfo.SetBundleName(bundleName);
-    position += LEN;
 
-    (void)memcpy_s(&name, LEN, &data[position], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], &data[position], size - position);
+    }
     std::string notificationContent(name);
     sourceEventInfo.SetNotificationContent(notificationContent);
-    position += LEN;
 
     int32_t int32Data = 0;
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
@@ -328,6 +351,14 @@ static size_t GenerateAccessibilityEventInfo(OHOS::Accessibility::AccessibilityE
     sourceEventInfo.SetTimeStamp(int64Data);
 
     return position;
+}
+
+bool DoSomethingInterestingWithRegisterAbilityListener(const uint8_t* data, size_t size)
+{
+    std::shared_ptr<AccessibleAbilityListenerForFuzzTest> listener =
+        std::make_shared<AccessibleAbilityListenerForFuzzTest>();
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->RegisterAbilityListener(listener);
+    return true;
 }
 
 bool DoSomethingInterestingWithGetFocus(const uint8_t* data, size_t size)
@@ -359,6 +390,46 @@ bool DoSomethingInterestingWithGetFocusByElementInfo(const uint8_t* data, size_t
     GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetFocusByElementInfo(
         sourceElementInfo, focusType, resultElementInfo);
+
+    return true;
+}
+
+bool DoSomethingInterestingWithInjectGesture(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    Accessibility::AccessibilityGesturePosition position;
+    float point = .0f;
+    startPos += GetObject<float>(point, &data[startPos], size - startPos);
+    position.positionX_ = point;
+
+    startPos += GetObject<float>(point, &data[startPos], size - startPos);
+    position.positionY_ = point;
+
+    std::shared_ptr<Accessibility::AccessibilityGestureInjectPath> gesturePath =
+        std::make_shared<Accessibility::AccessibilityGestureInjectPath>();
+    gesturePath->AddPosition(position);
+
+    int64_t int64Data = 0;
+    startPos += GetObject<int64_t>(int64Data, &data[startPos], size - startPos);
+    gesturePath->SetDurationTime(int64Data);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
+    return true;
+}
+
+bool DoSomethingInterestingWithGetRoot(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    OHOS::Accessibility::AccessibilityElementInfo resultElementInfo;
+    GenerateAccessibilityElementInfo(resultElementInfo, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetRoot(resultElementInfo);
 
     return true;
 }
@@ -395,6 +466,21 @@ bool DoSomethingInterestingWithGetWindow(const uint8_t* data, size_t size)
 }
 
 bool DoSomethingInterestingWithGetWindows(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    std::vector<OHOS::Accessibility::AccessibilityWindowInfo> resultWindowInfos;
+    OHOS::Accessibility::AccessibilityWindowInfo windowInfo;
+    GenerateAccessibilityWindowInfo(windowInfo, &data[startPos], size - startPos);
+    resultWindowInfos.push_back(windowInfo);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetWindows(resultWindowInfos);
+    return true;
+}
+
+bool DoSomethingInterestingWithGetWindowsByDisplayId(const uint8_t* data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
         return false;
@@ -471,7 +557,9 @@ bool DoSomethingInterestingWithGetByContent(const uint8_t* data, size_t size)
     startPos += GenerateAccessibilityElementInfo(sourceElementInfo, &data[startPos], size - startPos);
     char name[LEN + 1];
     name[LEN] = END_CHAR;
-    (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+    for (size_t i = 0; i < LEN; i++) {
+        startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+    }
     std::string text(name);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->GetByContent(
         sourceElementInfo, text, resultElementInfos);
@@ -525,13 +613,14 @@ bool DoSomethingInterestingWithExecuteAction(const uint8_t* data, size_t size)
     for (size_t i = 0; i < MAP_SIZE; i++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
-        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+        for (size_t i = 0; i < LEN; i++) {
+            startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+        }
         std::string action1(name);
-        startPos += LEN;
-
-        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+        for (size_t i = 0; i < LEN; i++) {
+            startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+        }
         std::string action2(name);
-        startPos += LEN;
         actionArguments.insert(std::make_pair(action1, action2));
     }
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->ExecuteAction(
@@ -551,12 +640,27 @@ bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t s
     for (size_t i = 0; i < VEC_SIZE; i++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
-        (void)memcpy_s(&name, LEN, &data[startPos], LEN);
+        for (size_t i = 0; i < LEN; i++) {
+            startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
+        }
         std::string targetBundleName(name);
-        startPos += LEN;
         targetBundleNames.push_back(targetBundleName);
     }
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SetTargetBundleName(targetBundleNames);
+
+    return true;
+}
+
+bool DoSomethingInterestingWithSetCacheMode(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t startPos = 0;
+    int32_t cacheMode = 0;
+    GetObject<int32_t>(cacheMode, &data[startPos], size - startPos);
+    OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->SetCacheMode(cacheMode);
 
     return true;
 }
@@ -566,11 +670,15 @@ bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t s
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
+    OHOS::DoSomethingInterestingWithRegisterAbilityListener(data, size);
     OHOS::DoSomethingInterestingWithGetFocus(data, size);
     OHOS::DoSomethingInterestingWithGetFocusByElementInfo(data, size);
+    OHOS::DoSomethingInterestingWithInjectGesture(data, size);
+    OHOS::DoSomethingInterestingWithGetRoot(data, size);
     OHOS::DoSomethingInterestingWithGetRootByWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindow(data, size);
     OHOS::DoSomethingInterestingWithGetWindows(data, size);
+    OHOS::DoSomethingInterestingWithGetWindowsByDisplayId(data, size);
     OHOS::DoSomethingInterestingWithGetNext(data, size);
     OHOS::DoSomethingInterestingWithGetChildElementInfo(data, size);
     OHOS::DoSomethingInterestingWithGetChildren(data, size);
@@ -579,5 +687,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::DoSomethingInterestingWithGetParentElementInfo(data, size);
     OHOS::DoSomethingInterestingWithExecuteAction(data, size);
     OHOS::DoSomethingInterestingWithSetTargetBundleName(data, size);
+    OHOS::DoSomethingInterestingWithSetCacheMode(data, size);
     return 0;
 }
