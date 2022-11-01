@@ -253,7 +253,7 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
     position += GenerateGridItemInfo(gridItem, &data[position], size - position);
     sourceElementInfo.SetGridItem(gridItem);
 
-    for (size_t i = 0; i < VEC_SIZE; i++) {
+    for (size_t count = 0; count < VEC_SIZE; count++) {
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
         for (size_t i = 0; i < LEN; i++) {
             position += GetObject<char>(name[i], &data[position], size - position);
@@ -414,7 +414,7 @@ bool DoSomethingInterestingWithInjectGesture(const uint8_t* data, size_t size)
     gesturePath->AddPosition(position);
 
     int64_t int64Data = 0;
-    startPos += GetObject<int64_t>(int64Data, &data[startPos], size - startPos);
+    GetObject<int64_t>(int64Data, &data[startPos], size - startPos);
     gesturePath->SetDurationTime(int64Data);
     OHOS::Accessibility::AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
     return true;
@@ -610,7 +610,7 @@ bool DoSomethingInterestingWithExecuteAction(const uint8_t* data, size_t size)
     int32_t action = 0;
     startPos += GetObject<int32_t>(action, &data[startPos], size - startPos);
     std::map<std::string, std::string> actionArguments;
-    for (size_t i = 0; i < MAP_SIZE; i++) {
+    for (size_t count = 0; count < MAP_SIZE; count++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
         for (size_t i = 0; i < LEN; i++) {
@@ -637,7 +637,7 @@ bool DoSomethingInterestingWithSetTargetBundleName(const uint8_t* data, size_t s
 
     size_t startPos = 0;
     std::vector<std::string> targetBundleNames;
-    for (size_t i = 0; i < VEC_SIZE; i++) {
+    for (size_t count = 0; count < VEC_SIZE; count++) {
         char name[LEN + 1];
         name[LEN] = END_CHAR;
         for (size_t i = 0; i < LEN; i++) {
