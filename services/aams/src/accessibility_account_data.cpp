@@ -50,6 +50,8 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     HILOG_INFO();
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
+        HILOG_DEBUG("connectingA11yAbilities[%{public}zu] connectedA11yAbilities[%{public}zu]",
+            connectingA11yAbilities_.size(), connectedA11yAbilities_.size());
         state |= STATE_ACCESSIBILITY_ENABLED;
         if (!config_->GetEnabledState()) {
             config_->SetEnabled(true);
@@ -280,7 +282,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == bundleName) {
             HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
-            installedAbilities_.erase(it);
+            it = installedAbilities_.erase(it);
         } else {
             ++it;
         }
@@ -327,7 +329,7 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("connectedA11yAbilities size[%{public}zu]", connectedA11yAbilities_.size());
     return connectedA11yAbilities_;
 }
 
