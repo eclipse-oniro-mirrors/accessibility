@@ -80,8 +80,7 @@ void AccessibleAbilityConnectionUnitTest::SetUp()
     sptr<AccessibilityElementOperatorStub> stub = new MockAccessibilityElementOperatorStub();
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     sptr<AccessibilityWindowConnection> connection = new AccessibilityWindowConnection(0, proxy, 0);
-    // aams RegisterElementOperator
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, proxy);
+
     // new AAconnection
     AccessibilityAbilityInitParams initParams;
     initParams.abilityTypes = ACCESSIBILITY_ABILITY_TYPE_ALL;
@@ -103,12 +102,12 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     AccessibilityAbilityHelper::GetInstance().SetTestChannelId(INVALID_CHANNEL_ID);
-    // Deregister ElementOperator
-    Singleton<AccessibleAbilityManagerService>::GetInstance().DeregisterElementOperator(0);
-    if (connection_ != nullptr) {
+    if (!accountData_) {
+        accountData_->RemoveAccessibilityWindowConnection(0);
+    }
+
+    if (!connection_) {
         connection_->OnAbilityDisconnectDoneSync(*elementName_);
-    } else {
-        return;
     }
     connection_ = nullptr;
     elementName_ = nullptr;
