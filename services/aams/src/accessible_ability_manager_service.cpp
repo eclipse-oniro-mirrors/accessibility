@@ -1109,6 +1109,11 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         return;
     }
     accountData->Init();
+    float discount = accountData->GetConfig()->GetBrightnessDiscount();
+    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
+    if (!displayPowerMgrClient.DiscountBrightness(discount)) {
+        HILOG_ERROR("Failed to set brightness discount");
+    }
     if (accountData->GetInstalledAbilitiesFromBMS()) {
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         accountData->UpdateAbilities();
