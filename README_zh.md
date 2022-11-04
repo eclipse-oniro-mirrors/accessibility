@@ -66,9 +66,15 @@
 
 [1. 系统辅助功能配置](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-config.md)
 
-[2. 辅助扩展能力](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-extension-context.md)
+[2. 辅助扩展扩展上下文](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-extension-context.md)
 
 [3. 辅助功能](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility.md)
+
+[4. 辅助功能扩展能力](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-application-AccessibilityExtensionAbility.md)
+
+[5. 手势路径](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-GesturePath.md)
+
+[6. 手势触摸点](https://gitee.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/apis/js-apis-accessibility-GesturePoint.md)
 
 ## 相关仓<a name="relevant"></a>
 
