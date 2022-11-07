@@ -781,6 +781,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         HILOG_ERROR("RemoveEnabledAbility failed");
         return ret;
     }
+    accountData->RemoveConnectingA11yAbility(name);
     accountData->UpdateAbilities();
     return RET_OK;
 }
