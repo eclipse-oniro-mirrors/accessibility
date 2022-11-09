@@ -54,8 +54,10 @@ PowerErrors PowerMgrClient::WakeupDevice(WakeupDeviceType reason, const std::str
     return PowerErrors::ERR_OK;
 }
 
-void PowerMgrClient::RefreshActivity(UserActivityType type)
-{}
+bool PowerMgrClient::RefreshActivity(UserActivityType type)
+{
+    return true;
+}
 
 bool PowerMgrClient::IsRunningLockTypeSupported(uint32_t type)
 {
@@ -82,27 +84,41 @@ std::shared_ptr<RunningLock> PowerMgrClient::CreateRunningLock(const std::string
     return nullptr;
 }
 
-void PowerMgrClient::RegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
-{}
+bool PowerMgrClient::RegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
+{
+    return true;
+}
 
-void PowerMgrClient::UnRegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
-{}
+bool PowerMgrClient::UnRegisterPowerStateCallback(const sptr<IPowerStateCallback>& callback)
+{
+    return true;
+}
 
-void PowerMgrClient::RegisterShutdownCallback(
+bool PowerMgrClient::RegisterShutdownCallback(
     const sptr<IShutdownCallback>& callback, IShutdownCallback::ShutdownPriority priority)
-{}
+{
+    return true;
+}
 
-void PowerMgrClient::UnRegisterShutdownCallback(const sptr<IShutdownCallback>& callback)
-{}
+bool PowerMgrClient::UnRegisterShutdownCallback(const sptr<IShutdownCallback>& callback)
+{
+    return true;
+}
 
-void PowerMgrClient::RegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
-{}
+bool PowerMgrClient::RegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
+{
+    return true;
+}
 
-void PowerMgrClient::UnRegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
-{}
+bool PowerMgrClient::UnRegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
+{
+    return true;
+}
 
-void PowerMgrClient::SetDisplaySuspend(bool enable)
-{}
+bool PowerMgrClient::SetDisplaySuspend(bool enable)
+{
+    return true;
+}
 
 PowerErrors PowerMgrClient::SetDeviceMode(const PowerMode mode)
 {
