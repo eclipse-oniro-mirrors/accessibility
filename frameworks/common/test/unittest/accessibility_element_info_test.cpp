@@ -909,6 +909,19 @@ HWTEST_F(AccessibilityElementInfoTest, SetInspectorKey_001, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetPagePath_001
+ * @tc.name: SetPagePath
+ * @tc.desc: Test function SetPagePath, GetPagePath
+ */
+HWTEST_F(AccessibilityElementInfoTest, SetPagePath_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetPagePath_001 start";
+    elementInfo_->SetPagePath("test");
+    EXPECT_STREQ(elementInfo_->GetPagePath().c_str(), "test");
+    GTEST_LOG_(INFO) << "SetPagePath_001 end";
+}
+
+/**
  * @tc.number: SetPageId_001
  * @tc.name: SetPageId
  * @tc.desc: Test function SetPageId, GetPageId
