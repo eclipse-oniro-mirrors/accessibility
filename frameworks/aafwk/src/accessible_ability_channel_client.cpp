@@ -70,14 +70,21 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
 
-    RetError ret = proxy_->FindFocusedElementInfo(accessibilityWindowId,
+    int32_t windowId = accessibilityWindowId;
+    if (accessibilityWindowId == ANY_WINDOW_ID && focusType == FOCUS_TYPE_ACCESSIBILITY &&
+        accessibilityFocusedWindowId_ != INVALID_WINDOW_ID) {
+        windowId = accessibilityFocusedWindowId_;
+        HILOG_INFO("Convert into accessibility focused window id[%{public}d]", windowId);
+    }
+
+    RetError ret = proxy_->FindFocusedElementInfo(windowId,
         elementId, focusType, requestId, elementOperator);
     if (ret != RET_OK) {
         HILOG_ERROR("FindFocusedElementInfo failed. ret[%{public}d]", ret);
         return ret;
     }
-    HILOG_DEBUG("channelId:%{public}d, accessibilityWindowId:%{public}d, elementId:%{public}d, focusType:%{public}d",
-        channelId_, accessibilityWindowId, elementId, focusType);
+    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}d, focusType:%{public}d",
+        channelId_, windowId, elementId, focusType);
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
@@ -141,6 +148,21 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     }
     HILOG_INFO("Get result successfully from ace. executeActionResult_[%{public}d]",
         elementOperator->executeActionResult_);
+
+    if (elementOperator->executeActionResult_) {
+        switch (action) {
+            case ActionType::ACCESSIBILITY_ACTION_ACCESSIBILITY_FOCUS:
+                accessibilityFocusedWindowId_ = accessibilityWindowId;
+                HILOG_INFO("Set accessibility focused window id[%{public}d]", accessibilityFocusedWindowId_);
+                break;
+            case ActionType::ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS:
+                accessibilityFocusedWindowId_ = INVALID_WINDOW_ID;
+                HILOG_INFO("Clear accessibility focused window id");
+                break;
+            default:
+                break;
+        }
+    }
     return elementOperator->executeActionResult_ ? RET_OK : RET_ERR_PERFORM_ACTION_FAILED_BY_ACE;
 }
 
