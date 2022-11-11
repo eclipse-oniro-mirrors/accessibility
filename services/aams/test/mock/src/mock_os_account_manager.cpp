@@ -41,11 +41,9 @@ OsAccountSubscriber::OsAccountSubscriber(const OsAccountSubscribeInfo &subscribe
 OsAccountSubscriber::~OsAccountSubscriber()
 {}
 
-ErrCode OsAccountSubscriber::GetSubscribeInfo(OsAccountSubscribeInfo &subscribeInfo) const
+void OsAccountSubscriber::GetSubscribeInfo(OsAccountSubscribeInfo &subscribeInfo) const
 {
     subscribeInfo = subscribeInfo_;
-
-    return ERR_OK;
 }
 
 OsAccountSubscribeInfo::OsAccountSubscribeInfo()
@@ -59,32 +57,24 @@ OsAccountSubscribeInfo::OsAccountSubscribeInfo(OS_ACCOUNT_SUBSCRIBE_TYPE &osAcco
 OsAccountSubscribeInfo::~OsAccountSubscribeInfo()
 {}
 
-ErrCode OsAccountSubscribeInfo::GetOsAccountSubscribeType(OS_ACCOUNT_SUBSCRIBE_TYPE &osAccountSubscribeType) const
+void OsAccountSubscribeInfo::GetOsAccountSubscribeType(OS_ACCOUNT_SUBSCRIBE_TYPE &osAccountSubscribeType) const
 {
     osAccountSubscribeType = osAccountSubscribeType_;
-
-    return ERR_OK;
 }
 
-ErrCode OsAccountSubscribeInfo::SetOsAccountSubscribeType(const OS_ACCOUNT_SUBSCRIBE_TYPE &osAccountSubscribeType)
+void OsAccountSubscribeInfo::SetOsAccountSubscribeType(const OS_ACCOUNT_SUBSCRIBE_TYPE &osAccountSubscribeType)
 {
     osAccountSubscribeType_ = osAccountSubscribeType;
-
-    return ERR_OK;
 }
 
-ErrCode OsAccountSubscribeInfo::GetName(std::string &name) const
+void OsAccountSubscribeInfo::GetName(std::string &name) const
 {
     name = name_;
-
-    return ERR_OK;
 }
 
-ErrCode OsAccountSubscribeInfo::SetName(const std::string &name)
+void OsAccountSubscribeInfo::SetName(const std::string &name)
 {
     name_ = name;
-
-    return ERR_OK;
 }
 
 bool OsAccountSubscribeInfo::Marshalling(Parcel &parcel) const
