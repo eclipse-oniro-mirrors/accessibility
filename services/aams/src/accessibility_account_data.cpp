@@ -50,6 +50,8 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     HILOG_INFO();
     uint32_t state = 0;
     if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
+        HILOG_DEBUG("connectingA11yAbilities[%{public}zu] connectedA11yAbilities[%{public}zu]",
+            connectingA11yAbilities_.size(), connectedA11yAbilities_.size());
         state |= STATE_ACCESSIBILITY_ENABLED;
         if (!config_->GetEnabledState()) {
             config_->SetEnabled(true);
@@ -264,7 +266,8 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
 {
     HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
     for (size_t i = 0; i < installedAbilities_.size(); i++) {
-        if (installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) {
+        if ((installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) &&
+            installedAbilities_[i].GetName() == abilityInfo.GetName()) {
             HILOG_DEBUG("the ability is already exist.");
             return;
         }
@@ -280,7 +283,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == bundleName) {
             HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
-            installedAbilities_.erase(it);
+            it = installedAbilities_.erase(it);
         } else {
             ++it;
         }
@@ -327,7 +330,7 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("connectedA11yAbilities size[%{public}zu]", connectedA11yAbilities_.size());
     return connectedA11yAbilities_;
 }
 
@@ -764,19 +767,16 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
     bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     bool hasNewExtensionAbility = false;
-    auto it = std::find_if(extensionInfos.begin(), extensionInfos.end(),
-        [&bundleName](const AppExecFwk::ExtensionAbilityInfo &newAbility) {
-            return newAbility.bundleName == bundleName;
-        });
-    if (it != extensionInfos.end()) {
-        HILOG_DEBUG("The package added is an extension ability and\
-            extension ability's name is %{public}s", (*it).name.c_str());
-        AccessibilityAbilityInitParams initParams;
-        Utils::Parse(*it, initParams);
-        std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
-            std::make_shared<AccessibilityAbilityInfo>(initParams);
-        AddInstalledAbility(*accessibilityInfo);
-        hasNewExtensionAbility = true;
+    for (auto &newAbility : extensionInfos) {
+        if (newAbility.bundleName == bundleName) {
+            HILOG_DEBUG("The package%{public}s added", (bundleName + "/" + newAbility.name).c_str());
+            AccessibilityAbilityInitParams initParams;
+            Utils::Parse(newAbility, initParams);
+            std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
+                std::make_shared<AccessibilityAbilityInfo>(initParams);
+            AddInstalledAbility(*accessibilityInfo);
+            hasNewExtensionAbility = true;
+        }
     }
 
     if (hasNewExtensionAbility) {
