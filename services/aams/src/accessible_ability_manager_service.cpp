@@ -102,20 +102,34 @@ void AccessibleAbilityManagerService::OnStart()
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+    if (!handler_) {
+        HILOG_ERROR("AccessibleAbilityManagerService::OnStop failed!");
+        return;
+    }
 
-    Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-    Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG();
 
-    currentAccountId_ = -1;
-    a11yAccountsData_.clear();
-    stateCallbacks_.clear();
-    bundleManager_ = nullptr;
-    inputInterceptor_ = nullptr;
-    touchEventInjector_ = nullptr;
-    keyEventFilter_ = nullptr;
-    stateCallbackDeathRecipient_ = nullptr;
-    bundleManagerDeathRecipient_ = nullptr;
+        Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+        Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+
+        currentAccountId_ = -1;
+        a11yAccountsData_.clear();
+        stateCallbacks_.clear();
+        bundleManager_ = nullptr;
+        inputInterceptor_ = nullptr;
+        touchEventInjector_ = nullptr;
+        keyEventFilter_ = nullptr;
+        stateCallbackDeathRecipient_ = nullptr;
+        bundleManagerDeathRecipient_ = nullptr;
+
+        syncPromise.set_value();
+        }), "TASK_ONSTOP");
+    syncFuture.wait();
+
     runner_.reset();
     handler_.reset();
     for (auto &iter : dependentServicesStatus_) {
