@@ -506,29 +506,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetConn
 }
 
 /**
- * @tc.number: AccessibilityAccountData_Unittest_GetStateCallbacks001
- * @tc.name: GetStateCallbacks
- * @tc.desc: Check the get state callbacks.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetStateCallbacks001, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetStateCallbacks001 start";
-    const int32_t accountId = 1;
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
-    sptr<AccessibleAbilityManagerStateObserverStub> stub = new MockAccessibleAbilityManagerStateObserverStub();
-    const sptr<IAccessibleAbilityManagerStateObserver> state = new MockAccessibleAbilityManagerStateObserverProxy(stub);
-    /* get */
-    size_t size = accountData->GetStateCallbacks().size();
-    EXPECT_EQ(0, size);
-    /* add */
-    accountData->AddStateCallback(state);
-    /* get */
-    EXPECT_EQ(1, accountData->GetStateCallbacks().size());
-
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetStateCallbacks001 end";
-}
-
-/**
  * @tc.number: AccessibilityAccountData_Unittest_GetAsacConnections001
  * @tc.name: GetAsacConnections
  * @tc.desc: Check the get asac connections.
@@ -1332,28 +1309,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveU
     accountData->RemoveUITestClient(connection, "uitestBundle");
     EXPECT_EQ(0, static_cast<int>(accountData->GetInstalledAbilities().size()));
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveUITestClient_002 end";
-}
-
-/**
- * @tc.number: AccessibilityAccountData_Unittest_RemoveStateCallback
- * @tc.name: RemoveStateCallback
- * @tc.desc: Check the function of RemoveStateCallback.
- */
-HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveStateCallback, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveStateCallback start";
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(0);
-    sptr<AccessibleAbilityManagerStateObserverStub> stub = new MockAccessibleAbilityManagerStateObserverStub();
-    sptr<IAccessibleAbilityManagerStateObserver> state = new MockAccessibleAbilityManagerStateObserverProxy(stub);
-    EXPECT_EQ(0, static_cast<int>(accountData->GetStateCallbacks().size()));
-
-    accountData->AddStateCallback(state);
-    EXPECT_EQ(1, static_cast<int>(accountData->GetStateCallbacks().size()));
-
-    accountData->RemoveStateCallback(state->AsObject());
-    EXPECT_EQ(0, static_cast<int>(accountData->GetStateCallbacks().size()));
-
-    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveStateCallback end";
 }
 
 /**

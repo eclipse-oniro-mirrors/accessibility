@@ -76,18 +76,6 @@ public:
      */
     void RemoveConnectingA11yAbility(const std::string &uri);
 
-    /**
-     * @brief Add accessibility monitoring connection.
-     * @param callback Accessibility monitoring connection.
-     */
-    void AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback);
-
-    /**
-     * @brief Remove accessibility monitoring connection.
-     * @param callback Accessibility monitoring connection.
-     */
-    void RemoveStateCallback(const wptr<IRemoteObject>& callback);
-
     void AddCaptionPropertyCallback(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback);
     void RemoveCaptionPropertyCallback(const wptr<IRemoteObject>& callback);
 
@@ -144,12 +132,6 @@ public:
      * @return Store map of connected accessibility abilities.
      */
     const std::map<std::string, sptr<AccessibleAbilityConnection>> GetConnectedA11yAbilities();
-
-    /**
-     * @brief Get accessibility listening connection list.
-     * @return Store vector of accessibility listening connection.
-     */
-    const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> &GetStateCallbacks() const;
 
     const CaptionPropertyCallbacks GetCaptionPropertyCallbacks();
 
@@ -308,7 +290,6 @@ private:
     uint32_t connectCounter_ = 1;
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
     std::map<std::string, sptr<AccessibleAbilityConnection>> connectingA11yAbilities_; // key: bundleName/abilityName
-    std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     CaptionPropertyCallbacks captionPropertyCallbacks_;

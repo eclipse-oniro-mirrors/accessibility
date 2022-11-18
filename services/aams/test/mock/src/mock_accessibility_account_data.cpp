@@ -89,19 +89,6 @@ void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementN
     HILOG_INFO("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
 }
 
-void AccessibilityAccountData::AddStateCallback(const sptr<IAccessibleAbilityManagerStateObserver>& callback)
-{
-    HILOG_DEBUG("start.");
-    stateCallbacks_.push_back(callback);
-}
-
-// remove IAccessibleAbilityManagerServiceState
-void AccessibilityAccountData::RemoveStateCallback(const wptr<IRemoteObject>& callback)
-{
-    (void)callback;
-    HILOG_DEBUG("start.");
-}
-
 void AccessibilityAccountData::AddCaptionPropertyCallback(
     const sptr<IAccessibleAbilityManagerCaptionObserver>& callback)
 {
@@ -217,12 +204,6 @@ const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAcco
 {
     HILOG_DEBUG("start.");
     return connectedA11yAbilities_;
-}
-
-const std::vector<sptr<IAccessibleAbilityManagerStateObserver>> &AccessibilityAccountData::GetStateCallbacks() const
-{
-    HILOG_DEBUG("start.");
-    return stateCallbacks_;
 }
 
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
