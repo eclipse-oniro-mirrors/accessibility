@@ -85,6 +85,7 @@ void AccessibilityAccountData::OnAccountSwitched()
     }
     connectedA11yAbilities_.clear();
     enabledAbilities_.clear();
+    asacConnections_.clear();
 }
 
 void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection)
