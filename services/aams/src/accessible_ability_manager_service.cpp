@@ -102,19 +102,34 @@ void AccessibleAbilityManagerService::OnStart()
 void AccessibleAbilityManagerService::OnStop()
 {
     HILOG_INFO("stop AccessibleAbilityManagerService");
+    if (!handler_) {
+        HILOG_ERROR("AccessibleAbilityManagerService::OnStop failed!");
+        return;
+    }
 
-    Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
-    Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
-    Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+        HILOG_DEBUG();
 
-    currentAccountId_ = -1;
-    a11yAccountsData_.clear();
-    bundleManager_ = nullptr;
-    inputInterceptor_ = nullptr;
-    touchEventInjector_ = nullptr;
-    keyEventFilter_ = nullptr;
-    stateCallbackDeathRecipient_ = nullptr;
-    bundleManagerDeathRecipient_ = nullptr;
+        Singleton<AccessibilityCommonEvent>::GetInstance().UnSubscriberEvent();
+        Singleton<AccessibilityDisplayManager>::GetInstance().UnregisterDisplayListener();
+        Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
+
+        currentAccountId_ = -1;
+        a11yAccountsData_.clear();
+        stateCallbacks_.clear();
+        bundleManager_ = nullptr;
+        inputInterceptor_ = nullptr;
+        touchEventInjector_ = nullptr;
+        keyEventFilter_ = nullptr;
+        stateCallbackDeathRecipient_ = nullptr;
+        bundleManagerDeathRecipient_ = nullptr;
+
+        syncPromise.set_value();
+        }), "TASK_ONSTOP");
+    syncFuture.wait();
+
     runner_.reset();
     handler_.reset();
     for (auto &iter : dependentServicesStatus_) {
@@ -243,8 +258,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
 {
     HILOG_DEBUG();
     if (!callback || !handler_) {
-        HILOG_ERROR("Parameters check failed! callback:%{public}p, handler:%{public}p",
-            callback.GetRefPtr(), handler_.get());
+        HILOG_ERROR("Parameters check failed!");
         return 0;
     }
 
@@ -252,13 +266,6 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, callback]() -> void {
         HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromise.set_value(0);
-            return;
-        }
-
         if (!stateCallbackDeathRecipient_) {
             stateCallbackDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
             if (!stateCallbackDeathRecipient_) {
@@ -273,10 +280,18 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
             return;
         }
         callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
-        accountData->AddStateCallback(callback);
+        auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
+        if (iter == stateCallbacks_.end()) {
+            stateCallbacks_.push_back(callback);
+            HILOG_INFO("RegisterStateObserver successfully");
+        }
 
-        HILOG_INFO("AccessibleAbilityManagerService::RegisterStateObserver successfully");
-
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            syncPromise.set_value(0);
+            return;
+        }
         uint32_t state = accountData->GetAccessibilityState();
         syncPromise.set_value(state);
         }), "TASK_REGISTER_STATE_OBSERVER");
@@ -1184,7 +1199,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
     if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
         Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
     }
-    for (auto &callback : accountData->GetStateCallbacks()) {
+    for (auto &callback : stateCallbacks_) {
         if (callback) {
             callback->OnStateChanged(state);
         }
@@ -2118,7 +2133,15 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
         }
         switch (callback) {
             case STATE_CALLBACK:
-                accountData->RemoveStateCallback(remote);
+                {
+                    auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
+                        [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
+                            return stateCallback->AsObject() == remote;
+                        });
+                    if (iter != stateCallbacks_.end()) {
+                        stateCallbacks_.erase(iter);
+                    }
+                }
                 break;
             case CAPTION_PROPERTY_CALLBACK:
                 accountData->RemoveCaptionPropertyCallback(remote);
