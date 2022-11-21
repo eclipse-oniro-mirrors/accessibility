@@ -247,7 +247,7 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
         << ", bundleName: " << bundleName << ", abilityName: " << abilityName << ";";
     std::string info = oss.str();
     HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
-    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+    int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "ACCESSIBILITY_UNAVAILABLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
@@ -282,7 +282,7 @@ void Utils::RecordStartingA11yEvent(uint32_t flag)
     std::ostringstream oss;
     oss << "starting accessibility: " << "event: " << "system" << ", id: " << flag << ";";
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
-    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+    int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "ACCESSIBILITY_STARTING_FUNCTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
@@ -297,7 +297,7 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     std::ostringstream oss;
     oss << "starting accessibility: " << "event: " << "extension" << ", name: " << name << ";";
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
-    int32_t ret = OHOS::HiviewDFX::HiSysEvent::Write(
+    int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
         "ACCESSIBILITY_STARTING_FUNCTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
