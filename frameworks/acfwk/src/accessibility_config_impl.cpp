@@ -19,7 +19,6 @@
 #include "iservice_registry.h"
 #include "parameter.h"
 #include "system_ability_definition.h"
-#include "display_power_mgr_client.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -913,11 +912,6 @@ Accessibility::RetError AccessibilityConfig::Impl::SetBrightnessDiscount(const f
 {
     HILOG_INFO("brightness = [%{public}f]", brightness);
     std::lock_guard<std::mutex> lock(mutex_);
-    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
-    if (!displayPowerMgrClient.DiscountBrightness(brightness)) {
-        HILOG_ERROR("Failed to set brightness discount");
-        return Accessibility::RET_ERR_FAILED;
-    }
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to get accessibility service");
         return Accessibility::RET_ERR_SAMGR;
