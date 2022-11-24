@@ -102,11 +102,11 @@ void AccessibleAbilityConnectionUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     AccessibilityAbilityHelper::GetInstance().SetTestChannelId(INVALID_CHANNEL_ID);
-    if (!accountData_) {
+    if (accountData_) {
         accountData_->RemoveAccessibilityWindowConnection(0);
     }
 
-    if (!connection_) {
+    if (connection_) {
         connection_->OnAbilityDisconnectDoneSync(*elementName_);
     }
     connection_ = nullptr;
