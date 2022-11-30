@@ -88,7 +88,7 @@ void AccessibleAbilityClientProxy::Disconnect(const int32_t channelId)
 {
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option(MessageOption::TF_ASYNC);
+    MessageOption option(MessageOption::TF_SYNC);
 
     HILOG_DEBUG();
 

@@ -149,6 +149,7 @@ private:
 struct ExtensionCallbackInfo {
     NativeEngine *engine_;
     NAccessibilityExtension *extension_;
+    std::promise<void> syncPromise_;
 };
 
 struct KeyEventCallbackInfo : public ExtensionCallbackInfo {
