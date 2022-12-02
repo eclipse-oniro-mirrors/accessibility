@@ -22,6 +22,8 @@ namespace Accessibility {
 AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG();
+    HILOG_INFO("bundleName is [%{public}s]", bundleName_.c_str());
+    HILOG_INFO("notificationContent is [%{public}s]", notificationContent_.c_str());
 
     AccessibilityEventInfo *self = this;
     *self = eventInfo;
