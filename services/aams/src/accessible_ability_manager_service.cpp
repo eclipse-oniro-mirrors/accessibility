@@ -186,13 +186,14 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
 
 void AccessibleAbilityManagerService::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
 {
-    HILOG_DEBUG("systemAbilityId:%{public}d removed!", systemAbilityId);
+    HILOG_INFO("systemAbilityId:%{public}d removed!", systemAbilityId);
     if (!handler_) {
         HILOG_DEBUG("Event handler is nullptr.");
         return;
     }
 
     handler_->PostTask(std::bind([=]() -> void {
+        HILOG_INFO("Remove system ability start");
         auto iter = dependentServicesStatus_.find(systemAbilityId);
         if (iter == dependentServicesStatus_.end()) {
             HILOG_ERROR("SystemAbilityId is not found!");

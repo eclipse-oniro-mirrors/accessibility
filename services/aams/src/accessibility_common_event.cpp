@@ -90,11 +90,11 @@ void AccessibilityCommonEvent::SubscriberEvent(const std::shared_ptr<AppExecFwk:
 
 void AccessibilityCommonEvent::UnSubscriberEvent()
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     eventHandles_.clear();
     if (subscriber_) {
         bool unSubscribeResult = EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
-        HILOG_DEBUG("unSubscribeResult = %{public}d", unSubscribeResult);
+        HILOG_INFO("unSubscribeResult = %{public}d", unSubscribeResult);
         subscriber_ = nullptr;
         eventHandler_ = nullptr;
     }
@@ -110,7 +110,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
     eventHandler_->PostTask(std::bind([this, data]() -> void {
         HILOG_DEBUG();
         std::string action = data.GetWant().GetAction();
-        HILOG_INFO("Handle event: %{public}s", action.c_str());
+        HILOG_INFO("Handle event:[%{public}s] eventHandles size[%{public}zu]", action.c_str(), eventHandles_.size());
         auto it = eventHandles_.find(action);
         if (it == eventHandles_.end()) {
             HILOG_ERROR("Ignore event: %{public}s", action.c_str());
