@@ -43,7 +43,7 @@ namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
-    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 60;
+    constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
 } // namespace
 
