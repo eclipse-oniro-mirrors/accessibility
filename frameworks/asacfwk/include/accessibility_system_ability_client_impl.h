@@ -231,12 +231,12 @@ private:
         virtual void OnLoadSystemAbilitySuccess(int32_t systemAbilityId, const sptr<IRemoteObject> &remoteObject) override
         {
             client_.FinishStartSASuccess(systemAbilityId, remoteObject);
-        } 
+        }
 
         virtual void OnLoadSystemAbilityFail(int32_t systemAbilityId) override
         {
             client_.FinishStartSAFailed(systemAbilityId);
-        } 
+        }
 
     private:
         AccessibilitySystemAbilityClientImpl &client_;
