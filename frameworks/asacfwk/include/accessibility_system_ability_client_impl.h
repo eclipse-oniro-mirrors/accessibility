@@ -224,7 +224,7 @@ private:
 
     class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
     public:
-        explicit AccessibilityLoadCallback(AccessibilitySystemAbilityClientImpl &client) 
+        explicit AccessibilityLoadCallback(AccessibilitySystemAbilityClientImpl &client)
             : client_(client) {}
         ~AccessibilityLoadCallback() = default;
 
