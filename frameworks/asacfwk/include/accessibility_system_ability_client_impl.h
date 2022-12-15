@@ -228,7 +228,8 @@ private:
             : client_(client) {}
         ~AccessibilityLoadCallback() = default;
 
-        virtual void OnLoadSystemAbilitySuccess(int32_t systemAbilityId, const sptr<IRemoteObject> &remoteObject) override
+        virtual void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
+            const sptr<IRemoteObject> &remoteObject) override
         {
             client_.FinishStartSASuccess(systemAbilityId, remoteObject);
         }
