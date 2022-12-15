@@ -253,7 +253,8 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
     return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
 }
 
-bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityServiceProxy() {
+bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityServiceProxy()
+{
     if (serviceProxy_) {
         HILOG_DEBUG("Accessibility Service is connected!");
         return true;
@@ -266,7 +267,6 @@ bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityServiceProxy() {
     }
     sptr<AccessibilityLoadCallback> accessibilityLoadCallback_ = new(std::nothrow) AccessibilityLoadCallback(*this);
     int32_t ret = samgr->LoadSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, accessibilityLoadCallback_);
-
     if (ret!= ERR_OK) {
         HILOG_ERROR("systemAbilityId: %d load failed, result code: %d", ACCESSIBILITY_MANAGER_SERVICE_ID, ret);
         return false;
@@ -284,7 +284,8 @@ bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityServiceProxy() {
     return true;
 }
 
-void AccessibilitySystemAbilityClientImpl::FinishStartSASuccess(int32_t systemAbilityId, const sptr<IRemoteObject> &remoteObject)
+void AccessibilitySystemAbilityClientImpl::FinishStartSASuccess(int32_t systemAbilityId,
+    const sptr<IRemoteObject> &remoteObject)
 {
     HILOG_INFO("FinishStartSASuccess sa id: %d.", systemAbilityId);
     if (systemAbilityId != ACCESSIBILITY_MANAGER_SERVICE_ID) {
