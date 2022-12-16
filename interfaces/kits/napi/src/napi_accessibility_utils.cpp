@@ -1059,7 +1059,7 @@ bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode)
     return std::find(pressedKeys.begin(), pressedKeys.end(), keyCode) != pressedKeys.end();
 }
 
-void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::KeyItem* keyItem)
+void GetKeyValue(napi_env env, napi_value keyObject, std::optional<MMI::KeyEvent::KeyItem> keyItem)
 {
     HILOG_DEBUG();
 
@@ -1142,7 +1142,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     // set key
     napi_value keyObject = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &keyObject));
-    const OHOS::MMI::KeyEvent::KeyItem* keyItem = keyEvent->GetKeyItem();
+    std::optional<MMI::KeyEvent::KeyItem> keyItem = keyEvent->GetKeyItem();
     GetKeyValue(env, keyObject, keyItem);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "key", keyObject));
 
@@ -1159,7 +1159,7 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     for (const auto &pressedKeyCode : pressedKeys) {
         napi_value element = nullptr;
         NAPI_CALL_RETURN_VOID(env, napi_create_object(env, &element));
-        const OHOS::MMI::KeyEvent::KeyItem* pressedKeyItem = keyEvent->GetKeyItem(pressedKeyCode);
+        std::optional<MMI::KeyEvent::KeyItem> pressedKeyItem = keyEvent->GetKeyItem(pressedKeyCode);
         GetKeyValue(env, element, pressedKeyItem);
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, keysAarry, index, element));
         ++index;
