@@ -24,6 +24,7 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   include_dirs = [
+    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include/",
     "//foundation/barrierfree/accessibility/common/log/include",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/include",
     "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
@@ -71,6 +72,7 @@ ohos_unittest("asac_unit_test") {
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "samgr:samgr_proxy",
   ]
 }
 

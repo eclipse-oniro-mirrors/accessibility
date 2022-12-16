@@ -40,12 +40,36 @@ std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClie
     return g_Instance;
 }
 
+std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClient::GetShellCommandInstance()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (!g_Instance) {
+        g_Instance = std::make_shared<AccessibilitySystemAbilityClientImpl>(0);
+    } else {
+        HILOG_DEBUG("AccessibilitySystemAbilityClient had construct shell command instance");
+    }
+
+    return g_Instance;
+}
+
 AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
     stateArray_.fill(false);
     if (!ConnectToService()) {
         HILOG_ERROR("Failed to connect to aams service");
+        return;
+    }
+    Init();
+}
+
+AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl(const int32_t param)
+{
+    HILOG_DEBUG("Shell command to loadAccessibilityService dynamicially");
+    stateArray_.fill(false);
+    if (!LoadAccessibilityServiceProxy()) {
+        HILOG_ERROR("LoadAccessibilityServiceProxy -> Failed to load aams service");
         return;
     }
     Init();
@@ -222,10 +246,69 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
         return RET_ERR_INVALID_PARAM;
     }
     if (!serviceProxy_) {
+        LoadAccessibilityServiceProxy();
         HILOG_ERROR("Failed to get aams service");
         return RET_ERR_SAMGR;
     }
     return serviceProxy_->GetAbilityList(accessibilityAbilityTypes, stateType, infos);
+}
+
+bool AccessibilitySystemAbilityClientImpl::LoadAccessibilityServiceProxy()
+{
+    if (serviceProxy_) {
+        HILOG_DEBUG("Accessibility Service is connected!");
+        return true;
+    }
+    std::unique_lock<std::mutex> lock(mutex_);
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!samgr) {
+        HILOG_ERROR("Failed to get ISystemAbilityManager");
+        return false;
+    }
+    sptr<AccessibilityLoadCallback> accessibilityLoadCallback_ = new(std::nothrow) AccessibilityLoadCallback(*this);
+    int32_t ret = samgr->LoadSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID, accessibilityLoadCallback_);
+    if (ret!= ERR_OK) {
+        HILOG_ERROR("systemAbilityId: %d load failed, result code: %d", ACCESSIBILITY_MANAGER_SERVICE_ID, ret);
+        return false;
+    }
+    uint32_t waitIntervalSecond = 60000;
+
+    // wait_for release lock and block until time out(60s) or match the condition with notice
+    auto waitStatus = accessibilityLoadCon_.wait_for(lock, std::chrono::milliseconds(waitIntervalSecond),
+        [this]() { return serviceProxy_ != nullptr; });
+    if (!waitStatus) {
+        // time out or loadcallback fail
+        HILOG_ERROR("tokensync load sa timeout");
+        return false;
+    }
+    return true;
+}
+
+void AccessibilitySystemAbilityClientImpl::FinishStartSASuccess(int32_t systemAbilityId,
+    const sptr<IRemoteObject> &remoteObject)
+{
+    HILOG_INFO("FinishStartSASuccess sa id: %d.", systemAbilityId);
+    if (systemAbilityId != ACCESSIBILITY_MANAGER_SERVICE_ID) {
+        HILOG_ERROR("start systemAbilityId is not sourceSaId!");
+        return;
+    }
+    if (remoteObject == nullptr) {
+        HILOG_ERROR("remoteObject is null");
+        return;
+    }
+
+    std::unique_lock<std::mutex> lock(mutex_);
+    serviceProxy_ = iface_cast<Accessibility::IAccessibleAbilityManagerService>(remoteObject);
+    accessibilityLoadCon_.notify_one();
+}
+
+void AccessibilitySystemAbilityClientImpl::FinishStartSAFailed(int32_t systemAbilityId)
+{
+    HILOG_INFO("Get accessibility sa failed.");
+    // get lock which wait_for release and send a notice
+    std::unique_lock<std::mutex> lock(mutex_);
+    serviceProxy_ = nullptr;
+    accessibilityLoadCon_.notify_one();
 }
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)

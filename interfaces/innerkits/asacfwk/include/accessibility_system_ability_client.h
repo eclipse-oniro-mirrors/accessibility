@@ -47,6 +47,12 @@ public:
     static std::shared_ptr<AccessibilitySystemAbilityClient> GetInstance();
 
     /**
+     * @brief Obtains the AccessibilitySystemAbilityClient instance from shell command.
+     * @return AccessibilitySystemAbilityClient instance
+     */
+    static std::shared_ptr<AccessibilitySystemAbilityClient> GetShellCommandInstance();
+
+    /**
      * @brief Deconstruct.
      */
     virtual ~AccessibilitySystemAbilityClient() = default;
