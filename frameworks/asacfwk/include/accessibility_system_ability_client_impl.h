@@ -18,14 +18,10 @@
 
 #include <array>
 #include <mutex>
-#include <condition_variable>
-
 #include "accessibility_element_operator_impl.h"
 #include "accessibility_system_ability_client.h"
 #include "accessible_ability_manager_state_observer_stub.h"
 #include "i_accessible_ability_manager_service.h"
-#include "system_ability_load_callback_stub.h"
-#include "iremote_object.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -39,11 +35,6 @@ public:
      * @brief Construct.
      */
     AccessibilitySystemAbilityClientImpl();
-
-    /**
-     * @brief Construct of shell command.
-     */
-    AccessibilitySystemAbilityClientImpl(const int32_t param);
 
     /**
      * @brief Deconstruct.
@@ -79,12 +70,6 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError IsTouchExplorationEnabled(bool &isEnabled) override;
-
-    bool LoadAccessibilityServiceProxy();
-
-    void FinishStartSASuccess(int32_t systemAbilityId, const sptr<IRemoteObject> &remoteObject);
-
-    void FinishStartSAFailed(int32_t systemAbilityId);
 
     /**
      * @brief Queries the list of accessibility abilities.
@@ -222,27 +207,6 @@ private:
         AccessibilitySystemAbilityClientImpl &client_;
     };
 
-    class AccessibilityLoadCallback : public SystemAbilityLoadCallbackStub {
-    public:
-        explicit AccessibilityLoadCallback(AccessibilitySystemAbilityClientImpl &client)
-            : client_(client) {}
-        ~AccessibilityLoadCallback() = default;
-
-        virtual void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
-            const sptr<IRemoteObject> &remoteObject) override
-        {
-            client_.FinishStartSASuccess(systemAbilityId, remoteObject);
-        }
-
-        virtual void OnLoadSystemAbilityFail(int32_t systemAbilityId) override
-        {
-            client_.FinishStartSAFailed(systemAbilityId);
-        }
-
-    private:
-        AccessibilitySystemAbilityClientImpl &client_;
-    };
-
     /**
      * @brief Connect to AAMS Service.
      * @return success : true, failed : false.
@@ -267,7 +231,6 @@ private:
     bool CheckEventType(EventType eventType);
 
     std::mutex mutex_;
-    std::condition_variable accessibilityLoadCon_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;
 
