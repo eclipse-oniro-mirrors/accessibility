@@ -65,6 +65,7 @@ ohos_shared_library("accessibleability") {
     "//base/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
     "//base/accessibility/interfaces/kits/napi:accessibility",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
+    "//foundation/aafwk/standard/frameworks/kits/appkit:app_context",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//utils/native/base:utils",
   ]
