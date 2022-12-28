@@ -183,6 +183,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
+    std::future syncFuture = callbackInfo->syncPromise_.get_future();
 
     int ret = uv_queue_work(
         loop,
@@ -191,6 +192,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         [](uv_work_t *work, int status) {
             ExtensionCallbackInfo *data = static_cast<ExtensionCallbackInfo*>(work->data);
             data->extension_->CallObjectMethod("onDisconnect");
+            data->syncPromise_.set_value();
             delete data;
             data = nullptr;
             delete work;
@@ -198,11 +200,13 @@ void NAccessibilityExtension::OnAbilityDisconnected()
         });
     if (ret) {
         HILOG_ERROR("Failed to execute OnAbilityDisconnected work queue");
+        callbackInfo->syncPromise_.set_value();
         delete callbackInfo;
         callbackInfo = nullptr;
         delete work;
         work = nullptr;
     }
+    syncFuture.get();
     HILOG_INFO("end.");
 }
 
