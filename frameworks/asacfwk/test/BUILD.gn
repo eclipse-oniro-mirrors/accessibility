@@ -24,6 +24,7 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   include_dirs = [
+    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara/include",
     "//foundation/barrierfree/accessibility/common/log/include",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/include",
     "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
@@ -47,6 +48,7 @@ ohos_unittest("asac_unit_test") {
     "//foundation/barrierfree/accessibility/frameworks/aafwk/src/accessibility_element_operator_callback_impl.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_bundle_manager.cpp",
+    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "unittest/accessibility_element_operator_impl_test.cpp",
     "unittest/accessibility_system_ability_client_impl_test.cpp",

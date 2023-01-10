@@ -17,12 +17,15 @@
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
+#include "parameter.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr int32_t REQUEST_WINDOW_ID_MASK_BIT = 16;
+    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
 } // namespaces
 
 static std::mutex g_Mutex;
@@ -43,7 +46,19 @@ std::shared_ptr<AccessibilitySystemAbilityClient> AccessibilitySystemAbilityClie
 AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
 {
     HILOG_DEBUG();
+
     stateArray_.fill(false);
+    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+    }
+
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam < 0 || std::strcmp(value, "true")) {
+        HILOG_ERROR("accessibility service is not ready.");
+        return;
+    }
     if (!ConnectToService()) {
         HILOG_ERROR("Failed to connect to aams service");
         return;
@@ -59,6 +74,7 @@ AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
 bool AccessibilitySystemAbilityClientImpl::ConnectToService()
 {
     HILOG_DEBUG();
+
     if (serviceProxy_) {
         HILOG_DEBUG("AAMS Service is connected");
         return true;
@@ -76,10 +92,12 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         return false;
     }
 
-    deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
     if (!deathRecipient_) {
-        HILOG_ERROR("Failed to create deathRecipient.");
-        return false;
+        deathRecipient_ = new(std::nothrow) DeathRecipient(*this);
+        if (!deathRecipient_) {
+            HILOG_ERROR("Failed to create deathRecipient.");
+            return false;
+        }
     }
 
     if ((object->IsProxyObject()) && (!object->AddDeathRecipient(deathRecipient_))) {
@@ -92,18 +110,55 @@ bool AccessibilitySystemAbilityClientImpl::ConnectToService()
         HILOG_ERROR("IAccessibleAbilityManagerService iface_cast failed");
         return false;
     }
-
     return true;
+}
+
+void AccessibilitySystemAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
+{
+    HILOG_DEBUG("Parameter key = [%{public}s] value = [%{public}s]", key, value);
+
+    if (!key || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
+        HILOG_WARN("not accessibility.config.ready callback");
+        return;
+    }
+
+    if (!value || std::strcmp(value, "true")) {
+        HILOG_WARN("accessibility.config.ready value not true");
+        return;
+    }
+
+    if (!context) {
+        HILOG_ERROR("accessibility.config.ready context NULL");
+        return;
+    }
+
+    AccessibilitySystemAbilityClientImpl* implPtr = static_cast<AccessibilitySystemAbilityClientImpl*>(context);
+    {
+        HILOG_DEBUG("ConnectToService start.");
+        std::lock_guard<std::mutex> lock(implPtr->mutex_);
+        if (implPtr->serviceProxy_) {
+            HILOG_DEBUG("service is already started.");
+            return;
+        }
+        if (!implPtr->ConnectToService()) {
+            HILOG_ERROR("Failed to connect to aams service");
+            return;
+        }
+        implPtr->Init();
+        implPtr->ReregisterElementOperator();
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::Init()
 {
     HILOG_DEBUG();
     stateArray_.fill(false);
-    stateObserver_ = new(std::nothrow) AccessibleAbilityManagerStateObserverImpl(*this);
     if (!stateObserver_) {
-        HILOG_ERROR("Failed to create stateObserver.");
-        return;
+        stateObserver_ = new(std::nothrow) AccessibleAbilityManagerStateObserverImpl(*this);
+        if (!stateObserver_) {
+            HILOG_ERROR("Failed to create stateObserver.");
+            return;
+        }
     }
     uint32_t stateType = serviceProxy_->RegisterStateObserver(stateObserver_);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
@@ -162,6 +217,19 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
     }
     elementOperators_[windowId] = aamsInteractionOperator;
     return serviceProxy_->RegisterElementOperator(windowId, aamsInteractionOperator);
+}
+
+void AccessibilitySystemAbilityClientImpl::ReregisterElementOperator()
+{
+    HILOG_DEBUG();
+
+    if (!serviceProxy_) {
+        HILOG_ERROR("serviceProxy_ is null.");
+        return;
+    }
+    for (auto iter = elementOperators_.begin(); iter != elementOperators_.end(); iter++) {
+        serviceProxy_->RegisterElementOperator(iter->first, iter->second);
+    }
 }
 
 RetError AccessibilitySystemAbilityClientImpl::DeregisterElementOperator(const int32_t windowId)

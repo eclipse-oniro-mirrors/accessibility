@@ -229,6 +229,8 @@ private:
      * @return True: The data of event type is valid; otherwise is not.
      */
     bool CheckEventType(EventType eventType);
+    static void OnParameterChanged(const char *key, const char *value, void *context);
+    void ReregisterElementOperator();
 
     std::mutex mutex_;
     StateArray stateArray_;

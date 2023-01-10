@@ -26,7 +26,7 @@ public:
     /**
      * @brief Construct
      */
-    AccessibilityUITestAbilityImpl();
+    AccessibilityUITestAbilityImpl() = default;
 
     /**
      * @brief Destruct

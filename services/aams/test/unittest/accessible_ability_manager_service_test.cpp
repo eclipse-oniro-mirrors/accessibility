@@ -147,7 +147,8 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAbilityList_001, TestSize.L
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAbilityList_001 start";
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(0xFFFFFFFF, 3, infos);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAbilityList(
+        ACCESSIBILITY_ABILITY_TYPE_ALL, ABILITY_STATE_ENABLE, infos);
     EXPECT_EQ(infos.size(), 0);
 
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_GetAbilityList_001 end";
