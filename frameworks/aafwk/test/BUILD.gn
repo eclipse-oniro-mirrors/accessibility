@@ -77,7 +77,7 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
   module_out_path = module_output_path
   sources = [
     "../src/accessibility_ui_test_ability_impl.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_client_impl.cpp",
+    "./mock/src/mock_accessible_ability_client_impl.cpp",
     "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_listener.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
     "//foundation/barrierfree/accessibility/services/test/mock/mock_bundle_manager.cpp",
