@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,6 +36,11 @@ public:
      * @brief The deconstructor of AccessibleAbilityClientImpl.
      */
     ~AccessibleAbilityClientImpl();
+
+    /**
+     * @brief Get the implement of accessibility ability client.
+     */
+    static sptr<AccessibleAbilityClientImpl> GetAbilityClientImplement();
 
     /**
      * @brief Gets remote object.
@@ -252,6 +257,20 @@ public:
      */
     void NotifyServiceDied(const wptr<IRemoteObject> &remote);
 
+    /**
+     * @brief Connect to AAMS. For UI test.
+     * @return Return RET_OK if the command of connection is sent successfully,
+     *         otherwise refer to the RetError for the failure.
+     */
+    RetError Connect();
+
+    /**
+     * @brief disconnect to AAMS. For UI test.
+     * @return Return RET_OK if the command of disconnect is sent successfully,
+     *         otherwise refer to the RetError for the failure.
+     */
+    RetError Disconnect();
+
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
@@ -281,6 +300,8 @@ private:
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
     RetError SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
+    bool InitAccessibilityServiceProxy();
+    static void OnParameterChanged(const char *key, const char *value, void *context);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;
