@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@
 #include "accessibility_ui_test_ability_impl.h"
 
 #include <mutex>
-#include "accessible_ability_client_impl.h"
+#include "accessible_ability_client.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
@@ -34,6 +34,29 @@ std::shared_ptr<AccessibilityUITestAbility> AccessibilityUITestAbility::GetInsta
         g_Instance = std::make_shared<AccessibilityUITestAbilityImpl>();
     }
     return g_Instance;
+}
+
+AccessibilityUITestAbilityImpl::AccessibilityUITestAbilityImpl()
+{
+    HILOG_DEBUG();
+
+    sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!samgr) {
+        HILOG_ERROR("Failed to get ISystemAbilityManager");
+        return;
+    }
+
+    sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
+    if (!object) {
+        HILOG_ERROR("Get IAccessibleAbilityManagerService object from samgr failed");
+        return;
+    }
+
+    serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Get aams proxy failed");
+        return;
+    }
 }
 
 RetError AccessibilityUITestAbilityImpl::RegisterAbilityListener(
@@ -56,23 +79,28 @@ RetError AccessibilityUITestAbilityImpl::RegisterAbilityListener(
 RetError AccessibilityUITestAbilityImpl::Connect()
 {
     HILOG_INFO();
-    sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
     if (!aaClient) {
         HILOG_ERROR("aaClient is nullptr");
         return RET_ERR_NULLPTR;
     }
-    return aaClient->Connect();
+
+    return serviceProxy_->EnableUITestAbility(aaClient->GetRemoteObject());
 }
 
 RetError AccessibilityUITestAbilityImpl::Disconnect()
 {
     HILOG_INFO();
-    sptr<AccessibleAbilityClientImpl> aaClient = AccessibleAbilityClientImpl::GetAbilityClientImplement();
-    if (!aaClient) {
-        HILOG_ERROR("aaClient is nullptr");
-        return RET_ERR_NULLPTR;
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
     }
-    return aaClient->Disconnect();
+    return serviceProxy_->DisableUITestAbility();
 }
 
 RetError AccessibilityUITestAbilityImpl::GetFocus(
