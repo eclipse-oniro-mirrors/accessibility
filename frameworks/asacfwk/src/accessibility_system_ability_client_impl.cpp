@@ -48,22 +48,21 @@ AccessibilitySystemAbilityClientImpl::AccessibilitySystemAbilityClientImpl()
     HILOG_DEBUG();
 
     stateArray_.fill(false);
-    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        HILOG_ERROR("accessibility service is ready.");
+        if (!ConnectToService()) {
+            HILOG_ERROR("Failed to connect to aams service");
+            return;
+        }
+        Init();
+    }
+
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
     if (retSysParam) {
         HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
     }
-
-    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
-    retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
-    if (retSysParam < 0 || std::strcmp(value, "true")) {
-        HILOG_ERROR("accessibility service is not ready.");
-        return;
-    }
-    if (!ConnectToService()) {
-        HILOG_ERROR("Failed to connect to aams service");
-        return;
-    }
-    Init();
 }
 
 AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl()
