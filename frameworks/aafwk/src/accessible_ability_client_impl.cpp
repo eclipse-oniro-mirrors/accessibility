@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
 #include "iservice_registry.h"
+#include "parameter.h"
 #include "system_ability_definition.h"
 
 namespace OHOS {
@@ -30,6 +31,8 @@ namespace Accessibility {
 // tmp: wait for window registing when client connect done
 constexpr int WAIT_WINDOW_REGIST = 500;
 namespace {
+    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
+    constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t ROOT_NONE_ID = -1;
     std::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
@@ -45,28 +48,71 @@ sptr<AccessibleAbilityClient> AccessibleAbilityClient::GetInstance()
     return g_Instance;
 }
 
+sptr<AccessibleAbilityClientImpl> AccessibleAbilityClientImpl::GetAbilityClientImplement()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (!g_Instance) {
+        g_Instance = new(std::nothrow) AccessibleAbilityClientImpl();
+    }
+    return g_Instance;
+}
+
 AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
 {
     HILOG_DEBUG();
+    char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    if (retSysParam >= 0 && !std::strcmp(value, "true")) {
+        // Accessibility service is ready
+        if (!InitAccessibilityServiceProxy()) {
+            HILOG_ERROR("Init accessibility service proxy failed");
+        }
+    }
+
+    HILOG_DEBUG("Start watching accessibility service.");
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(),
+        &AccessibleAbilityClientImpl::OnParameterChanged, this);
+    if (retSysParam) {
+        HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
+    }
+}
+
+AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (serviceProxy_ && serviceProxy_->AsObject()) {
+        HILOG_DEBUG("Remove service death recipient");
+        serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
+    }
+}
+
+bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
+{
+    if (serviceProxy_) {
+        HILOG_DEBUG("Accessibility Service is connected");
+        return true;
+    }
 
     sptr<ISystemAbilityManager> samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!samgr) {
         HILOG_ERROR("Failed to get ISystemAbilityManager");
-        return;
+        return false;
     }
     HILOG_DEBUG("ISystemAbilityManager obtained");
 
     sptr<IRemoteObject> object = samgr->GetSystemAbility(ACCESSIBILITY_MANAGER_SERVICE_ID);
     if (!object) {
         HILOG_ERROR("Get IAccessibleAbilityManagerService object from samgr failed");
-        return;
+        return false;
     }
     HILOG_DEBUG("Get remote object ok");
 
     serviceProxy_ = iface_cast<IAccessibleAbilityManagerService>(object);
     if (!serviceProxy_) {
         HILOG_ERROR("Get aams proxy failed");
-        return;
+        return false;
     }
 
     // Add death recipient
@@ -74,7 +120,7 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
         accessibilityServiceDeathRecipient_ = new(std::nothrow) AccessibilityServiceDeathRecipient(*this);
         if (!accessibilityServiceDeathRecipient_) {
             HILOG_ERROR("Failed to create service deathRecipient.");
-            return;
+            return false;
         }
     }
 
@@ -82,25 +128,42 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
         HILOG_DEBUG("Add death recipient");
         serviceProxy_->AsObject()->AddDeathRecipient(accessibilityServiceDeathRecipient_);
     }
+    return true;
 }
 
-AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
+void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
 {
-    HILOG_DEBUG();
-    if (serviceProxy_ && serviceProxy_->AsObject()) {
-        HILOG_DEBUG("Remove service death recipient");
-        serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
+    HILOG_DEBUG("Parameter key = [%{public}s] value = [%{public}s]", key, value);
+
+    if (!key || std::strcmp(key, SYSTEM_PARAMETER_AAMS_NAME.c_str())) {
+        HILOG_WARN("not accessibility.config.ready callback");
+        return;
+    }
+
+    if (!value || std::strcmp(value, "true")) {
+        HILOG_WARN("accessibility.config.ready value not true");
+        return;
+    }
+
+    if (!context) {
+        HILOG_ERROR("accessibility.config.ready context NULL");
+        return;
+    }
+
+    AccessibleAbilityClientImpl* implPtr = static_cast<AccessibleAbilityClientImpl*>(context);
+    {
+        HILOG_DEBUG("ConnectToService start.");
+        std::lock_guard<std::mutex> lock(implPtr->mutex_);
+        if (implPtr->InitAccessibilityServiceProxy()) {
+            HILOG_DEBUG("ConnectToService Success");
+        }
     }
 }
 
 sptr<IRemoteObject> AccessibleAbilityClientImpl::GetRemoteObject()
 {
     HILOG_INFO();
-    if (!g_Instance) {
-        HILOG_ERROR("instance is nullptr");
-        return nullptr;
-    }
-    return g_Instance->AsObject();
+    return this->AsObject();
 }
 
 RetError AccessibleAbilityClientImpl::RegisterAbilityListener(
@@ -554,6 +617,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
             listener_ = nullptr;
 
             object->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
+            serviceProxy_ = nullptr;
             channelClient_ = nullptr;
             HILOG_DEBUG("ResetAAClient OK");
         }
@@ -649,6 +713,29 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     SetCacheElementInfo(windowId, elementInfos);
     info = elementInfos.front();
     return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::Connect()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+
+    return serviceProxy_->EnableUITestAbility(this->AsObject());
+}
+
+RetError AccessibleAbilityClientImpl::Disconnect()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    return serviceProxy_->DisableUITestAbility();
 }
 } // namespace Accessibility
 } // namespace OHOS
