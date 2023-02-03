@@ -410,7 +410,9 @@ void NAccessibilityElement::AttributeValueComplete(napi_env env, napi_status sta
     HILOG_DEBUG("result is %{public}d", callbackInfo->ret_);
     result[PARAM0] = CreateBusinessError(env, callbackInfo->ret_);
     if (callbackInfo->callback_) {
-        napi_value callback, returnVal, undefined;
+        napi_value callback;
+        napi_value returnVal;
+        napi_value undefined;
         napi_get_reference_value(env, callbackInfo->callback_, &callback);
         napi_get_undefined(env, &undefined);
         napi_call_function(env, undefined, callback, ARGS_SIZE_TWO, result, &returnVal);
