@@ -28,7 +28,7 @@
             OHOS::Accessibility::TouchInjectHandler*;
             OHOS::Accessibility::TouchEventInjector*;
             OHOS::Accessibility::KeyEventFilter*;
-            OHOS::Accessibility::AccessibilityMouseAutoClick*;
+            OHOS::Accessibility::AccessibilityMouseAutoclick*;
             OHOS::Accessibility::AccessibilityMouseKey*;
             OHOS::Accessibility::AccessibilityShortKey*;
             OHOS::Accessibility::AccessibilityWindowManager*;
