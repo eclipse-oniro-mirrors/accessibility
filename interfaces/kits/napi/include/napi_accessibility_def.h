@@ -37,6 +37,7 @@ constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
 const std::string ERROR_MESSAGE_PARAMETER_ERROR = "Input parameter error";
 const std::string ERROR_MESSAGE_NO_PERMISSION = "Permission denied";
+const std::string ERROR_MESSAGE_NOT_SYSTEM_APP = "Not system App";
 const std::string ERROR_MESSAGE_NO_RIGHT = "Do not have accessibility right for this operation";
 const std::string ERROR_MESSAGE_SYSTEM_ABNORMALITY = "System abnormality";
 const std::string ERROR_MESSAGE_PROPERTY_NOT_EXIST = "This property does not exist";
@@ -47,6 +48,7 @@ const std::string ERROR_MESSAGE_TARGET_ABILITY_ALREADY_ENABLED = "Target ability
 enum class NAccessibilityErrorCode : int32_t {
     ACCESSIBILITY_OK = 0,
     ACCESSIBILITY_ERROR_NO_PERMISSION = 201,
+    ACCESSIBILITY_ERROR_NOT_SYSTEM_APP = 202,
     ACCESSIBILITY_ERROR_INVALID_PARAM = 401,
     ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY = 9300000,
     ACCESSIBILITY_ERROR_ERROR_EXTENSION_NAME = 9300001,
@@ -107,5 +109,7 @@ const std::map<OHOS::Accessibility::RetError, NAccessibilityErrMsg> ACCESSIBILIT
         {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_PROPERTY_NOT_EXIST, ERROR_MESSAGE_PROPERTY_NOT_EXIST}},
     {OHOS::Accessibility::RetError::RET_ERR_ACTION_NOT_SUPPORT,
         {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_ACTION_NOT_SUPPORT, ERROR_MESSAGE_ACTION_NOT_SUPPORT}},
+    {OHOS::Accessibility::RetError::RET_ERR_NOT_SYSTEM_APP,
+        {NAccessibilityErrorCode::ACCESSIBILITY_ERROR_NOT_SYSTEM_APP, ERROR_MESSAGE_NOT_SYSTEM_APP}},
 };
 #endif // NAPI_ACCESSIBILITY_DEF_H

@@ -90,6 +90,7 @@ declare namespace config {
    * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
    * @param capability Indicates the ability.
    * @throws { BusinessError } 201 - Permission denied.
+   * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
    * @throws { BusinessError } 9300002 - Target ability already enabled.
@@ -101,6 +102,7 @@ declare namespace config {
    * Disable the accessibility extension ability.
    * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
    * @throws { BusinessError } 201 - Permission denied.
+   * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
    */
@@ -111,6 +113,7 @@ declare namespace config {
    * Register the listener that watches for changes in the enabled status of accessibility extensions.
    * @param type Indicates the type of event.
    * @param callback Indicates the listener.
+   * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    */
   function on(type: 'enabledAccessibilityExtensionListChange', callback: Callback<void>): void;
@@ -119,6 +122,7 @@ declare namespace config {
    * Deregister listener that watches for changes in the enabled status of accessibility extensions.
    * @param type Indicates the type of event.
    * @param callback Indicates the listener.
+   * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    */
   function off(type: 'enabledAccessibilityExtensionListChange', callback?: Callback<void>): void;
@@ -131,6 +135,7 @@ declare namespace config {
      * Setting configuration value.
      * @param value Indicates the value.
      * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 202 - Not system App.
      * @throws { BusinessError } 401 - Input parameter error.
      */
     set(value: T): Promise<void>;
@@ -139,6 +144,7 @@ declare namespace config {
     /**
      * Getting configuration value.
      * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 202 - Not system App.
      */
     get(): Promise<T>;
     get(callback: AsyncCallback<T>): void;
@@ -147,6 +153,7 @@ declare namespace config {
      * Register the listener to listen for configuration changes.
      * @param callback Indicates the listener.
      * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 202 - Not system App.
      * @throws { BusinessError } 401 - Input parameter error.
      */
     on(callback: Callback<T>): void;
@@ -154,6 +161,7 @@ declare namespace config {
     /**
      * Deregister the listener to listen for configuration changes.
      * @param callback Indicates the listener.
+     * @throws { BusinessError } 202 - Not system App.
      */
     off(callback?: Callback<T>): void;
   }

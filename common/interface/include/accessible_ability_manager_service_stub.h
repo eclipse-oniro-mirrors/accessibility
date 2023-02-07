@@ -56,6 +56,12 @@ private:
     bool CheckPermission(const std::string &permission);
 
     /**
+     * @brief Check if the caller is a system application.
+     * @return Check result.
+     */
+    bool IsSystemApp();
+
+    /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
      * @param data The data of process communication
      * @param reply The response of IPC request
