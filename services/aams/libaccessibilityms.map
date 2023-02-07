@@ -9,7 +9,7 @@
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityConnection*;
             OHOS::Accessibility::CreateWant*;
             OHOS::Accessibility::AAMSEventHandler*;
-            OHOS::Accessibility::AccessibilityAbilityManagerService*;
+            OHOS::Accessibility::AccessibleAbilityManagerService*;
             non-virtual?thunk?to?OHOS::Accessibility::AccessibilityAbilityManagerService*;
             virtual?thunk?to?OHOS::Accessibility::AccessibilityAbilityManagerService*;
             OHOS::Accessibility::AccessibilityAccountData*;
