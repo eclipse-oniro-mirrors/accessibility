@@ -50,6 +50,8 @@
             non-virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityChannelStub*;
+            OHOS::SystemAbilityLoadCallbackStub*;
+            VTT?for?OHOS::SystemAbilityLoadCallbackStub*;
 	    };
     local:
         *;
