@@ -1,0 +1,28 @@
+{
+    global:
+        extern "C++" {
+            OHOS::Accessibility::AccessibilityAbilityInfo*;
+            OHOS::AccessibilityConfig::CaptionProperty*;
+            OHOS::Accessibility::AccessibilityElementInfo*;
+            OHOS::Accessibility::AccessibleAction*;
+            OHOS::Accessibility::RangeInfo*;
+            OHOS::Accessibility::GridInfo*;
+            OHOS::Accessibility::GridItemInfo*;
+            OHOS::Accessibility::AccessibilityMemo*;
+            OHOS::Accessibility::AccessibilityEventInfo*;
+            OHOS::Accessibility::AccessibilityWindowInfo*;
+            OHOS::Accessibility::AccessibilityGestureInjectPath*;
+            OHOS::Accessibility::OHOS_PERMISSION*;
+            OHOS::Accessibility::STATE_*;
+            OHOS::Accessibility::ANY_WINDOW_ID;
+            OHOS::Accessibility::FOCUS_*;
+            OHOS::Accessibility::INVALID_*;
+            OHOS::Accessibility::ROOT_NODE_ID*;
+            OHOS::Accessibility::GET_SOURCE_PREFETCH_MODE*;
+            OHOS::Accessibility::ACTIVE_WINDOW_ID;
+            OHOS::Accessibility::ACTION_ARGU_SET_TEXT;
+            OHOS::Accessibility::PREFETCH_*;
+    };
+    local:
+        *;
+};
