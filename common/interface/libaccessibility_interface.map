@@ -14,6 +14,8 @@
             OHOS::Accessibility::AccessibilityElementOperatorStub*;
             OHOS::Accessibility::AccessibilityEnableAbilityListsObserverProxy*;
             OHOS::Accessibility::AccessibilityEnableAbilityListsObserverStub*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibilityEnableAbilityListsObserverProxy*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerConfigObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityChannelProxy*;
             OHOS::Accessibility::AccessibleAbilityChannelStub*;
             OHOS::Accessibility::AccessibleAbilityClientProxy*;
