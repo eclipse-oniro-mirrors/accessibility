@@ -25,6 +25,7 @@
             OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             OHOS::Accessibility::AccessibleAbilityManagerStateObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerStateObserverStub*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerStateObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerConfigObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerConfigObserverStub*;
             OHOS::Accessibility::AccessibilityAbilityInfoParcel*;
