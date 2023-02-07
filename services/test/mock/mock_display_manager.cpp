@@ -90,24 +90,24 @@ std::vector<sptr<Display>> DisplayManager::GetAllDisplays()
     return res;
 }
 
-bool DisplayManager::RegisterDisplayListener(sptr<IDisplayListener> listener)
+DMError DisplayManager::RegisterDisplayListener(sptr<IDisplayListener> listener)
 {
-    return true;
+    return DMError::DM_OK;
 }
 
-bool DisplayManager::UnregisterDisplayListener(sptr<IDisplayListener> listener)
+DMError DisplayManager::UnregisterDisplayListener(sptr<IDisplayListener> listener)
 {
-    return true;
+    return DMError::DM_OK;
 }
 
-bool DisplayManager::RegisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
+DMError DisplayManager::RegisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
 {
-    return true;
+    return DMError::DM_OK;
 }
 
-bool DisplayManager::UnregisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
+DMError DisplayManager::UnregisterDisplayPowerEventListener(sptr<IDisplayPowerEventListener> listener)
 {
-    return true;
+    return DMError::DM_OK;
 }
 
 bool DisplayManager::WakeUpBegin(PowerStateChangeReason reason)
