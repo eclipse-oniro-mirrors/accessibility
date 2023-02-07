@@ -71,7 +71,7 @@ accessibility_data_parcel_src = [
 ohos_shared_library("accessibility_interface") {
   sources = accessibility_interface_src
   sources += accessibility_data_parcel_src
-
+  version_script = "libaccessibility_interface.map"
   configs = [
     ":accessibility_interface_private_config",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
