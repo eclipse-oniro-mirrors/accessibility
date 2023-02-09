@@ -14,6 +14,8 @@
             OHOS::Accessibility::AccessibilityElementOperatorStub*;
             OHOS::Accessibility::AccessibilityEnableAbilityListsObserverProxy*;
             OHOS::Accessibility::AccessibilityEnableAbilityListsObserverStub*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibilityEnableAbilityListsObserverProxy*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerConfigObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityChannelProxy*;
             OHOS::Accessibility::AccessibleAbilityChannelStub*;
             OHOS::Accessibility::AccessibleAbilityClientProxy*;
@@ -23,6 +25,7 @@
             OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             OHOS::Accessibility::AccessibleAbilityManagerStateObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerStateObserverStub*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerStateObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerConfigObserverProxy*;
             OHOS::Accessibility::AccessibleAbilityManagerConfigObserverStub*;
             OHOS::Accessibility::AccessibilityAbilityInfoParcel*;
@@ -47,6 +50,8 @@
             non-virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityChannelStub*;
+            OHOS::SystemAbilityLoadCallbackStub*;
+            VTT?for?OHOS::SystemAbilityLoadCallbackStub*;
 	    };
     local:
         *;
