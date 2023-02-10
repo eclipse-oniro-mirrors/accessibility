@@ -42,6 +42,7 @@
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityChannelStub*;
             virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
             non-virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityManagerServiceStub*;
+            vtable?for?OHOS::Accessibility::AccessibilityZoomGesture*;
 	    };
     local:
         *;
