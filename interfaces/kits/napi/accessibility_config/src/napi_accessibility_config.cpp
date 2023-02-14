@@ -17,7 +17,9 @@
 
 #include <uv.h>
 #include "hilog_wrapper.h"
+#include "ipc_skeleton.h"
 #include "napi_accessibility_utils.h"
+#include "tokenid_kit.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;
@@ -32,6 +34,11 @@ std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbil
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -104,6 +111,11 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -170,6 +182,11 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
 napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -216,6 +233,11 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
 napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_TWO;
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
@@ -663,6 +685,11 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
 napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_value jsthis;
@@ -711,6 +738,11 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
 napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return nullptr;
+    }
     napi_value jsthis;
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
@@ -807,6 +839,11 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return;
+    }
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
@@ -829,6 +866,11 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
 void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
+    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
+        napi_throw(env, err);
+        return;
+    }
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
