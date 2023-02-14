@@ -26,51 +26,56 @@ import { GesturePath } from "../@ohos.accessibility.GesturePath";
  */
 export default class AccessibilityExtensionContext extends ExtensionContext {
     /**
-     * Set the name of the bundle name that is interested in sending the event.
-     * @param targetNames 
+     * Set the bundle names that is interested in sending the event.
+     * @param targetNames The bundle names that are interested in sending the event.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      */
-    setTargetBundleName(targetNames: Array<string>): Promise<void>;
     setTargetBundleName(targetNames: Array<string>, callback: AsyncCallback<void>): void;
+    setTargetBundleName(targetNames: Array<string>): Promise<void>;
 
     /**
      * Get focus element.
      * @param isAccessibilityFocus Indicates whether the acquired element has an accessibility focus.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
      */
+    getFocusElement(isAccessibilityFocus: boolean, callback: AsyncCallback<AccessibilityElement>): void;
     getFocusElement(isAccessibilityFocus?: boolean): Promise<AccessibilityElement>;
     getFocusElement(callback: AsyncCallback<AccessibilityElement>): void;
-    getFocusElement(isAccessibilityFocus: boolean, callback: AsyncCallback<AccessibilityElement>): void;
 
     /**
      * Get window root element.
      * @param windowId Indicates the window ID.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
      */
+    getWindowRootElement(windowId: number, callback: AsyncCallback<AccessibilityElement>): void;
     getWindowRootElement(windowId?: number): Promise<AccessibilityElement>;
     getWindowRootElement(callback: AsyncCallback<AccessibilityElement>): void;
-    getWindowRootElement(windowId: number, callback: AsyncCallback<AccessibilityElement>): void;
 
     /**
      * Get window list.
      * @param displayId Indicates the display ID.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
      */
+    getWindows(displayId: number, callback: AsyncCallback<Array<AccessibilityElement>>): void;
     getWindows(displayId?: number): Promise<Array<AccessibilityElement>>;
     getWindows(callback: AsyncCallback<Array<AccessibilityElement>>): void;
-    getWindows(displayId: number, callback: AsyncCallback<Array<AccessibilityElement>>): void;
 
     /**
      * Inject gesture path events.
      * @param gesturePath Indicates the gesture path.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
      */
-    injectGesture(gesturePath: GesturePath): Promise<void>;
     injectGesture(gesturePath: GesturePath, callback: AsyncCallback<void>): void;
+    injectGesture(gesturePath: GesturePath): Promise<void>;
 }
 
 /**
@@ -83,63 +88,70 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
 declare interface AccessibilityElement {
     /**
      * Get a list of attribute names.
+     * @param callback Indicates the listener.
      */
-    attributeNames<T extends keyof ElementAttributeValues>(): Promise<Array<T>>;
     attributeNames<T extends keyof ElementAttributeValues>(callback: AsyncCallback<Array<T>>): void;
+    attributeNames<T extends keyof ElementAttributeValues>(): Promise<Array<T>>;
 
     /**
      * Get the value of an attribute.
      * @param attributeName Indicates the attribute name.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300004 - This property does not exist.
      */
-    attributeValue<T extends keyof ElementAttributeValues>(attributeName: T): Promise<ElementAttributeValues[T]>;
     attributeValue<T extends keyof ElementAttributeValues>(attributeName: T,
         callback: AsyncCallback<ElementAttributeValues[T]>): void;
+    attributeValue<T extends keyof ElementAttributeValues>(attributeName: T): Promise<ElementAttributeValues[T]>;
 
     /**
      * Get a list of supported actions.
+     * @param callback Indicates the listener.
      */
-    actionNames(): Promise<Array<string>>;
     actionNames(callback: AsyncCallback<Array<string>>): void;
+    actionNames(): Promise<Array<string>>;
 
     /**
      * Perform the specified action.
      * @param actionName Indicates the action name.
      * @param parameters Indicates the parameters needed to execute the action.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      * @throws { BusinessError } 9300005 - This action is not supported.
      */
+    performAction(actionName: string, parameters: object, callback: AsyncCallback<void>): void;
     performAction(actionName: string, parameters?: object): Promise<void>;
     performAction(actionName: string, callback: AsyncCallback<void>): void;
-    performAction(actionName: string, parameters: object, callback: AsyncCallback<void>): void;
     
     /**
      * Find elements that match the condition.
      * @param type The type of query condition is content.
      * @param condition Indicates the specific content to be queried.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      */
-    findElement(type: 'content', condition: string): Promise<Array<AccessibilityElement>>;
     findElement(type: 'content', condition: string, callback: AsyncCallback<Array<AccessibilityElement>>): void
-
+    findElement(type: 'content', condition: string): Promise<Array<AccessibilityElement>>;
+    
     /**
      * Find elements that match the condition.
      * @param type The type of query condition is focus type.
      * @param condition Indicates the type of focus to query.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      */
-    findElement(type: 'focusType', condition: FocusType): Promise<AccessibilityElement>;
     findElement(type: 'focusType', condition: FocusType, callback: AsyncCallback<AccessibilityElement>): void
+    findElement(type: 'focusType', condition: FocusType): Promise<AccessibilityElement>;
 
     /**
      * Find elements that match the condition.
      * @param type The type of query condition is focus direction.
      * @param condition Indicates the direction of search focus to query.
+     * @param callback Indicates the listener.
      * @throws { BusinessError } 401 - Input parameter error.
      */
-    findElement(type: 'focusDirection', condition: FocusDirection): Promise<AccessibilityElement>;
     findElement(type: 'focusDirection', condition: FocusDirection, callback: AsyncCallback<AccessibilityElement>): void
+    findElement(type: 'focusDirection', condition: FocusDirection): Promise<AccessibilityElement>;
 }
 
 /**
