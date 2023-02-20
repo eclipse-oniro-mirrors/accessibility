@@ -395,7 +395,7 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
 {
     HILOG_DEBUG("abilityTypes(%{public}d) stateType(%{public}d)", abilityTypes, stateType);
     if (!handler_ || (stateType > ABILITY_STATE_INSTALLED) || (stateType < ABILITY_STATE_ENABLE)) {
-        HILOG_ERROR("Parameters check failed! stateType:%{public}d, ", stateType);
+        HILOG_ERROR("Parameters check failed! stateType:%{public}d", stateType);
         return RET_ERR_INVALID_PARAM;
     }
 
