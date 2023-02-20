@@ -315,8 +315,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
 {
     HILOG_DEBUG();
     if (!callback || !handler_) {
-        HILOG_ERROR("Parameters check failed!",
-            callback.GetRefPtr(), handler_.get());
+        HILOG_ERROR("Parameters check failed!");
         return ERR_INVALID_VALUE;
     }
 
