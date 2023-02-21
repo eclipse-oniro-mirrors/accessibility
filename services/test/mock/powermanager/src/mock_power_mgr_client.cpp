@@ -59,7 +59,7 @@ bool PowerMgrClient::RefreshActivity(UserActivityType type)
     return true;
 }
 
-bool PowerMgrClient::IsRunningLockTypeSupported(uint32_t type)
+bool PowerMgrClient::IsRunningLockTypeSupported(RunningLockType type)
 {
     return true;
 }
