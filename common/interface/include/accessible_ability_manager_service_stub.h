@@ -53,13 +53,13 @@ private:
      * @param permission The description of permission
      * @return Check result.
      */
-    bool CheckPermission(const std::string &permission);
+    bool CheckPermission(const std::string &permission) const;
 
     /**
      * @brief Check if the caller is a system application.
      * @return Check result.
      */
-    bool IsSystemApp();
+    bool IsSystemApp() const;
 
     /**
      * @brief Handle the IPC request for the function:HandleSendEvent.

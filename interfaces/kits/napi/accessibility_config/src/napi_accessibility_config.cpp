@@ -34,11 +34,6 @@ std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbil
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        return nullptr;
-    }
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -111,11 +106,6 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        return nullptr;
-    }
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -839,11 +829,6 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        return;
-    }
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
@@ -866,11 +851,6 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
 void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
     HILOG_INFO();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
-        napi_throw(env, err);
-        return;
-    }
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
