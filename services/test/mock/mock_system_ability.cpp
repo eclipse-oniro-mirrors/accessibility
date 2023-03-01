@@ -170,8 +170,25 @@ void SystemAbility::OnStart()
 {
 }
 
+void SystemAbility::OnStart(const std::unordered_map<std::string, std::string>& startReason)
+{
+}
+
+int32_t SystemAbility::OnIdle(const std::unordered_map<std::string, std::string>& idleReason)
+{
+    return 0;
+}
+
+void SystemAbility::OnActive(const std::unordered_map<std::string, std::string>& activeReason)
+{
+}
+
 // The details should be implemented by subclass
 void SystemAbility::OnStop()
+{
+}
+
+void SystemAbility::OnStop(const std::unordered_map<std::string, std::string>& stopReason)
 {
 }
 
