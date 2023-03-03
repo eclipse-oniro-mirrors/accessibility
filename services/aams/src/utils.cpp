@@ -249,7 +249,7 @@ void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode
     HILOG_DEBUG("accessibility function is unavailable: %{public}s", info.c_str());
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "ACCESSIBILITY_UNAVAILABLE",
+        "UNAVAILABLE",
         OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
         "MSG", info);
     if (ret != 0) {
@@ -284,7 +284,7 @@ void Utils::RecordStartingA11yEvent(uint32_t flag)
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "ACCESSIBILITY_STARTING_FUNCTION",
+        "STARTING_FUNCTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG", oss.str());
     if (ret != 0) {
@@ -299,7 +299,7 @@ void Utils::RecordStartingA11yEvent(const std::string &name)
     HILOG_DEBUG("starting accessibility: %{public}s", oss.str().c_str());
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "ACCESSIBILITY_STARTING_FUNCTION",
+        "STARTING_FUNCTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG", oss.str());
     if (ret != 0) {

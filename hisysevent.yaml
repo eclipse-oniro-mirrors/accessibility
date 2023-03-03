@@ -39,10 +39,10 @@
 
 domain: ACCESSIBILITY
 
-ACCESSIBILITY_UNAVAILABLE:
+UNAVAILABLE:
   __BASE: {type: FAULT, level: CRITICAL, desc: Accessibility function is unavailable}
   MSG: {type: STRING, desc: accessibility event message}
 
-ACCESSIBILITY_STARTING_FUNCTION:
+STARTING_FUNCTION:
   __BASE: {type: BEHAVIOR, level: CRITICAL, desc: Starting accessibility function}
   MSG: {type: STRING, desc: accessibility event message}
