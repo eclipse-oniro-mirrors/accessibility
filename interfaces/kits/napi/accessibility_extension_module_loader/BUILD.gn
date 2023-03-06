@@ -53,6 +53,7 @@ ohos_shared_library("accessibility_extension_module") {
     "ability_runtime:runtime",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
   ]
 
   relative_install_dir = "extensionability/"
