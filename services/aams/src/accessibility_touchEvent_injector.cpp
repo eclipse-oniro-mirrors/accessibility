@@ -17,8 +17,6 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
-#include "input_event.h"
-#include "input_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -127,7 +125,7 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int32_t 
     HILOG_DEBUG();
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
     pointerEvent->SetPointerId(point.GetPointerId());
-    pointerEvent->SetTargetDisplayId(0);
+    pointerEvent->SetTargetDisplayId(Singleton<AccessibilityDisplayManager>::GetInstance.GetDefaultDisplayId());
     pointerEvent->SetPointerAction(action);
     pointerEvent->SetActionTime(actionTime);
     pointerEvent->SetActionStartTime(point.GetDownTime());
