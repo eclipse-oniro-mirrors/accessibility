@@ -22,9 +22,7 @@
 #include "event_handler.h"
 #include "event_runner.h"
 #include "accessibility_gesture_inject_path.h"
-#include "input_manager.h"
 #include "pointer_event.h"
-#include "input_event.h"
 #include "singleton.h"
 
 namespace OHOS {
