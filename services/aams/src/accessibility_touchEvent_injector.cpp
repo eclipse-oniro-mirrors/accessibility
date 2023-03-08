@@ -17,6 +17,8 @@
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include "input_event.h"
+#include "input_manager.h"
 
 namespace OHOS {
 namespace Accessibility {
