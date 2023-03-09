@@ -125,6 +125,7 @@ std::shared_ptr<MMI::PointerEvent> TouchEventInjector::obtainTouchEvent(int32_t 
     HILOG_DEBUG();
     std::shared_ptr<MMI::PointerEvent> pointerEvent = MMI::PointerEvent::Create();
     pointerEvent->SetPointerId(point.GetPointerId());
+    pointerEvent->SetTargetDisplayId(0);
     pointerEvent->SetPointerAction(action);
     pointerEvent->SetActionTime(actionTime);
     pointerEvent->SetActionStartTime(point.GetDownTime());
