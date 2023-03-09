@@ -455,7 +455,7 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 
     int32_t windowId = parent.GetWindowId();
     int32_t childId = parent.GetChildId(index);
-    HILOG_INFO("windowId[%{public}d], childId[%{public}d]", windowId, childId);
+    HILOG_DEBUG("windowId[%{public}d], childId[%{public}d]", windowId, childId);
     if (childId == -1) {
         HILOG_ERROR("childId[%{public}d] is invalid", childId);
         return RET_ERR_INVALID_PARAM;
