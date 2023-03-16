@@ -48,7 +48,6 @@ config("module_private_config") {
     "//base/powermgr/display_manager/interfaces/innerkits/native/include",
     "//base/powermgr/display_manager/utils/native/include",
     "//base/powermgr/power_manager/interfaces/innerkits/native/include",
-    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara/include",
     "//foundation",
     "${ability_base_path}/interfaces/inner_api/base/include",
     "${ability_base_path}/interfaces/kits/native/uri/include",
@@ -122,6 +121,7 @@ ohos_unittest("accessibility_account_data_test") {
     "c_utils:utils",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -169,6 +169,7 @@ ohos_unittest("accessible_ability_manager_service_test") {
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }
@@ -228,6 +229,7 @@ ohos_unittest("accessibility_touch_guider_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -275,6 +277,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
@@ -341,6 +344,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
     "window_manager:libdm",
@@ -392,6 +396,7 @@ ohos_unittest("accessibility_window_manager_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -433,6 +438,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -508,6 +514,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
     "samgr:samgr_proxy",
@@ -540,6 +547,7 @@ ohos_unittest("accessibility_display_manager_test") {
   external_deps = [
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
     "window_manager:libdm",
   ]
@@ -594,6 +602,7 @@ ohos_unittest("accessibility_dumper_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
   ]
 }
@@ -635,6 +644,7 @@ ohos_unittest("accessibility_touchevent_injector_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -698,6 +708,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -739,6 +750,7 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
     "ability_base:want",
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -768,6 +780,7 @@ ohos_unittest("accessibility_mouse_key_test") {
   external_deps = [
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
   ]
 }
@@ -809,6 +822,7 @@ ohos_unittest("accessibility_short_key_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
@@ -837,7 +851,10 @@ ohos_unittest("accessibility_settings_config_test") {
     "//third_party/googletest:gtest_main",
   ]
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
+  ]
 }
 
 ################################################################################
@@ -878,6 +895,7 @@ ohos_unittest("accessibility_zoom_gesture_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
   ]
