@@ -64,7 +64,6 @@ accessibleabilityms_files = [
 
 ohos_shared_library("accessibleabilityms") {
   sources = accessibleabilityms_files
-  version_script = "libaccessibilityms.map"
   configs = [
     ":aams_service_config",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
