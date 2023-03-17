@@ -13,23 +13,30 @@
  * limitations under the License.
  */
 
-import { GesturePoint } from "./@ohos.accessibility.GesturePoint";
+import { GesturePoint } from './@ohos.accessibility.GesturePoint';
 
 /**
  * Indicates the path of the gesture.
+ *
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  * @since 9
  */
 export declare class GesturePath {
-    constructor(durationTime: number);
-    /**
-     * Indicates the position of the points that make up the gesture.
-     * @type {Array<GesturePoint>}
-     */
-    points: Array<GesturePoint>;
-    /**
-     * Indicates the duration of the gesture.
-     * @type {number}
-     */
-    durationTime: number;
+  constructor(durationTime: number);
+  /**
+   * Indicates the position of the points that make up the gesture.
+   *
+   * @type { Array<GesturePoint> }
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  points: Array<GesturePoint>;
+  /**
+   * Indicates the duration of the gesture.
+   *
+   * @type { number }
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  durationTime: number;
 }
