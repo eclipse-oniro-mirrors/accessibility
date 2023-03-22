@@ -13,79 +13,98 @@
  * limitations under the License.
  */
 
-import accessibility from './@ohos.accessibility'
-import AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext'
-import { KeyEvent } from './@ohos.multimodalInput.keyEvent'
+import accessibility from './@ohos.accessibility';
+import AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext';
+import { KeyEvent } from './@ohos.multimodalInput.keyEvent';
 
 /**
  * class of accessibility extension ability.
  *
- * @since 9
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
 export default class AccessibilityExtensionAbility {
-    /**
-     * Indicates accessibility extension ability context.
-     */
-    context: AccessibilityExtensionContext;
+  /**
+   * Indicates accessibility extension ability context.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  context: AccessibilityExtensionContext;
 
-    /**
-     * Called when extension ability is connected.
-     */
-    onConnect(): void;
+  /**
+   * Called when extension ability is connected.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  onConnect(): void;
 
-    /**
-     * Called when extension ability is disconnected.
-     */
-    onDisconnect(): void;
+  /**
+   * Called when extension ability is disconnected.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  onDisconnect(): void;
 
-    /**
-     * Called when an accessibility event occurs, such as when the user touches the application interface.
-     * @param event Indicates an accessibility event.
-     */
-    onAccessibilityEvent(event: AccessibilityEvent): void;
+  /**
+   * Called when an accessibility event occurs, such as when the user touches the application interface.
+   *
+   * @param { AccessibilityEvent } event Indicates an accessibility event.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  onAccessibilityEvent(event: AccessibilityEvent): void;
 
-    /**
-     * Called when a physical key is pressed, such as when the user presses the volume button .
-     * @param keyEvent Indicates the physical key event.
-     */
-    onKeyEvent(keyEvent: KeyEvent): boolean;
+  /**
+   * Called when a physical key is pressed, such as when the user presses the volume button .
+   *
+   * @param { KeyEvent } keyEvent Indicates the physical key event.
+   * @returns { boolean }
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  onKeyEvent(keyEvent: KeyEvent): boolean;
 }
 
 /**
  * Indicates the accessibility event.
- * 
  * It provides the event type and the target element of the event if any.
- * @since 9
+ *
+ * @typedef AccessibilityEvent
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
 declare interface AccessibilityEvent {
-    eventType: accessibility.EventType | accessibility.WindowUpdateType |
-        TouchGuideType | GestureType | PageUpdateType;
-    target?: AccessibilityElement;
-    timeStamp?: number;
+  eventType: accessibility.EventType | accessibility.WindowUpdateType | TouchGuideType | GestureType | PageUpdateType;
+  target?: AccessibilityElement;
+  timeStamp?: number;
 }
 
 /**
  * Indicates the gusture type.
- * @since 9
+ *
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
 type GestureType = 'left' | 'leftThenRight' | 'leftThenUp' | 'leftThenDown' |
-    'right' | 'rightThenLeft' | 'rightThenUp' | 'rightThenDown' |
-    'up' | 'upThenLeft' | 'upThenRight' | 'upThenDown' |
-    'down' | 'downThenLeft' | 'downThenRight' | 'downThenUp';
+  'right' | 'rightThenLeft' | 'rightThenUp' | 'rightThenDown' |
+  'up' | 'upThenLeft' | 'upThenRight' | 'upThenDown' |
+  'down' | 'downThenLeft' | 'downThenRight' | 'downThenUp';
 
 /**
  * Indicates the page update type.
- * @since 9
+ *
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
 type PageUpdateType = 'pageContentUpdate' | 'pageStateUpdate';
 
 /**
  * Indicates the type of touch event during touch browsing.
- * @since 9
+ *
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
+ * @since 9
  */
 type TouchGuideType = 'touchBegin' | 'touchEnd';

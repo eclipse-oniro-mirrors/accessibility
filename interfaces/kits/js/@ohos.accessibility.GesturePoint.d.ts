@@ -15,19 +15,26 @@
 
 /**
  * Indicates the point of the gesture.
+ *
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  * @since 9
  */
- export declare class GesturePoint {
-    constructor(positionX: number, positionY: number);
-    /**
-     * Indicates the X coordinate of point.
-     * @type {number}
-     */
-    positionX: number;
-    /**
-     * Indicates the Y coordinate of point.
-     * @type {number}
-     */
-    positionY: number;
+export declare class GesturePoint {
+  constructor(positionX: number, positionY: number);
+  /**
+   * Indicates the X coordinate of point.
+   *
+   * @type { number }
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  positionX: number;
+  /**
+   * Indicates the Y coordinate of point.
+   *
+   * @type { number }
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  positionY: number;
 }

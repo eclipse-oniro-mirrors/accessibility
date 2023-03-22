@@ -19,155 +19,317 @@ import { AsyncCallback, Callback } from './basic';
 /**
  * Configuration of the accessibility.
  *
- * @since 9
+ * @namespace config
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  * @systemapi
+ * @since 9
  */
 declare namespace config {
   /**
    * Indicates the configuration of high-contrast text.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var highContrastText: Config<boolean>;
   /**
    * Indicates the configuration of invert color.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var invertColor: Config<boolean>;
   /**
    * Indicates the configuration of daltonization color filter.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var daltonizationColorFilter: Config<DaltonizationColorFilter>;
   /**
    * Indicates the configuration of content timeout.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var contentTimeout: Config<number>;
   /**
    * Indicates the configuration of animation state.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var animationOff: Config<boolean>;
   /**
    * Indicates the configuration of brightness discount.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var brightnessDiscount: Config<number>;
   /**
    * Indicates the configuration of screen magnifier.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var screenMagnifier: Config<boolean>;
   /**
    * Indicates the configuration of audio mono.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var audioMono: Config<boolean>;
   /**
    * Indicates the configuration of audio balance.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var audioBalance: Config<number>;
   /**
    * Indicates the configuration of mouse key state.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var mouseKey: Config<boolean>;
   /**
    * Indicates the configuration of mouse auto click.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var mouseAutoClick: Config<number>;
   /**
    * Indicates the configuration of short key state.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var shortkey: Config<boolean>;
   /**
    * Indicates the configuration of short key target.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var shortkeyTarget: Config<string>;
   /**
    * Indicates the configuration of captions state.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var captions: Config<boolean>;
   /**
    * Indicates the configuration of captions style.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   var captionsStyle: Config<accessibility.CaptionsStyle>;
 
   /**
    * Enable the accessibility extension ability.
-   * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
-   * @param capability Indicates the ability.
+   *
+   * @param { string } name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * @param { Array<accessibility.Capability> } capability Indicates the ability.
+   * @returns { Promise<void> }
    * @throws { BusinessError } 201 - Permission denied.
    * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
    * @throws { BusinessError } 9300002 - Target ability already enabled.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   function enableAbility(name: string, capability: Array<accessibility.Capability>): Promise<void>;
-  function enableAbility(name: string, capability: Array<accessibility.Capability>, callback: AsyncCallback<void>): void;
 
   /**
-   * Disable the accessibility extension ability.
-   * @param name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * Enable the accessibility extension ability.
+   *
+   * @param { string } name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * @param { Array<accessibility.Capability> } capability Indicates the ability.
+   * @param { AsyncCallback<void> } callback
    * @throws { BusinessError } 201 - Permission denied.
    * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
    * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
+   * @throws { BusinessError } 9300002 - Target ability already enabled.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
+   */
+  function enableAbility(
+    name: string,
+    capability: Array<accessibility.Capability>,
+    callback: AsyncCallback<void>
+  ): void;
+
+  /**
+   * Disable the accessibility extension ability.
+   *
+   * @param { string } name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * @returns { Promise<void> }
+   * @throws { BusinessError } 201 - Permission denied.
+   * @throws { BusinessError } 202 - Not system App.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   function disableAbility(name: string): Promise<void>;
+
+  /**
+   * Disable the accessibility extension ability.
+   *
+   * @param { string } name Indicates the accessibility extension name, in "bundleName/abilityName" format.
+   * @param { AsyncCallback<void> } callback
+   * @throws { BusinessError } 201 - Permission denied.
+   * @throws { BusinessError } 202 - Not system App.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300001 - Invalid bundle name or ability name.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
+   */
   function disableAbility(name: string, callback: AsyncCallback<void>): void;
 
   /**
    * Register the listener that watches for changes in the enabled status of accessibility extensions.
-   * @param type Indicates the type of event.
-   * @param callback Indicates the listener.
+   *
+   * @param { 'enabledAccessibilityExtensionListChange' } type Indicates the type of event.
+   * @param { Callback<void> } callback Indicates the listener.
    * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   function on(type: 'enabledAccessibilityExtensionListChange', callback: Callback<void>): void;
 
   /**
    * Deregister listener that watches for changes in the enabled status of accessibility extensions.
-   * @param type Indicates the type of event.
-   * @param callback Indicates the listener.
+   *
+   * @param { 'enabledAccessibilityExtensionListChange' } type Indicates the type of event.
+   * @param { Callback<void> } callback Indicates the listener.
    * @throws { BusinessError } 202 - Not system App.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   function off(type: 'enabledAccessibilityExtensionListChange', callback?: Callback<void>): void;
 
   /**
    * Indicates setting, getting, and listening to changes in configuration.
+   *
+   * @typedef Config
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 9
    */
   interface Config<T> {
     /**
      * Setting configuration value.
-     * @param value Indicates the value.
+     *
+     * @param { T } value Indicates the value.
+     * @returns { Promise<void> }
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 202 - Not system App.
      * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
      */
     set(value: T): Promise<void>;
+
+    /**
+     * Setting configuration value.
+     *
+     * @param { T } value Indicates the value.
+     * @param { AsyncCallback<void> } callback
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 202 - Not system App.
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
+     */
     set(value: T, callback: AsyncCallback<void>): void;
 
     /**
      * Getting configuration value.
+     *
+     * @returns { Promise<T> }
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 202 - Not system App.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
      */
     get(): Promise<T>;
+
+    /**
+     * Getting configuration value.
+     *
+     * @param { AsyncCallback<T> } callback
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 202 - Not system App.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
+     */
     get(callback: AsyncCallback<T>): void;
 
     /**
      * Register the listener to listen for configuration changes.
-     * @param callback Indicates the listener.
+     *
+     * @param { Callback<T> } callback Indicates the listener.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 202 - Not system App.
      * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
      */
     on(callback: Callback<T>): void;
 
     /**
      * Deregister the listener to listen for configuration changes.
-     * @param callback Indicates the listener.
+     *
+     * @param { Callback<T> } callback Indicates the listener.
      * @throws { BusinessError } 202 - Not system App.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @systemapi
+     * @since 9
      */
     off(callback?: Callback<T>): void;
   }
 
   /**
    * Indicates the type of daltonization color filter.
+   *
+   * @systemapi
    */
   type DaltonizationColorFilter = 'Normal' | 'Protanomaly' | 'Deuteranomaly' | 'Tritanomaly';
 }
