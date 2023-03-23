@@ -156,6 +156,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
@@ -234,6 +235,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
@@ -317,6 +319,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
@@ -398,6 +401,7 @@ ohos_moduletest("aams_server_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
@@ -474,6 +478,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
@@ -555,6 +560,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "multimedia_image_framework:image_native",
     "window_manager:libwm",
   ]
 }
