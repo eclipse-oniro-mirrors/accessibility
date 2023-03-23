@@ -16,7 +16,7 @@
 #ifndef NAPI_ACCESSIBILITY_ELEMENT_H
 #define NAPI_ACCESSIBILITY_ELEMENT_H
 
-#include "napi_accessibility_def.h"
+#include "accessibility_def.h"
 #include "accessibility_event_info.h"
 #include "accessibility_window_info.h"
 #include "napi/native_api.h"

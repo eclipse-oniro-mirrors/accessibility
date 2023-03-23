@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "napi_accessibility_utils.h"
-#include "napi_accessibility_config_observer.h"
+#include "accessibility_utils.h"
+#include "accessibility_config_observer.h"
 
 #include <uv.h>
 

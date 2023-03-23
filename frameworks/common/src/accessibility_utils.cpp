@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "napi_accessibility_utils.h"
+#include "accessibility_utils.h"
 
 #include <cmath>
 #include <iomanip>
@@ -24,7 +24,6 @@
 #include "hilog_wrapper.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_event_info.h"
 
 namespace OHOS {
 namespace AccessibilityNapi {

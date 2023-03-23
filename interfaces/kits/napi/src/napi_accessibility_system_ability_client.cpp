@@ -18,7 +18,7 @@
 #include <uv.h>
 #include "accessibility_state_event.h"
 #include "hilog_wrapper.h"
-#include "napi_accessibility_utils.h"
+#include "accessibility_utils.h"
 
 using namespace OHOS;
 using namespace OHOS::Accessibility;

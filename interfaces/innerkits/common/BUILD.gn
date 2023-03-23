@@ -39,11 +39,11 @@ accessibility_common_src = [
   "${accessibility_common_path}/src/accessibility_event_info.cpp",
   "${accessibility_common_path}/src/accessibility_window_info.cpp",
   "${accessibility_common_path}/src/accessibility_gesture_inject_path.cpp",
+  "${accessibility_common_path}/src/accessibility_utils.cpp",
 ]
 
 ohos_shared_library("accessibility_common") {
   sources = accessibility_common_src
-  version_script = "libaccessibility_common.map"
   configs = [
     ":accessibility_common_private_config",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
@@ -53,7 +53,11 @@ ohos_shared_library("accessibility_common") {
 
   install_enable = true
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [
+    "hiviewdfx_hilog_native:libhilog",
+    "input:libmmi-client",
+    "napi:ace_napi",
+  ]
 
   subsystem_name = "barrierfree"
   part_name = "accessibility"

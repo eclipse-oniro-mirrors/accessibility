@@ -19,8 +19,8 @@
 #include <vector>
 #include <map>
 #include <mutex>
-#include "napi_accessibility_utils.h"
-#include "napi_accessibility_config_observer.h"
+#include "accessibility_utils.h"
+#include "accessibility_config_observer.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "accessibility_config.h"
