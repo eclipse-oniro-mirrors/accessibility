@@ -13,13 +13,12 @@
  * limitations under the License.
  */
 
-#ifndef NAPI_ACCESSIBILITY_UTILS_H
-#define NAPI_ACCESSIBILITY_UTILS_H
+#ifndef ACCESSIBILITY_UTILS_H
+#define ACCESSIBILITY_UTILS_H
 
 #include <map>
 #include "accessibility_ability_info.h"
 #include "accessibility_caption.h"
-#include "accessibility_config.h"
 #include "accessibility_element_info.h"
 #include "accessibility_event_info.h"
 #include "accessibility_gesture_inject_path.h"
@@ -27,7 +26,7 @@
 #include "key_event.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "napi_accessibility_def.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace AccessibilityNapi {
@@ -111,4 +110,4 @@ struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
 };
 } // namespace AccessibilityNapi
 } // OHOS
-#endif // NAPI_ACCESSIBILITY_UTILS_H
+#endif // ACCESSIBILITY_UTILS_H

@@ -24,8 +24,8 @@
 #include "accessibility_system_ability_client.h"
 #include "accessibility_state_event.h"
 #include "accessibility_ability_info.h"
-#include "napi_accessibility_utils.h"
-#include "napi_accessibility_config_observer.h"
+#include "accessibility_utils.h"
+#include "accessibility_config_observer.h"
 
 const uint32_t START_WORK_ARGS_SIZE = 2;
 struct StateListener {

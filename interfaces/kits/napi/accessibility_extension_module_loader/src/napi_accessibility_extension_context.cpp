@@ -21,7 +21,7 @@
 #include "js_runtime_utils.h"
 #include "hilog_wrapper.h"
 #include "napi_accessibility_element.h"
-#include "napi_accessibility_utils.h"
+#include "accessibility_utils.h"
 #include "native_engine/native_value.h"
 
 using namespace OHOS::AbilityRuntime;

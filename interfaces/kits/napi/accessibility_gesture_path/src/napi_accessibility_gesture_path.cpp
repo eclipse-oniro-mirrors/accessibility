@@ -14,7 +14,7 @@
  */
 
 #include "napi_accessibility_gesture_path.h"
-#include "napi_accessibility_def.h"
+#include "accessibility_def.h"
 #include "hilog_wrapper.h"
 
 using namespace OHOS;

@@ -23,7 +23,7 @@
 #include "js_runtime_utils.h"
 #include "napi_accessibility_event_info.h"
 #include "napi_accessibility_extension_context.h"
-#include "napi_accessibility_utils.h"
+#include "accessibility_utils.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "napi_accessibility_element.h"

@@ -19,6 +19,7 @@
 #include <memory>
 #include "accessibility_caption.h"
 #include "accessibility_singleton.h"
+#include "accessibility_def.h"
 
 namespace OHOS {
 namespace AccessibilityConfig {
@@ -39,13 +40,6 @@ enum CONFIG_ID : int32_t {
     CONFIG_SHORT_KEY_TARGET,
     CONFIG_MOUSE_AUTOCLICK,
     CONFIG_ID_MAX,
-};
-
-enum DALTONIZATION_TYPE : uint32_t {
-    Normal = 0,
-    Protanomaly,
-    Deuteranomaly,
-    Tritanomaly,
 };
 
 struct ConfigValue {

@@ -18,7 +18,7 @@
 #include <uv.h>
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
-#include "napi_accessibility_utils.h"
+#include "accessibility_utils.h"
 #include "tokenid_kit.h"
 
 using namespace OHOS;

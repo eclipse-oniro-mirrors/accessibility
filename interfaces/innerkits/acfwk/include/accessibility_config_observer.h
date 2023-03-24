@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H
-#define NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H
+#ifndef ACCESSIBILITY_CONFIG_OBSERVER_H
+#define ACCESSIBILITY_CONFIG_OBSERVER_H
 
 #include <map>
 #include <string>
@@ -57,4 +57,4 @@ private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
-#endif // NAPI_ACCESSIBILITY_CONFIG_OBSERVER_H
+#endif // ACCESSIBILITY_CONFIG_OBSERVER_H
