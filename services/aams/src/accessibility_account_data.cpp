@@ -541,6 +541,12 @@ const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityA
     return configCallbacks_;
 }
 
+void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
+{
+    HILOG_DEBUG("start.");
+    configCallbacks_ = observer;
+}
+
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
     HILOG_DEBUG("start.");
