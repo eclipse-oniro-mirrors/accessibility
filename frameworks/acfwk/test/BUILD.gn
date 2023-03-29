@@ -29,7 +29,6 @@ config("module_private_config") {
     "${ability_base_path}/interfaces/kits/native/uri/include",
     "${ability_base_path}/interfaces/kits/native/want/include",
     "//base/notification/common_event_service/interfaces/inner_api",
-    "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/barrierfree/accessibility/services/interface/include",
     "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
@@ -77,6 +76,7 @@ ohos_unittest("ac_unit_test") {
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "power_manager:powermgr_client",
     "samgr:samgr_proxy",
   ]
 }

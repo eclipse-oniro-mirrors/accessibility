@@ -25,7 +25,7 @@ aams_mock_include_dirs = [
   "//foundation/distributeddatamgr/preferences/interfaces/inner_api/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-  "//base/powermgr/power_manager/interfaces/innerkits/native/include",
+  "//base/powermgr/power_manager/interfaces/inner_api/native/include",
 ]
 
 aams_mock_distributeddatamgr_src =
