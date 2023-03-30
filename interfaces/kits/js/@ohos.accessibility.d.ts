@@ -22,7 +22,6 @@ import { Callback } from './basic';
  * @namespace accessibility
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  * @since 7
- * @name Accessibility
  */
 declare namespace accessibility {
   /**
@@ -64,10 +63,10 @@ declare namespace accessibility {
 
   /**
    * The change type of the windowsChange event.
+   * It's used when received the {@code windowsChange} event.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
-   * @note It's used when received the {@code windowsChange} event.
    */
   type WindowUpdateType = 'add' | 'remove' | 'bounds' | 'active' | 'focus';
 
@@ -81,15 +80,15 @@ declare namespace accessibility {
 
   /**
    * The ability that accessibility subsystem support.
-   *
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @since 7
-   * @note touchExplorer: Describes the capability to talkback.
+   * touchExplorer: Describes the capability to talkback.
    * magnification: Describes the capability to request to control the display magnification.
    * gesturesSimulation: Describes the capability to request to simulate the gesture.
    * windowContent: Describes the capability to search for the content of the active window.
    * filterKeyEvents: Describes the capability to request to filter key events.
    * fingerprintGesture: Describes the capability to request to fingerprint gesture.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
    */
   type Capability = 'retrieve' | 'touchGuide' | 'keyEventObserver' | 'zoom' | 'gesture';
 
@@ -98,7 +97,6 @@ declare namespace accessibility {
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
-   * @note The granularity of text move.
    */
   type TextMoveUnit = 'char' | 'word' | 'line' | 'page' | 'paragraph';
 
