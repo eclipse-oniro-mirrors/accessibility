@@ -13,37 +13,37 @@
  * limitations under the License.
  */
 
-var ExtensionContext = requireNapi("application.ExtensionContext")
+let ExtensionContext = requireNapi('application.ExtensionContext');
 
 class AccessibilityExtensionContext extends ExtensionContext {
-    constructor(obj) {
-        super(obj);
-    }
+  constructor(obj) {
+    super(obj);
+  }
 
-    setTargetBundleName(targetNames, callback) {
-        console.log('setTargetBundleName');
-        return this.__context_impl__.setTargetBundleName(targetNames, callback);
-    }
+  setTargetBundleName(targetNames, callback) {
+    console.log('setTargetBundleName');
+    return this.__context_impl__.setTargetBundleName(targetNames, callback);
+  }
 
-    getFocusElement(isAccessibilityFocus, callback) {
-        console.log('getFocusElement');
-        return this.__context_impl__.getFocusElement(isAccessibilityFocus, callback);
-    }
+  getFocusElement(isAccessibilityFocus, callback) {
+    console.log('getFocusElement');
+    return this.__context_impl__.getFocusElement(isAccessibilityFocus, callback);
+  }
 
-    getWindowRootElement(windowId, callback) {
-        console.log('getWindowRootElement');
-        return this.__context_impl__.getWindowRootElement(windowId, callback);
-    }
+  getWindowRootElement(windowId, callback) {
+    console.log('getWindowRootElement');
+    return this.__context_impl__.getWindowRootElement(windowId, callback);
+  }
 
-    getWindows(displayId, callback) {
-        console.log('getWindows');
-        return this.__context_impl__.getWindows(displayId, callback);
-    }
+  getWindows(displayId, callback) {
+    console.log('getWindows');
+    return this.__context_impl__.getWindows(displayId, callback);
+  }
 
-    injectGesture(gesture, callback) {
-        console.log('injectGesture');
-        return this.__context_impl__.injectGesture(gesture, callback);
-    }
+  injectGesture(gesture, callback) {
+    console.log('injectGesture');
+    return this.__context_impl__.injectGesture(gesture, callback);
+  }
 }
 
-export default AccessibilityExtensionContext
+export default AccessibilityExtensionContext;

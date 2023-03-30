@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+import type accessibility from './@ohos.accessibility';
+import type AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext';
+import type { KeyEvent } from './@ohos.multimodalInput.keyEvent';
 import accessibility from './@ohos.accessibility'
 import AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext'
 import { KeyEvent } from './@ohos.multimodalInput.keyEvent'
