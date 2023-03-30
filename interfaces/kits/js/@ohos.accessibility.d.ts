@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-import { AsyncCallback } from './basic';
-import { Callback } from './basic';
+import type { AsyncCallback } from './basic';
+import type { Callback } from './basic';
 
 /**
  * Accessibility

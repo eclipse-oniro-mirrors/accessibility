@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-import { AsyncCallback } from '../basic';
+import type { AsyncCallback } from '../basic';
 import ExtensionContext from './ExtensionContext';
-import accessibility from '../@ohos.accessibility';
-import { GesturePath } from '../@ohos.accessibility.GesturePath';
+import type accessibility from '../@ohos.accessibility';
+import type { GesturePath } from '../@ohos.accessibility.GesturePath';
 
 /**
  * The accessibility extension context. Used to configure, query information, and inject gestures.

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-import accessibility from './@ohos.accessibility';
-import { AsyncCallback, Callback } from './basic';
+import type accessibility from './@ohos.accessibility';
+import type { AsyncCallback, Callback } from './basic';
 
 /**
  * Configuration of the accessibility.
@@ -32,7 +32,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var highContrastText: Config<boolean>;
+  let highContrastText: Config<boolean>;
   /**
    * Indicates the configuration of invert color.
    *
@@ -40,7 +40,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var invertColor: Config<boolean>;
+  let invertColor: Config<boolean>;
   /**
    * Indicates the configuration of daltonization color filter.
    *
@@ -48,7 +48,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var daltonizationColorFilter: Config<DaltonizationColorFilter>;
+  let daltonizationColorFilter: Config<DaltonizationColorFilter>;
   /**
    * Indicates the configuration of content timeout.
    *
@@ -56,7 +56,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var contentTimeout: Config<number>;
+  let contentTimeout: Config<number>;
   /**
    * Indicates the configuration of animation state.
    *
@@ -64,7 +64,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var animationOff: Config<boolean>;
+  let animationOff: Config<boolean>;
   /**
    * Indicates the configuration of brightness discount.
    *
@@ -72,7 +72,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var brightnessDiscount: Config<number>;
+  let brightnessDiscount: Config<number>;
   /**
    * Indicates the configuration of screen magnifier.
    *
@@ -80,7 +80,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var screenMagnifier: Config<boolean>;
+  let screenMagnifier: Config<boolean>;
   /**
    * Indicates the configuration of audio mono.
    *
@@ -88,7 +88,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var audioMono: Config<boolean>;
+  let audioMono: Config<boolean>;
   /**
    * Indicates the configuration of audio balance.
    *
@@ -96,7 +96,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var audioBalance: Config<number>;
+  let audioBalance: Config<number>;
   /**
    * Indicates the configuration of mouse key state.
    *
@@ -104,7 +104,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var mouseKey: Config<boolean>;
+  let mouseKey: Config<boolean>;
   /**
    * Indicates the configuration of mouse auto click.
    *
@@ -112,7 +112,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var mouseAutoClick: Config<number>;
+  let mouseAutoClick: Config<number>;
   /**
    * Indicates the configuration of short key state.
    *
@@ -120,7 +120,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var shortkey: Config<boolean>;
+  let shortkey: Config<boolean>;
   /**
    * Indicates the configuration of short key target.
    *
@@ -128,7 +128,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var shortkeyTarget: Config<string>;
+  let shortkeyTarget: Config<string>;
   /**
    * Indicates the configuration of captions state.
    *
@@ -136,7 +136,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var captions: Config<boolean>;
+  let captions: Config<boolean>;
   /**
    * Indicates the configuration of captions style.
    *
@@ -144,7 +144,7 @@ declare namespace config {
    * @systemapi
    * @since 9
    */
-  var captionsStyle: Config<accessibility.CaptionsStyle>;
+  let captionsStyle: Config<accessibility.CaptionsStyle>;
 
   /**
    * Enable the accessibility extension ability.

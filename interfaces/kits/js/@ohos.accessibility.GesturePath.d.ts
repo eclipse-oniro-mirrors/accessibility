@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { GesturePoint } from './@ohos.accessibility.GesturePoint';
+import type { GesturePoint } from './@ohos.accessibility.GesturePoint';
 
 /**
  * Indicates the path of the gesture.
