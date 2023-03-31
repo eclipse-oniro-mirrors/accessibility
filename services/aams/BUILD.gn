@@ -27,6 +27,7 @@ config("aams_service_config") {
 
   include_dirs = [
     "include",
+    "//base/powermgr/power_manager/interfaces/innerkits/native/include",
     "//foundation/barrierfree/accessibility/common/log/include",
   ]
 
@@ -88,7 +89,6 @@ ohos_shared_library("accessibleabilityms") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
-    "power_manager:powermgr_client",
     "preferences:native_preferences",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
