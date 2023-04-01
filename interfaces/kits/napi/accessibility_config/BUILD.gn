@@ -34,8 +34,8 @@ ohos_shared_library("config_napi") {
   configs = [ "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags" ]
 
   deps = [
+    "./../../../innerkits/common:accessibility_common",
     "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi:accessibility",
   ]
 
   external_deps = [
