@@ -1093,6 +1093,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
 
     std::map<std::string, uint32_t> importantEnabledAbilities;
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> tmpObserver;
     // Clear last account's data
     if (currentAccountId_ != -1) {
         HILOG_DEBUG("current account id: %{public}d", currentAccountId_);
@@ -1101,6 +1102,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
             HILOG_ERROR("Current account data is null");
             return;
         }
+        tmpObserver = accountData->GetConfigCallbacks();
         accountData->GetImportantEnabledAbilities(importantEnabledAbilities);
         accountData->OnAccountSwitched();
         UpdateAccessibilityManagerService();
@@ -1116,6 +1118,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         return;
     }
     accountData->Init();
+    accountData->SetConfigCallbacks(tmpObserver);
     float discount = accountData->GetConfig()->GetBrightnessDiscount();
     auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
     if (!displayPowerMgrClient.DiscountBrightness(discount)) {
