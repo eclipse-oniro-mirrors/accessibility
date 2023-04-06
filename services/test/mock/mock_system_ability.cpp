@@ -170,16 +170,16 @@ void SystemAbility::OnStart()
 {
 }
 
-void SystemAbility::OnStart(const std::unordered_map<std::string, std::string>& startReason)
+void SystemAbility::OnStart(const SystemAbilityOnDemandReason& startReason)
 {
 }
 
-int32_t SystemAbility::OnIdle(const std::unordered_map<std::string, std::string>& idleReason)
+int32_t SystemAbility::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
     return 0;
 }
 
-void SystemAbility::OnActive(const std::unordered_map<std::string, std::string>& activeReason)
+void SystemAbility::OnActive(const SystemAbilityOnDemandReason& activeReason)
 {
 }
 
@@ -188,7 +188,7 @@ void SystemAbility::OnStop()
 {
 }
 
-void SystemAbility::OnStop(const std::unordered_map<std::string, std::string>& stopReason)
+void SystemAbility::OnStop(const SystemAbilityOnDemandReason& stopReason)
 {
 }
 
