@@ -14,22 +14,22 @@
  */
 
 class AccessibilityExtensionAbility {
-    onConnect() {
-        console.log('onConnect');
-    }
+  onConnect() {
+    console.log('onConnect');
+  }
 
-    onDisconnect() {
-        console.log('onDisconnect');
-    }
+  onDisconnect() {
+    console.log('onDisconnect');
+  }
 
-    onAccessibilityEvent(accessibilityEvent) {
-        console.log('onAccessibilityEvent');
-    }
+  onAccessibilityEvent(accessibilityEvent) {
+    console.log('onAccessibilityEvent');
+  }
 
-    onKeyEvent(keyEvent) {
-        console.log('onKeyEvent');
-        return false;
-    }
+  onKeyEvent(keyEvent) {
+    console.log('onKeyEvent');
+    return false;
+  }
 }
 
-export default AccessibilityExtensionAbility
+export default AccessibilityExtensionAbility;

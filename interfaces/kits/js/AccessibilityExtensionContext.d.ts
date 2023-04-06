@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 
+import type { AsyncCallback } from '../basic';
+import ExtensionContext from './ExtensionContext';
+import type accessibility from '../@ohos.accessibility';
+import type { GesturePath } from '../@ohos.accessibility.GesturePath';
 import { AsyncCallback } from "../basic";
 import ExtensionContext from "./ExtensionContext";
 import accessibility from "../@ohos.accessibility";
