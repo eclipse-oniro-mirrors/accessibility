@@ -18,21 +18,23 @@ import type { Callback } from './basic';
 
 /**
  * Accessibility
- * @name Accessibility
- * @since 7
+ *
+ * @namespace accessibility
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
- * @import basic,abilityInfo
+ * @since 7
  */
 declare namespace accessibility {
   /**
    * The type of the Ability app.
+   *
    * @type { 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' }
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
   /**
    * The type of the Ability app.
-   * @type { 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all' } 
+   *
+   * @type { 'audible' | 'generic' | 'haptic' | 'spoken' | 'visual' | 'all' }
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
@@ -40,6 +42,7 @@ declare namespace accessibility {
 
   /**
    * The action that the ability can execute.
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -49,12 +52,8 @@ declare namespace accessibility {
 
   /**
    * The type of the accessibility event.
-   * @note windowsChange
-   * @note windowContentChange
-   * @note windowStateChange
-   * @note announcement
-   * @note notificationChange
-   * @note textTraversedAtMove
+   * windowsChange/windowContentChange/windowStateChange/announcement/notificationChange/textTraversedAtMove
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -64,7 +63,8 @@ declare namespace accessibility {
 
   /**
    * The change type of the windowsChange event.
-   * @note It's used when received the {@code windowsChange} event.
+   * It's used when received the {@code windowsChange} event.
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -72,6 +72,7 @@ declare namespace accessibility {
 
   /**
    * The type of the ability state.
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -79,12 +80,13 @@ declare namespace accessibility {
 
   /**
    * The ability that accessibility subsystem support.
-   * @note touchExplorer: Describes the capability to talkback.
+   * touchExplorer: Describes the capability to talkback.
    * magnification: Describes the capability to request to control the display magnification.
    * gesturesSimulation: Describes the capability to request to simulate the gesture.
    * windowContent: Describes the capability to search for the content of the active window.
    * filterKeyEvents: Describes the capability to request to filter key events.
    * fingerprintGesture: Describes the capability to request to fingerprint gesture.
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -92,7 +94,7 @@ declare namespace accessibility {
 
   /**
    * The granularity of text move.
-   * @note The granularity of text move.
+   *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    */
@@ -100,218 +102,345 @@ declare namespace accessibility {
 
   /**
    * Checks whether accessibility ability is enabled.
-   * @since 7
-   * @param callback Asynchronous callback interface.
+   *
+   * @param { AsyncCallback<boolean> } callback Asynchronous callback interface.
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns {@code true} if the accessibility is enabled; returns {@code false} otherwise.
+   * @since 7
    */
   function isOpenAccessibility(callback: AsyncCallback<boolean>): void;
+
+  /**
+   * Checks whether accessibility ability is enabled.
+   *
+   * @param { AsyncCallback<boolean> } callback Asynchronous callback interface.
+   * @returns { Promise<boolean> } Returns {@code true} if the accessibility is enabled; returns {@code false} otherwise.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
+   */
   function isOpenAccessibility(): Promise<boolean>;
 
   /**
    * Checks touch browser ability (which is used by talkback) is enabled.
-   * @since 7
-   * @param callback Asynchronous callback interface.
+   *
+   * @param { AsyncCallback<boolean> } callback Asynchronous callback interface.
    * @syscap SystemCapability.BarrierFree.Accessibility.Vision
-   * @return Returns {@code true} if the touch browser is enabled; returns {@code false} otherwise.
+   * @since 7
    */
   function isOpenTouchGuide(callback: AsyncCallback<boolean>): void;
+
+  /**
+   * Checks touch browser ability (which is used by talkback) is enabled.
+   *
+   * @param { AsyncCallback<boolean> } callback Asynchronous callback interface.
+   * @returns { Promise<boolean> } Returns {@code true} if the touch browser is enabled; returns {@code false} otherwise.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Vision
+   * @since 7
+   */
   function isOpenTouchGuide(): Promise<boolean>;
 
   /**
    * Queries the list of accessibility abilities.
+   *
+   * @param { AbilityType } abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
+   * @param { AbilityState } stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
+   * @param { AsyncCallback<Array<AccessibilityAbilityInfo>> } callback
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    * @deprecated since 9
-   * @param abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
-   * @param stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns the list of abilityInfos.
    */
-  function getAbilityLists(abilityType: AbilityType, stateType: AbilityState,
-    callback: AsyncCallback<Array<AccessibilityAbilityInfo>>): void;
-  function getAbilityLists(abilityType: AbilityType,
-    stateType: AbilityState): Promise<Array<AccessibilityAbilityInfo>>;
+  function getAbilityLists(
+    abilityType: AbilityType,
+    stateType: AbilityState,
+    callback: AsyncCallback<Array<AccessibilityAbilityInfo>>
+  ): void;
 
   /**
    * Queries the list of accessibility abilities.
-   * @since 9
-   * @param abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
-   * @param stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
+   *
+   * @param { AbilityType } abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
+   * @param { AbilityState } stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
+   * @returns { Promise<Array<AccessibilityAbilityInfo>> } Returns the list of abilityInfos.
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns the list of abilityInfos.
-   * @throws { BusinessError } 401 - Input parameter error.
+   * @since 7
+   * @deprecated since 9
    */
-  function getAccessibilityExtensionList(abilityType: AbilityType, stateType: AbilityState): Promise<Array<AccessibilityAbilityInfo>>;
-  function getAccessibilityExtensionList(abilityType: AbilityType, stateType: AbilityState, callback: AsyncCallback<Array<AccessibilityAbilityInfo>>): void;
+  function getAbilityLists(abilityType: AbilityType, stateType: AbilityState): Promise<Array<AccessibilityAbilityInfo>>;
+
+  /**
+   * Queries the list of accessibility abilities.
+   *
+   * @param { AbilityType } abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
+   * @param { AbilityState } stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
+   * @returns { Promise<Array<AccessibilityAbilityInfo>> } Returns the list of abilityInfos.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  function getAccessibilityExtensionList(
+    abilityType: AbilityType,
+    stateType: AbilityState
+  ): Promise<Array<AccessibilityAbilityInfo>>;
+
+  /**
+   * Queries the list of accessibility abilities.
+   *
+   * @param { AbilityType } abilityType The type of the accessibility ability. {@code AbilityType} eg.spoken
+   * @param { AbilityState } stateType The state of the accessibility ability.  {@code AbilityState} eg.installed
+   * @param { AsyncCallback<Array<AccessibilityAbilityInfo>> } callback
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
+  function getAccessibilityExtensionList(
+    abilityType: AbilityType,
+    stateType: AbilityState,
+    callback: AsyncCallback<Array<AccessibilityAbilityInfo>>
+  ): void;
 
   /**
    * Send accessibility Event.
+   *
+   * @param { EventInfo } event The object of the accessibility {@code EventInfo} .
+   * @param { AsyncCallback<void> } callback Asynchronous callback interface.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 7
    * @deprecated since 9
-   * @param event The object of the accessibility {@code EventInfo} .
-   * @param callback Asynchronous callback interface.
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns {@code true} if success ; returns {@code false} otherwise.
    */
   function sendEvent(event: EventInfo, callback: AsyncCallback<void>): void;
+
+  /**
+   * Send accessibility Event.
+   *
+   * @param { EventInfo } event The object of the accessibility {@code EventInfo} .
+   * @returns { Promise<void> } Returns {@code true} if success ; returns {@code false} otherwise.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
+   * @deprecated since 9
+   */
   function sendEvent(event: EventInfo): Promise<void>;
 
   /**
    * Send accessibility event.
-   * @since 9
-   * @param event The object of the accessibility {@code EventInfo} .
-   * @param callback Asynchronous callback interface.
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns {@code true} if success ; returns {@code false} otherwise.
+   *
+   * @param { EventInfo } event The object of the accessibility {@code EventInfo} .
+   * @param { AsyncCallback<void> } callback Asynchronous callback interface.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
    */
   function sendAccessibilityEvent(event: EventInfo, callback: AsyncCallback<void>): void;
+
+  /**
+   * Send accessibility event.
+   *
+   * @param { EventInfo } event The object of the accessibility {@code EventInfo} .
+   * @returns { Promise<void> } Returns {@code true} if success ; returns {@code false} otherwise.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 9
+   */
   function sendAccessibilityEvent(event: EventInfo): Promise<void>;
 
   /**
    * Register the observe of the accessibility state changed.
-   * @since 7
-   * @param type state event type.
-   * @param callback Asynchronous callback interface.
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns {@code true} if the register is success ; returns {@code false} otherwise.
+   *
+   * @param { 'accessibilityStateChange' } type state event type.
+   * @param { Callback<boolean> } callback Asynchronous callback interface.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
    */
   function on(type: 'accessibilityStateChange', callback: Callback<boolean>): void;
 
   /**
    * Register the observe of the touchGuide state changed.
-   * @since 7
-   * @param type state event type.
-   * @param callback Asynchronous callback interface.
-   * @syscap SystemCapability.BarrierFree.Accessibility.Vision
-   * @return Returns {@code true} if the register is success ; returns {@code false} otherwise.
+   *
+   * @param { 'touchGuideStateChange' } type state event type.
+   * @param { Callback<boolean> } callback Asynchronous callback interface.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Vision
+   * @since 7
    */
   function on(type: 'touchGuideStateChange', callback: Callback<boolean>): void;
 
   /**
    * Deregister the observe of the accessibility state changed.
-   * @since 7
-   * @param type state event type
-   * @param callback Asynchronous callback interface.
-   * @syscap SystemCapability.BarrierFree.Accessibility.Core
-   * @return Returns {@code true} if the deregister is success ; returns {@code false} otherwise.
+   *
+   * @param { 'accessibilityStateChange' } type state event type
+   * @param { Callback<boolean> } callback Asynchronous callback interface.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
    */
   function off(type: 'accessibilityStateChange', callback?: Callback<boolean>): void;
 
   /**
    * Deregister the observe of the touchGuide state changed.
-   * @since 7
-   * @param type state event type
-   * @param callback Asynchronous callback interface.
-   * @return Returns {@code true} if the deregister is success ; returns {@code false} otherwise.
+   *
+   * @param { 'touchGuideStateChange' } type state event type
+   * @param { Callback<boolean> } callback Asynchronous callback interface.
    * @throws { BusinessError } 401 - Input parameter error.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
    */
-   function off(type: 'touchGuideStateChange', callback?: Callback<boolean>): void;
+  function off(type: 'touchGuideStateChange', callback?: Callback<boolean>): void;
 
   /**
    * Get the captions manager.
+   *
+   * @returns { CaptionsManager } Returns the captions manager.
    * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
    * @since 8
-   * @return Returns the captions manager.
    */
-   function getCaptionsManager(): CaptionsManager;
+  function getCaptionsManager(): CaptionsManager;
 
-   /**
-    * Indicates the captions manager.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
-    * @since 8
-    */
-   interface CaptionsManager {
-     /**
-      * Indicates whether captions are enabled.
-      */
-     enabled: boolean;
-     /**
-      * Indicates the style of captions.
-      */
-     style: CaptionsStyle;
- 
-     /**
-      * Register the observe of the enable state.
-      * @throws { BusinessError } 401 - Input parameter error.
-      */
-     on(type: 'enableChange', callback: Callback<boolean>): void;
+  /**
+   * Indicates the captions manager.
+   *
+   * @typedef CaptionsManager
+   * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+   * @since 8
+   */
+  interface CaptionsManager {
+    /**
+     * Indicates whether captions are enabled.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    enabled: boolean;
+    /**
+     * Indicates the style of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    style: CaptionsStyle;
 
-     /**
-      * Register the observer of the style.
-      * @throws { BusinessError } 401 - Input parameter error.
-      */
-     on(type: 'styleChange', callback: Callback<CaptionsStyle>): void;
+    /**
+     * Register the observe of the enable state.
+     *
+     * @param { 'enableChange' } type
+     * @param { Callback<boolean> } callback
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    on(type: 'enableChange', callback: Callback<boolean>): void;
 
-     /**
-      * Deregister the observe of the enable state.
-      * @throws { BusinessError } 401 - Input parameter error.
-      */
-     off(type: 'enableChange', callback?: Callback<boolean>): void;
+    /**
+     * Register the observer of the style.
+     *
+     * @param { 'styleChange' } type
+     * @param { Callback<CaptionsStyle> } callback
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    on(type: 'styleChange', callback: Callback<CaptionsStyle>): void;
 
-     /**
-      * Deregister the observer of the style.
-      * @throws { BusinessError } 401 - Input parameter error.
-      */
-     off(type: 'styleChange', callback?: Callback<CaptionsStyle>): void;
-   }
- 
-   /**
-    * Indicates the edge type of the captions font.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
-    * @since 8
-    */
-   type CaptionsFontEdgeType = 'none' | 'raised' | 'depressed' | 'uniform' | 'dropShadow';
-   /**
-    * Indicates the font family of captions.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
-    * @since 8
-    */
-   type CaptionsFontFamily = 'default' | 'monospacedSerif' | 'serif' |
-     'monospacedSansSerif' | 'sansSerif' | 'casual' | 'cursive' | 'smallCapitals';
-   /**
-    * Indicates the style of captions.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
-    * @since 8
-    */
-   interface CaptionsStyle {
-     /**
-      * Indicates the font family of captions.
-      */
-     fontFamily: CaptionsFontFamily;
-     /**
-      * Indicates the font scaling of captions.
-      */
-     fontScale: number;
-     /**
-      * Indicates the font color of captions.
-      */
-     fontColor: number | string;
-     /**
-      * Indicates the edge type of the captions font.
-      */
-     fontEdgeType: CaptionsFontEdgeType;
-     /**
-      * Indicates the background color of captions.
-      */
-     backgroundColor: number | string;
-     /**
-      * Indicates the window color of captions.
-      */
-     windowColor: number | string;
-   }
+    /**
+     * Deregister the observe of the enable state.
+     *
+     * @param { 'enableChange' } type
+     * @param { Callback<boolean> } callback
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    off(type: 'enableChange', callback?: Callback<boolean>): void;
 
-   /**
-    * Indicates the info of accessibility.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Core
-    * @since 7
-    */
+    /**
+     * Deregister the observer of the style.
+     *
+     * @param { 'styleChange' } type
+     * @param { Callback<CaptionsStyle> } callback
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    off(type: 'styleChange', callback?: Callback<CaptionsStyle>): void;
+  }
+
+  /**
+   * Indicates the edge type of the captions font.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+   * @since 8
+   */
+  type CaptionsFontEdgeType = 'none' | 'raised' | 'depressed' | 'uniform' | 'dropShadow';
+  /**
+   * Indicates the font family of captions.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+   * @since 8
+   */
+  type CaptionsFontFamily = 'default' | 'monospacedSerif' | 'serif' |
+    'monospacedSansSerif' | 'sansSerif' | 'casual' | 'cursive' | 'smallCapitals';
+  /**
+   * Indicates the style of captions.
+   *
+   * @typedef CaptionsStyle
+   * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+   * @since 8
+   */
+  interface CaptionsStyle {
+    /**
+     * Indicates the font family of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    fontFamily: CaptionsFontFamily;
+    /**
+     * Indicates the font scaling of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    fontScale: number;
+    /**
+     * Indicates the font color of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    fontColor: number | string;
+    /**
+     * Indicates the edge type of the captions font.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    fontEdgeType: CaptionsFontEdgeType;
+    /**
+     * Indicates the background color of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    backgroundColor: number | string;
+    /**
+     * Indicates the window color of captions.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Hearing
+     * @since 8
+     */
+    windowColor: number | string;
+  }
+
+  /**
+   * Indicates the info of accessibility.
+   *
+   * @typedef AccessibilityAbilityInfo
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
+   */
   interface AccessibilityAbilityInfo {
     /**
      * The ability id.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     readonly id: string;
@@ -333,118 +462,153 @@ declare namespace accessibility {
 
     /**
      * The type of the ability.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     readonly abilityTypes: Array<AbilityType>;
 
     /**
      * The capabilities of the ability.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     readonly capabilities: Array<Capability>;
 
     /**
      * The description of the ability.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     readonly description: string;
 
     /**
      * The events which the accessibility ability wants to observe.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     readonly eventTypes: Array<EventType>;
-
   }
 
   /**
-    * Indicates the info of events.
-    * @syscap SystemCapability.BarrierFree.Accessibility.Core
-    * @since 7
-    */
+   * Indicates the info of events.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 7
+   */
   class EventInfo {
     constructor(jsonObject);
     /**
      * The type of an accessibility event.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     type: EventType;
 
     /**
      * The type of the window change event.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     windowUpdateType?: WindowUpdateType;
 
     /**
      * The bundle name of the target application.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     bundleName: string;
 
     /**
      * The type of the event source component,such as button, chart.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     componentType?: string;
 
-    /** The page id of the event source.
+    /**
+     * The page id of the event source.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
-    pageId ?: number;
+    pageId?: number;
 
     /**
      * The accessibility event description.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     description?: string;
 
     /**
      * The action that triggers the accessibility event, for example, clicking or focusing a view.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     triggerAction: Action;
 
     /**
      * The movement step used for reading texts.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     textMoveUnit?: TextMoveUnit;
 
     /**
      * The content list.
-     * @note
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     contents?: Array<string>;
 
     /**
      * The content changed before.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     lastContent?: string;
 
     /**
      * The start index of listed items on the screen.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     beginIndex?: number;
 
     /**
      * The index of the current item on the screen.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     currentIndex?: number;
 
     /**
      * The end index of listed items on the screen.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     endIndex?: number;
 
     /**
-     * The total of the items.
-     * @note talkback used it when scroll.
+     * The total of the items, talkback used it when scroll.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
      * @since 7
      */
     itemCount?: number;
