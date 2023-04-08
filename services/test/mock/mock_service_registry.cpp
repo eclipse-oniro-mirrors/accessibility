@@ -184,4 +184,21 @@ int32_t SystemAbilityManagerProxy::UnSubscribeSystemProcess(const sptr<ISystemPr
 {
     return -1;
 }
+
+int32_t SystemAbilityManagerProxy::GetOnDemandReasonExtraData(int64_t extraDataId, MessageParcel& extraDataParcel)
+{
+    return -1;
+}
+
+int32_t SystemAbilityManagerProxy::GetOnDemandPolicy(int32_t systemAbilityId, OnDemandPolicyType type,
+    std::vector<SystemAbilityOnDemandEvent>& abilityOnDemandEvents)
+{
+    return -1;
+}
+
+int32_t SystemAbilityManagerProxy::UpdateOnDemandPolicy(int32_t systemAbilityId, OnDemandPolicyType type,
+    const std::vector<SystemAbilityOnDemandEvent>& sabilityOnDemandEvents)
+{
+    return -1;
+}
 }

@@ -280,6 +280,7 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
 }
