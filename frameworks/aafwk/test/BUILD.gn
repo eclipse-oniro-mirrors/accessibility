@@ -19,6 +19,7 @@ module_output_path = "accessibility/framework_test"
 ###############################################################################
 config("module_private_config") {
   visibility = [ ":*" ]
+  visibility += [ "//foundation/arkui/ace_engine/frameworks/core/components_ng/test/pattern/ability_component:ability_component_pattern_test_ng" ]
   cflags = []
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
