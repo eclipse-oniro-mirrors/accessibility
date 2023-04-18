@@ -371,329 +371,329 @@ type ElementAttributeValues = {
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  accessibilityFocused: boolean;
+  'accessibilityFocused': boolean;
   /**
    * Indicates the bundle name to which it belongs.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  bundleName: string;
+  'bundleName': string;
   /**
    * Indicates whether the element is checkable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  checkable: boolean;
+  'checkable': boolean;
   /**
    * Indicates whether the element is checked.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  checked: boolean;
+  'checked': boolean;
   /**
    * Indicates all child elements.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  children: Array<AccessibilityElement>;
+  'children': Array<AccessibilityElement>;
   /**
    * Indicates whether the element is clickable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  clickable: boolean;
+  'clickable': boolean;
   /**
    * Indicates the component ID to which the element belongs.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  componentId: number;
+  'componentId': number;
   /**
    * Indicates the component type to which the element belongs.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  componentType: string;
+  'componentType': string;
   /**
    * Indicates the content.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  contents: Array<string>;
+  'contents': Array<string>;
   /**
    * Indicates the index of the current item.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  currentIndex: number;
+  'currentIndex': number;
   /**
    * Indicates the description of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  description: string;
+  'description': string;
   /**
    * Indicates whether the element is editable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  editable: boolean;
+  'editable': boolean;
   /**
    * Indicates the list index of the last item displayed on the screen.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  endIndex: number;
+  'endIndex': number;
   /**
    * Indicates the string of error state.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  error: string;
+  'error': string;
   /**
    * Indicates whether the element is focusable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  focusable: boolean;
+  'focusable': boolean;
   /**
    * Indicates the hint text.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  hintText: string;
+  'hintText': string;
   /**
    * Indicates the type of input text.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  inputType: number;
+  'inputType': number;
   /**
    * Indicates the inspector key.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  inspectorKey: string;
+  'inspectorKey': string;
   /**
    * Indicates whether the element is active or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isActive: boolean;
+  'isActive': boolean;
   /**
    * Indicates whether the element is enable or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isEnable: boolean;
+  'isEnable': boolean;
   /**
    * Indicates whether the element is hint state or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isHint: boolean;
+  'isHint': boolean;
   /**
    * Indicates whether the element is focused or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isFocused: boolean;
+  'isFocused': boolean;
   /**
    * Indicates whether the element is password or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isPassword: boolean;
+  'isPassword': boolean;
   /**
    * Indicates whether the element is visible or not.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  isVisible: boolean;
+  'isVisible': boolean;
   /**
    * Indicates the total count of the items.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  itemCount: number;
+  'itemCount': number;
   /**
    * Indicates the last content.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  lastContent: string;
+  'lastContent': string;
   /**
    * Indicates the display layer of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  layer: number;
+  'layer': number;
   /**
    * Indicates whether the element is long clickable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  longClickable: boolean;
+  'longClickable': boolean;
   /**
    * Indicates the page id.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  pageId: number;
+  'pageId': number;
   /**
    * Indicates the parent of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  parent: AccessibilityElement;
+  'parent': AccessibilityElement;
   /**
    * Indicates whether the element supports multiple lines of text.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  pluralLineSupported: boolean;
+  'pluralLineSupported': boolean;
   /**
    * Indicates the area of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  rect: Rect;
+  'rect': Rect;
   /**
    * Indicates the resource name of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  resourceName: string;
+  'resourceName': string;
   /**
    * Indicates the root element of the window element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  rootElement: AccessibilityElement;
+  'rootElement': AccessibilityElement;
   /**
    * Indicates the display area of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  screenRect: Rect;
+  'screenRect': Rect;
   /**
    * Indicates whether the element is scrollable.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  scrollable: boolean;
+  'scrollable': boolean;
   /**
    * Indicates whether the element is selected.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  selected: boolean;
+  'selected': boolean;
   /**
    * Indicates the list index of the first item displayed on the screen.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  startIndex: number;
+  'startIndex': number;
   /**
    * Indicates the text of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  text: string;
+  'text': string;
   /**
    * Indicates the maximum length limit of the element text.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  textLengthLimit: number;
+  'textLengthLimit': number;
   /**
    * Indicates the unit of movement of the element text as it is read.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  textMoveUnit: accessibility.TextMoveUnit;
+  'textMoveUnit': accessibility.TextMoveUnit;
   /**
    * Indicates the action that triggered the element event.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  triggerAction: accessibility.Action;
+  'triggerAction': accessibility.Action;
   /**
    * Indicates the window type of the element.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  type: WindowType;
+  'type': WindowType;
   /**
    * Indicates the maximum value.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  valueMax: number;
+  'valueMax': number;
   /**
    * Indicates the minimum value.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  valueMin: number;
+  'valueMin': number;
   /**
    * Indicates the current value.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  valueNow: number;
+  'valueNow': number;
   /**
    * Indicates the window id.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
    */
-  windowId: number;
+  'windowId': number;
 };
 
 /**
