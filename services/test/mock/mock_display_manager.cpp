@@ -62,13 +62,13 @@ sptr<Display> DisplayManager::GetDisplayById(DisplayId displayId)
     return display;
 }
 
-std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId)
+std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId, DmErrorCode* errorCode)
 {
     return nullptr;
 }
 
-std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(
-    DisplayId displayId, const Media::Rect& rect, const Media::Size& size, int rotation)
+std::shared_ptr<Media::PixelMap> DisplayManager::GetScreenshot(DisplayId displayId,
+    const Media::Rect& rect, const Media::Size& size, int rotation, DmErrorCode* errorCode)
 {
     return nullptr;
 }
