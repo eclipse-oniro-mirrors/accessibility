@@ -41,7 +41,7 @@ acfwk_src = [
 
 ohos_shared_library("accessibilityconfig") {
   sources = acfwk_src
-
+  version_script = "libaccessibility_acfwk.map"
   configs = [
     ":accessibilityconfig_private_config",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
@@ -59,11 +59,11 @@ ohos_shared_library("accessibilityconfig") {
     "hiviewdfx_hilog_native:libhilog",
     "init:libbeget_proxy",
     "init:libbegetutil",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
     "napi:ace_napi",
     "samgr:samgr_proxy",
   ]
-
+  innerapi_tags = [ "platformsdk" ]
   install_enable = true
 
   subsystem_name = "barrierfree"
