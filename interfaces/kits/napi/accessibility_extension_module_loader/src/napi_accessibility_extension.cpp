@@ -50,7 +50,10 @@ NAccessibilityExtension::NAccessibilityExtension(AbilityRuntime::JsRuntime& jsRu
     engine_ = &jsRuntime_.GetNativeEngine();
 }
 
-NAccessibilityExtension::~NAccessibilityExtension() = default;
+NAccessibilityExtension::~NAccessibilityExtension()
+{
+    jsRuntime_.FreeNativeReference(std::move(jsObj_));
+}
 
 void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLocalRecord> &record,
     const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
