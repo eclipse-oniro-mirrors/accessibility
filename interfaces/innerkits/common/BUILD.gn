@@ -44,6 +44,7 @@ accessibility_common_src = [
 
 ohos_shared_library("accessibility_common") {
   sources = accessibility_common_src
+  version_script = "libaccessibility_common.map"
   configs = [
     ":accessibility_common_private_config",
     "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
@@ -58,7 +59,7 @@ ohos_shared_library("accessibility_common") {
     "input:libmmi-client",
     "napi:ace_napi",
   ]
-
+  innerapi_tags = [ "platformsdk" ]
   subsystem_name = "barrierfree"
   part_name = "accessibility"
 }

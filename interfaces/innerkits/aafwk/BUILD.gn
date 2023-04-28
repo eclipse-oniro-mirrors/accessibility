@@ -31,10 +31,7 @@ config("accessibleability_private_config") {
 }
 
 config("accessibleability_public_config") {
-  include_dirs = [
-    "include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 aafwk_files = [
@@ -46,7 +43,7 @@ aafwk_files = [
 
 ohos_shared_library("accessibleability") {
   sources = aafwk_files
-
+  version_script = "libaccessibility_aafwk.map"
   configs = [ ":accessibleability_private_config" ]
 
   public_configs = [
@@ -63,12 +60,12 @@ ohos_shared_library("accessibleability") {
     "init:libbeget_proxy",
     "init:libbegetutil",
     "input:libmmi-client",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
     "samgr:samgr_proxy",
   ]
 
   public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
-
+  innerapi_tags = [ "platformsdk" ]
   install_enable = true
 
   subsystem_name = "barrierfree"

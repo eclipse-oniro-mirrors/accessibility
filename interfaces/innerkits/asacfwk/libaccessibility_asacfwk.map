@@ -1,0 +1,27 @@
+{
+    global:
+        extern "C++" {
+            OHOS::Accessibility::AccessibilitySystemAbilityClient::GetInstance*;
+            OHOS::Accessibility::AccessibilitySystemAbilityClientImpl*;
+            OHOS::Accessibility::AccessibilityElementOperatorImpl*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::SearchElementInfo*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::FocusMoveSearch*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::ClearFocus*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::OutsideTouch*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl::Set*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl::~AccessibilitySystemAbilityClientImpl*;
+            vtable?for?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl::AccessibleAbilityManagerStateObserverImpl*;
+            vtable?for?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl;
+            vtable?for?OHOS::Accessibility::AccessibilityElementOperatorImpl*;
+            vtable?for?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl::DeathRecipient*;
+            OHOS::ISystemAbilityManager::SAMANAGER_INTERFACE_TOKEN;
+            OHOS::IRemoteStub*;
+            VTT?for?OHOS::Accessibility::AccessibilityElementOperatorImpl;
+            non-virtual?thunk?to?OHOS::IRemoteStub*;
+            VTT?for?OHOS::Accessibility::AccessibilitySystemAbilityClientImpl::AccessibleAbilityManagerStateObserverImpl*;
+    };
+    local:
+        *;
+};

@@ -1,0 +1,25 @@
+{
+    global:
+        extern "C++" {
+            OHOS::Accessibility::AccessibleAbilityChannelClient*;
+            OHOS::Accessibility::AccessibleAbilityClientImpl*;
+            OHOS::Accessibility::AccessibleAbilityClient::GetInstance*;
+            VTT?for?OHOS::Accessibility::AccessibleAbilityClientImpl*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityClientImpl*;
+            virtual?thunk?to?OHOS::Accessibility::AccessibleAbilityClientImpl*;
+            OHOS::Accessibility::AccessibilityUITestAbilityImpl*;
+            OHOS::Accessibility::AccessibilityUITestAbility*;
+            vtable?for?OHOS::Accessibility::AccessibilityUITestAbilityImpl*;
+            vtable?for?OHOS::Accessibility::AccessibleAbilityClientImpl*;
+            OHOS::Accessibility::AccessibilityElementOperatorCallbackImpl*;
+            non-virtual?thunk?to?OHOS::Accessibility::AccessibilityElementOperatorCallbackImpl*;
+            vtable?for?OHOS::Accessibility::AccessibilityElementOperatorCallbackImpl*;
+            VTT?for?OHOS::Accessibility::AccessibilityElementOperatorCallbackImpl*;
+            vtable?for?OHOS::Accessibility::Rect*;
+            vtable?for?OHOS::Accessibility::AccessibleAbilityClientImpl::AccessibilityServiceDeathRecipient*;
+            OHOS::IRemoteStub*;
+            OHOS::ISystemAbilityManager::SAMANAGER_INTERFACE_TOKEN;
+    };
+    local:
+        *;
+};

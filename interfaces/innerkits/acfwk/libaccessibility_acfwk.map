@@ -1,0 +1,28 @@
+{
+    global:
+        extern "C++" {
+            OHOS::BrokerDelegator*;
+            vtable?for?OHOS::BrokerDelegator*;
+            OHOS::IRemoteStub*;
+            NAccessibilityConfigObserverImpl*;
+            NAccessibilityConfigObserver::Notify*;
+            NAccessibilityConfigObserver::Subscribe*;
+            NAccessibilityConfigObserver::Unsubscribe*;
+            NAccessibilityConfigObserver::OnConfigChanged*;
+            vtable?for?NAccessibilityConfigObserverImpl*;
+            OHOS::Accessibility::AccessibleAbilityManagerServiceProxy::delegator*;
+            OHOS::ISystemAbilityManager::SAMANAGER_INTERFACE_TOKEN;
+            non-virtual?thunk?to?OHOS::IRemoteStub*;
+            OHOS::AccessibilityConfig::AccessibilityConfig*;
+            OHOS::AccessibilityConfig::AccessibilityConfig::Impl*;
+            vtable?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibilityEnableAbilityListsObserverImpl*;
+            vtable?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibleAbilityManagerCaptionObserverImpl*;
+            vtable?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibleAbilityManagerConfigObserverImpl*;
+            VTT?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibilityEnableAbilityListsObserverImpl*;
+            VTT?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibilityEnableAbilityListsObserverImpl*;
+            VTT?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::AccessibilityEnableAbilityListsObserverImpl*;
+            vtable?for?OHOS::AccessibilityConfig::AccessibilityConfig::Impl::DeathRecipient*;
+        };
+    local:
+        *;
+};
