@@ -12,16 +12,16 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
+import("../../../accessibility_aafwk.gni")
 
-aafwk_path = "//foundation/barrierfree/accessibility/frameworks/aafwk"
+aafwk_path = "../../../frameworks/aafwk"
 
 config("accessibleability_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
     "${aafwk_path}/include",
-    "//foundation/barrierfree/accessibility/common/log/include",
+    "../../../common/log/include",
   ]
 
   defines = [
@@ -48,10 +48,10 @@ ohos_shared_library("accessibleability") {
 
   public_configs = [
     ":accessibleability_public_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
-  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
+  deps = [ "../../../common/interface:accessibility_interface" ]
 
   external_deps = [
     "c_utils:utils",
@@ -64,7 +64,7 @@ ohos_shared_library("accessibleability") {
     "samgr:samgr_proxy",
   ]
 
-  public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
+  public_deps = [ "../common:accessibility_common" ]
   innerapi_tags = [ "platformsdk" ]
   install_enable = true
 

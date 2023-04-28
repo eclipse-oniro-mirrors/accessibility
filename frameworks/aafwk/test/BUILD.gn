@@ -12,14 +12,14 @@
 # limitations under the License.
 
 import("//build/test.gni")
-import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
+import("../../../services/test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
 ###############################################################################
 config("module_private_config") {
   visibility = [ ":*" ]
-  visibility += [ "//foundation/arkui/ace_engine/frameworks/core/components_ng/test/pattern/ability_component:ability_component_pattern_test_ng" ]
+  visibility += [ "../../../../../arkui/ace_engine/frameworks/core/components_ng/test/pattern/ability_component:ability_component_pattern_test_ng" ]
   cflags = []
   if (target_cpu == "arm") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
@@ -27,45 +27,23 @@ config("module_private_config") {
   include_dirs = aams_mock_include_dirs
   include_dirs += [
     "${ability_runtime_inner_api_path}/ability_manager/include",
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/include",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/include",
-    "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
-    "//foundation/barrierfree/accessibility/frameworks/asacfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
-    "//foundation/barrierfree/accessibility/services/aams/include",
-    "//foundation/barrierfree/accessibility/common/interface/include",
-    "//foundation/barrierfree/accessibility/common/interface/include",
-    "//foundation/barrierfree/accessibility/common/interface/include/parcel",
-    "//foundation/barrierfree/accessibility/common/interface/include/parcel",
-    "//foundation/barrierfree/accessibility/services/test/mock/common",
-    "//foundation/barrierfree/accessibility/services/test/mock/include/extern",
-    "//foundation/barrierfree/accessibility/util/include",
-    "//base/account/os_account/frameworks/common/account_error/include",
-    "//base/account/os_account/frameworks/common/database/include",
-    "//base/account/os_account/interfaces/innerkits/domain_account/native/include",
-    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
-    "//base/hiviewdfx/hiview/adapter/utility/include/extra/singleton.h",
-    "//base/notification/common_event_service/interfaces/inner_api",
-    "//foundation/arkui/napi/native_engine",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_base/include",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include/bundlemgr",
-    "//foundation/multimedia/image_framework/interfaces/innerkits/include",
-    "//foundation/multimedia/image_framework/interfaces/kits/native/include",
-    "//foundation/multimodalinput/input/util/common/include",
-    "//foundation/window/window_manager/dm/include",
-    "//foundation/window/window_manager/interfaces/innerkits",
-    "//foundation/window/window_manager/interfaces/innerkits/dm",
-    "//foundation/window/window_manager/interfaces/innerkits/wm",
-    "//foundation/window/window_manager/utils/include",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
-    "//third_party/json/include",
+    "../../../common/log/include",
+    "../include",
+    "./mock/include",
+    "../../acfwk/include",
+    "../../asacfwk/include",
+    "../../../interfaces/innerkits/aafwk/include",
+    "../../../interfaces/innerkits/acfwk/include",
+    "../../../interfaces/innerkits/asacfwk/include",
+    "../../../interfaces/innerkits/common/include",
+    "../../../services/aams/include",
+    "../../../common/interface/include",
+    "../../../common/interface/include/parcel",
+    "../../../services/test/mock/common",
+    "../../../services/test/mock/include/extern",
+    "../../../services/aams/test/mock/include",
   ]
+
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
     "AAMS_LOG_DOMAIN = 0xD001D05",
@@ -76,26 +54,26 @@ config("module_private_config") {
 ohos_unittest("accessibility_ui_test_ability_impl_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
+    "../../../services/test/mock/mock_bundle_manager.cpp",
+    "../../../services/test/mock/mock_service_registry.cpp",
     "../src/accessibility_ui_test_ability_impl.cpp",
     "./mock/src/mock_accessible_ability_client_impl.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_listener.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_bundle_manager.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
+    "./mock/src/mock_accessible_ability_listener.cpp",
     "unittest/accessibility_ui_test_ability_impl_test.cpp",
   ]
   sources += aams_mock_multimodalinput_src
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
@@ -107,6 +85,7 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "init:libbeget_proxy",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
     "samgr:samgr_proxy",
   ]
 }
@@ -115,43 +94,43 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
 ohos_unittest("accessible_ability_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
+    "../../../common/interface/src/accessible_ability_client_stub.cpp",
+    "../../../common/interface/src/accessible_ability_manager_service_proxy.cpp",
+    "../../../common/interface/src/parcel/accessibility_ability_info_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_caption_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_event_info_parcel.cpp",
+    "../../../services/aams/src/accessibility_display_manager.cpp",
+    "../../../services/aams/src/accessibility_dumper.cpp",
+    "../../../services/aams/src/accessibility_settings_config.cpp",
+    "../../../services/aams/src/accessible_ability_manager_service.cpp",
+    "../../../services/aams/src/accessible_ability_manager_service_event_handler.cpp",
+    "../../../services/aams/src/utils.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_account_data.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_common_event.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_input_interceptor.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_window_connection.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_window_manager.cpp",
+    "../../../services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
+    "../../../services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
+    "../../../services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
+    "../../../services/aams/test/mock/src/mock_os_account_manager.cpp",
+    "../../../services/test/mock/mock_parameter.c",
+    "../../common/src/accessibility_caption.cpp",
+    "../../common/src/accessibility_constants.cpp",
+    "../../common/src/accessibility_element_info.cpp",
+    "../../common/src/accessibility_event_info.cpp",
+    "../../common/src/accessibility_gesture_inject_path.cpp",
+    "../../common/src/accessibility_window_info.cpp",
     "../src/accessibility_element_operator_callback_impl.cpp",
     "../src/accessibility_ui_test_ability_impl.cpp",
     "../src/accessible_ability_channel_client.cpp",
     "../src/accessible_ability_client_impl.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessibility_element_operator_callback_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_manager_service_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_ability_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_caption_parcel.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_element_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_event_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_channel_proxy.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_channel_stub.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/test/mock/src/mock_accessible_ability_listener.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_constants.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_gesture_inject_path.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_window_info.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/accessibility_display_manager.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/accessibility_dumper.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/accessibility_settings_config.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/accessible_ability_manager_service.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/accessible_ability_manager_service_event_handler.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/src/utils.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_account_data.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_common_event.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_input_interceptor.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_window_connection.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_window_manager.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_os_account_manager.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
+    "./mock/src/mock_accessible_ability_channel_proxy.cpp",
+    "./mock/src/mock_accessible_ability_channel_stub.cpp",
+    "./mock/src/mock_accessible_ability_listener.cpp",
     "unittest/accessibility_element_operator_callback_impl_test.cpp",
     "unittest/accessible_ability_channel_client_test.cpp",
     "unittest/accessible_ability_client_impl_test.cpp",
@@ -160,14 +139,14 @@ ohos_unittest("accessible_ability_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
@@ -180,9 +159,11 @@ ohos_unittest("accessible_ability_test") {
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
     "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 

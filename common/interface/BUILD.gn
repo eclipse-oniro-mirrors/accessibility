@@ -18,7 +18,7 @@ config("accessibility_interface_private_config") {
 
   include_dirs = [
     "include/parcel",
-    "//foundation/barrierfree/accessibility/common/log/include",
+    "../log/include",
   ]
 
   defines = [
@@ -34,7 +34,7 @@ config("accessibility_interface_private_config") {
 config("accessibility_interface_public_config") {
   include_dirs = [
     "include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
+    "../../../../multimodalinput/input/interfaces/native/innerkits/event/include",
   ]
 }
 
@@ -73,12 +73,12 @@ ohos_shared_library("accessibility_interface") {
   sources += accessibility_data_parcel_src
   configs = [
     ":accessibility_interface_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../resources/config/build:coverage_flags",
   ]
 
   public_configs = [ ":accessibility_interface_public_config" ]
 
-  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
+  deps = [ "../../interfaces/innerkits/common:accessibility_common" ]
 
   external_deps = [
     "access_token:libaccesstoken_sdk",

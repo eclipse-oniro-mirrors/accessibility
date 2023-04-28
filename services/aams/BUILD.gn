@@ -13,7 +13,7 @@
 
 import("//build/ohos.gni")
 
-services_path = "//foundation/barrierfree/accessibility/services/aams"
+services_path = "./"
 
 ohos_prebuilt_etc("accessibility_service.rc") {
   source = "etc/accessibility_service.rc"
@@ -27,7 +27,7 @@ config("aams_service_config") {
 
   include_dirs = [
     "include",
-    "//foundation/barrierfree/accessibility/common/log/include",
+    "../../common/log/include",
   ]
 
   defines = [
@@ -65,12 +65,12 @@ ohos_shared_library("accessibleabilityms") {
   sources = accessibleabilityms_files
   configs = [
     ":aams_service_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
+    "../../common/interface:accessibility_interface",
+    "../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [

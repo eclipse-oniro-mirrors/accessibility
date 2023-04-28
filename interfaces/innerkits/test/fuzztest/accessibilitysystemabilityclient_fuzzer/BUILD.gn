@@ -21,15 +21,15 @@ ohos_fuzztest("AccessibilitySystemAbilityClientFuzzTest") {
   fuzz_config_file = "../../fuzztest/accessibilitysystemabilityclient_fuzzer"
 
   include_dirs = [
-    "//foundation/barrierfree/accessibility/common/interface/include",
-    "//foundation/barrierfree/accessibility/frameworks/asacfwk/include",
+    "../../../../../common/interface/include",
+    "../../../../../frameworks/asacfwk/include",
   ]
   configs = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:configs_cc_ld",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../fuzztest:configs_cc_ld",
+    "../../../../../resources/config/build:coverage_flags",
   ]
   sources = [ "accessibilitysystemabilityclient_fuzzer.cpp" ]
-  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient" ]
+  deps = [ "../../../asacfwk:accessibilityclient" ]
   external_deps = [ "c_utils:utils" ]
 }
 

@@ -17,15 +17,51 @@ ability_runtime_inner_api_path = "${ability_runtime_path}/interfaces/inner_api"
 ability_runtime_kits_path = "${ability_runtime_path}/frameworks/kits"
 ability_runtime_services_path = "${ability_runtime_path}/services"
 AAMS_MOCK_PATH = "//foundation/barrierfree/accessibility/services/test/mock"
+AAMS_FRAMEWORKS_PATH = "//foundation/barrierfree/accessibility/frameworks"
+AAMS_INTERFACES_PATH = "//foundation/barrierfree/accessibility/interfaces"
+AAMS_SERVICES_PATH = "//foundation/barrierfree/accessibility/services"
+AAMS_COMMON_PATH = "//foundation/barrierfree/accessibility/common"
+AAMS_FOUNDATION_PATH = "//foundation"
 
 aams_mock_include_dirs = [
   "$AAMS_MOCK_PATH/distributeddatamgr/include",
   "$AAMS_MOCK_PATH/multimodalinput/include",
   "$AAMS_MOCK_PATH/powermanager/include",
+  "//base/account/os_account/frameworks/common/account_error/include",
+  "//base/account/os_account/frameworks/common/database/include",
+  "//base/account/os_account/interfaces/innerkits/domain_account/native/include",
+  "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
+  "//base/global/resource_management/interfaces/inner_api/include",
+  "//base/hiviewdfx/hiview/adapter/utility/include/extra/singleton.h",
+  "//base/notification/common_event_service/interfaces/inner_api",
+  "//base/notification/eventhandler/interfaces/inner_api",
+  "//base/powermgr/display_manager/utils/native/include",
+  "//foundation",
+  "//foundation/arkui/napi/native_engine",
   "//foundation/distributeddatamgr/preferences/interfaces/inner_api/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/proxy/include",
   "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
   "//base/powermgr/power_manager/interfaces/inner_api/native/include",
+  "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_base/include",
+  "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include",
+  "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include/bundlemgr",
+  "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk",
+  "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
+  "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
+  "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
+  "//foundation/multimedia/image_framework/interfaces/kits/native/include",
+  "//foundation/multimedia/image_framework/interfaces/innerkits/include",
+  "//foundation/multimodalinput/input/util/common/include",
+  "//foundation/window/window_manager/dm/include",
+  "//foundation/window/window_manager/interfaces/innerkits",
+  "//foundation/window/window_manager/interfaces/innerkits/dm",
+  "//foundation/window/window_manager/interfaces/innerkits/wm",
+  "//foundation/window/window_manager/utils/include",
+  "//third_party/json/include",
+  "//third_party/jsoncpp/include",
+  "//third_party/jsoncpp/include/json",
+  "//commonlibrary/c_utils/base/include",
+  "//utils/system/safwk/native/include",
 ]
 
 aams_mock_distributeddatamgr_src =

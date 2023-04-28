@@ -17,10 +17,10 @@ config("accessibility_extension_module_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_module_loader/include",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/include",
+    "../../../../common/log/include",
+    "../../../innerkits/acfwk/include",
+    "include",
+    "../include",
   ]
 
   defines = [
@@ -42,8 +42,8 @@ ohos_shared_library("accessibility_extension_module") {
   configs = [ ":accessibility_extension_module_config" ]
 
   deps = [
+    "../../../innerkits/aafwk:accessibleability",
     "./../../../innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
   ]
 
   external_deps = [
