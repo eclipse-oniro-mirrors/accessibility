@@ -222,7 +222,6 @@ private:
     void NotifyDefaultConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
-    void InitEventHandler();
     static void OnParameterChanged(const char *key, const char *value, void *context);
 
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
