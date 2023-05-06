@@ -13,14 +13,14 @@
 
 import("//build/ohos.gni")
 
-asacfwk_path = "//foundation/barrierfree/accessibility/frameworks/asacfwk"
+asacfwk_path = "../../../frameworks/asacfwk"
 
 config("accessibilityclient_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
     "${asacfwk_path}/include",
-    "//foundation/barrierfree/accessibility/common/log/include",
+    "../../../common/log/include",
   ]
 
   defines = [
@@ -43,14 +43,14 @@ ohos_shared_library("accessibilityclient") {
   version_script = "libaccessibility_asacfwk.map"
   configs = [
     ":accessibilityclient_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   public_configs = [ ":accessibilityclient_public_config" ]
 
-  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
+  deps = [ "../../../common/interface:accessibility_interface" ]
 
-  public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
+  public_deps = [ "../common:accessibility_common" ]
 
   external_deps = [
     "c_utils:utils",

@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/test.gni")
-import("//foundation/barrierfree/accessibility/services/test/aamstestmock.gni")
+import("../../test/aamstestmock.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -27,26 +27,15 @@ config("module_private_config") {
 
   include_dirs = aams_mock_include_dirs
   include_dirs += [
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
-    "//foundation/barrierfree/accessibility/services/aams/include",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/include",
-    "//foundation/barrierfree/accessibility/services/test/mock/common",
-    "//foundation/barrierfree/accessibility/common/interface/include",
-    "//foundation/barrierfree/accessibility/common/interface/include/parcel",
-    "//foundation/barrierfree/accessibility/util/include",
-    "//base/account/os_account/frameworks/common/account_error/include",
-    "//base/account/os_account/frameworks/common/database/include",
-    "//base/account/os_account/interfaces/innerkits/domain_account/native/include",
-    "//base/account/os_account/interfaces/innerkits/osaccount/native/include",
-    "//base/global/resource_management/interfaces/inner_api/include",
-    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
-    "//base/notification/common_event_service/interfaces/inner_api",
-    "//base/notification/eventhandler/interfaces/inner_api",
-    "//base/powermgr/display_manager/utils/native/include",
-    "//foundation",
+    "../../../common/log/include",
+    "../../../interfaces/innerkits/acfwk/include",
+    "../../../interfaces/innerkits/asacfwk/include",
+    "../../../interfaces/innerkits/common/include",
+    "../include",
+    "./mock/include",
+    "../../test/mock/common",
+    "../../../common/interface/include",
+    "../../../common/interface/include/parcel",
     "${ability_base_path}/interfaces/inner_api/base/include",
     "${ability_base_path}/interfaces/kits/native/uri/include",
     "${ability_base_path}/interfaces/kits/native/want/include",
@@ -55,29 +44,15 @@ config("module_private_config") {
     "${ability_runtime_inner_api_path}/ability_manager/include",
     "${ability_runtime_inner_api_path}/app_manager/include/appmgr/",
     "${ability_runtime_services_path}/abilitymgr/include",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_base/include",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include",
-    "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core/include/bundlemgr",
-    "//foundation/distributeddatamgr/preferences/interfaces/inner_api/include",
-    "//foundation/systemabilitymgr/safwk/interfaces/innerkits/safwk",
-    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/common/include",
-    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/systemabilitymgr/samgr/services/samgr/native/include",
-    "//foundation/graphic/graphic_2d/rosen/modules/render_service_base/include",
-    "//foundation/multimedia/image_framework/interfaces/innerkits/include",
-    "//foundation/multimedia/image_framework/interfaces/kits/native/include",
-    "//foundation/multimodalinput/input/util/common/include",
-    "//foundation/window/window_manager/dm/include",
-    "//foundation/window/window_manager/interfaces/innerkits",
-    "//foundation/window/window_manager/interfaces/innerkits/dm",
-    "//foundation/window/window_manager/interfaces/innerkits/wm",
-    "//foundation/window/window_manager/utils/include",
-    "//third_party/json/include",
-    "//commonlibrary/c_utils/base/include",
-    "//utils/system/safwk/native/include",
     "mock",
+    "../../../../graphic/graphic_2d/rosen/modules/render_service_base/include",
+    "../../../../multimedia/image_framework/interfaces/innerkits/include",
+    "../../../../multimedia/image_framework/interfaces/kits/native/include",
+    "../../../../window/window_manager/previewer/mock",
+    "../../../../multimodalinput/input/util/common/include",
+    "../../../../window/window_manager/utils/include",
   ]
+
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
     "AAMS_LOG_DOMAIN = 0xD001D05",
@@ -102,26 +77,36 @@ ohos_unittest("accessibility_account_data_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../../services/aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -129,7 +114,7 @@ ohos_unittest("accessibility_account_data_test") {
 ohos_unittest("accessible_ability_manager_service_test") {
   module_out_path = module_output_path
   sources = [
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
+    "../../test/mock/mock_parameter.c",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/src/mock_accessibility_window_manager.cpp",
@@ -151,26 +136,36 @@ ohos_unittest("accessible_ability_manager_service_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "display_manager:displaymgr",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
     "power_manager:powermgr_client",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -178,6 +173,10 @@ ohos_unittest("accessible_ability_manager_service_test") {
 ohos_unittest("accessibility_touch_guider_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../common/interface/src/accessibility_element_operator_callback_stub.cpp",
+    "../../../common/interface/src/accessible_ability_channel_stub.cpp",
+    "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
+    "../../test/mock/mock_display_manager.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_gesture_recognizer.cpp",
     "../src/accessibility_settings_config.cpp",
@@ -185,10 +184,6 @@ ohos_unittest("accessibility_touch_guider_test") {
     "../src/accessibility_window_connection.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessibility_element_operator_callback_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_element_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_element_operator_proxy.cpp",
@@ -214,25 +209,35 @@ ohos_unittest("accessibility_touch_guider_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -240,9 +245,9 @@ ohos_unittest("accessibility_touch_guider_test") {
 ohos_unittest("accessibility_common_event_registry_test") {
   module_out_path = module_output_path
   sources = [
+    "../../test/mock/mock_parameter.c",
     "../src/accessibility_common_event.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_common_event_data.cpp",
@@ -259,21 +264,24 @@ ohos_unittest("accessibility_common_event_registry_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -281,8 +289,15 @@ ohos_unittest("accessibility_common_event_registry_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -291,6 +306,13 @@ ohos_unittest("accessibility_input_interceptor_test") {
   module_out_path = module_output_path
 
   sources = [
+    "../../../common/interface/src/accessible_ability_channel_proxy.cpp",
+    "../../../common/interface/src/accessible_ability_client_proxy.cpp",
+    "../../../frameworks/common/src/accessibility_ability_info.cpp",
+    "../../../frameworks/common/src/accessibility_caption.cpp",
+    "../../../frameworks/common/src/accessibility_event_info.cpp",
+    "../../../frameworks/common/src/accessibility_window_info.cpp",
+    "../../test/mock/mock_parameter.c",
     "../src/accessibility_common_event.cpp",
     "../src/accessibility_display_manager.cpp",
     "../src/accessibility_dumper.cpp",
@@ -301,13 +323,6 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "../src/accessibility_short_key.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_proxy.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_ability_info.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_caption.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_window_info.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_gesture_recognizer.cpp",
@@ -326,21 +341,24 @@ ohos_unittest("accessibility_input_interceptor_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
@@ -348,8 +366,14 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
     "samgr:samgr_proxy",
     "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -358,14 +382,14 @@ ohos_unittest("accessibility_window_manager_test") {
   module_out_path = module_output_path
 
   sources = [
+    "../../../common/interface/src/accessibility_element_operator_callback_proxy.cpp",
+    "../../../common/interface/src/accessibility_element_operator_proxy.cpp",
+    "../../../common/interface/src/accessible_ability_channel_proxy.cpp",
+    "../../../common/interface/src/accessible_ability_client_proxy.cpp",
     "../src/accessibility_window_connection.cpp",
     "../src/accessibility_window_manager.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessibility_element_operator_callback_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessibility_element_operator_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_client_proxy.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
@@ -379,21 +403,24 @@ ohos_unittest("accessibility_window_manager_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -401,6 +428,13 @@ ohos_unittest("accessibility_window_manager_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -409,10 +443,10 @@ ohos_unittest("accessibility_keyevent_filter_test") {
   module_out_path = module_output_path
   sources = [
     "../src/accessibility_keyevent_filter.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_account_data.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
-    "//foundation/barrierfree/accessibility/services/aams/test/mock/src/mock_accessible_ability_manager_service.cpp",
+    "./mock/src/mock_accessibility_account_data.cpp",
+    "./mock/src/mock_accessibility_event_transmission.cpp",
+    "./mock/src/mock_accessible_ability_connection.cpp",
+    "./mock/src/mock_accessible_ability_manager_service.cpp",
     "mock/src/mock_system_ability.cpp",
     "unittest/accessibility_keyevent_filter_test.cpp",
   ]
@@ -420,22 +454,25 @@ ohos_unittest("accessibility_keyevent_filter_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -443,6 +480,13 @@ ohos_unittest("accessibility_keyevent_filter_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -450,6 +494,7 @@ ohos_unittest("accessibility_keyevent_filter_test") {
 ohos_unittest("accessible_ability_connection_test") {
   module_out_path = module_output_path
   sources = [
+    "../../test/mock/mock_parameter.c",
     "../src/accessibility_account_data.cpp",
     "../src/accessibility_common_event.cpp",
     "../src/accessibility_display_manager.cpp",
@@ -471,7 +516,6 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessible_ability_manager_service.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_parameter.c",
     "mock/src/aafwk/mock_ability_manager_client.cpp",
     "mock/src/aafwk/mock_bundle_manager.cpp",
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
@@ -495,22 +539,24 @@ ohos_unittest("accessible_ability_connection_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/systemabilitymgr/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
@@ -519,6 +565,12 @@ ohos_unittest("accessible_ability_connection_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "samgr:samgr_proxy",
     "samgr:samgr_proxy",
     "window_manager:libdm",
     "window_manager:libwm",
@@ -537,21 +589,30 @@ ohos_unittest("accessibility_display_manager_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
     "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -559,10 +620,10 @@ ohos_unittest("accessibility_display_manager_test") {
 ohos_unittest("accessibility_dumper_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../common/interface/src/accessible_ability_channel_stub.cpp",
     "../src/accessibility_dumper.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_stub.cpp",
     "mock/src/mock_accessibility_account_data.cpp",
     "mock/src/mock_accessibility_common_event.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
@@ -589,24 +650,34 @@ ohos_unittest("accessibility_dumper_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -631,25 +702,35 @@ ohos_unittest("accessibility_touchevent_injector_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -657,6 +738,12 @@ ohos_unittest("accessibility_touchevent_injector_test") {
 ohos_unittest("accessible_ability_channel_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../common/interface/src/accessibility_element_operator_callback_proxy.cpp",
+    "../../../common/interface/src/accessible_ability_channel_stub.cpp",
+    "../../../common/interface/src/parcel/accessibility_element_info_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
+    "../../../common/interface/src/parcel/accessibility_window_info_parcel.cpp",
+    "../../test/mock/mock_display_manager.cpp",
     "../src/accessibility_account_data.cpp",
     "../src/accessibility_common_event.cpp",
     "../src/accessibility_display_manager.cpp",
@@ -665,12 +752,6 @@ ohos_unittest("accessible_ability_channel_test") {
     "../src/accessible_ability_connection.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
     "../src/utils.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessibility_element_operator_callback_proxy.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/accessible_ability_channel_stub.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_element_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_gesture_inject_path_parcel.cpp",
-    "//foundation/barrierfree/accessibility/common/interface/src/parcel/accessibility_window_info_parcel.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_display_manager.cpp",
     "mock/src/mock_accessibility_element_operator_proxy.cpp",
     "mock/src/mock_accessibility_element_operator_stub.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
@@ -694,19 +775,22 @@ ohos_unittest("accessible_ability_channel_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
@@ -714,6 +798,13 @@ ohos_unittest("accessible_ability_channel_test") {
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -738,24 +829,34 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -771,20 +872,30 @@ ohos_unittest("accessibility_mouse_key_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -809,25 +920,35 @@ ohos_unittest("accessibility_short_key_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -844,19 +965,29 @@ ohos_unittest("accessibility_settings_config_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "common_event_service:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 
@@ -882,25 +1013,35 @@ ohos_unittest("accessibility_zoom_gesture_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//foundation/barrierfree/accessibility/services/aams:accessibleabilityms",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
   ]
 
   external_deps = [
     "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
     "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
   ]
 }
 

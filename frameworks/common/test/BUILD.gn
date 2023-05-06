@@ -23,8 +23,8 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   include_dirs = [
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common/include",
+    "../../../common/log/include",
+    "../../../interfaces/innerkits/common/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_test\"",
@@ -35,8 +35,8 @@ config("module_private_config") {
 ohos_unittest("accessibility_common_test") {
   module_out_path = module_output_path
   sources = [
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_element_info.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/common/src/accessibility_event_info.cpp",
+    "../src/accessibility_element_info.cpp",
+    "../src/accessibility_event_info.cpp",
     "unittest/accessibility_ability_info_test.cpp",
     "unittest/accessibility_element_info_test.cpp",
     "unittest/accessibility_event_info_test.cpp",
@@ -45,13 +45,13 @@ ohos_unittest("accessibility_common_test") {
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [ "hiviewdfx_hilog_native:libhilog" ]

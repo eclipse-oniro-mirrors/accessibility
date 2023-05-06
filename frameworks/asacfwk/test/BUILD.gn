@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/test.gni")
-import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
+import("../../../accessibility_aafwk.gni")
 
 module_output_path = "accessibility/framework_test"
 
@@ -24,14 +24,14 @@ config("module_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   include_dirs = [
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/include",
-    "//foundation/barrierfree/accessibility/frameworks/acfwk/include",
-    "//foundation/barrierfree/accessibility/frameworks/asacfwk/include",
-    "//foundation/barrierfree/accessibility/frameworks/asacfwk/test/mock/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk/include",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk/include",
-    "//foundation/barrierfree/accessibility/services/test/mock/common",
+    "../../../common/log/include",
+    "../../aafwk/include",
+    "../../acfwk/include",
+    "../../asacfwk/include",
+    "../../asacfwk/test/mock/include",
+    "../../../interfaces/innerkits/acfwk/include",
+    "../../../interfaces/innerkits/asacfwk/include",
+    "../../../services/test/mock/common",
   ]
   defines = [
     "AAMS_LOG_DOMAIN = 0xD001D05",
@@ -42,32 +42,33 @@ config("module_private_config") {
 ohos_unittest("asac_unit_test") {
   module_out_path = module_output_path
   sources = [
+    "../../../services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
+    "../../../services/test/mock/mock_bundle_manager.cpp",
     "../../../services/test/mock/mock_parameter.c",
+    "../../../services/test/mock/mock_service_registry.cpp",
+    "../../aafwk/src/accessibility_element_operator_callback_impl.cpp",
     "../src/accessibility_element_operator_impl.cpp",
     "../src/accessibility_system_ability_client_impl.cpp",
-    "//foundation/barrierfree/accessibility/frameworks/aafwk/src/accessibility_element_operator_callback_impl.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_accessible_ability_manager_service_stub.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_bundle_manager.cpp",
-    "//foundation/barrierfree/accessibility/services/test/mock/mock_service_registry.cpp",
     "unittest/accessibility_element_operator_impl_test.cpp",
     "unittest/accessibility_system_ability_client_impl_test.cpp",
   ]
 
   configs = [
     ":module_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:ability_manager",
+    "bundle_framework:appexecfwk_base",
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",

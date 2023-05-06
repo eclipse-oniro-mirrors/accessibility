@@ -12,12 +12,12 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-import("//foundation/barrierfree/accessibility/accessibility_aafwk.gni")
+import("../../../accessibility_aafwk.gni")
 
 ohos_shared_library("accessibility") {
   include_dirs = [
-    "//foundation/barrierfree/accessibility/common/log/include",
-    "//foundation/multimodalinput/input/interfaces/native/innerkits/event/include",
+    "../../../common/log/include",
+    "../../../../../multimodalinput/input/interfaces/native/innerkits/event/include",
     "./include",
   ]
 
@@ -32,11 +32,11 @@ ohos_shared_library("accessibility") {
     "./src/native_module.cpp",
   ]
 
-  configs = [ "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags" ]
+  configs = [ "../../../resources/config/build:coverage_flags" ]
 
   deps = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/acfwk:accessibilityconfig",
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/asacfwk:accessibilityclient",
+    "../../innerkits/acfwk:accessibilityconfig",
+    "../../innerkits/asacfwk:accessibilityclient",
   ]
 
   external_deps = [
@@ -53,11 +53,11 @@ ohos_shared_library("accessibility") {
 group("napi_packages") {
   deps = [
     ":accessibility",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_config:config_napi",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension:accessibilityextensionability_napi",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_context:accessibilityextensioncontext_napi",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_extension_module_loader:accessibility_extension_module",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_gesture_path:gesturepath_napi",
-    "//foundation/barrierfree/accessibility/interfaces/kits/napi/accessibility_gesture_point:gesturepoint_napi",
+    "accessibility_config:config_napi",
+    "accessibility_extension:accessibilityextensionability_napi",
+    "accessibility_extension_context:accessibilityextensioncontext_napi",
+    "accessibility_extension_module_loader:accessibility_extension_module",
+    "accessibility_gesture_path:gesturepath_napi",
+    "accessibility_gesture_point:gesturepoint_napi",
   ]
 }

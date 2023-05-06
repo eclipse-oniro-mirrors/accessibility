@@ -14,7 +14,8 @@
 import("//build/ohos.gni")
 
 ohos_prebuilt_etc("ohos.para.dac") {
-  source = "//foundation/barrierfree/accessibility/services/etc/accessibility.para.dac"
+  source = "./accessibility.para.dac"
   part_name = "accessibility"
+  subsystem_name = "barrierfree"
   module_install_dir = "etc/param"
 }

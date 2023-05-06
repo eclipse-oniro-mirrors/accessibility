@@ -13,14 +13,14 @@
 
 import("//build/ohos.gni")
 
-acfwk_path = "//foundation/barrierfree/accessibility/frameworks/acfwk"
+acfwk_path = "../../../frameworks/acfwk"
 
 config("accessibilityconfig_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
     "${acfwk_path}/include",
-    "//foundation/barrierfree/accessibility/common/log/include",
+    "../../../common/log/include",
   ]
 
   defines = [
@@ -44,14 +44,14 @@ ohos_shared_library("accessibilityconfig") {
   version_script = "libaccessibility_acfwk.map"
   configs = [
     ":accessibilityconfig_private_config",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../../resources/config/build:coverage_flags",
   ]
 
   public_configs = [ ":accessibilityconfig_public_config" ]
 
-  deps = [ "//foundation/barrierfree/accessibility/common/interface:accessibility_interface" ]
+  deps = [ "../../../common/interface:accessibility_interface" ]
 
-  public_deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/common:accessibility_common" ]
+  public_deps = [ "../common:accessibility_common" ]
 
   external_deps = [
     "c_utils:utils",
@@ -59,6 +59,7 @@ ohos_shared_library("accessibilityconfig") {
     "hiviewdfx_hilog_native:libhilog",
     "init:libbeget_proxy",
     "init:libbegetutil",
+    "input:libmmi-client",
     "ipc:ipc_single",
     "napi:ace_napi",
     "samgr:samgr_proxy",

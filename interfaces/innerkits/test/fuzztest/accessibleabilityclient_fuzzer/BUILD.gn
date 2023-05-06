@@ -22,11 +22,11 @@ ohos_fuzztest("AccessibleAbilityClientFuzzTest") {
 
   include_dirs = []
   configs = [
-    "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:configs_cc_ld",
-    "//foundation/barrierfree/accessibility/resources/config/build:coverage_flags",
+    "../../fuzztest:configs_cc_ld",
+    "../../../../../resources/config/build:coverage_flags",
   ]
   sources = [ "accessibleabilityclient_fuzzer.cpp" ]
-  deps = [ "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability" ]
+  deps = [ "../../../aafwk:accessibleability" ]
   external_deps = [ "c_utils:utils" ]
 }
 
