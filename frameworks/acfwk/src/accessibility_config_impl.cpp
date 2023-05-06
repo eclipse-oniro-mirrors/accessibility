@@ -83,7 +83,6 @@ bool AccessibilityConfig::Impl::ConnectToService()
         InitConfigValues();
     } else {
         HILOG_DEBUG("Start watching accessibility service.");
-        InitEventHandler();
         retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
         if (retSysParam) {
             HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
@@ -96,19 +95,15 @@ bool AccessibilityConfig::Impl::ConnectToService()
 
 bool AccessibilityConfig::Impl::ConnectToServiceAsync()
 {
-    if (handler_) {
-        handler_->PostTask(std::bind([this]() {
-            HILOG_DEBUG("ConnectToServiceAsync start.");
-            std::lock_guard<std::mutex> lock(mutex_);
-            if (InitAccessibilityServiceProxy()) {
-                (void)RegisterToService();
-                InitConfigValues();
-                HILOG_DEBUG("ConnectToService Success");
-            }
-            }), "ConnectToServiceAsync");
+    HILOG_DEBUG("ConnectToServiceAsync start.");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (InitAccessibilityServiceProxy()) {
+        (void)RegisterToService();
+        InitConfigValues();
         return true;
-    } else {
-        HILOG_ERROR("Event handler is nullptr");
+    }
+    else {
+        HILOG_ERROR("ConnectToServiceAsync fail");
         return false;
     }
 }
@@ -1277,33 +1272,26 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
 void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
-    if (handler_) {
-        handler_->PostTask(std::bind([this, id, observer]() {
-            HILOG_DEBUG("NotifyImmediately start.");
-            ConfigValue configValue;
-            {
-                std::lock_guard<std::mutex> lock(mutex_);
-                configValue.highContrastText = highContrastText_;
-                configValue.invertColor = invertColor_;
-                configValue.animationOff = animationOff_;
-                configValue.screenMagnifier = screenMagnifier_;
-                configValue.audioMono = audioMono_;
-                configValue.mouseKey = mouseKey_;
-                configValue.shortkey = shortkey_;
-                configValue.captionState = captionState_;
-                configValue.contentTimeout = contentTimeout_;
-                configValue.mouseAutoClick = mouseAutoClick_;
-                configValue.audioBalance = audioBalance_;
-                configValue.brightnessDiscount = brightnessDiscount_;
-                configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
-                configValue.shortkey_target = shortkeyTarget_;
-                configValue.captionStyle = captionProperty_;
-            }
-            observer->OnConfigChanged(id, configValue);
-            }), "NotifyImmediately");
-    } else {
-        HILOG_ERROR("Event handler is nullptr");
+    HILOG_DEBUG("NotifyImmediately start.");
+    ConfigValue configValue;
+    {
+        configValue.highContrastText = highContrastText_;
+        configValue.invertColor = invertColor_;
+        configValue.animationOff = animationOff_;
+        configValue.screenMagnifier = screenMagnifier_;
+        configValue.audioMono = audioMono_;
+        configValue.mouseKey = mouseKey_;
+        configValue.shortkey = shortkey_;
+        configValue.captionState = captionState_;
+        configValue.contentTimeout = contentTimeout_;
+        configValue.mouseAutoClick = mouseAutoClick_;
+        configValue.audioBalance = audioBalance_;
+        configValue.brightnessDiscount = brightnessDiscount_;
+        configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+        configValue.shortkey_target = shortkeyTarget_;
+        configValue.captionStyle = captionProperty_;
     }
+    observer->OnConfigChanged(id, configValue);
 }
 
 void AccessibilityConfig::Impl::InitConfigValues()
@@ -1382,23 +1370,5 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     }
 }
 
-void AccessibilityConfig::Impl::InitEventHandler()
-{
-    if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create("Accessibility.Config");
-        if (!runner_) {
-            HILOG_ERROR("AccessibilityConfig::Impl::InitEventHandler create runner failed");
-            return;
-        }
-    }
-
-    if (!handler_) {
-        handler_ = std::make_shared<AppExecFwk::EventHandler>(runner_);
-        if (!handler_) {
-            HILOG_ERROR("AccessibilityConfig::Impl::InitEventHandler create event handler failed");
-            return;
-        }
-    }
-}
 } // namespace AccessibilityConfig
 } // namespace OHOS
