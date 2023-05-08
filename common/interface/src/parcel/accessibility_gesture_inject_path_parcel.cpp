@@ -34,6 +34,7 @@ bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     int32_t positionSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positionSize);
+    CONTAINER_SECURITY_VERIFY(parcel, positionSize, &position_);
     for (auto i = 0; i < positionSize; i++) {
         AccessibilityGesturePosition position;
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, position.positionX_);
