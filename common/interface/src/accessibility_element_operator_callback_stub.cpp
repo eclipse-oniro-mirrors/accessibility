@@ -16,6 +16,7 @@
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_element_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
