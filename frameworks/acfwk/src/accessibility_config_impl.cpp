@@ -101,8 +101,7 @@ bool AccessibilityConfig::Impl::ConnectToServiceAsync()
         (void)RegisterToService();
         InitConfigValues();
         return true;
-    }
-    else {
+    } else {
         HILOG_ERROR("ConnectToServiceAsync fail");
         return false;
     }
