@@ -18,6 +18,7 @@
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
