@@ -15,7 +15,6 @@
 
 #include "accessibility_element_operator_callback_impl.h"
 #include "hilog_wrapper.h"
-#include <iostream>
 
 namespace OHOS {
 namespace Accessibility {
@@ -38,7 +37,6 @@ void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
 void AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    std::cout<<"AccessibilityElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult 40"<<std::endl;
     HILOG_DEBUG("Response[elementInfoSize:%{public}zu] [requestId:%{public}d]", infos.size(), requestId);
     elementInfosResult_ = infos;
     promise_.set_value();
