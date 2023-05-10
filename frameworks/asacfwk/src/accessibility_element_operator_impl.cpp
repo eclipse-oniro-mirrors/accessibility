@@ -17,7 +17,6 @@
 #include "accessibility_element_operator.h"
 #include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
-#include <iostream>
 
 namespace OHOS {
 namespace Accessibility {
@@ -48,7 +47,6 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
     HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
-        std::cout<<"AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId 42 "<<std::endl;
     } else {
         HILOG_ERROR("Operator is nullptr");
     }
