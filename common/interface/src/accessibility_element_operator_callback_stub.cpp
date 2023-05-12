@@ -16,6 +16,7 @@
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_element_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -70,6 +71,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+    CONTAINER_SECURITY_VERIFY(data, accessibilityInfosize, &infos);
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
@@ -91,6 +93,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
+    CONTAINER_SECURITY_VERIFY(data, accessibilityInfosize, &infos);
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();

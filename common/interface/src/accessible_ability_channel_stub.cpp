@@ -18,6 +18,7 @@
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "parcel_util.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -314,6 +315,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
     HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
+    CONTAINER_SECURITY_VERIFY(data, size, &targetBundleNames);
     for (int32_t i = 0; i < size; i++) {
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);
