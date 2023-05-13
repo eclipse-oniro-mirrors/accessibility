@@ -26,6 +26,7 @@ config("module_private_config") {
   include_dirs = [
     "../../../common/log/include",
     "../../aafwk/include",
+    "../../aafwk/test/mock/include",
     "../../acfwk/include",
     "../../asacfwk/include",
     "../../asacfwk/test/mock/include",
