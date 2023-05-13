@@ -291,10 +291,13 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
             return;
         }
         callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
-        auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
-        if (iter == stateCallbacks_.end()) {
-            stateCallbacks_.push_back(callback);
-            HILOG_INFO("RegisterStateObserver successfully");
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
+            if (iter == stateCallbacks_.end()) {
+                stateCallbacks_.push_back(callback);
+                HILOG_INFO("RegisterStateObserver successfully");
+            }
         }
 
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
