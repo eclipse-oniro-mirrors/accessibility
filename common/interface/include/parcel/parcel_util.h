@@ -38,7 +38,7 @@ namespace Accessibility {
 
 #define CONTAINER_SECURITY_VERIFY(parcel, readContainerSize, val)                                           \
     if ((val) == nullptr) {                                                                                 \
-         HILOG_ERROR("Failed to read container due to val is nullptr");                                     \
+        HILOG_ERROR("Failed to read container due to val is nullptr");                                     \
     }                                                                                                       \
     size_t readAbleDataSize = (parcel).GetReadableBytes();                                                  \
     size_t readSize = static_cast<size_t>(readContainerSize);                                               \
