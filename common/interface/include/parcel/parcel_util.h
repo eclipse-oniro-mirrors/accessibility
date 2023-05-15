@@ -36,20 +36,16 @@ namespace Accessibility {
         }                                                                       \
     } while (0)
 
-#define CONTAINER_SECURITY_VERIFY(parcel, readContainerSize, val)                                         \
-    do {                                                                                                  \
-        if ((val) == nullptr) {                                                                           \
-            HILOG_ERROR("Failed to read container due to val is nullptr");                                   \
-            return false;                                                                                 \
-        }                                                                                                 \
-        size_t readAbleDataSize = (parcel).GetReadableBytes();                                            \
-        size_t readSize = static_cast<size_t>(readContainerSize);                                         \
-        if ((readSize > readAbleDataSize) || ((val)->max_size() < readSize)) {                            \
-            HILOG_ERROR("Failed to read container, readSize = %{public}zu, readAbleDataSize = %{public}zu",  \
-                readSize, readAbleDataSize);                                                              \
-            return false;                                                                                 \
-        }                                                                                                 \
-    } while (0)
+#define CONTAINER_SECURITY_VERIFY(parcel, readContainerSize, val)                                           \
+    if ((val) == nullptr) {                                                                                 \
+         HILOG_ERROR("Failed to read container due to val is nullptr");                                     \
+    }                                                                                                       \
+    size_t readAbleDataSize = (parcel).GetReadableBytes();                                                  \
+    size_t readSize = static_cast<size_t>(readContainerSize);                                               \
+    if ((readSize > readAbleDataSize) || ((val)->max_size() < readSize)) {                                  \
+        HILOG_ERROR("Failed to read container, readSize = %{public}zu, readAbleDataSize = %{public}zu",     \
+            readSize, readAbleDataSize);                                                                    \
+    }                                                                                                       \
 } // namespace Accessibility
 } // namespace OHOS
 #endif // PARCEL_UTIL_H
