@@ -1208,7 +1208,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
 {
     HILOG_DEBUG("start.");
-    std::lock_guard<std::mutex> lock(mutex_);   
+    std::lock_guard<std::mutex> lock(mutex_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
