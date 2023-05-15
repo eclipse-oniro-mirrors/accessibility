@@ -297,7 +297,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
             stateCallbacks_.push_back(callback);
             HILOG_INFO("RegisterStateObserver successfully");
         }
-        
+
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
