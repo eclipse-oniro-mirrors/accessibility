@@ -93,11 +93,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTe
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> infos {};
     int32_t accessibilityInfosize = data.ReadInt32();
-    if ((&infos) == nullptr) {
-        HILOG_ERROR("Failed to read container due to val is nullptr");
-    } else {
-        ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
-    }
+    ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
