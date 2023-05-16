@@ -50,7 +50,11 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childCount_);
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
-    ContainerSecurityVerify(parcel, operationsSize, operations_.max_size());
+    if ((&operations_) == nullptr) {
+        HILOG_ERROR("Failed to read container due to val is nullptr");
+    } else {
+        ContainerSecurityVerify(parcel, operationsSize, operations_.max_size());
+    }
     for (int32_t i = 0; i < operationsSize; i++) {
         sptr<AccessibleActionParcel> accessibleOperation = parcel.ReadStrongParcelable<AccessibleActionParcel>();
         if (!accessibleOperation) {
