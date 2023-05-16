@@ -75,7 +75,11 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     int32_t contentSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, contentSize);
     std::string content;
-    ContainerSecurityVerify(parcel, contentSize, contents_.max_size());
+    if ((&contents_) == nullptr) {
+        HILOG_ERROR("Failed to read container due to val is nullptr");
+    } else {
+        ContainerSecurityVerify(parcel, contentSize, contents_.max_size());
+    }
     for (auto i = 0 ; i < contentSize; i++) {
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, content);
         AddContent(content);
