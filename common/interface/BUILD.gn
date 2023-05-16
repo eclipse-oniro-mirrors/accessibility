@@ -92,5 +92,6 @@ ohos_shared_library("accessibility_interface") {
   install_enable = true
 
   subsystem_name = "barrierfree"
+  innerapi_tags = [ "platformsdk_indirect" ]
   part_name = "accessibility"
 }
