@@ -315,11 +315,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
     HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
-    if ((&targetBundleNames) == nullptr) {
-        HILOG_ERROR("Failed to read container due to val is nullptr");
-    } else {
-        ContainerSecurityVerify(data, size, targetBundleNames.max_size());
-    }
+    ContainerSecurityVerify(data, size, targetBundleNames.max_size());
     for (int32_t i = 0; i < size; i++) {
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);
