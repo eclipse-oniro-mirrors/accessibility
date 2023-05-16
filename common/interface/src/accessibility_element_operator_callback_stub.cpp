@@ -70,7 +70,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
 {
     HILOG_DEBUG();
     std::vector<AccessibilityElementInfo> infos {};
-    int32_t accessibilityInfosize = data.ReadInt32();        
+    int32_t accessibilityInfosize = data.ReadInt32();
     if ((&infos) == nullptr) {
         HILOG_ERROR("Failed to read container due to val is nullptr");
     } else {
