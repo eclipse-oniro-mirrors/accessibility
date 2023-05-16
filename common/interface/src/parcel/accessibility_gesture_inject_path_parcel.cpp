@@ -34,11 +34,7 @@ bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     int32_t positionSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positionSize);
-    if ((&positions_) == nullptr) {
-        HILOG_ERROR("Failed to read container due to val is nullptr");
-    } else {
-        ContainerSecurityVerify(parcel, positionSize, positions_.max_size());
-    }
+    ContainerSecurityVerify(parcel, positionSize, positions_.max_size());
     for (auto i = 0; i < positionSize; i++) {
         AccessibilityGesturePosition position;
         READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Float, parcel, position.positionX_);
