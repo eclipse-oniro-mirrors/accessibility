@@ -36,17 +36,17 @@ namespace Accessibility {
         }                                                                       \
     } while (0)
 
-inline bool ContainerSecurityVerify(Parcel &parcel,int readContainerSize, size_t val_size)
+inline bool ContainerSecurityVerify(Parcel &parcel, int readContainerSize, size_t val_size)
 {
     size_t readAbleDataSize = (parcel).GetReadableBytes();
     size_t readSize = static_cast<size_t>(readContainerSize);
     if ((readSize > readAbleDataSize) || (val_size < readSize)) {
         HILOG_ERROR("Failed to read container, readSize = %{public}zu, readAbleDataSize = %{public}zu",
             readSize, readAbleDataSize);
-        return false; 
+        return false;
     }
     return true;
-}                                                                                                                            
+}
 } // namespace Accessibility
 } // namespace OHOS
 #endif // PARCEL_UTIL_H
