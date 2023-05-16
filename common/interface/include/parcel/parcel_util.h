@@ -37,7 +37,7 @@ namespace Accessibility {
     } while (0)
 
 #define CONTAINER_SECURITY_VERIFY(parcel, readContainerSize, val)                                           \
-    do {                                                                                                    \                                                                                              \
+    do {                                                                                                    \
         size_t readAbleDataSize = (parcel).GetReadableBytes();                                              \
         size_t readSize = static_cast<size_t>(readContainerSize);                                           \
         if ((readSize > readAbleDataSize) || ((val)->max_size() < readSize)) {                              \
