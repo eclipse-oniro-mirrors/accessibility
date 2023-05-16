@@ -865,7 +865,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ClearIn
 
     accountData->AddInstalledAbility(*abilityInfo);
     accountData->ClearInstalledAbility();
-
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ClearInstalledAbility end";
 }
 
@@ -883,7 +883,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveE
     const std::string bundleName = "bbb";
     accountData->Init();
     accountData->RemoveEnabledAbility(bundleName);
-
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_RemoveEnabledAbility end";
 }
 
@@ -1350,7 +1350,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_EnableA
     accountData->AddEnableAbilityListsObserver(observer);
     accountData->AddEnableAbilityListsObserver(observer);
     accountData->RemoveEnableAbilityListsObserver(observer->AsObject());
-
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_EnableAbilityListsObserver end";
 }
 

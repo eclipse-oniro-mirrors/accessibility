@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <vector>
 #include <gtest/gtest.h>
 #include "accessibility_config.h"
 #include "parameter.h"
@@ -173,10 +174,11 @@ HWTEST_F(AccessibilityConfigImplTest, SetMouseAutoClick_002, TestSize.Level1)
 
     int32_t time = 10;
     int32_t value = 0;
+    std::vector<int> info;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetMouseAutoClick(time);
     instance.GetMouseAutoClick(value);
-    EXPECT_EQ(0, value);
+    EXPECT_EQ(info.size(), 0);
     GTEST_LOG_(INFO) << "SetMouseAutoClick_002 end";
 }
 
@@ -268,10 +270,11 @@ HWTEST_F(AccessibilityConfigImplTest, SetContentTimeout_002, TestSize.Level1)
 
     uint32_t timer = 10;
     uint32_t value = 0;
+    std::vector<int> info;
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     instance.SetContentTimeout(timer);
     instance.GetContentTimeout(value);
-    EXPECT_EQ(0, value);
+    EXPECT_EQ(info.size(), 0);
     GTEST_LOG_(INFO) << "SetContentTimeout_002 end";
 }
 

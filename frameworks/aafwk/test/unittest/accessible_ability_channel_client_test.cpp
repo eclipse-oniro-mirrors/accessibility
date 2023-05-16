@@ -97,7 +97,7 @@ HWTEST_F(AccessibleAbilityChannelClientTest, SetOnKeyPressEventResult, TestSize.
     }
 
     instance_->SetOnKeyPressEventResult(true, SEQUENCE);
-
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetOnKeyPressEventResult_001 end";
 }
 

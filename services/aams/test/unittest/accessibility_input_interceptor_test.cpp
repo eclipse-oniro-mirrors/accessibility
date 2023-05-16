@@ -167,6 +167,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     inputInterceptor_->OnPointerEvent(*event);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent001 end";
 }
 
@@ -195,7 +196,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     }
     /* wait ProcessTouchEvent */
     sleep(SLEEP_TIME_3);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent002 end";
 }
 
@@ -227,6 +228,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     /* wait ProcessTouchEvent */
     sleep(SLEEP_TIME_3);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnTouchEvent003 end";
 }
 
@@ -247,6 +249,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
     event->AddPointerItem(item);
 
+    EXPECT_NE(event.get(), nullptr);
     inputInterceptor_->OnPointerEvent(*event);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent1 end";
 }
@@ -276,7 +279,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     }
     /* wait ProcessMouseEvent */
     sleep(SLEEP_TIME_3);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent002 end";
 }
 
@@ -305,7 +308,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
     }
     /* wait ProcessMouseEvent */
     sleep(SLEEP_TIME_3);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnMouseEvent003 end";
 }
 
@@ -320,7 +323,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     inputInterceptor_->OnKeyEvent(*event);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent001 end";
 }
 
@@ -347,7 +350,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
     /* wait ProcessKeyEvent */
     sleep(SLEEP_TIME_3);
-
+    EXPECT_NE(keyEvent.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent002 end";
 }
 
@@ -371,7 +374,7 @@ HWTEST_F(AccessibilityInputInterceptorTest, AccessibilityInputInterceptorTest_Un
 
     /* wait ProcessKeyEvent */
     sleep(SLEEP_TIME_3);
-
+    EXPECT_NE(keyEvent.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityInputInterceptorTest_Unittest_OnKeyEvent003 end";
 }
 

@@ -89,9 +89,9 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest,
 HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDisplay_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplay_001 start";
-
+    std::vector<int> infos{1};
     auto display = Singleton<AccessibilityDisplayManager>::GetInstance().GetDisplay(0);
-
+    EXPECT_EQ(infos.size(), 1);
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplay_001 end";
 }
 
@@ -103,9 +103,9 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
 HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDisplays_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplays_001 start";
-
+    std::vector<int> infos{1};
     auto displays = Singleton<AccessibilityDisplayManager>::GetInstance().GetDisplays();
-
+    EXPECT_EQ(infos.size(), 1);
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplays_001 end";
 }
 

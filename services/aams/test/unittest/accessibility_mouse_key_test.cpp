@@ -82,7 +82,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->OnPointerEvent(*event);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_001 end";
 }
 
@@ -107,7 +107,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
     MMI::PointerEvent::PointerItem item;
     event->AddPointerItem(item);
     mouseKey_->OnPointerEvent(*event);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_002 end";
 }
 
@@ -191,7 +191,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item7.SetPressed(true);
     event->AddKeyItem(item7);
     mouseKey_->OnKeyEvent(*event);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_001 end";
 }
 
@@ -217,7 +217,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event->AddKeyItem(item);
     mouseKey_->OnKeyEvent(*event);
-
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_002 end";
 }
 
@@ -470,6 +470,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item1.SetPressed(true);
     event->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event);
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_007 end";
 }
 
@@ -502,6 +503,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item1.SetPressed(true);
     event->AddKeyItem(item1);
     mouseKey_->OnKeyEvent(*event);
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_008 end";
 }
 
@@ -539,6 +541,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item2.SetPressed(true);
     event->AddKeyItem(item2);
     mouseKey_->OnKeyEvent(*event);
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_009 end";
 }
 
@@ -576,6 +579,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item2.SetPressed(true);
     event->AddKeyItem(item2);
     mouseKey_->OnKeyEvent(*event);
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_010 end";
 }
 
@@ -613,6 +617,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     item2.SetPressed(true);
     event->AddKeyItem(item2);
     mouseKey_->OnKeyEvent(*event);
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_011 end";
 }
 } // namespace Accessibility

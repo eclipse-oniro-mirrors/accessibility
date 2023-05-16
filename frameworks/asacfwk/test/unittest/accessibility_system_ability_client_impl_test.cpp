@@ -489,6 +489,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, ResetService_001, TestSize.Le
         return;
     }
     impl_->ResetService(nullptr);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "ResetService_001 end";
 }
@@ -509,6 +510,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManagerSta
     uint32_t stateType = STATE_ACCESSIBILITY_ENABLED | STATE_EXPLORATION_ENABLED |
         STATE_KEYEVENT_ENABLED | STATE_GESTURE_ENABLED;
     impl_->OnAccessibleAbilityManagerStateChanged(stateType);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerStateChanged_001 end";
 }
@@ -527,6 +529,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, OnAccessibleAbilityManagerSta
         return;
     }
     impl_->OnAccessibleAbilityManagerStateChanged(0);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "OnAccessibleAbilityManagerStateChanged_002 end";
 }
@@ -749,6 +752,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfoResu
     requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
     AccessibilityElementInfo info;
     impl_->SetFindFocusedElementInfoResult(info, requestId);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_002 end";
 }
@@ -768,6 +772,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfoResu
     }
     AccessibilityElementInfo info;
     impl_->SetFindFocusedElementInfoResult(info, -1);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_003 end";
 }
@@ -814,6 +819,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_002,
     requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
     AccessibilityElementInfo info;
     impl_->SetFocusMoveSearchResult(info, requestId);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_002 end";
 }
@@ -833,6 +839,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_003,
     }
     AccessibilityElementInfo info;
     impl_->SetFocusMoveSearchResult(info, -1);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_003 end";
 }
@@ -877,6 +884,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_002, T
     int32_t requestId = REQUEST_ID;
     requestId |= static_cast<uint32_t>(WINDOW_ID) << WINDOW_ID_MASK;
     impl_->SetExecuteActionResult(true, requestId);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_002 end";
 }
@@ -895,6 +903,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_003, T
         return;
     }
     impl_->SetExecuteActionResult(true, -1);
+    EXPECT_NE(impl_.get(), nullptr);
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_003 end";
 }
