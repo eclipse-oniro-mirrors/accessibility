@@ -43,7 +43,6 @@ namespace Accessibility {
         if ((readSize > readAbleDataSize) || ((val)->max_size() < readSize)) {                              \
             HILOG_ERROR("Failed to read container, readSize = %{public}zu, readAbleDataSize = %{public}zu", \
                 readSize, readAbleDataSize);                                                                \
-            return false;                                                                                   \
         }                                                                                                   \
     } while (0)                                                                                             \
 } // namespace Accessibility
