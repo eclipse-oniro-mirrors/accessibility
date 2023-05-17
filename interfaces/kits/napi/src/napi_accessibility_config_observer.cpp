@@ -108,7 +108,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
@@ -226,7 +226,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
@@ -289,7 +289,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
