@@ -337,7 +337,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(env_, &scope);
+            napi_open_handle_scope(env_, &scope);
             if (scope == nullptr) {
                 return;
             }
