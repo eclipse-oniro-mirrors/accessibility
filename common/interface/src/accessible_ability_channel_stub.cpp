@@ -315,7 +315,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSetTargetBundleName(MessageParcel &d
     HILOG_DEBUG();
     std::vector<std::string> targetBundleNames;
     int32_t size = data.ReadInt32();
-    CONTAINER_SECURITY_VERIFY(data, size, &targetBundleNames);
+    ContainerSecurityVerify(data, size, targetBundleNames.max_size());
     for (int32_t i = 0; i < size; i++) {
         std::string temp = data.ReadString();
         targetBundleNames.emplace_back(temp);
