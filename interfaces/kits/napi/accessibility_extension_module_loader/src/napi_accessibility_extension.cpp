@@ -276,7 +276,7 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         return;
     }
     napi_handle_scope scope = nullptr;
-    api_open_handle_scope(env_, &scope);
+    api_open_handle_scope(env, &scope);
     if (scope == nullptr) {
         return;
     }
@@ -298,7 +298,7 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         nullptr);
     HILOG_DEBUG("napi_wrap status: %{public}d", (int)sts);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
-    napi_close_handle_scope(env_, scope);
+    napi_close_handle_scope(env, scope);
 }
 
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
