@@ -276,7 +276,7 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         return;
     }
     napi_handle_scope scope = nullptr;
-    api_open_handle_scope(env, &scope);
+    napi_open_handle_scope(env, &scope);
     if (scope == nullptr) {
         return;
     }
