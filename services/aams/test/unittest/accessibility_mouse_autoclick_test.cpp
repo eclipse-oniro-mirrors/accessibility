@@ -99,6 +99,7 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     mouseAutoclick_->OnPointerEvent(*event);
     sleep(2);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_001 end";
 }
 
@@ -140,6 +141,7 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     mouseAutoclick_->OnPointerEvent(*event);
     sleep(2);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_002 end";
 }
 
@@ -175,6 +177,7 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     mouseAutoclick_->OnPointerEvent(*event);
     sleep(2);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_003 end";
 }
 
@@ -200,6 +203,7 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     event->AddPointerItem(item);
     mouseAutoclick_->OnPointerEvent(*event);
 
+    EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004 end";
 }
 } // namespace Accessibility

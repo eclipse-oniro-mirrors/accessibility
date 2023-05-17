@@ -414,6 +414,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetExecuteActionResult_001, T
         return;
     }
     mockStub_->SetExecuteActionResult(true, REQUEST_ID);
+    EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
 
@@ -434,6 +435,7 @@ HWTEST_F(AccessibilityElementOperatorImplUnitTest, SetExecuteActionResult_002, T
     std::map<std::string, std::string> actionArguments;
     mockStub_->ExecuteAction(ELEMENT_ID, ACTION, actionArguments, REQUEST_ID_2, elementOperator);
     mockStub_->SetExecuteActionResult(true, CompositeId(REQUEST_ID_2));
+    EXPECT_NE(mockStub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_002 end";
 }
 } // namespace Accessibility

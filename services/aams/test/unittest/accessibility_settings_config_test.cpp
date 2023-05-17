@@ -209,6 +209,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     settingConfig_->Init();
     settingConfig_->SetCaptionProperty(caption);
     settingConfig_->GetCaptionProperty();
+    EXPECT_NE(settingConfig_.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_001 end";
 }
 
@@ -223,6 +224,7 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
     AccessibilityConfig::CaptionProperty caption;
     settingConfig_->SetCaptionProperty(caption);
     settingConfig_->GetCaptionProperty();
+    EXPECT_NE(settingConfig_.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetCaptionProperty_002 end";
 }
 

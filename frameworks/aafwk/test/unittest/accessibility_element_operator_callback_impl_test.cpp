@@ -74,6 +74,7 @@ HWTEST_F(
     AccessibilityElementInfo info {};
     infos.push_back(info);
     instance_->SetSearchElementInfoByAccessibilityIdResult(infos, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_001 end";
 }
 
@@ -94,6 +95,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetSearchElementInfoByTex
     AccessibilityElementInfo info {};
     infos.push_back(info);
     instance_->SetSearchElementInfoByTextResult(infos, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetSearchElementInfoByTextResult_001 end";
 }
 
@@ -114,6 +116,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFindFocusedElementInfo
     AccessibilityElementInfo info {};
     infos.push_back(info);
     instance_->SetFindFocusedElementInfoResult(info, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 end";
 }
 
@@ -134,6 +137,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetFocusMoveSearchResult_
     AccessibilityElementInfo info {};
     infos.push_back(info);
     instance_->SetFocusMoveSearchResult(info, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 end";
 }
 
@@ -154,6 +158,7 @@ HWTEST_F(AccessibilityElementOperatorCallbackImplTest, SetExecuteActionResult_00
     AccessibilityElementInfo info {};
     infos.push_back(info);
     instance_->SetExecuteActionResult(true, SEQUENCE_NUM);
+    EXPECT_NE(instance_.get(), nullptr);
     GTEST_LOG_(INFO) << "SetExecuteActionResult_001 end";
 }
 } // namespace Accessibility
