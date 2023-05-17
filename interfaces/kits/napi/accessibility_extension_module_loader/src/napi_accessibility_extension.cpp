@@ -337,7 +337,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             
             napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(env_, &scope);
+            napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope);
             if (scope == nullptr) {
                 return;
             }
@@ -363,7 +363,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
             NativeValue* argv[] = {nativeEventInfo};
             data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
-            napi_close_handle_scope(env_, scope);
+            napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
             delete data;
             data = nullptr;
             delete work;
@@ -407,7 +407,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(env_, &scope);
+            napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope);
             if (scope == nullptr) {
                 return;
             }
@@ -439,7 +439,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             }
             HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
             data->syncPromise_.set_value(result);
-            napi_close_handle_scope(env_, scope);
+            napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
             delete data;
             data = nullptr;
             delete work;
