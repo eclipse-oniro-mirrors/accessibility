@@ -407,7 +407,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(env_, &scope);
+            napi_open_handle_scope(env_, &scope);
             if (scope == nullptr) {
                 return;
             }
