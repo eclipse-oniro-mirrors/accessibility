@@ -350,7 +350,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
@@ -411,7 +411,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
