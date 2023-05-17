@@ -167,7 +167,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            api_open_handle_scope(callbackInfo->env_, &scope);
+            napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
                 return;
             }
