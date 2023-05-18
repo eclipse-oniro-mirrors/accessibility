@@ -112,7 +112,7 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
@@ -146,7 +146,7 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
@@ -181,7 +181,7 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
@@ -217,7 +217,7 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
@@ -253,7 +253,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
@@ -289,7 +289,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;    
+    return ret;
 }
 
 void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
