@@ -81,7 +81,7 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
     }
 }
 
-int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
+int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
@@ -112,7 +112,184 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             delete work;
             work = nullptr;
         });
-    return ret;
+    return ret;    
+}
+
+int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_object(callbackInfo->env_, &jsEvent);
+            ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
+
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            int32_t result;
+            napi_get_value_int32(callbackInfo->env_, callResult, &result);
+            HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;    
+}
+
+int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(),
+                callbackInfo->stringValue_.length(), &jsEvent);
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            size_t result;
+            const uint32_t BUF_SIZE = 1024;
+            char buf[BUF_SIZE] = {0};
+            napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
+            HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;    
+}
+
+int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_int32(callbackInfo->env_, callbackInfo->int32Value_, &jsEvent);
+
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            int32_t result;
+            napi_get_value_int32(callbackInfo->env_, callResult, &result);
+            HILOG_INFO("NotifyIntChanged2JSInner napi_call_function result[%{public}d]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;    
+}
+
+int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_uint32(callbackInfo->env_, callbackInfo->uint32Value_, &jsEvent);
+
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            uint32_t result;
+            napi_get_value_uint32(callbackInfo->env_, callResult, &result);
+            HILOG_INFO("NotifyUintChanged2JSInner napi_call_function result[%{public}d]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;    
+}
+
+int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
+
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            int32_t result;
+            napi_get_value_int32(callbackInfo->env_, callResult, &result);
+            HILOG_INFO("NotifyFloatChanged2JSInner napi_call_function result[%{public}d]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;    
 }
 
 void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
@@ -135,7 +312,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyStateChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyStateChanged2JS work queue");
         delete callbackInfo;
@@ -165,7 +342,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyPropertyChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyPropertyChanged2JS work queue");
         delete callbackInfo;
@@ -195,7 +372,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyStringChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyStringChanged2JS work queue");
         delete callbackInfo;
@@ -225,7 +402,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyIntChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyIntChanged2JS work queue");
         delete callbackInfo;
@@ -255,7 +432,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work);
+    int ret = NotifyUintChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyUintChanged2JS work queue");
         delete callbackInfo;
