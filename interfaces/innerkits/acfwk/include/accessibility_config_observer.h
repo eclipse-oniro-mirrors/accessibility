@@ -32,6 +32,7 @@ public:
 
     void NotifyStateChanged2JS(bool enabled);
     void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption);
+    int NotifyFloatChanged(uv_work_t *work);
     void NotifyStringChanged2JS(const std::string& value);
     void NotifyIntChanged2JS(int32_t value);
     void NotifyUintChanged2JS(uint32_t value);
