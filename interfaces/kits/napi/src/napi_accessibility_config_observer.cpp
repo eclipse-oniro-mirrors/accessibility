@@ -285,7 +285,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = NotifyFloatChanged(work); 
+    int ret = NotifyFloatChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyFloatChanged2JS work queue");
         delete callbackInfo;
