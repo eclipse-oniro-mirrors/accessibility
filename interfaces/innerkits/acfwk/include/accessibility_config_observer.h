@@ -18,6 +18,7 @@
 
 #include <map>
 #include <string>
+#include <uv.h>
 #include "accessibility_config.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
