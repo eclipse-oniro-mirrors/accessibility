@@ -1340,8 +1340,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetAllConfigs_002, TestSize.Le
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAllConfigs_002 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    AccessibilityConfigData data;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllConfigs(data);
+    std::shared_ptr<AccessibilityConfigData> data = std::make_shared<AccessibilityConfigData>();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().GetAllConfigs(*data);
+    EXPECT_NE(data.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_GetAllConfigs_002 end";
 }
 
