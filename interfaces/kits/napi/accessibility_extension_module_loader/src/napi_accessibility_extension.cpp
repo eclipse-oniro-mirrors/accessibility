@@ -332,7 +332,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         work,
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
-            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);+
+            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
             NAPI_CALL(reinterpret_cast<napi_env>(data->engine_), napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope));
             auto closeScope = [reinterpret_cast<napi_env>(data->engine_)](napi_handle_scope scope) { napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
