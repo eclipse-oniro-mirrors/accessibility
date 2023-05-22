@@ -339,7 +339,8 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         [](uv_work_t *work, int status) {
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             auto closeScope = [data](napi_handle_scope scope) {
-                napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
+                napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
+            };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
             napi_value napiEventInfo = nullptr;
@@ -407,7 +408,8 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
             auto closeScope = [data](napi_handle_scope scope) {
-                napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
+                napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
+            };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
                 OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
             napi_value napiEventInfo = nullptr;
