@@ -52,6 +52,13 @@ NAccessibilityExtension::NAccessibilityExtension(AbilityRuntime::JsRuntime& jsRu
 
 NAccessibilityExtension::~NAccessibilityExtension() = default;
 
+napi_handle_scope OpenScope(napi_env env)
+{
+    napi_handle_scope scope = nullptr;
+    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+    return scope;
+}
+
 void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLocalRecord> &record,
     const std::shared_ptr<AppExecFwk::OHOSApplication> &application,
     std::shared_ptr<AppExecFwk::AbilityHandler> &handler, const sptr<IRemoteObject> &token)
@@ -275,10 +282,8 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
         HILOG_ERROR("Failed to create AccessibilityElement.");
         return;
     }
-    napi_handle_scope scope = nullptr;
-    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
     auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
-    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(scope, closeScope);
+    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(OpenScope(env), closeScope);
     napi_value nTargetObject = nullptr;
     napi_value constructor = nullptr;
     napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
@@ -333,12 +338,10 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            NAPI_CALL(reinterpret_cast<napi_env>(data->engine_),
-                napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope));
-            auto closeScope = [&(data->engine_)](napi_handle_scope scope) {
+            auto closeScope = [data](napi_handle_scope scope) {
                 napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(scope, closeScope);
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
             napi_value napiEventInfo = nullptr;
             napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo);
 
@@ -403,12 +406,10 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            NAPI_CALL(reinterpret_cast<napi_env>(data->engine_),
-                napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope));
-            auto closeScope = [&(data->engine_)](napi_handle_scope scope) {
+            auto closeScope = [data](napi_handle_scope scope) {
                 napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
-            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(scope, closeScope);
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
             napi_value napiEventInfo = nullptr;
             if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
                 HILOG_ERROR("Create keyEvent object failed.");
