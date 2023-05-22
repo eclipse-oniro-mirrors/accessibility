@@ -334,8 +334,8 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         [](uv_work_t *work, int status) {
             AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);+
             napi_handle_scope scope = nullptr;
-            NAPI_CALL(env, napi_open_handle_scope(env, &scope));
-            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            NAPI_CALL(reinterpret_cast<napi_env>(data->engine_), napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope));
+            auto closeScope = [reinterpret_cast<napi_env>(data->engine_)](napi_handle_scope scope) { napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(scope, closeScope);
             napi_value napiEventInfo = nullptr;
             napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo);
@@ -402,8 +402,8 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         [](uv_work_t *work, int status) {
             KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
-            NAPI_CALL(env, napi_open_handle_scope(env, &scope));
-            auto closeScope = [env](napi_handle_scope scope) { napi_close_handle_scope(env, scope); };
+            NAPI_CALL(reinterpret_cast<napi_env>(data->engine_), napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope));
+            auto closeScope = [reinterpret_cast<napi_env>(data->engine_)](napi_handle_scope scope) { napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope); };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(scope, closeScope);
             napi_value napiEventInfo = nullptr;
             if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
