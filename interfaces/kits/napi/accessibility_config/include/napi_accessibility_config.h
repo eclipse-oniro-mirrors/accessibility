@@ -32,8 +32,6 @@ struct EnableAbilityListsObserver {
     napi_ref callback_ = nullptr;
 };
 
-
-
 class EnableAbilityListsObserverImpl : public OHOS::AccessibilityConfig::AccessibilityEnableAbilityListsObserver,
     public std::enable_shared_from_this<EnableAbilityListsObserverImpl> {
 public:
@@ -64,9 +62,11 @@ struct NAccessibilityConfigData {
     bool boolConfig_ = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
 };
-void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode, napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
+void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
 
-void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode, napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
+void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
 
 void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result);
 
