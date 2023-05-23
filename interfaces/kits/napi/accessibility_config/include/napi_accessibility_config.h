@@ -126,7 +126,6 @@ private:
     static void SetConfigExecute(napi_env env, void* data);
     static void GetConfigComplete(napi_env env, napi_status status, void* data);
     static void GetConfigExecute(napi_env env, void* data);
-
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };
