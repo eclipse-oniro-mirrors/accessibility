@@ -22,6 +22,7 @@
 #include "accessibility_event_transmission.h"
 #include "accessibility_gesture_recognizer.h"
 #include "accessible_ability_manager_service.h"
+#include <stdint.h>
 
 namespace OHOS {
 namespace Accessibility {
