@@ -420,9 +420,6 @@ private:
     std::shared_ptr<TGEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
 };
-bool HWTEST_FEVENTTYPE(uint32_t x);
-bool HWTEST_FTOUCHEVENT0(uint32_t x);
-bool HWTEST_FTOUCHEVENT1(uint32_t x);
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBILITY_TOUCH_GUIDER_H
