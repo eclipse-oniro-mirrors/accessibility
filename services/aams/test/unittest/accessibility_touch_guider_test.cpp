@@ -527,7 +527,6 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_008, TestSize.Leve
             return false;
         }
         }), SLEEP_TIME_3);
-
     EXPECT_TRUE(ret);
 
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_008 end";
@@ -554,7 +553,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_009, TestSize.Leve
     std::shared_ptr<MMI::PointerEvent> event =
         CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
-    bool ret =  TestEventType();
+    bool ret = TestEventType();
     EXPECT_TRUE(ret);
 
     points.emplace_back(otherPoint);
