@@ -31,22 +31,9 @@ std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configOb
 std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers_ =
     std::make_shared<EnableAbilityListsObserverImpl>();
 
-napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
+void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo)
 {
-    HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
-        napi_throw(env, err);
-        return nullptr;
-    }
-
-    size_t argc = ARGS_SIZE_THREE;
-    napi_value parameters[ARGS_SIZE_THREE] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
-
-    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_THREE - 1) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -68,6 +55,45 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
+}
+
+void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo)
+{
+    if (argc < ARGS_SIZE_TWO - 1) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+    }
+
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        // parse name
+        std::string ability = "";
+        if (ParseString(env, ability, parameters[PARAM0])) {
+            HILOG_INFO("ability = %{private}s", ability.c_str());
+            callbackInfo->abilityName_ = ability;
+        } else {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    }
+}
+
+napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value parameters[ARGS_SIZE_THREE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    EnableAbilityError(argc, errCode, env, parameters, callbackInfo);
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         delete callbackInfo;
@@ -119,21 +145,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
-    if (argc < ARGS_SIZE_TWO - 1) {
-        HILOG_ERROR("argc is invalid: %{public}zu", argc);
-        errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
-    }
-
-    if (errCode == OHOS::Accessibility::RET_OK) {
-        // parse name
-        std::string ability = "";
-        if (ParseString(env, ability, parameters[PARAM0])) {
-            HILOG_INFO("ability = %{private}s", ability.c_str());
-            callbackInfo->abilityName_ = ability;
-        } else {
-            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
-        }
-    }
+    DisableAbilityError(argc, errCode, env, parameters, callbackInfo);
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         delete callbackInfo;
@@ -361,16 +373,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     }
 }
 
-void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, void* data)
-{
-    HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
-    napi_value result[ARGS_SIZE_TWO] = {0};
+void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result){
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
@@ -401,6 +404,19 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
         default:
             break;
     }
+}
+
+void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, void* data)
+{
+    HILOG_INFO();
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    napi_value result[ARGS_SIZE_TWO] = {0};
+    GetConfigCompleteSwitch(env, callbackInfo, result);
 
     napi_value returnVal = 0;
     napi_value callback = 0;
