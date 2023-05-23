@@ -373,7 +373,8 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     }
 }
 
-void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result){
+void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result)
+{
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
