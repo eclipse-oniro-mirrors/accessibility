@@ -405,7 +405,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     }
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     napi_value result[ARGS_SIZE_TWO] = {0};
-    ConfigCompleteInfoById(env, callbackInfo, result);  
+    ConfigCompleteInfoById(env, callbackInfo, result);
 
     napi_value returnVal = 0;
     napi_value callback = 0;
