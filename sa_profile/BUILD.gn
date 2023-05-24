@@ -15,7 +15,7 @@ import("//build/ohos.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("aams_sa_profile") {
-  sources = [ "801.xml" ]
+  sources = [ "801.json" ]
 
   part_name = "accessibility"
 }
