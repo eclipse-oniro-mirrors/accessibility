@@ -68,7 +68,7 @@ void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
 void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
     napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
 
-void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result);
+void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result);
 
 class NAccessibilityConfigClass {
 public:
