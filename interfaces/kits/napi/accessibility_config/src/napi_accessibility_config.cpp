@@ -373,7 +373,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     }
 }
 
-void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result)
+void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result)
 {
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
@@ -417,7 +417,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     }
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     napi_value result[ARGS_SIZE_TWO] = {0};
-    GetConfigCompleteSwitch(env, callbackInfo, result);
+    ConfigCompleteInfoById(env, callbackInfo, result);
 
     napi_value returnVal = 0;
     napi_value callback = 0;
