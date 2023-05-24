@@ -63,10 +63,10 @@ struct NAccessibilityConfigData {
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
 };
 void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
+    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
 
 void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo);
+    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
 
 void GetConfigCompleteSwitch(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result);
 
