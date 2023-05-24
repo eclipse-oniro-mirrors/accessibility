@@ -32,7 +32,7 @@ std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbil
     std::make_shared<EnableAbilityListsObserverImpl>();
 
 void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo)
+    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
 {
     if (argc < ARGS_SIZE_THREE - 1) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
@@ -58,7 +58,7 @@ void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
 }
 
 void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value *parameters, NAccessibilityConfigData* callbackInfo)
+    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
 {
     if (argc < ARGS_SIZE_TWO - 1) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
