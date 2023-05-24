@@ -57,7 +57,7 @@ protected:
 
 bool TouchGuiderTest::TestEventType()
 {
-    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(0) ==
             EventType::TYPE_TOUCH_BEGIN) {
             return true;
@@ -65,11 +65,12 @@ bool TouchGuiderTest::TestEventType()
             return false;
         }
         }), SLEEP_TIME_3);
+    return ret;
 }
 
 bool TouchGuiderTest::TestEventAction()
 {
-    AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
+    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0) ==
             MMI::PointerEvent::POINTER_ACTION_DOWN) {
             return true;
@@ -77,6 +78,7 @@ bool TouchGuiderTest::TestEventAction()
             return false;
         }
         }), SLEEP_TIME_3);
+    return ret;
 }
 
 void TouchGuiderTest::SetUpTestCase()
