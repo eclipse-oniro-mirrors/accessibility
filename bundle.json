@@ -43,7 +43,13 @@
         "hitrace_native",
         "hiviewdfx_hilog_native",
         "ipc",
-        "ability_runtime"
+        "ability_runtime",
+        "init",
+        "access_token",
+        "display_manager",
+        "hisysevent_native",
+        "os_account",
+        "preferences"
       ],
       "third_party": []
     },
