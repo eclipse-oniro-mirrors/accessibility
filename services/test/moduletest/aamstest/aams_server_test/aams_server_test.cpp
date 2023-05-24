@@ -14,6 +14,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <windows.h>
 #include "accessibility_common_helper.h"
 #include "accessibility_display_manager.h"
 #include "accessibility_element_operator_proxy.h"
@@ -172,7 +173,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_002 start";
-    sleep(1);
+    Sleep(100);
     AddAccessibleAbilityConnection();
 
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
@@ -194,7 +195,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_003 start";
-    sleep(1);
+    Sleep(100);
     AddAccessibleAbilityConnection();
 
     AccessibilityAbilityInitParams initParams;
@@ -230,7 +231,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_004 start";
-    sleep(1);
+    Sleep(100);
     AddAccessibleAbilityConnection();
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
