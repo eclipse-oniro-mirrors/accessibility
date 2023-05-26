@@ -172,6 +172,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_001, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_002 start";
+    sleep(1);
     AddAccessibleAbilityConnection();
 
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
@@ -193,7 +194,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_002, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_003 start";
-
+    sleep(1);
     AddAccessibleAbilityConnection();
 
     AccessibilityAbilityInitParams initParams;
@@ -229,7 +230,7 @@ HWTEST_F(AAMSServerTest, GetAbilityList_003, TestSize.Level1)
 HWTEST_F(AAMSServerTest, GetAbilityList_004, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AAMSServerTest GetAbilityList_004 start";
-
+    sleep(1);
     AddAccessibleAbilityConnection();
     int32_t stateType = AbilityStateType::ABILITY_STATE_DISABLE;
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> infos;
