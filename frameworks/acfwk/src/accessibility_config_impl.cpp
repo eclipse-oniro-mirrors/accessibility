@@ -1312,9 +1312,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     audioBalance_ = configData.audioBalance_;
     shortkeyTarget_ = configData.shortkeyTarget_;
     captionProperty_ = configData.captionProperty_;
-    if (isInitialized_) {
-        NotifyDefaultConfigs();
-    }
+    NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
 }
 
