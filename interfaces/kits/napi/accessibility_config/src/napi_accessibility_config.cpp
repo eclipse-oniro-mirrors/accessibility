@@ -31,7 +31,7 @@ std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityConfig::configOb
 std::shared_ptr<EnableAbilityListsObserverImpl> NAccessibilityConfig::enableAbilityListsObservers_ =
     std::make_shared<EnableAbilityListsObserverImpl>();
 
-void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+void NAccessibilityConfig::EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
     napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
 {
     if (argc < ARGS_SIZE_THREE - 1) {
@@ -57,7 +57,7 @@ void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
     }
 }
 
-void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+void NAccessibilityConfig::DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
     napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo)
 {
     if (argc < ARGS_SIZE_TWO - 1) {
@@ -373,7 +373,8 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     }
 }
 
-void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result)
+void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
+    napi_value* result, size_t len)
 {
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
@@ -417,7 +418,7 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     }
     HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     napi_value result[ARGS_SIZE_TWO] = {0};
-    ConfigCompleteInfoById(env, callbackInfo, result);
+    ConfigCompleteInfoById(env, callbackInfo, result, sizeof(result));
 
     napi_value returnVal = 0;
     napi_value callback = 0;
