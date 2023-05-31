@@ -206,5 +206,55 @@ HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unitte
     EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_004 end";
 }
+
+/**
+ * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005
+ * @tc.name: OnPointerEvent
+ * @tc.desc: Test function OnPointerEvent
+ */
+HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005 start";
+    if (!mouseAutoclick_) {
+        return;
+    }
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
+    MMI::PointerEvent::PointerItem item;
+    event->AddPointerItem(item);
+    mouseAutoclick_->OnPointerEvent(*event);
+
+    EXPECT_NE(event.get(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_005 end";
+}
+
+/**
+ * @tc.number: AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006
+ * @tc.name: OnPointerEvent
+ * @tc.desc: Test function OnPointerEvent
+ */
+HWTEST_F(AccessibilityMouseAutoclickUnitTest, AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006 start";
+    if (!mouseAutoclick_) {
+        return;
+    }
+    std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
+    if (!event) {
+        return;
+    }
+    event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
+    event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_UP);
+    MMI::PointerEvent::PointerItem item;
+    event->AddPointerItem(item);
+    mouseAutoclick_->OnPointerEvent(*event);
+
+    EXPECT_NE(event.get(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibilityMouseAutoclick_Unittest_OnPointerEvent_006 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

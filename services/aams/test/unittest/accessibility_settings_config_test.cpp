@@ -682,7 +682,7 @@ HWTEST_F(AccessibilitySettingsConfigTest,
     AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 start";
-    std::vector<std::string> vecvalue {};
+    std::vector<std::string> vecvalue { "test" };
     settingConfig_->UpdateEnabledAbilities(vecvalue);
     GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_002 end";
 }

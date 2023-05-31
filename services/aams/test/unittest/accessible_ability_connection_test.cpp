@@ -236,6 +236,27 @@ HWTEST_F(
 }
 
 /**
+ * @tc.number: AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_003
+ * @tc.name: OnAccessibilityEvent
+ * @tc.desc: Test function OnAccessibilityEvent
+ */
+HWTEST_F(
+    AccessibleAbilityConnectionUnitTest, AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_003 start";
+    if (connection_ != nullptr) {
+        AccessibilityEventInfo eventInfo;
+        /* EventType is not in the allowed list */
+        eventInfo.SetEventType(TYPE_VIEW_INVALID);
+        sleep(SLEEP_TIME_2);
+        connection_->OnAccessibilityEvent(eventInfo);
+        sleep(SLEEP_TIME_2);
+        EXPECT_EQ(0, AccessibilityAbilityHelper::GetInstance().GetTestEventType());
+    }
+    GTEST_LOG_(INFO) << "AccessibleAbilityConnection_Unittest_OnAccessibilityEvent_003 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityConnection_Unittest_Connect_001
  * @tc.name: Connect
  * @tc.desc: Test function Connect

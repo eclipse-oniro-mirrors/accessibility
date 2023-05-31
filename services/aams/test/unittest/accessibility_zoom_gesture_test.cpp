@@ -265,12 +265,12 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     MMI::PointerEvent::PointerItem item3;
     item3.SetDisplayX(0);
     item3.SetDisplayY(50);
-    eventDown->AddPointerItem(item1);
+    eventMove->AddPointerItem(item3);
 
     MMI::PointerEvent::PointerItem item4;
     item4.SetDisplayX(70);
     item4.SetDisplayY(50);
-    eventDown->AddPointerItem(item4);
+    eventMove->AddPointerItem(item4);
     zoomGesture_->OnPointerEvent(*eventMove);
     bool scrollState = AccessibilityAbilityHelper::GetInstance().GetScrollState();
     EXPECT_TRUE(scrollState);
@@ -312,7 +312,7 @@ HWTEST_F(AccessibilityZoomGestureUnitTest, AccessibilityZoomGesture_Unittest_OnP
     MMI::PointerEvent::PointerItem item3;
     item3.SetDisplayX(50);
     item3.SetDisplayY(25);
-    eventDown->AddPointerItem(item1);
+    eventDown->AddPointerItem(item3);
     zoomGesture_->OnPointerEvent(*eventDown);
 
     GTEST_LOG_(INFO) << "AccessibilityZoomGesture_Unittest_OnPointerEvent_006 end";
