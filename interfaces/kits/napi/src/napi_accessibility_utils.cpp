@@ -495,7 +495,8 @@ const std::string ConvertWindowUpdateTypeToString(WindowUpdateType type)
         {WindowUpdateType::WINDOW_UPDATE_ACTIVE, "active"},
         {WindowUpdateType::WINDOW_UPDATE_ADDED, "add"},
         {WindowUpdateType::WINDOW_UPDATE_REMOVED, "remove"},
-        {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"}};
+        {WindowUpdateType::WINDOW_UPDATE_BOUNDS, "bounds"},
+        {WindowUpdateType::WINDOW_UPDATE_PROPERTY, "property"}};
 
     if (windowUpdateTypeTable.find(type) == windowUpdateTypeTable.end()) {
         return "";
@@ -565,7 +566,8 @@ static WindowUpdateType ConvertStringToWindowUpdateTypes(std::string type)
         {"layer", WindowUpdateType::WINDOW_UPDATE_LAYER},
         {"parent", WindowUpdateType::WINDOW_UPDATE_PARENT},
         {"children", WindowUpdateType::WINDOW_UPDATE_CHILDREN},
-        {"pip", WindowUpdateType::WINDOW_UPDATE_PIP}};
+        {"pip", WindowUpdateType::WINDOW_UPDATE_PIP},
+        {"property", WindowUpdateType::WINDOW_UPDATE_PROPERTY}};
 
     if (windowsUpdateTypesTable.find(type) == windowsUpdateTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

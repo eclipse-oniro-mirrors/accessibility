@@ -417,6 +417,7 @@ void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen
 void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
     HILOG_DEBUG("start");
+    auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -425,6 +426,8 @@ void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Ros
         if (a11yWindows_.count(windowInfo->wid_)) {
             UpdateAccessibilityWindowInfo(a11yWindows_[windowInfo->wid_], windowInfo);
         }
+        AccessibilityEventInfo evtInfProperty(windowInfo->wid_, WINDOW_UPDATE_PROPERTY);
+        aams.SendEvent(evtInfProperty);
     }
 }
 
