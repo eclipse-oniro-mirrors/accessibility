@@ -177,6 +177,7 @@ enum WindowUpdateType : int32_t {
     WINDOW_UPDATE_PARENT = 0x00000100,
     WINDOW_UPDATE_CHILDREN = 0x00000200,
     WINDOW_UPDATE_PIP = 0x00000400,
+    WINDOW_UPDATE_PROPERTY = 0x00000800,
 };
 
 enum WindowsContentChangeTypes : int32_t {
