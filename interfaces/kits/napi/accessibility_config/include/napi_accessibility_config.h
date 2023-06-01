@@ -62,13 +62,6 @@ struct NAccessibilityConfigData {
     bool boolConfig_ = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
 };
-void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
-
-void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
-    napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
-
-void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo, napi_value* result);
 
 class NAccessibilityConfigClass {
 public:
@@ -126,6 +119,12 @@ private:
     static void SetConfigExecute(napi_env env, void* data);
     static void GetConfigComplete(napi_env env, napi_status status, void* data);
     static void GetConfigExecute(napi_env env, void* data);
+    static void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+        napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
+    static void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
+        napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
+    static void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
+        napi_value* result, size_t len);
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };
