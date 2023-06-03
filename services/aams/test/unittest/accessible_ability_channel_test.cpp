@@ -415,6 +415,30 @@ HWTEST_F(AccessibleAbilityChannelUnitTest,
 }
 
 /**
+ * @tc.number: AccessibleAbilityChannel_Unittest_SendSimulateGesture_003
+ * @tc.name: SendSimulateGesture
+ * @tc.desc: Test function SendSimulateGesture
+ */
+HWTEST_F(AccessibleAbilityChannelUnitTest,
+    AccessibleAbilityChannel_Unittest_SendSimulateGesture_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_003 start";
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    // add a client which has no retieve capability
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>();
+    sptr<AccessibleAbilityConnection> connection =
+        new AccessibleAbilityConnection(accountData->GetAccountId(), 0, *abilityInfo);
+    AppExecFwk::ElementName elementName("device", "bundle", "ability");
+    std::string ability = "bundle/ability";
+    sptr<AccessibleAbilityChannel> channel = new AccessibleAbilityChannel(accountData->GetAccountId(), ability);
+    connection->OnAbilityConnectDoneSync(elementName, channel);
+    EXPECT_TRUE(accountData->GetAccessibleAbilityConnection(ability));
+    EXPECT_EQ(channel->SendSimulateGesture(nullptr), RET_ERR_NO_CAPABILITY);
+    GTEST_LOG_(INFO) << "AccessibleAbilityChannel_Unittest_SendSimulateGesture_003 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityChannel_Unittest_SetTargetBundleName_001
  * @tc.name: SetTargetBundleName
  * @tc.desc: Test function SetTargetBundleName

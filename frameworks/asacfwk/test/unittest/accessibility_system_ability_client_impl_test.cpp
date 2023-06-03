@@ -495,6 +495,28 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, ResetService_001, TestSize.Le
 }
 
 /**
+ * @tc.number: ResetService_002
+ * @tc.name: ResetService
+ * @tc.desc: Test function ResetService
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, ResetService_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "ResetService_002 start";
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    wptr<IRemoteObject> object;
+    impl_->ResetService(object);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "ResetService_002 end";
+}
+
+/**
  * @tc.number: OnAccessibleAbilityManagerStateChanged_001
  * @tc.name: OnAccessibleAbilityManagerStateChanged
  * @tc.desc: Test function OnAccessibleAbilityManagerStateChanged
