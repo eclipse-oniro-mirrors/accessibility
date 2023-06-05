@@ -215,7 +215,7 @@ const std::string &AccessibilityEventInfo::GetBundleName() const
 
 void AccessibilityEventInfo::SetBundleName(const std::string &bundleName)
 {
-    HILOG_INFO("previous bundleName[%{public}s] new bundleName[%{public}s]", bundleName_.c_str(), bundleName.c_str());
+    HILOG_DEBUG("previous bundleName[%{public}s] new bundleName[%{public}s]", bundleName_.c_str(), bundleName.c_str());
     bundleName_ = bundleName;
 }
 
