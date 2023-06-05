@@ -204,7 +204,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
-    HILOG_INFO("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
+    HILOG_DEBUG("Get result successfully from ace. size[%{public}zu]", elementOperator->elementInfosResult_.size());
     elementInfos = elementOperator->elementInfosResult_;
     return RET_OK;
 }
