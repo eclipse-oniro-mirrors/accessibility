@@ -110,7 +110,7 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
     if (IsWantedEvent(eventInfo.GetEventType()) && (filterBundleNames.empty() || find(filterBundleNames.begin(),
         filterBundleNames.end(), eventInfo.GetBundleName()) != filterBundleNames.end())) {
         abilityClient_->OnAccessibilityEvent(eventInfo);
-        HILOG_INFO("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
+        HILOG_DEBUG("windowId[%{public}d] evtType[%{public}d] windowChangeType[%{public}d] GestureId[%{public}d]",
             eventInfo.GetWindowId(), eventInfo.GetEventType(), eventInfo.GetWindowChangeTypes(),
             eventInfo.GetGestureType());
     }
