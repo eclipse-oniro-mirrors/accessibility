@@ -106,8 +106,8 @@ namespace {
     {
         while (state.KeepRunning()) {
             AccessibilityElementInfo elementInfo;
-            bool result = AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
-            if (!result) {
+            int32_t result = AccessibilityUITestAbility::GetInstance()->GetRoot(elementInfo);
+            if (result != 0) {
                 state.SkipWithError("GetRoot failed. Maybe there is no command to set ace");
             }
         }
@@ -124,7 +124,10 @@ namespace {
     {
         while (state.KeepRunning()) {
             std::vector<AccessibilityWindowInfo> windows;
-            AccessibilityUITestAbility::GetInstance()->GetWindows(windows);
+            int32_t result = AccessibilityUITestAbility::GetInstance()->GetWindows(windows);
+            if (result != 0) {
+                state.SkipWithError("GetWindows failed.");
+            }
         }
     }
 
@@ -160,7 +163,10 @@ namespace {
             gesturePath->SetDurationTime(durationTime);
             AccessibilityGesturePosition position = {200.0f, 200.0f};
             gesturePath->AddPosition(position);
-            AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
+            int32_t result = AccessibilityUITestAbility::GetInstance()->InjectGesture(gesturePath);
+            if (result != 0) {
+                state.SkipWithError("InjectGesture failed.");
+            }
         }
     }
 }
