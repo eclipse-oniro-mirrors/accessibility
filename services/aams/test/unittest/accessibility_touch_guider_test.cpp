@@ -340,14 +340,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_005, TestSize.Leve
     std::shared_ptr<MMI::PointerEvent> event =
         CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(*event);
-    bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(0) ==
-            EventType::TYPE_TOUCH_BEGIN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
+    bool ret = TestEventType();
     EXPECT_TRUE(ret);
 
     points.emplace_back(otherPoint);
@@ -355,14 +348,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_005, TestSize.Leve
     touchGuider_->OnPointerEvent(*event);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 2, 0, 0);
     touchGuider_->OnPointerEvent(*event);
-    ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0) ==
-            MMI::PointerEvent::POINTER_ACTION_DOWN) {
-            return true;
-        } else {
-            return false;
-        }
-        }), SLEEP_TIME_3);
+    ret = TestEventAction();
     EXPECT_TRUE(ret);
 
     points.clear();
