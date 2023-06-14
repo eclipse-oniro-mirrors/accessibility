@@ -22,6 +22,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+namespace {
+    constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+} // namespace
+
 AccessibleAbilityChannel::AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName)
     : clientName_(clientName), accountId_(accountId)
 {
@@ -56,6 +60,12 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
         HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfoByAccessibilityId");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait SearchElementInfoByAccessibilityId result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -85,6 +95,12 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         elementOperator->SearchElementInfosByText(elementId, text, requestId, callback);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfosByText");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait SearchElementInfosByText result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -114,6 +130,12 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         elementOperator->FindFocusedElementInfo(elementId, focusType, requestId, callback);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "FindFocusedElementInfo");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait FindFocusedElementInfo result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -142,6 +164,12 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         elementOperator->FocusMoveSearch(elementId, direction, requestId, callback);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "FocusMoveSearch");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait FocusMoveSearch result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -171,6 +199,12 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         elementOperator->ExecuteAction(elementId, action, actionArguments, requestId, callback);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "ExecuteAction");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait ExecuteAction result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -206,6 +240,12 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
             syncPromise.set_value(RET_ERR_NO_WINDOW_CONNECTION);
         }
         }, accountId_, clientName_), "GetWindow");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait GetWindow result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -258,6 +298,12 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         }
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "GetWindows");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait GetWindows result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -322,6 +368,12 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
         touchEventInjector->InjectEvents(gesturePath);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "SendSimulateGesture");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait SendSimulateGesture result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -348,6 +400,12 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
         clientConnection->SetAbilityInfoTargetBundleName(targetBundleNames);
         syncPromise.set_value(RET_OK);
         }, accountId_, clientName_), "SetTargetBundleName");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait SetTargetBundleName result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 

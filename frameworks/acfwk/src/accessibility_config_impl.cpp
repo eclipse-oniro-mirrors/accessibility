@@ -125,7 +125,11 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create captionObserver_ failed.");
             return false;
         }
-        serviceProxy_->RegisterCaptionObserver(captionObserver_);
+        uint32_t ret = serviceProxy_->RegisterCaptionObserver(captionObserver_);
+        if (ret != 0) {
+            HILOG_ERROR("Register captionObserver failed.");
+            return false;
+        }
     }
 
     if (!enableAbilityListsObserver_) {
@@ -143,7 +147,11 @@ bool AccessibilityConfig::Impl::RegisterToService()
             HILOG_ERROR("Create configObserver_ failed.");
             return false;
         }
-        serviceProxy_->RegisterConfigObserver(configObserver_);
+        uint32_t ret = serviceProxy_->RegisterConfigObserver(configObserver_);
+        if (ret != 0) {
+            HILOG_ERROR("Register configObserver failed.");
+            return false;
+        }
     }
 
     HILOG_DEBUG("RegisterToService succeaddss");
