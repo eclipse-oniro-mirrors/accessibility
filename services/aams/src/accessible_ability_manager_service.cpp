@@ -45,6 +45,7 @@ namespace {
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
+    constexpr uint32_t TIME_OUT_OPERATOR = 5000;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -349,6 +350,12 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
             accountData->GetCaptionPropertyCallbacks().size());
         syncPromise.set_value(NO_ERROR);
         }), "TASK_REGISTER_CAPTION_OBSERVER");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterCaptionObserver result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
@@ -388,6 +395,12 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         accountData->AddEnableAbilityListsObserver(observer);
         syncPromise.set_value();
         }), "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
+    
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
+        return;
+    }
     return syncFuture.get();
 }
 
@@ -1985,6 +1998,12 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
             accountData->GetConfigCallbacks().size());
         syncPromise.set_value(NO_ERROR);
         }), "TASK_REGISTER_CONFIG_OBSERVER");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait RegisterConfigObserver result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
