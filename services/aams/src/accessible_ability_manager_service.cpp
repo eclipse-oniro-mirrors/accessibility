@@ -929,7 +929,7 @@ void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemo
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccountData()
 {
-    HILOG_DEBUG("currentAccoutId is %{public}d ", currentAccountId_);
+    HILOG_DEBUG();
     if (currentAccountId_ == -1) {
         HILOG_ERROR("current account id is wrong");
         return nullptr;
@@ -949,12 +949,12 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
 
 sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
 {
-    HILOG_DEBUG("accountId is %{public}d ", accountId);
+    HILOG_DEBUG();
     auto iter = a11yAccountsData_.find(accountId);
     if (iter != a11yAccountsData_.end()) {
         return iter->second;
     }
-    HILOG_ERROR("There is no account[%{public}d]", accountId);
+    HILOG_ERROR("There is no account");
     return nullptr;
 }
 
@@ -1058,12 +1058,12 @@ void AccessibleAbilityManagerService::EnableAbilityListsObserverDeathRecipient::
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 {
-    HILOG_DEBUG("accountId(%{public}d)", accountId);
+    HILOG_DEBUG("accountId");
 
     // Add this account in map
     auto iter = a11yAccountsData_.find(accountId);
     if (iter != a11yAccountsData_.end()) {
-        HILOG_DEBUG("The account[%{public}d] is already exist.", accountId);
+        HILOG_DEBUG("The account is already exist.");
     }
     sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
     if (!accountData) {
@@ -1078,7 +1078,7 @@ void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
 {
-    HILOG_DEBUG("accountId(%{public}d)", accountId);
+    HILOG_DEBUG();
     if (accountId == currentAccountId_) {
         HILOG_ERROR("Remove user failed, this account is current account.");
         return;
@@ -1090,15 +1090,15 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
         a11yAccountsData_.erase(iter);
         return;
     }
-    HILOG_ERROR("The account[%{public}d] is not exist.", accountId);
+    HILOG_ERROR("The account is not exist.");
 }
 
 void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
 {
-    HILOG_DEBUG("accountId(%{public}d)", accountId);
+    HILOG_DEBUG();
 
     if (accountId == currentAccountId_) {
-        HILOG_WARN("The account id(%{public}d) is current account id.", accountId);
+        HILOG_WARN("The account id is current account id.");
         return;
     }
 
@@ -1106,7 +1106,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> tmpObserver;
     // Clear last account's data
     if (currentAccountId_ != -1) {
-        HILOG_DEBUG("current account id: %{public}d", currentAccountId_);
+        HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Current account data is null");
