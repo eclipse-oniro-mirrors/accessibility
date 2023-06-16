@@ -41,7 +41,7 @@ AccessibilityAccountData::~AccessibilityAccountData()
 
 int32_t AccessibilityAccountData::GetAccountId()
 {
-    HILOG_INFO("id_ = %{public}d", id_);
+    HILOG_INFO();
     return id_;
 }
 

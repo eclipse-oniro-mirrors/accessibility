@@ -123,7 +123,7 @@ void AccessibilityCommonEvent::OnReceiveEvent(const EventFwk::CommonEventData &d
 void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &data) const
 {
     int32_t accountId = data.GetCode();
-    HILOG_INFO("account id is %{public}d", accountId);
+    HILOG_INFO();
     if (accountId == -1) {
         HILOG_ERROR("account id is wrong");
         return;
@@ -134,7 +134,7 @@ void AccessibilityCommonEvent::HandleUserAdded(const EventFwk::CommonEventData &
 void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData &data) const
 {
     int32_t accountId = data.GetCode();
-    HILOG_INFO("account id is %{public}d", accountId);
+    HILOG_INFO();
     if (accountId == -1) {
         HILOG_ERROR("account id is wrong");
         return;
@@ -145,7 +145,7 @@ void AccessibilityCommonEvent::HandleUserRemoved(const EventFwk::CommonEventData
 void AccessibilityCommonEvent::HandleUserSwitched(const EventFwk::CommonEventData &data) const
 {
     int32_t accountId = data.GetCode();
-    HILOG_INFO("account id is %{public}d", accountId);
+    HILOG_INFO();
     if (accountId == -1) {
         HILOG_ERROR("account id is wrong");
         return;

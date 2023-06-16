@@ -572,7 +572,7 @@ void AccessibilitySettingsConfig::Init()
                                                                  errCode);
     if (errCode) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::READ_EVENT, A11yError::ERROR_READ_FAILED);
-        HILOG_ERROR("GetPreferences failed! account id (%{public}d), errCode(%{public}d).", accountId_, errCode);
+        HILOG_ERROR("GetPreferences failed! errCode(%{public}d).", errCode);
         return;
     }
 
@@ -664,7 +664,7 @@ void AccessibilitySettingsConfig::ClearData()
     int errCode = -1;
     errCode = NativePreferences::PreferencesHelper::DeletePreferences(PREF_PATH + std::to_string(accountId_) + ".xml");
     if (errCode) {
-        HILOG_ERROR("DeletePreferences failed! account id (%{public}d)", accountId_);
+        HILOG_ERROR("DeletePreferences failed!");
     }
 
     pref_ = nullptr;
