@@ -177,6 +177,20 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_003, TestSize.Level1)
 }
 
 /**
+ * @tc.number: GetFocus_004
+ * @tc.name: GetFocus
+ * @tc.desc: Test function GetFocus
+ */
+HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_004, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocus_004 start";
+    Connect();
+    AccessibilityElementInfo info {};
+    EXPECT_EQ(instance_->GetFocus(FOCUS_TYPE_ACCESSIBILITY, info), RET_ERR_TIME_OUT);
+    GTEST_LOG_(INFO) << "GetFocus_004 end";
+}
+
+/**
  * @tc.number: GetRemoteObject_001
  * @tc.name: GetRemoteObject
  * @tc.desc: Test function GetRemoteObject
