@@ -32,16 +32,6 @@ public:
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) = 0;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) = 0;
 
-    enum class Message {
-        ON_CONFIG_STATE_CHANGED,
-        ON_DALTONIZATION_COLOR_FILTER_CHANGED,
-        ON_CONTENT_TIMEOUT_CHANGED,
-        ON_MOUSE_AUTOCLICK_CHANGED,
-        ON_BRIGHTNESS_DISCOUNT_CHANGED,
-        ON_AUDIO_BALANCE_CHANGED,
-        ON_SHORTKEY_TARGET_CHANGED,
-        ON_CAPTION_STYLE_CHANGED,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

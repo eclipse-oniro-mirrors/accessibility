@@ -16,6 +16,7 @@
 #include "accessible_ability_client_proxy.h"
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_event_info_parcel.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -35,7 +36,7 @@ bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel &data)
     return true;
 }
 
-bool AccessibleAbilityClientProxy::SendTransactCmd(IAccessibleAbilityClient::Message code, MessageParcel &data,
+bool AccessibleAbilityClientProxy::SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
     MessageParcel &reply,  MessageOption &option)
 {
     HILOG_DEBUG();
@@ -78,7 +79,7 @@ void AccessibleAbilityClientProxy::Init(const sptr<IAccessibleAbilityChannel> &c
         return;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::INIT, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::INIT, data, reply, option)) {
         HILOG_ERROR("Init fail");
         return;
     }
@@ -101,7 +102,7 @@ void AccessibleAbilityClientProxy::Disconnect(const int32_t channelId)
         return;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::DISCONNECT, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::DISCONNECT, data, reply, option)) {
         HILOG_ERROR("Disconnect fail");
         return;
     }
@@ -123,7 +124,7 @@ void AccessibleAbilityClientProxy::OnAccessibilityEvent(const AccessibilityEvent
         HILOG_ERROR("fail, eventInfo write parcelable error");
         return;
     }
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::ON_ACCESSIBILITY_EVENT, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT, data, reply, option)) {
         HILOG_ERROR("OnAccessibilityEvent fail");
         return;
     }
@@ -150,7 +151,7 @@ void AccessibleAbilityClientProxy::OnKeyPressEvent(const MMI::KeyEvent &keyEvent
         return;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT, data, reply, option)) {
         HILOG_ERROR("OnKeyPressEvent fail");
         return;
     }

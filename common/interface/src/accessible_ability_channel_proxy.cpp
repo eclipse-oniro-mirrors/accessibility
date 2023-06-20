@@ -21,6 +21,7 @@
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
+#include "accessibility_icp_interface_code.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -40,7 +41,7 @@ bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel &data)
     return true;
 }
 
-bool AccessibleAbilityChannelProxy::SendTransactCmd(IAccessibleAbilityChannel::Message code,
+bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode code,
     MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     HILOG_DEBUG();
@@ -96,7 +97,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by elementId");
         return RET_ERR_IPC_FAILED;
@@ -143,7 +144,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT,
         data, reply, option)) {
         HILOG_ERROR("fail to find elementInfo by text");
         return RET_ERR_IPC_FAILED;
@@ -189,7 +190,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, data, reply, option)) {
         HILOG_ERROR("fail to gain focus");
         return RET_ERR_IPC_FAILED;
     }
@@ -233,7 +234,7 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, data, reply, option)) {
         HILOG_ERROR("fail to search focus");
         return RET_ERR_IPC_FAILED;
     }
@@ -290,7 +291,7 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::PERFORM_ACTION,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION,
         data, reply, option)) {
         HILOG_ERROR("fail to perform accessibility action");
         return RET_ERR_IPC_FAILED;
@@ -315,7 +316,7 @@ RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, Access
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOW, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_WINDOW, data, reply, option)) {
         HILOG_ERROR("fail to get window");
         return RET_ERR_IPC_FAILED;
     }
@@ -341,7 +342,7 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_WINDOWS, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
         return RET_ERR_IPC_FAILED;
     }
@@ -377,7 +378,7 @@ RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t dis
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID, data, reply, option)) {
         HILOG_ERROR("fail to get windows");
         return RET_ERR_IPC_FAILED;
     }
@@ -414,7 +415,7 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
         HILOG_ERROR("sequence write error: %{public}d, ", sequence);
         return;
     }
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT,
         data, reply, option)) {
         HILOG_ERROR("fail to set onKeyPressEvent result");
     }
@@ -444,7 +445,7 @@ RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
         return RET_ERR_IPC_FAILED;
     }
 
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH, data, reply, option)) {
         HILOG_ERROR("fail to send simulation gesture path");
         return RET_ERR_IPC_FAILED;
     }
@@ -472,7 +473,7 @@ RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<st
             return RET_ERR_IPC_FAILED;
         }
     }
-    if (!SendTransactCmd(IAccessibleAbilityChannel::Message::SET_TARGET_BUNDLE_NAME, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME, data, reply, option)) {
         HILOG_ERROR("fail to set target bundle name filter");
         return RET_ERR_IPC_FAILED;
     }

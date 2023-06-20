@@ -17,6 +17,7 @@
 #define MOCK_ACCESSIBILITY_ELEMENT_OPERATOR_PROXY_H
 
 #include "i_accessibility_element_operator.h"
+#include "accessibility_icp_interface_code.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {
@@ -151,7 +152,7 @@ private:
      * @return true: Write the descriptor successfully; otherwise is not.
      */
     bool SendTransactCmd(
-        IAccessibilityElementOperator::Message code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+        AccessibilityInterfaceCode code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     static inline BrokerDelegator<MockAccessibilityElementOperatorProxy> delegator;
 };
 } // namespace Accessibility

@@ -18,6 +18,7 @@
 
 #include "i_accessible_ability_client.h"
 #include "iremote_proxy.h"
+#include "accessibility_icp_interface_code.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -61,7 +62,7 @@ private:
      * @param option The option parameter of IPC,such as: async,sync
      * @return true: Write the descriptor successfully; otherwise is not.
      */
-    bool SendTransactCmd(IAccessibleAbilityClient::Message code, MessageParcel &data,
+    bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
 
     bool WriteInterfaceToken(MessageParcel &data);

@@ -30,7 +30,7 @@ bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel& data)
 }
 
 bool AccessibleAbilityChannelProxy::SendTransactCmd(
-    IAccessibleAbilityChannel::Message code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
+    AccessibilityInterfaceCode code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
     (void)code;
     (void)data;

@@ -15,6 +15,7 @@
 
 #include "accessible_ability_manager_caption_observer_proxy.h"
 #include "accessibility_caption_parcel.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -64,7 +65,7 @@ void AccessibleAbilityManagerCaptionObserverProxy::OnPropertyChanged(
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerCaptionObserver::Message::ON_PROPERTY_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_PROPERTY_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnPropertyChanged fail, error: %{public}d", error);

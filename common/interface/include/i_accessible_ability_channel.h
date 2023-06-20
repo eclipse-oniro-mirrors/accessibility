@@ -146,21 +146,6 @@ public:
      * @return Return RET_OK if sets target bundle names successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SetTargetBundleName(const std::vector<std::string> &targetBundleNames) = 0;
-
-    enum class Message {
-        SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID = 0,
-        SEARCH_ELEMENTINFOS_BY_TEXT,
-        FIND_FOCUSED_ELEMENTINFO,
-        FOCUS_MOVE_SEARCH,
-        PERFORM_ACTION,
-        GET_WINDOW,
-        GET_WINDOWS,
-        GET_WINDOWS_BY_DISPLAY_ID,
-        DISABLE_ABILITY,
-        SET_ON_KEY_PRESS_EVENT_RESULT,
-        SEND_SIMULATE_GESTURE_PATH,
-        SET_TARGET_BUNDLE_NAME,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

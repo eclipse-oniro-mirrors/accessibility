@@ -21,19 +21,19 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityElementOperatorStub::AccessibilityElementOperatorStub()
 {
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::SEARCH_BY_ACCESSIBILITY_ID)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID)] =
         &AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibilityId;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::SEARCH_BY_TEXT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_BY_TEXT)] =
         &AccessibilityElementOperatorStub::HandleSearchElementInfosByText;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::FIND_FOCUSED_INFO)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_INFO)] =
         &AccessibilityElementOperatorStub::HandleFindFocusedElementInfo;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::FOCUS_FIND)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_FIND)] =
         &AccessibilityElementOperatorStub::HandleFocusFind;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::PERFORM_ACTION)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT)] =
         &AccessibilityElementOperatorStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::CLEAR_FOCUS)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::CLEAR_FOCUS)] =
         &AccessibilityElementOperatorStub::HandleClearFocus;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperator::Message::OUTSIDE_TOUCH)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::OUTSIDE_TOUCH)] =
         &AccessibilityElementOperatorStub::HandleOutsideTouch;
 }
 

@@ -33,10 +33,6 @@ public:
      *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED
      */
     virtual void OnStateChanged(const uint32_t stateType) = 0;
-
-    enum class Message {
-        ON_STATE_CHANGED,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

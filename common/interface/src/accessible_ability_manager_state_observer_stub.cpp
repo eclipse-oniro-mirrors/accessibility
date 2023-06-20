@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_state_observer_stub.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -34,7 +35,7 @@ int AccessibleAbilityManagerStateObserverStub::OnRemoteRequest(uint32_t code, Me
         return ERR_INVALID_STATE;
     }
 
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerStateObserver::Message::ON_STATE_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_STATE_CHANGED)) {
         return HandleOnStateChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

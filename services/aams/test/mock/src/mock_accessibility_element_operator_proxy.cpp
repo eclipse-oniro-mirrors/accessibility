@@ -29,7 +29,7 @@ bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
     return true;
 }
 
-bool AccessibilityElementOperatorProxy::SendTransactCmd(IAccessibilityElementOperator::Message code,
+bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCode code,
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
     (void)code;

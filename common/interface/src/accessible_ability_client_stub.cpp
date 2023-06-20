@@ -16,6 +16,7 @@
 #include "accessible_ability_client_stub.h"
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_event_info_parcel.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -23,13 +24,13 @@ namespace Accessibility {
 AccessibleAbilityClientStub::AccessibleAbilityClientStub()
 {
     HILOG_DEBUG();
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::INIT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::INIT)] =
         &AccessibleAbilityClientStub::HandleInit;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::DISCONNECT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISCONNECT)] =
         &AccessibleAbilityClientStub::HandleDisconnect;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_ACCESSIBILITY_EVENT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ON_ACCESSIBILITY_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnAccessibilityEvent;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityClient::Message::ON_KEY_PRESS_EVENT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ON_KEY_PRESS_EVENT)] =
         &AccessibleAbilityClientStub::HandleOnKeyPressEvent;
 }
 

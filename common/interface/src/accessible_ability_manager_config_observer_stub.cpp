@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_config_observer_stub.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -34,27 +35,27 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
         return ERR_INVALID_STATE;
     }
 
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONFIG_STATE_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CONFIG_STATE_CHANGED)) {
         return HandleOnConfigStateChanged(data, reply);
     }
     if (code == static_cast<uint32_t>(
-                    IAccessibleAbilityManagerConfigObserver::Message::ON_DALTONIZATION_COLOR_FILTER_CHANGED)) {
+                    AccessibilityInterfaceCode::ON_DALTONIZATION_COLOR_FILTER_CHANGED)) {
         return HandleOnDaltonizationColorFilterChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONTENT_TIMEOUT_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CONTENT_TIMEOUT_CHANGED)) {
         return HandleOnContentTimeoutChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_MOUSE_AUTOCLICK_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_MOUSE_AUTOCLICK_CHANGED)) {
         return HandleOnMouseAutoClickChanged(data, reply);
     }
     if (code ==
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_BRIGHTNESS_DISCOUNT_CHANGED)) {
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_BRIGHTNESS_DISCOUNT_CHANGED)) {
         return HandleOnBrightnessDiscountChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_AUDIO_BALANCE_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_AUDIO_BALANCE_CHANGED)) {
         return HandleOnAudioBalanceChanged(data, reply);
     }
-    if (code == static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_SHORTKEY_TARGET_CHANGED)) {
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_TARGET_CHANGED)) {
         return HandleOnShortkeyTargetChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

@@ -53,13 +53,6 @@ public:
      * @param sequence The sequence of the key event.
      */
     virtual void OnKeyPressEvent(const MMI::KeyEvent &keyEvent, const int32_t sequence) = 0;
-
-    enum class Message {
-        INIT = 0,
-        DISCONNECT,
-        ON_ACCESSIBILITY_EVENT,
-        ON_KEY_PRESS_EVENT,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -15,6 +15,7 @@
 
 #include "accessible_ability_manager_caption_observer_stub.h"
 #include "accessibility_caption_parcel.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -36,7 +37,7 @@ int AccessibleAbilityManagerCaptionObserverStub::OnRemoteRequest(uint32_t code, 
     }
 
     if (code ==
-        static_cast<uint32_t>(IAccessibleAbilityManagerCaptionObserver::Message::ON_PROPERTY_CHANGED)) {
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_PROPERTY_CHANGED)) {
         return HandleOnCaptionPropertyChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

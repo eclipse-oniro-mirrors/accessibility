@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_config_observer_proxy.h"
+#include "accessibility_icp_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -61,7 +62,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnConfigStateChanged(const uin
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONFIG_STATE_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CONFIG_STATE_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnConfigStateChanged fail, error: %{public}d", error);
@@ -95,7 +96,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnAudioBalanceChanged(const fl
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_AUDIO_BALANCE_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_AUDIO_BALANCE_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnAudioBalanceChanged fail, error: %{public}d", error);
@@ -129,7 +130,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnBrightnessDiscountChanged(co
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_BRIGHTNESS_DISCOUNT_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_BRIGHTNESS_DISCOUNT_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnBrightnessDiscountChanged fail, error: %{public}d", error);
@@ -163,7 +164,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnContentTimeoutChanged(const 
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_CONTENT_TIMEOUT_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CONTENT_TIMEOUT_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnContentTimeoutChanged fail, error: %{public}d", error);
@@ -197,7 +198,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnDaltonizationColorFilterChan
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_DALTONIZATION_COLOR_FILTER_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_DALTONIZATION_COLOR_FILTER_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnDaltonizationColorFilterChanged fail, error: %{public}d", error);
@@ -231,7 +232,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnMouseAutoClickChanged(const 
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_MOUSE_AUTOCLICK_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_MOUSE_AUTOCLICK_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnMouseAutoClickChanged fail, error: %{public}d", error);
@@ -265,7 +266,7 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerConfigObserver::Message::ON_SHORTKEY_TARGET_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_TARGET_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnShortkeyTargetChanged fail, error: %{public}d", error);

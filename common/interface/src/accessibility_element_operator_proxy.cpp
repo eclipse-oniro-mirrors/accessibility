@@ -33,7 +33,7 @@ bool AccessibilityElementOperatorProxy::WriteInterfaceToken(MessageParcel &data)
     return true;
 }
 
-bool AccessibilityElementOperatorProxy::SendTransactCmd(IAccessibilityElementOperator::Message code,
+bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCode code,
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
     HILOG_DEBUG();
@@ -87,7 +87,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::SEARCH_BY_ACCESSIBILITY_ID,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("SearchElementInfoByAccessibilityId failed");
         return;
@@ -131,7 +131,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::SEARCH_BY_TEXT, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_TEXT, data, reply, option)) {
         HILOG_ERROR("SearchElementInfosByText failed");
         return;
     }
@@ -174,7 +174,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t ele
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::FIND_FOCUSED_INFO, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_INFO, data, reply, option)) {
         HILOG_ERROR("FindFocusedElementInfo failed");
         return;
     }
@@ -217,7 +217,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::FOCUS_FIND, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_FIND, data, reply, option)) {
         HILOG_ERROR("FocusMoveSearch failed");
         return;
     }
@@ -280,7 +280,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, c
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::PERFORM_ACTION, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, data, reply, option)) {
         HILOG_ERROR("ExecuteAction failed");
         return;
     }
@@ -297,7 +297,7 @@ void AccessibilityElementOperatorProxy::ClearFocus()
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::CLEAR_FOCUS, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::CLEAR_FOCUS, data, reply, option)) {
         HILOG_ERROR("ClearFocus failed");
         return;
     }
@@ -314,7 +314,7 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
         return;
     }
 
-    if (!SendTransactCmd(AccessibilityElementOperatorProxy::Message::OUTSIDE_TOUCH, data, reply, option)) {
+    if (!SendTransactCmd(AccessibilityInterfaceCode::OUTSIDE_TOUCH, data, reply, option)) {
         HILOG_ERROR("OutsideTouch failed");
         return;
     }

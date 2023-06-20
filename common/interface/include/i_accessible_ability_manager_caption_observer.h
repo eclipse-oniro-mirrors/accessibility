@@ -31,9 +31,6 @@ public:
      */
     virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) = 0;
 
-    enum class Message {
-        ON_PROPERTY_CHANGED,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

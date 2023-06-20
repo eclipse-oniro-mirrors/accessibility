@@ -67,14 +67,6 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) = 0;
-
-    enum class Message {
-        SET_RESULT_BY_ACCESSIBILITY_ID = 0,
-        SET_RESULT_BY_TEXT,
-        SET_RESULT_FOCUSED_INFO,
-        SET_RESULT_FOCUS_MOVE,
-        SET_RESULT_PERFORM_ACTION,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS
