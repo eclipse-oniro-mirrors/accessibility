@@ -402,6 +402,26 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SendEvent_006, TestSize.Level
 }
 
 /**
+ * @tc.number: SendEvent_007
+ * @tc.name: SendEvent
+ * @tc.desc: Test function SendEvent(proxy is null)
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, SendEvent_007, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SendEvent_007 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    AccessibilityEventInfo event {};
+    event.SetEventType(TYPE_VIEW_FOCUSED_EVENT);
+    EXPECT_EQ(RET_ERR_SAMGR, impl_->SendEvent(event));
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "SendEvent_007 end";
+}
+
+/**
  * @tc.number: SubscribeStateObserver_001
  * @tc.name: SubscribeStateObserver
  * @tc.desc: Test function SubscribeStateObserver
