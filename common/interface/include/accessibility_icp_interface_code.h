@@ -119,4 +119,4 @@ namespace Accessibility {
     };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_PROXY_H
+#endif // ACCESSIBILITY_ICP_INTERFACE_CODE_H
