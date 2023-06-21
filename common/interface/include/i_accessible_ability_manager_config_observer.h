@@ -31,7 +31,6 @@ public:
     virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) = 0;
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) = 0;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) = 0;
-
 };
 } // namespace Accessibility
 } // namespace OHOS
