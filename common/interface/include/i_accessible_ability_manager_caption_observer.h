@@ -30,7 +30,6 @@ public:
      * @param caption The caption properties.
      */
     virtual void OnPropertyChanged(const AccessibilityConfig::CaptionProperty &property) = 0;
-
 };
 } // namespace Accessibility
 } // namespace OHOS
