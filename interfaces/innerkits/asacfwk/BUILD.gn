@@ -53,7 +53,7 @@ ohos_shared_library("accessibilityclient") {
 
   external_deps = [
     "c_utils:utils",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "init:libbeget_proxy",
     "init:libbegetutil",
     "ipc:ipc_single",
