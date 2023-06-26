@@ -54,8 +54,8 @@ ohos_shared_library("accessibleability") {
 
   external_deps = [
     "c_utils:utils",
-    "hitrace:hitrace_meter",
     "hilog:libhilog",
+    "hitrace:hitrace_meter",
     "init:libbeget_proxy",
     "init:libbegetutil",
     "input:libmmi-client",
