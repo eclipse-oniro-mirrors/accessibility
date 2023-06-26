@@ -19,7 +19,6 @@
 namespace OHOS {
 namespace Accessibility {
     enum class AccessibilityInterfaceCode {
-
         SET_RESULT_BY_ACCESSIBILITY_ID = 100,
         SET_RESULT_BY_TEXT,
         SET_RESULT_FOCUSED_INFO,
