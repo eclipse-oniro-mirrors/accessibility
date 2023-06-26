@@ -94,17 +94,6 @@ bool PowerMgrClient::UnRegisterPowerStateCallback(const sptr<IPowerStateCallback
     return true;
 }
 
-bool PowerMgrClient::RegisterShutdownCallback(
-    const sptr<IShutdownCallback>& callback, IShutdownCallback::ShutdownPriority priority)
-{
-    return true;
-}
-
-bool PowerMgrClient::UnRegisterShutdownCallback(const sptr<IShutdownCallback>& callback)
-{
-    return true;
-}
-
 bool PowerMgrClient::RegisterPowerModeCallback(const sptr<IPowerModeCallback>& callback)
 {
     return true;
