@@ -54,7 +54,7 @@ ohos_unittest("accessibility_common_test") {
     "../../../interfaces/innerkits/common:accessibility_common",
   ]
 
-  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  external_deps = [ "hilog:libhilog" ]
 }
 
 ###############################################################################

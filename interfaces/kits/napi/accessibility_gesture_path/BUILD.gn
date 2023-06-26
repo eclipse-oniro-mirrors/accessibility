@@ -35,7 +35,7 @@ ohos_shared_library("gesturepath_napi") {
   deps = [ "../../../innerkits/common:accessibility_common" ]
 
   external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
     "napi:ace_napi",
   ]
 
