@@ -14,7 +14,7 @@
  */
 
 #include "accessible_ability_manager_config_observer_proxy.h"
-#include "accessibility_icp_interface_code.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
