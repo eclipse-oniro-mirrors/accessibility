@@ -16,7 +16,7 @@
 #include "accessible_ability_client_proxy.h"
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_event_info_parcel.h"
-#include "accessibility_icp_interface_code.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
