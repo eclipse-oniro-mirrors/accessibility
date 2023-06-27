@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_ICP_INTERFACE_CODE_H
-#define ACCESSIBILITY_ICP_INTERFACE_CODE_H
+#ifndef ACCESSIBILITY_IPC_INTERFACE_CODE_H
+#define ACCESSIBILITY_IPC_INTERFACE_CODE_H
 /* SAID:3503 */
 namespace OHOS {
 namespace Accessibility {
@@ -118,4 +118,4 @@ namespace Accessibility {
     };
 } // namespace Accessibility
 } // namespace OHOS
-#endif // ACCESSIBILITY_ICP_INTERFACE_CODE_H
+#endif // ACCESSIBILITY_IPC_INTERFACE_CODE_H
