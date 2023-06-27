@@ -16,9 +16,9 @@
 #ifndef ACCESSIBILITY_ABILITY_MANAGER_SERVICE_PROXY_H
 #define ACCESSIBILITY_ABILITY_MANAGER_SERVICE_PROXY_H
 
+#include "accessibility_ipc_interface_code.h"
 #include "i_accessible_ability_manager_service.h"
 #include "iremote_proxy.h"
-#include "accessibility_ipc_interface_code.h"
 
 namespace OHOS {
 namespace Accessibility {
