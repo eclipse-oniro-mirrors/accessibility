@@ -11,5 +11,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# any change to common/interface/include/accessibility_icp_interface_code.h needs to be reviewed by @leonchan5
-# common/interface/include/accessibility_icp_interface_code.h @leonchan5
+# any change to common/interface/include/accessibility_ipc_interface_code.h needs to be reviewed by @leonchan5
+# common/interface/include/accessibility_ipc_interface_code.h @leonchan5
