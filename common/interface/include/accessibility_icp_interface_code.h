@@ -114,7 +114,7 @@ namespace Accessibility {
         REGISTER_ENABLE_ABILITY_LISTS_OBSERVER,
         REGISTER_CONFIG_CALLBACK,
 
-        ON_STATE_CHANGED = 900,
+        ON_STATE_CHANGED = 900
     };
 } // namespace Accessibility
 } // namespace OHOS
