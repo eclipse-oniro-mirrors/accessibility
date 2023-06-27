@@ -17,7 +17,7 @@
 #include "accessibility_ability_info_parcel.h"
 #include "accessibility_caption_parcel.h"
 #include "accessibility_event_info_parcel.h"
-#include "accessibility_icp_interface_code.h"
+#include "accessibility_ipc_interface_code.h"
 #include "accesstoken_kit.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
