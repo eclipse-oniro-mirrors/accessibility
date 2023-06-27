@@ -17,7 +17,7 @@
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_window_info_parcel.h"
-#include "accessibility_icp_interface_code.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
