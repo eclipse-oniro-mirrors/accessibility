@@ -1233,10 +1233,12 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
     if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
         Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
     }
-    std::lock_guard<std::mutex> lock(mutex_);
-    for (auto &callback : stateCallbacks_) {
-        if (callback) {
-            callback->OnStateChanged(state);
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        for (auto &callback : stateCallbacks_) {
+            if (callback) {
+                callback->OnStateChanged(state);
+            }
         }
     }
 }
@@ -2178,13 +2180,15 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
         switch (callback) {
             case STATE_CALLBACK:
                 {
-                    std::lock_guard<std::mutex> lock(mutex_);
-                    auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
-                        [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
-                            return stateCallback->AsObject() == remote;
-                        });
-                    if (iter != stateCallbacks_.end()) {
-                        stateCallbacks_.erase(iter);
+                    {
+                        std::lock_guard<std::mutex> lock(mutex_);
+                        auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
+                            [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
+                                return stateCallback->AsObject() == remote;
+                            });
+                        if (iter != stateCallbacks_.end()) {
+                            stateCallbacks_.erase(iter);
+                        }
                     }
                 }
                 break;
