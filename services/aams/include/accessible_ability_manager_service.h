@@ -286,6 +286,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::mutex mutex_;
 };
 } // namespace Accessibility
