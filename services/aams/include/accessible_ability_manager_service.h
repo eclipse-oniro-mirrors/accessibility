@@ -262,6 +262,7 @@ private:
     void UpdateCaptionProperty();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
+    void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
 
     bool isReady_ = false;
@@ -286,6 +287,7 @@ private:
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
     std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::mutex mutex_;
 };
 } // namespace Accessibility
