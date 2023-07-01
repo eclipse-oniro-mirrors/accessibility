@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_enable_ability_lists_observer_stub.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -35,7 +36,7 @@ int AccessibilityEnableAbilityListsObserverStub::OnRemoteRequest(uint32_t code, 
     }
 
     if (code == static_cast<uint32_t>(
-        IAccessibilityEnableAbilityListsObserver::Message::ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED)) {
+        AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED)) {
         return HandleOnAccessibilityEnableAbilityListsChanged(data, reply);
     }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);

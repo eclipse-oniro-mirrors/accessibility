@@ -16,6 +16,7 @@
 #ifndef ACCESSIBILITY_ABILITY_MANAGER_SERVICE_PROXY_H
 #define ACCESSIBILITY_ABILITY_MANAGER_SERVICE_PROXY_H
 
+#include "accessibility_ipc_interface_code.h"
 #include "i_accessible_ability_manager_service.h"
 #include "iremote_proxy.h"
 
@@ -148,7 +149,7 @@ private:
      * @param option The option parameter of IPC,such as: async,sync
      * @return true: Write the descriptor successfully; otherwise is not.
      */
-    bool SendTransactCmd(IAccessibleAbilityManagerService::Message code, MessageParcel &data,
+    bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
     static inline BrokerDelegator<AccessibleAbilityManagerServiceProxy> delegator;
 };

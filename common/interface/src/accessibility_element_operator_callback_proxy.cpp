@@ -36,7 +36,7 @@ bool AccessibilityElementOperatorCallbackProxy::WriteInterfaceToken(MessageParce
     return true;
 }
 
-bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(IAccessibilityElementOperatorCallback::Message code,
+bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(AccessibilityInterfaceCode code,
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
     HILOG_DEBUG();
@@ -85,7 +85,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
         return;
     }
 
-    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_ACCESSIBILITY_ID,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
         HILOG_ERROR("SetSearchElementInfoByAccessibilityIdResult failed");
         return;
@@ -123,7 +123,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
         return;
     }
 
-    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_TEXT,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT,
         data, reply, option)) {
         HILOG_ERROR("SetSearchElementInfoByTextResult failed");
         return;
@@ -153,7 +153,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
         return;
     }
 
-    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUSED_INFO,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO,
         data, reply, option)) {
         HILOG_ERROR("SetFindFocusedElementInfoResult failed");
         return;
@@ -184,7 +184,7 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
         return;
     }
 
-    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUS_MOVE,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE,
         data, reply, option)) {
         HILOG_ERROR("SetFocusMoveSearchResult failed");
         return;
@@ -213,7 +213,7 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
         return;
     }
 
-    if (!SendTransactCmd(IAccessibilityElementOperatorCallback::Message::SET_RESULT_PERFORM_ACTION,
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION,
         data, reply, option)) {
         HILOG_ERROR("SetExecuteActionResult failed");
         return;

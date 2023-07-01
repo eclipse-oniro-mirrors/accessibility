@@ -115,16 +115,6 @@ public:
     * Example: PopupWindow receive the OUTSIDE_EVENT to close itself.
     */
     virtual void OutsideTouch() = 0;
-
-    enum class Message {
-        SEARCH_BY_ACCESSIBILITY_ID = 0,
-        SEARCH_BY_TEXT,
-        FIND_FOCUSED_INFO,
-        FOCUS_FIND,
-        PERFORM_ACTION,
-        CLEAR_FOCUS,
-        OUTSIDE_TOUCH,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

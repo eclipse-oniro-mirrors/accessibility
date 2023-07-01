@@ -14,6 +14,7 @@
  */
 
 #include "accessible_ability_manager_state_observer_proxy.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -61,7 +62,7 @@ void AccessibleAbilityManagerStateObserverProxy::OnStateChanged(const uint32_t s
     }
 
     error = remote->SendRequest(
-        static_cast<uint32_t>(IAccessibleAbilityManagerStateObserver::Message::ON_STATE_CHANGED),
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_STATE_CHANGED),
         data, reply, option);
     if (error != NO_ERROR) {
         HILOG_ERROR("OnStateChanged fail, error: %{public}d", error);

@@ -16,9 +16,9 @@
 #ifndef ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_PROXY_H
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_PROXY_H
 
+#include "accessibility_ipc_interface_code.h"
 #include "i_accessibility_element_operator_callback.h"
 #include "iremote_proxy.h"
-
 namespace OHOS {
 namespace Accessibility {
 /*
@@ -90,7 +90,7 @@ private:
      * @param option The option parameter of IPC,such as: async,sync
      * @return true: Write the descriptor successfully; otherwise is not.
      */
-    bool SendTransactCmd(IAccessibilityElementOperatorCallback::Message code, MessageParcel &data,
+    bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
 
     static inline BrokerDelegator<AccessibilityElementOperatorCallbackProxy> delegator;

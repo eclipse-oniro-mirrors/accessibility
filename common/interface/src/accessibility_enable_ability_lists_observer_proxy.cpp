@@ -14,6 +14,7 @@
  */
 
 #include "accessibility_enable_ability_lists_observer_proxy.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -55,7 +56,7 @@ void AccessibilityEnableAbilityListsObserverProxy::OnAccessibilityEnableAbilityL
     }
 
     int32_t result = remote->SendRequest(static_cast<uint32_t>(
-        IAccessibilityEnableAbilityListsObserver::Message::ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED),
+        AccessibilityInterfaceCode::ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED),
         data, reply, option);
     if (result != NO_ERROR) {
         HILOG_ERROR("OnAccessibilityEnableAbilityListsChanged fail, error: %{public}d", result);

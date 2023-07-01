@@ -17,6 +17,7 @@
 #include "accessibility_ability_info_parcel.h"
 #include "accessibility_caption_parcel.h"
 #include "accessibility_event_info_parcel.h"
+#include "accessibility_ipc_interface_code.h"
 #include "accesstoken_kit.h"
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
@@ -30,113 +31,113 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
 {
     HILOG_DEBUG();
 
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SEND_EVENT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_EVENT)] =
         &AccessibleAbilityManagerServiceStub::HandleSendEvent;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::REGISTER_STATE_CALLBACK)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ABILITYLIST)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ABILITYLIST)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAbilityList;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::REGISTER_INTERACTION_CONNECTION)] =
+        AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::DEREGISTER_INTERACTION_CONNECTION)] =
+        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION)] =
         &AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator;
 
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_CAPTION_PROPERTY)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_PROPERTY)] =
         &AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_CAPTION_PROPERTY)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_PROPERTY)] =
         &AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_CAPTION_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED)] =
         &AccessibleAbilityManagerServiceStub::HandleGetEnabled;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_CAPTION_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_TOUCH_GUIDE_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_GESTURE_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_GESTURE_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetGestureState;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::GET_KEY_EVENT_OBSERVE_STATE)] =
+        AccessibilityInterfaceCode::GET_KEY_EVENT_OBSERVE_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::ENABLE_ABILITIES)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ENABLED_OBJECT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED_OBJECT)] =
         &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::DISABLE_ABILITIES)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_ABILITIES)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
+        AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::ENABLE_UI_TEST_ABILITY)] =
+        AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
         &AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::DISABLE_UI_TEST_ABILITY)] =
+        AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::GET_ACTIVE_WINDOW)] =
+        AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
         &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibleAbilityManagerService::Message::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
+        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
 
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SCREENMAGNIFIER_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SCREENMAGNIFIER_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetShortKeyState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_MOUSEKEY_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_SHORTKEY_TARGET)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_TARGET)] =
         &AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_MOUSEKEY_AUTOCLICK)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_MOUSEKEY_AUTOCLICK)] =
         &AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_INVERTCOLOR_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_INVERTCOLOR_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetInvertColorState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_HIGHCONTRASTTEXT_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_HIGHCONTRASTTEXT_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_AUDIOMONO_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_AUDIOMONO_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_ANIMATIONOFF_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ANIMATIONOFF_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_DALTONIZATION_COLORFILTER)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_COLORFILTER)] =
         &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_CONTENT_TIMEOUT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CONTENT_TIMEOUT)] =
         &AccessibleAbilityManagerServiceStub::HandleSetContentTimeout;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_BRIGHTNESS_DISCOUNT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_BRIGHTNESS_DISCOUNT)] =
         &AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::SET_AUDIO_BALANCE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_AUDIO_BALANCE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetAudioBalance;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SCREENMAGNIFIER_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCREENMAGNIFIER_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetShortKeyState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_MOUSEKEY_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetMouseKeyState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_SHORTKEY_TARGET)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_TARGET)] =
         &AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_MOUSEKEY_AUTOCLICK)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_MOUSEKEY_AUTOCLICK)] =
         &AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_INVERTCOLOR_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_INVERTCOLOR_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetInvertColorState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_HIGHCONTRASTTEXT_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_HIGHCONTRASTTEXT_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetHighContrastTextState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_AUDIOMONO_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_AUDIOMONO_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ANIMATIONOFF_STATE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ANIMATIONOFF_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_DALTONIZATION_COLORFILTER)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_DALTONIZATION_COLORFILTER)] =
         &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_CONTENT_TIMEOUT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CONTENT_TIMEOUT)] =
         &AccessibleAbilityManagerServiceStub::HandleGetContentTimeout;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_BRIGHTNESS_DISCOUNT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_BRIGHTNESS_DISCOUNT)] =
         &AccessibleAbilityManagerServiceStub::HandleGetBrightnessDiscount;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_AUDIO_BALANCE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_AUDIO_BALANCE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAudioBalance;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::GET_ALL_CONFIGS)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ALL_CONFIGS)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAllConfigs;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityManagerService::Message::REGISTER_CONFIG_CALLBACK)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_CONFIG_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback;
 }
 

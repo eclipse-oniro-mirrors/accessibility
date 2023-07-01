@@ -16,6 +16,7 @@
 #ifndef MOCK_ACCESSIBILITY_ELEMENT_OPERATOR_PROXY_H
 #define MOCK_ACCESSIBILITY_ELEMENT_OPERATOR_PROXY_H
 
+#include "accessibility_ipc_interface_code.h"
 #include "i_accessibility_element_operator.h"
 #include "iremote_proxy.h"
 
@@ -151,7 +152,7 @@ private:
      * @return true: Write the descriptor successfully; otherwise is not.
      */
     bool SendTransactCmd(
-        IAccessibilityElementOperator::Message code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
+        AccessibilityInterfaceCode code, MessageParcel& data, MessageParcel& reply, MessageOption& option);
     static inline BrokerDelegator<MockAccessibilityElementOperatorProxy> delegator;
 };
 } // namespace Accessibility

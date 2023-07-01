@@ -28,10 +28,6 @@ public:
      * @brief Receive the state notify from AAMS and send it to the observer registered.
      */
     virtual void OnAccessibilityEnableAbilityListsChanged() = 0;
-
-    enum class Message {
-        ON_ACCESSIBILITY_ENABLE_ABILITY_LISTS_CHANGED,
-    };
 };
 } // namespace Accessibility
 } // namespace OHOS

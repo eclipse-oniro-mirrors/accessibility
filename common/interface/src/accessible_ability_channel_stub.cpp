@@ -16,6 +16,7 @@
 #include "accessible_ability_channel_stub.h"
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_gesture_inject_path_parcel.h"
+#include "accessibility_ipc_interface_code.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
@@ -26,27 +27,27 @@ AccessibleAbilityChannelStub::AccessibleAbilityChannelStub()
 {
     HILOG_DEBUG();
 
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID)] =
         &AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEARCH_ELEMENTINFOS_BY_TEXT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT)] =
         &AccessibleAbilityChannelStub::HandleSearchElementInfosByText;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FIND_FOCUSED_ELEMENTINFO)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO)] =
         &AccessibleAbilityChannelStub::HandleFindFocusedElementInfo;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::FOCUS_MOVE_SEARCH)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH)] =
         &AccessibleAbilityChannelStub::HandleFocusMoveSearch;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::PERFORM_ACTION)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::PERFORM_ACTION)] =
         &AccessibleAbilityChannelStub::HandleExecuteAction;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOW)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW)] =
         &AccessibleAbilityChannelStub::HandleGetWindow;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS)] =
         &AccessibleAbilityChannelStub::HandleGetWindows;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::GET_WINDOWS_BY_DISPLAY_ID)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOWS_BY_DISPLAY_ID)] =
         &AccessibleAbilityChannelStub::HandleGetWindowsByDisplayId;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_ON_KEY_PRESS_EVENT_RESULT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ON_KEY_PRESS_EVENT_RESULT)] =
         &AccessibleAbilityChannelStub::HandleSetOnKeyPressEventResult;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SEND_SIMULATE_GESTURE_PATH)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_SIMULATE_GESTURE_PATH)] =
         &AccessibleAbilityChannelStub::HandleSendSimulateGesturePath;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibleAbilityChannel::Message::SET_TARGET_BUNDLE_NAME)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_TARGET_BUNDLE_NAME)] =
         &AccessibleAbilityChannelStub::HandleSetTargetBundleName;
 }
 

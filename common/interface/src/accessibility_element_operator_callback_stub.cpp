@@ -15,6 +15,7 @@
 
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_element_info_parcel.h"
+#include "accessibility_ipc_interface_code.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
 
@@ -23,17 +24,17 @@ namespace Accessibility {
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_ACCESSIBILITY_ID)] =
+        AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAccessibilityIdResult;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_BY_TEXT)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByTextResult;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUSED_INFO)] =
+        AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetFindFocusedElementInfoResult;
-    memberFuncMap_[static_cast<uint32_t>(IAccessibilityElementOperatorCallback::Message::SET_RESULT_FOCUS_MOVE)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetFocusMoveSearchResult;
     memberFuncMap_[static_cast<uint32_t>(
-        IAccessibilityElementOperatorCallback::Message::SET_RESULT_PERFORM_ACTION)] =
+        AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
 }
 
