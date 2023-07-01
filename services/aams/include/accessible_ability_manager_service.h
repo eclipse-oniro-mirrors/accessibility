@@ -23,6 +23,7 @@
 #include <string>
 
 #include "accessibility_dumper.h"
+#include "accessibility_def.h"
 #include "accessible_ability_manager_service_stub.h"
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
@@ -48,6 +49,22 @@ enum CallBackID {
     CAPTION_PROPERTY_CALLBACK,
     ENABLE_ABILITY_LISTS_CALLBACK,
     CONFIG_CALLBACK
+};
+
+const std::map<std::string, int32_t> AccessibilityConfigTable = {
+    {"HIGH_CONTRAST_TEXT", HIGH_CONTRAST_TEXT},
+    {"INVERT_COLOR", INVERT_COLOR},
+    {"DALTONIZATION_COLOR_FILTER", DALTONIZATION_COLOR_FILTER},
+    {"CONTENT_TIMEOUT", CONTENT_TIMEOUT},
+    {"ANIMATION_OFF", ANIMATION_OFF},
+    {"BRIGHTNESS_DISCOUNT", BRIGHTNESS_DISCOUNT},
+    {"AUDIO_MONO", AUDIO_MONO},
+    {"AUDIO_BALANCE", AUDIO_BALANCE},
+    {"MOUSE_KEY", MOUSE_KEY},
+    {"CAPTION_STATE", CAPTION_STATE},
+    {"CAPTION_STYLE", CAPTION_STYLE},
+    {"SCREEN_MAGNIFICATION", SCREEN_MAGNIFICATION},
+    {"MOUSE_AUTOCLICK", MOUSE_AUTOCLICK}
 };
 
 class AccessibleAbilityManagerService : public SystemAbility, public AccessibleAbilityManagerServiceStub {
@@ -99,6 +116,7 @@ public:
 
 public:
     /* For inner modules */
+    bool SetTargetAbility(const int32_t targetAbilityValue);
     bool EnableShortKeyTargetAbility();
     bool DisableShortKeyTargetAbility();
 
