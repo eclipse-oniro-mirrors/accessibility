@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef ACCESSIBILITY_UTILS_H
-#define ACCESSIBILITY_UTILS_H
+#ifndef ACCESSIBILITY_COMMON_UTILS_H
+#define ACCESSIBILITY_COMMON_UTILS_H
 
 #include <map>
 #include "accessibility_ability_info.h"
@@ -110,4 +110,4 @@ struct CaptionCallbackInfo: public AccessibilityCallbackInfo {
 };
 } // namespace AccessibilityNapi
 } // OHOS
-#endif // ACCESSIBILITY_UTILS_H
+#endif // ACCESSIBILITY_COMMON_UTILS_H
