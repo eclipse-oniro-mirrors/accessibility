@@ -44,7 +44,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, requestId, callback, mode](
         int32_t accountId, const std::string &name) -> void {
@@ -80,7 +80,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, text, requestId, callback](
         int32_t accountId, const std::string &name) -> void {
@@ -115,7 +115,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId,
         focusType, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -149,7 +149,7 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId,
         elementId, direction, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -184,7 +184,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, action,
         actionArguments, requestId, callback](int32_t accountId, const std::string &name) -> void {
@@ -217,8 +217,8 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
         return RET_ERR_NULLPTR;
     }
  
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
-    std::shared_ptr<AccessibilityWindowInfo> tmpWindowInfo = make_shared<AccessibilityWindowInfo>(windowInfo);
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
+    std::shared_ptr<AccessibilityWindowInfo> tmpWindowInfo = std::make_shared<AccessibilityWindowInfo>(windowInfo);
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([windowId, tmpWindowInfo, syncPromise](
         int32_t accountId, const std::string &name) -> void {
@@ -273,7 +273,7 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     auto tmpWindows = make_shared<std::vector<AccessibilityWindowInfo>>(windows);
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([displayId, tmpWindows, syncPromise](
@@ -345,7 +345,7 @@ RetError AccessibleAbilityChannel::SendSimulateGesture(
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([gesturePath, syncPromise](int32_t accountId, const std::string &name) -> void {
         HILOG_DEBUG();
@@ -389,7 +389,7 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
         return RET_ERR_NULLPTR;
     }
 
-    std::shared_ptr<std::promise<RetError>> syncPromise = make_shared<std::promise<RetError>>();
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([targetBundleNames, syncPromise](
         int32_t accountId, const std::string &name) -> void {
