@@ -274,7 +274,7 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
     }
 
     std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
-    auto tmpWindows = make_shared<std::vector<AccessibilityWindowInfo>>(windows);
+    auto tmpWindows = std::make_shared<std::vector<AccessibilityWindowInfo>>(windows);
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([displayId, tmpWindows, syncPromise](
         int32_t accountId, const std::string &name) -> void {
