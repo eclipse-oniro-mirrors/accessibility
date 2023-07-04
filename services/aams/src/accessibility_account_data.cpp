@@ -484,6 +484,8 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
         HILOG_ERROR("The ability[%{public}s] is already enabled", name.c_str());
         return RET_ERR_CONNECTION_EXIST;
     }
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
+
     enabledAbilities_.push_back(name);
     UpdateEnableAbilityListsState();
     UpdateAbilities();

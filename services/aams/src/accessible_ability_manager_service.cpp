@@ -16,6 +16,7 @@
 #include "accessible_ability_manager_service.h"
 
 #include <new>
+#include <string>
 #include <unistd.h>
 #include <functional>
 #include <hitrace_meter.h>
@@ -836,6 +837,8 @@ RetError AccessibleAbilityManagerService::DisableAbility(const std::string &name
 RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string &name)
 {
     HILOG_DEBUG();
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "InnerDisableAbility:" + name);
+
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -1320,6 +1323,7 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
 RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetScreenMagnificationState:" + to_string(state));
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -1335,6 +1339,8 @@ RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortKeyState:" + to_string(state));
+
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1400,6 +1406,8 @@ RetError AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
     HILOG_INFO("name = [%{public}s]", name.c_str());
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyTarget:" + name);
+
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
@@ -1423,7 +1431,8 @@ RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &n
 RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetHighContrastTextState:" + to_string(state));
+
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr.");
@@ -1475,6 +1484,7 @@ RetError AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioMonoState:" + to_string(state));
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -1565,6 +1575,8 @@ RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float disc
 RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
     HILOG_INFO("balance = [%{public}f]", balance);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioBalance:" + to_string(balance));
+
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
