@@ -247,9 +247,9 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
         HILOG_ERROR("Failed to wait GetWindow result");
         return RET_ERR_TIME_OUT;
     }
-    RetError ret = syncFuture.get();
+
     windowInfo = *tmpWindowInfo;
-    return ret;
+    return syncFuture.get();;
 }
 
 RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
@@ -308,9 +308,9 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
         HILOG_ERROR("Failed to wait GetWindows result");
         return RET_ERR_TIME_OUT;
     }
-    RetError ret = syncFuture.get();
+
     windows = *tmpWindows;
-    return ret;
+    return syncFuture.get();
 }
 
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
