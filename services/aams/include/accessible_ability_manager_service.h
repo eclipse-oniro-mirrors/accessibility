@@ -116,7 +116,6 @@ public:
 
 public:
     /* For inner modules */
-    bool SetTargetAbility(const int32_t targetAbilityValue);
     bool EnableShortKeyTargetAbility();
     bool DisableShortKeyTargetAbility();
 
@@ -210,6 +209,7 @@ public:
     void UpdateShortkeyTarget();
 
 private:
+    bool SetTargetAbility(const int32_t targetAbilityValue);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         StateCallbackDeathRecipient() = default;
