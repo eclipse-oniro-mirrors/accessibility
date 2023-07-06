@@ -325,34 +325,34 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         return ERR_INVALID_VALUE;
     }
 
-    std::promise<uint32_t> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, callback]() -> void {
+    std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
+    std::future syncFuture = syncPromisePtr->get_future();
+    handler_->PostTask(std::bind([this, syncPromisePtr, callback]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
-            syncPromise.set_value(ERR_INVALID_VALUE);
+            syncPromisePtr->set_value(ERR_INVALID_VALUE);
             return;
         }
         if (!captionPropertyCallbackDeathRecipient_) {
             captionPropertyCallbackDeathRecipient_ = new(std::nothrow) CaptionPropertyCallbackDeathRecipient();
             if (!captionPropertyCallbackDeathRecipient_) {
                 HILOG_ERROR("captionPropertyCallbackDeathRecipient_ is null");
-                syncPromise.set_value(ERR_INVALID_VALUE);
+                syncPromisePtr->set_value(ERR_INVALID_VALUE);
                 return;
             }
         }
         if (!callback->AsObject()) {
             HILOG_ERROR("object is null");
-            syncPromise.set_value(0);
+            syncPromisePtr->set_value(0);
             return;
         }
         callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
         accountData->AddCaptionPropertyCallback(callback);
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetCaptionPropertyCallbacks().size());
-        syncPromise.set_value(NO_ERROR);
+        syncPromisePtr->set_value(NO_ERROR);
         }), "TASK_REGISTER_CAPTION_OBSERVER");
     
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
@@ -372,32 +372,32 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         return;
     }
 
-    std::promise<void> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, observer]() -> void {
+    std::shared_ptr<std::promise<void>> syncPromisePtr = std::make_shared<std::promise<void>>();
+    std::future syncFuture = syncPromisePtr->get_future();
+    handler_->PostTask(std::bind([this, syncPromisePtr, observer]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
-            syncPromise.set_value();
+            syncPromisePtr->set_value();
             return;
         }
         if (!enableAbilityListsObserverDeathRecipient_) {
             enableAbilityListsObserverDeathRecipient_ = new(std::nothrow) EnableAbilityListsObserverDeathRecipient();
             if (!enableAbilityListsObserverDeathRecipient_) {
                 HILOG_ERROR("enableAbilityListsObserverDeathRecipient_ is null");
-                syncPromise.set_value();
+                syncPromisePtr->set_value();
                 return;
             }
         }
         if (!observer->AsObject()) {
             HILOG_ERROR("object is null");
-            syncPromise.set_value();
+            syncPromisePtr->set_value();
             return;
         }
         observer->AsObject()->AddDeathRecipient(enableAbilityListsObserverDeathRecipient_);
         accountData->AddEnableAbilityListsObserver(observer);
-        syncPromise.set_value();
+        syncPromisePtr->set_value();
         }), "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
     
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
@@ -1958,34 +1958,34 @@ uint32_t AccessibleAbilityManagerService::RegisterConfigObserver(
         return ERR_INVALID_VALUE;
     }
 
-    std::promise<uint32_t> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, callback]() -> void {
+    std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
+    std::future syncFuture = syncPromisePtr->get_future();
+    handler_->PostTask(std::bind([this, syncPromisePtr, callback]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
-            syncPromise.set_value(ERR_INVALID_VALUE);
+            syncPromisePtr->set_value(ERR_INVALID_VALUE);
             return;
         }
         if (!configCallbackDeathRecipient_) {
             configCallbackDeathRecipient_ = new(std::nothrow) ConfigCallbackDeathRecipient();
             if (!configCallbackDeathRecipient_) {
                 HILOG_ERROR("configCallbackDeathRecipient_ is null");
-                syncPromise.set_value(ERR_INVALID_VALUE);
+                syncPromisePtr->set_value(ERR_INVALID_VALUE);
                 return;
             }
         }
         if (!callback->AsObject()) {
             HILOG_ERROR("object is null");
-            syncPromise.set_value(0);
+            syncPromisePtr->set_value(0);
             return;
         }
         callback->AsObject()->AddDeathRecipient(configCallbackDeathRecipient_);
         accountData->AddConfigCallback(callback);
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetConfigCallbacks().size());
-        syncPromise.set_value(NO_ERROR);
+        syncPromisePtr->set_value(NO_ERROR);
         }), "TASK_REGISTER_CONFIG_OBSERVER");
 
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
