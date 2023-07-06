@@ -249,7 +249,7 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
     }
 
     windowInfo = *tmpWindowInfo;
-    return syncFuture.get();;
+    return syncFuture.get();
 }
 
 RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
