@@ -783,13 +783,7 @@ RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_NULLPTR;
     }
-    RetError enableState = accountData->EnableAbility(name, capabilities);
-    if (enableState == RET_ERR_CONNECTION_EXIST) {
-        HILOG_DEBUG();
-        return InnerDisableAbility(name);
-    }
-    
-    return enableState;
+    return accountData->EnableAbility(name, capabilities);
 }
 
 RetError AccessibleAbilityManagerService::GetEnabledAbilities(std::vector<std::string> &enabledAbilities)
@@ -1908,6 +1902,8 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
 bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
 {
     HILOG_DEBUG();
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableShortKeyTargetAbility");
+
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
@@ -1928,7 +1924,12 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
     
     uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
         CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-    return InnerEnableAbility(targetAbility, capabilities) == RET_OK;
+    RetError enableState = accountData->EnableAbility(targetAbility, capabilities);
+    if (enableState == RET_ERR_CONNECTION_EXIST) {
+        HILOG_DEBUG();
+        return InnerDisableAbility(targetAbility);
+    }
+    return enableState;
 }
 
 bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
