@@ -467,7 +467,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
                 return RET_ERR_NO_CAPABILITY;
             }
 
-            itr->SetCapabilityValues(capabilities);
+            itr->SetCapabilityValues(resultCapabilities);
             break;
         }
     }
