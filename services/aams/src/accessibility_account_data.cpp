@@ -270,7 +270,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
             it = installedAbilities_.erase(it);
             std::string targetName = "";
             std::string name = GetConfig()->GetShortkeyTarget();
-            if (it->GetName() == name) {
+            if (it->GetId() == name) {
                 GetConfig()->SetShortkeyTarget(targetName);
                 GetConfig()->SetShortKeyState(false);
             }
