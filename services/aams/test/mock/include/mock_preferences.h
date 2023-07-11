@@ -65,9 +65,9 @@ public:
 
     int FlushSync() override;
 
-    void RegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver) override;
+    int RegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver, RegisterMode mode) override;
 
-    void UnRegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver) override;
+    int UnRegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver, RegisterMode mode) override;
 };
 } // End of namespace NativePreferences
 } // End of namespace OHOS
