@@ -25,11 +25,11 @@ std::string PreferencesHelper::GetRealPath(const std::string& path, int& errorCo
     return "";
 }
 
-std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const std::string& path, int& errCode)
+std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const Options &options, int& errCode)
 {
     std::shared_ptr<MockPreferences> pref = std::make_shared<MockPreferences>();
     errCode = 0;
-    (void)path;
+    (void)options;
     return pref;
 }
 

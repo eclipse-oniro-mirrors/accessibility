@@ -149,13 +149,17 @@ int MockPreferences::FlushSync()
     return 0;
 }
 
-void MockPreferences::RegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver)
+int MockPreferences::RegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver, RegisterMode mode)
 {
     (void)preferencesObserver;
+    (void)mode;
+    return 0;
 }
-void MockPreferences::UnRegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver)
+int MockPreferences::UnRegisterObserver(std::shared_ptr<PreferencesObserver> preferencesObserver, RegisterMode mode)
 {
     (void)preferencesObserver;
+    (void)mode;
+    return 0;
 }
 } // End of namespace NativePreferences
 } // End of namespace OHOS

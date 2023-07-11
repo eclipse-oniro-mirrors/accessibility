@@ -25,7 +25,7 @@ std::string PreferencesHelper::GetRealPath(const std::string& path, int& errorCo
     return "";
 }
 
-std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const std::string& path, int& errCode)
+std::shared_ptr<Preferences> PreferencesHelper::GetPreferences(const Options &options, int& errCode)
 {
     return nullptr;
 }
