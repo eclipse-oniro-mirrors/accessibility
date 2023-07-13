@@ -1927,9 +1927,9 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
     RetError enableState = accountData->EnableAbility(targetAbility, capabilities);
     if (enableState == RET_ERR_CONNECTION_EXIST) {
         HILOG_DEBUG();
-        return InnerDisableAbility(targetAbility);
+        return InnerDisableAbility(targetAbility) == RET_OK;
     }
-    return enableState;
+    return enableState == RET_OK;
 }
 
 bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
