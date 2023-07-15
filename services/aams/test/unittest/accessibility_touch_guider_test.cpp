@@ -57,7 +57,8 @@ protected:
     int32_t pointId_ = -1;
 };
 
-void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt){
+void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt)
+{
     eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(2);
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(3);
@@ -66,7 +67,8 @@ void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt){
     EXPECT_EQ(uTgestureId, GestureTypeInt);
 }
 
-void TouchGuiderTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y){
+void TouchGuiderTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y)
+{
     point.SetPointerId(id);
     point.SetDisplayX(x);
     point.SetDisplayY(y);
