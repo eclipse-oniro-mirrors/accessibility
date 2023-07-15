@@ -189,7 +189,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
 
     // power key(down)
     flag = OnKeyEventDown();
-    if (!flag){
+    if (!flag) {
         return ;
     }
 
@@ -203,7 +203,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
 
     // power key(down)
     flag = OnKeyEventDown();
-    if (!flag){
+    if (!flag) {
         return ;
     }
 
@@ -217,7 +217,7 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
 
     // power key(down)
     flag = OnKeyEventDown();
-    if (!flag){
+    if (!flag) {
         return ;
     }
 
