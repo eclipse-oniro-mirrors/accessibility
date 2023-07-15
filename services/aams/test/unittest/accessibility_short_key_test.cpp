@@ -89,7 +89,6 @@ bool AccessibilityShortKeyUnitTest::OnKeyEventDown()
     downEvent->AddKeyItem(item);
     shortKey_->OnKeyEvent(*downEvent);
     return true;
-
 }
 
 /**
