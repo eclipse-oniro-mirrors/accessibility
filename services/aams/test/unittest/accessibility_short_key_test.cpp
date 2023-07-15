@@ -77,7 +77,8 @@ std::shared_ptr<MMI::KeyEvent> AccessibilityShortKeyUnitTest::CreateKeyEvent(int
     return event;
 }
 
-bool AccessibilityShortKeyUnitTest::OnKeyEventDown(){
+bool AccessibilityShortKeyUnitTest::OnKeyEventDown()
+{
     std::shared_ptr<MMI::KeyEvent> downEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
         MMI::KeyEvent::KEY_ACTION_DOWN);
     if (!downEvent) {
