@@ -25,6 +25,9 @@ using namespace testing::ext;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+    constexpr uint32_t GET_EVENT_TARGET_INDEX_2 = 2;
+    constexpr uint32_t GET_EVENT_TARGET_INDEX_3 = 3;
+    constexpr uint32_t SLEEP_TIME_3 = 3;
     constexpr uint32_t SLEEP_TIME_3 = 3;
     constexpr int64_t MS_TO_US = 1000;
     constexpr int32_t ACCOUNT_ID = 100;
@@ -59,9 +62,9 @@ protected:
 
 void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt)
 {
-    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(2);
+    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_2);
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(3);
+    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_3 );
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_END);
     auto uTgestureId = AccessibilityAbilityHelper::GetInstance().GetGestureId();
     EXPECT_EQ(uTgestureId, GestureTypeInt);
