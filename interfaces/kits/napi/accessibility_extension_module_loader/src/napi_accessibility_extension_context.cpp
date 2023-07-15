@@ -222,7 +222,11 @@ private:
 
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
         HILOG_DEBUG("focus type is [%{public}d]", focus);
+        return GetFoucusElementCompleteTask(engine, focus, lastParam);
+    }
 
+    NativeValue* GetFoucusElementCompleteTask(NativeEngine& engine, int32_t focus, NativeValue* lastParam)
+    {
         AsyncTask::CompleteCallback complete =
             [weak = context_, focus](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetFocusElement begin");
@@ -306,7 +310,12 @@ private:
             lastParam = nullptr;
             HILOG_INFO("argc is others, use promise");
         }
+        return GetWindowRootElementCompleteTask(engine, windowId, isActiveWindow, lastParam);
+    }
 
+    NativeValue* GetWindowRootElementCompleteTask(
+        NativeEngine& engine, int32_t windowId, bool isActiveWindow, NativeValue* lastParam)
+    {
         AsyncTask::CompleteCallback complete =
             [weak = context_, windowId, isActiveWindow](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindowRootElement begin");
@@ -363,37 +372,24 @@ private:
         bool hasDisplayId = false;
         NativeValue* lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
-                info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-                if (ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                    lastParam = info.argv[PARAM1];
-                    hasDisplayId = true;
-                } else {
-                    HILOG_ERROR("Convert displayId from js value failed");
-                    lastParam = info.argv[PARAM1];
-                }
-            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
                 HILOG_INFO("argc is more than two, use callback: situation 1");
                 lastParam = info.argv[PARAM1];
             } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                HILOG_INFO("argc is more than two, use promise: situation 3");
-                lastParam = nullptr;
-                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
             } else {
                 lastParam = nullptr;
-                HILOG_INFO("argc is more than two, use promise");
+            }
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
+                HILOG_INFO("argc is more than two, use promise: situation 3");
             }
         } else if (info.argc == ARGS_SIZE_ONE) {
             if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 lastParam = info.argv[PARAM0];
-            } else {
-                if ((info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) &&
-                    ConvertFromJsValue(engine, info.argv[PARAM0], displayId)) {
-                    hasDisplayId = true;
-                }
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
             }
@@ -515,7 +511,12 @@ private:
                 ERROR_MESSAGE_PARAMETER_ERROR));
             return engine.CreateUndefined();
         }
+        return GestureInjectCompleteTask(engine, info, gesturePath);
+    }
 
+    NativeValue* GestureInjectCompleteTask(
+        NativeEngine& engine, NativeCallbackInfo& info, std::shared_ptr<AccessibilityGestureInjectPath> gesturePath)
+    {
         AsyncTask::CompleteCallback complete =
             [weak = context_, gesturePath](
             NativeEngine& engine, AsyncTask& task, int32_t status) {

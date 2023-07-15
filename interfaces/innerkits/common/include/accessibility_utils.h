@@ -54,7 +54,8 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
-bool ConvertEventInfoJSToNAPI(napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPI(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type);
 void ConvertActionArgsJSToNAPI(
     napi_env env, napi_value object, std::map<std::string, std::string>& args, OHOS::Accessibility::ActionType action);
@@ -75,7 +76,13 @@ bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
+bool ConvertEventInfoJSToNAPIPart(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 std::string ConvertColorToString(uint32_t color);
+std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
+int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
+void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
+    napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray);
 
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
 OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
