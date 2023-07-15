@@ -55,7 +55,7 @@ public:
     static bool OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
     MMI::PointerEvent::PointerItem point4);
-    static bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
+    static bool OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3);
     void SetUp();
     void TearDown();
