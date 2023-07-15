@@ -37,6 +37,7 @@ using namespace testing::ext;
 namespace OHOS {
 namespace Accessibility {
 namespace {
+    constexpr uint32_t POINT_ID = 2;
     const int32_t SLEEP_TIME_3 = 3;
 } // namespace
 
@@ -88,7 +89,7 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEv
     inputEventConsumer->OnInputEvent(event);
 
     points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, POINT_ID_2);
     inputEventConsumer->OnInputEvent(event);
 
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
@@ -97,7 +98,7 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEv
     points.clear();
     points.emplace_back(point3);
     points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, POINT_ID_2);
     inputEventConsumer->OnInputEvent(event);
 
     points.clear();
@@ -107,7 +108,7 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEv
 
     points.clear();
     points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, POINT_ID_2);
     inputEventConsumer->OnInputEvent(event);
     return true;
 }
