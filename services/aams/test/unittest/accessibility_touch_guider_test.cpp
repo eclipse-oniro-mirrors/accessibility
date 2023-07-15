@@ -40,7 +40,7 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y);
+    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
     static void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt);
     bool TestEventType();
     bool TestEventAction();
@@ -66,7 +66,7 @@ void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt){
     EXPECT_EQ(uTgestureId, GestureTypeInt);
 }
 
-void TouchGuiderTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y){
+void TouchGuiderTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y){
     point.SetPointerId(id);
     point.SetDisplayX(x);
     point.SetDisplayY(y);
