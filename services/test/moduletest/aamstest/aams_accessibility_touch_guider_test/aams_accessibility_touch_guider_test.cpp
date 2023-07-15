@@ -49,13 +49,13 @@ public:
     static void SetUpTestCase();
     static void TearDownTestCase();
     static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
-    static bool OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
+    bool OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
     MMI::PointerEvent::PointerItem point4);
-    static bool OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
+    bool OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
     MMI::PointerEvent::PointerItem point4);
-    static bool OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
+    bool OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3);
     void SetUp();
     void TearDown();
