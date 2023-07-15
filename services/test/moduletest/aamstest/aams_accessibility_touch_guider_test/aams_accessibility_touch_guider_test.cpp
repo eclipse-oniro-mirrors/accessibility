@@ -312,7 +312,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    TouchGuiderPointSet(point, 1, 500, 500);
+    TouchGuiderPointSet(point1, 1, 500, 500);
     MMI::PointerEvent::PointerItem point2 = {};
     TouchGuiderPointSet(point2, 2, 1000, 500);
     MMI::PointerEvent::PointerItem point3 = {};
