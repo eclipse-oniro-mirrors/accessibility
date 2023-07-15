@@ -33,8 +33,8 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static void OnKeyEventPresssOneToFour(MMI::KeyEvent &event);
-    static void OnKeyEventPresssSixToNine(MMI::KeyEvent &event);
+    void OnKeyEventPresssOneToFour(MMI::KeyEvent &event);
+    void OnKeyEventPresssSixToNine(MMI::KeyEvent &event);
     void SetUp() override;
     void TearDown() override;
 
