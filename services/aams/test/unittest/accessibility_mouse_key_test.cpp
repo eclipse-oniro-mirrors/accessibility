@@ -71,7 +71,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     item.SetPressed(true);
     event.AddKeyItem(item);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 2
     event.RemoveReleasedKeyItems(item);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
@@ -79,7 +79,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
     item1.SetPressed(true);
     event.AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 3
     event.RemoveReleasedKeyItems(item1);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
@@ -87,7 +87,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
     item2.SetPressed(true);
     event.AddKeyItem(item2);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 4
     event.RemoveReleasedKeyItems(item2);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
@@ -95,7 +95,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     item3.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
     item3.SetPressed(true);
     event.AddKeyItem(item3);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
 }
 
 void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &event){
@@ -106,7 +106,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &eve
     item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
     item4.SetPressed(true);
     event.AddKeyItem(item4);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 7
     event.RemoveReleasedKeyItems(item4);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
@@ -114,7 +114,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &eve
     item5.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
     item5.SetPressed(true);
     event.AddKeyItem(item5);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 8
     event.RemoveReleasedKeyItems(item5);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
@@ -122,7 +122,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &eve
     item6.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
     item6.SetPressed(true);
     event.AddKeyItem(item6);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
     // presss 9
     event.RemoveReleasedKeyItems(item6);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
@@ -130,7 +130,7 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &eve
     item7.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
     item7.SetPressed(true);
     event.AddKeyItem(item7);
-    mouseKey_->OnKeyEvent(*event);
+    mouseKey_->OnKeyEvent(event);
 }
 
 /**
