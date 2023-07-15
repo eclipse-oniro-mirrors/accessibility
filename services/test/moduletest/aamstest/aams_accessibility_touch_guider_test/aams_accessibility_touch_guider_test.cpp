@@ -48,6 +48,15 @@ public:
     {}
     static void SetUpTestCase();
     static void TearDownTestCase();
+    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y);
+    static bool OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
+    MMI::PointerEvent::PointerItem point4);
+    static bool OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
+    MMI::PointerEvent::PointerItem point4);
+    static bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3);
     void SetUp();
     void TearDown();
 
@@ -63,6 +72,108 @@ protected:
     void WritefileAll(const char* fname, const char* data);
     void AddAccessibilityWindowConnection();
 };
+
+bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
+    MMI::PointerEvent::PointerItem point4){
+    points.emplace_back(point1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (!inputEventConsumer) {
+        return false;
+    }
+    inputEventConsumer->OnInputEvent(event);
+
+    points.emplace_back(point2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 2);
+    inputEventConsumer->OnInputEvent(event);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point3);
+    points.emplace_back(point4);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 2);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point3);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point4);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 2);
+    inputEventConsumer->OnInputEvent(event);
+    return true;
+}
+
+bool AamsTouchGuideTest::OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
+    MMI::PointerEvent::PointerItem point4){
+    points.emplace_back(point1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (!inputEventConsumer) {
+        // GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent003 inputEventConsumer is null";
+        return false;
+    }
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point3);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point4);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+    return true;
+}
+
+bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3){
+    points.emplace_back(point1);
+    std::shared_ptr<MMI::PointerEvent> event =
+        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
+    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
+    if (!inputEventConsumer) {
+        return false;
+    }
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point2);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    points.clear();
+    points.emplace_back(point3);
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+
+    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
+    inputEventConsumer->OnInputEvent(event);
+    return true;
+}
+
+void AamsTouchGuideTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y){
+    point.SetPointerId(id);
+    point.SetDisplayX(x);
+    point.SetDisplayY(y);
+}
 
 void AamsTouchGuideTest::WritefileAll(const char* fname, const char* data)
 {
@@ -201,54 +312,19 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(500);
-    point1.SetDisplayY(500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point, 1, 500, 500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(1000);
-    point2.SetDisplayY(500);
-    point2.SetPointerId(2);
+    TouchGuiderPointSet(point2, 2, 1000, 500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(2000);
-    point3.SetDisplayY(500);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 2000, 500);
     MMI::PointerEvent::PointerItem point4 = {};
-    point4.SetDisplayX(2500);
-    point4.SetDisplayY(500);
-    point4.SetPointerId(2);
+    TouchGuiderPointSet(point4, 1, 2500, 500);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
+    bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
+    if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent001 inputEventConsumer is null";
-        return;
     }
-    inputEventConsumer->OnInputEvent(event);
 
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 2);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 2);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 2);
-    inputEventConsumer->OnInputEvent(event);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1) ==
             EventType::TYPE_TOUCH_END) {
@@ -335,49 +411,16 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent003, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(2500);
-    point1.SetDisplayY(2500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(1500);
-    point2.SetDisplayY(2500);
-    point2.SetPointerId(1);
+    TouchGuiderPointSet(point2, 1, 1500, 2500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(0);
-    point3.SetDisplayY(2500);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 0, 2500);
     MMI::PointerEvent::PointerItem point4 = {};
-    point4.SetDisplayX(2500);
-    point4.SetDisplayY(2250);
-    point4.SetPointerId(1);
+    TouchGuiderPointSet(point4, 1, 2500, 2250);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
-        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent003 inputEventConsumer is null";
-        return;
-    }
-    inputEventConsumer->OnInputEvent(event);
+    OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
 
-    points.clear();
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
@@ -424,49 +467,19 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent004, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(2500);
-    point1.SetDisplayY(2500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(2500);
-    point2.SetDisplayY(3500);
-    point2.SetPointerId(1);
+    TouchGuiderPointSet(point2, 1, 2500, 3500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(2500);
-    point3.SetDisplayY(5000);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 2500, 5000);
     MMI::PointerEvent::PointerItem point4 = {};
-    point4.SetDisplayX(2250);
-    point4.SetDisplayY(2500);
-    point4.SetPointerId(1);
+    TouchGuiderPointSet(point4, 1, 2250, 5000);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
-        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent004 inputEventConsumer is null";
-        return;
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent003 inputEventConsumer is null";
     }
-    inputEventConsumer->OnInputEvent(event);
 
-    points.clear();
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
@@ -513,49 +526,19 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent005, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(2500);
-    point1.SetDisplayY(2500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(3500);
-    point2.SetDisplayY(2500);
-    point2.SetPointerId(1);
+    TouchGuiderPointSet(point2, 1, 3500, 2500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(5000);
-    point3.SetDisplayY(2500);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 5000, 2500);
     MMI::PointerEvent::PointerItem point4 = {};
-    point4.SetDisplayX(2500);
-    point4.SetDisplayY(2250);
-    point4.SetPointerId(1);
+    TouchGuiderPointSet(point4, 1, 2500, 2250);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent005 inputEventConsumer is null";
-        return;
     }
-    inputEventConsumer->OnInputEvent(event);
 
-    points.clear();
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
@@ -602,49 +585,19 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(2500);
-    point1.SetDisplayY(2500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(2500);
-    point2.SetDisplayY(1500);
-    point2.SetPointerId(1);
+    TouchGuiderPointSet(point2, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(2500);
-    point3.SetDisplayY(0);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 2500, 0);
     MMI::PointerEvent::PointerItem point4 = {};
-    point4.SetDisplayX(2250);
-    point4.SetDisplayY(2500);
-    point4.SetPointerId(1);
+    TouchGuiderPointSet(point4, 1, 2250, 2500);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
+    bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
+    if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent006 inputEventConsumer is null";
-        return;
     }
-    inputEventConsumer->OnInputEvent(event);
 
-    points.clear();
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point4);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
@@ -691,40 +644,17 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent007, Te
     MMI::MockInputManager::ClearTouchActions();
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point1 = {};
-    point1.SetDisplayX(2500);
-    point1.SetDisplayY(2500);
-    point1.SetPointerId(1);
+    TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    point2.SetDisplayX(2500);
-    point2.SetDisplayY(1500);
-    point2.SetPointerId(1);
+    TouchGuiderPointSet(point2, 1, 2500, 1500);
     MMI::PointerEvent::PointerItem point3 = {};
-    point3.SetDisplayX(2500);
-    point3.SetDisplayY(0);
-    point3.SetPointerId(1);
+    TouchGuiderPointSet(point3, 1, 2500, 0);
 
-    points.emplace_back(point1);
-    std::shared_ptr<MMI::PointerEvent> event =
-        CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
-    auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
-    if (!inputEventConsumer) {
+    bool flag = OnPointerEventOnePointsTest7(points, point1, point2, point3);
+    if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent007 inputEventConsumer is null";
-        return;
     }
-    inputEventConsumer->OnInputEvent(event);
 
-    points.clear();
-    points.emplace_back(point2);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    points.clear();
-    points.emplace_back(point3);
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
-
-    event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, 1);
-    inputEventConsumer->OnInputEvent(event);
     // Determine event type
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==

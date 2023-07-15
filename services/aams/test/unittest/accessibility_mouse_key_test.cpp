@@ -33,6 +33,8 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
+    static void OnKeyEventPresssOneToFour(MMI::KeyEvent &event);
+    static void OnKeyEventPresssSixToNine(MMI::KeyEvent &event);
     void SetUp() override;
     void TearDown() override;
 
@@ -59,6 +61,76 @@ void AccessibilityMouseKeyUnitTest::TearDown()
 {
     GTEST_LOG_(INFO) << "TearDown";
     mouseKey_ = nullptr;
+}
+
+void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &event){
+    // presss 1
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    MMI::KeyEvent::KeyItem item;
+    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
+    item.SetPressed(true);
+    event->AddKeyItem(item);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 2
+    event->RemoveReleasedKeyItems(item);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    MMI::KeyEvent::KeyItem item1;
+    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
+    item1.SetPressed(true);
+    event->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 3
+    event->RemoveReleasedKeyItems(item1);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    MMI::KeyEvent::KeyItem item2;
+    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
+    item2.SetPressed(true);
+    event->AddKeyItem(item2);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 4
+    event->RemoveReleasedKeyItems(item2);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    MMI::KeyEvent::KeyItem item3;
+    item3.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
+    item3.SetPressed(true);
+    event->AddKeyItem(item3);
+    mouseKey_->OnKeyEvent(*event);
+}
+
+void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &event){
+    // presss 6
+    event->RemoveReleasedKeyItems(item3);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    MMI::KeyEvent::KeyItem item4;
+    item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
+    item4.SetPressed(true);
+    event->AddKeyItem(item4);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 7
+    event->RemoveReleasedKeyItems(item4);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
+    MMI::KeyEvent::KeyItem item5;
+    item5.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
+    item5.SetPressed(true);
+    event->AddKeyItem(item5);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 8
+    event->RemoveReleasedKeyItems(item5);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
+    MMI::KeyEvent::KeyItem item6;
+    item6.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
+    item6.SetPressed(true);
+    event->AddKeyItem(item6);
+    mouseKey_->OnKeyEvent(*event);
+    // presss 9
+    event->RemoveReleasedKeyItems(item6);
+    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
+    MMI::KeyEvent::KeyItem item7;
+    item7.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
+    item7.SetPressed(true);
+    event->AddKeyItem(item7);
+    mouseKey_->OnKeyEvent(*event);
 }
 
 /**
@@ -127,70 +199,9 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     if (!event) {
         return;
     }
-    // presss 1
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
-    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    MMI::KeyEvent::KeyItem item;
-    item.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
-    item.SetPressed(true);
-    event->AddKeyItem(item);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 2
-    event->RemoveReleasedKeyItems(item);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
-    MMI::KeyEvent::KeyItem item1;
-    item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_2);
-    item1.SetPressed(true);
-    event->AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 3
-    event->RemoveReleasedKeyItems(item1);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_3);
-    item2.SetPressed(true);
-    event->AddKeyItem(item2);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 4
-    event->RemoveReleasedKeyItems(item2);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
-    MMI::KeyEvent::KeyItem item3;
-    item3.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_4);
-    item3.SetPressed(true);
-    event->AddKeyItem(item3);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 6
-    event->RemoveReleasedKeyItems(item3);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
-    MMI::KeyEvent::KeyItem item4;
-    item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
-    item4.SetPressed(true);
-    event->AddKeyItem(item4);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 7
-    event->RemoveReleasedKeyItems(item4);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
-    MMI::KeyEvent::KeyItem item5;
-    item5.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_7);
-    item5.SetPressed(true);
-    event->AddKeyItem(item5);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 8
-    event->RemoveReleasedKeyItems(item5);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
-    MMI::KeyEvent::KeyItem item6;
-    item6.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_8);
-    item6.SetPressed(true);
-    event->AddKeyItem(item6);
-    mouseKey_->OnKeyEvent(*event);
-    // presss 9
-    event->RemoveReleasedKeyItems(item6);
-    event->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
-    MMI::KeyEvent::KeyItem item7;
-    item7.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_9);
-    item7.SetPressed(true);
-    event->AddKeyItem(item7);
-    mouseKey_->OnKeyEvent(*event);
+    OnKeyEventPresssOneToFour(*event);
+    OnKeyEventPresssSixToNine(*event);
+
     EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_001 end";
 }

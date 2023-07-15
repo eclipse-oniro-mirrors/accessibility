@@ -49,6 +49,8 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
+    static void AddActiveWindow(AccessibilityWindowManager& windowInfoManager);
+    static void AddNormalWindow(AccessibilityWindowManager& windowInfoManager);
     void SetUp() override;
     void TearDown() override;
 };
@@ -89,6 +91,39 @@ sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType window
         rosen_winInfo->focused_ = true;
     }
     return rosen_winInfo;
+}
+
+void AccessibilityWindowManagerTest::AddActiveWindow(AccessibilityWindowManager& windowInfoManager){
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfoFirst->type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
+    rosenWinInfoFirst->wid_ = 1;
+    rosenWinInfoFirst->focused_ = false;
+    Rosen::Rect rect;
+    rect.posX_ = 1;
+    rect.posY_ = 1;
+    rect.width_ = 1;
+    rect.height_ = 1;
+    rosenWinInfoFirst->windowRect_ = rect;
+    rosenWinInfoFirst->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
+    rosenWinInfoFirst->isDecorEnable_ = false;
+    rosenWinInfoFirst->displayId_ = 0;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoFirst->wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoFirst)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
+}
+
+void AccessibilityWindowManagerTest::AddNormalWindow(AccessibilityWindowManager& windowInfoManager){
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond = new Rosen::AccessibilityWindowInfo();
+    rosenWinInfoSecond->type_ = Rosen::WindowType::APP_WINDOW_BASE;
+    rosenWinInfoSecond->wid_ = WINDOW_ID;
+    rosenWinInfoSecond->focused_ = false;
+    rosenWinInfoSecond->windowRect_ = rect;
+    rosenWinInfoSecond->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
+    rosenWinInfoSecond->isDecorEnable_ = false;
+    rosenWinInfoSecond->displayId_ = 0;
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond->wid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoSecond)));
+    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
 }
 
 /**
@@ -397,17 +432,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
 
     // Add another window
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond = new Rosen::AccessibilityWindowInfo();
-    rosenWinInfoSecond->type_ = Rosen::WindowType::APP_WINDOW_BASE;
-    rosenWinInfoSecond->wid_ = WINDOW_ID;
-    rosenWinInfoSecond->focused_ = false;
-    rosenWinInfoSecond->windowRect_ = rect;
-    rosenWinInfoSecond->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
-    rosenWinInfoSecond->isDecorEnable_ = false;
-    rosenWinInfoSecond->displayId_ = 0;
-    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond->wid_,
-        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoSecond)));
-    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
+    AddNormalWindow(windowInfoManager);
 
     // Remove the first window
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
@@ -447,37 +472,12 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     EXPECT_EQ(windowInfoManager.activeWindowId_, INVALID_WINDOW_ID);
 
     // Add an active window
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst = new Rosen::AccessibilityWindowInfo();
-    rosenWinInfoFirst->type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
-    rosenWinInfoFirst->wid_ = 1;
-    rosenWinInfoFirst->focused_ = false;
-    Rosen::Rect rect;
-    rect.posX_ = 1;
-    rect.posY_ = 1;
-    rect.width_ = 1;
-    rect.height_ = 1;
-    rosenWinInfoFirst->windowRect_ = rect;
-    rosenWinInfoFirst->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
-    rosenWinInfoFirst->isDecorEnable_ = false;
-    rosenWinInfoFirst->displayId_ = 0;
-    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoFirst->wid_,
-        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoFirst)));
-    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
+    AddActiveWindow(windowInfoManager);  
     windowInfoManager.SetActiveWindow(rosenWinInfoFirst->wid_);
     EXPECT_EQ(windowInfoManager.activeWindowId_, rosenWinInfoFirst->wid_);
 
     // Add another normal window
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond = new Rosen::AccessibilityWindowInfo();
-    rosenWinInfoSecond->type_ = Rosen::WindowType::APP_WINDOW_BASE;
-    rosenWinInfoSecond->wid_ = WINDOW_ID;
-    rosenWinInfoSecond->focused_ = false;
-    rosenWinInfoSecond->windowRect_ = rect;
-    rosenWinInfoSecond->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
-    rosenWinInfoSecond->isDecorEnable_ = false;
-    rosenWinInfoSecond->displayId_ = 0;
-    windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond->wid_,
-        windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoSecond)));
-    EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
+    AddNormalWindow(windowInfoManager);
 
     // Remove the active window
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
