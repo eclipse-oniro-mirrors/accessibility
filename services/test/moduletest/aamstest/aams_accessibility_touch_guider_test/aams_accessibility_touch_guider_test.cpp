@@ -50,13 +50,14 @@ public:
     static void TearDownTestCase();
     static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
     bool OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
-    MMI::PointerEvent::PointerItem point4);
+        MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2,
+        MMI::PointerEvent::PointerItem point3, MMI::PointerEvent::PointerItem point4);
     bool OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
-    MMI::PointerEvent::PointerItem point4);
+        MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2,
+        MMI::PointerEvent::PointerItem point3, MMI::PointerEvent::PointerItem point4);
     bool OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3);
+        MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2,
+        MMI::PointerEvent::PointerItem point3);
     void SetUp();
     void TearDown();
 
@@ -75,7 +76,8 @@ protected:
 
 bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
-    MMI::PointerEvent::PointerItem point4){
+    MMI::PointerEvent::PointerItem point4)
+{
     points.emplace_back(point1);
     std::shared_ptr<MMI::PointerEvent> event =
         CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
@@ -112,7 +114,8 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest1(std::vector<MMI::PointerEv
 
 bool AamsTouchGuideTest::OnPointerEventOnePointsTest3(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
-    MMI::PointerEvent::PointerItem point4){
+    MMI::PointerEvent::PointerItem point4)
+{
     points.emplace_back(point1);
     std::shared_ptr<MMI::PointerEvent> event =
         CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
@@ -144,7 +147,8 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest3(std::vector<MMI::PointerEv
 }
 
 bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEvent::PointerItem> &points,
-    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3){
+    MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3)
+{
     points.emplace_back(point1);
     std::shared_ptr<MMI::PointerEvent> event =
         CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, 0, 0, 1);
