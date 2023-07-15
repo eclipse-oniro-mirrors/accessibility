@@ -63,7 +63,8 @@ void AccessibilityMouseKeyUnitTest::TearDown()
     mouseKey_ = nullptr;
 }
 
-void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &event){
+void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &event)
+{
     // presss 1
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_1);
     event.SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
@@ -98,7 +99,8 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     mouseKey_->OnKeyEvent(event);
 }
 
-void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &event){
+void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &event)
+{
     // presss 6
     event.RemoveReleasedKeyItems(item3);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
