@@ -48,7 +48,7 @@ public:
     {}
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y);
+    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
     static bool OnPointerEventOnePointsTest1(std::vector<MMI::PointerEvent::PointerItem> &points,
     MMI::PointerEvent::PointerItem point1, MMI::PointerEvent::PointerItem point2, MMI::PointerEvent::PointerItem point3,
     MMI::PointerEvent::PointerItem point4);
@@ -169,7 +169,7 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEv
     return true;
 }
 
-void AamsTouchGuideTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem point, int id, int x, int y){
+void AamsTouchGuideTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y){
     point.SetPointerId(id);
     point.SetDisplayX(x);
     point.SetDisplayY(y);
