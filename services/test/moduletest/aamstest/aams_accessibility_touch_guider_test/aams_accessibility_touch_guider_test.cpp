@@ -37,7 +37,7 @@ using namespace testing::ext;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr uint32_t POINT_ID = 2;
+    constexpr uint32_t POINT_ID_2 = 2;
     const int32_t SLEEP_TIME_3 = 3;
 } // namespace
 
