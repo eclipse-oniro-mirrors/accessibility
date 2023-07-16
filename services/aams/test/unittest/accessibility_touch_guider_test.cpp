@@ -28,7 +28,6 @@ namespace {
     constexpr uint32_t GET_EVENT_TARGET_INDEX_2 = 2;
     constexpr uint32_t GET_EVENT_TARGET_INDEX_3 = 3;
     constexpr uint32_t SLEEP_TIME_3 = 3;
-    constexpr uint32_t SLEEP_TIME_3 = 3;
     constexpr int64_t MS_TO_US = 1000;
     constexpr int32_t ACCOUNT_ID = 100;
     constexpr int32_t WINDOW_ID = 2;
