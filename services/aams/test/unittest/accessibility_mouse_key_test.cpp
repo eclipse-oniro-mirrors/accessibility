@@ -97,12 +97,12 @@ void AccessibilityMouseKeyUnitTest::OnKeyEventPresssOneToFour(MMI::KeyEvent &eve
     item3.SetPressed(true);
     event.AddKeyItem(item3);
     mouseKey_->OnKeyEvent(event);
+    event.RemoveReleasedKeyItems(item3);
 }
 
 void AccessibilityMouseKeyUnitTest::OnKeyEventPresssSixToNine(MMI::KeyEvent &event)
 {
     // presss 6
-    event.RemoveReleasedKeyItems(item3);
     event.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
     MMI::KeyEvent::KeyItem item4;
     item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_6);
