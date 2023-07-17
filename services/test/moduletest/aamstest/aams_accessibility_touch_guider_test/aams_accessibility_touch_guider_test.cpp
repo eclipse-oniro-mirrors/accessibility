@@ -174,7 +174,8 @@ bool AamsTouchGuideTest::OnPointerEventOnePointsTest7(std::vector<MMI::PointerEv
     return true;
 }
 
-void AamsTouchGuideTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y){
+void AamsTouchGuideTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y)
+{
     point.SetPointerId(id);
     point.SetDisplayX(x);
     point.SetDisplayY(y);
