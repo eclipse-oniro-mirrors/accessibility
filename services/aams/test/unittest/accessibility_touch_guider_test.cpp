@@ -63,7 +63,7 @@ void TouchGuiderTest::TouchGuiderExpect(EventType eventType, int32_t GestureType
 {
     eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_2);
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
-    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_3 );
+    eventType = AccessibilityAbilityHelper::GetInstance().GetEventTypeOfTargetIndex(GET_EVENT_TARGET_INDEX_3);
     EXPECT_EQ(eventType, EventType::TYPE_TOUCH_END);
     auto uTgestureId = AccessibilityAbilityHelper::GetInstance().GetGestureId();
     EXPECT_EQ(uTgestureId, GestureTypeInt);
