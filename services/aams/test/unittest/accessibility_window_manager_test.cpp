@@ -421,7 +421,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 
     // Add a window
     sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst = new Rosen::AccessibilityWindowInfo();
-    AddActiveWindow(windowInfoManager, rosenWinInfoFirst);  
+    AddActiveWindow(windowInfoManager, rosenWinInfoFirst);
 
     // Add another window
     sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond = new Rosen::AccessibilityWindowInfo();
@@ -466,7 +466,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
 
     // Add an active window
     sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst = new Rosen::AccessibilityWindowInfo();
-    AddActiveWindow(windowInfoManager, rosenWinInfoFirst);  
+    AddActiveWindow(windowInfoManager, rosenWinInfoFirst);
     windowInfoManager.SetActiveWindow(rosenWinInfoFirst->wid_);
     EXPECT_EQ(windowInfoManager.activeWindowId_, rosenWinInfoFirst->wid_);
 
