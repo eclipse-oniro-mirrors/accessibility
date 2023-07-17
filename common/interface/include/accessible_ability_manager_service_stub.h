@@ -49,6 +49,16 @@ public:
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 private:
     /**
+     * @brief add accessibility get config handles.
+     */
+    void AddGetConfigHandles();
+
+    /**
+     * @brief add accessibility set config handles.
+     */
+    void AddSetConfigHandles();
+
+    /**
      * @brief Check the caller has permissions.
      * @param permission The description of permission
      * @return Check result.

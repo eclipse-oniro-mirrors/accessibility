@@ -64,9 +64,10 @@ public:
     void OnStateChanged(const bool state) {}
 };
 
-static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size)
+
+static void CreateEventInfoFirstPart(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size,
+    size_t& position)
 {
-    size_t position = 0;
     int32_t componentId = 0;
     position += GetObject<int32_t>(componentId, &data[position], size - position);
     eventInfo.SetSource(componentId);
@@ -110,7 +111,11 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
     int32_t pageId = 0;
     position += GetObject<int32_t>(pageId, &data[position], size - position);
     eventInfo.SetPageId(pageId);
+}
 
+static void CreateEventInfoSecondPart(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size,
+    size_t& position)
+{
     char name[LEN + 1];
     name[LEN] = END_CHAR;
     for (size_t i = 0; i < LEN; i++) {
@@ -154,7 +159,13 @@ static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* 
     }
     std::string notificationContent(name);
     eventInfo.SetNotificationContent(notificationContent);
+}
 
+static size_t CreateEventInfo(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size)
+{
+    size_t position = 0;
+    CreateEventInfoFirstPart(eventInfo, data, size, position);
+    CreateEventInfoSecondPart(eventInfo, data, size, position);
     return position;
 }
 

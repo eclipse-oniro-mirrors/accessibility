@@ -111,18 +111,9 @@ static size_t GenerateCaptionProperty(
     return position;
 }
 
-bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
+void DoSomethingInterestingSetConfig(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+    const uint8_t* data, size_t size, size_t& startPos)
 {
-    if (data == nullptr || size < DATA_MIN_SIZE) {
-        return false;
-    }
-
-    auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-    (void)abConfig.InitializeContext();
-    std::shared_ptr<ConfigObserver> cObserver = std::make_shared<ConfigObserver>();
-    std::shared_ptr<EnableAbilityListObserver> eObserver = std::make_shared<EnableAbilityListObserver>();
-
-    size_t startPos = 0;
     abConfig.SetScreenMagnificationState(data[startPos++] & 0x01);
     abConfig.SetShortKeyState(data[startPos++] & 0x01);
     abConfig.SetMouseKeyState(data[startPos++] & 0x01);
@@ -160,6 +151,16 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     OHOS::AccessibilityConfig::CaptionProperty property;
     startPos += GenerateCaptionProperty(property, &data[startPos], size - startPos);
     abConfig.SetCaptionsProperty(property);
+}
+
+void DoSomethingInterestingGetAbility(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+    const uint8_t* data, size_t size, size_t& startPos)
+{
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    uint32_t temp = 0;
+    std::shared_ptr<ConfigObserver> cObserver = std::make_shared<ConfigObserver>();
+    std::shared_ptr<EnableAbilityListObserver> eObserver = std::make_shared<EnableAbilityListObserver>();
 
     for (size_t i = 0; i < LEN; i++) {
         startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
@@ -181,8 +182,12 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     abConfig.UnsubscribeConfigObserver(static_cast<OHOS::AccessibilityConfig::CONFIG_ID>(temp), cObserver);
     abConfig.SubscribeEnableAbilityListsObserver(eObserver);
     abConfig.UnsubscribeEnableAbilityListsObserver(eObserver);
+}
 
-    flag = data[startPos++] & 0x01;
+void DoSomethingInterestingGetConfig(OHOS::AccessibilityConfig::AccessibilityConfig& abConfig,
+    const uint8_t* data, size_t size, size_t& startPos)
+{
+    bool flag = data[startPos++] & 0x01;
     abConfig.GetScreenMagnificationState(flag);
     flag = data[startPos++] & 0x01;
     abConfig.GetShortKeyState(flag);
@@ -199,6 +204,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     flag = data[startPos++] & 0x01;
     abConfig.GetAudioMonoState(flag);
 
+    uint32_t temp = 0;
     startPos += GetObject<uint32_t>(temp, &data[startPos], size - startPos);
     abConfig.GetContentTimeout(temp);
 
@@ -211,12 +217,15 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     int32_t clicks = static_cast<int32_t>(temp);
     abConfig.GetMouseAutoClick(clicks);
 
+    float tempFloat = 0;
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.GetBrightnessDiscount(tempFloat);
 
     startPos += GetObject<float>(tempFloat, &data[startPos], size - startPos);
     abConfig.GetAudioBalance(tempFloat);
 
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
     for (size_t i = 0; i < LEN; i++) {
         startPos += GetObject<char>(name[i], &data[startPos], size - startPos);
     }
@@ -226,6 +235,20 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
     OHOS::AccessibilityConfig::CaptionProperty propertyForGet;
     GenerateCaptionProperty(propertyForGet, &data[startPos], size - startPos);
     abConfig.GetCaptionsProperty(propertyForGet);
+}
+
+bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    auto &abConfig = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    (void)abConfig.InitializeContext();
+    size_t startPos = 0;
+    DoSomethingInterestingSetConfig(abConfig, data, size, startPos);
+    DoSomethingInterestingGetAbility(abConfig, data, size, startPos);
+    DoSomethingInterestingGetConfig(abConfig, data, size, startPos);
 
     return true;
 }

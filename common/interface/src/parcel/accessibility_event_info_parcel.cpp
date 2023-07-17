@@ -29,9 +29,8 @@ AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEv
     *self = eventInfo;
 }
 
-bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
+bool AccessibilityEventInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
 {
-    HILOG_DEBUG();
     uint32_t eventType = TYPE_VIEW_INVALID;
     uint32_t gestureType = GESTURE_INVALID;
     int32_t triggerAction = ACCESSIBILITY_ACTION_INVALID;
@@ -56,7 +55,11 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, category);
     category_ = static_cast<NotificationCategory>(category);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
+    return true;
+}
 
+bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
+{
     int32_t componentId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId);
     SetSource(componentId);
@@ -98,6 +101,18 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
     SetItemCounts(itemCounts);
+    return true;
+}
+
+bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
+{
+    HILOG_DEBUG();
+    if (!ReadFromParcelFirstPart(parcel)) {
+        return false;
+    }
+    if (!ReadFromParcelSecondPart(parcel)) {
+        return false;
+    }
     return true;
 }
 

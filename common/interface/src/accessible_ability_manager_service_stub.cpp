@@ -27,62 +27,8 @@ namespace OHOS {
 namespace Accessibility {
 using namespace Security::AccessToken;
 
-AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
+void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
 {
-    HILOG_DEBUG();
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_EVENT)] =
-        &AccessibleAbilityManagerServiceStub::HandleSendEvent;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ABILITYLIST)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetAbilityList;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION)] =
-        &AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator;
-
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_PROPERTY)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_PROPERTY)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleSetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetEnabled;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetCaptionState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_GESTURE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetGestureState;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::GET_KEY_EVENT_OBSERVE_STATE)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED_OBJECT)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
-    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_ABILITIES)] =
-        &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
-        &AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
-        &AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
-        &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
-        &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
-
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SCREENMAGNIFIER_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetScreenMagnificationState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_STATE)] =
@@ -109,6 +55,14 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_AUDIO_BALANCE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetAudioBalance;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_PROPERTY)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetCaptionState;
+}
+
+void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
+{
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCREENMAGNIFIER_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_STATE)] =
@@ -139,6 +93,62 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
         &AccessibleAbilityManagerServiceStub::HandleGetAllConfigs;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_CONFIG_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_PROPERTY)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetCaptionState;
+}
+
+AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
+{
+    HILOG_DEBUG();
+
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SEND_EVENT)] =
+        &AccessibleAbilityManagerServiceStub::HandleSendEvent;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::REGISTER_STATE_CALLBACK)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterStateCallback;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ABILITYLIST)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetAbilityList;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::REGISTER_INTERACTION_CONNECTION)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementOperator;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::DEREGISTER_INTERACTION_CONNECTION)] =
+        &AccessibleAbilityManagerServiceStub::HandleDeregisterAccessibilityElementOperator;
+
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetEnabled;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_TOUCH_GUIDE_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetTouchGuideState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_GESTURE_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetGestureState;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::GET_KEY_EVENT_OBSERVE_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetKeyEventObserverState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_ABILITIES)] =
+        &AccessibleAbilityManagerServiceStub::HandleEnableAbility;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ENABLED_OBJECT)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetEnabledAbilities;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_ABILITIES)] =
+        &AccessibleAbilityManagerServiceStub::HandleDisableAbility;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
+        &AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
+        &AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
+    memberFuncMap_[static_cast<uint32_t>(
+        AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
+        &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
+
+    AddSetConfigHandles();
+    AddGetConfigHandles();
 }
 
 AccessibleAbilityManagerServiceStub::~AccessibleAbilityManagerServiceStub()
