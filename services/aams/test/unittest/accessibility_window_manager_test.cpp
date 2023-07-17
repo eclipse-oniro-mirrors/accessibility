@@ -98,7 +98,6 @@ sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType window
 void AccessibilityWindowManagerTest::AddActiveWindow(AccessibilityWindowManager &windowInfoManager,
     sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst)
 {
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst = new Rosen::AccessibilityWindowInfo();
     rosenWinInfoFirst->type_ = Rosen::WindowType::WINDOW_TYPE_APP_MAIN_WINDOW;
     rosenWinInfoFirst->wid_ = 1;
     rosenWinInfoFirst->focused_ = false;
@@ -123,6 +122,11 @@ void AccessibilityWindowManagerTest::AddNormalWindow(AccessibilityWindowManager 
     rosenWinInfoSecond->type_ = Rosen::WindowType::APP_WINDOW_BASE;
     rosenWinInfoSecond->wid_ = WINDOW_ID;
     rosenWinInfoSecond->focused_ = false;
+    Rosen::Rect rect;
+    rect.posX_ = 1;
+    rect.posY_ = 1;
+    rect.width_ = 1;
+    rect.height_ = 1;
     rosenWinInfoSecond->windowRect_ = rect;
     rosenWinInfoSecond->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
     rosenWinInfoSecond->isDecorEnable_ = false;
