@@ -128,6 +128,11 @@ public:
     static std::shared_ptr<NAccessibilityConfigObserverImpl> captionListeners_;
 
 private:
+    static napi_value GetAccessibilityExtensionListAsync(
+        napi_env env, size_t argc, napi_value* parameters, NAccessibilitySystemAbilityClient* data);
+    static void GetAccessibilityStateEventType(
+        napi_env env, napi_value* args, OHOS::Accessibility::RetError& errCode, uint32_t& type);
+    static void Completefunction(napi_env env, std::string type, void* data);
     static void GetAbilityListExecute(napi_env env, void* data);
     static void GetAbilityListComplete(napi_env env, napi_status status, void* data);
     static void SendEventExecute(napi_env env, void* data);

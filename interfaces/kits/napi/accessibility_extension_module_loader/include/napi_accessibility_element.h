@@ -137,14 +137,26 @@ private:
     static void ActionNamesComplete(napi_env env, napi_status status, void* data);
     static void PerformActionExecute(napi_env env, void* data);
     static void PerformActionComplete(napi_env env, napi_status status, void* data);
+    static void FindElementConstructCallbackInfo(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
     static void FindElementExecute(napi_env env, void* data);
     static void FindElementComplete(napi_env env, napi_status status, void* data);
     static void GetElement(NAccessibilityElementData *callbackInfo, napi_value &value);
-
+    static napi_value PerformActionAsync(napi_env env, size_t argc, napi_value* argv,
+        std::string actionName, AccessibilityElement* accessibilityElement);
+    static napi_value PerformActionConstructPromise(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo, std::string actionName);
+    static napi_value FindElementAsync(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement);
+    static NAccessibilityErrorCode GetAttribute(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo);
+    static napi_value AttributeValueAsync(napi_env env, size_t argc, napi_value* argv,
+        NAccessibilityElementData* callbackInfo);
     static FindElementCondition ConvertStringToCondition(const std::string &str);
     static OHOS::Accessibility::FocusMoveDirection ConvertStringToDirection(const std::string &str);
     static int32_t ConvertStringToFocusType(const std::string &str);
 
+    static AccessibilityElement* UnrapAccessibilityElement(napi_env env, napi_value thisVar);
     static bool CheckElementInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
     static bool CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value);
 

@@ -859,7 +859,7 @@ bool ConvertEventInfoJSToNAPI(
         eventInfo.SetEventType(TYPE_WINDOW_UPDATE);
         eventInfo.SetWindowChangeTypes(ConvertStringToWindowUpdateTypes(str));
     }
-    
+
     napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {

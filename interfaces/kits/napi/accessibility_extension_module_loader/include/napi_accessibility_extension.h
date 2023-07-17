@@ -16,6 +16,7 @@
 #ifndef NAPI_ACCESSIBILITY_EXTENSION_H
 #define NAPI_ACCESSIBILITY_EXTENSION_H
 
+#include <uv.h>
 #include <future>
 #include "accessibility_extension.h"
 #include "accessible_ability_listener.h"
@@ -138,7 +139,9 @@ private:
     void CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,
         const std::shared_ptr<AccessibilityElementInfo> &elementInfo);
 
-    void GetSrcPath(std::string &srcPath);
+    bool GetSrcPathAndModuleName(std::string& srcPath, std::string& moduleName);
+    void OnAccessibilityEventCompleteCallback(uv_work_t* work, int status);
+    void OnKeyPressEventCompleteCallback(uv_work_t* work, int status);
 
     NativeEngine *engine_ = nullptr;
     AbilityRuntime::JsRuntime& jsRuntime_;
