@@ -42,7 +42,7 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static void TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
+    static void SetTouchGuiderPoint(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
     static void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt);
     bool TestEventType();
     bool TestEventAction();
@@ -69,7 +69,7 @@ void TouchGuiderTest::TouchGuiderExpect(EventType eventType, int32_t GestureType
     EXPECT_EQ(uTgestureId, GestureTypeInt);
 }
 
-void TouchGuiderTest::TouchGuiderPointSet(MMI::PointerEvent::PointerItem &point, int id, int x, int y)
+void TouchGuiderTest::SetTouchGuiderPoint(MMI::PointerEvent::PointerItem &point, int id, int x, int y)
 {
     point.SetPointerId(id);
     point.SetDisplayX(x);
@@ -710,13 +710,13 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_013, TestSize.Leve
 
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
-    TouchGuiderPointSet(point, 1, 2500, 2500);
+    SetTouchGuiderPoint(point, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
-    TouchGuiderPointSet(movepoint1, 1, 3500, 2500);
+    SetTouchGuiderPoint(movepoint1, 1, 3500, 2500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
-    TouchGuiderPointSet(movepoint2, 1, 5000, 2500);
+    SetTouchGuiderPoint(movepoint2, 1, 5000, 2500);
     MMI::PointerEvent::PointerItem movepoint3 = {};
-    TouchGuiderPointSet(movepoint3, 1, 4000, 0);
+    SetTouchGuiderPoint(movepoint3, 1, 4000, 0);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -772,13 +772,13 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_014, TestSize.Leve
 
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
-    TouchGuiderPointSet(point, 1, 2500, 2500);
+    SetTouchGuiderPoint(point, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
-    TouchGuiderPointSet(movepoint1, 1, 1500, 2500);
+    SetTouchGuiderPoint(movepoint1, 1, 1500, 2500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
-    TouchGuiderPointSet(movepoint2, 1, 0, 2500);
+    SetTouchGuiderPoint(movepoint2, 1, 0, 2500);
     MMI::PointerEvent::PointerItem movepoint3 = {};
-    TouchGuiderPointSet(movepoint3, 1, 1000, 0);
+    SetTouchGuiderPoint(movepoint3, 1, 1000, 0);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -834,13 +834,13 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_015, TestSize.Leve
 
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
-    TouchGuiderPointSet(point, 1, 2500, 2500);
+    SetTouchGuiderPoint(point, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
-    TouchGuiderPointSet(movepoint1, 1, 2500, 3500);
+    SetTouchGuiderPoint(movepoint1, 1, 2500, 3500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
-    TouchGuiderPointSet(movepoint2, 1, 2500, 5000);
+    SetTouchGuiderPoint(movepoint2, 1, 2500, 5000);
     MMI::PointerEvent::PointerItem movepoint3 = {};
-    TouchGuiderPointSet(movepoint3, 1, 0, 4000);
+    SetTouchGuiderPoint(movepoint3, 1, 0, 4000);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
@@ -896,13 +896,13 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_016, TestSize.Leve
 
     std::vector<MMI::PointerEvent::PointerItem> points = {};
     MMI::PointerEvent::PointerItem point = {};
-    TouchGuiderPointSet(point, 1, 2500, 2500);
+    SetTouchGuiderPoint(point, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem movepoint1 = {};
-    TouchGuiderPointSet(movepoint1, 1, 2500, 3500);
+    SetTouchGuiderPoint(movepoint1, 1, 2500, 3500);
     MMI::PointerEvent::PointerItem movepoint2 = {};
-    TouchGuiderPointSet(movepoint2, 1, 2500, 5000);
+    SetTouchGuiderPoint(movepoint2, 1, 2500, 5000);
     MMI::PointerEvent::PointerItem movepoint3 = {};
-    TouchGuiderPointSet(movepoint3, 1, 5000, 4000);
+    SetTouchGuiderPoint(movepoint3, 1, 5000, 4000);
 
     points.emplace_back(point);
     std::shared_ptr<MMI::PointerEvent> event =
