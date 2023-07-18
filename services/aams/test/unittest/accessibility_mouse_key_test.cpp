@@ -140,7 +140,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     if (!event) {
         return;
     }
-    event.SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    event->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_1);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_2);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_3);
