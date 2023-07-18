@@ -116,9 +116,8 @@ void AccessibilityWindowManagerTest::AddActiveWindow(AccessibilityWindowManager 
 }
 
 void AccessibilityWindowManagerTest::AddNormalWindow(AccessibilityWindowManager &windowInfoManager,
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoFirst)
+    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond)
 {
-    sptr<Rosen::AccessibilityWindowInfo> rosenWinInfoSecond = new Rosen::AccessibilityWindowInfo();
     rosenWinInfoSecond->type_ = Rosen::WindowType::APP_WINDOW_BASE;
     rosenWinInfoSecond->wid_ = WINDOW_ID;
     rosenWinInfoSecond->focused_ = false;
