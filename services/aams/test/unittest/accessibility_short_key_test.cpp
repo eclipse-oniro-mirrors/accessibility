@@ -185,12 +185,9 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     if (!shortKey_) {
         return;
     }
-    bool flag = true;
-
     // power key(down)
-    flag = OnKeyEventDown();
-    if (!flag) {
-        return ;
+    if (!OnKeyEventDown()) {
+        return;
     }
 
     // power key(up)
@@ -202,9 +199,8 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     shortKey_->OnKeyEvent(*upEvent);
 
     // power key(down)
-    flag = OnKeyEventDown();
-    if (!flag) {
-        return ;
+    if (!OnKeyEventDown()) {
+        return;
     }
 
     // power key(up)
@@ -216,9 +212,8 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     shortKey_->OnKeyEvent(*upEvent1);
 
     // power key(down)
-    flag = OnKeyEventDown();
-    if (!flag) {
-        return ;
+    if (!OnKeyEventDown()) {
+        return;
     }
 
     // power key(up)
