@@ -150,9 +150,6 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_8);
     OnKeyEventPresss(*event, MMI::KeyEvent::KEYCODE_NUMPAD_9);
 
-    OnKeyEventPresssOneToFour(*event);
-    OnKeyEventPresssSixToNine(*event);
-
     EXPECT_NE(event.get(), nullptr);
     GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_001 end";
 }
