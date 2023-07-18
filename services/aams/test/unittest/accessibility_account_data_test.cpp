@@ -396,6 +396,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_RemoveI
     AccessibilityAbilityInitParams initParams;
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    accountData->Init();
     EXPECT_EQ(0, (int)accountData->GetInstalledAbilities().size());
     /* add */
     accountData->AddInstalledAbility(*abilityInfo);
