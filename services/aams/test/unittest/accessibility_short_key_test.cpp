@@ -34,7 +34,7 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
-    static bool OnKeyEventDown();
+    bool OnKeyEventDown();
     void SetUp() override;
     void TearDown() override;
     std::shared_ptr<MMI::KeyEvent> CreateKeyEvent(int32_t keyCode, int32_t keyAction);
