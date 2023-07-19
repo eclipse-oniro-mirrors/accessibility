@@ -164,7 +164,7 @@ bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &action);
     }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
-    return false;
+    return true;
 }
 
 bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
