@@ -148,7 +148,13 @@ private:
                 ERROR_MESSAGE_PARAMETER_ERROR));
             return engine.CreateUndefined();
         }
+        
+        return SetTargetBundleNameCompleteTask(engine, targetBundleNames, info);
+    }
 
+    NativeValue* SetTargetBundleNameCompleteTask(
+        NativeEngine& engine, std::vector<std::string> targetBundleNames, NativeCallbackInfo& info)
+    {
         AsyncTask::CompleteCallback complete =
             [weak = context_, targetBundleNames](NativeEngine& engine, AsyncTask& task, int32_t status) {
                 HILOG_INFO("SetTargetBundleName begin");

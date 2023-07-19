@@ -66,20 +66,10 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
     HILOG_INFO();
     AccessibilityExtension::Init(record, application, handler, token);
     std::string srcPath = "";
-    GetSrcPath(srcPath);
-    if (srcPath.empty()) {
-        HILOG_ERROR("Failed to get srcPath");
+    std::string moduleName = "";
+    if (!GetSrcPathAndModuleName(srcPath, moduleName)) {
         return;
     }
-
-    if (!abilityInfo_) {
-        HILOG_ERROR("abilityInfo_ is nullptr.");
-        return;
-    }
-    std::string moduleName(Extension::abilityInfo_->moduleName);
-    moduleName.append("::").append(abilityInfo_->name);
-    HILOG_INFO("moduleName:%{public}s, srcPath:%{public}s.", moduleName.c_str(), srcPath.c_str());
-
     jsObj_ = jsRuntime_.LoadModule(moduleName, srcPath, abilityInfo_->hapPath,
         abilityInfo_->compileMode == CompileMode::ES_MODULE);
     if (!jsObj_) {
@@ -117,6 +107,34 @@ void NAccessibilityExtension::Init(const std::shared_ptr<AppExecFwk::AbilityLoca
             delete static_cast<std::weak_ptr<AbilityRuntime::Context>*>(data);
         }, nullptr);
     NAccessibilityElement::DefineJSAccessibilityElement(reinterpret_cast<napi_env>(engine_));
+}
+
+bool NAccessibilityExtension::GetSrcPathAndModuleName(std::string& srcPath, std::string& moduleName)
+{
+    if (!Extension::abilityInfo_) {
+        HILOG_ERROR("abilityInfo_ is nullptr");
+        return false;
+    }
+    if (!Extension::abilityInfo_->isModuleJson) {
+        srcPath.append(Extension::abilityInfo_->package);
+        srcPath.append("/assets/js/");
+        if (!Extension::abilityInfo_->srcPath.empty()) {
+            srcPath.append(Extension::abilityInfo_->srcPath);
+        }
+        srcPath.append("/").append(Extension::abilityInfo_->name).append(".abc");
+    } else if (!Extension::abilityInfo_->srcEntrance.empty()) {
+        srcPath.append(Extension::abilityInfo_->moduleName + "/");
+        srcPath.append(Extension::abilityInfo_->srcEntrance);
+        srcPath.erase(srcPath.rfind('.'));
+        srcPath.append(".abc");
+    } else {
+        HILOG_ERROR("Failed to get srcPath");
+        return false;
+    }
+    moduleName = Extension::abilityInfo_->moduleName;
+    moduleName.append("::").append(abilityInfo_->name);
+    HILOG_INFO("moduleName:%{public}s, srcPath:%{public}s.", moduleName.c_str(), srcPath.c_str());
+    return true;
 }
 
 sptr<IRemoteObject> NAccessibilityExtension::OnConnect(const AAFwk::Want &want)
@@ -379,6 +397,42 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
     }
 }
 
+void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* work, int status)
+{
+    AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
+    auto closeScope = [data](napi_handle_scope scope) {
+        napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
+    };
+    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+        OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
+    napi_value napiEventInfo = nullptr;
+    napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo);
+
+    napi_value nType;
+    NAPI_CALL_RETURN_VOID(reinterpret_cast<napi_env>(data->engine_),
+        napi_create_string_utf8(reinterpret_cast<napi_env>(data->engine_), data->eventType_.c_str(),
+        NAPI_AUTO_LENGTH, &nType));
+    NAPI_CALL_RETURN_VOID(reinterpret_cast<napi_env>(data->engine_),
+        napi_set_named_property(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, "eventType", nType));
+    HILOG_DEBUG("eventType[%{public}s]", data->eventType_.c_str());
+
+    napi_value nTimeStamp;
+    NAPI_CALL_RETURN_VOID(reinterpret_cast<napi_env>(data->engine_),
+        napi_create_int64(reinterpret_cast<napi_env>(data->engine_), data->timeStamp_, &nTimeStamp));
+    NAPI_CALL_RETURN_VOID(reinterpret_cast<napi_env>(data->engine_),
+        napi_set_named_property(reinterpret_cast<napi_env>(data->engine_),
+        napiEventInfo, "timeStamp", nTimeStamp));
+
+    ConvertAccessibilityElementToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->element_);
+    NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
+    NativeValue* argv[] = {nativeEventInfo};
+    data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
+    delete data;
+    data = nullptr;
+    delete work;
+    work = nullptr;
+}
+
 bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
 {
     HILOG_INFO();
@@ -458,6 +512,48 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
     return callbackResult;
 }
 
+void NAccessibilityExtension::OnKeyPressEventCompleteCallback(uv_work_t* work, int status)
+{
+    KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
+    auto closeScope = [data](napi_handle_scope scope) {
+        napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
+    };
+    std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+        OpenScope(reinterpret_cast<napi_env>(data->engine_)), closeScope);
+    napi_value napiEventInfo = nullptr;
+    if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
+        HILOG_ERROR("Create keyEvent object failed.");
+        data->syncPromise_.set_value(false);
+        delete data;
+        data = nullptr;
+        delete work;
+        work = nullptr;
+        return;
+    }
+    ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
+    NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
+    NativeValue* argv[] = {nativeEventInfo};
+    NativeValue* nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+
+    // Unwrap result
+    bool result = false;
+    if (!ConvertFromJsValue(*data->engine_, nativeResult, result)) {
+        HILOG_ERROR("ConvertFromJsValue failed");
+        data->syncPromise_.set_value(false);
+        delete data;
+        data = nullptr;
+        delete work;
+        work = nullptr;
+        return;
+    }
+    HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
+    data->syncPromise_.set_value(result);
+    delete data;
+    data = nullptr;
+    delete work;
+    work = nullptr;
+}
+
 NativeValue* NAccessibilityExtension::CallObjectMethod(const char* name, NativeValue* const* argv, size_t argc)
 {
     HILOG_INFO("name:%{public}s", name);
@@ -480,30 +576,6 @@ NativeValue* NAccessibilityExtension::CallObjectMethod(const char* name, NativeV
     }
     HILOG_INFO("CallFunction(%{public}s), success", name);
     return engine_->CallFunction(value, method, argv, argc);
-}
-
-void NAccessibilityExtension::GetSrcPath(std::string &srcPath)
-{
-    if (!Extension::abilityInfo_) {
-        HILOG_ERROR("abilityInfo_ is nullptr");
-        return;
-    }
-    if (!Extension::abilityInfo_->isModuleJson) {
-        srcPath.append(Extension::abilityInfo_->package);
-        srcPath.append("/assets/js/");
-        if (!Extension::abilityInfo_->srcPath.empty()) {
-            srcPath.append(Extension::abilityInfo_->srcPath);
-        }
-        srcPath.append("/").append(Extension::abilityInfo_->name).append(".abc");
-        return;
-    }
-
-    if (!Extension::abilityInfo_->srcEntrance.empty()) {
-        srcPath.append(Extension::abilityInfo_->moduleName + "/");
-        srcPath.append(Extension::abilityInfo_->srcEntrance);
-        srcPath.erase(srcPath.rfind('.'));
-        srcPath.append(".abc");
-    }
 }
 } // namespace Accessibility
 } // namespace OHOS
