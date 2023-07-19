@@ -28,10 +28,8 @@ AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const Accessibili
     *self = elementInfo;
 }
 
-bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
+bool AccessibilityElementInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
 {
-    HILOG_DEBUG();
-
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
     int32_t textMoveStep = STEP_CHARACTER;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textMoveStep);
@@ -48,6 +46,11 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32Vector, parcel, &childNodeIds_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childCount_);
+    return true;
+}
+
+bool AccessibilityElementInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
+{
     int32_t operationsSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
     ContainerSecurityVerify(parcel, operationsSize, operations_.max_size());
@@ -59,12 +62,14 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
         }
         operations_.emplace_back(*accessibleOperation);
     }
+
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
     sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
     if (!rect) {
         return false;
     }
     bounds_ = *rect;
+
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checkable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checked_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focusable_);
@@ -86,21 +91,29 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex_);
+    return true;
+}
+
+bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
+{
     sptr<RangeInfoParcel> rangeInfo = parcel.ReadStrongParcelable<RangeInfoParcel>();
     if (!rangeInfo) {
         return false;
     }
     rangeInfo_ = *rangeInfo;
+
     sptr<GridInfoParcel> grid = parcel.ReadStrongParcelable<GridInfoParcel>();
     if (!grid) {
         return false;
     }
     grid_ = *grid;
+
     sptr<GridItemInfoParcel> gridItem = parcel.ReadStrongParcelable<GridItemInfoParcel>();
     if (!gridItem) {
         return false;
     }
     gridItem_ = *gridItem;
+
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, liveRegion_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, contentInvalid_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, error_);
@@ -111,14 +124,26 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, validElement_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, inspectorKey_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
-
     return true;
 }
 
-bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
+bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG();
+    if (!ReadFromParcelFirstPart(parcel)) {
+        return false;
+    }
+    if (!ReadFromParcelSecondPart(parcel)) {
+        return false;
+    }
+    if (!ReadFromParcelThirdPart(parcel)) {
+        return false;
+    }
+    return true;
+}
 
+bool AccessibilityElementInfoParcel::MarshallingFirstPart(Parcel &parcel) const
+{
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(textMoveStep_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts_);
@@ -139,6 +164,11 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
         WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &action);
     }
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    return false;
+}
+
+bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
+{
     RectParcel boundsParcel(bounds_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Parcelable, parcel, &boundsParcel);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checkable_);
@@ -178,6 +208,18 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, validElement_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, inspectorKey_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
+    return true;
+}
+
+bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
+{
+    HILOG_DEBUG();
+    if (!MarshallingFirstPart(parcel)) {
+        return false;
+    }
+    if (!MarshallingSecondPart(parcel)) {
+        return false;
+    }
     return true;
 }
 

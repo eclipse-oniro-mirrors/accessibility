@@ -272,6 +272,42 @@ public:
      * @sysCap Accessibility
      */
     static sptr<AccessibilityElementInfoParcel> Unmarshalling(Parcel &parcel);
+
+private:
+     /**
+     * @brief Used for IPC communication first part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelFirstPart(Parcel &parcel);
+
+     /**
+     * @brief Used for IPC communication second part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelSecondPart(Parcel &parcel);
+
+     /**
+     * @brief Used for IPC communication third part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelThirdPart(Parcel &parcel);
+
+    /**
+     * @brief Used for IPC communication first part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool MarshallingFirstPart(Parcel &parcel) const;
+
+    /**
+     * @brief Used for IPC communication second part
+     * @param parcel
+     * @sysCap Accessibility
+     */
+    bool MarshallingSecondPart(Parcel &parcel) const;
 };
 } // namespace Accessibility
 } // namespace OHOS

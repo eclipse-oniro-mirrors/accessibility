@@ -111,10 +111,9 @@ static size_t GenerateGridItemInfo(OHOS::Accessibility::GridItemInfo &gridItem, 
     return position;
 }
 
-static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
-    const uint8_t* data, size_t size)
+static void GenerateAccessibilityElementInfoP1(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
 {
-    size_t position = 0;
     int32_t int32Data = 0;
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetPageId(int32Data);
@@ -165,7 +164,11 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
         sourceElementInfo.AddChild(int32Data);
     }
+}
 
+static void GenerateAccessibilityElementInfoP2(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
     char name[LEN + 1];
     name[LEN] = END_CHAR;
     for (size_t i = 0; i < LEN; i++) {
@@ -215,7 +218,11 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
     }
     std::string error(name);
     sourceElementInfo.SetError(error);
+}
 
+static void GenerateAccessibilityElementInfoP3(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size, size_t& position)
+{
     sourceElementInfo.SetCheckable(data[position++] & 0x01);
     sourceElementInfo.SetChecked(data[position++] & 0x01);
     sourceElementInfo.SetFocusable(data[position++] & 0x01);
@@ -253,6 +260,9 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
     position += GenerateGridItemInfo(gridItem, &data[position], size - position);
     sourceElementInfo.SetGridItem(gridItem);
 
+    int32_t int32Data = 0;
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
     for (size_t count = 0; count < VEC_SIZE; count++) {
         position += GetObject<int32_t>(int32Data, &data[position], size - position);
         for (size_t i = 0; i < LEN; i++) {
@@ -263,6 +273,15 @@ static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::Accessibilit
             static_cast<OHOS::Accessibility::ActionType>(int32Data), description);
         sourceElementInfo.AddAction(action);
     }
+}
+
+static size_t GenerateAccessibilityElementInfo(OHOS::Accessibility::AccessibilityElementInfo &sourceElementInfo,
+    const uint8_t* data, size_t size)
+{
+    size_t position = 0;
+    GenerateAccessibilityElementInfoP1(sourceElementInfo, data, size, position);
+    GenerateAccessibilityElementInfoP2(sourceElementInfo, data, size, position);
+    GenerateAccessibilityElementInfoP3(sourceElementInfo, data, size, position);
     return position;
 }
 

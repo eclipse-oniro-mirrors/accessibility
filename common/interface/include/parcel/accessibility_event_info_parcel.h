@@ -64,6 +64,23 @@ public:
      * @sysCap Accessibility
      */
     static sptr<AccessibilityEventInfoParcel> Unmarshalling(Parcel &parcel);
+
+private:
+    /**
+     * @brief Used for IPC communication first part
+     * @param parcel
+     * @return true: Read parcel data successfully; otherwise is not.
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelFirstPart(Parcel &parcel);
+
+    /**
+     * @brief Used for IPC communication second part
+     * @param parcel
+     * @return true: Read parcel data successfully; otherwise is not.
+     * @sysCap Accessibility
+     */
+    bool ReadFromParcelSecondPart(Parcel &parcel);
 };
 } // namespace Accessibility
 } // namespace OHOS

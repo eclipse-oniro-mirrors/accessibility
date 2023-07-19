@@ -310,15 +310,9 @@ void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
-void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
+void NAccessibilityConfig::SetConfigExcludeColorFilter(NAccessibilityConfigData* callbackInfo,
+    OHOS::AccessibilityConfig::AccessibilityConfig& instance)
 {
-    HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
@@ -356,12 +350,6 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
             callbackInfo->ret_ = instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
             break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-            {
-                auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
-                callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
-            }
-            break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
             callbackInfo->ret_ = instance.SetShortkeyTarget(callbackInfo->stringConfig_);
             break;
@@ -371,6 +359,28 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         default:
             break;
     }
+}
+
+void NAccessibilityConfig::SetColorFilterConfig(NAccessibilityConfigData* callbackInfo,
+    OHOS::AccessibilityConfig::AccessibilityConfig& instance)
+{
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER) {
+        auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
+        callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
+    }
+}
+
+void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
+{
+    HILOG_INFO();
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    SetConfigExcludeColorFilter(callbackInfo, instance);
+    SetColorFilterConfig(callbackInfo, instance);
 }
 
 void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
@@ -442,15 +452,9 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
-void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
+void NAccessibilityConfig::GetConfigExcludeTimeoutAndColorFilter(NAccessibilityConfigData* callbackInfo,
+    OHOS::AccessibilityConfig::AccessibilityConfig& instance)
 {
-    HILOG_INFO();
-    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
-    if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
-        return;
-    }
-    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     switch (callbackInfo->id_) {
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
             callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
@@ -476,13 +480,6 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
             callbackInfo->ret_ = instance.GetCaptionsState(callbackInfo->boolConfig_);
             break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            {
-                uint32_t timeout = 0;
-                callbackInfo->ret_ = instance.GetContentTimeout(timeout);
-                callbackInfo->int32Config_ = static_cast<int32_t>(timeout);
-            }
-            break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
             callbackInfo->ret_ = instance.GetMouseAutoClick(callbackInfo->int32Config_);
             break;
@@ -491,13 +488,6 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
             callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
-            break;
-        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-            {
-                OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
-                callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
-                callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
-            }
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
             callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
@@ -508,6 +498,34 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         default:
             break;
     }
+}
+
+void NAccessibilityConfig::GetTimeoutAndColorFilterConfig(NAccessibilityConfigData* callbackInfo,
+    OHOS::AccessibilityConfig::AccessibilityConfig& instance)
+{
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
+        uint32_t timeout = 0;
+        callbackInfo->ret_ = instance.GetContentTimeout(timeout);
+        callbackInfo->int32Config_ = static_cast<int32_t>(timeout);
+    }
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER) {
+        OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
+        callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
+        callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
+    }
+}
+
+void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
+{
+    HILOG_INFO();
+    NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
+    if (!callbackInfo) {
+        HILOG_ERROR("callbackInfo is nullptr");
+        return;
+    }
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    GetConfigExcludeTimeoutAndColorFilter(callbackInfo, instance);
+    GetTimeoutAndColorFilterConfig(callbackInfo, instance);
 }
 
 napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
