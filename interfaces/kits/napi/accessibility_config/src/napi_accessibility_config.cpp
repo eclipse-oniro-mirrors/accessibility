@@ -528,15 +528,12 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     GetTimeoutAndColorFilterConfig(callbackInfo, instance);
 }
 
-napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
+NAccessibilityConfigData* NAccessibilityConfig::GetCallbackInfo(napi_env env, napi_callback_info info,
+    napi_value* parameters, size_t& argc, NAccessibilityConfigClass*& obj)
 {
-    HILOG_INFO();
-    size_t argc = ARGS_SIZE_TWO;
-    napi_value parameters[ARGS_SIZE_TWO] = {0};
     napi_value jsthis;
     napi_get_cb_info(env, info, &argc, parameters, &jsthis, nullptr);
 
-    NAccessibilityConfigClass* obj;
     napi_status status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj));
     if (status != napi_ok) {
         HILOG_ERROR("Failed to get unwrap obj");
@@ -558,68 +555,101 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         napi_throw(env, err);
         return nullptr;
     }
+    return callbackInfo;
+}
+
+bool NAccessibilityConfig::ParseConnectTimeoutData(napi_env env, NAccessibilityConfigData* callbackInfo,
+    napi_value* parameters)
+{
+    int32_t timeout = 0;
+    bool ret = ParseInt32(env, timeout, parameters[PARAM0]);
+    callbackInfo->uint32Config_ = static_cast<uint32_t>(timeout);
+    return ret;
+}
+
+bool NAccessibilityConfig::ParseMouseAutoClickData(napi_env env, NAccessibilityConfigData* callbackInfo,
+    napi_value* parameters)
+{
+    int32_t time = 0;
+    bool ret = ParseInt32(env, time, parameters[PARAM0]);
+    callbackInfo->int32Config_ = time;
+    return ret;
+}
+
+bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfigClass* obj,
+    NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc)
+{
+    bool ret = false;
+    switch (obj->GetConfigId()) {
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+            {
+                bool state = false;
+                ret = ParseBool(env, state, parameters[PARAM0]);
+                callbackInfo->boolConfig_ = state;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
+            ret = ParseConnectTimeoutData(env, callbackInfo, parameters);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
+            ret = ParseMouseAutoClickData(env, callbackInfo, parameters);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
+            {
+                double doubleTemp = 0;
+                ret = ParseDouble(env, doubleTemp, parameters[PARAM0]);
+                callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+            {
+                std::string target = "";
+                ret = ParseString(env, target, parameters[PARAM0]) && target.length() > 0;
+                callbackInfo->stringConfig_ = target;
+            }
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
+            ret = ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
+            break;
+        default:
+            break;
+    }
+    return ret;
+}
+
+napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+
+    NAccessibilityConfigClass* obj;
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    NAccessibilityConfigData* callbackInfo = GetCallbackInfo(env, info, parameters, argc, obj);
+    if (callbackInfo == nullptr) {
+        return nullptr;
+    }
+
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO - 1) {
         HILOG_ERROR("argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
+
     if (errCode == OHOS::Accessibility::RET_OK) {
-        bool ret = false;
-        switch (obj->GetConfigId()) {
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SCREEN_MAGNIFICATION:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_MONO:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
-                {
-                    bool state = false;
-                    ret = ParseBool(env, state, parameters[PARAM0]);
-                    callbackInfo->boolConfig_ = state;
-                }
-                break;
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-                {
-                    int32_t timeout = 0;
-                    ret = ParseInt32(env, timeout, parameters[PARAM0]);
-                    callbackInfo->uint32Config_ = static_cast<uint32_t>(timeout);
-                }
-                break;
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-                {
-                    int32_t time = 0;
-                    ret = ParseInt32(env, time, parameters[PARAM0]);
-                    callbackInfo->int32Config_ = time;
-                }
-                break;
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
-                {
-                    double doubleTemp = 0;
-                    ret = ParseDouble(env, doubleTemp, parameters[PARAM0]);
-                    callbackInfo->floatConfig_ = static_cast<float>(doubleTemp);
-                }
-                break;
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
-                {
-                    std::string target = "";
-                    ret = ParseString(env, target, parameters[PARAM0]) && target.length() > 0;
-                    callbackInfo->stringConfig_ = target;
-                }
-                break;
-            case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-                ret = ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
-                break;
-            default:
-                break;
-        }
-        if (!ret) {
+        if (!SetConfigParseData(env, obj, callbackInfo, parameters, argc)) {
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
+
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         delete callbackInfo;
         callbackInfo = nullptr;
@@ -651,7 +681,6 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
     napi_queue_async_work(env, callbackInfo->work_);
     return promise;
 }
-
 
 napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info)
 {

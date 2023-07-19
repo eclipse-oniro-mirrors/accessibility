@@ -133,6 +133,14 @@ private:
         napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
     static void ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
         napi_value* result, size_t len);
+    static NAccessibilityConfigData* GetCallbackInfo(napi_env env, napi_callback_info info,
+        napi_value* parameters, size_t& argc, NAccessibilityConfigClass*& obj);
+    static bool ParseConnectTimeoutData(napi_env env, NAccessibilityConfigData* callbackInfo,
+        napi_value* parameters);
+    static bool ParseMouseAutoClickData(napi_env env, NAccessibilityConfigData* callbackInfo,
+        napi_value* parameters);
+    static bool SetConfigParseData(napi_env env, NAccessibilityConfigClass* obj,
+        NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);
     NAccessibilityConfig() = default;
     ~NAccessibilityConfig() = default;
 };
