@@ -34,6 +34,7 @@ public:
 
     static void SetUpTestCase();
     static void TearDownTestCase();
+    bool OnKeyEventDown();
     void SetUp() override;
     void TearDown() override;
     std::shared_ptr<MMI::KeyEvent> CreateKeyEvent(int32_t keyCode, int32_t keyAction);
@@ -74,6 +75,20 @@ std::shared_ptr<MMI::KeyEvent> AccessibilityShortKeyUnitTest::CreateKeyEvent(int
     event->SetKeyCode(keyCode);
     event->SetKeyAction(keyAction);
     return event;
+}
+
+bool AccessibilityShortKeyUnitTest::OnKeyEventDown()
+{
+    std::shared_ptr<MMI::KeyEvent> downEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
+        MMI::KeyEvent::KEY_ACTION_DOWN);
+    if (!downEvent) {
+        return false;
+    }
+    MMI::KeyEvent::KeyItem item;
+    item.SetPressed(true);
+    downEvent->AddKeyItem(item);
+    shortKey_->OnKeyEvent(*downEvent);
+    return true;
 }
 
 /**
@@ -171,15 +186,10 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
         return;
     }
     // power key(down)
-    std::shared_ptr<MMI::KeyEvent> downEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!downEvent) {
+    if (!OnKeyEventDown()) {
         return;
     }
-    MMI::KeyEvent::KeyItem item;
-    item.SetPressed(true);
-    downEvent->AddKeyItem(item);
-    shortKey_->OnKeyEvent(*downEvent);
+
     // power key(up)
     std::shared_ptr<MMI::KeyEvent> upEvent = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
         MMI::KeyEvent::KEY_ACTION_UP);
@@ -189,15 +199,10 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     shortKey_->OnKeyEvent(*upEvent);
 
     // power key(down)
-    std::shared_ptr<MMI::KeyEvent> downEvent1 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!downEvent1) {
+    if (!OnKeyEventDown()) {
         return;
     }
-    MMI::KeyEvent::KeyItem item1;
-    item1.SetPressed(true);
-    downEvent1->AddKeyItem(item1);
-    shortKey_->OnKeyEvent(*downEvent1);
+
     // power key(up)
     std::shared_ptr<MMI::KeyEvent> upEvent1 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
         MMI::KeyEvent::KEY_ACTION_UP);
@@ -207,15 +212,10 @@ HWTEST_F(AccessibilityShortKeyUnitTest, AccessibilityShortKey_Unittest_OnKeyEven
     shortKey_->OnKeyEvent(*upEvent1);
 
     // power key(down)
-    std::shared_ptr<MMI::KeyEvent> downEvent2 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
-        MMI::KeyEvent::KEY_ACTION_DOWN);
-    if (!downEvent2) {
+    if (!OnKeyEventDown()) {
         return;
     }
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetPressed(true);
-    downEvent2->AddKeyItem(item2);
-    shortKey_->OnKeyEvent(*downEvent2);
+
     // power key(up)
     std::shared_ptr<MMI::KeyEvent> upEvent2 = CreateKeyEvent(MMI::KeyEvent::KEYCODE_POWER,
         MMI::KeyEvent::KEY_ACTION_UP);
