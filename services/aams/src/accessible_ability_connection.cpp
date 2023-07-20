@@ -90,6 +90,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         accountData->RemoveConnectingA11yAbility(Utils::GetUri(element));
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
         connection->InitAbilityClient(remoteObject);
+        accountData->UpdateEnableAbilityListsState();
         }, accountId_), "OnAbilityConnectDone");
 }
 
