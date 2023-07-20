@@ -497,7 +497,6 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
 
     enabledAbilities_.push_back(name);
-    UpdateEnableAbilityListsState();
     UpdateAbilities();
     Utils::RecordStartingA11yEvent(name);
     return RET_OK;
