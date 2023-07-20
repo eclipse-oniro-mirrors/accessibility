@@ -272,8 +272,12 @@ napi_value NAccessibilityElement::AttributeValue(napi_env env, napi_callback_inf
     HILOG_DEBUG("argc = %{public}d", (int)argc);
 
     // Unwrap AccessibilityElement
-    AccessibilityElement* accessibilityElement = UnrapAccessibilityElement(env, thisVar);
-    if (!accessibilityElement) {
+    AccessibilityElement* accessibilityElement = nullptr;
+    status = napi_unwrap(env, thisVar, (void**)&accessibilityElement);
+    if (!accessibilityElement || status != napi_ok) {
+        HILOG_ERROR("accessibilityElement is null or status[%{public}d] is wrong", status);
+        napi_value err = CreateBusinessError(env, RetError::RET_ERR_NULLPTR);
+        napi_throw(env, err);
         return nullptr;
     }
 
