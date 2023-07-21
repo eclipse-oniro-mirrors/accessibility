@@ -322,34 +322,8 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, objEventInfo, "target", nTargetObject));
 }
 
-void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
+int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
-    HILOG_INFO();
-    std::string strType = "";
-    ConvertEventTypeToString(eventInfo, strType);
-    if (strType.empty()) {
-        HILOG_DEBUG("eventType is invalid.");
-        return;
-    }
-    uv_loop_t *loop = engine_->GetUVLoop();
-    AccessibilityEventInfoCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityEventInfoCallbackInfo();
-    if (!callbackInfo) {
-        HILOG_ERROR("Failed to create callbackInfo.");
-        return;
-    }
-    callbackInfo->engine_ = engine_;
-    callbackInfo->extension_ = this;
-    callbackInfo->eventType_ = strType;
-    callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
-    callbackInfo->element_ = GetElement(eventInfo);
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (!work) {
-        HILOG_ERROR("Failed to create data.");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        return;
-    }
-    work->data = static_cast<void*>(callbackInfo);
     int ret = uv_queue_work(
         loop,
         work,
@@ -388,7 +362,39 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
             delete work;
             work = nullptr;
         });
-    if (ret) {
+    return ret;
+}
+
+void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
+{
+    HILOG_INFO();
+    std::string strType = "";
+    ConvertEventTypeToString(eventInfo, strType);
+    if (strType.empty()) {
+        HILOG_DEBUG("eventType is invalid.");
+        return;
+    }
+    uv_loop_t *loop = engine_->GetUVLoop();
+    AccessibilityEventInfoCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityEventInfoCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
+    callbackInfo->engine_ = engine_;
+    callbackInfo->extension_ = this;
+    callbackInfo->eventType_ = strType;
+    callbackInfo->timeStamp_ = eventInfo.GetTimeStamp();
+    callbackInfo->element_ = GetElement(eventInfo);
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create data.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+
+    if (OnAccessibilityEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnAccessibilityEvent work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
@@ -433,28 +439,8 @@ void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* wo
     work = nullptr;
 }
 
-bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
+int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)
 {
-    HILOG_INFO();
-    uv_loop_t *loop = engine_->GetUVLoop();
-    KeyEventCallbackInfo *callbackInfo = new(std::nothrow) KeyEventCallbackInfo();
-    if (!callbackInfo) {
-        HILOG_ERROR("Failed to create callbackInfo.");
-        return false;
-    }
-    callbackInfo->engine_ = engine_;
-    callbackInfo->keyEvent_ = MMI::KeyEvent::Clone(keyEvent);
-    callbackInfo->extension_ = this;
-    uv_work_t *work = new(std::nothrow) uv_work_t;
-    if (!work) {
-        HILOG_ERROR("Failed to create data.");
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        return false;
-    }
-    work->data = static_cast<void*>(callbackInfo);
-    std::future syncFuture = callbackInfo->syncPromise_.get_future();
-
     int ret = uv_queue_work(
         loop,
         work,
@@ -499,7 +485,32 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
             delete work;
             work = nullptr;
         });
-    if (ret) {
+    return ret;
+}
+
+bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
+{
+    HILOG_INFO();
+    uv_loop_t *loop = engine_->GetUVLoop();
+    KeyEventCallbackInfo *callbackInfo = new(std::nothrow) KeyEventCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return false;
+    }
+    callbackInfo->engine_ = engine_;
+    callbackInfo->keyEvent_ = MMI::KeyEvent::Clone(keyEvent);
+    callbackInfo->extension_ = this;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("Failed to create data.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return false;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+    std::future syncFuture = callbackInfo->syncPromise_.get_future();
+
+    if (OnKeyPressEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");
         callbackInfo->syncPromise_.set_value(false);
         delete callbackInfo;
