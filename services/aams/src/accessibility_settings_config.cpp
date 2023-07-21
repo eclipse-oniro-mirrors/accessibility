@@ -224,6 +224,66 @@ RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConf
     return RET_OK;
 }
 
+bool AccessibilitySettingsConfig::SetShortKeyStatePref(int32_t type)
+{
+    if (type == STATE::SHORTKEY) {
+        std::string strValue = StateChange(isShortKeyState_);
+        pref_->PutString("ShortKey", strValue);
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilitySettingsConfig::SetMouseKeyStatePref(int32_t type)
+{
+    if (type == STATE::MOUSEKEY) {
+        std::string strValue = StateChange(isMouseKeyState_);
+        pref_->PutString("MouseKey", strValue);
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilitySettingsConfig::SetHighContrastStatePref(int32_t type)
+{
+    if (type == STATE::HIGHCONTRASTTEXT) {
+        std::string strValue = StateChange(highContrastTextState_);
+        pref_->PutString("highContrastText", strValue);
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilitySettingsConfig::SetIvertColorStatePref(int32_t type)
+{
+    if (type == STATE::INVERTCOLORSTATE) {
+        std::string strValue = StateChange(invertColorState_);
+        pref_->PutString("invertColor", strValue);
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilitySettingsConfig::SetAnimationOffStatePref(int32_t type)
+{
+    if (type == STATE::ANIMATIONOFF) {
+        std::string strValue = StateChange(animationOffState_);
+        pref_->PutString("animationOff", strValue);
+        return true;
+    }
+    return false;
+}
+
+bool AccessibilitySettingsConfig::SetAudioMonoStatePref(int32_t type)
+{
+    if (type == STATE::AUDIOMONO) {
+        std::string strValue = StateChange(audioMonoState_);
+        pref_->PutString("audioMono", strValue);
+        return true;
+    }
+    return false;
+}
+
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
 {
     HILOG_DEBUG("type = [%{public}d]", type);
@@ -232,6 +292,7 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
         return false;
     }
 
+    bool ret = false;
     std::string strValue = "";
     switch (type) {
         case STATE::ACCESSIBILITY:
@@ -258,36 +319,23 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
             strValue = StateChange(isScreenMagnificationState_);
             pref_->PutString("ScreenMagnification", strValue);
             break;
-        case STATE::SHORTKEY:
-            strValue = StateChange(isShortKeyState_);
-            pref_->PutString("ShortKey", strValue);
-            break;
-        case STATE::MOUSEKEY:
-            strValue = StateChange(isMouseKeyState_);
-            pref_->PutString("MouseKey", strValue);
-            break;
-        case STATE::HIGHCONTRASTTEXT:
-            strValue = StateChange(highContrastTextState_);
-            pref_->PutString("highContrastText", strValue);
-            break;
-        case STATE::INVERTCOLORSTATE:
-            strValue = StateChange(invertColorState_);
-            pref_->PutString("invertColor", strValue);
-            break;
-        case STATE::ANIMATIONOFF:
-            strValue = StateChange(animationOffState_);
-            pref_->PutString("animationOff", strValue);
-            break;
-        case STATE::AUDIOMONO:
-            strValue = StateChange(audioMonoState_);
-            pref_->PutString("audioMono", strValue);
-            break;
         default:
             HILOG_ERROR("Invalid parameter.");
-            return false;
+            ret |= false;
+            break;
     }
-    pref_->Flush();
-    return true;
+
+    ret |= SetShortKeyStatePref(type);
+    ret |= SetMouseKeyStatePref(type);
+    ret |= SetHighContrastStatePref(type);
+    ret |= SetIvertColorStatePref(type);
+    ret |= SetAnimationOffStatePref(type);
+    ret |= SetAudioMonoStatePref(type);
+    if (ret) {
+        pref_->Flush();
+    } 
+
+    return ret;
 }
 
 std::string AccessibilitySettingsConfig::StateChange(bool state)
