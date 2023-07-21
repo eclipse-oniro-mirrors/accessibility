@@ -234,6 +234,8 @@ public:
 
     void Init();
 
+    void UpdateEnableAbilityListsState();
+
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
     const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &GetConfigCallbacks() const;
@@ -280,8 +282,6 @@ private:
      *        otherwise isScreenMagnification_ is false.
      */
     void UpdateMagnificationCapability();
-
-    void UpdateEnableAbilityListsState();
 
     int32_t id_;
     bool isEventTouchGuideState_ = false;
