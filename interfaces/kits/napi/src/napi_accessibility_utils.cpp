@@ -1436,7 +1436,6 @@ bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
 {
     napi_value propertyNameValue = nullptr;
-    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
     bool hasProperty = false;
     int32_t num = 0;
 
