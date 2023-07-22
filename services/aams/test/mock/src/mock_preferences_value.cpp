@@ -157,9 +157,9 @@ PreferencesValue::operator int64_t() const
     return std::get<int64_t>(value_);
 }
 
-bool PreferencesValue::IsBoolArray() const
+PreferencesValue::operator double() const
 {
-    return std::holds_alternative<std::vector<bool>>(value_);
+    return std::get<double>(value_);
 }
 
 PreferencesValue::operator float() const
@@ -167,9 +167,9 @@ PreferencesValue::operator float() const
     return std::get<float>(value_);
 }
 
-bool PreferencesValue::IsBoolArray() const
+PreferencesValue::operator std::string() const
 {
-    return std::holds_alternative<std::vector<bool>>(value_);
+    return std::get<std::string>(value_);
 }
 
 PreferencesValue::operator bool() const
