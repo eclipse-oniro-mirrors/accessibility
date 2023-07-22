@@ -347,8 +347,18 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
     return typeTable.at(type);
 }
 
-static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, AccessibilityAbilityInfo& info)
+void ConvertAccessibleAbilityInfoToJS(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
 {
+    HILOG_DEBUG();
+    ConvertAccessibleAbilityInfoToJSPart1(env, result, info);
+    ConvertAccessibleAbilityInfoToJSPart2(env, result, info);
+}
+
+void ConvertAccessibleAbilityInfoToJSPart1(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
+{
+    HILOG_DEBUG();
     napi_value nId;
     NAPI_CALL_RETURN_VOID(env, napi_create_string_utf8(env, info.GetId().c_str(), NAPI_AUTO_LENGTH, &nId));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "id", nId));
@@ -373,7 +383,12 @@ static void ConvertAccessibleAbilityInfoToJS(napi_env env, napi_value& result, A
         NAPI_CALL_RETURN_VOID(env, napi_set_element(env, nAbilityType, idxType, nType));
     }
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "abilityTypes", nAbilityType));
+}
 
+void ConvertAccessibleAbilityInfoToJSPart2(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
+{
+    HILOG_DEBUG();
     napi_value nCapabilities;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &nCapabilities));
     uint32_t capabilitiesValue = info.GetStaticCapabilityValues();
@@ -739,50 +754,35 @@ void ConvertActionArgsJSToNAPI(
         case ActionType::ACCESSIBILITY_ACTION_NEXT_HTML_ITEM:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_HTML_ITEM:
             napi_create_string_utf8(env, "htmlItem", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                napi_value htmlItemValue = nullptr;
-                napi_get_property(env, object, propertyNameValue, &htmlItemValue);
-                str = GetStringFromNAPI(env, htmlItemValue);
                 args.insert(std::pair<std::string, std::string>("htmlItem", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_NEXT_TEXT:
         case ActionType::ACCESSIBILITY_ACTION_PREVIOUS_TEXT:
             napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                napi_value textMoveUnitValue = nullptr;
-                napi_get_property(env, object, propertyNameValue, &textMoveUnitValue);
-                str = GetStringFromNAPI(env, textMoveUnitValue);
                 args.insert(std::pair<std::string, std::string>("textMoveUnit", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_SELECTION:
             napi_create_string_utf8(env, "selectTextBegin", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                napi_value selectTextBeginValue = nullptr;
-                napi_get_property(env, object, propertyNameValue, &selectTextBeginValue);
-                str = GetStringFromNAPI(env, selectTextBeginValue);
                 args.insert(std::pair<std::string, std::string>("selectTextBegin", str.c_str()));
             }
             napi_create_string_utf8(env, "selectTextEnd", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                napi_value selectTextEndValue = nullptr;
-                napi_get_property(env, object, propertyNameValue, &selectTextEndValue);
-                str = GetStringFromNAPI(env, selectTextEndValue);
                 args.insert(std::pair<std::string, std::string>("selectTextEnd", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_TEXT:
             napi_create_string_utf8(env, "setText", NAPI_AUTO_LENGTH, &propertyNameValue);
-            napi_has_property(env, object, propertyNameValue, &hasProperty);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
             if (hasProperty) {
-                napi_value setTextValue = nullptr;
-                napi_get_property(env, object, propertyNameValue, &setTextValue);
-                str = GetStringFromNAPI(env, setTextValue);
                 args.insert(std::pair<std::string, std::string>("setText", str.c_str()));
             }
             break;
@@ -837,8 +837,26 @@ void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
 bool ConvertEventInfoJSToNAPI(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
 {
+    HILOG_INFO();
+    bool tmpResult = ConvertEventInfoJSToNAPIPart1(env, object, eventInfo);
+    if (!tmpResult) {
+        return false;
+    }
+    tmpResult = ConvertEventInfoJSToNAPIPart2(env, object, eventInfo);
+    if (!tmpResult) {
+        return false;
+    }
+    tmpResult = ConvertEventInfoJSToNAPIPart3(env, object, eventInfo);
+    if (!tmpResult) {
+        return false;
+    }
+    return true;
+}
+
+bool ConvertEventInfoJSToNAPIPart1(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
+{
     bool hasProperty = false;
-    int32_t dataValue = 0;
     std::string str = "";
     napi_value propertyNameValue = nullptr;
     napi_create_string_utf8(env, "type", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -871,7 +889,16 @@ bool ConvertEventInfoJSToNAPI(
     } else {
         return false;
     }
+    return true;
+}
 
+bool ConvertEventInfoJSToNAPIPart2(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
+{
+    bool hasProperty = false;
+    int32_t dataValue = 0;
+    std::string str = "";
+    napi_value propertyNameValue = nullptr;
     napi_create_string_utf8(env, "componentType", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
@@ -890,16 +917,26 @@ bool ConvertEventInfoJSToNAPI(
         eventInfo.SetDescription(str);
     }
 
+    napi_create_string_utf8(env, "triggerAction", NAPI_AUTO_LENGTH, &propertyNameValue);
+    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    if (hasProperty) {
+        eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(str));
+        if (eventInfo.GetTriggerAction() == ACCESSIBILITY_ACTION_INVALID) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
     napi_create_string_utf8(env, "textMoveUnit", NAPI_AUTO_LENGTH, &propertyNameValue);
     str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
         eventInfo.SetTextMovementStep(ConvertStringToTextMoveUnit(str));
     }
-
-    return ConvertEventInfoJSToNAPIPart(env, object, eventInfo);
+    return true;
 }
 
-bool ConvertEventInfoJSToNAPIPart(
+bool ConvertEventInfoJSToNAPIPart3(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
 {
     bool hasProperty = false;
@@ -913,17 +950,6 @@ bool ConvertEventInfoJSToNAPIPart(
         for (auto str : stringArray) {
             eventInfo.AddContent(str);
         }
-    }
-
-    napi_create_string_utf8(env, "triggerAction", NAPI_AUTO_LENGTH, &propertyNameValue);
-    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-    if (hasProperty) {
-        eventInfo.SetTriggerAction(ConvertStringToAccessibleOperationType(str));
-        if (eventInfo.GetTriggerAction() == ACCESSIBILITY_ACTION_INVALID) {
-            return false;
-        }
-    } else {
-        return false;
     }
 
     napi_create_string_utf8(env, "lastContent", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1033,13 +1059,10 @@ bool ConvertGesturePathJSToNAPI(napi_env env, napi_value object,
         return false;
     }
 
-    int64_t durationTime = 0;
     napi_create_string_utf8(env, "durationTime", NAPI_AUTO_LENGTH, &propertyNameValue);
+    int64_t durationTime = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
-        napi_value timeValue = nullptr;
-        napi_get_property(env, object, propertyNameValue, &timeValue);
-        napi_get_value_int64(env, timeValue, &durationTime);
         gesturePath->SetDurationTime(durationTime);
         return true;
     }
@@ -1163,6 +1186,14 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "unicodeChar", unicodeCharValue));
     
     // set keys
+    SetKeyPropertyPart1(env, result, keyEvent);
+    SetKeyPropertyPart2(env, result, keyEvent);
+}
+
+void SetKeyPropertyPart1(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
+    // set keys
     napi_value keysAarry = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_create_array(env, &keysAarry));
     uint32_t index = 0;
@@ -1210,7 +1241,11 @@ void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<
     napi_value fnKeyValue = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, isPressed, &fnKeyValue));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "fnKey", fnKeyValue));
+}
 
+void SetKeyPropertyPart2(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent)
+{
+    HILOG_DEBUG();
     // set capsLock
     napi_value capsLockValue = nullptr;
     NAPI_CALL_RETURN_VOID(env, napi_get_boolean(env, false, &capsLockValue));
@@ -1272,20 +1307,42 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
     // Remove all " ".
     colorStr.erase(std::remove(colorStr.begin(), colorStr.end(), ' '), colorStr.end());
 
+    if (ColorRegexMatch(colorStr, color)) {
+        return color;
+    }
+
+    // Match for special string
+    static const std::map<std::string, uint32_t> colorTable {
+        std::make_pair("black", COLOR_BLACK),
+        std::make_pair("blue", COLOR_BLUE),
+        std::make_pair("gray", COLOR_GRAY),
+        std::make_pair("green", COLOR_GREEN),
+        std::make_pair("red", COLOR_RED),
+        std::make_pair("white", COLOR_WHITE),
+    };
+    auto it = colorTable.find(colorStr.c_str());
+    if (it != colorTable.end()) {
+        color = it->second;
+    }
+    return color;
+}
+
+bool ColorRegexMatch(std::string colorStr, uint32_t &color)
+{
     // Regex match for #909090 or #90909090.
     if (std::regex_match(colorStr, COLOR_WITH_MAGIC)) {
         colorStr.erase(0, 1);
-        auto value = stoul(colorStr, nullptr, COLOR_STRING_BASE);
+        auto colorValue = stoul(colorStr, nullptr, COLOR_STRING_BASE);
         if (colorStr.length() < COLOR_STRING_SIZE_STANDARD) {
             // No alpha specified, set alpha to 0xff
-            value |= COLOR_ALPHA_MASK;
+            colorValue |= COLOR_ALPHA_MASK;
         } else {
-            auto alpha = value << ALPHA_MOVE;
-            auto rgb = value >> COLOR_MOVE;
-            value = alpha | rgb;
+            auto alpha = colorValue << ALPHA_MOVE;
+            auto rgb = colorValue >> COLOR_MOVE;
+            colorValue = alpha | rgb;
         }
-        color = value;
-        return color;
+        color = colorValue;
+        return true;
     }
     // Regex match for #rgb or #rgba.
     if (std::regex_match(colorStr, COLOR_WITH_MAGIC_MINI)) {
@@ -1306,23 +1363,9 @@ uint32_t ConvertColorStringToNumer(std::string colorStr)
             valueMini = alphaMini | rgbMini;
         }
         color = valueMini;
-        return color;
+        return true;
     }
-
-    // Match for special string
-    static const std::map<std::string, uint32_t> colorTable {
-        std::make_pair("black", COLOR_BLACK),
-        std::make_pair("blue", COLOR_BLUE),
-        std::make_pair("gray", COLOR_GRAY),
-        std::make_pair("green", COLOR_GREEN),
-        std::make_pair("red", COLOR_RED),
-        std::make_pair("white", COLOR_WHITE),
-    };
-    auto it = colorTable.find(colorStr.c_str());
-    if (it != colorTable.end()) {
-        color = it->second;
-    }
-    return color;
+    return false;
 }
 
 std::string ConvertColorToString(uint32_t color)
@@ -1392,30 +1435,21 @@ uint32_t GetColorValue(napi_env env, napi_value value)
 bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty)
 {
-    HILOG_DEBUG("start");
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
     int32_t num = 0;
 
     napi_create_string_utf8(env, "fontFamily", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    std::string fontFamily = ConvertCaptionPropertyJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        ptrCaptionProperty->SetFontFamily(std::string(outBuffer));
+        ptrCaptionProperty->SetFontFamily(fontFamily);
     } else {
         return false;
     }
 
     napi_create_string_utf8(env, "fontScale", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    num = ConvertIntJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_int32(env, value, &num);
         ptrCaptionProperty->SetFontScale(num);
     } else {
         return false;
@@ -1430,14 +1464,9 @@ bool ConvertObjToCaptionProperty(
     }
 
     napi_create_string_utf8(env, "fontEdgeType", NAPI_AUTO_LENGTH, &propertyNameValue);
-    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    std::string fontEdgeType = ConvertCaptionPropertyJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        napi_value value = nullptr;
-        char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
-        size_t outSize = 0;
-        napi_get_property(env, object, propertyNameValue, &value);
-        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
-        ptrCaptionProperty->SetFontEdgeType(std::string(outBuffer));
+        ptrCaptionProperty->SetFontEdgeType(fontEdgeType);
     } else {
         return false;
     }
@@ -1459,6 +1488,20 @@ bool ConvertObjToCaptionProperty(
     }
 
     return true;
+}
+
+std::string ConvertCaptionPropertyJSToNAPI(napi_env env, napi_value object,
+    napi_value propertyNameValue, bool &hasProperty)
+{
+    char outBuffer[CHAE_BUFFER_MAX + 1] = {0};
+    napi_has_property(env, object, propertyNameValue, &hasProperty);
+    if (hasProperty) {
+        napi_value value = nullptr;
+        size_t outSize = 0;
+        napi_get_property(env, object, propertyNameValue, &value);
+        napi_get_value_string_utf8(env, value, outBuffer, CHAE_BUFFER_MAX, &outSize);
+    }
+    return std::string(outBuffer);
 }
 
 bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string>& values)

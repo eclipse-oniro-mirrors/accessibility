@@ -54,7 +54,19 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
 void ConvertRectToJS(napi_env env, napi_value result, const OHOS::Accessibility::Rect& rect);
 void ConvertAccessibleAbilityInfosToJS(napi_env env, napi_value& result,
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
+void ConvertAccessibleAbilityInfoToJS(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
+void ConvertAccessibleAbilityInfoToJSPart1(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
+void ConvertAccessibleAbilityInfoToJSPart2(
+    napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info);
 bool ConvertEventInfoJSToNAPI(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPIPart1(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPIPart2(
+    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ConvertEventInfoJSToNAPIPart3(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
 OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(std::string& type);
 void ConvertActionArgsJSToNAPI(
@@ -64,11 +76,15 @@ KeyAction TransformKeyActionValue(int32_t keyAction);
 bool HasKeyCode(const std::vector<int32_t>& pressedKeys, int32_t keyCode);
 void GetKeyValue(napi_env env, napi_value keyObject, const OHOS::MMI::KeyEvent::KeyItem* keyItem);
 void SetInputEventProperty(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
+void SetKeyPropertyPart1(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
+void SetKeyPropertyPart2(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertKeyEventToJS(napi_env env, napi_value result, const std::shared_ptr<OHOS::MMI::KeyEvent> &keyEvent);
 void ConvertCaptionPropertyToJS(napi_env env, napi_value& result,
     OHOS::AccessibilityConfig::CaptionProperty captionProperty);
 bool ConvertObjToCaptionProperty(
     napi_env env, napi_value object, OHOS::AccessibilityConfig::CaptionProperty* ptrCaptionProperty);
+std::string ConvertCaptionPropertyJSToNAPI(
+    napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 bool ConvertJSToStringVec(napi_env env, napi_value arrayValue, std::vector<std::string> &values);
 void ConvertStringVecToJS(napi_env env, napi_value &result, std::vector<std::string> values);
 void ConvertJSToEventTypes(napi_env env, napi_value arrayValue, uint32_t &eventTypes);
@@ -76,8 +92,7 @@ bool ConvertJSToCapabilities(napi_env env, napi_value arrayValue, uint32_t &capa
 uint32_t GetColorValue(napi_env env, napi_value object, napi_value propertyNameValue);
 uint32_t GetColorValue(napi_env env, napi_value value);
 uint32_t ConvertColorStringToNumer(std::string colorStr);
-bool ConvertEventInfoJSToNAPIPart(
-    napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo);
+bool ColorRegexMatch(std::string colorStr, uint32_t &color);
 std::string ConvertColorToString(uint32_t color);
 std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
