@@ -343,8 +343,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_SetServiceOnKeyEventRes
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
         CONNECTION_ID, abilityInfo);
-     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     if (!KeyEventFilterUnittest(accountData, connection, elementName, event,
         MMI::KeyEvent::KEY_ACTION_DOWN)) {
         return;
@@ -379,8 +379,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
         CONNECTION_ID, abilityInfo);
-     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     if (!KeyEventFilterUnittest(accountData, connection, elementName, event,
         MMI::KeyEvent::KEY_ACTION_DOWN)) {
         return;
@@ -417,8 +417,8 @@ HWTEST_F(KeyEventFilterUnitTest, KeyEventFilter_Unittest_ClearServiceKeyEvents_0
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     sptr<AccessibleAbilityConnection> connection = new(std::nothrow) AccessibleAbilityConnection(ACCOUNT_ID,
         CONNECTION_ID, abilityInfo);
-     AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
-     std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
+    AppExecFwk::ElementName elementName("deviceId", "bundleName", "name");
+    std::shared_ptr<MMI::KeyEvent> event = MMI::KeyEvent::Create();
     if (!KeyEventFilterUnittest(accountData, connection, elementName, event,
         MMI::KeyEvent::KEY_ACTION_DOWN)) {
         return;
