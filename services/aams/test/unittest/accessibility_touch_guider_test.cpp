@@ -44,8 +44,8 @@ public:
     static void TearDownTestCase();
     static void SetTouchGuiderPoint(MMI::PointerEvent::PointerItem &point, int id, int x, int y);
     static void TouchGuiderExpect(EventType eventType, int32_t GestureTypeInt);
-    static void PointerEventTest(std::vector<MMI::PointerEvent::PointerItem> &points, MMI::PointerEvent::PointerItem movepoint2,
-        MMI::PointerEvent::PointerItem movepoint3, MMI::KeyEvent &event);
+    static void PointerEventTest(std::vector<MMI::PointerEvent::PointerItem> &points,
+        MMI::PointerEvent::PointerItem movepoint2, MMI::PointerEvent::PointerItem movepoint3, MMI::KeyEvent &event);
     bool TestEventType();
     bool TestEventAction();
     void SetUp() override;
@@ -61,8 +61,8 @@ protected:
     int32_t pointId_ = -1;
 };
 
-void TouchGuiderTest::PointerEventTest(std::vector<MMI::PointerEvent::PointerItem> &points, MMI::PointerEvent::PointerItem movepoint2,
-    MMI::PointerEvent::PointerItem movepoint3, MMI::KeyEvent &event)
+void TouchGuiderTest::PointerEventTest(std::vector<MMI::PointerEvent::PointerItem> &points,
+    MMI::PointerEvent::PointerItem movepoint2, MMI::PointerEvent::PointerItem movepoint3, MMI::KeyEvent &event)
 {
     int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_MOVE;
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
