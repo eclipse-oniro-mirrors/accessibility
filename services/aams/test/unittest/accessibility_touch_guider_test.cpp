@@ -81,7 +81,7 @@ void TouchGuiderTest::PointerEventTest(std::vector<MMI::PointerEvent::PointerIte
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 1, 0, 0);
     touchGuider_->OnPointerEvent(event);
 
-    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(2);
+    touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(GET_EVENT_TARGET_INDEX_2);
     EXPECT_EQ(touchAction, expectValue);
 
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 1, 0, 0);
