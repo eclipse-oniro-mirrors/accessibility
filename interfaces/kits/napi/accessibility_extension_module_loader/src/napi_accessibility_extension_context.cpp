@@ -193,24 +193,7 @@ private:
         bool isAccessibilityFocus = false;
         NativeValue* lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
-                info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-                lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
-                    info.argv[PARAM1] : nullptr;
-            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-                HILOG_INFO("argc is more than two, use callback: situation 1");
-                lastParam = info.argv[PARAM1];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
-                HILOG_INFO("argc is more than two, use callback: situation 2");
-                lastParam = info.argv[PARAM0];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
-                HILOG_INFO("argc is more than two, use promise: situation 3");
-                lastParam = nullptr;
-                ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
-            } else {
-                lastParam = nullptr;
-                HILOG_INFO("argc is more than two, use promise");
-            }
+            GetLastParamForTwo(engine, info, lastParam, isAccessibilityFocus);
         } else if (info.argc == ARGS_SIZE_ONE) {
             if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 lastParam = info.argv[PARAM0];
@@ -229,6 +212,29 @@ private:
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
         HILOG_DEBUG("focus type is [%{public}d]", focus);
         return GetFoucusElementCompleteTask(engine, focus, lastParam);
+    }
+
+    void GetLastParamForTwo(
+        NativeEngine& engine, NativeCallbackInfo& info, NativeValue* lastParam, bool& isAccessibilityFocus)
+    {
+        if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
+            info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
+                info.argv[PARAM1] : nullptr;
+        } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            HILOG_INFO("argc is more than two, use callback: situation 1");
+            lastParam = info.argv[PARAM1];
+        } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            HILOG_INFO("argc is more than two, use callback: situation 2");
+            lastParam = info.argv[PARAM0];
+        } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+            HILOG_INFO("argc is more than two, use promise: situation 3");
+            lastParam = nullptr;
+            ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+        } else {
+            lastParam = nullptr;
+            HILOG_INFO("argc is more than two, use promise");
+        }
     }
 
     NativeValue* GetFoucusElementCompleteTask(NativeEngine& engine, int32_t focus, NativeValue* lastParam)
@@ -278,37 +284,25 @@ private:
         bool isActiveWindow = true;
         NativeValue* lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
-                info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-                if (ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
-                    lastParam = info.argv[PARAM1];
-                    isActiveWindow = false;
-                } else {
-                    HILOG_ERROR("argc is more than two, convert window id failed");
-                    lastParam = info.argv[PARAM1];
-                }
-            } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
                 HILOG_INFO("argc is more than two, use callback: situation 1");
                 lastParam = info.argv[PARAM1];
             } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                HILOG_INFO("argc is more than two, use promise: situation 3");
-                lastParam = nullptr;
-                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
             } else {
                 lastParam = nullptr;
                 HILOG_INFO("argc is two, use promise");
             }
+            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                HILOG_INFO("argc is more than two, use promise: situation 3");
+                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
+            }
         } else if (info.argc == ARGS_SIZE_ONE) {
             if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
                 lastParam = info.argv[PARAM0];
-            } else {
-                if ((info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) &&
-                    ConvertFromJsValue(engine, info.argv[PARAM0], windowId)) {
-                    isActiveWindow = false;
-                }
+            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
             }
