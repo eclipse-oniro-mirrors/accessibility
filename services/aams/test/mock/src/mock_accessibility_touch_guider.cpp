@@ -301,6 +301,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent& event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_DOWN");
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 Clear(event);
             } else {
@@ -310,9 +311,11 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent& event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_MOVE");
             HandleDraggingStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_UP");
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 OnTouchInteractionEnd();
                 SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);

@@ -20,6 +20,14 @@
 #ifdef CONFIG_HILOG
 #include "hilog/log.h"
 
+#ifdef HILOG_INFO
+#undef HILOG_INFO
+#endif
+
+#ifdef HILOG_DEBUG
+#undef HILOG_DEBUG
+#endif
+
 #ifdef HILOG_FATAL
 #undef HILOG_FATAL
 #endif
@@ -30,14 +38,6 @@
 
 #ifdef HILOG_WARN
 #undef HILOG_WARN
-#endif
-
-#ifdef HILOG_INFO
-#undef HILOG_INFO
-#endif
-
-#ifdef HILOG_DEBUG
-#undef HILOG_DEBUG
 #endif
 
 #ifndef AAMS_LOG_DOMAIN
