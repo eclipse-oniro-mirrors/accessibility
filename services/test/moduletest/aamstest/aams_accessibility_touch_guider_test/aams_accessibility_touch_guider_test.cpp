@@ -373,7 +373,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent002, Te
         return;
     }
     inputEventConsumer->OnInputEvent(event);
-    bool retOnPointerEvent2 = 
+    bool retOnPointerEvent2 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(1) ==
             EventType::TYPE_TOUCH_GUIDE_BEGIN) {
@@ -429,7 +429,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent003, Te
     OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
 
     // Determine event type
-    bool retOnPointerEvent3 = 
+    bool retOnPointerEvent3 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
             EventType::TYPE_TOUCH_END) {
@@ -824,7 +824,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent010, Te
     inputEventConsumer->OnInputEvent(event);
 
     // Determine event type
-    bool retOnPointerEvent10 = 
+    bool retOnPointerEvent10 =
         AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(3) ==
             EventType::TYPE_TOUCH_END) {
