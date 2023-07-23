@@ -23,19 +23,14 @@ PointerEvent::PointerItem::PointerItem()
 PointerEvent::PointerItem::~PointerItem()
 {}
 
-int32_t PointerEvent::PointerItem::GetPointerId() const
-{
-    return pointerId_;
-}
-
 void PointerEvent::PointerItem::SetPointerId(int32_t pointerId)
 {
     pointerId_ = pointerId;
 }
 
-int64_t PointerEvent::PointerItem::GetDownTime() const
+int32_t PointerEvent::PointerItem::GetPointerId() const
 {
-    return downTime_;
+    return pointerId_;
 }
 
 void PointerEvent::PointerItem::SetDownTime(int64_t downTime)
@@ -43,9 +38,9 @@ void PointerEvent::PointerItem::SetDownTime(int64_t downTime)
     downTime_ = downTime;
 }
 
-bool PointerEvent::PointerItem::IsPressed() const
+int64_t PointerEvent::PointerItem::GetDownTime() const
 {
-    return pressed_;
+    return downTime_;
 }
 
 void PointerEvent::PointerItem::SetPressed(bool pressed)
@@ -53,9 +48,9 @@ void PointerEvent::PointerItem::SetPressed(bool pressed)
     pressed_ = pressed;
 }
 
-int32_t PointerEvent::PointerItem::GetDisplayX() const
+bool PointerEvent::PointerItem::IsPressed() const
 {
-    return displayX_;
+    return pressed_;
 }
 
 void PointerEvent::PointerItem::SetDisplayX(int32_t x)
@@ -63,9 +58,9 @@ void PointerEvent::PointerItem::SetDisplayX(int32_t x)
     displayX_ = x;
 }
 
-int32_t PointerEvent::PointerItem::GetDisplayY() const
+int32_t PointerEvent::PointerItem::GetDisplayX() const
 {
-    return displayY_;
+    return displayX_;
 }
 
 void PointerEvent::PointerItem::SetDisplayY(int32_t y)
@@ -73,9 +68,9 @@ void PointerEvent::PointerItem::SetDisplayY(int32_t y)
     displayY_ = y;
 }
 
-int32_t PointerEvent::PointerItem::GetWindowX() const
+int32_t PointerEvent::PointerItem::GetDisplayY() const
 {
-    return windowX_;
+    return displayY_;
 }
 
 void PointerEvent::PointerItem::SetWindowX(int32_t x)
@@ -83,9 +78,9 @@ void PointerEvent::PointerItem::SetWindowX(int32_t x)
     windowX_ = x;
 }
 
-int32_t PointerEvent::PointerItem::GetWindowY() const
+int32_t PointerEvent::PointerItem::GetWindowX() const
 {
-    return windowY_;
+    return windowX_;
 }
 
 void PointerEvent::PointerItem::SetWindowY(int32_t y)
@@ -93,9 +88,9 @@ void PointerEvent::PointerItem::SetWindowY(int32_t y)
     windowY_ = y;
 }
 
-int32_t PointerEvent::PointerItem::GetWidth() const
+int32_t PointerEvent::PointerItem::GetWindowY() const
 {
-    return width_;
+    return windowY_;
 }
 
 void PointerEvent::PointerItem::SetWidth(int32_t width)
@@ -103,9 +98,9 @@ void PointerEvent::PointerItem::SetWidth(int32_t width)
     width_ = width;
 }
 
-int32_t PointerEvent::PointerItem::GetHeight() const
+int32_t PointerEvent::PointerItem::GetWidth() const
 {
-    return height_;
+    return width_;
 }
 
 void PointerEvent::PointerItem::SetHeight(int32_t height)
@@ -113,9 +108,9 @@ void PointerEvent::PointerItem::SetHeight(int32_t height)
     height_ = height;
 }
 
-double PointerEvent::PointerItem::GetPressure() const
+int32_t PointerEvent::PointerItem::GetHeight() const
 {
-    return pressure_;
+    return height_;
 }
 
 void PointerEvent::PointerItem::SetPressure(double pressure)
@@ -123,14 +118,19 @@ void PointerEvent::PointerItem::SetPressure(double pressure)
     pressure_ = pressure;
 }
 
-int32_t PointerEvent::PointerItem::GetDeviceId() const
+double PointerEvent::PointerItem::GetPressure() const
 {
-    return deviceId_;
+    return pressure_;
 }
 
 void PointerEvent::PointerItem::SetDeviceId(int32_t deviceId)
 {
     deviceId_ = deviceId;
+}
+
+int32_t PointerEvent::PointerItem::GetDeviceId() const
+{
+    return deviceId_;
 }
 
 PointerEvent::PointerEvent(int32_t eventType) : InputEvent(eventType)

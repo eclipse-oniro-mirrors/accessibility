@@ -301,6 +301,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent& event)
 
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_DOWN");
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 Clear(event);
             } else {
@@ -310,9 +311,11 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent& event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_MOVE");
             HandleDraggingStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
+            HILOG_DEBUG("MMI::PointerEvent::POINTER_ACTION_UP");
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 OnTouchInteractionEnd();
                 SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
@@ -421,13 +424,16 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
 
     switch (event.GetPointerIds().size()) {
         case POINTER_COUNT_1:
+            HILOG_DEBUG("POINTER_COUNT_1 begin");
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                 pointerEvents_.push_back(event);
             } else if (isTouchGuiding_) {
                 SendEventToMultimodal(event, HOVER_MOVE);
             }
+            HILOG_DEBUG("POINTER_COUNT_1 end");
             break;
         case POINTER_COUNT_2:
+            HILOG_DEBUG("POINTER_COUNT_2 begin");
             CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
             CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
             if (IsDragGestureAccept(event)) {
@@ -437,8 +443,10 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
                 currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
                 SendAllDownEvents(event);
             }
+            HILOG_DEBUG("POINTER_COUNT_2 end");
             break;
         default:
+            HILOG_DEBUG("default begin");
             if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                 CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
                 CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
@@ -447,6 +455,7 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
             }
             currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
             SendAllDownEvents(event);
+            HILOG_DEBUG("default end");
             break;
     }
 }

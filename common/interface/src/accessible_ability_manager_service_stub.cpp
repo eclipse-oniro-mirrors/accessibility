@@ -319,12 +319,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty(MessagePar
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetCaptionProperty Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetCaptionProperty Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -344,12 +344,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetCaptionState(MessageParcel
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetCaptionState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetCaptionState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -435,12 +435,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleEnableAbility(MessageParcel &
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleEnableAbility Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleEnableAbility Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -473,12 +473,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleDisableAbility(MessageParcel 
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleDisableAbility Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleDisableAbility Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -544,12 +544,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortKeyState(MessageParce
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetShortKeyState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetShortKeyState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -565,12 +565,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseKeyState(MessageParce
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetMouseKeyState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetMouseKeyState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -586,12 +586,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParc
     HILOG_DEBUG();
     
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetShortkeyTarget Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetShortkeyTarget Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -607,12 +607,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParc
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetMouseAutoClick Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetMouseAutoClick Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -628,12 +628,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetInvertColorState(MessagePa
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetInvertColorState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetInvertColorState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -649,12 +649,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetHighContrastTextState(Mess
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetHighContrastTextState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetHighContrastTextState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -686,12 +686,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageP
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetAnimationOffState Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetAnimationOffState Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -708,12 +708,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
     HILOG_DEBUG();
 	
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetDaltonizationColorFilter Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetDaltonizationColorFilter Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -729,12 +729,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetContentTimeout(MessageParc
     HILOG_DEBUG();
 	
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetContentTimeout Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetContentTimeout Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }
@@ -750,12 +750,12 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetBrightnessDiscount(Message
     HILOG_DEBUG();
 
     if (!IsSystemApp()) {
-        HILOG_WARN("Not system app");
+        HILOG_WARN("HandleSetBrightnessDiscount Not system app");
         reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
         return NO_ERROR;
     }
     if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
-        HILOG_WARN("Permission denied!");
+        HILOG_WARN("HandleSetBrightnessDiscount Permission denied!");
         reply.WriteInt32(RET_ERR_NO_PERMISSION);
         return NO_ERROR;
     }

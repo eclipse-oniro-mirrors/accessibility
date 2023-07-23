@@ -88,6 +88,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
     }
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_001 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -113,6 +114,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnPointer
     }
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnPointerEvent_002 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
@@ -195,6 +197,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_003 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -204,17 +207,17 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     mouseKey_->OnPointerEvent(*event);
 
     // press '/' key
-    std::shared_ptr<MMI::KeyEvent> event1 = MMI::KeyEvent::Create();
-    if (!event1) {
+    std::shared_ptr<MMI::KeyEvent> event3 = MMI::KeyEvent::Create();
+    if (!event3) {
         return;
     }
-    event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
-    event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    event3->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
+    event3->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
     item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     item1.SetPressed(true);
-    event1->AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event1);
+    event3->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event3);
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
@@ -223,10 +226,10 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     }
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
-    item2.SetPressed(true);
-    event2->AddKeyItem(item2);
+    MMI::KeyEvent::KeyItem item3;
+    item3.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
+    item3.SetPressed(true);
+    event2->AddKeyItem(item3);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     mouseKey_->OnKeyEvent(*event2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
@@ -250,6 +253,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_004 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -259,17 +263,17 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     mouseKey_->OnPointerEvent(*event);
 
     // press '-' key
-    std::shared_ptr<MMI::KeyEvent> event1 = MMI::KeyEvent::Create();
-    if (!event1) {
+    std::shared_ptr<MMI::KeyEvent> event4 = MMI::KeyEvent::Create();
+    if (!event4) {
         return;
     }
-    event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
-    event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    event4->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
+    event4->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
     item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_SUBTRACT);
     item1.SetPressed(true);
-    event1->AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event1);
+    event4->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event4);
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
@@ -278,10 +282,10 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     }
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
-    item2.SetPressed(true);
-    event2->AddKeyItem(item2);
+    MMI::KeyEvent::KeyItem item4;
+    item4.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
+    item4.SetPressed(true);
+    event2->AddKeyItem(item4);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     mouseKey_->OnKeyEvent(*event2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
@@ -305,6 +309,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_005 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -314,17 +319,17 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     mouseKey_->OnPointerEvent(*event);
 
     // press '*' key
-    std::shared_ptr<MMI::KeyEvent> event1 = MMI::KeyEvent::Create();
-    if (!event1) {
+    std::shared_ptr<MMI::KeyEvent> event5 = MMI::KeyEvent::Create();
+    if (!event5) {
         return;
     }
-    event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
-    event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    event5->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
+    event5->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
     item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_MULTIPLY);
     item1.SetPressed(true);
-    event1->AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event1);
+    event5->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event5);
 
     // press '5' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();
@@ -333,10 +338,10 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     }
     event2->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
     event2->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
-    MMI::KeyEvent::KeyItem item2;
-    item2.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
-    item2.SetPressed(true);
-    event2->AddKeyItem(item2);
+    MMI::KeyEvent::KeyItem item5;
+    item5.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_5);
+    item5.SetPressed(true);
+    event2->AddKeyItem(item5);
     AccessibilityAbilityHelper::GetInstance().ClearTouchEventActionVector();
     mouseKey_->OnKeyEvent(*event2);
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1);
@@ -360,6 +365,7 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     // mouse event
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     if (!event) {
+        GTEST_LOG_(INFO) << "AccessibilityMouseKey_Unittest_OnKeyEvent_006 event is null";
         return;
     }
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
@@ -369,17 +375,17 @@ HWTEST_F(AccessibilityMouseKeyUnitTest, AccessibilityMouseKey_Unittest_OnKeyEven
     mouseKey_->OnPointerEvent(*event);
 
     // press '/' key
-    std::shared_ptr<MMI::KeyEvent> event1 = MMI::KeyEvent::Create();
-    if (!event1) {
+    std::shared_ptr<MMI::KeyEvent> event6 = MMI::KeyEvent::Create();
+    if (!event6) {
         return;
     }
-    event1->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
-    event1->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
+    event6->SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
+    event6->SetKeyAction(MMI::KeyEvent::KEY_ACTION_DOWN);
     MMI::KeyEvent::KeyItem item1;
     item1.SetKeyCode(MMI::KeyEvent::KEYCODE_NUMPAD_DIVIDE);
     item1.SetPressed(true);
-    event1->AddKeyItem(item1);
-    mouseKey_->OnKeyEvent(*event1);
+    event6->AddKeyItem(item1);
+    mouseKey_->OnKeyEvent(*event6);
 
     // press '+' key
     std::shared_ptr<MMI::KeyEvent> event2 = MMI::KeyEvent::Create();

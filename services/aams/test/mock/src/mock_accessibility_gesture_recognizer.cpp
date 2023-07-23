@@ -281,6 +281,13 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
     return false;
 }
 
+void AccessibilityGestureRecognizer::SingleTapDetected()
+{
+    HILOG_DEBUG();
+
+    Clear();
+}
+
 void AccessibilityGestureRecognizer::StandardGestureCancled()
 {
     HILOG_DEBUG();
@@ -292,11 +299,12 @@ void AccessibilityGestureRecognizer::StandardGestureCancled()
     isTapDown_ = false;
 }
 
-void AccessibilityGestureRecognizer::SingleTapDetected()
+bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent& event)
 {
     HILOG_DEBUG();
 
     Clear();
+    return listener_->OnDoubleTap(event);
 }
 
 void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(MMI::PointerEvent& event)
@@ -307,14 +315,6 @@ void AccessibilityGestureRecognizer::MaybeRecognizeLongPress(MMI::PointerEvent& 
         return;
     }
     Clear();
-}
-
-bool AccessibilityGestureRecognizer::DoubleTapRecognized(MMI::PointerEvent& event)
-{
-    HILOG_DEBUG();
-
-    Clear();
-    return listener_->OnDoubleTap(event);
 }
 
 bool AccessibilityGestureRecognizer::recognizeDirectionGesture(MMI::PointerEvent& event)
