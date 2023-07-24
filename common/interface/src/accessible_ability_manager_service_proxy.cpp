@@ -49,7 +49,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
-    int32_t resultServiceProxy = 
+    int32_t resultServiceProxy =
         remoteServiceProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
     if (resultServiceProxy != NO_ERROR) {
         HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", resultServiceProxy, code);
