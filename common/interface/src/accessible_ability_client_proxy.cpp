@@ -49,7 +49,7 @@ bool AccessibleAbilityClientProxy::SendTransactCmd(AccessibilityInterfaceCode co
     int32_t resultClientProxy = 
         remoteClientProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
     if (resultClientProxy != NO_ERROR) {
-        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", resultClientProxy, code);
         return false;
     }
     return true;
