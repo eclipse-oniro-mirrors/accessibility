@@ -14,7 +14,8 @@
  */
 
 import type accessibility from './@ohos.accessibility';
-import type AccessibilityExtensionContext, { AccessibilityElement } from './application/AccessibilityExtensionContext';
+import type AccessibilityExtensionContext from './application/AccessibilityExtensionContext';
+import type { AccessibilityElement } from './application/AccessibilityExtensionContext';
 import type { KeyEvent } from './@ohos.multimodalInput.keyEvent';
 
 /**
