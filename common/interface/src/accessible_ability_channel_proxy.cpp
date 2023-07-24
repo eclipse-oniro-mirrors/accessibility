@@ -53,7 +53,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
     }
     int32_t resultChannelProxy = remoteChannelProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
     if (resultChannelProxy != NO_ERROR) {
-        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", resultChannelProxy, code);
         return false;
     }
     return true;
