@@ -165,8 +165,8 @@ int AccessibleAbilityManagerServiceStub::OnRemoteRequest(
     std::u16string descriptor = AccessibleAbilityManagerServiceStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        HILOG_ERROR("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest,
-            local descriptor is not equal to remote");
+        HILOG_ERROR("AccessibleAbilityManagerServiceClientStub::OnRemoteRequest,"
+            "local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 
