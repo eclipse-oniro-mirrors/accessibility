@@ -52,7 +52,7 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
     int32_t resultServiceProxy = 
         remoteServiceProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
     if (resultServiceProxy != NO_ERROR) {
-        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", resultServiceProxy, code);
         return false;
     }
     return true;
