@@ -145,8 +145,10 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
         if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+            HILOG_DEBUG("Completefunction callbackInfo->ret_ is RET_OK");
             napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
         } else {
+            HILOG_DEBUG("Completefunction callbackInfo->ret_ is not RET_OK");
             napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
     }
@@ -182,8 +184,10 @@ void NAccessibilityClient::GetAbilityListComplete(napi_env env, napi_status stat
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
         if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+            HILOG_DEBUG("GetAbilityListComplete callbackInfo->ret_ is RET_OK");
             napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
         } else {
+            HILOG_DEBUG("GetAbilityListComplete callbackInfo->ret_ is not RET_OK");
             napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
     }
@@ -369,8 +373,10 @@ void NAccessibilityClient::SendEventComplete(napi_env env, napi_status status, v
         napi_delete_reference(env, callbackInfo->callback_);
     } else {
         if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+            HILOG_DEBUG("SendEventComplete callbackInfo->ret_ is RET_OK");
             napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
         } else {
+            HILOG_DEBUG("SendEventComplete callbackInfo->ret_ is not RET_OK");
             napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
     }
@@ -447,7 +453,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
         delete callbackInfo;
         callbackInfo = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("SendAccessibilityEvent invalid param");
         napi_throw(env, err);
         return nullptr;
     }
@@ -480,7 +486,7 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     if (status != napi_ok) {
-        HILOG_ERROR("Failed to get event type");
+        HILOG_ERROR("SubscribeState Failed to get event type");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
         napi_throw(env, err);
         return nullptr;
@@ -488,7 +494,7 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO) {
-        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        HILOG_ERROR("SubscribeState argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
     uint32_t type = AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED;
@@ -504,7 +510,7 @@ napi_value NAccessibilityClient::SubscribeState(napi_env env, napi_callback_info
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("SubscribeState invalid param");
         napi_throw(env, err);
         return nullptr;
     }
@@ -552,7 +558,7 @@ napi_value NAccessibilityClient::UnsubscribeState(napi_env env, napi_callback_in
 
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO - 1) {
-        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        HILOG_ERROR("UnsubscribeState argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
@@ -709,7 +715,7 @@ napi_value NAccessibilityClient::SetCaptionStateEnabled(napi_env env, napi_callb
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionStateEnabled argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -754,7 +760,7 @@ napi_value NAccessibilityClient::SetCaptionStyle(napi_env env, napi_callback_inf
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionStyle argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -781,7 +787,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
     napi_value args[ARGS_SIZE_TWO] = {0};
     napi_status status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     if (status != napi_ok) {
-        HILOG_ERROR("Failed to get event type");
+        HILOG_ERROR("RegisterCaptionStateCallback Failed to get event type");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_FAILED);
         napi_throw(env, err);
         return nullptr;
@@ -789,7 +795,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
 
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO) {
-        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        HILOG_ERROR("RegisterCaptionStateCallback argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
@@ -815,7 +821,7 @@ napi_value NAccessibilityClient::RegisterCaptionStateCallback(napi_env env, napi
         napi_valuetype valueType = napi_null;
         napi_typeof(env, args[PARAM1], &valueType);
         if (valueType != napi_function) {
-            HILOG_ERROR("args[PARAM1] format is wrong");
+            HILOG_ERROR("RegisterCaptionStateCallback args[PARAM1] format is wrong");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
@@ -841,7 +847,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
 
     OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
     if (argc < ARGS_SIZE_TWO - 1) {
-        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        HILOG_ERROR("DeregisterCaptionStateCallback argc is invalid: %{public}zu", argc);
         errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
 
@@ -865,7 +871,7 @@ napi_value NAccessibilityClient::DeregisterCaptionStateCallback(napi_env env, na
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("DeregisterCaptionStateCallback invalid param");
         napi_throw(env, err);
         return nullptr;
     }
@@ -958,7 +964,7 @@ napi_value NAccessibilityClient::SetCaptionsFontFamily(napi_env env, napi_callba
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionsFontFamily argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1004,7 +1010,7 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionsFontScale argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1033,6 +1039,7 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
+        HILOG_DEBUG("SetCaptionFrontColor argc > 1");
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
@@ -1045,7 +1052,7 @@ napi_value NAccessibilityClient::SetCaptionFrontColor(napi_env env, napi_callbac
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionFrontColor argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1092,7 +1099,7 @@ napi_value NAccessibilityClient::SetCaptionFontEdgeType(napi_env env, napi_callb
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionFontEdgeType argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1121,6 +1128,7 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
+        HILOG_DEBUG("SetCaptionBackgroundColor argc > 1");
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
@@ -1133,7 +1141,7 @@ napi_value NAccessibilityClient::SetCaptionBackgroundColor(napi_env env, napi_ca
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionBackgroundColor argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1162,6 +1170,7 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
+        HILOG_DEBUG("SetCaptionWindowColor argc > 1");
         uint32_t color = GetColorValue(env, parameters[PARAM0]);
         auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
         OHOS::AccessibilityConfig::CaptionProperty captionProperty {};
@@ -1174,7 +1183,7 @@ napi_value NAccessibilityClient::SetCaptionWindowColor(napi_env env, napi_callba
             napi_throw(env, err);
         }
     } else {
-        HILOG_ERROR("argc size Error");
+        HILOG_ERROR("SetCaptionWindowColor argc size Error");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
     }
@@ -1206,7 +1215,7 @@ void StateListenerImpl::SubscribeObserver(napi_env env, napi_value observer)
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
-            HILOG_DEBUG("Observer exist");
+            HILOG_DEBUG("SubscribeObserver Observer exist");
             return;
         } else {
             iter++;

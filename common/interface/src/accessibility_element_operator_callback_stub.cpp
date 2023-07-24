@@ -51,7 +51,8 @@ int AccessibilityElementOperatorCallbackStub::OnRemoteRequest(uint32_t code, Mes
     std::u16string descriptor = AccessibilityElementOperatorCallbackStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        HILOG_ERROR("local descriptor is not equal to remote");
+        HILOG_ERROR("AccessibilityElementOperatorCallbackStub::OnRemoteRequest"
+            "local descriptor is not equal to remote");
         return ERR_INVALID_STATE;
     }
 

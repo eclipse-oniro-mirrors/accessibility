@@ -44,14 +44,15 @@ bool AccessibleAbilityManagerServiceProxy::SendTransactCmd(AccessibilityInterfac
 {
     HILOG_DEBUG();
 
-    sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    sptr<IRemoteObject> remoteServiceProxy= Remote();
+    if (!remoteServiceProxy) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
-    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
-    if (result != NO_ERROR) {
-        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+    int32_t resultServiceProxy =
+        remoteServiceProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    if (resultServiceProxy != NO_ERROR) {
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", resultServiceProxy, code);
         return false;
     }
     return true;
@@ -115,12 +116,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetCaptionState(const bool state)
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetCaptionState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetCaptionState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -140,17 +141,17 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterStateObserver(
     MessageOption option;
 
     if (!client) {
-        HILOG_ERROR("fail, Input client is null");
+        HILOG_ERROR("RegisterStateObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token error");
+        HILOG_ERROR("RegisterStateObserver fail, connection write Token error");
         return TRANSACTION_ERR;
     }
 
     if (!data.WriteRemoteObject(client->AsObject())) {
-        HILOG_ERROR("fail, connection write client error");
+        HILOG_ERROR("RegisterStateObserver fail, connection write client error");
         return TRANSACTION_ERR;
     }
 
@@ -298,17 +299,17 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterCaptionObserver(
     MessageOption option;
 
     if (!client) {
-        HILOG_ERROR("fail, Input client is null");
+        HILOG_ERROR("RegisterCaptionObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token error");
+        HILOG_ERROR("RegisterCaptionObserver fail, connection write Token error");
         return TRANSACTION_ERR;
     }
 
     if (!data.WriteRemoteObject(client->AsObject())) {
-        HILOG_ERROR("fail, connection write client error");
+        HILOG_ERROR("RegisterCaptionObserver fail, connection write client error");
         return TRANSACTION_ERR;
     }
 
@@ -428,7 +429,7 @@ RetError AccessibleAbilityManagerServiceProxy::EnableAbility(const std::string &
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("EnableAbility fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -482,7 +483,7 @@ RetError AccessibleAbilityManagerServiceProxy::DisableAbility(const std::string 
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("DisableAbility fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -573,12 +574,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetScreenMagnificationState(const
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetScreenMagnificationState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetScreenMagnificationState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -598,12 +599,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetShortKeyState(const bool state
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetShortKeyState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetShortKeyState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -623,12 +624,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetMouseKeyState(const bool state
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetMouseKeyState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetMouseKeyState fail, connection write parcelable Caption State");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -673,7 +674,7 @@ RetError AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::stri
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("DisableAbility fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -698,12 +699,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bo
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetHighContrastTextState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetHighContrastTextState fail, connection write parcelable Caption State");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -723,12 +724,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetInvertColorState(const bool st
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetInvertColorState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetInvertColorState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -748,12 +749,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetAnimationOffState(const bool s
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetAnimationOffState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetAnimationOffState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -773,12 +774,12 @@ RetError AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool stat
     MessageOption option;
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("SetAudioMonoState fail, connection write Token");
         return RET_ERR_IPC_FAILED;
     }
 
     if (!data.WriteBool(state)) {
-        HILOG_ERROR("fail, connection write parcelable Caption State ");
+        HILOG_ERROR("SetAudioMonoState fail, connection write parcelable Caption State ");
         return RET_ERR_IPC_FAILED;
     }
 
@@ -1262,17 +1263,17 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterConfigObserver(
     MessageOption option(MessageOption::TF_SYNC);
 
     if (!client) {
-        HILOG_ERROR("fail, Input client is null");
+        HILOG_ERROR("RegisterConfigObserver fail, Input client is null");
         return TRANSACTION_ERR;
     }
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token error");
+        HILOG_ERROR("RegisterConfigObserver fail, connection write Token error");
         return TRANSACTION_ERR;
     }
 
     if (!data.WriteRemoteObject(client->AsObject())) {
-        HILOG_ERROR("fail, connection write client error");
+        HILOG_ERROR("RegisterConfigObserver fail, connection write client error");
         return TRANSACTION_ERR;
     }
 
