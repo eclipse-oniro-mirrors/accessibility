@@ -202,43 +202,43 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConnectedA11yAbilities start.");
     return connectedA11yAbilities_;
 }
 
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetAsacConnections start");
     return asacConnections_;
 }
 
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetCaptionPropertyCallbacks start");
     return captionPropertyCallbacks_;
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    auto iter = connectingA11yAbilities_.find(uri);
-    if (iter != connectingA11yAbilities_.end()) {
-        return iter->second;
+    auto iterator = connectingA11yAbilities_.find(uri);
+    if (iterator != connectingA11yAbilities_.end()) {
+        return iterator->second;
     }
     return nullptr;
 }
 
 const std::vector<std::string>& AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("enabledAbilities_ size is (%{public}zu).", enabledAbilities_.size());
+    HILOG_DEBUG("enabledAbilities_'s size is %{public}zu", enabledAbilities_.size());
     for (auto& ability : enabledAbilities_) {
-        HILOG_DEBUG("bundleName = %{public}s ", ability.c_str());
+        HILOG_DEBUG("bundleName %{public}s ", ability.c_str());
     }
     return enabledAbilities_;
 }
 
 const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetInstalledAbilities start");
     return installedAbilities_;
 }
 
@@ -310,28 +310,28 @@ void AccessibilityAccountData::RemoveEnableAbilityListsObserver(const wptr<IRemo
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("AddConfigCallback start");
     configCallbacks_.push_back(callback);
 }
 
 const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConfigCallbacks start");
     return configCallbacks_;
 }
 
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("SetConfigCallbacks start");
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("start.");
-    for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
-        if ((*itr)->AsObject() == callback) {
-            configCallbacks_.erase(itr);
+    HILOG_DEBUG("RemoveConfigCallback start");
+    for (auto iter = configCallbacks_.begin(); iter != configCallbacks_.end(); iter++) {
+        if ((*iter)->AsObject() == callback) {
+            configCallbacks_.erase(iter);
             break;
         }
     }
@@ -339,31 +339,33 @@ void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& c
 
 std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConfig start");
     return config_;
 }
 
 void AccessibilityAccountData::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("GetImportantEnabledAbilities start");
     (void)importantEnabledAbilities;
 }
 
 void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("UpdateImportantEnabledAbilities start");
     (void)importantEnabledAbilities;
 }
 
 uint32_t AccessibilityAccountData::GetInputFilterFlag() const
 {
+    HILOG_DEBUG("GetInputFilterFlag start");
     return 0;
 }
 
 void AccessibilityAccountData::UpdateAbilities()
 {
+    HILOG_DEBUG("UpdateAbilities start");
 }
 
 void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,

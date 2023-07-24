@@ -116,7 +116,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
     "../../../services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_proxy.cpp",
     "../../../services/aams/test/mock/src/mock_accessible_ability_manager_service_state_observer_stub.cpp",
-    "../../../services/aams/test/mock/src/mock_os_account_manager.cpp",
+    "../../../services/test/mock/mock_os_account_manager.cpp",
     "../../../services/test/mock/mock_parameter.c",
     "../../common/src/accessibility_caption.cpp",
     "../../common/src/accessibility_constants.cpp",

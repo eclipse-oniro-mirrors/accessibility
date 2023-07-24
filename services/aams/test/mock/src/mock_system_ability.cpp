@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "accessibility_common_helper.h"
 #include "accessibility_ut_helper.h"
 #include "system_ability.h"
@@ -26,6 +27,7 @@ SystemAbility::~SystemAbility()
 
 bool SystemAbility::MakeAndRegisterAbility(SystemAbility* systemAbility)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility MakeAndRegisterAbility";
     (void)systemAbility;
     Accessibility::AccessibilityCommonHelper::GetInstance().SetIsServicePublished(false);
     return true;
@@ -33,18 +35,21 @@ bool SystemAbility::MakeAndRegisterAbility(SystemAbility* systemAbility)
 
 bool SystemAbility::AddSystemAbilityListener(int32_t systemAbilityId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility MakeAndRegisterAbility";
     OnAddSystemAbility(systemAbilityId, "");
     return true;
 }
 
 bool SystemAbility::RemoveSystemAbilityListener(int32_t systemAbilityId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility RemoveSystemAbilityListener";
     (void)systemAbilityId;
     return true;
 }
 
 bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility Publish";
     systemAbility.ForceSetRefPtr(nullptr);
     Accessibility::AccessibilityCommonHelper::GetInstance().SetIsServicePublished(true);
     return true;
@@ -52,117 +57,150 @@ bool SystemAbility::Publish(sptr<IRemoteObject> systemAbility)
 
 void SystemAbility::StopAbility(int32_t systemAbilityId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility StopAbility";
     (void)systemAbilityId;
 }
 
 void SystemAbility::Start()
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility Start";
+}
 
 void SystemAbility::Stop()
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility Stop";
+}
 
 void SystemAbility::SADump()
 {}
 
 int32_t SystemAbility::GetSystemAbilitId() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetSystemAbilitId";
     return 0;
 }
 
 void SystemAbility::SetLibPath(const std::string& libPath)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetLibPath";
     libPath_ = libPath;
 }
 
 const std::string& SystemAbility::GetLibPath() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetLibPath";
     return libPath_;
 }
 
 void SystemAbility::SetDependSa(const std::vector<int32_t>& dependSa)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetDependSa";
     dependSa_ = dependSa;
 }
 
 const std::vector<int32_t>& SystemAbility::GetDependSa() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetDependSa";
     return dependSa_;
 }
 
 void SystemAbility::SetRunOnCreate(bool isRunOnCreate)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetRunOnCreate";
     isRunOnCreate_ = isRunOnCreate;
 }
 
 bool SystemAbility::IsRunOnCreate() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility IsRunOnCreate";
     return isRunOnCreate_;
 }
 
 void SystemAbility::SetDistributed(bool isDistributed)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetDistributed";
     isDistributed_ = isDistributed;
 }
 
 bool SystemAbility::GetDistributed() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetDistributed";
     return isDistributed_;
 }
 
 bool SystemAbility::GetRunningStatus() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetRunningStatus";
     return isRunning_;
 }
 
 void SystemAbility::SetDumpLevel(uint32_t dumpLevel)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetDumpLevel";
     dumpLevel_ = dumpLevel;
 }
 
 uint32_t SystemAbility::GetDumpLevel() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetDumpLevel";
     return dumpLevel_;
 }
 
 void SystemAbility::SetDependTimeout(int32_t dependTimeout)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetDependTimeout";
     (void)dependTimeout;
 }
 
 int32_t SystemAbility::GetDependTimeout() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetDependTimeout";
     return dependTimeout_;
 }
 
 // The details should be implemented by subclass
 void SystemAbility::OnDump()
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnDump";
+}
 
 // The details should be implemented by subclass
 void SystemAbility::OnStart()
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnStart";
+}
 
 void SystemAbility::OnStart(const SystemAbilityOnDemandReason& startReason)
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnStart";
+}
 
 int32_t SystemAbility::OnIdle(const SystemAbilityOnDemandReason& idleReason)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnIdle";
     return 0;
 }
 
 void SystemAbility::OnActive(const SystemAbilityOnDemandReason& activeReason)
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnActive";
+}
 
 // The details should be implemented by subclass
 void SystemAbility::OnStop()
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnStop";
+}
 
 void SystemAbility::OnStop(const SystemAbilityOnDemandReason& stopReason)
-{}
+{
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnStop";
+}
 
 // The details should be implemented by subclass
 void SystemAbility::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnAddSystemAbility";
     (void)systemAbilityId;
     (void)deviceId;
 }
@@ -170,27 +208,32 @@ void SystemAbility::OnAddSystemAbility(int32_t systemAbilityId, const std::strin
 // The details should be implemented by subclass
 void SystemAbility::OnRemoveSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility OnRemoveSystemAbility";
     (void)systemAbilityId;
     (void)deviceId;
 }
 
 sptr<IRemoteObject> SystemAbility::GetSystemAbility(int32_t systemAbilityId)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetSystemAbility";
     (void)systemAbilityId;
     return nullptr;
 }
 
 void SystemAbility::SetCapability(const std::u16string& capability)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetCapability";
     capability_ = capability;
 }
 
 const std::u16string& SystemAbility::GetCapability() const
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility GetCapability";
     return capability_;
 }
 
 void SystemAbility::SetPermission(const std::u16string& permission)
 {
+    GTEST_LOG_(INFO) << "aams MOCK SystemAbility SetPermission";
     permission_ = permission;
 }

@@ -206,18 +206,18 @@ void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("start");
-    auto iter = connectingA11yAbilities_.find(uri);
-    if (iter != connectingA11yAbilities_.end()) {
-        connectingA11yAbilities_.erase(iter);
+    HILOG_DEBUG("RemoveConnectingA11yAbility start");
+    auto iterator = connectingA11yAbilities_.find(uri);
+    if (iterator != connectingA11yAbilities_.end()) {
+        connectingA11yAbilities_.erase(iterator);
         return;
     }
-    HILOG_ERROR("The ability(%{public}s) is not connecting.", uri.c_str());
+    HILOG_ERROR("The ability %{public}s is not connecting.", uri.c_str());
 }
 
 void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("AddEnabledAbility start.");
     if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
         [name](const std::string &abilityName) {
             return abilityName == name;
@@ -232,17 +232,17 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
 
 RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("AddEnabledAbility start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
         if (*it == name) {
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
             enabledAbilities_.erase(it);
             UpdateEnableAbilityListsState();
-            HILOG_DEBUG("EnabledAbility size(%{public}zu)", enabledAbilities_.size());
+            HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
             return RET_OK;
         }
     }
-    HILOG_ERROR("The ability(%{public}s) is not enabled.", name.c_str());
+    HILOG_ERROR("The ability %{public}s is not enabled.", name.c_str());
     return RET_ERR_NOT_ENABLED;
 }
 
@@ -293,13 +293,13 @@ void AccessibilityAccountData::ClearInstalledAbility()
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string &elementName)
 {
-    HILOG_DEBUG("URI is %{public}s", elementName.c_str());
+    HILOG_DEBUG("GetAccessibleAbilityConnection URI is %{public}s", elementName.c_str());
     for (auto& connected : connectedA11yAbilities_) {
-        std::string::size_type  idx = connected.first.find(elementName);
-        if (idx == std::string::npos) {
+        std::string::size_type index = connected.first.find(elementName);
+        if (index == std::string::npos) {
             continue;
         } else {
-            HILOG_DEBUG("founded URI = %{public}s ", connected.first.c_str());
+            HILOG_DEBUG("founded URI is %{public}s ", connected.first.c_str());
             return connected.second;
         }
     }
@@ -310,9 +310,9 @@ const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleA
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
     const int32_t windowId)
 {
-    HILOG_DEBUG("windowId[%{public}d] interactionOperators's size[%{public}zu]", windowId, asacConnections_.size());
+    HILOG_DEBUG("window id[%{public}d] interactionOperators's size[%{public}zu]", windowId, asacConnections_.size());
     for (auto &asacConnection : asacConnections_) {
-        HILOG_DEBUG("The window id of asacConnection is %{public}d", asacConnection.first);
+        HILOG_DEBUG("window id of asacConnection is %{public}d", asacConnection.first);
     }
 
     if (asacConnections_.count(windowId) > 0) {
@@ -324,25 +324,25 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("connectedA11yAbilities size[%{public}zu]", connectedA11yAbilities_.size());
+    HILOG_DEBUG("connectedA11yAbilities's size[%{public}zu]", connectedA11yAbilities_.size());
     return connectedA11yAbilities_;
 }
 
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetAsacConnections start.");
     return asacConnections_;
 }
 
 const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallbacks()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetCaptionPropertyCallbacks start.");
     return captionPropertyCallbacks_;
 }
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConnectingA11yAbility start.");
     auto iter = connectingA11yAbilities_.find(uri);
     if (iter != connectingA11yAbilities_.end()) {
         return iter->second;
@@ -352,23 +352,23 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbi
 
 const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
 {
-    HILOG_DEBUG("enabledAbilities_ size is (%{public}zu).", enabledAbilities_.size());
+    HILOG_DEBUG("enabledAbilities_'s size is (%{public}zu).", enabledAbilities_.size());
     for (auto& ability : enabledAbilities_) {
-        HILOG_DEBUG("bundleName = %{public}s ", ability.c_str());
+        HILOG_DEBUG("bundleName is %{public}s ", ability.c_str());
     }
     return enabledAbilities_;
 }
 
 const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetInstalledAbilities start.");
     return installedAbilities_;
 }
 
 void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
     std::vector<AccessibilityAbilityInfo> &abilities) const
 {
-    HILOG_DEBUG("state(%{public}d) start.", state);
+    HILOG_DEBUG("GetAbilitiesByState state(%{public}d) start.", state);
     if (state == ABILITY_STATE_ENABLE) {
         for (auto &ability : connectedA11yAbilities_) {
             if (ability.second) {
@@ -532,7 +532,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
 
 void AccessibilityAccountData::Init()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("Init start.");
     if (!config_) {
         config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
         config_->Init();
@@ -542,25 +542,25 @@ void AccessibilityAccountData::Init()
 void AccessibilityAccountData::AddConfigCallback(
     const sptr<IAccessibleAbilityManagerConfigObserver>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("AddConfigCallback start.");
     configCallbacks_.push_back(callback);
 }
 
 const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> &AccessibilityAccountData::GetConfigCallbacks() const
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConfigCallbacks start.");
     return configCallbacks_;
 }
 
 void AccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("SetConfigCallbacks start.");
     configCallbacks_ = observer;
 }
 
 void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& callback)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("RemoveConfigCallback start.");
     for (auto itr = configCallbacks_.begin(); itr != configCallbacks_.end(); itr++) {
         if ((*itr)->AsObject() == callback) {
             configCallbacks_.erase(itr);
@@ -571,23 +571,23 @@ void AccessibilityAccountData::RemoveConfigCallback(const wptr<IRemoteObject>& c
 
 std::shared_ptr<AccessibilitySettingsConfig> AccessibilityAccountData::GetConfig()
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("GetConfig start.");
     return config_;
 }
 
 void AccessibilityAccountData::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("GetImportantEnabledAbilities start.");
     if (installedAbilities_.empty()) {
-        HILOG_DEBUG("Current user has no installedAbilities.");
+        HILOG_DEBUG("Current user has no installed Abilities.");
         return;
     }
     if (enabledAbilities_.empty()) {
-        HILOG_DEBUG("Current user has no enabledabilities.");
+        HILOG_DEBUG("Current user has no enabled abilities.");
         return;
     }
-    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+    HILOG_DEBUG("installedAbilities_'s is %{public}zu.", installedAbilities_.size());
     for (auto &installAbility : installedAbilities_) {
         if (!installAbility.IsImportant()) {
             HILOG_DEBUG("The ability is not important.");

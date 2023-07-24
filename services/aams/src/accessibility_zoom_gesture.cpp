@@ -183,6 +183,7 @@ void AccessibilityZoomGesture::RecognizeInReadyState(MMI::PointerEvent &event)
                 isTripleTaps = IsTripleTaps();
             } else {
                 SendCacheEventsToNext();
+                HILOG_DEBUG("action:%{public}d, pointerCount:%{public}zu", action, pointerCount);
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
@@ -241,6 +242,7 @@ void AccessibilityZoomGesture::RecognizeInZoomState(MMI::PointerEvent &event)
             break;
         case MMI::PointerEvent::POINTER_ACTION_CANCEL:
             SendCacheEventsToNext();
+            HILOG_DEBUG("action:%{public}d", action);
             break;
         default:
             break;

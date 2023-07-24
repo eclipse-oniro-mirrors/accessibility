@@ -45,15 +45,15 @@ int AccessibleAbilityClientStub::OnRemoteRequest(uint32_t code,
 {
     HILOG_DEBUG("AccessibleAbilityClientStub::OnRemoteRequest, cmd = %d, flags= %d", code, option.GetFlags());
     std::u16string descriptor = AccessibleAbilityClientStub::GetDescriptor();
-    std::u16string remoteDescriptor = data.ReadInterfaceToken();
-    if (descriptor != remoteDescriptor) {
-        HILOG_ERROR("local descriptor is not equal to remote");
+    std::u16string remote = data.ReadInterfaceToken();
+    if (descriptor != remote) {
+        HILOG_ERROR("local descriptor is not equal to remote descriptor");
         return ERR_INVALID_STATE;
     }
 
-    auto itFunc = memberFuncMap_.find(code);
-    if (itFunc != memberFuncMap_.end()) {
-        auto memberFunc = itFunc->second;
+    auto func = memberFuncMap_.find(code);
+    if (func != memberFuncMap_.end()) {
+        auto memberFunc = func->second;
         if (memberFunc != nullptr) {
             return (this->*memberFunc)(data, reply);
         }

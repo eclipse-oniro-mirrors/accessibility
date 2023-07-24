@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "common_event_subscriber.h"
 
 namespace OHOS {
@@ -29,51 +30,61 @@ CommonEventSubscriber::~CommonEventSubscriber()
 
 const CommonEventSubscribeInfo& CommonEventSubscriber::GetSubscribeInfo() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber CommonEventSubscriber";
     return subscribeInfo_;
 }
 
 bool CommonEventSubscriber::SetCode(const int& code)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber SetCode";
     return result_->SetCode(code);
 }
 
 int CommonEventSubscriber::GetCode() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber GetCode";
     return result_->GetCode();
 }
 
 bool CommonEventSubscriber::SetData(const std::string& data)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber SetData";
     return result_->SetData(data);
 }
 
 std::string CommonEventSubscriber::GetData() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber GetData";
     return result_->GetData();
 }
 
 bool CommonEventSubscriber::SetCodeAndData(const int& code, const std::string& data)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber SetCodeAndData";
     return result_->SetCodeAndData(code, data);
 }
 
 bool CommonEventSubscriber::AbortCommonEvent()
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber AbortCommonEvent";
     return result_->AbortCommonEvent();
 }
 
 bool CommonEventSubscriber::ClearAbortCommonEvent()
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber ClearAbortCommonEvent";
     return result_->ClearAbortCommonEvent();
 }
 
 bool CommonEventSubscriber::GetAbortCommonEvent() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber GetAbortCommonEvent";
     return result_->GetAbortCommonEvent();
 }
 
 std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GoAsyncCommonEvent()
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber GoAsyncCommonEvent";
     std::shared_ptr<AsyncCommonEventResult> res = result_;
     result_ = nullptr;
     return res;
@@ -81,28 +92,32 @@ std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GoAsyncCommonEven
 
 bool CommonEventSubscriber::IsOrderedCommonEvent() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber IsOrderedCommonEvent";
     return (result_ != nullptr) ? result_->IsOrderedCommonEvent() : false;
 }
 
 bool CommonEventSubscriber::IsStickyCommonEvent() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber IsStickyCommonEvent";
     return (result_ != nullptr) ? result_->IsStickyCommonEvent() : false;
 }
 
 bool CommonEventSubscriber::SetAsyncCommonEventResult(const std::shared_ptr<AsyncCommonEventResult>& result)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber SetAsyncCommonEventResult";
     result_ = result;
-
     return true;
 }
 
 std::shared_ptr<AsyncCommonEventResult> CommonEventSubscriber::GetAsyncCommonEventResult()
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber GetAsyncCommonEventResult";
     return result_;
 }
 
 bool CommonEventSubscriber::CheckSynchronous() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscriber CheckSynchronous";
     return true;
 }
 } // namespace EventFwk

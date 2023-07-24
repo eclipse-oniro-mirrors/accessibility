@@ -41,14 +41,14 @@ bool AccessibilityElementOperatorCallbackProxy::SendTransactCmd(AccessibilityInt
 {
     HILOG_DEBUG();
 
-    sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    sptr<IRemoteObject> remoteObj = Remote();
+    if (!remoteObj) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
-    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
-    if (result != NO_ERROR) {
-        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
+    int32_t ret = remoteObj->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    if (ret != NO_ERROR) {
+        HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", ret, code);
         return false;
     }
     return true;
@@ -63,7 +63,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
@@ -75,19 +75,19 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByAccessibil
     for (auto &info : infos) {
         AccessibilityElementInfoParcel infoParcel(info);
         if (!data.WriteParcelable(&infoParcel)) {
-            HILOG_ERROR("write Parcelable failed");
+            HILOG_ERROR("write accessibility element info failed");
             return;
         }
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
-        HILOG_ERROR("SetSearchElementInfoByAccessibilityIdResult failed");
+        HILOG_ERROR("set search element info by accessibility id result failed");
         return;
     }
 }
@@ -101,7 +101,7 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
@@ -113,19 +113,19 @@ void AccessibilityElementOperatorCallbackProxy::SetSearchElementInfoByTextResult
     for (auto &info : infos) {
         AccessibilityElementInfoParcel infoParcel(info);
         if (!data.WriteParcelable(&infoParcel)) {
-            HILOG_ERROR("write Parcelable failed");
+            HILOG_ERROR("write accessibility element info failed");
             return;
         }
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_BY_TEXT,
         data, reply, option)) {
-        HILOG_ERROR("SetSearchElementInfoByTextResult failed");
+        HILOG_ERROR("set search element info by text result failed");
         return;
     }
 }
@@ -140,22 +140,22 @@ void AccessibilityElementOperatorCallbackProxy::SetFindFocusedElementInfoResult(
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteParcelable(&infoParcel)) {
-        HILOG_ERROR("fail, connection write info");
+        HILOG_ERROR("connection write info failed");
         return;
     }
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUSED_INFO,
         data, reply, option)) {
-        HILOG_ERROR("SetFindFocusedElementInfoResult failed");
+        HILOG_ERROR("set find focused element info result failed");
         return;
     }
 }
@@ -170,23 +170,23 @@ void AccessibilityElementOperatorCallbackProxy::SetFocusMoveSearchResult(const A
     AccessibilityElementInfoParcel infoParcel(info);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteParcelable(&infoParcel)) {
-        HILOG_ERROR("fail, connection write info");
+        HILOG_ERROR("connection write info failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId");
+        HILOG_ERROR("connection write requestId failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_FOCUS_MOVE,
         data, reply, option)) {
-        HILOG_ERROR("SetFocusMoveSearchResult failed");
+        HILOG_ERROR("set focus move search result failed");
         return;
     }
 }
@@ -199,23 +199,23 @@ void AccessibilityElementOperatorCallbackProxy::SetExecuteActionResult(const boo
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteBool(succeeded)) {
-        HILOG_ERROR("fail, connection write succeeded");
+        HILOG_ERROR("connection write failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION,
         data, reply, option)) {
-        HILOG_ERROR("SetExecuteActionResult failed");
+        HILOG_ERROR("set execute action result failed");
         return;
     }
 }

@@ -82,7 +82,7 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
     } else if ((type >= Rosen::WindowType::SYSTEM_WINDOW_BASE) && (type <= Rosen::WindowType::SYSTEM_WINDOW_END)) {
         winType = TYPE_SYSTEM;
     } else {
-        HILOG_ERROR("Unknown windowType[%{public}d]", type);
+        HILOG_ERROR("ConvertWindowType Unknown windowType[%{public}d]", type);
     }
     return winType;
 }
@@ -134,7 +134,7 @@ bool AccessibilityWindowManager::IsValidWindow(int32_t windowId)
 
 void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
 {
-    HILOG_DEBUG("start windowId(%{public}d)", windowId);
+    HILOG_DEBUG("SetWindowSize windowId(%{public}d)", windowId);
 
     auto it = std::find_if(a11yWindows_.begin(), a11yWindows_.end(),
         [windowId](const std::map<int32_t, AccessibilityWindowInfo>::value_type &window) {
