@@ -46,13 +46,13 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(AccessibilityInterfaceCode c
 {
     HILOG_DEBUG();
 
-    sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    sptr<IRemoteObject> remoteChannelProxy = Remote();
+    if (!remoteChannelProxy) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
-    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
-    if (result != NO_ERROR) {
+    int32_t resultChannelProxy = remoteChannelProxy->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    if (resultChannelProxy != NO_ERROR) {
         HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
         return false;
     }

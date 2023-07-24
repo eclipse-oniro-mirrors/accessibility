@@ -57,7 +57,8 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "FindFocusedElement");
     if (!proxy_) {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        HILOG_ERROR("FindFocusedElementInfo Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -65,7 +66,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
-        HILOG_ERROR("Failed to create elementOperator.");
+        HILOG_ERROR("FindFocusedElementInfo Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
@@ -88,13 +89,13 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
 
     if (elementOperator->accessibilityInfoResult_.GetAccessibilityId() ==
         AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-        HILOG_ERROR("The elementInfo from ace is wrong");
+        HILOG_ERROR("FindFocusedElementInfo The elementInfo from ace is wrong");
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
     HILOG_INFO("Get result successfully from ace.");
@@ -121,7 +122,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
     if (!proxy_) {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        HILOG_ERROR("ExecuteAction Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -129,7 +130,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
-        HILOG_ERROR("Failed to create elementOperator.");
+        HILOG_ERROR("ExecuteAction Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
@@ -172,7 +173,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, accessibilityWindowId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
     if (!proxy_) {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -180,7 +182,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
-        HILOG_ERROR("Failed to create elementOperator.");
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
@@ -194,13 +196,13 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
 
     for (auto &info : elementOperator->elementInfosResult_) {
         if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-            HILOG_ERROR("The elementInfo from ace is wrong");
+            HILOG_ERROR("SearchElementInfosByAccessibilityId The elementInfo from ace is wrong");
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
@@ -251,7 +253,8 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementByText");
     if (!proxy_) {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        HILOG_ERROR("SearchElementInfosByText Failed to connect to aams [channelId:%{public}d]",
+            channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -259,7 +262,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
-        HILOG_ERROR("Failed to create elementOperator.");
+        HILOG_ERROR("SearchElementInfosByText Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
@@ -273,13 +276,13 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("SearchElementInfosByText Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
 
     for (auto &info : elementOperator->elementInfosResult_) {
         if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-            HILOG_ERROR("The elementInfo from ace is wrong");
+            HILOG_ERROR("SearchElementInfosByText The elementInfo from ace is wrong");
             return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
         }
     }
@@ -293,7 +296,7 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     if (!proxy_) {
-        HILOG_ERROR("Failed to connect to aams [channelId:%{public}d]", channelId_);
+        HILOG_ERROR("FocusMoveSearch Failed to connect to aams [channelId:%{public}d]", channelId_);
         return RET_ERR_SAMGR;
     }
 
@@ -301,7 +304,7 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
-        HILOG_ERROR("Failed to create elementOperator.");
+        HILOG_ERROR("FocusMoveSearch Failed to create elementOperator.");
         return RET_ERR_NULLPTR;
     }
     std::future<void> promiseFuture = elementOperator->promise_.get_future();
@@ -314,13 +317,13 @@ RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWi
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("FocusMoveSearch Failed to wait result");
         return RET_ERR_TIME_OUT;
     }
 
     if (elementOperator->accessibilityInfoResult_.GetAccessibilityId() ==
         AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
-        HILOG_ERROR("The elementInfo from ace is wrong");
+        HILOG_ERROR("FocusMoveSearch The elementInfo from ace is wrong");
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
 

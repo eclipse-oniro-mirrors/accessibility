@@ -91,6 +91,7 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
             napi_handle_scope scope = nullptr;
             napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
+                HILOG_DEBUG("NotifyStateChanged scope is nullptr");
                 return;
             }
             napi_value jsEvent;
@@ -159,6 +160,7 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             napi_handle_scope scope = nullptr;
             napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
+                HILOG_DEBUG("NotifyStringChanged scope is nullptr");
                 return;
             }
             napi_value jsEvent;
@@ -197,6 +199,7 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
             napi_handle_scope scope = nullptr;
             napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
+                HILOG_DEBUG("NotifyStateChanged scope is nullptr");
                 return;
             }
             napi_value jsEvent;
@@ -233,6 +236,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
             napi_handle_scope scope = nullptr;
             napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
+                HILOG_DEBUG("NotifyUintChanged scope is nullptr");
                 return;
             }
             napi_value jsEvent;
@@ -269,6 +273,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             napi_handle_scope scope = nullptr;
             napi_open_handle_scope(callbackInfo->env_, &scope);
             if (scope == nullptr) {
+                HILOG_DEBUG("NotifyFloatChanged scope is nullptr");
                 return;
             }
             napi_value jsEvent;
@@ -306,7 +311,7 @@ void NAccessibilityConfigObserver::NotifyStateChanged2JS(bool enabled)
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyStateChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -336,7 +341,7 @@ void NAccessibilityConfigObserver::NotifyPropertyChanged2JS(const OHOS::Accessib
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyPropertyChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -366,7 +371,7 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyStringChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -396,7 +401,7 @@ void NAccessibilityConfigObserver::NotifyIntChanged2JS(int32_t value)
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyIntChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -426,7 +431,7 @@ void NAccessibilityConfigObserver::NotifyUintChanged2JS(uint32_t value)
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyUintChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -456,7 +461,7 @@ void NAccessibilityConfigObserver::NotifyFloatChanged2JS(float value)
     callbackInfo->ref_ = handlerRef_;
     uv_work_t *work = new(std::nothrow) uv_work_t;
     if (!work) {
-        HILOG_ERROR("Failed to create work.");
+        HILOG_ERROR("NotifyFloatChanged2JS Failed to create work.");
         delete callbackInfo;
         callbackInfo = nullptr;
         return;
@@ -499,7 +504,7 @@ void NAccessibilityConfigObserverImpl::SubscribeObserver(napi_env env,
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = observers_.begin(); iter != observers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
-            HILOG_DEBUG("Observer exist");
+            HILOG_DEBUG("SubscribeObserver Observer exist");
             return;
         } else {
             iter++;

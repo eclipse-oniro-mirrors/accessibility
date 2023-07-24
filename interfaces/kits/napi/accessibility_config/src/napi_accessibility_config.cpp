@@ -134,7 +134,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
     HILOG_INFO();
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
-        HILOG_ERROR("callbackInfo is nullptr");
+        HILOG_ERROR("DisableAbility callbackInfo is nullptr");
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
         napi_throw(env, err);
         return nullptr;
@@ -151,7 +151,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
         delete callbackInfo;
         callbackInfo = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("DisableAbility invalid param");
         napi_throw(env, err);
         return nullptr;
     }
@@ -216,7 +216,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
         napi_valuetype valueType = napi_null;
         napi_typeof(env, args[PARAM1], &valueType);
         if (valueType != napi_function) {
-            HILOG_ERROR("args[PARAM1] format is wrong");
+            HILOG_ERROR("SubscribeState args[PARAM1] format is wrong");
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
     }
@@ -265,7 +265,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
 
     if (errCode == OHOS::Accessibility::RET_ERR_INVALID_PARAM) {
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("UnsubscribeState invalid param");
         napi_throw(env, err);
         return nullptr;
     }
@@ -442,8 +442,10 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
         HILOG_DEBUG("complete function callback mode");
     } else {
         if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+            HILOG_DEBUG("GetConfigComplete callbackInfo->ret_ is RET_OK");
             napi_resolve_deferred(env, callbackInfo->deferred_, result[PARAM1]);
         } else {
+            HILOG_DEBUG("GetConfigComplete callbackInfo->ret_ is not RET_OK");
             napi_reject_deferred(env, callbackInfo->deferred_, result[PARAM0]);
         }
     }
@@ -654,7 +656,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         delete callbackInfo;
         callbackInfo = nullptr;
         napi_value err = CreateBusinessError(env, errCode);
-        HILOG_ERROR("invalid param");
+        HILOG_ERROR("SetConfig invalid param");
         napi_throw(env, err);
         return nullptr;
     }

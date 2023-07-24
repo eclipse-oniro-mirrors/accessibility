@@ -41,6 +41,13 @@ sptr<ISystemAbilityManager> SystemAbilityManagerClient::GetSystemAbilityManager(
     return systemAbilityManager_;
 }
 
+sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAbilityId,
+    const std::string& deviceId)
+{
+    (void)deviceId;
+    return GetSystemAbility(systemAbilityId);
+}
+
 sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAbilityId)
 {
     sptr<IRemoteObject> remote = nullptr;
@@ -56,13 +63,6 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAb
             break;
     }
     return remote;
-}
-
-sptr<IRemoteObject> SystemAbilityManagerProxy::GetSystemAbility(int32_t systemAbilityId,
-    const std::string& deviceId)
-{
-    (void)deviceId;
-    return GetSystemAbility(systemAbilityId);
 }
 
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbilityWrapper(int32_t code, MessageParcel& data)

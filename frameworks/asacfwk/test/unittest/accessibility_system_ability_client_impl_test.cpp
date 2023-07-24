@@ -628,7 +628,8 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetSearchElementInfoByAccessi
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        GTEST_LOG_(INFO) << "SetSearchElementInfoByAccessibilityIdResult_001
+            Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
@@ -764,7 +765,8 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFindFocusedElementInfoResu
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        GTEST_LOG_(INFO) << "SetFindFocusedElementInfoResult_001 
+            Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
@@ -831,7 +833,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetFocusMoveSearchResult_001,
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        GTEST_LOG_(INFO) << "SetFocusMoveSearchResult_001 Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
@@ -898,7 +900,7 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_001, T
     impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
     AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
     if (!impl_) {
-        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        GTEST_LOG_(INFO) << "SetExecuteActionResult_001 Cann't get AccessibilitySystemAbilityClientImpl impl_";
         return;
     }
     std::shared_ptr<AccessibilityElementOperator> mockOperator = std::make_shared<MockAccessibilityElementOperator>();
