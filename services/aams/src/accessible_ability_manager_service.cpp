@@ -325,34 +325,34 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
         return ERR_INVALID_VALUE;
     }
 
-    std::shared_ptr<std::promise<uint32_t>> syncPromisePtr = std::make_shared<std::promise<uint32_t>>();
-    std::future syncFuture = syncPromisePtr->get_future();
-    handler_->PostTask(std::bind([this, syncPromisePtr, callback]() -> void {
+    std::shared_ptr<std::promise<uint32_t>> syncPromise = std::make_shared<std::promise<uint32_t>>();
+    std::future syncFuture = syncPromise->get_future();
+    handler_->PostTask(std::bind([this, syncPromise, callback]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("Account data is null");
-            syncPromisePtr->set_value(ERR_INVALID_VALUE);
+            syncPromise->set_value(ERR_INVALID_VALUE);
             return;
         }
         if (!captionPropertyCallbackDeathRecipient_) {
             captionPropertyCallbackDeathRecipient_ = new(std::nothrow) CaptionPropertyCallbackDeathRecipient();
             if (!captionPropertyCallbackDeathRecipient_) {
                 HILOG_ERROR("captionPropertyCallbackDeathRecipient_ is null");
-                syncPromisePtr->set_value(ERR_INVALID_VALUE);
+                syncPromise->set_value(ERR_INVALID_VALUE);
                 return;
             }
         }
         if (!callback->AsObject()) {
             HILOG_ERROR("object is null");
-            syncPromisePtr->set_value(0);
+            syncPromise->set_value(0);
             return;
         }
         callback->AsObject()->AddDeathRecipient(captionPropertyCallbackDeathRecipient_);
         accountData->AddCaptionPropertyCallback(callback);
         HILOG_DEBUG("the size of caption property callbacks is %{public}zu",
             accountData->GetCaptionPropertyCallbacks().size());
-        syncPromisePtr->set_value(NO_ERROR);
+        syncPromise->set_value(NO_ERROR);
         }), "TASK_REGISTER_CAPTION_OBSERVER");
     
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));

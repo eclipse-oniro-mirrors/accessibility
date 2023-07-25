@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "display.h"
 #include "window/window_manager/utils/include/display_info.h"
 
@@ -24,10 +25,10 @@ namespace {
 
 class Display::Impl : public RefBase {
 public:
-    Impl(const std::string& name, sptr<DisplayInfo> info)
+    Impl(const std::string& name, sptr<DisplayInfo> displayInfo)
     {
         name_ = name;
-        displayInfo_ = info;
+        displayInfo_ = displayInfo;
     }
     ~Impl() = default;
     DEFINE_VAR_FUNC_GET_SET(std::string, Name, name);
@@ -35,40 +36,50 @@ public:
 };
 
 Display::Display(const std::string& name, sptr<DisplayInfo> info) : pImpl_(new Impl(name, info))
-{}
+{
+    GTEST_LOG_(INFO) << "MOCK Display Display";
+}
 
 Display::~Display()
-{}
+{
+    GTEST_LOG_(INFO) << "MOCK Display ~Display";
+}
 
 DisplayId Display::GetId() const
 {
-    DisplayId id {0};
-    return id;
+    GTEST_LOG_(INFO) << "MOCK Display ~Display";
+    DisplayId displayId {0};
+    return displayId;
 }
 
 int32_t Display::GetWidth() const
 {
+    GTEST_LOG_(INFO) << "MOCK Display GetWidth";
     return WEIGHT_VALUE;
 }
 
 int32_t Display::GetHeight() const
 {
+    GTEST_LOG_(INFO) << "MOCK Display GetHeight";
     return HEIGHT_VALUE;
 }
 
 uint32_t Display::GetRefreshRate() const
 {
+    GTEST_LOG_(INFO) << "MOCK Display GetRefreshRate";
     return 0;
 }
 
 ScreenId Display::GetScreenId() const
 {
-    ScreenId id {0};
-    return id;
+    GTEST_LOG_(INFO) << "MOCK Display GetScreenId";
+    ScreenId screenId {0};
+    return screenId;
 }
 
 void Display::UpdateDisplayInfo(sptr<DisplayInfo> displayInfo) const
 {
+    GTEST_LOG_(INFO) << "MOCK Display UpdateDisplayInfo";
     if (!displayInfo) {
         return;
     }

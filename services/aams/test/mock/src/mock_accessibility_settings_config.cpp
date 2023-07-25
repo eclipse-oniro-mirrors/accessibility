@@ -174,96 +174,115 @@ std::string AccessibilitySettingsConfig::StateChange(bool state)
 
 bool AccessibilitySettingsConfig::GetCaptionState() const
 {
+    HILOG_DEBUG("start.");
     return isCaptionState_;
 }
 
 bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
 {
+    HILOG_DEBUG("start.");
     return isScreenMagnificationState_;
 }
 
 bool AccessibilitySettingsConfig::GetShortKeyState() const
 {
+    HILOG_DEBUG("start.");
     return isShortKeyState_;
 }
 
 bool AccessibilitySettingsConfig::GetMouseKeyState() const
 {
+    HILOG_DEBUG("start.");
     return isMouseKeyState_;
 }
 
 int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
 {
+    HILOG_DEBUG("start.");
     return mouseAutoClick_;
 }
 
 const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
+    HILOG_DEBUG("start.");
     return shortkeyTarget_;
 }
 
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const
 {
+    HILOG_DEBUG("start.");
     return highContrastTextState_;
 }
 
 bool AccessibilitySettingsConfig::GetInvertColorState() const
 {
+    HILOG_DEBUG("start.");
     return invertColorState_;
 }
 
 bool AccessibilitySettingsConfig::GetAnimationOffState() const
 {
+    HILOG_DEBUG("start.");
     return animationOffState_;
 }
 
 bool AccessibilitySettingsConfig::GetAudioMonoState() const
 {
+    HILOG_DEBUG("start.");
     return audioMonoState_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetDaltonizationColorFilter() const
 {
+    HILOG_DEBUG("start.");
     return daltonizationColorFilter_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetContentTimeout() const
 {
+    HILOG_DEBUG("start.");
     return contentTimeout_;
 }
 
 float AccessibilitySettingsConfig::GetBrightnessDiscount() const
 {
+    HILOG_DEBUG("start.");
     return brightnessDiscount_;
 }
 
 float AccessibilitySettingsConfig::GetAudioBalance() const
 {
+    HILOG_DEBUG("start.");
     return audioBalance_;
 }
 
 bool AccessibilitySettingsConfig::GetEnabledState() const
 {
+    HILOG_DEBUG("start.");
     return enabled_;
 }
 
 bool AccessibilitySettingsConfig::GetTouchGuideState() const
 {
+    HILOG_DEBUG("start.");
     return eventTouchGuideState_;
 }
 
 bool AccessibilitySettingsConfig::GetGestureState() const
 {
+    HILOG_DEBUG("start.");
     return gesturesSimulation_;
 }
 
 bool AccessibilitySettingsConfig::GetKeyEventObserverState() const
 {
+    HILOG_DEBUG("start.");
     return filteringKeyEvents_;
 }
 
 const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
 {
+    HILOG_DEBUG("start.");
     return captionProperty_;
 };
 

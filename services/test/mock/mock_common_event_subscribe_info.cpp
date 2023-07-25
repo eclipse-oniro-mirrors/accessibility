@@ -27,6 +27,7 @@ CommonEventSubscribeInfo::CommonEventSubscribeInfo() : priority_(0), threadMode_
 
 CommonEventSubscribeInfo::CommonEventSubscribeInfo(const CommonEventSubscribeInfo& commonEventSubscribeInfo)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo CommonEventSubscribeInfo";
     matchingSkills_ = commonEventSubscribeInfo.matchingSkills_;
     priority_ = commonEventSubscribeInfo.priority_;
     permission_ = commonEventSubscribeInfo.permission_;
@@ -39,11 +40,13 @@ CommonEventSubscribeInfo::~CommonEventSubscribeInfo()
 
 void CommonEventSubscribeInfo::SetPriority(const int32_t& priority)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo SetPriority";
     priority_ = priority;
 }
 
 int32_t CommonEventSubscribeInfo::GetPriority() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo GetPriority";
     return priority_;
 }
 
@@ -55,46 +58,55 @@ void CommonEventSubscribeInfo::SetPermission(const std::string& permission)
 
 std::string CommonEventSubscribeInfo::GetPermission() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo GetPermission";
     return permission_;
 }
 
 CommonEventSubscribeInfo::ThreadMode CommonEventSubscribeInfo::GetThreadMode() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo GetThreadMode";
     return threadMode_;
 }
 
 void CommonEventSubscribeInfo::SetThreadMode(CommonEventSubscribeInfo::ThreadMode threadMode)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo SetThreadMode";
     threadMode_ = threadMode;
 }
 
 void CommonEventSubscribeInfo::SetDeviceId(const std::string& deviceId)
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo SetDeviceId";
     deviceId_ = deviceId;
 }
 
 std::string CommonEventSubscribeInfo::GetDeviceId() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo GetDeviceId";
     return deviceId_;
 }
 
 const MatchingSkills& CommonEventSubscribeInfo::GetMatchingSkills() const
 {
+    GTEST_LOG_(INFO) << "MOCK CommonEventSubscribeInfo GetMatchingSkills";
     return matchingSkills_;
 }
 
 bool CommonEventSubscribeInfo::Marshalling(Parcel& parcel) const
 {
+    (void)parcel;
     return true;
 }
 
 bool CommonEventSubscribeInfo::ReadFromParcel(Parcel& parcel)
 {
+    (void)parcel;
     return true;
 }
 
 CommonEventSubscribeInfo* CommonEventSubscribeInfo::Unmarshalling(Parcel& parcel)
 {
+    (void)parcel;
     CommonEventSubscribeInfo* commonEventSubscribeInfo = new CommonEventSubscribeInfo();
     return commonEventSubscribeInfo;
 }

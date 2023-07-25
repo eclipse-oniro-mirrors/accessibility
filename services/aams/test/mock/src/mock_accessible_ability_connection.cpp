@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "mock_accessible_ability_connection.h"
 #include <algorithm>
 #include <map>
@@ -44,6 +45,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfoByAccessibilityId";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)requestId;
@@ -56,6 +58,7 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
     const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SearchElementInfosByText";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)text;
@@ -68,6 +71,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FindFocusedElementInfo";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)focusType;
@@ -79,6 +83,7 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
 RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel FocusMoveSearch";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)direction;
@@ -91,6 +96,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
     const int32_t action, const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel ExecuteAction";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)action;
@@ -102,6 +108,7 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
 
 RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<AccessibilityWindowInfo> &windows) const
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
     (void)displayId;
     (void)windows;
     sptr<AccessibleAbilityConnection> clientConnection = GetConnection(accountId_, clientName_);
@@ -119,12 +126,14 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
 
 RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindows";
     uint64_t displayId = 0;
     return GetWindows(displayId, windows);
 }
 
 RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindow";
     (void)windowId;
     (void)windowInfo;
     return RET_OK;
@@ -132,6 +141,7 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
 
 RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SetTargetBundleName";
     (void)targetBundleNames;
     return RET_OK;
 }
@@ -139,11 +149,13 @@ RetError AccessibleAbilityChannel::SetTargetBundleName(const std::vector<std::st
 RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel GetWindowsByDisplayId";
     return GetWindows(displayId, windows);
 }
 
 void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SetOnKeyPressEventResult";
     (void)handled;
     (void)sequence;
 }
@@ -151,6 +163,7 @@ void AccessibleAbilityChannel::SetOnKeyPressEventResult(const bool handled, cons
 RetError AccessibleAbilityChannel::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannel SendSimulateGesture";
     (void)gesturePath;
     return RET_OK;
 }

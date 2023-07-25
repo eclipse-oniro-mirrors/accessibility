@@ -26,8 +26,8 @@
 
 namespace OHOS {
 namespace Accessibility {
-AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject>& object)
-    : IRemoteProxy<IAccessibleAbilityClient>(object)
+AccessibleAbilityClientProxy::AccessibleAbilityClientProxy(const sptr<IRemoteObject>& remoteObj)
+    : IRemoteProxy<IAccessibleAbilityClient>(remoteObj)
 {}
 
 bool AccessibleAbilityClientProxy::WriteInterfaceToken(MessageParcel& data)

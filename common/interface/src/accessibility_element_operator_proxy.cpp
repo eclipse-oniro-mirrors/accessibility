@@ -37,12 +37,12 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
     MessageParcel &data, MessageParcel &reply,  MessageOption &option)
 {
     HILOG_DEBUG();
-    sptr<IRemoteObject> remote = Remote();
-    if (!remote) {
+    sptr<IRemoteObject> remoteObj = Remote();
+    if (!remoteObj) {
         HILOG_ERROR("fail to send transact cmd %{public}d due to remote object", code);
         return false;
     }
-    int32_t result = remote->SendRequest(static_cast<uint32_t>(code), data, reply, option);
+    int32_t result = remoteObj->SendRequest(static_cast<uint32_t>(code), data, reply, option);
     if (result != NO_ERROR) {
         HILOG_ERROR("receive error transact code %{public}d in transact cmd %{public}d", result, code);
         return false;
@@ -59,37 +59,37 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("fail, connection write parcelable elementId error");
+        HILOG_ERROR("connection write parcelable element id failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write parcelable requestId error");
+        HILOG_ERROR("connection write parcelable request id failed");
         return;
     }
 
     if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
+        HILOG_ERROR("callback is nullptr");
         return;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("fail, connection write parcelable callback error");
+        HILOG_ERROR("connection write parcelable callback failed");
         return;
     }
 
     if (!data.WriteInt32(mode)) {
-        HILOG_ERROR("fail, connection write parcelable mode error");
+        HILOG_ERROR("connection write parcelable mode failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_ACCESSIBILITY_ID,
         data, reply, option)) {
-        HILOG_ERROR("SearchElementInfoByAccessibilityId failed");
+        HILOG_ERROR("search element info by accessibility id failed");
         return;
     }
 }
@@ -104,35 +104,35 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("fail, connection write parcelable elementId error");
+        HILOG_ERROR("connection write parcelable elementId failed");
         return;
     }
     if (!data.WriteString(text)) {
-        HILOG_ERROR("fail, connection write text error");
+        HILOG_ERROR("connection write text failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId error");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
+        HILOG_ERROR("callback is nullptr");
         return;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("fail, connection write callback error");
+        HILOG_ERROR("connection write callback failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_BY_TEXT, data, reply, option)) {
-        HILOG_ERROR("SearchElementInfosByText failed");
+        HILOG_ERROR("search element infos by text failed");
         return;
     }
 }
@@ -146,36 +146,36 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t ele
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("fail, connection write elementId error");
+        HILOG_ERROR("connection write elementId failed");
         return;
     }
 
     if (!data.WriteInt32(focusType)) {
-        HILOG_ERROR("fail, connection write focusType error");
+        HILOG_ERROR("connection write focusType failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId error");
+        HILOG_ERROR("connection write requestId failed");
         return;
     }
 
     if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
+        HILOG_ERROR("callback is nullptr");
         return;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("fail, connection write callback error");
+        HILOG_ERROR("connection write callback failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_INFO, data, reply, option)) {
-        HILOG_ERROR("FindFocusedElementInfo failed");
+        HILOG_ERROR("find focused element info failed");
         return;
     }
 }
@@ -218,7 +218,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_FIND, data, reply, option)) {
-        HILOG_ERROR("FocusMoveSearch failed");
+        HILOG_ERROR("focus move search failed");
         return;
     }
 }
@@ -233,55 +233,55 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, c
     MessageOption option(MessageOption::TF_ASYNC);
 
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!data.WriteInt32(elementId)) {
-        HILOG_ERROR("fail, connection write elementId error");
+        HILOG_ERROR("connection write element id failed");
         return;
     }
 
     if (!data.WriteInt32(action)) {
-        HILOG_ERROR("fail, connection write focusType error");
+        HILOG_ERROR("connection write focus type failed");
         return;
     }
 
     auto iter = arguments.begin();
-    std::vector<std::string> argumentKey;
-    std::vector<std::string> argumentValue;
+    std::vector<std::string> keys;
+    std::vector<std::string> values;
     while (iter != arguments.end()) {
-        argumentKey.push_back(iter->first);
-        argumentValue.push_back(iter->second);
+        keys.push_back(iter->first);
+        values.push_back(iter->second);
         iter++;
     }
 
-    if (!data.WriteStringVector(argumentKey)) {
-        HILOG_ERROR("fail, connection write argumentKey error");
+    if (!data.WriteStringVector(keys)) {
+        HILOG_ERROR("connection write argument keys failed");
         return;
     }
 
-    if (!data.WriteStringVector(argumentValue)) {
-        HILOG_ERROR("fail, connection write argumentValue error");
+    if (!data.WriteStringVector(values)) {
+        HILOG_ERROR("connection write argument values failed");
         return;
     }
 
     if (!data.WriteInt32(requestId)) {
-        HILOG_ERROR("fail, connection write requestId error");
+        HILOG_ERROR("connection write request id failed");
         return;
     }
 
     if (!callback) {
-        HILOG_ERROR("callback is nullptr.");
+        HILOG_ERROR("callback is nullptr");
         return;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        HILOG_ERROR("fail, connection write callback error");
+        HILOG_ERROR("connection write callback failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::PERFORM_ACTION_ELEMENT, data, reply, option)) {
-        HILOG_ERROR("ExecuteAction failed");
+        HILOG_ERROR("execute action failed");
         return;
     }
 }
@@ -293,12 +293,12 @@ void AccessibilityElementOperatorProxy::ClearFocus()
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::CLEAR_FOCUS, data, reply, option)) {
-        HILOG_ERROR("ClearFocus failed");
+        HILOG_ERROR("clear focus failed");
         return;
     }
 }
@@ -310,12 +310,12 @@ void AccessibilityElementOperatorProxy::OutsideTouch()
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     if (!WriteInterfaceToken(data)) {
-        HILOG_ERROR("fail, connection write Token");
+        HILOG_ERROR("connection write token failed");
         return;
     }
 
     if (!SendTransactCmd(AccessibilityInterfaceCode::OUTSIDE_TOUCH, data, reply, option)) {
-        HILOG_ERROR("OutsideTouch failed");
+        HILOG_ERROR("outside touch failed");
         return;
     }
 }

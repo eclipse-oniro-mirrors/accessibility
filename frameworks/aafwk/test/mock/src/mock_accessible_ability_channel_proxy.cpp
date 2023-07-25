@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
+#include <gtest/gtest.h>
 #include "mock_accessible_ability_channel_proxy.h"
 #include "accessible_ability_channel_proxy.h"
 #include "parcel.h"
 
 namespace OHOS {
 namespace Accessibility {
-AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(const sptr<IRemoteObject>& object)
-    : IRemoteProxy<IAccessibleAbilityChannel>(object)
+AccessibleAbilityChannelProxy::AccessibleAbilityChannelProxy(const sptr<IRemoteObject>& remoteObj)
+    : IRemoteProxy<IAccessibleAbilityChannel>(remoteObj)
 {}
 
 bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel& data)
@@ -30,9 +31,10 @@ bool AccessibleAbilityChannelProxy::WriteInterfaceToken(MessageParcel& data)
 }
 
 bool AccessibleAbilityChannelProxy::SendTransactCmd(
-    AccessibilityInterfaceCode code, MessageParcel& data, MessageParcel& reply, MessageOption& option)
+    AccessibilityInterfaceCode interfaceCode, MessageParcel& data, MessageParcel& reply, MessageOption& option)
 {
-    (void)code;
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SendTransactCmd";
+    (void)interfaceCode;
     (void)data;
     (void)reply;
     (void)option;
@@ -43,6 +45,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
     const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfoByAccessibilityId";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)requestId;
@@ -55,6 +58,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
     const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfosByText";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)text;
@@ -67,6 +71,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
     const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy FindFocusedElementInfo";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)focusType;
@@ -78,6 +83,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
 RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy FocusMoveSearch";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)direction;
@@ -90,6 +96,7 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy ExecuteAction";
     (void)accessibilityWindowId;
     (void)elementId;
     (void)action;
@@ -99,8 +106,17 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
     return RET_OK;
 }
 
+RetError AccessibleAbilityChannelProxy::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy GetWindow";
+    (void)windowId;
+    (void)windowInfo;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy GetWindows";
     (void)windows;
     return RET_OK;
 }
@@ -108,6 +124,7 @@ RetError AccessibleAbilityChannelProxy::GetWindows(std::vector<AccessibilityWind
 RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy GetWindowsByDisplayId";
     (void)displayId;
     (void)windows;
     return RET_OK;
@@ -115,6 +132,7 @@ RetError AccessibleAbilityChannelProxy::GetWindowsByDisplayId(const uint64_t dis
 
 void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled, const int32_t sequence)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SetOnKeyPressEventResult";
     (void)handled;
     (void)sequence;
 }
@@ -122,7 +140,15 @@ void AccessibleAbilityChannelProxy::SetOnKeyPressEventResult(const bool handled,
 RetError AccessibleAbilityChannelProxy::SendSimulateGesture(
     const std::shared_ptr<AccessibilityGestureInjectPath>& gesturePath)
 {
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SendSimulateGesture";
     (void)gesturePath;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityChannelProxy::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
+{
+    GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SetTargetBundleName";
+    (void)targetBundleNames;
     return RET_OK;
 }
 

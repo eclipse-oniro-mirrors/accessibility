@@ -142,8 +142,7 @@ int32_t MockAccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
     }
 
     requestId = static_cast<int32_t>(compositionRequestId);
-    auto iter = requests_.find(requestId);
-    if (iter == requests_.end()) {
+    if (requests_.find(requestId) == requests_.end()) {
         requests_[requestId] = callback;
     }
     return requestId;
@@ -154,12 +153,12 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityId
 {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetSearchElementInfoByAccessibilityIdResult(myInfos, requestId);
         }
-        requests_.erase(iter);
+        requests_.erase(iterator);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
@@ -171,12 +170,12 @@ void MockAccessibilityElementOperatorImpl::SetSearchElementInfoByTextResult(
 {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetSearchElementInfoByTextResult(myInfos, requestId);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetSearchElementInfoByTextResult(myInfos, requestId);
         }
-        requests_.erase(iter);
+        requests_.erase(iterator);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
@@ -187,12 +186,12 @@ void MockAccessibilityElementOperatorImpl::SetFindFocusedElementInfoResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetFindFocusedElementInfoResult(info, requestId);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetFindFocusedElementInfoResult(info, requestId);
         }
-        requests_.erase(iter);
+        requests_.erase(iterator);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
@@ -203,12 +202,12 @@ void MockAccessibilityElementOperatorImpl::SetFocusMoveSearchResult(
     const AccessibilityElementInfo& info, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetFocusMoveSearchResult(info, requestId);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetFocusMoveSearchResult(info, requestId);
         }
-        requests_.erase(iter);
+        requests_.erase(iterator);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }
@@ -219,12 +218,12 @@ void MockAccessibilityElementOperatorImpl::SetExecuteActionResult(
     const bool succeeded, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    auto iter = requests_.find(requestId);
-    if (iter != requests_.end()) {
-        if (iter->second != nullptr) {
-            iter->second->SetExecuteActionResult(succeeded, requestId);
+    auto iterator = requests_.find(requestId);
+    if (iterator != requests_.end()) {
+        if (iterator->second != nullptr) {
+            iterator->second->SetExecuteActionResult(succeeded, requestId);
         }
-        requests_.erase(iter);
+        requests_.erase(iterator);
     } else {
         HILOG_DEBUG("Can't find the callback [requestId:%d]", requestId);
     }

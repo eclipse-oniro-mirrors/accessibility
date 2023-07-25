@@ -40,16 +40,16 @@ namespace {
 
 static void WaitUntilTaskFinished()
 {
-    const uint32_t maxRetryCount = TEST_NUM_THOUSAND;
+    const uint32_t maxRetryNum = TEST_NUM_THOUSAND;
     const uint32_t sleepTime = TEST_NUM_THOUSAND;
     uint32_t count = 0;
     auto handler = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainHandler();
     std::atomic<bool> taskCalled(false);
-    auto f = [&taskCalled]() { taskCalled.store(true); };
-    if (handler->PostTask(f)) {
+    auto func = [&taskCalled]() { taskCalled.store(true); };
+    if (handler->PostTask(func)) {
         while (!taskCalled.load()) {
-            ++count;
-            if (count >= maxRetryCount) {
+            count++;
+            if (count >= maxRetryNum) {
                 break;
             }
             usleep(sleepTime);
