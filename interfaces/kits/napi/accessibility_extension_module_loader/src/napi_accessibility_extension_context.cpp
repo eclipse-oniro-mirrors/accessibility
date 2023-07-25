@@ -77,6 +77,29 @@ static void ConvertAccessibilityWindowInfosToJS(
     }
 }
 
+static void GetLastParamForTwo(
+    NativeEngine& engine, NativeCallbackInfo& info, NativeValue*& lastParam, bool& isAccessibilityFocus)
+{
+    if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
+        info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+        lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
+            info.argv[PARAM1] : nullptr;
+    } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+        HILOG_INFO("argc is more than two, use callback: situation 1");
+        lastParam = info.argv[PARAM1];
+    } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+        HILOG_INFO("argc is more than two, use callback: situation 2");
+        lastParam = info.argv[PARAM0];
+    } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+        HILOG_INFO("argc is more than two, use promise: situation 3");
+        lastParam = nullptr;
+        ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+    } else {
+        lastParam = nullptr;
+        HILOG_INFO("argc is more than two, use promise");
+    }
+}
+
 class NAccessibilityExtensionContext final {
 public:
     explicit NAccessibilityExtensionContext(
@@ -212,29 +235,6 @@ private:
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
         HILOG_DEBUG("focus type is [%{public}d]", focus);
         return GetFoucusElementCompleteTask(engine, focus, lastParam);
-    }
-
-    void GetLastParamForTwo(
-        NativeEngine& engine, NativeCallbackInfo& info, NativeValue* lastParam, bool& isAccessibilityFocus)
-    {
-        if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
-            info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-            lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
-                info.argv[PARAM1] : nullptr;
-        } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-            HILOG_INFO("argc is more than two, use callback: situation 1");
-            lastParam = info.argv[PARAM1];
-        } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
-            HILOG_INFO("argc is more than two, use callback: situation 2");
-            lastParam = info.argv[PARAM0];
-        } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
-            HILOG_INFO("argc is more than two, use promise: situation 3");
-            lastParam = nullptr;
-            ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
-        } else {
-            lastParam = nullptr;
-            HILOG_INFO("argc is more than two, use promise");
-        }
     }
 
     NativeValue* GetFoucusElementCompleteTask(NativeEngine& engine, int32_t focus, NativeValue* lastParam)
