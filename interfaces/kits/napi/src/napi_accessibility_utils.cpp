@@ -818,7 +818,6 @@ std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value pr
 void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray)
 {
-    std::string str = "";
     napi_has_property(env, object, propertyNameValue, &hasProperty);
     if (hasProperty) {
         napi_value contentsValue = nullptr;
@@ -828,7 +827,7 @@ void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
         napi_get_array_length(env, contentsValue, &dataLen);
         for (uint32_t i = 0; i < dataLen; i++) {
             napi_get_element(env, contentsValue, i, &data);
-            str = GetStringFromNAPI(env, data);
+            std::string str = GetStringFromNAPI(env, data);
             stringArray.push_back(str);
         }
     }
@@ -941,7 +940,6 @@ bool ConvertEventInfoJSToNAPIPart3(
 {
     bool hasProperty = false;
     int32_t dataValue = 0;
-    std::string str = "";
     napi_value propertyNameValue = nullptr;
     napi_create_string_utf8(env, "contents", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::vector<std::string> stringArray {};
@@ -953,9 +951,9 @@ bool ConvertEventInfoJSToNAPIPart3(
     }
 
     napi_create_string_utf8(env, "lastContent", NAPI_AUTO_LENGTH, &propertyNameValue);
-    str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+    std::string strNapi = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {
-        eventInfo.SetLatestContent(str);
+        eventInfo.SetLatestContent(strNapi);
     }
 
     napi_create_string_utf8(env, "beginIndex", NAPI_AUTO_LENGTH, &propertyNameValue);
