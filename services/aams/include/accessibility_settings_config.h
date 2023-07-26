@@ -100,12 +100,7 @@ private:
     std::string StateChange(bool state);
     void StringToVector(const std::string &stringIn, std::vector<std::string> &vectorResult);
     void VectorToString(const std::vector<std::string> &vectorVal, std::string &stringOut);
-    bool SetShortKeyStatePref(int32_t type);
-    bool SetMouseKeyStatePref(int32_t type);
-    bool SetHighContrastStatePref(int32_t type);
-    bool SetIvertColorStatePref(int32_t type);
-    bool SetAnimationOffStatePref(int32_t type);
-    bool SetAudioMonoStatePref(int32_t type);
+    bool SetStatePrefExec(int32_t type);
 
     int32_t accountId_;
     bool enabled_ = false;
