@@ -224,64 +224,51 @@ RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConf
     return RET_OK;
 }
 
-bool AccessibilitySettingsConfig::SetShortKeyStatePref(int32_t type)
+bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
 {
-    if (type == STATE::SHORTKEY) {
-        std::string strValue = StateChange(isShortKeyState_);
+    bool ret = true;
+    std::string strValue;
+    if (type == STATE::ACCESSIBILITY) {
+        strValue = StateChange(enabled_);
+        pref_->PutString("accessible", strValue);
+    } else if (type == STATE::TOUCHGUIDE) {
+        strValue = StateChange(eventTouchGuideState_);
+        pref_->PutString("touchGuide", strValue);
+    } else if (type == STATE::GESTURE) {
+        strValue = StateChange(gesturesSimulation_);
+        pref_->PutString("gesture", strValue);
+    } else if (type == STATE::KEYEVENT) {
+        strValue = StateChange(filteringKeyEvents_);
+        pref_->PutString("keyEventObserver", strValue);
+    } else if (type == STATE::CAPTION) {
+        strValue = StateChange(isCaptionState_);
+        pref_->PutString("CaptionState", strValue);
+    } else if (type == STATE::SCREENMAGNIFIER) {
+        strValue = StateChange(isScreenMagnificationState_);
+        pref_->PutString("ScreenMagnification", strValue);
+    } else if (type == STATE::SHORTKEY) {
+        strValue = StateChange(isShortKeyState_);
         pref_->PutString("ShortKey", strValue);
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilitySettingsConfig::SetMouseKeyStatePref(int32_t type)
-{
-    if (type == STATE::MOUSEKEY) {
-        std::string strValue = StateChange(isMouseKeyState_);
+    } else if (type == STATE::MOUSEKEY) {
+        strValue = StateChange(isMouseKeyState_);
         pref_->PutString("MouseKey", strValue);
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilitySettingsConfig::SetHighContrastStatePref(int32_t type)
-{
-    if (type == STATE::HIGHCONTRASTTEXT) {
-        std::string strValue = StateChange(highContrastTextState_);
+    } else if (type == STATE::HIGHCONTRASTTEXT) {
+        strValue = StateChange(highContrastTextState_);
         pref_->PutString("highContrastText", strValue);
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilitySettingsConfig::SetIvertColorStatePref(int32_t type)
-{
-    if (type == STATE::INVERTCOLORSTATE) {
-        std::string strValue = StateChange(invertColorState_);
+    } else if (type == STATE::INVERTCOLORSTATE) {
+        strValue = StateChange(invertColorState_);
         pref_->PutString("invertColor", strValue);
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilitySettingsConfig::SetAnimationOffStatePref(int32_t type)
-{
-    if (type == STATE::ANIMATIONOFF) {
-        std::string strValue = StateChange(animationOffState_);
+    } else if (type == STATE::ANIMATIONOFF) {
+        strValue = StateChange(animationOffState_);
         pref_->PutString("animationOff", strValue);
-        return true;
-    }
-    return false;
-}
-
-bool AccessibilitySettingsConfig::SetAudioMonoStatePref(int32_t type)
-{
-    if (type == STATE::AUDIOMONO) {
+    } else if (type == STATE::AUDIOMONO) {
         std::string strValue = StateChange(audioMonoState_);
         pref_->PutString("audioMono", strValue);
-        return true;
+    } else {
+        ret = false;
+        HILOG_ERROR("invalid parameter type = [%{public}d]", type);
     }
-    return false;
+    return ret;
 }
 
 bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
@@ -292,49 +279,10 @@ bool AccessibilitySettingsConfig::SetStatePref(int32_t type)
         return false;
     }
 
-    bool ret = false;
-    std::string strValue = "";
-    switch (type) {
-        case STATE::ACCESSIBILITY:
-            strValue = StateChange(enabled_);
-            pref_->PutString("accessible", strValue);
-            break;
-        case STATE::TOUCHGUIDE:
-            strValue = StateChange(eventTouchGuideState_);
-            pref_->PutString("touchGuide", strValue);
-            break;
-        case STATE::GESTURE:
-            strValue = StateChange(gesturesSimulation_);
-            pref_->PutString("gesture", strValue);
-            break;
-        case STATE::KEYEVENT:
-            strValue = StateChange(filteringKeyEvents_);
-            pref_->PutString("keyEventObserver", strValue);
-            break;
-        case STATE::CAPTION:
-            strValue = StateChange(isCaptionState_);
-            pref_->PutString("CaptionState", strValue);
-            break;
-        case STATE::SCREENMAGNIFIER:
-            strValue = StateChange(isScreenMagnificationState_);
-            pref_->PutString("ScreenMagnification", strValue);
-            break;
-        default:
-            HILOG_ERROR("Invalid parameter.");
-            ret |= false;
-            break;
-    }
-
-    ret |= SetShortKeyStatePref(type);
-    ret |= SetMouseKeyStatePref(type);
-    ret |= SetHighContrastStatePref(type);
-    ret |= SetIvertColorStatePref(type);
-    ret |= SetAnimationOffStatePref(type);
-    ret |= SetAudioMonoStatePref(type);
+    bool ret = SetStatePrefExec(type);
     if (ret) {
         pref_->Flush();
-    } 
-
+    }
     return ret;
 }
 
