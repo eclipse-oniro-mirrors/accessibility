@@ -30,54 +30,38 @@ using namespace OHOS::AccessibilityConfig;
 void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
-    switch (configId_) {
-        case CONFIG_CAPTION_STATE:
-            NotifyStateChanged2JS(value.captionState);
-            break;
-        case CONFIG_CAPTION_STYLE:
-            NotifyPropertyChanged2JS(value.captionStyle);
-            break;
-        case CONFIG_SCREEN_MAGNIFICATION:
-            NotifyStateChanged2JS(value.screenMagnifier);
-            break;
-        case CONFIG_MOUSE_KEY:
-            NotifyStateChanged2JS(value.mouseKey);
-            break;
-        case CONFIG_SHORT_KEY:
-            NotifyStateChanged2JS(value.shortkey);
-            break;
-        case CONFIG_SHORT_KEY_TARGET:
-            NotifyStringChanged2JS(value.shortkey_target);
-            break;
-        case CONFIG_MOUSE_AUTOCLICK:
-            NotifyIntChanged2JS(value.mouseAutoClick);
-            break;
-        case CONFIG_DALTONIZATION_COLOR_FILTER:
-            NotifyStringChanged2JS(ConvertDaltonizationTypeToString(value.daltonizationColorFilter));
-            break;
-        case CONFIG_CONTENT_TIMEOUT:
-            NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
-            break;
-        case CONFIG_BRIGHTNESS_DISCOUNT:
-            NotifyFloatChanged2JS(value.brightnessDiscount);
-            break;
-        case CONFIG_AUDIO_BALANCE:
-            NotifyFloatChanged2JS(value.audioBalance);
-            break;
-        case CONFIG_HIGH_CONTRAST_TEXT:
-            NotifyStateChanged2JS(value.highContrastText);
-            break;
-        case CONFIG_INVERT_COLOR:
-            NotifyStateChanged2JS(value.invertColor);
-            break;
-        case CONFIG_AUDIO_MONO:
-            NotifyStateChanged2JS(value.audioMono);
-            break;
-        case CONFIG_ANIMATION_OFF:
-            NotifyStateChanged2JS(value.animationOff);
-            break;
-        default:
-            break;
+    if (configId_ == CONFIG_CAPTION_STATE) {
+        NotifyStateChanged2JS(value.captionState);
+    } else if (configId_ == CONFIG_CAPTION_STYLE) {
+        NotifyPropertyChanged2JS(value.captionStyle);
+    } else if (configId_ == CONFIG_SCREEN_MAGNIFICATION) {
+        NotifyStateChanged2JS(value.screenMagnifier);
+    } else if (configId_ == CONFIG_MOUSE_KEY) {
+        NotifyStateChanged2JS(value.mouseKey);
+    } else if (configId_ == CONFIG_SHORT_KEY) {
+        NotifyStateChanged2JS(value.shortkey);
+    } else if (configId_ == CONFIG_SHORT_KEY_TARGET) {
+        NotifyStringChanged2JS(value.shortkey_target);
+    } else if (configId_ == CONFIG_MOUSE_AUTOCLICK) {
+        NotifyIntChanged2JS(value.mouseAutoClick);
+    } else if (configId_ == CONFIG_DALTONIZATION_COLOR_FILTER) {
+        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(value.daltonizationColorFilter));
+    } else if (configId_ == CONFIG_CONTENT_TIMEOUT) {
+        NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
+    } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
+        NotifyFloatChanged2JS(value.brightnessDiscount);
+    } else if (configId_ == CONFIG_AUDIO_BALANCE) {
+        NotifyFloatChanged2JS(value.audioBalance);
+    } else if (configId_ ==  CONFIG_HIGH_CONTRAST_TEXT) {
+        NotifyStateChanged2JS(value.highContrastText);
+    } else if (configId_ == CONFIG_INVERT_COLOR) {
+        NotifyStateChanged2JS(value.invertColor);
+    } else if (configId_ == CONFIG_ANIMATION_OFF) {
+        NotifyStateChanged2JS(value.animationOff);
+    } else if (configId_ == CONFIG_AUDIO_MONO) {
+        NotifyStateChanged2JS(value.audioMono);
+    } else {
+        HILOG_DEBUG("on config changed invalid parameter id = [%{public}d]", static_cast<int32_t>(configId_));
     }
 }
 
