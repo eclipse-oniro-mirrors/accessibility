@@ -1919,7 +1919,7 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
 
     auto it = AccessibilityConfigTable.find(targetAbility);
     if (it != AccessibilityConfigTable.end()) {
-        return SetTargetAbility(it->second) == RET_OK;
+        return SetTargetAbility(it->second);
     }
     
     uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
