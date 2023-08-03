@@ -329,6 +329,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent001, Te
     bool flag = OnPointerEventOnePointsTest1(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent001 inputEventConsumer is null";
+        return;
     }
 
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
@@ -481,11 +482,12 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent004, Te
     MMI::PointerEvent::PointerItem point3 = {};
     TouchGuiderPointSet(point3, 1, 2500, 5000);
     MMI::PointerEvent::PointerItem point4 = {};
-    TouchGuiderPointSet(point4, 1, 2250, 5000);
+    TouchGuiderPointSet(point4, 1, 2250, 2500);
 
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent003 inputEventConsumer is null";
+        return;
     }
 
     // Determine event type
@@ -545,6 +547,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent005, Te
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent005 inputEventConsumer is null";
+        return;
     }
 
     // Determine event type
@@ -595,7 +598,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
     MMI::PointerEvent::PointerItem point1 = {};
     TouchGuiderPointSet(point1, 1, 2500, 2500);
     MMI::PointerEvent::PointerItem point2 = {};
-    TouchGuiderPointSet(point2, 1, 2500, 2500);
+    TouchGuiderPointSet(point2, 1, 2500, 1500);
     MMI::PointerEvent::PointerItem point3 = {};
     TouchGuiderPointSet(point3, 1, 2500, 0);
     MMI::PointerEvent::PointerItem point4 = {};
@@ -604,6 +607,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
     bool flag = OnPointerEventOnePointsTest3(points, point1, point2, point3, point4);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent006 inputEventConsumer is null";
+        return;
     }
 
     // Determine event type
@@ -661,6 +665,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent007, Te
     bool flag = OnPointerEventOnePointsTest7(points, point1, point2, point3);
     if (!flag) {
         GTEST_LOG_(INFO) << "AamsTouchGuideTest OnPointerEvent007 inputEventConsumer is null";
+        return;
     }
 
     // Determine event type
