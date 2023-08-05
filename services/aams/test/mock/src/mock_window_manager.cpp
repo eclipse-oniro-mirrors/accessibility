@@ -19,11 +19,6 @@ namespace OHOS {
 namespace Rosen {
 WM_IMPLEMENT_SINGLE_INSTANCE(WindowManager)
 
-class WindowManager::Impl {
-};
-
-WindowManager::WindowManager() : pImpl_(std::make_unique<Impl>()) {}
-
 WMError WindowManager::RegisterWindowUpdateListener(const sptr<IWindowUpdateListener> &listener)
 {
     return WMError::WM_OK;
