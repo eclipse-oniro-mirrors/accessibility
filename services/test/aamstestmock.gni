@@ -57,7 +57,6 @@ aams_mock_include_dirs = [
   "//foundation/window/window_manager/interfaces/innerkits/dm",
   "//foundation/window/window_manager/interfaces/innerkits/wm",
   "//foundation/window/window_manager/utils/include",
-  "//third_party/json/include",
   "//third_party/jsoncpp/include",
   "//third_party/jsoncpp/include/json",
   "//commonlibrary/c_utils/base/include",

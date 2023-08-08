@@ -154,7 +154,6 @@ void TouchGuider::SendEventToMultimodal(MMI::PointerEvent &event, int32_t action
         case HOVER_MOVE:
             if (event.GetSourceType() == MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN) {
                 event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_MOVE);
-                event.SetSourceType(MMI::PointerEvent::SOURCE_TYPE_MOUSE);
             }
             break;
         case POINTER_DOWN:
