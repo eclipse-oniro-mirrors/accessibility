@@ -56,7 +56,10 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
             syncPromise->set_value(ret);
             return;
         }
-        elementOperator->SearchElementInfoByAccessibilityId(elementId, requestId, callback, mode);
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int32_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->SearchElementInfoByAccessibilityId(realElementId, requestId, callback, mode);
         HILOG_DEBUG("AccessibleAbilityChannel::SearchElementInfoByAccessibilityId successfully");
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfoByAccessibilityId");
@@ -92,7 +95,10 @@ RetError AccessibleAbilityChannel::SearchElementInfosByText(const int32_t access
             syncPromise->set_value(ret);
             return;
         }
-        elementOperator->SearchElementInfosByText(elementId, text, requestId, callback);
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int32_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->SearchElementInfosByText(realElementId, text, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "SearchElementInfosByText");
 
@@ -127,7 +133,10 @@ RetError AccessibleAbilityChannel::FindFocusedElementInfo(const int32_t accessib
             syncPromise->set_value(ret);
             return;
         }
-        elementOperator->FindFocusedElementInfo(elementId, focusType, requestId, callback);
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int32_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->FindFocusedElementInfo(realElementId, focusType, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FindFocusedElementInfo");
     
@@ -161,7 +170,10 @@ RetError AccessibleAbilityChannel::FocusMoveSearch(const int32_t accessibilityWi
             syncPromise->set_value(ret);
             return;
         }
-        elementOperator->FocusMoveSearch(elementId, direction, requestId, callback);
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int32_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->FocusMoveSearch(realElementId, direction, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "FocusMoveSearch");
     
@@ -196,7 +208,10 @@ RetError AccessibleAbilityChannel::ExecuteAction(const int32_t accessibilityWind
             syncPromise->set_value(ret);
             return;
         }
-        elementOperator->ExecuteAction(elementId, action, actionArguments, requestId, callback);
+
+        auto& awm = Singleton<AccessibilityWindowManager>::GetInstance();
+        int32_t realElementId = awm.GetSceneBoardElementId(accessibilityWindowId, elementId);
+        elementOperator->ExecuteAction(realElementId, action, actionArguments, requestId, callback);
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "ExecuteAction");
     

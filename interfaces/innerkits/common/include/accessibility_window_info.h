@@ -198,6 +198,34 @@ public:
      */
     void SetDecorEnable(const bool isDecorEnable);
 
+    /**
+     * @brief Set inner window id
+     * @param innerWid inner window id
+     * @sysCap Accessibility
+     */
+    void SetInnerWid(const int32_t innerWid);
+
+    /**
+     * @brief Get inner window id
+     * @return Inner window id
+     * @sysCap Accessibility
+     */
+    int32_t GetInnerWid() const;
+
+    /**
+     * @brief Set arkui node id
+     * @param nodeId Arkui node id
+     * @sysCap Accessibility
+     */
+    void SetUiNodeId(const int32_t nodeId);
+
+    /**
+     * @brief Get arkui node id
+     * @return Arkui node id
+     * @sysCap Accessibility
+     */
+    int32_t GetUiNodeId() const;
+
 protected:
     uint64_t displayId_ = 0;
     uint32_t windowMode_ = 0;
@@ -210,6 +238,8 @@ protected:
     bool accessibilityFocused_ = false;
     Rect boundsInScreen_ {};
     bool isDecorEnable_ = false;
+    int32_t innerWid_ = 0; // used for window id 1, scene board
+    int32_t uiNodeId_ = 0; // used for window id 1, scene board
 };
 } // namespace Accessibility
 } // namespace OHOS

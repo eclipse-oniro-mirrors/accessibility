@@ -148,5 +148,11 @@ void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
 void AccessibilityWindowManager::ClearAccessibilityFocused()
 {
 }
+
+int32_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int32_t elementId)
+{
+    return elementId;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

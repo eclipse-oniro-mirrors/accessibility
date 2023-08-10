@@ -157,5 +157,30 @@ void AccessibilityWindowInfo::SetDecorEnable(const bool isDecorEnable)
     isDecorEnable_ = isDecorEnable;
     HILOG_DEBUG("isDecorEnable_[%{public}d]", isDecorEnable_);
 }
+
+void AccessibilityWindowInfo::SetInnerWid(const int32_t innerWid)
+{
+    innerWid_ = innerWid;
+    HILOG_DEBUG("innerWid_[%{public}d]", innerWid_);
+}
+
+int32_t AccessibilityWindowInfo::GetInnerWid() const
+{
+    HILOG_DEBUG("innerWid_[%{public}d]", innerWid_);
+    return innerWid_;
+}
+
+void AccessibilityWindowInfo::SetUiNodeId(const int32_t nodeId)
+{
+    uiNodeId_ = nodeId;
+    HILOG_DEBUG("uiNodeId_[%{public}d]", uiNodeId_);
+}
+
+int32_t AccessibilityWindowInfo::GetUiNodeId() const
+{
+    HILOG_DEBUG("uiNodeId_[%{public}d]", uiNodeId_);
+    return uiNodeId_;
+}
+
 } // namespace Accessibility
 } // namespace OHOS
