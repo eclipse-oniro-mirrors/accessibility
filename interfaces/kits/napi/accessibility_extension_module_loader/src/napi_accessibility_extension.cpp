@@ -169,7 +169,7 @@ void NAccessibilityExtension::OnAbilityConnected()
     }
     work->data = static_cast<void*>(callbackInfo);
 
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -180,7 +180,8 @@ void NAccessibilityExtension::OnAbilityConnected()
             data = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_user_initiated);
     if (ret) {
         HILOG_ERROR("Failed to execute OnAbilityConnected work queue");
         delete callbackInfo;
@@ -211,7 +212,7 @@ void NAccessibilityExtension::OnAbilityDisconnected()
     work->data = static_cast<void*>(callbackInfo);
     std::future syncFuture = callbackInfo->syncPromise_.get_future();
 
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -223,7 +224,8 @@ void NAccessibilityExtension::OnAbilityDisconnected()
             data = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_user_initiated);
     if (ret) {
         HILOG_ERROR("Failed to execute OnAbilityDisconnected work queue");
         callbackInfo->syncPromise_.set_value();
@@ -324,7 +326,7 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
 
 int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -361,7 +363,8 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
             data = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_user_initiated);
     return ret;
 }
 
@@ -441,7 +444,7 @@ void NAccessibilityExtension::OnAccessibilityEventCompleteCallback(uv_work_t* wo
 
 int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)
 {
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -484,7 +487,8 @@ int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loo
             data = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_user_initiated);
     return ret;
 }
 

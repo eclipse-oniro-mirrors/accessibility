@@ -73,7 +73,7 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
             Completefunction(env, "IsOpenAccessibility", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -116,7 +116,7 @@ napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callb
             Completefunction(env, "IsOpenTouchExploration", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -233,7 +233,7 @@ napi_value NAccessibilityClient::GetAbilityList(napi_env env, napi_callback_info
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -316,7 +316,7 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
         NAccessibilityClient::GetAbilityListComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -416,7 +416,7 @@ napi_value NAccessibilityClient::SendEvent(napi_env env, napi_callback_info info
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
 }
@@ -474,7 +474,7 @@ napi_value NAccessibilityClient::SendAccessibilityEvent(napi_env env, napi_callb
         NAccessibilityClient::SendEventComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
 
     return promise;
 }
@@ -616,7 +616,7 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env, &loop);
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -635,7 +635,8 @@ void StateListener::NotifyJS(napi_env env, bool state, napi_ref handlerRef)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyJS work queue");
         delete callbackInfo;
