@@ -69,7 +69,7 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
+    int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
@@ -96,7 +96,8 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 
@@ -104,7 +105,7 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
+    int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
@@ -130,7 +131,8 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 
@@ -138,7 +140,7 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(loop, work, [](uv_work_t *work) {},
+    int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
             napi_handle_scope scope = nullptr;
@@ -166,7 +168,8 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 
@@ -174,7 +177,7 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -203,7 +206,8 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 
@@ -211,7 +215,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -240,7 +244,8 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 
@@ -248,7 +253,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
 {
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -277,7 +282,8 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     return ret;
 }
 

@@ -125,7 +125,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
                     callbackInfo->abilityName_, callbackInfo->capabilities_);
             }
         }, NAccessibilityConfig::AsyncWorkComplete, reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -177,7 +177,7 @@ napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info
             }
         }, NAccessibilityConfig::AsyncWorkComplete,
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -626,7 +626,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::AsyncWorkComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -681,7 +681,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
         NAccessibilityConfig::GetConfigComplete,
         reinterpret_cast<void*>(callbackInfo),
         &callbackInfo->work_);
-    napi_queue_async_work(env, callbackInfo->work_);
+    napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
 }
 
@@ -797,7 +797,7 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 
     uv_loop_s *loop = nullptr;
     napi_get_uv_event_loop(env_, &loop);
-    int ret = uv_queue_work(
+    int ret = uv_queue_work_with_qos(
         loop,
         work,
         [](uv_work_t *work) {},
@@ -814,7 +814,8 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
             callbackInfo = nullptr;
             delete work;
             work = nullptr;
-        });
+        },
+        uv_qos_default);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute OnEnableAbilityListsStateChanged work queue");
         delete callbackInfo;
