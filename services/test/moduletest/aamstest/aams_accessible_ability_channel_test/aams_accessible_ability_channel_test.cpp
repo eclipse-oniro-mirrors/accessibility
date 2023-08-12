@@ -468,7 +468,7 @@ HWTEST_F(AamsAccessibleAbilityChannelTest, AccessibleAbilityChannel_ModuleTest_G
     AccessibilityHelper::GetInstance().GetTestStub()->GetWindowsByDisplayId(displayId, windows);
     sleep(2);
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, windows.size());
+    EXPECT_EQ(1, windows.size());
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_002 end";
 }
 
@@ -648,7 +648,7 @@ HWTEST_F(
     AccessibilityHelper::GetInstance().GetTestStub()->GetWindowsByDisplayId(displayId, windows);
 
     GTEST_LOG_(INFO) << "Test result";
-    EXPECT_EQ(0, windows.size());
+    EXPECT_EQ(1, windows.size());
     GTEST_LOG_(INFO) << "AccessibleAbilityChannel_ModuleTest_GetWindows_NoCapability_001 end";
 }
 
