@@ -91,6 +91,7 @@ sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType window
         rosen_winInfo->windowRect_.posX_ = 1;
         rosen_winInfo->windowRect_.posY_ = 1;
         rosen_winInfo->focused_ = true;
+        rosen_winInfo->innerWid_ = 1;
     }
     return rosen_winInfo;
 }
@@ -110,6 +111,7 @@ void AccessibilityWindowManagerTest::AddActiveWindow(AccessibilityWindowManager 
     rosenWinInfoFirst->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
     rosenWinInfoFirst->isDecorEnable_ = false;
     rosenWinInfoFirst->displayId_ = 0;
+    rosenWinInfoFirst->innerWid_ = 1;
     windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoFirst->wid_,
         windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoFirst)));
     EXPECT_EQ(windowInfoManager.a11yWindows_.size(), 1);
@@ -130,6 +132,7 @@ void AccessibilityWindowManagerTest::AddNormalWindow(AccessibilityWindowManager 
     rosenWinInfoSecond->mode_ = Rosen::WindowMode::WINDOW_MODE_PIP;
     rosenWinInfoSecond->isDecorEnable_ = false;
     rosenWinInfoSecond->displayId_ = 0;
+    rosenWinInfoSecond->innerWid_ = WINDOW_ID;
     windowInfoManager.a11yWindows_.insert(std::make_pair(rosenWinInfoSecond->wid_,
         windowInfoManager.CreateAccessibilityWindowInfo(rosenWinInfoSecond)));
     EXPECT_EQ(windowInfoManager.a11yWindows_.size(), WINDOWS_SIZE);
@@ -381,6 +384,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_OnW
     rosen_winInfo->type_ = Rosen::WindowType::APP_WINDOW_BASE;
     rosen_winInfo->wid_ = 1;
     rosen_winInfo->focused_ = true;
+    rosen_winInfo->innerWid_ = 1;
 
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> infos;
     infos.emplace_back(rosen_winInfo);
