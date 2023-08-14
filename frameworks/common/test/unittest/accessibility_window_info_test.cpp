@@ -22,6 +22,9 @@ using namespace testing::ext;
 
 namespace OHOS {
 namespace Accessibility {
+constexpr int32_t INNER_WINDOW_ID = 2;
+constexpr int32_t UI_NODE_ID = 2;
+
 class AccessibilityWindowInfoUnitTest : public ::testing::Test {
 public:
     AccessibilityWindowInfoUnitTest()
@@ -241,6 +244,40 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetDecorEnable_001, TestSize.Level1)
     windowInfo_->SetDecorEnable(true);
     EXPECT_TRUE(windowInfo_->IsDecorEnable());
     GTEST_LOG_(INFO) << "SetDecorEnable_001 end";
+}
+
+/**
+ * @tc.number: GetInnerWid_001
+ * @tc.name: GetInnerWid
+ * @tc.desc: Test function GetInnerWid
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, GetInnerWid_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetInnerWid_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetInnerWid(INNER_WINDOW_ID);
+    EXPECT_EQ(windowInfo_->GetInnerWid(), INNER_WINDOW_ID);
+    GTEST_LOG_(INFO) << "GetInnerWid_001 end";
+}
+
+/**
+ * @tc.number: GetUiNodeId_001
+ * @tc.name: GetUiNodeId
+ * @tc.desc: Test function GetUiNodeId
+ */
+HWTEST_F(AccessibilityWindowInfoUnitTest, GetUiNodeId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetUiNodeId_001 start";
+    if (!windowInfo_) {
+        GTEST_LOG_(INFO) << "windowInfo_ is null";
+        return;
+    }
+    windowInfo_->SetUiNodeId(UI_NODE_ID);
+    EXPECT_EQ(windowInfo_->GetUiNodeId(), UI_NODE_ID);
+    GTEST_LOG_(INFO) << "GetUiNodeId_001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
