@@ -918,18 +918,7 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
 int32_t AccessibleAbilityManagerService::GetActiveWindow()
 {
     HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return -1;
-    }
-
-    std::promise<int32_t> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
-        HILOG_DEBUG();
-        syncPromise.set_value(Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_);
-        }), "TASK_GET_ACTIVE_WINDOW");
-    return syncFuture.get();
+    return Singleton<AccessibilityWindowManager>::GetInstance().activeWindowId_;
 }
 
 bool AccessibleAbilityManagerService::Init()
