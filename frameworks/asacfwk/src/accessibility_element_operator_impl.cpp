@@ -44,7 +44,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
 {
     HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
-    HILOG_DEBUG("add requestId[%{public}d]", mRequestId);
+    HILOG_INFO("search element add requestId[%{public}d]", mRequestId);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
@@ -154,7 +154,7 @@ int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
 void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG();
+    HILOG_INFO();
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
