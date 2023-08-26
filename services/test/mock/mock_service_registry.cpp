@@ -170,6 +170,12 @@ int32_t SystemAbilityManagerProxy::AddSystemProcess(
     return -1;
 }
 
+int32_t SystemAbilityManagerProxy::GetSystemProcessInfo(
+    int32_t systemAbilityId, SystemProcessInfo& systemProcessInfo)
+{
+    return -1;
+}
+
 int32_t SystemAbilityManagerProxy::GetRunningSystemProcess(std::list<SystemProcessInfo>& systemProcessInfos)
 {
     return -1;
