@@ -120,13 +120,13 @@ void AccessibleAbilityManagerService::OnStop()
         Singleton<AccessibilityWindowManager>::GetInstance().DeregisterWindowListener();
 
         currentAccountId_ = -1;
-        a11yAccountsData_.clear();
-        stateCallbacks_.clear();
+        a11yAccountsData_.Clear();
+        stateObservers_.Clear();
         bundleManager_ = nullptr;
         inputInterceptor_ = nullptr;
         touchEventInjector_ = nullptr;
         keyEventFilter_ = nullptr;
-        stateCallbackDeathRecipient_ = nullptr;
+        stateObserversDeathRecipient_ = nullptr;
         bundleManagerDeathRecipient_ = nullptr;
 
         syncPromise.set_value();
@@ -267,53 +267,36 @@ RetError AccessibleAbilityManagerService::SendEvent(const AccessibilityEventInfo
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
-    const sptr<IAccessibleAbilityManagerStateObserver> &callback)
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
 {
     HILOG_DEBUG();
-    
-    if (!callback || !handler_) {
-        HILOG_ERROR("Parameters check failed!");
+    if (!stateObserver || !handler_) {
+        HILOG_ERROR("parameters check failed!");
         return 0;
     }
 
-    std::promise<uint32_t> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, callback]() -> void {
-        HILOG_DEBUG();
-        if (!stateCallbackDeathRecipient_) {
-            stateCallbackDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
-            if (!stateCallbackDeathRecipient_) {
-                HILOG_ERROR("stateCallbackDeathRecipient_ is null");
-                syncPromise.set_value(0);
-                return;
-            }
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!stateObserversDeathRecipient_) {
+        stateObserversDeathRecipient_ = new(std::nothrow) StateCallbackDeathRecipient();
+        if (!stateObserversDeathRecipient_) {
+            HILOG_ERROR("stateObserversDeathRecipient_ is null");
+            return 0;
         }
-        if (!callback->AsObject()) {
-            HILOG_ERROR("object is null");
-            syncPromise.set_value(0);
-            return;
-        }
-        callback->AsObject()->AddDeathRecipient(stateCallbackDeathRecipient_);
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            auto iter = std::find(stateCallbacks_.begin(), stateCallbacks_.end(), callback);
-            if (iter == stateCallbacks_.end()) {
-                stateCallbacks_.push_back(callback);
-                HILOG_INFO("RegisterStateObserver successfully");
-            }
-        }
+    }
 
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            syncPromise.set_value(0);
-            return;
-        }
-        uint32_t state = accountData->GetAccessibilityState();
-        syncPromise.set_value(state);
-        }), "TASK_REGISTER_STATE_OBSERVER");
+    if (!stateObserver->AsObject()) {
+        HILOG_ERROR("object is null");
+        return 0;
+    }
 
-    return syncFuture.get();
+    stateObserver->AsObject()->AddDeathRecipient(stateObserversDeathRecipient_);
+    stateObservers_.AddStateObserver(stateObserver);
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (accountData == nullptr) {
+        return 0;
+    }
+
+    return accountData->GetAccessibilityState();
 }
 
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
@@ -354,7 +337,7 @@ uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
             accountData->GetCaptionPropertyCallbacks().size());
         syncPromise->set_value(NO_ERROR);
         }), "TASK_REGISTER_CAPTION_OBSERVER");
-    
+
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterCaptionObserver result");
@@ -399,7 +382,7 @@ void AccessibleAbilityManagerService::RegisterEnableAbilityListsObserver(
         accountData->AddEnableAbilityListsObserver(observer);
         syncPromisePtr->set_value();
         }), "TASK_REGISTER_ENABLE_ABILITY_LISTS_OBSERVER");
-    
+
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (wait != std::future_status::ready) {
         HILOG_ERROR("Failed to wait RegisterEnableAbilityListsObserver result");
@@ -969,28 +952,14 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
         HILOG_ERROR("current account id is wrong");
         return nullptr;
     }
-    auto iter = a11yAccountsData_.find(currentAccountId_);
-    if (iter != a11yAccountsData_.end()) {
-        return iter->second;
-    }
-    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(currentAccountId_);
-    if (!accountData) {
-        HILOG_ERROR("accountData is null");
-        return nullptr;
-    }
-    a11yAccountsData_.insert(make_pair(currentAccountId_, accountData));
-    return accountData;
+
+    return a11yAccountsData_.GetCurrentAccountData(currentAccountId_);
 }
 
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId)
 {
     HILOG_DEBUG();
-    auto iter = a11yAccountsData_.find(accountId);
-    if (iter != a11yAccountsData_.end()) {
-        return iter->second;
-    }
-    HILOG_ERROR("There is no account");
-    return nullptr;
+    return a11yAccountsData_.GetAccountData(accountId);
 }
 
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityManagerService::GetBundleMgrProxy()
@@ -1093,22 +1062,11 @@ void AccessibleAbilityManagerService::EnableAbilityListsObserverDeathRecipient::
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 {
-    HILOG_DEBUG("accountId");
-
-    // Add this account in map
-    auto iter = a11yAccountsData_.find(accountId);
-    if (iter != a11yAccountsData_.end()) {
-        HILOG_DEBUG("The account is already exist.");
+    HILOG_DEBUG();
+    auto accountData = a11yAccountsData_.AddAccountData(accountId);
+    if (accountData) {
+        accountData->Init();
     }
-    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
-    if (!accountData) {
-        HILOG_ERROR("accountData is null");
-        return;
-    }
-    a11yAccountsData_.insert(make_pair(accountId, accountData));
-
-    // Initialize data of this account
-    a11yAccountsData_[accountId]->Init();
 }
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
@@ -1119,13 +1077,13 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
         return;
     }
 
-    auto iter = a11yAccountsData_.find(accountId);
-    if (iter != a11yAccountsData_.end()) {
-        iter->second->GetConfig()->ClearData();
-        a11yAccountsData_.erase(iter);
+    auto accountData = a11yAccountsData_.RemoveAccountData(accountId);
+    if (accountData) {
+        accountData->GetConfig()->ClearData();
         return;
     }
-    HILOG_ERROR("The account is not exist.");
+
+    HILOG_ERROR("accountId is not exist");
 }
 
 void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
@@ -1133,7 +1091,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     HILOG_DEBUG();
 
     if (accountId == currentAccountId_) {
-        HILOG_WARN("The account id is current account id.");
+        HILOG_WARN("The account is current account id.");
         return;
     }
 
@@ -1251,14 +1209,8 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
     if (!(state & STATE_ACCESSIBILITY_ENABLED)) {
         Singleton<AccessibilityWindowManager>::GetInstance().ClearAccessibilityFocused();
     }
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        for (auto &callback : stateCallbacks_) {
-            if (callback) {
-                callback->OnStateChanged(state);
-            }
-        }
-    }
+
+    stateObservers_.OnStateObservers(state);
 }
 
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
@@ -1910,7 +1862,7 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
     if (it != AccessibilityConfigTable.end()) {
         return SetTargetAbility(it->second);
     }
-    
+
     uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
         CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
     RetError enableState = accountData->EnableAbility(targetAbility, capabilities);
@@ -2156,18 +2108,7 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
         }
         switch (callback) {
             case STATE_CALLBACK:
-                {
-                    {
-                        std::lock_guard<std::mutex> lock(mutex_);
-                        auto iter = std::find_if(stateCallbacks_.begin(), stateCallbacks_.end(),
-                            [remote](const sptr<IAccessibleAbilityManagerStateObserver> &stateCallback) {
-                                return stateCallback->AsObject() == remote;
-                            });
-                        if (iter != stateCallbacks_.end()) {
-                            stateCallbacks_.erase(iter);
-                        }
-                    }
-                }
+                stateObservers_.RemoveStateObserver(remote);
                 break;
             case CAPTION_PROPERTY_CALLBACK:
                 accountData->RemoveCaptionPropertyCallback(remote);
@@ -2213,5 +2154,120 @@ void AccessibleAbilityManagerService::OnBundleManagerDied(const wptr<IRemoteObje
         bundleManager_ = nullptr;
         }), "OnBundleManagerDied");
 }
+
+void AccessibleAbilityManagerService::StateObservers::AddStateObserver(
+    const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver)
+{
+    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    auto iter = std::find(observersList_.begin(), observersList_.end(), stateObserver);
+    if (iter == observersList_.end()) {
+        observersList_.push_back(stateObserver);
+        HILOG_INFO("register state observer successfully");
+        return;
+    }
+
+    HILOG_INFO("state observer is existed");
+}
+
+void AccessibleAbilityManagerService::StateObservers::OnStateObservers(uint32_t state)
+{
+    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    for (auto& stateObserver : observersList_) {
+        if (stateObserver) {
+            stateObserver->OnStateChanged(state);
+        }
+    }
+}
+
+void AccessibleAbilityManagerService::StateObservers::RemoveStateObserver(const wptr<IRemoteObject> &remote)
+{
+    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    auto iter = std::find_if(observersList_.begin(), observersList_.end(),
+        [remote](const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver) {
+            return stateObserver->AsObject() == remote;
+        });
+    if (iter != observersList_.end()) {
+        observersList_.erase(iter);
+    }
+}
+
+void AccessibleAbilityManagerService::StateObservers::Clear()
+{
+    std::lock_guard<std::mutex> lock(stateObserversMutex_);
+    observersList_.clear();
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::AddAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        HILOG_DEBUG("accountId is existed");
+    }
+
+    // even old account exist, new account cover old
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetCurrentAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (!accountData) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    HILOG_DEBUG("accountId is not existed");
+    return nullptr;
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::RemoveAccountData(
+    int32_t accountId)
+{
+    sptr<AccessibilityAccountData> accountData = nullptr;
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        accountData = iter->second;
+        accountDataMap_.erase(iter);
+    }
+
+    return accountData;
+}
+
+void AccessibleAbilityManagerService::AccessibilityAccountDataMap::Clear()
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    accountDataMap_.clear();
+}
+
 } // namespace Accessibility
 } // namespace OHOS

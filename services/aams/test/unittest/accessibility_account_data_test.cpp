@@ -1371,5 +1371,28 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_ConfigC
 
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_ConfigCallback end";
 }
+
+/**
+ * @tc.number: AccessibilityAccountData_Unittest_AddAccessibilityAbility_001
+ * @tc.name: AddAccessibilityAbility
+ * @tc.desc: Check add accessibility ability.
+ */
+HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_AddAccessibilityAbility001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityAbility_001 start";
+    const int32_t accountId = 1;
+    int32_t connectCounter = 0;
+    AccessibilityAbilityInitParams initParams;
+    std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
+    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    sptr<AccessibleAbilityConnection> connection =
+        new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
+    std::string uri = Utils::GetUri(connection->GetElementName());
+    accountData->AddConnectingA11yAbility(uri, connection);
+    auto connnection = accountData->GetConnectingA11yAbility(uri);
+    EXPECT_NE(connnection.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_AddAccessibilityAbility_001 end";
+}
+
 } // namespace Accessibility
 } // namespace OHOS

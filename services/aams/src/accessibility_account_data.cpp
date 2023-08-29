@@ -49,9 +49,9 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 {
     HILOG_INFO();
     uint32_t state = 0;
-    if (!connectedA11yAbilities_.empty() || !connectingA11yAbilities_.empty()) {
-        HILOG_DEBUG("connectingA11yAbilities[%{public}zu] connectedA11yAbilities[%{public}zu]",
-            connectingA11yAbilities_.size(), connectedA11yAbilities_.size());
+    if (connectedA11yAbilities_.GetSize() != 0 || connectingA11yAbilities_.GetSize() != 0) {
+        HILOG_DEBUG("connectingA11yAbilities %{public}zu connectedA11yAbilities %{public}zu",
+            connectingA11yAbilities_.GetSize(), connectedA11yAbilities_.GetSize());
         state |= STATE_ACCESSIBILITY_ENABLED;
         if (!config_->GetEnabledState()) {
             config_->SetEnabled(true);
@@ -79,11 +79,16 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
 void AccessibilityAccountData::OnAccountSwitched()
 {
     HILOG_INFO();
-    connectingA11yAbilities_.clear();
-    for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
-        itr->second->Disconnect();
+    connectingA11yAbilities_.Clear();
+    std::vector<sptr<AccessibleAbilityConnection>> connectionList;
+    connectedA11yAbilities_.GetAccessibilityAbilities(connectionList);
+    for (auto& connection : connectionList) {
+        if (connection) {
+            connection->Disconnect();
+        }
     }
-    connectedA11yAbilities_.clear();
+
+    connectedA11yAbilities_.Clear();
     enabledAbilities_.clear();
     asacConnections_.clear();
 }
@@ -96,24 +101,12 @@ void AccessibilityAccountData::AddConnectedAbility(sptr<AccessibleAbilityConnect
     }
 
     std::string uri = Utils::GetUri(connection->GetElementName());
-    HILOG_INFO("URI is %{private}s", uri.c_str());
-    if (!connectedA11yAbilities_.count(uri)) {
-        connectedA11yAbilities_.insert(make_pair(uri, connection));
-    }
-
-    HILOG_INFO("Add ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
+    connectedA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
 void AccessibilityAccountData::RemoveConnectedAbility(const AppExecFwk::ElementName &element)
 {
-    std::string uri = Utils::GetUri(element);
-    HILOG_INFO("URI is %{private}s", uri.c_str());
-    std::map<std::string, sptr<AccessibleAbilityConnection>>::iterator it = connectedA11yAbilities_.find(uri);
-    if (it != connectedA11yAbilities_.end()) {
-        connectedA11yAbilities_.erase(it);
-    }
-
-    HILOG_INFO("Remove ConnectedAbility: %{public}zu", connectedA11yAbilities_.size());
+    connectedA11yAbilities_.RemoveAccessibilityAbilityByUri(Utils::GetUri(element));
 }
 
 void AccessibilityAccountData::AddCaptionPropertyCallback(
@@ -194,25 +187,12 @@ void AccessibilityAccountData::RemoveAccessibilityWindowConnection(const int32_t
 void AccessibilityAccountData::AddConnectingA11yAbility(const std::string &uri,
     const sptr<AccessibleAbilityConnection> &connection)
 {
-    HILOG_DEBUG("start.");
-    auto iter = connectingA11yAbilities_.find(uri);
-    if (iter == connectingA11yAbilities_.end()) {
-        connectingA11yAbilities_[uri] = connection;
-        HILOG_DEBUG("Add ConnectingA11yAbility: %{public}zu", connectingA11yAbilities_.size());
-    } else {
-        HILOG_ERROR("The ability is already connecting, and it's uri is %{public}s", uri.c_str());
-    }
+    connectingA11yAbilities_.AddAccessibilityAbility(uri, connection);
 }
 
 void AccessibilityAccountData::RemoveConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("RemoveConnectingA11yAbility start");
-    auto iterator = connectingA11yAbilities_.find(uri);
-    if (iterator != connectingA11yAbilities_.end()) {
-        connectingA11yAbilities_.erase(iterator);
-        return;
-    }
-    HILOG_ERROR("The ability %{public}s is not connecting.", uri.c_str());
+    connectingA11yAbilities_.RemoveAccessibilityAbilityByUri(uri);
 }
 
 void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
@@ -293,18 +273,7 @@ void AccessibilityAccountData::ClearInstalledAbility()
 const sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetAccessibleAbilityConnection(
     const std::string &elementName)
 {
-    HILOG_DEBUG("GetAccessibleAbilityConnection URI is %{public}s", elementName.c_str());
-    for (auto& connected : connectedA11yAbilities_) {
-        std::string::size_type index = connected.first.find(elementName);
-        if (index == std::string::npos) {
-            continue;
-        } else {
-            HILOG_DEBUG("founded URI is %{public}s ", connected.first.c_str());
-            return connected.second;
-        }
-    }
-    HILOG_DEBUG("URI %{public}s not found ", elementName.c_str());
-    return nullptr;
+    return connectedA11yAbilities_.GetAccessibilityAbilityByName(elementName);
 }
 
 const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibilityWindowConnection(
@@ -324,8 +293,9 @@ const sptr<AccessibilityWindowConnection> AccessibilityAccountData::GetAccessibi
 
 const std::map<std::string, sptr<AccessibleAbilityConnection>> AccessibilityAccountData::GetConnectedA11yAbilities()
 {
-    HILOG_DEBUG("connectedA11yAbilities's size[%{public}zu]", connectedA11yAbilities_.size());
-    return connectedA11yAbilities_;
+    std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap;
+    connectedA11yAbilities_.GetAccessibilityAbilitiesMap(connectionMap);
+    return connectionMap;
 }
 
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> AccessibilityAccountData::GetAsacConnections()
@@ -342,12 +312,7 @@ const CaptionPropertyCallbacks AccessibilityAccountData::GetCaptionPropertyCallb
 
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbility(const std::string &uri)
 {
-    HILOG_DEBUG("GetConnectingA11yAbility start.");
-    auto iter = connectingA11yAbilities_.find(uri);
-    if (iter != connectingA11yAbilities_.end()) {
-        return iter->second;
-    }
-    return nullptr;
+    return connectingA11yAbilities_.GetAccessibilityAbilityByUri(uri);
 }
 
 const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
@@ -366,17 +331,11 @@ const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstal
 }
 
 void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
-    std::vector<AccessibilityAbilityInfo> &abilities) const
+    std::vector<AccessibilityAbilityInfo> &abilities)
 {
-    HILOG_DEBUG("GetAbilitiesByState state(%{public}d) start.", state);
+    HILOG_DEBUG("get abilities by state %{public}d", state);
     if (state == ABILITY_STATE_ENABLE) {
-        for (auto &ability : connectedA11yAbilities_) {
-            if (ability.second) {
-                abilities.push_back(ability.second->GetAbilityInfo());
-            }
-        }
-        HILOG_DEBUG("connectedA11yAbilities_ is (%{public}zu) enabledAbilities is (%{public}zu).",
-            connectedA11yAbilities_.size(), abilities.size());
+        connectedA11yAbilities_.GetAbilitiesInfo(abilities);
     } else if (state == ABILITY_STATE_DISABLE) {
         GetDisableAbilities(abilities);
         HILOG_DEBUG("the size of disable abilities is %{public}zu", abilities.size());
@@ -385,19 +344,11 @@ void AccessibilityAccountData::GetAbilitiesByState(AbilityStateType state,
     }
 }
 
-void AccessibilityAccountData::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities) const
+void AccessibilityAccountData::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
-    HILOG_DEBUG("start.");
+    HILOG_DEBUG("get disable abilities");
     disabledAbilities = installedAbilities_;
-    for (auto &enabledAbility : connectedA11yAbilities_) {
-        for (auto itr = disabledAbilities.begin(); itr != disabledAbilities.end();) {
-            if (enabledAbility.second && (itr->GetId() == enabledAbility.second->GetAbilityInfo().GetId())) {
-                disabledAbilities.erase(itr);
-            } else {
-                itr++;
-            }
-        }
-    }
+    connectedA11yAbilities_.GetDisableAbilities(disabledAbilities);
 }
 
 void AccessibilityAccountData::UpdateAccountCapabilities()
@@ -414,49 +365,41 @@ void AccessibilityAccountData::UpdateAccountCapabilities()
 
 void AccessibilityAccountData::UpdateEventTouchGuideCapability()
 {
-    HILOG_DEBUG("start.");
-    for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
-        if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_TOUCH_GUIDE) {
-            isEventTouchGuideState_ = true;
-            return;
-        }
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_TOUCH_GUIDE)) {
+        isEventTouchGuideState_ = true;
+        return;
     }
+
     isEventTouchGuideState_ = false;
 }
 
 void AccessibilityAccountData::UpdateGesturesSimulationCapability()
 {
-    HILOG_DEBUG("start.");
-    for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
-        if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_GESTURE) {
-            isGesturesSimulation_ = true;
-            return;
-        }
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_GESTURE)) {
+        isGesturesSimulation_ = true;
+        return;
     }
+
     isGesturesSimulation_ = false;
 }
 
 void AccessibilityAccountData::UpdateFilteringKeyEventsCapability()
 {
-    HILOG_DEBUG("start.");
-    for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
-        if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_KEY_EVENT_OBSERVER) {
-            isFilteringKeyEvents_ = true;
-            return;
-        }
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_KEY_EVENT_OBSERVER)) {
+        isFilteringKeyEvents_ = true;
+        return;
     }
+
     isFilteringKeyEvents_ = false;
 }
 
 void AccessibilityAccountData::UpdateMagnificationCapability()
 {
-    HILOG_DEBUG("start.");
-    for (auto itr = connectedA11yAbilities_.begin(); itr != connectedA11yAbilities_.end(); itr++) {
-        if (itr->second->GetAbilityInfo().GetCapabilityValues() & Capability::CAPABILITY_ZOOM) {
-            isScreenMagnification_ = true;
-            return;
-        }
+    if (connectedA11yAbilities_.IsExistCapability(Capability::CAPABILITY_ZOOM)) {
+        isScreenMagnification_ = true;
+        return;
     }
+
     isScreenMagnification_ = false;
 }
 
@@ -678,7 +621,7 @@ void AccessibilityAccountData::UpdateAbilities()
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             bundleName.c_str(), abilityName.c_str());
 
-        if (connectingA11yAbilities_.count(Utils::GetUri(bundleName, abilityName))) {
+        if (connectingA11yAbilities_.GetSizeByUri(Utils::GetUri(bundleName, abilityName))) {
             HILOG_DEBUG("The ability(bundleName[%{public}s] abilityName[%{public}s]) is connecting.",
                 bundleName.c_str(), abilityName.c_str());
             continue;
@@ -728,24 +671,11 @@ bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
     }
 
     // Remove connected ability
-    for (auto &connectedAbility : connectedA11yAbilities_) {
-        std::size_t firstPos = connectedAbility.first.find_first_of('/') + 1;
-        std::size_t endPos = connectedAbility.first.find_last_of('/');
-        if (endPos <= firstPos) {
-            HILOG_ERROR("it's a wrong ability and the uri is %{public}s", connectedAbility.first.c_str());
-            continue;
-        }
-        std::string connectedBundleName = connectedAbility.first.substr(firstPos, endPos - firstPos);
-        if (connectedBundleName == bundleName) {
-            HILOG_DEBUG("Remove connected ability and it's bundle name is %{public}s", connectedBundleName.c_str());
-            RemoveConnectedAbility(connectedAbility.second->GetElementName());
-            result = true;
-        }
-    }
-
+    connectedA11yAbilities_.RemoveAccessibilityAbilityByName(bundleName, result);
     if (result) {
         UpdateAbilities();
     }
+
     return result;
 }
 
@@ -834,5 +764,163 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
     RemoveConnectedAbility(connection->GetElementName());
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName());
 }
+
+void AccessibilityAccountData::AccessibilityAbility::AddAccessibilityAbility(const std::string& uri,
+    const sptr<AccessibleAbilityConnection>& connection)
+{
+    HILOG_INFO("uri is %{private}s", uri.c_str());
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!connectionMap_.count(uri)) {
+        connectionMap_[uri] = connection;
+        HILOG_DEBUG("connectionMap_ size %{public}zu", connectionMap_.size());
+        return;
+    }
+    
+    HILOG_DEBUG("uri %{private}s, connectionMap_ %{public}zu", uri.c_str(), connectionMap_.size());
+}
+
+void AccessibilityAccountData::AccessibilityAbility::RemoveAccessibilityAbilityByUri(const std::string& uri)
+{
+    HILOG_INFO("uri is %{private}s", uri.c_str());
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto it = connectionMap_.find(uri);
+    if (it != connectionMap_.end()) {
+        connectionMap_.erase(it);
+    }
+
+    HILOG_DEBUG("connectionMap_ %{public}zu", connectionMap_.size());
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilityByName(
+    const std::string& elementName)
+{
+    HILOG_DEBUG("elementName is %{public}s", elementName.c_str());
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        std::string::size_type index = connection.first.find(elementName);
+        if (index == std::string::npos) {
+            continue;
+        } else {
+            HILOG_DEBUG("uri %{private}s ", connection.first.c_str());
+            return connection.second;
+        }
+    }
+
+    return nullptr;
+}
+
+sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilityByUri(
+    const std::string& uri)
+{
+    HILOG_DEBUG("uri is %{private}s", uri.c_str());
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto iter = connectionMap_.find(uri);
+    if (iter != connectionMap_.end()) {
+        return iter->second;
+    }
+    return nullptr;
+}
+
+void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilities(
+    std::vector<sptr<AccessibleAbilityConnection>>& connectionList)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        connectionList.push_back(connection.second);
+    }
+}
+
+void AccessibilityAccountData::AccessibilityAbility::GetAbilitiesInfo(
+    std::vector<AccessibilityAbilityInfo>& abilities)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        if (connection.second) {
+            abilities.push_back(connection.second->GetAbilityInfo());
+        }
+    }
+
+    HILOG_DEBUG("connectionMap_ %{public}zu and enabledAbilities %{public}zu",
+        connectionMap_.size(), abilities.size());
+}
+
+bool AccessibilityAccountData::AccessibilityAbility::IsExistCapability(Capability capability)
+{
+    HILOG_DEBUG("capability %{public}d", capability);
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto iter = connectionMap_.begin(); iter != connectionMap_.end(); iter++) {
+        if (iter->second->GetAbilityInfo().GetCapabilityValues() & capability) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilitiesMap(
+    std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    connectionMap = connectionMap_;
+}
+
+void AccessibilityAccountData::AccessibilityAbility::Clear()
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    return connectionMap_.clear();
+}
+
+size_t AccessibilityAccountData::AccessibilityAbility::GetSize()
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    return connectionMap_.size();
+}
+
+void AccessibilityAccountData::AccessibilityAbility::GetDisableAbilities(
+    std::vector<AccessibilityAbilityInfo> &disabledAbilities)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        for (auto iter = disabledAbilities.begin(); iter != disabledAbilities.end();) {
+            if (connection.second && (iter->GetId() == connection.second->GetAbilityInfo().GetId())) {
+                disabledAbilities.erase(iter);
+            } else {
+                iter++;
+            }
+        }
+    }
+}
+
+void AccessibilityAccountData::AccessibilityAbility::RemoveAccessibilityAbilityByName(const std::string& bundleName,
+    bool& result)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& connection : connectionMap_) {
+        std::size_t firstPos = connection.first.find_first_of('/') + 1;
+        std::size_t endPos = connection.first.find_last_of('/');
+        if (endPos <= firstPos) {
+            HILOG_ERROR("it's a wrong ability and the uri %{public}s ", connection.first.c_str());
+            continue;
+        }
+
+        std::string connectedBundleName = connection.first.substr(firstPos, endPos - firstPos);
+        if (connectedBundleName == bundleName) {
+            HILOG_DEBUG("remove connected ability, bundle name %{public}s", connectedBundleName.c_str());
+            std::string uri = Utils::GetUri(connection.second->GetElementName());
+            auto it = connectionMap_.find(uri);
+            if (it != connectionMap_.end()) {
+                connectionMap_.erase(it);
+            }
+            result = true;
+        }
+    }
+}
+
+int32_t AccessibilityAccountData::AccessibilityAbility::GetSizeByUri(const std::string& uri)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    return connectionMap_.count(uri);
+}
+
 } // namespace Accessibility
 } // namespace OHOS

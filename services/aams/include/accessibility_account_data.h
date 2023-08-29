@@ -167,12 +167,12 @@ public:
      *        ability state type.
      * @param state Ability state type.
      */
-    void GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities) const;
+    void GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities);
 
     /**
      * @brief Get the accessibility ability info of the disabled ability.
      */
-    void GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities) const;
+    void GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities);
 
     /**
      * @brief Get enable accessibility list.
@@ -283,14 +283,36 @@ private:
      */
     void UpdateMagnificationCapability();
 
+    class AccessibilityAbility {
+    public:
+        AccessibilityAbility() = default;
+        ~AccessibilityAbility() = default;
+        void AddAccessibilityAbility(const std::string& uri, const sptr<AccessibleAbilityConnection>& connection);
+        sptr<AccessibleAbilityConnection> GetAccessibilityAbilityByName(const std::string& elementName);
+        sptr<AccessibleAbilityConnection> GetAccessibilityAbilityByUri(const std::string& uri);
+        void GetAccessibilityAbilities(std::vector<sptr<AccessibleAbilityConnection>>& connectionList);
+        void GetAbilitiesInfo(std::vector<AccessibilityAbilityInfo>& abilities);
+        bool IsExistCapability(Capability capability);
+        void GetAccessibilityAbilitiesMap(std::map<std::string, sptr<AccessibleAbilityConnection>>& connectionMap);
+        void GetDisableAbilities(std::vector<AccessibilityAbilityInfo>& disabledAbilities);
+        int32_t GetSizeByUri(const std::string& uri);
+        void RemoveAccessibilityAbilityByName(const std::string& bundleName, bool& result);
+        void RemoveAccessibilityAbilityByUri(const std::string& uri);
+        void Clear();
+        size_t GetSize();
+    private:
+        std::map<std::string, sptr<AccessibleAbilityConnection>> connectionMap_;
+        std::mutex mutex_;
+    };
+
     int32_t id_;
     bool isEventTouchGuideState_ = false;
     bool isScreenMagnification_ = false;
     bool isFilteringKeyEvents_ = false;
     bool isGesturesSimulation_ = false;
     uint32_t connectCounter_ = 1;
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectedA11yAbilities_; // key: bundleName/abilityName
-    std::map<std::string, sptr<AccessibleAbilityConnection>> connectingA11yAbilities_; // key: bundleName/abilityName
+    AccessibilityAbility connectedA11yAbilities_;  // key: bundleName/abilityName
+    AccessibilityAbility connectingA11yAbilities_;  // key: bundleName/abilityName
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<int32_t, sptr<AccessibilityWindowConnection>> asacConnections_; // key: windowId
     CaptionPropertyCallbacks captionPropertyCallbacks_;

@@ -1811,5 +1811,24 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_010, TestSize
     EXPECT_FALSE(ret);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_SetTargetAbility_010 end";
 }
+
+/**
+ * @tc.number: Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001
+ * @tc.name: AddAccountData
+ * @tc.desc: Test function add account
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, AddAccountData_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001 start";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().AddedUser(1);
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(1);
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
+
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(1);
+    accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(1);
+    EXPECT_EQ(accountData.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001 end";
+}
+
 } // namespace Accessibility
 } // namespace OHOS
