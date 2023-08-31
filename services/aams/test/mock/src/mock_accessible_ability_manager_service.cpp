@@ -135,23 +135,15 @@ sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetCurrentAccoun
     if (needNullFlag) {
         return nullptr;
     }
-    auto iter = a11yAccountsData_.find(ACCOUNT_ID);
-    if (iter != a11yAccountsData_.end()) {
-        return iter->second;
-    }
-    sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(ACCOUNT_ID);
+
+    auto accountData = a11yAccountsData_.GetCurrentAccountData(ACCOUNT_ID);
     accountData->Init();
-    a11yAccountsData_[ACCOUNT_ID] = accountData;
     return accountData;
 }
 
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId) const
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::GetAccountData(int32_t accountId)
 {
-    auto iter = a11yAccountsData_.find(accountId);
-    if (iter != a11yAccountsData_.end()) {
-        return iter->second;
-    }
-    return nullptr;
+    return a11yAccountsData_.GetAccountData(accountId);
 }
 
 RetError AccessibleAbilityManagerService::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
@@ -465,5 +457,34 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);
 }
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetCurrentAccountData(
+    int32_t accountId)
+{
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (!accountData) {
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetAccountData(
+    int32_t accountId)
+{
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    return nullptr;
+}
+
 } // namespace Accessibility
 } // namespace OHOS

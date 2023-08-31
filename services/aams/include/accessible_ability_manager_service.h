@@ -156,7 +156,7 @@ public:
         return runner_;
     }
 
-    sptr<AccessibilityAccountData> GetAccountData(int32_t accountId) const;
+    sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
     sptr<AccessibilityAccountData> GetCurrentAccountData();
     sptr<AppExecFwk::IBundleMgr> GetBundleMgrProxy();
 
@@ -267,6 +267,33 @@ private:
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
 
+    class StateObservers {
+    public:
+        StateObservers() = default;
+        ~StateObservers() = default;
+        void AddStateObserver(const sptr<IAccessibleAbilityManagerStateObserver>& stateObserver);
+        void OnStateObservers(uint32_t state);
+        void RemoveStateObserver(const wptr<IRemoteObject>& remote);
+        void Clear();
+    private:
+        std::vector<sptr<IAccessibleAbilityManagerStateObserver>> observersList_;
+        std::mutex stateObserversMutex_;
+    };
+
+    class AccessibilityAccountDataMap {
+    public:
+        AccessibilityAccountDataMap() = default;
+        ~AccessibilityAccountDataMap() = default;
+        sptr<AccessibilityAccountData> AddAccountData(int32_t accountId);
+        sptr<AccessibilityAccountData> GetCurrentAccountData(int32_t accountId);
+        sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
+        sptr<AccessibilityAccountData> RemoveAccountData(int32_t accountId);
+        void Clear();
+    private:
+        std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
+        std::mutex accountDataMutex_;
+    };
+
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
     RetError InnerDisableAbility(const std::string &name);
 
@@ -287,7 +314,7 @@ private:
     bool isPublished_ = false;
     std::map<int32_t, bool> dependentServicesStatus_;
     int32_t currentAccountId_ = -1;
-    std::map<int32_t, sptr<AccessibilityAccountData>> a11yAccountsData_;
+    AccessibilityAccountDataMap  a11yAccountsData_;
     sptr<AppExecFwk::IBundleMgr> bundleManager_ = nullptr;
 
     sptr<AccessibilityInputInterceptor> inputInterceptor_ = nullptr;
@@ -298,15 +325,15 @@ private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AAMSEventHandler> handler_;
 
-    sptr<IRemoteObject::DeathRecipient> stateCallbackDeathRecipient_ = nullptr;
+    sptr<IRemoteObject::DeathRecipient> stateObserversDeathRecipient_ = nullptr;
     std::map<int32_t, sptr<IRemoteObject::DeathRecipient>> interactionOperationDeathRecipients_ {};
     sptr<IRemoteObject::DeathRecipient> captionPropertyCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> enableAbilityListsObserverDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> configCallbackDeathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> bundleManagerDeathRecipient_ = nullptr;
-    std::vector<sptr<IAccessibleAbilityManagerStateObserver>> stateCallbacks_;
+    StateObservers stateObservers_;
+    std::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
-    std::mutex mutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
