@@ -16,6 +16,7 @@
 #ifndef ACCESSIBLE_ABILITY_CLIENT_IMPL_H
 #define ACCESSIBLE_ABILITY_CLIENT_IMPL_H
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include "accessible_ability_channel_client.h"
@@ -312,6 +313,7 @@ private:
     int32_t cacheWindowId_ = -1;
     std::map<int32_t, AccessibilityElementInfo> cacheElementInfos_;
     std::mutex mutex_;
+    std::atomic<bool> isConnected_ = false;
 };
 } // namespace Accessibility
 } // namespace OHOS
