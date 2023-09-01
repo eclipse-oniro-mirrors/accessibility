@@ -133,7 +133,7 @@ int32_t SystemAbilityManagerProxy::UnSubscribeSystemAbility(int32_t systemAbilit
 
 sptr<IRemoteObject> LoadSystemAbility(int32_t systemAbilityId, int32_t timeout)
 {
-    return -1;
+    return nullptr;
 }
 
 int32_t SystemAbilityManagerProxy::LoadSystemAbility(int32_t systemAbilityId,
