@@ -23,6 +23,7 @@ namespace Accessibility {
 namespace {
     constexpr int32_t POINTER_COUNT_1 = 1;
     constexpr int32_t POINTER_COUNT_2 = 2;
+    constexpr int32_t SCREEN_AXIS_NUM = 2;
 } // namespace
 
 TGEventHandler::TGEventHandler(
@@ -42,6 +43,8 @@ void TouchGuider::StartUp()
     HILOG_DEBUG();
     touchGuideListener_ = std::make_unique<TouchGuideListener>(*this);
     gestureRecognizer_.RegisterListener(*touchGuideListener_.get());
+    multiFingerGestureRecognizer_.RegisterListener(*touchGuideListener_.get());
+
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {
         HILOG_ERROR("get runner failed");
@@ -91,9 +94,15 @@ bool TouchGuider::OnPointerEvent(MMI::PointerEvent &event)
         return true;
     }
     RecordReceivedEvent(event);
-    if (gestureRecognizer_.OnPointerEvent(event)) {
+    if (!multiFingerGestureRecognizer_.IsMultiFingerGestureStarted() &&
+        gestureRecognizer_.OnPointerEvent(event)) {
         return true;
     }
+
+    if (multiFingerGestureRecognizer_.OnPointerEvent(event)) {
+        return true;
+    }
+
     switch (static_cast<TouchGuideState>(currentState_)) {
         case TouchGuideState::TOUCH_GUIDING:
             HandleTouchGuidingState(event);
@@ -223,6 +232,16 @@ bool TouchGuider::TouchGuideListener::OnStarted()
     return true;
 }
 
+void TouchGuider::TouchGuideListener::TwoFingerGestureOnStarted()
+{
+    HILOG_DEBUG();
+
+    server_.CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
+    server_.CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
+    server_.PostGestureRecognizeExit();
+    server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_BEGIN);
+}
+
 bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
 {
     HILOG_DEBUG("gestureId is %{public}d", gestureId);
@@ -242,16 +261,30 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     return true;
 }
 
+void TouchGuider::TouchGuideListener::TwoFingerGestureOnCompleted(GestureType gestureId)
+{
+    HILOG_DEBUG("gestureId is %{public}d", gestureId);
+
+    server_.OnTouchInteractionEnd();
+    server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+    server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
+    server_.currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+
+    // Send customize gesture type to aa
+    server_.SendGestureEventToAA(gestureId);
+}
+
 bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
 
     switch (static_cast<TouchGuideState>(server_.currentState_)) {
         case TouchGuideState::TRANSMITTING:
-            server_.OnTouchInteractionEnd();
             server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
             if (event.GetPointerAction() == MMI::PointerEvent::POINTER_ACTION_UP &&
                 event.GetPointerIds().size() == POINTER_COUNT_1) {
+                server_.OnTouchInteractionEnd();
                 server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
             }
             server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
@@ -267,6 +300,18 @@ bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent &event)
             return false;
     }
     return true;
+}
+
+void TouchGuider::TouchGuideListener::TwoFingerGestureOnCancelled(const bool isNoDelayFlag)
+{
+    HILOG_DEBUG();
+
+    server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
+    server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
+    if (isNoDelayFlag) {
+        server_.OnTouchInteractionEnd();
+        server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
+    }
 }
 
 void TouchGuider::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
@@ -325,11 +370,12 @@ void TouchGuider::HandleTouchGuidingState(MMI::PointerEvent &event)
             HandleTouchGuidingStateInnerMove(event);
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1 && !IsTouchInteractionEnd() &&
+                !multiFingerGestureRecognizer_.IsMultiFingerRecognize()) {
                 OnTouchInteractionEnd();
                 if (HasEventPending(SEND_HOVER_ENTER_MOVE_MSG)) {
                     PostHoverExit();
-                } else {
+                } else if (isTouchGuiding_) {
                     SendExitEvents();
                 }
                 if (!HasEventPending(SEND_TOUCH_INTERACTION_END_MSG)) {
@@ -467,7 +513,7 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
     if (isTouchGuiding_) {
         SendExitEvents();
     }
-    if (!gestureRecognizer_.IsfirstTap()) {
+    if (!gestureRecognizer_.IsfirstTap() && !multiFingerGestureRecognizer_.IsMultiFingerGestureStarted()) {
         ForceSendAndRemoveEvent(SEND_TOUCH_GUIDE_END_MSG, event);
         ForceSendAndRemoveEvent(SEND_TOUCH_INTERACTION_END_MSG, event);
         SendAccessibilityEventToAA(EventType::TYPE_TOUCH_BEGIN);
@@ -481,6 +527,29 @@ void TouchGuider::HandleTouchGuidingStateInnerDown(MMI::PointerEvent &event)
     } else {
         CancelPostEvent(SEND_TOUCH_INTERACTION_END_MSG);
     }
+}
+
+void TouchGuider::SendPointerDownEventToMultimodal(MMI::PointerEvent event, int32_t action)
+{
+    int32_t currentPid = event.GetPointerId();
+    if (currentPid >= MAX_POINTER_COUNT) {
+        return;
+    }
+
+    int32_t xPointDown = receivedRecorder_.pointerDownX[currentPid];
+    int32_t yPointDown = receivedRecorder_.pointerDownY[currentPid];
+    int64_t actionTime = receivedRecorder_.pointerActionTime[currentPid];
+
+    HILOG_DEBUG("first down point info is: xPos: %d, yPos: %d, actionTime: [%{public}" PRId64 "], "
+        "currentTime: [%{public}" PRId64 "]", xPointDown, yPointDown, actionTime, event.GetActionTime());
+    MMI::PointerEvent::PointerItem pointer = {};
+    event.GetPointerItem(currentPid, pointer);
+    pointer.SetDisplayX(xPointDown);
+    pointer.SetDisplayY(yPointDown);
+    event.RemovePointerItem(currentPid);
+    event.AddPointerItem(pointer);
+    event.SetActionTime(actionTime);
+    SendEventToMultimodal(event, action);
 }
 
 void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
@@ -498,9 +567,14 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent &event)
         case POINTER_COUNT_2:
             CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
             CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
+            if (!IsRealMoveState(event)) {
+                HILOG_DEBUG("not a move");
+                break;
+            }
             if (IsDragGestureAccept(event)) {
-                currentState_ =  static_cast<int32_t>(TouchGuideState::DRAGGING);
-                SendEventToMultimodal(event, POINTER_DOWN);
+                currentState_ = static_cast<int32_t>(TouchGuideState::DRAGGING);
+                SendPointerDownEventToMultimodal(event, POINTER_DOWN);
+                SendEventToMultimodal(event, NO_CHANGE);
             } else {
                 currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
                 SendAllDownEvents(event);
@@ -573,18 +647,26 @@ float TouchGuider::GetAngleCos(float offsetX, float offsetY, bool isGetX)
     return ret;
 }
 
-bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
+void TouchGuider::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
+    std::vector<float> &secondPointOffset) const
 {
     HILOG_DEBUG();
 
     std::vector<int32_t> pIds = event.GetPointerIds();
+    if (pIds.size() != POINTER_COUNT_2) {
+        return;
+    }
+
     MMI::PointerEvent::PointerItem pointerF = {};
     MMI::PointerEvent::PointerItem pointerS = {};
     if (!event.GetPointerItem(pIds[0], pointerF)) {
-        HILOG_WARN("GetPointerItem(%d) failed", pIds[0]);
+        HILOG_ERROR("GetPointerItem(%d) failed", pIds[0]);
+        return;
     }
+
     if (!event.GetPointerItem(pIds[1], pointerS)) {
-        HILOG_WARN("GetPointerItem(%d) failed", pIds[1]);
+        HILOG_ERROR("GetPointerItem(%d) failed", pIds[1]);
+        return;
     }
 
     float xPointF = pointerF.GetDisplayX();
@@ -595,10 +677,28 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
     float xPointDownS = receivedRecorder_.pointerDownX[INDEX_1];
     float yPointDownF = receivedRecorder_.pointerDownY[INDEX_0];
     float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
-    float firstOffsetX = xPointF - xPointDownF;
-    float firstOffsetY = yPointF - yPointDownF;
-    float secondOffsetX = xPointS - xPointDownS;
-    float secondOffsetY = yPointS - yPointDownS;
+
+    firstPointOffset.push_back(xPointF - xPointDownF); // firstOffsetX
+    firstPointOffset.push_back (yPointF - yPointDownF); // firstOffsetY
+    secondPointOffset.push_back(xPointS - xPointDownS); // secondOffsetX
+    secondPointOffset.push_back(yPointS - yPointDownS); // secondOffsetY
+}
+
+bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    std::vector<float> firstPointOffset;
+    std::vector<float> secondPointOffset;
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
+    if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
+        return false;
+    }
+
+    float firstOffsetX = firstPointOffset[0];
+    float firstOffsetY = firstPointOffset[1];
+    float secondOffsetX = secondPointOffset[0];
+    float secondOffsetY = secondPointOffset[1];
     if ((!firstOffsetX && !firstOffsetY) ||
         (!secondOffsetX && !secondOffsetY)) {
         return true;
@@ -612,6 +712,26 @@ bool TouchGuider::IsDragGestureAccept(MMI::PointerEvent &event)
         return false;
     }
     return true;
+}
+
+bool TouchGuider::IsRealMoveState(MMI::PointerEvent &event) const
+{
+    HILOG_DEBUG("moveThreshold: %f", multiFingerGestureRecognizer_.GetTouchSlop());
+
+    std::vector<float> firstPointOffset;
+    std::vector<float> secondPointOffset;
+    GetPointOffset(event, firstPointOffset, secondPointOffset);
+    if (firstPointOffset.size() != SCREEN_AXIS_NUM || secondPointOffset.size() != SCREEN_AXIS_NUM) {
+        return false;
+    }
+
+    HILOG_DEBUG("offset of fisrt down points and current points: %f, %f,%f, %f",
+        firstPointOffset[0], firstPointOffset[1], secondPointOffset[0],secondPointOffset[1]);
+    if (hypot(firstPointOffset[0], firstPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop() &&
+        hypot(secondPointOffset[0], secondPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop()) {
+        return true;
+    }
+    return false;
 }
 
 void TouchGuider::RecordInjectedEvent(MMI::PointerEvent &event)
@@ -656,10 +776,12 @@ void TouchGuider::RecordReceivedEvent(MMI::PointerEvent &event)
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             receivedRecorder_.pointerDownX[pointId] = pointer.GetDisplayX();
             receivedRecorder_.pointerDownY[pointId] = pointer.GetDisplayY();
+            receivedRecorder_.pointerActionTime[pointId] = event.GetActionTime();
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
             receivedRecorder_.pointerDownX[pointId] = 0;
             receivedRecorder_.pointerDownY[pointId] = 0;
+            receivedRecorder_.pointerActionTime[pointId] = 0;
             break;
         default:
             break;
@@ -674,6 +796,8 @@ void TouchGuider::ClearReceivedEventRecorder()
              0, sizeof(receivedRecorder_.pointerDownX));
     (void)memset_s(receivedRecorder_.pointerDownY, sizeof(receivedRecorder_.pointerDownY),
              0, sizeof(receivedRecorder_.pointerDownY));
+    (void)memset_s(receivedRecorder_.pointerActionTime, sizeof(receivedRecorder_.pointerActionTime),
+             0, sizeof(receivedRecorder_.pointerActionTime));
     receivedRecorder_.lastEvent = nullptr;
 }
 

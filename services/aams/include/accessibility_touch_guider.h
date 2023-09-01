@@ -21,6 +21,7 @@
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_event_transmission.h"
 #include "accessibility_gesture_recognizer.h"
+#include "accessibility_multifinger_multitap.h"
 #include "accessible_ability_manager_service.h"
 
 namespace OHOS {
@@ -73,6 +74,7 @@ struct InjectedEventRecorder {
 struct ReceivedEventRecorder {
     int32_t pointerDownX[MAX_POINTER_COUNT];
     int32_t pointerDownY[MAX_POINTER_COUNT];
+    int64_t pointerActionTime[MAX_POINTER_COUNT];
     std::shared_ptr<MMI::PointerEvent> lastEvent;
 };
 
@@ -146,6 +148,13 @@ public:
     void DestroyEvents() override;
 
     /**
+     * @brief Send pointer down event to multimodal input.
+     * @param event event the touch event from Multimodal, set the down point to the event and send.
+     * @param action point action send to multimode.
+     */
+    void SendPointerDownEventToMultimodal(MMI::PointerEvent event, int32_t action);
+
+    /**
      * @brief Send event to multimodal input.
      * @param event the event prepared to send to Multimodal
      * @param action the action of the event
@@ -193,6 +202,15 @@ public:
     }
 
     /**
+     * @brief whether touch guide end.
+     * @return true if touch guide end, else false.
+     */
+    inline bool IsTouchInteractionEnd()
+    {
+        return isTouchStart_ == false;
+    }
+
+    /**
      * @brief Perform action on Accessibility Focus.
      * @param action the action of Accessibility node.
      * @return Returns true if the action perform successfully; returns false code otherwise.
@@ -219,10 +237,21 @@ private:
         bool OnStarted() override;
 
         /**
+         * @brief Send GESTURE_BEGIN to AccessibleAbility when two finger gesture start.
+         */
+        void TwoFingerGestureOnStarted() override;
+
+        /**
          * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility.
          * @param gestureId the id of gesture
          */
         bool OnCompleted(GestureType gestureId) override;
+
+        /**
+         * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility when two finger gesture complete.
+         * @param gestureId the id of gesture.
+         */
+        void TwoFingerGestureOnCompleted(GestureType gestureId) override;
 
         /**
          * @brief The gesture has been cancelled.
@@ -230,6 +259,11 @@ private:
          */
         bool OnCancelled(MMI::PointerEvent &event) override;
 
+        /**
+         * @brief The gesture has been cancelled.
+         * @param isNoDelayFlag  whether the gesture recognize process is immediately canceled.
+         */
+        void TwoFingerGestureOnCancelled(const bool isNoDelayFlag) override;
     private:
         TouchGuider &server_;
     };
@@ -292,6 +326,22 @@ private:
      * @return whether the dragGesture is accepted.
      */
     bool IsDragGestureAccept(MMI::PointerEvent &event);
+
+    /**
+     * @brief Get the offset of current points and touch down points.
+     * @param event the current touch event from Multimodal.
+     * @param firstPointOffset the first finger offset result, xAxis offset and yAxis offset.
+     * @param firstPointOffset the second finger offset result, xAxis offset and yAxis offset.
+     */
+    void GetPointOffset(MMI::PointerEvent &event, std::vector<float> &firstPointOffset,
+        std::vector<float> &secondPointOffset) const;
+
+    /**
+     * @brief Determine whether it is a move gesture.
+     * @param event the touch event from Multimodal.
+     * @return whether this is a scolling.
+     */
+    bool IsRealMoveState(MMI::PointerEvent &event) const;
 
     /**
      * @brief Get Angle Cos value.
@@ -416,6 +466,7 @@ private:
     InjectedEventRecorder injectedRecorder_ = {};
     std::list<MMI::PointerEvent> pointerEvents_ {};
     AccessibilityGestureRecognizer gestureRecognizer_;
+    AccessibilityMultiTapGestureRecognizer multiFingerGestureRecognizer_;
     std::unique_ptr<TouchGuideListener> touchGuideListener_ = nullptr;
     std::shared_ptr<TGEventHandler> handler_ = nullptr;
     std::shared_ptr<AppExecFwk::EventRunner> runner_ = nullptr;
