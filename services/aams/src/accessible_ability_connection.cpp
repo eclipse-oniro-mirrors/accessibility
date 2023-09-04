@@ -309,7 +309,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         HILOG_ERROR("handler_ is nullptr");
         return;
     }
-    handler_->PostTask(std::bind([](int32_t accountId, AppExecFwk::ElementName &elementName) -> void {
+    handler_->PostTask(std::bind([](int32_t accountId, AppExecFwk::ElementName elementName) -> void {
         HILOG_DEBUG();
 
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
