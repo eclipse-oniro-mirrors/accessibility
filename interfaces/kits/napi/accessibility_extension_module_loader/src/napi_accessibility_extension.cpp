@@ -50,7 +50,10 @@ NAccessibilityExtension::NAccessibilityExtension(AbilityRuntime::JsRuntime& jsRu
     engine_ = &jsRuntime_.GetNativeEngine();
 }
 
-NAccessibilityExtension::~NAccessibilityExtension() = default;
+NAccessibilityExtension::~NAccessibilityExtension()
+{
+    jsRuntime_.FreeNativeReference(std::move(jsObj_));
+}
 
 napi_handle_scope OpenScope(napi_env env)
 {
