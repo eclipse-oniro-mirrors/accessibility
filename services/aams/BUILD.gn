@@ -53,6 +53,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_touchEvent_injector.cpp",
   "${services_path}/src/accessibility_keyevent_filter.cpp",
   "${services_path}/src/accessibility_mouse_autoclick.cpp",
+  "${services_path}/src/accessibility_multifinger_multitap.cpp",
   "${services_path}/src/accessibility_mouse_key.cpp",
   "${services_path}/src/accessibility_short_key.cpp",
   "${services_path}/src/accessibility_window_manager.cpp",

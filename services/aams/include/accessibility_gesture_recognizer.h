@@ -35,6 +35,7 @@ const float DOUBLE_TAP_SLOP = 100.0f;
 const int64_t MIN_DOUBLE_TAP_TIME = 40000; // microsecond
 const int64_t DOUBLE_TAP_TIMEOUT = 300000; // microsecond
 const int64_t LONG_PRESS_TIMEOUT = 400000; // microsecond
+const int64_t TAP_INTERVAL_TIMEOUT = 100000; // microsecond
 const float DEGREES_THRESHOLD = 0.0f;
 const int32_t DIRECTION_NUM = 4;
 const int64_t US_TO_MS = 1000;
@@ -82,6 +83,11 @@ public:
     virtual bool OnStarted();
 
     /**
+     * @brief The callback function when recognized an event stream as a two finger gesture.
+     */
+    virtual void TwoFingerGestureOnStarted();
+
+    /**
      * @brief The callback function when decided the event stream is a gesture.
      * @param gestureId  the recognized gesture ID.
      * @return true if the event is consumed, else false
@@ -89,11 +95,23 @@ public:
     virtual bool OnCompleted(GestureType gestureId);
 
     /**
+     * @brief The callback function when decided the event stream is a two finger gesture.
+     * @param gestureId  the recognized gesture ID.
+     */
+    virtual void TwoFingerGestureOnCompleted(GestureType gestureId);
+
+    /**
      * @brief The callback function when decided an event stream doesn't match any known gesture.
      * @param event  the touch event received.
      * @return true if the event is consumed, else false
      */
     virtual bool OnCancelled(MMI::PointerEvent &event);
+
+    /**
+     * @brief The callback function when decided an event stream doesn't match any known two finger gesture.
+     * @param isNoDelayFlag  whether the gesture recognize process is immediately canceled.
+     */
+    virtual void TwoFingerGestureOnCancelled(const bool isNoDelayFlag);
 };
 
 class AccessibilityGestureRecognizer : public AppExecFwk::EventHandler {
@@ -232,7 +250,7 @@ private:
     /**
      * @brief Cancel the gesture.
      */
-    void StandardGestureCancled();
+    void StandardGestureCanceled();
 
     /**
      * @brief Get pointer path.

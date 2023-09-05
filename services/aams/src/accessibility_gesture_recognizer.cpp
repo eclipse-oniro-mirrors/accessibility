@@ -108,6 +108,7 @@ bool AccessibilityGestureRecognizer::OnPointerEvent(MMI::PointerEvent &event)
             if (event.GetPointerIds().size() == POINTER_COUNT_1) {
                 HandleTouchDownEvent(event);
             } else {
+                Clear();
                 isRecognizingGesture_ = false;
                 isGestureStarted_ = false;
                 pointerRoute_.clear();
@@ -142,7 +143,7 @@ void AccessibilityGestureRecognizer::Clear()
     isRecognizingGesture_ = false;
     pointerRoute_.clear();
     continueDown_ = false;
-    StandardGestureCancled();
+    StandardGestureCanceled();
 }
 
 void AccessibilityGestureRecognizer::HandleTouchDownEvent(MMI::PointerEvent &event)
@@ -267,7 +268,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
                 handler_->RemoveEvent(LONG_PRESS_MSG);
                 handler_->SendEvent(LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS);
             } else {
-                StandardGestureCancled();
+                StandardGestureCanceled();
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
@@ -290,7 +291,7 @@ bool AccessibilityGestureRecognizer::StandardGestureRecognizer(MMI::PointerEvent
     return false;
 }
 
-void AccessibilityGestureRecognizer::StandardGestureCancled()
+void AccessibilityGestureRecognizer::StandardGestureCanceled()
 {
     HILOG_DEBUG();
 
@@ -299,6 +300,7 @@ void AccessibilityGestureRecognizer::StandardGestureCancled()
     isLongpress_ = false;
     isDoubleTapdetecting_ = false;
     isTapDown_ = false;
+    isDoubleTap_ = false;
 }
 
 void AccessibilityGestureRecognizer::SingleTapDetected()
