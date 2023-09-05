@@ -231,6 +231,7 @@ int AccessibleAbilityManagerService::Dump(int fd, const std::vector<std::u16stri
             if (!accessibilityDumper_) {
                 HILOG_ERROR("accessibilityDumper_ is nullptr");
                 syncPromise.set_value(-1);
+                return;
             }
         }
         syncPromise.set_value(accessibilityDumper_->Dump(fd, args));
