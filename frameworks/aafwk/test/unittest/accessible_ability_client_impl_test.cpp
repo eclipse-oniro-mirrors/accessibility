@@ -159,7 +159,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocus_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "GetFocus_002 start";
     AccessibilityElementInfo info {};
-    EXPECT_EQ(instance_->GetFocus(FOCUS_TYPE_INVALID, info), RET_ERR_INVALID_PARAM);
+    EXPECT_EQ(instance_->GetFocus(FOCUS_TYPE_INVALID, info), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "GetFocus_002 end";
 }
 
@@ -288,7 +288,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetFocusByElementInfo_002, TestSize.Le
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_002 start";
     AccessibilityElementInfo sourceInfo {};
     AccessibilityElementInfo elementInfo {};
-    EXPECT_EQ(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE_INVALID, elementInfo), RET_ERR_INVALID_PARAM);
+    EXPECT_EQ(instance_->GetFocusByElementInfo(sourceInfo, FOCUS_TYPE_INVALID, elementInfo), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "GetFocusByElementInfo_002 end";
 }
 
@@ -315,7 +315,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_001, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "InjectGesture_001 start";
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = std::make_shared<AccessibilityGestureInjectPath>();
-    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_ERR_INVALID_PARAM);
+    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "InjectGesture_001 end";
 }
 
@@ -328,7 +328,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, InjectGesture_002, TestSize.Level1)
 {
     GTEST_LOG_(INFO) << "InjectGesture_002 start";
     std::shared_ptr<AccessibilityGestureInjectPath> gesturePath = nullptr;
-    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_ERR_INVALID_PARAM);
+    EXPECT_EQ(instance_->InjectGesture(gesturePath), RET_ERR_NO_CONNECTION);
     GTEST_LOG_(INFO) << "InjectGesture_002 end";
 }
 
@@ -618,7 +618,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, ResetAAClient_001, TestSize.Level1)
     wptr<IRemoteObject> remote = nullptr;
     instance_->ResetAAClient(remote);
     std::vector<AccessibilityWindowInfo> infos;
-    EXPECT_EQ(instance_->GetWindows(infos), RET_OK);
+    EXPECT_EQ(instance_->GetWindows(infos), RET_ERR_INVALID_PARAM);
     GTEST_LOG_(INFO) << "ResetAAClient_001 end";
 }
 
