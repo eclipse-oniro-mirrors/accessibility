@@ -558,7 +558,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_008, TestSize.Leve
 
     points.emplace_back(otherPoint1);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_DOWN, points, POINT_ID_3, 0, 0);
-    touchGuider_->OnPointerEvent(*event);    
+    touchGuider_->OnPointerEvent(*event);
     EXPECT_EQ(AccessibilityAbilityHelper::GetInstance().GetTouchEventActionVector().size(), 0);
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_008 end";
 }

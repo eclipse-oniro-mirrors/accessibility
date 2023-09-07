@@ -679,7 +679,7 @@ void TouchGuider::GetPointOffset(MMI::PointerEvent &event, std::vector<float> &f
     float yPointDownS = receivedRecorder_.pointerDownY[INDEX_1];
 
     firstPointOffset.push_back(xPointF - xPointDownF); // firstOffsetX
-    firstPointOffset.push_back (yPointF - yPointDownF); // firstOffsetY
+    firstPointOffset.push_back(yPointF - yPointDownF); // firstOffsetY
     secondPointOffset.push_back(xPointS - xPointDownS); // secondOffsetX
     secondPointOffset.push_back(yPointS - yPointDownS); // secondOffsetY
 }
@@ -726,7 +726,7 @@ bool TouchGuider::IsRealMoveState(MMI::PointerEvent &event) const
     }
 
     HILOG_DEBUG("offset of fisrt down points and current points: %f, %f,%f, %f",
-        firstPointOffset[0], firstPointOffset[1], secondPointOffset[0],secondPointOffset[1]);
+        firstPointOffset[0], firstPointOffset[1], secondPointOffset[0], secondPointOffset[1]);
     if (hypot(firstPointOffset[0], firstPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop() &&
         hypot(secondPointOffset[0], secondPointOffset[1]) >= multiFingerGestureRecognizer_.GetTouchSlop()) {
         return true;

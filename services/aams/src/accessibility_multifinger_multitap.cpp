@@ -19,7 +19,7 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr float SLOP_DELTA = 0.5f; 
+    constexpr float SLOP_DELTA = 0.5f;
     constexpr int32_t POINTER_COUNT_1 = 1;
     constexpr int32_t POINTER_COUNT_2 = 2;
     constexpr int32_t POINTER_COTINUE_TAP_ONE_TIME = 1;
@@ -97,7 +97,7 @@ void MultiFingerGestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Point
         return;
     }
 
-    switch (event->GetInnerEventId()) {    
+    switch (event->GetInnerEventId()) {
         case AccessibilityMultiTapGestureRecognizer::WAIT_ANOTHER_FINGER_DOWN_MSG:
             server_.SetFingerTouchUpState(FingerTouchUpState::NOT_ALL_FINGER_TOUCH_UP);
             break;
@@ -270,7 +270,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsTwoFingerDoubleTap(MMI::PointerEv
     firstDownPoint_[1]->GetPointerItem(firstDownPoint_[1]->GetPointerId(), secondPI);
     HILOG_DEBUG("first finger preDown x: %d, y: %d. curDown x: %d, y: %d",
         firstPI.GetDisplayX(), firstPI.GetDisplayY(), pointerF.GetDisplayX(), pointerF.GetDisplayY());
-    HILOG_DEBUG("second finger preDown x: %d, y: %d. curDown x: %d, y: %d", 
+    HILOG_DEBUG("second finger preDown x: %d, y: %d. curDown x: %d, y: %d",
         secondPI.GetDisplayX(), secondPI.GetDisplayY(), pointerS.GetDisplayX(), pointerS.GetDisplayY());
 
     int32_t durationXff = firstPI.GetDisplayX() - pointerF.GetDisplayX();
@@ -361,14 +361,14 @@ void AccessibilityMultiTapGestureRecognizer::HandleContinueTouchDownEvent(MMI::P
 
         if (addContinueTapNum_ == 0) {
             handler_->SendEvent(TWO_FINGER_SINGLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
-            handler_->SendEvent(TWO_FINGER_LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS); 
+            handler_->SendEvent(TWO_FINGER_LONG_PRESS_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS);
         } else if (addContinueTapNum_ == POINTER_COTINUE_TAP_ONE_TIME) {
             handler_->SendEvent(TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS);
             handler_->SendEvent(TWO_FINGER_DOUBLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
         } else {
             handler_->SendEvent(TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG, 0, LONG_PRESS_TIMEOUT / US_TO_MS);
             handler_->SendEvent(TWO_FINGER_TRIPLE_TAP_MSG, 0, DOUBLE_TAP_TIMEOUT / US_TO_MS);
-        } 
+        }
     } else {
         HILOG_DEBUG("current fingers is more than last touch down finger nums");
         CancelGesture(true);
@@ -378,7 +378,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleContinueTouchDownEvent(MMI::P
 void AccessibilityMultiTapGestureRecognizer::HandleTwoFingerMoveEvent(MMI::PointerEvent &event)
 {
     HILOG_DEBUG("finger num is %d, pId is %d", static_cast<int32_t>(currentDownPoint_.size()), event.GetPointerId());
-    
+
     int32_t pId = event.GetPointerId();
     MMI::PointerEvent::PointerItem pointerIterm;
     if (!event.GetPointerItem(pId, pointerIterm)) {
