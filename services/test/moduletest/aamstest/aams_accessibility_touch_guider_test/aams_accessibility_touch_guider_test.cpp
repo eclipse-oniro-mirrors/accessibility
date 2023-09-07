@@ -226,7 +226,7 @@ bool AamsTouchGuideTest::TwoFingerTapEventProduce(std::vector<MMI::PointerEvent:
         points.emplace_back(point2);
         event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, POINT_ID_1);
         inputEventConsumer->OnInputEvent(event);
-        
+
         occurredTime += TAP_TIME_INTERVAL;
     }
     return true;
@@ -268,7 +268,7 @@ bool AamsTouchGuideTest::TwoFingerMoveEventProduce(std::vector<MMI::PointerEvent
     points.emplace_back(point4);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, POINT_ID_1);
     inputEventConsumer->OnInputEvent(event);
-    
+
     return true;
 }
 
@@ -312,7 +312,7 @@ bool AamsTouchGuideTest::OneFingerTapAndTwoFingerTapEventProduce(std::vector<MMI
     points.emplace_back(point2);
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, POINT_ID_1);
     inputEventConsumer->OnInputEvent(event);
-    
+
     return true;
 }
 
@@ -357,7 +357,7 @@ bool AamsTouchGuideTest::TwoFingerTapAndOneFingerTapEventProduce(std::vector<MMI
 
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP, points, 0, 0, POINT_ID_0);
     inputEventConsumer->OnInputEvent(event);
-    
+
     return true;
 }
 
@@ -1080,7 +1080,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent011, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_SINGLE_TAP));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent011 ends";
 }
 
@@ -1129,7 +1129,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent012, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent012 ends";
 }
 
@@ -1178,7 +1178,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent013, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent013 ends";
 }
 
@@ -1227,7 +1227,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent014, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent014 ends";
 }
 
@@ -1276,7 +1276,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent015, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent015 ends";
 }
 
@@ -1334,7 +1334,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent016, Te
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
-    
+
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent016 ends";
 }
 
@@ -1378,7 +1378,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent017, Te
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
-    
+
     // touch action to multimode
     EXPECT_EQ(static_cast<int32_t>(MMI::MockInputManager::GetTouchActions().size()), 0);
 
@@ -1429,7 +1429,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent018, Te
 
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), static_cast<int32_t>(GestureType::GESTURE_INVALID));
-    
+
     // touch action to multimode
     EXPECT_EQ(static_cast<int32_t>(MMI::MockInputManager::GetTouchActions().size()), 0);
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent018 ends";
@@ -1484,7 +1484,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
     // gestureId
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
         static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_SINGLE_TAP));
-    
+
     // touch action to multimode
     int32_t touchActionSize = static_cast<int32_t>(MMI::MockInputManager::GetTouchActions().size());
     for (int32_t touchActionIndex = 0; touchActionIndex < touchActionSize; touchActionIndex++) {
