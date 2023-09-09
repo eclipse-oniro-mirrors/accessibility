@@ -493,7 +493,30 @@ std::string CoverGestureTypeToString(GestureType type)
         {GestureType::GESTURE_SWIPE_DOWN, "down"},
         {GestureType::GESTURE_SWIPE_DOWN_THEN_LEFT, "downThenLeft"},
         {GestureType::GESTURE_SWIPE_DOWN_THEN_RIGHT, "downThenRight"},
-        {GestureType::GESTURE_SWIPE_DOWN_THEN_UP, "downThenUp"}
+        {GestureType::GESTURE_SWIPE_DOWN_THEN_UP, "downThenUp"},
+        {GestureType::GESTURE_TWO_FINGER_SINGLE_TAP, "twoFingerSingleTap"},
+        {GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP, "twoFingerDoubleTap"},
+        {GestureType::GESTURE_TWO_FINGER_DOUBLE_TAP_AND_HOLD, "twoFingerDoubleTapAndHold"},
+        {GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP, "twoFingerTripleTap"},
+        {GestureType::GESTURE_TWO_FINGER_TRIPLE_TAP_AND_HOLD, "twoFingerTripleTapAndHold"},
+        {GestureType::GESTURE_THREE_FINGER_SINGLE_TAP, "threeFingerSingleTap"},
+        {GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP, "threeFingerDoubleTap"},
+        {GestureType::GESTURE_THREE_FINGER_DOUBLE_TAP_AND_HOLD, "threeFingerDoubleTapAndHold"},
+        {GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP, "threeFingerTripleTap"},
+        {GestureType::GESTURE_THREE_FINGER_TRIPLE_TAP_AND_HOLD, "threeFingerTripleTapAndHold"},
+        {GestureType::GESTURE_FOUR_FINGER_SINGLE_TAP, "fourFingerSingleTap"},
+        {GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP, "fourFingerDoubleTap"},
+        {GestureType::GESTURE_FOUR_FINGER_DOUBLE_TAP_AND_HOLD, "fourFingerDoubleTapAndHold"},
+        {GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP, "fourFingerTripleTap"},
+        {GestureType::GESTURE_FOUR_FINGER_TRIPLE_TAP_AND_HOLD, "fourFingerTripleTapAndHold"},
+        {GestureType::GESTURE_THREE_FINGER_SWIPE_UP, "threeFingerSwipeUp"},
+        {GestureType::GESTURE_THREE_FINGER_SWIPE_DOWN, "threeFingerSwipeDown"},
+        {GestureType::GESTURE_THREE_FINGER_SWIPE_LEFT, "threeFingerSwipeLeft"},
+        {GestureType::GESTURE_THREE_FINGER_SWIPE_RIGHT, "threeFingerSwipeRight"},
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_UP, "fourFingerSwipeUp"},
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_DOWN, "fourFingerSwipeDown"},
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_LEFT, "fourFingerSwipeLeft"},
+        {GestureType::GESTURE_FOUR_FINGER_SWIPE_RIGHT, "fourFingerSwipeRight"}
     };
 
     if (gestureTypeTable.find(type) == gestureTypeTable.end()) {
