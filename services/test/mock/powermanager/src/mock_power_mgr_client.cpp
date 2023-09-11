@@ -32,7 +32,9 @@ void PowerMgrClient::ResetProxy(const wptr<IRemoteObject>& remote)
 {}
 
 void PowerMgrClient::PowerMgrDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
-{}
+{
+    client_.ResetProxy(nullptr);
+}
 
 PowerErrors PowerMgrClient::RebootDevice(const std::string& reason)
 {
