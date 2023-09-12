@@ -249,5 +249,10 @@ RetError AccessibleAbilityClientImpl::Disconnect()
     HILOG_DEBUG();
     return RET_OK;
 }
+
+void AccessibleAbilityClientImpl::SetConnectionState(bool state)
+{
+    HILOG_DEBUG();
+}
 } // namespace Accessibility
 } // namespace OHOS

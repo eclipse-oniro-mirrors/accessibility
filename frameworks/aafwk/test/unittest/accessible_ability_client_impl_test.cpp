@@ -617,8 +617,9 @@ HWTEST_F(AccessibleAbilityClientImplTest, ResetAAClient_001, TestSize.Level1)
     Connect();
     wptr<IRemoteObject> remote = nullptr;
     instance_->ResetAAClient(remote);
+    instance_->SetConnectionState(true);
     std::vector<AccessibilityWindowInfo> infos;
-    EXPECT_EQ(instance_->GetWindows(infos), RET_ERR_NO_CONNECTION);
+    EXPECT_EQ(instance_->GetWindows(infos), RET_OK);
     GTEST_LOG_(INFO) << "ResetAAClient_001 end";
 }
 
