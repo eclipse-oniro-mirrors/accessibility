@@ -821,5 +821,10 @@ RetError AccessibleAbilityClientImpl::Disconnect()
     }
     return serviceProxy_->DisableUITestAbility();
 }
+
+void AccessibleAbilityClientImpl::SetConnectionState(bool state)
+{
+    isConnected_ = state;
+}
 } // namespace Accessibility
 } // namespace OHOS

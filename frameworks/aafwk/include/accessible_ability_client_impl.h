@@ -272,6 +272,12 @@ public:
      */
     RetError Disconnect();
 
+    /**
+     * @brief Set connection state.
+     * @param state Connnection state.
+     */
+    void SetConnectionState(bool state);
+
 private:
     class AccessibleAbilityDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
