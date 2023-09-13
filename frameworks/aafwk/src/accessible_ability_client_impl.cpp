@@ -213,6 +213,7 @@ void AccessibleAbilityClientImpl::Init(const sptr<IAccessibleAbilityChannel> &ch
         }
     }
 
+    isConnected_ = true;
     std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_WINDOW_REGIST));
     if (listener) {
         listener->OnAbilityConnected();
@@ -225,6 +226,7 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
 
     std::shared_ptr<AccessibleAbilityListener> listener = nullptr;
     {
+        isConnected_ = false;
         std::lock_guard<std::mutex> lock(mutex_);
         // Delete death recipient
         if (channelClient_ && channelClient_->GetRemote()) {
@@ -286,6 +288,11 @@ void AccessibleAbilityClientImpl::OnKeyPressEvent(const MMI::KeyEvent &keyEvent,
 RetError AccessibleAbilityClientImpl::GetFocus(const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
@@ -304,6 +311,11 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
     const int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_INFO("focusType[%{public}d]", focusType);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if ((focusType != FOCUS_TYPE_INPUT) && (focusType != FOCUS_TYPE_ACCESSIBILITY)) {
         HILOG_ERROR("focusType is not allowed.");
@@ -325,8 +337,12 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
 RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<AccessibilityGestureInjectPath> &gesturePath)
 {
     HILOG_INFO();
-    std::lock_guard<std::mutex> lock(mutex_);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
 
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!gesturePath) {
         HILOG_ERROR("The gesturePath is null.");
         return RET_ERR_INVALID_PARAM;
@@ -350,6 +366,11 @@ RetError AccessibleAbilityClientImpl::InjectGesture(const std::shared_ptr<Access
 RetError AccessibleAbilityClientImpl::GetRoot(AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!serviceProxy_) {
         HILOG_ERROR("Failed to connect to aams");
@@ -375,6 +396,11 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -394,6 +420,11 @@ RetError AccessibleAbilityClientImpl::GetRootByWindow(const AccessibilityWindowI
 RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_INFO("windowId[%{public}d]", windowId);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -405,6 +436,11 @@ RetError AccessibleAbilityClientImpl::GetWindow(const int32_t windowId, Accessib
 RetError AccessibleAbilityClientImpl::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_INFO();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -417,6 +453,11 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
     std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_INFO("displayId[%{public}" PRIu64 "]", displayId);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -430,6 +471,11 @@ RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &el
 {
     HILOG_INFO("windowId[%{public}d], elementId[%{public}d], direction[%{public}d]",
         elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -447,6 +493,11 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
     AccessibilityElementInfo &child)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -472,6 +523,11 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<AccessibilityElementInfo> &children)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -509,6 +565,11 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
     const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -524,6 +585,11 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
     AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -543,6 +609,11 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     AccessibilityElementInfo &parent)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -563,6 +634,11 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     const ActionType action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG();
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -582,6 +658,11 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
 RetError AccessibleAbilityClientImpl::SetTargetBundleName(const std::vector<std::string> &targetBundleNames)
 {
     HILOG_INFO("targetBundleNames size[%{public}zu]", targetBundleNames.size());
+    if (!isConnected_) {
+        HILOG_ERROR("connection is broken");
+        return RET_ERR_NO_CONNECTION;
+    }
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!channelClient_) {
         HILOG_ERROR("The channel is invalid.");
@@ -623,6 +704,7 @@ void AccessibleAbilityClientImpl::NotifyServiceDied(const wptr<IRemoteObject> &r
         }
     }
 
+    isConnected_ = false;
     if (listener) {
         listener->OnAbilityDisconnected();
     }
@@ -640,6 +722,8 @@ void AccessibleAbilityClientImpl::ResetAAClient(const wptr<IRemoteObject> &remot
             HILOG_DEBUG("ResetAAClient OK");
         }
     }
+
+    isConnected_ = false;
 }
 
 RetError AccessibleAbilityClientImpl::SetCacheMode(const int32_t cacheMode)
