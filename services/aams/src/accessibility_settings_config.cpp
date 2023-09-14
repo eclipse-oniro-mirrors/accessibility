@@ -262,7 +262,7 @@ bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
         strValue = StateChange(animationOffState_);
         pref_->PutString("animationOff", strValue);
     } else if (type == STATE::AUDIOMONO) {
-        std::string strValue = StateChange(audioMonoState_);
+        strValue = StateChange(audioMonoState_);
         pref_->PutString("audioMono", strValue);
     } else {
         ret = false;
