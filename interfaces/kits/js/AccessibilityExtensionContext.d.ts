@@ -159,6 +159,8 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
+   * @deprecated since 10
+   * @useinstead AccessibilityExtensionContext/AccessibilityExtensionContext#injectGestureSync
    */
   injectGesture(gesturePath: GesturePath, callback: AsyncCallback<void>): void;
 
@@ -171,8 +173,21 @@ export default class AccessibilityExtensionContext extends ExtensionContext {
    * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9
+   * @deprecated since 10
+   * @useinstead AccessibilityExtensionContext/AccessibilityExtensionContext#injectGestureSync
    */
   injectGesture(gesturePath: GesturePath): Promise<void>;
+
+  /**
+   * Inject gesture path events.
+   *
+   * @param { GesturePath } gesturePath Indicates the gesture path.
+   * @throws { BusinessError } 401 - Input parameter error.
+   * @throws { BusinessError } 9300003 -  Do not have accessibility right for this operation.
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @since 10
+   */
+  injectGestureSync(gesturePath: GesturePath): void;
 }
 
 /**
@@ -240,7 +255,6 @@ declare interface AccessibilityElement {
   /**
    * Get a list of supported actions.
    *
-   * @param { AsyncCallback<Array<string>> } callback Indicates the listener.
    * @returns { Promise<Array<string>> }
    * @syscap SystemCapability.BarrierFree.Accessibility.Core
    * @since 9

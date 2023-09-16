@@ -142,6 +142,12 @@ public:
         return (me != nullptr) ? me->OnGestureInject(*engine, *info) : nullptr;
     }
 
+    static NativeValue* InjectGestureSync(NativeEngine* engine, NativeCallbackInfo* info)
+    {
+        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
+        return (me != nullptr) ? me->OnGestureInjectSync(*engine, *info) : nullptr;
+    }
+
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
@@ -486,6 +492,46 @@ private:
         return result;
     }
 
+    NativeValue* OnGestureInjectSync(NativeEngine& engine, NativeCallbackInfo& info)
+    {
+        HILOG_INFO();
+        NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
+        if (info.argc != ARGS_SIZE_TWO) {
+            HILOG_ERROR("invalid param");
+            errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
+        }
+
+        napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
+        std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
+            std::make_shared<AccessibilityGestureInjectPath>();
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
+            if (!ConvertGesturePathJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePath)) {
+                errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
+                HILOG_ERROR("invalid param");
+            }
+        }
+
+        if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
+            engine.Throw(CreateJsError(engine,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return engine.CreateUndefined();
+        }
+
+        auto context = context_.lock();
+        RetError ret = context->InjectGesture(gesturePath);
+        if (ret != RET_OK) {
+            HILOG_ERROR("result error, ret %{public}d", ret);
+            engine.Throw(CreateJsError(engine,
+                static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
+                ERROR_MESSAGE_PARAMETER_ERROR));
+            return engine.CreateUndefined();
+        }
+
+        HILOG_DEBUG("OnGestureInjectSync success");
+        return engine.CreateUndefined();
+    }
+
     NativeValue* OnGestureInject(NativeEngine& engine, NativeCallbackInfo& info)
     {
         HILOG_INFO();
@@ -574,6 +620,8 @@ NativeValue* CreateJsAccessibilityExtensionContext(
         NAccessibilityExtensionContext::GetWindowRootElement);
     BindNativeFunction(engine, *object, "getWindows", moduleName, NAccessibilityExtensionContext::GetWindows);
     BindNativeFunction(engine, *object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
+    BindNativeFunction(engine, *object, "injectGestureSync", moduleName,
+        NAccessibilityExtensionContext::InjectGestureSync);
 
     return objValue;
 }
