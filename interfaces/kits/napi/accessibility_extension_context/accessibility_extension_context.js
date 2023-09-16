@@ -44,6 +44,11 @@ class AccessibilityExtensionContext extends ExtensionContext {
     console.log('injectGesture');
     return this.__context_impl__.injectGesture(gesture, callback);
   }
+
+  injectGestureSync(gesture, callback) {
+    console.log('injectGestureSync');
+    return this.__context_impl__.injectGestureSync(gesture, callback);
+  }
 }
 
 export default AccessibilityExtensionContext;
