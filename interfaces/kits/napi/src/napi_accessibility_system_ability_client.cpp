@@ -34,6 +34,35 @@ std::shared_ptr<NAccessibilityConfigObserverImpl> NAccessibilityClient::captionL
 thread_local napi_ref NAccessibilityClient::aaConsRef_;
 thread_local napi_ref NAccessibilityClient::aaStyleConsRef_;
 
+#define ACCESSIBILITY_NAPI_ASSERT(env, cond, errCode) \
+do { \
+    if (!(cond)) { \
+        napi_value err = CreateBusinessError(env, errCode); \
+        napi_throw(env, err); \
+        napi_value res = nullptr; \
+        napi_get_undefined(env, &res); \
+        return res; \
+    } \
+} while (0)
+
+napi_value NAccessibilityClient::IsOpenAccessibilitySync(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
+    bool status = false;
+    auto ret = asaClient->IsEnabled(status);
+    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    napi_value result;
+    napi_get_boolean(env, status, &result);
+    return result;
+}
+
 napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
@@ -75,6 +104,24 @@ napi_value NAccessibilityClient::IsOpenAccessibility(napi_env env, napi_callback
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
     napi_queue_async_work_with_qos(env, callbackInfo->work_, napi_qos_user_initiated);
     return promise;
+}
+
+napi_value NAccessibilityClient::IsOpenTouchExplorationSync(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value argv;
+    napi_get_cb_info(env, info, &argc, &argv, nullptr, nullptr);
+    ACCESSIBILITY_NAPI_ASSERT(env, argc == ARGS_SIZE_ZERO, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    ACCESSIBILITY_NAPI_ASSERT(env, asaClient != nullptr, OHOS::Accessibility::RET_ERR_NULLPTR);
+    bool status = false;
+    auto ret = asaClient->IsTouchExplorationEnabled(status);
+    ACCESSIBILITY_NAPI_ASSERT(env, ret == RET_OK, OHOS::Accessibility::RET_ERR_FAILED);
+    napi_value result;
+    napi_get_boolean(env, status, &result);
+    return result;
 }
 
 napi_value NAccessibilityClient::IsOpenTouchExploration(napi_env env, napi_callback_info info)
