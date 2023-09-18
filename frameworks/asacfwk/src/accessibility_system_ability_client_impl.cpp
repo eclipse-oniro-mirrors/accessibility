@@ -456,7 +456,7 @@ void AccessibilitySystemAbilityClientImpl::SetSearchElementInfoByAccessibilityId
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    HILOG_INFO("search element requestId[%{public}d]", requestId);
+    HILOG_DEBUG("search element requestId[%{public}d]", requestId);
     if (requestId >= 0) {
         auto iter = elementOperators_.find(static_cast<uint32_t>(requestId) >> REQUEST_WINDOW_ID_MASK_BIT);
         if (iter != elementOperators_.end()) {

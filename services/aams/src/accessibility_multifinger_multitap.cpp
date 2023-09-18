@@ -441,7 +441,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::
 
     lastUpPoint_[event.GetPointerId()] = std::make_shared<MMI::PointerEvent>(event);
     if (targetFingers_ == -1 && multiFingerGestureState_ == MultiFingerGestureState::GESTURE_START) {
-        targetFingers_ = event.GetPointerIds().size();
+        targetFingers_ = static_cast<int32_t>(event.GetPointerIds().size());
     }
 }
 
