@@ -48,7 +48,7 @@ RetError AccessibleAbilityChannel::SearchElementInfoByAccessibilityId(const int3
     std::future syncFuture = syncPromise->get_future();
     eventHandler_->PostTask(std::bind([syncPromise, accessibilityWindowId, elementId, requestId, callback, mode](
         int32_t accountId, const std::string &name) -> void {
-        HILOG_INFO("search element accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
+        HILOG_DEBUG("search element accountId[%{public}d], name[%{public}s]", accountId, name.c_str());
         sptr<IAccessibilityElementOperator> elementOperator = nullptr;
         RetError ret = GetElementOperator(accountId, accessibilityWindowId, FOCUS_TYPE_INVALID, name, elementOperator);
         if (ret != RET_OK) {
