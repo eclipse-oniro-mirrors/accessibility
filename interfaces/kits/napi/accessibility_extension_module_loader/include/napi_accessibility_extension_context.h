@@ -19,14 +19,11 @@
 #include "accessibility_extension_context.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include "native_engine/native_engine.h"
-#include "native_engine/native_reference.h"
-#include "native_engine/native_value.h"
 
 namespace OHOS {
 namespace Accessibility {
-NativeValue* CreateJsAccessibilityExtensionContext(
-    NativeEngine& engine, std::shared_ptr<AccessibilityExtensionContext> context);
+napi_value CreateJsAccessibilityExtensionContext(
+    napi_env env, std::shared_ptr<AccessibilityExtensionContext> context);
 } // namespace Accessibility
 } // namespace OHOS
 #endif // NAPI_ACCESSIBILITY_EXTENSION_CONTEXT_H

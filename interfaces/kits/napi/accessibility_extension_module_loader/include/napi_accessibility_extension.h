@@ -23,7 +23,6 @@
 #include "js_runtime.h"
 #include "napi_accessibility_element.h"
 #include "native_engine/native_reference.h"
-#include "native_engine/native_value.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -133,7 +132,7 @@ private:
         NAccessibilityExtension &extension_;
     };
 
-    NativeValue* CallObjectMethod(const char* name, NativeValue * const * argv = nullptr, size_t argc = 0);
+    napi_value CallObjectMethod(const char* name,  napi_value* argv = nullptr, size_t argc = 0);
 
     std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& eventInfo);
     void CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,
@@ -145,14 +144,14 @@ private:
     void OnKeyPressEventCompleteCallback(uv_work_t* work, int status);
     int OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop);
 
-    NativeEngine *engine_ = nullptr;
+    napi_env env_ = nullptr;
     AbilityRuntime::JsRuntime& jsRuntime_;
     std::unique_ptr<NativeReference> jsObj_;
     std::shared_ptr<AbilityListener> listener_ = nullptr;
 };
 
 struct ExtensionCallbackInfo {
-    NativeEngine *engine_;
+    napi_env env_;
     NAccessibilityExtension *extension_;
     std::promise<void> syncPromise_;
 };

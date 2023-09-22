@@ -22,7 +22,6 @@
 #include "hilog_wrapper.h"
 #include "napi_accessibility_element.h"
 #include "accessibility_utils.h"
-#include "native_engine/native_value.h"
 
 using namespace OHOS::AbilityRuntime;
 using namespace OHOS::AccessibilityNapi;
@@ -77,23 +76,71 @@ static void ConvertAccessibilityWindowInfosToJS(
     }
 }
 
-static void GetLastParamForTwo(
-    NativeEngine& engine, NativeCallbackInfo& info, NativeValue*& lastParam, bool& isAccessibilityFocus)
+static bool IsNapiFunction(napi_env env, napi_value param)
+{
+    napi_valuetype valueType = napi_null;
+    napi_status status = napi_typeof(env, param, &valueType);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valueType != napi_function) {
+        HILOG_ERROR("SubscribeState args[PARAM1] format is wrong");
+        return false;
+    }
+    return true;
+}
+
+static bool IsNapiBool(napi_env env, napi_value param)
+{
+    napi_valuetype valuetype = napi_null;
+    napi_status status = napi_typeof(env, param, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_boolean) {
+        HILOG_ERROR("Wrong argument type. Boolean expected.");
+        return false;
+    }
+    return true;
+}
+
+static bool IsNapiNumber(napi_env env, napi_value param)
+{
+    napi_valuetype valuetype;
+    napi_status status = napi_typeof(env, param, &valuetype);
+    if (status != napi_ok) {
+        HILOG_ERROR("napi_typeof error and status is %{public}d", status);
+        return false;
+    }
+
+    if (valuetype != napi_number) {
+        HILOG_ERROR("Wrong argument type. uint32 expected.");
+        return false;
+    }
+    return true;
+}
+
+static void GetLastParamForTwo(napi_env env, NapiCallbackInfo& info, napi_value& lastParam,
+    bool& isAccessibilityFocus)
 {
     if (info.argv[PARAM0] != nullptr && info.argv[PARAM1] != nullptr &&
-        info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
-        lastParam = ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus) ?
+        IsNapiBool(env, info.argv[PARAM0]) && IsNapiFunction(env, info.argv[PARAM1])) {
+        lastParam = ConvertFromJsValue(env, info.argv[PARAM0], isAccessibilityFocus) ?
             info.argv[PARAM1] : nullptr;
-    } else if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+    } else if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
         HILOG_INFO("argc is more than two, use callback: situation 1");
         lastParam = info.argv[PARAM1];
-    } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+    } else if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
         HILOG_INFO("argc is more than two, use callback: situation 2");
         lastParam = info.argv[PARAM0];
-    } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
+    } else if (info.argv[PARAM0] != nullptr && IsNapiBool(env, info.argv[PARAM0])) {
         HILOG_INFO("argc is more than two, use promise: situation 3");
         lastParam = nullptr;
-        ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+        ConvertFromJsValue(env, info.argv[PARAM0], isAccessibilityFocus);
     } else {
         lastParam = nullptr;
         HILOG_INFO("argc is more than two, use promise");
@@ -106,52 +153,46 @@ public:
         const std::shared_ptr<AccessibilityExtensionContext>& context) : context_(context) {}
     ~NAccessibilityExtensionContext() = default;
 
-    static void Finalizer(NativeEngine* engine, void* data, void* hint)
+    static void Finalizer(napi_env env, void* data, void* hint)
     {
         HILOG_INFO();
         std::unique_ptr<NAccessibilityExtensionContext>(static_cast<NAccessibilityExtensionContext*>(data));
     }
 
-    static NativeValue* SetTargetBundleName(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value SetTargetBundleName(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnSetTargetBundleName(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnSetTargetBundleName);
     }
 
-    static NativeValue* GetFocusElement(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value GetFocusElement(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnGetFocusElement(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetFocusElement);
     }
 
-    static NativeValue* GetWindowRootElement(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value GetWindowRootElement(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnGetWindowRootElement(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetWindowRootElement);
     }
 
-    static NativeValue* GetWindows(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value GetWindows(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnGetWindows(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGetWindows);
     }
 
-    static NativeValue* InjectGesture(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value InjectGesture(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnGestureInject(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGestureInject);
     }
 
-    static NativeValue* InjectGestureSync(NativeEngine* engine, NativeCallbackInfo* info)
+    static napi_value InjectGestureSync(napi_env env, napi_callback_info info)
     {
-        NAccessibilityExtensionContext* me = CheckParamsAndGetThis<NAccessibilityExtensionContext>(engine, info);
-        return (me != nullptr) ? me->OnGestureInjectSync(*engine, *info) : nullptr;
+        GET_NAPI_INFO_AND_CALL(env, info, NAccessibilityExtensionContext, OnGestureInjectSync);
     }
 
 private:
     std::weak_ptr<AccessibilityExtensionContext> context_;
 
-    NativeValue* OnSetTargetBundleName(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnSetTargetBundleName(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
         NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
@@ -162,8 +203,7 @@ private:
 
         std::vector<std::string> targetBundleNames;
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
-            if (ConvertJSToStringVec(reinterpret_cast<napi_env>(&engine),
-                reinterpret_cast<napi_value>(info.argv[PARAM0]), targetBundleNames)) {
+            if (ConvertJSToStringVec(env, info.argv[PARAM0], targetBundleNames)) {
                 HILOG_INFO("targetBundleNames's size = %{public}zu", targetBundleNames.size());
             } else {
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
@@ -172,25 +212,25 @@ private:
 
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
             HILOG_ERROR("invalid param");
-            engine.Throw(CreateJsError(engine,
+            napi_throw(env, CreateJsError(env,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                 ERROR_MESSAGE_PARAMETER_ERROR));
-            return engine.CreateUndefined();
+            return CreateJsUndefined(env);
         }
-        
-        return SetTargetBundleNameCompleteTask(engine, targetBundleNames, info);
+
+        return SetTargetBundleNameCompleteTask(env, targetBundleNames, info);
     }
 
-    NativeValue* SetTargetBundleNameCompleteTask(
-        NativeEngine& engine, std::vector<std::string> targetBundleNames, NativeCallbackInfo& info)
+    napi_value SetTargetBundleNameCompleteTask(napi_env env, std::vector<std::string> targetBundleNames,
+        NapiCallbackInfo& info)
     {
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, targetBundleNames](NativeEngine& engine, AsyncTask& task, int32_t status) {
+        NapiAsyncTask::CompleteCallback complete =
+            [weak = context_, targetBundleNames](napi_env env, NapiAsyncTask& task, int32_t status) {
                 HILOG_INFO("SetTargetBundleName begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
@@ -198,37 +238,36 @@ private:
 
                 RetError ret = context->SetTargetBundleName(targetBundleNames);
                 if (ret == RET_OK) {
-                    task.Resolve(engine, engine.CreateUndefined());
+                    task.Resolve(env, CreateJsUndefined(env));
                 } else {
                     HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                 }
             };
 
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
-            ((info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) ?
-            info.argv[PARAM1] : nullptr);
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 
-    NativeValue* OnGetFocusElement(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnGetFocusElement(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
         bool isAccessibilityFocus = false;
-        NativeValue* lastParam = nullptr;
+        napi_value lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            GetLastParamForTwo(engine, info, lastParam, isAccessibilityFocus);
+            GetLastParamForTwo(env, info, lastParam, isAccessibilityFocus);
         } else if (info.argc == ARGS_SIZE_ONE) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
                 lastParam = info.argv[PARAM0];
             } else {
-                if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_BOOLEAN) {
-                    ConvertFromJsValue(engine, info.argv[PARAM0], isAccessibilityFocus);
+                if (info.argv[PARAM0] != nullptr && IsNapiBool(env, info.argv[PARAM0])) {
+                    ConvertFromJsValue(env, info.argv[PARAM0], isAccessibilityFocus);
                 }
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
@@ -240,18 +279,18 @@ private:
 
         int32_t focus = isAccessibilityFocus ? FOCUS_TYPE_ACCESSIBILITY : FOCUS_TYPE_INPUT;
         HILOG_DEBUG("focus type is [%{public}d]", focus);
-        return GetFoucusElementCompleteTask(engine, focus, lastParam);
+        return GetFoucusElementCompleteTask(env, focus, lastParam);
     }
 
-    NativeValue* GetFoucusElementCompleteTask(NativeEngine& engine, int32_t focus, NativeValue* lastParam)
+    napi_value GetFoucusElementCompleteTask(napi_env env, int32_t focus, napi_value lastParam)
     {
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, focus](NativeEngine& engine, AsyncTask& task, int32_t status) {
+        NapiAsyncTask::CompleteCallback complete =
+            [weak = context_, focus](napi_env env, NapiAsyncTask& task, int32_t status) {
                 HILOG_INFO("GetFocusElement begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
@@ -261,54 +300,51 @@ private:
                 RetError ret = context->GetFocus(focus, elementInfo);
                 if (ret == RET_OK) {
                     napi_value constructor = nullptr;
-                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
-                        &constructor);
+                    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
                     napi_value napiElementInfo = nullptr;
-                    napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr, &napiElementInfo);
-                    NAccessibilityElement::ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine),
-                        napiElementInfo, elementInfo);
-                    NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
-                    task.Resolve(engine, nativeElementInfo);
+                    napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
+                    NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, elementInfo);
+                    task.Resolve(env, napiElementInfo);
                 } else {
                     HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetFocusElement",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGetFocusElement",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 
-    NativeValue* OnGetWindowRootElement(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnGetWindowRootElement(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
         int32_t windowId = INVALID_WINDOW_ID;
         bool isActiveWindow = true;
-        NativeValue* lastParam = nullptr;
+        napi_value lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
                 HILOG_INFO("argc is more than two, use callback: situation 1");
                 lastParam = info.argv[PARAM1];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            } else if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
             } else {
                 lastParam = nullptr;
                 HILOG_INFO("argc is two, use promise");
             }
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
                 HILOG_INFO("argc is more than two, use promise: situation 3");
-                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
+                isActiveWindow = !ConvertFromJsValue(env, info.argv[PARAM0], windowId);
             }
         } else if (info.argc == ARGS_SIZE_ONE) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
                 lastParam = info.argv[PARAM0];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                isActiveWindow = !ConvertFromJsValue(engine, info.argv[PARAM0], windowId);
+            } else if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                isActiveWindow = !ConvertFromJsValue(env, info.argv[PARAM0], windowId);
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
             }
@@ -316,19 +352,19 @@ private:
             lastParam = nullptr;
             HILOG_INFO("argc is others, use promise");
         }
-        return GetWindowRootElementCompleteTask(engine, windowId, isActiveWindow, lastParam);
+        return GetWindowRootElementCompleteTask(env, windowId, isActiveWindow, lastParam);
     }
 
-    NativeValue* GetWindowRootElementCompleteTask(
-        NativeEngine& engine, int32_t windowId, bool isActiveWindow, NativeValue* lastParam)
+    napi_value GetWindowRootElementCompleteTask(
+        napi_env env, int32_t windowId, bool isActiveWindow, napi_value lastParam)
     {
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, windowId, isActiveWindow](NativeEngine& engine, AsyncTask& task, int32_t status) {
+        NapiAsyncTask::CompleteCallback complete =
+            [weak = context_, windowId, isActiveWindow](napi_env env, NapiAsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindowRootElement begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
@@ -346,56 +382,52 @@ private:
                 }
                 if (ret == RET_OK) {
                     napi_value constructor = nullptr;
-                    napi_get_reference_value(reinterpret_cast<napi_env>(&engine), NAccessibilityElement::consRef_,
-                        &constructor);
+                    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
                     napi_value napiElementInfo = nullptr;
-                    napi_status result = napi_new_instance(reinterpret_cast<napi_env>(&engine), constructor, 0, nullptr,
-                        &napiElementInfo);
+                    napi_status result = napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
                     HILOG_DEBUG("napi_new_instance result is %{public}d", result);
-                    NAccessibilityElement::ConvertElementInfoToJS(reinterpret_cast<napi_env>(&engine),
-                        napiElementInfo, elementInfo);
-                    NativeValue* nativeElementInfo = reinterpret_cast<NativeValue*>(napiElementInfo);
-                    task.Resolve(engine, nativeElementInfo);
+                    NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, elementInfo);
+                    task.Resolve(env, napiElementInfo);
                 } else {
                     HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGetWindowRootElement",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGetWindowRootElement",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 
-    NativeValue* OnGetWindows(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnGetWindows(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
 
         int64_t displayId = 0;
         bool hasDisplayId = false;
-        NativeValue* lastParam = nullptr;
+        napi_value lastParam = nullptr;
         if (info.argc >= ARGS_SIZE_TWO) {
-            if (info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) {
                 HILOG_INFO("argc is more than two, use callback: situation 1");
                 lastParam = info.argv[PARAM1];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            } else if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
                 HILOG_INFO("argc is more than two, use callback: situation 2");
                 lastParam = info.argv[PARAM0];
             } else {
                 lastParam = nullptr;
             }
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
+            if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                hasDisplayId = ConvertFromJsValue(env, info.argv[PARAM0], displayId);
                 HILOG_INFO("argc is more than two, use promise: situation 3");
             }
         } else if (info.argc == ARGS_SIZE_ONE) {
-            if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_FUNCTION) {
+            if (info.argv[PARAM0] != nullptr && IsNapiFunction(env, info.argv[PARAM0])) {
                 lastParam = info.argv[PARAM0];
-            } else if (info.argv[PARAM0] != nullptr && info.argv[PARAM0]->TypeOf() == NATIVE_NUMBER) {
-                hasDisplayId = ConvertFromJsValue(engine, info.argv[PARAM0], displayId);
+            } else if (info.argv[PARAM0] != nullptr && IsNapiNumber(env, info.argv[PARAM0])) {
+                hasDisplayId = ConvertFromJsValue(env, info.argv[PARAM0], displayId);
                 lastParam = nullptr;
                 HILOG_INFO("argc is one, use promise");
             }
@@ -404,20 +436,20 @@ private:
             HILOG_INFO("argc is others, use promise");
         }
 
-        return hasDisplayId ? GetWindowsByDisplayIdAsync(engine, lastParam, displayId) :
-            GetWindowsAsync(engine, lastParam);
+        return hasDisplayId ? GetWindowsByDisplayIdAsync(env, lastParam, displayId) :
+            GetWindowsAsync(env, lastParam);
     }
 
-    NativeValue* GetWindowsAsync(NativeEngine& engine, NativeValue* lastParam)
+    napi_value GetWindowsAsync(napi_env env, napi_value lastParam)
     {
         HILOG_INFO();
-        AsyncTask::CompleteCallback complete =
-            [weak = context_](NativeEngine& engine, AsyncTask& task, int32_t status) {
+        NapiAsyncTask::CompleteCallback complete =
+            [weak = context_](napi_env env, NapiAsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindows begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
@@ -427,35 +459,33 @@ private:
                 RetError ret = context->GetWindows(accessibilityWindows);
                 if (ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
-                    napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
-                    ConvertAccessibilityWindowInfosToJS(
-                        reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);
-                    NativeValue* nativeWindowInfos = reinterpret_cast<NativeValue*>(napiWindowInfos);
-                    task.Resolve(engine, nativeWindowInfos);
+                    napi_create_array(env, &napiWindowInfos);
+                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, accessibilityWindows);
+                    task.Resolve(env, napiWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 
-    NativeValue* GetWindowsByDisplayIdAsync(NativeEngine& engine, NativeValue* lastParam, int64_t displayId)
+    napi_value GetWindowsByDisplayIdAsync(napi_env env, napi_value lastParam, int64_t displayId)
     {
         HILOG_INFO();
-        AsyncTask::CompleteCallback complete =
-            [weak = context_, displayId](NativeEngine& engine, AsyncTask& task, int32_t status) {
+        NapiAsyncTask::CompleteCallback complete =
+            [weak = context_, displayId](napi_env env, NapiAsyncTask& task, int32_t status) {
                 HILOG_INFO("GetWindows begin");
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
@@ -463,7 +493,7 @@ private:
 
                 if (displayId < 0) {
                     HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                         ERROR_MESSAGE_PARAMETER_ERROR));
                     return;
@@ -473,26 +503,24 @@ private:
                 RetError ret = context->GetWindows(static_cast<uint64_t>(displayId), accessibilityWindows);
                 if (ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
-                    napi_create_array(reinterpret_cast<napi_env>(&engine), &napiWindowInfos);
-                    ConvertAccessibilityWindowInfosToJS(
-                        reinterpret_cast<napi_env>(&engine), napiWindowInfos, accessibilityWindows);
-                    NativeValue* nativeWindowInfos = reinterpret_cast<NativeValue*>(napiWindowInfos);
-                    task.Resolve(engine, nativeWindowInfos);
+                    napi_create_array(env, &napiWindowInfos);
+                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, accessibilityWindows);
+                    task.Resolve(env, napiWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 
-    NativeValue* OnGestureInjectSync(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnGestureInjectSync(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
         NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
@@ -505,34 +533,34 @@ private:
         std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
             std::make_shared<AccessibilityGestureInjectPath>();
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
-            if (!ConvertGesturePathJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePath)) {
+            if (!ConvertGesturePathJSToNAPI(env, nGesturePaths, gesturePath)) {
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
                 HILOG_ERROR("invalid param");
             }
         }
 
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
-            engine.Throw(CreateJsError(engine,
+            napi_throw(env, CreateJsError(env,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                 ERROR_MESSAGE_PARAMETER_ERROR));
-            return engine.CreateUndefined();
+            return CreateJsUndefined(env);
         }
 
         auto context = context_.lock();
         RetError ret = context->InjectGesture(gesturePath);
         if (ret != RET_OK) {
             HILOG_ERROR("result error, ret %{public}d", ret);
-            engine.Throw(CreateJsError(engine,
+            napi_throw(env, CreateJsError(env,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                 ERROR_MESSAGE_PARAMETER_ERROR));
-            return engine.CreateUndefined();
+            return CreateJsUndefined(env);
         }
 
         HILOG_DEBUG("OnGestureInjectSync success");
-        return engine.CreateUndefined();
+        return CreateJsUndefined(env);
     }
 
-    NativeValue* OnGestureInject(NativeEngine& engine, NativeCallbackInfo& info)
+    napi_value OnGestureInject(napi_env env, NapiCallbackInfo& info)
     {
         HILOG_INFO();
         NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
@@ -541,89 +569,83 @@ private:
             errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
         }
 
-        napi_value nGesturePaths = reinterpret_cast<napi_value>(info.argv[PARAM0]);
+        napi_value nGesturePaths = info.argv[PARAM0];
         std::shared_ptr<AccessibilityGestureInjectPath> gesturePath =
             std::make_shared<AccessibilityGestureInjectPath>();
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_OK) {
-            if (!ConvertGesturePathJSToNAPI(reinterpret_cast<napi_env>(&engine), nGesturePaths, gesturePath)) {
+            if (!ConvertGesturePathJSToNAPI(env, nGesturePaths, gesturePath)) {
                 errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
             }
         }
 
         if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
             HILOG_ERROR("invalid param");
-            engine.Throw(CreateJsError(engine,
+            napi_throw(env, CreateJsError(env,
                 static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
                 ERROR_MESSAGE_PARAMETER_ERROR));
-            return engine.CreateUndefined();
+            return CreateJsUndefined(env);
         }
-        return GestureInjectCompleteTask(engine, info, gesturePath);
+        return GestureInjectCompleteTask(env, info, gesturePath);
     }
 
-    NativeValue* GestureInjectCompleteTask(
-        NativeEngine& engine, NativeCallbackInfo& info, std::shared_ptr<AccessibilityGestureInjectPath> gesturePath)
+    napi_value GestureInjectCompleteTask(
+        napi_env env, NapiCallbackInfo& info, std::shared_ptr<AccessibilityGestureInjectPath> gesturePath)
     {
-        AsyncTask::CompleteCallback complete =
+        NapiAsyncTask::CompleteCallback complete =
             [weak = context_, gesturePath](
-            NativeEngine& engine, AsyncTask& task, int32_t status) {
+            napi_env env, NapiAsyncTask& task, int32_t status) {
                 auto context = weak.lock();
                 if (!context) {
                     HILOG_ERROR("context is released");
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
                         ERROR_MESSAGE_SYSTEM_ABNORMALITY));
                     return;
                 }
                 RetError ret = context->InjectGesture(gesturePath);
                 if (ret == RET_OK) {
-                    task.Resolve(engine, engine.CreateUndefined());
+                    task.Resolve(env, CreateJsUndefined(env));
                 } else {
                     HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(engine, CreateJsError(engine,
+                    task.Reject(env, CreateJsError(env,
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
                 }
             };
 
-        NativeValue* lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
-            ((info.argv[PARAM1] != nullptr && info.argv[PARAM1]->TypeOf() == NATIVE_FUNCTION) ?
-            info.argv[PARAM1] : nullptr);
-        NativeValue* result = nullptr;
-        AsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
-            engine, CreateAsyncTaskWithLastParam(engine, lastParam, nullptr, std::move(complete), &result));
+        napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
+            ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
+        napi_value result = nullptr;
+        NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
+            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
         return result;
     }
 };
 } // namespace
 
-NativeValue* CreateJsAccessibilityExtensionContext(
-    NativeEngine& engine, std::shared_ptr<AccessibilityExtensionContext> context)
+napi_value CreateJsAccessibilityExtensionContext(
+    napi_env env, std::shared_ptr<AccessibilityExtensionContext> context)
 {
     HILOG_INFO();
-    NativeValue* objValue = CreateJsExtensionContext(engine, context);
-    NativeObject* object = ConvertNativeValueTo<NativeObject>(objValue);
-
+    napi_value object = CreateJsExtensionContext(env, context);
     std::unique_ptr<NAccessibilityExtensionContext> jsContext =
         std::make_unique<NAccessibilityExtensionContext>(context);
     if (!object) {
         HILOG_ERROR("object is nullptr.");
         return nullptr;
     }
-    object->SetNativePointer(jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr);
-
+    napi_wrap(env, object, jsContext.release(), NAccessibilityExtensionContext::Finalizer, nullptr, nullptr);
     const char *moduleName = "NAccessibilityExtensionContext";
-    BindNativeFunction(engine, *object, "setTargetBundleName", moduleName,
+    BindNativeFunction(env, object, "setTargetBundleName", moduleName,
         NAccessibilityExtensionContext::SetTargetBundleName);
-    BindNativeFunction(engine, *object, "getFocusElement", moduleName,
+    BindNativeFunction(env, object, "getFocusElement", moduleName,
         NAccessibilityExtensionContext::GetFocusElement);
-    BindNativeFunction(engine, *object, "getWindowRootElement", moduleName,
+    BindNativeFunction(env, object, "getWindowRootElement", moduleName,
         NAccessibilityExtensionContext::GetWindowRootElement);
-    BindNativeFunction(engine, *object, "getWindows", moduleName, NAccessibilityExtensionContext::GetWindows);
-    BindNativeFunction(engine, *object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
-    BindNativeFunction(engine, *object, "injectGestureSync", moduleName,
-        NAccessibilityExtensionContext::InjectGestureSync);
-
-    return objValue;
+    BindNativeFunction(env, object, "getWindows", moduleName, NAccessibilityExtensionContext::GetWindows);
+    BindNativeFunction(env, object, "injectGesture", moduleName, NAccessibilityExtensionContext::InjectGesture);
+    BindNativeFunction(env, object, "injectGestureSync", moduleName, NAccessibilityExtensionContext::InjectGestureSync);
+    return object;
 }
 } // namespace Accessibility
 } // namespace OHOS
