@@ -280,20 +280,6 @@ private:
         std::mutex stateObserversMutex_;
     };
 
-    class AccessibilityAccountDataMap {
-    public:
-        AccessibilityAccountDataMap() = default;
-        ~AccessibilityAccountDataMap() = default;
-        sptr<AccessibilityAccountData> AddAccountData(int32_t accountId);
-        sptr<AccessibilityAccountData> GetCurrentAccountData(int32_t accountId);
-        sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
-        sptr<AccessibilityAccountData> RemoveAccountData(int32_t accountId);
-        void Clear();
-    private:
-        std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
-        std::mutex accountDataMutex_;
-    };
-
     RetError InnerEnableAbility(const std::string &name, const uint32_t capabilities);
     RetError InnerDisableAbility(const std::string &name);
 

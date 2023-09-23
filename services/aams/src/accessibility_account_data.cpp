@@ -922,5 +922,76 @@ int32_t AccessibilityAccountData::AccessibilityAbility::GetSizeByUri(const std::
     return connectionMap_.count(uri);
 }
 
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        HILOG_DEBUG("accountId is existed");
+    }
+
+    // even old account exist, new account cover old
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (accountData == nullptr) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetCurrentAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (!accountData) {
+        HILOG_ERROR("accountData is null");
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetAccountData(
+    int32_t accountId)
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    HILOG_DEBUG("accountId is not existed");
+    return nullptr;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
+    int32_t accountId)
+{
+    sptr<AccessibilityAccountData> accountData = nullptr;
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        accountData = iter->second;
+        accountDataMap_.erase(iter);
+    }
+
+    return accountData;
+}
+
+void AccessibilityAccountDataMap::Clear()
+{
+    std::lock_guard<std::mutex> lock(accountDataMutex_);
+    accountDataMap_.clear();
+}
 } // namespace Accessibility
 } // namespace OHOS

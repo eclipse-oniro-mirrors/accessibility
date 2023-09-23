@@ -457,34 +457,5 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
     HILOG_DEBUG();
     AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);
 }
-
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetCurrentAccountData(
-    int32_t accountId)
-{
-    auto iter = accountDataMap_.find(accountId);
-    if (iter != accountDataMap_.end()) {
-        return iter->second;
-    }
-
-    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
-    if (!accountData) {
-        return nullptr;
-    }
-
-    accountDataMap_[accountId] = accountData;
-    return accountData;
-}
-
-sptr<AccessibilityAccountData> AccessibleAbilityManagerService::AccessibilityAccountDataMap::GetAccountData(
-    int32_t accountId)
-{
-    auto iter = accountDataMap_.find(accountId);
-    if (iter != accountDataMap_.end()) {
-        return iter->second;
-    }
-
-    return nullptr;
-}
-
 } // namespace Accessibility
 } // namespace OHOS
