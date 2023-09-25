@@ -412,5 +412,67 @@ void AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilitiesMa
     connectionMap = connectionMap_;
 }
 
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
+    int32_t accountId)
+{
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        HILOG_DEBUG("accountId is existed");
+    }
+
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (accountData == nullptr) {
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetCurrentAccountData(
+    int32_t accountId)
+{
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
+    if (!accountData) {
+        return nullptr;
+    }
+
+    accountDataMap_[accountId] = accountData;
+    return accountData;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::GetAccountData(
+    int32_t accountId)
+{
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        return iter->second;
+    }
+
+    return nullptr;
+}
+
+sptr<AccessibilityAccountData> AccessibilityAccountDataMap::RemoveAccountData(
+    int32_t accountId)
+{
+    sptr<AccessibilityAccountData> accountData = nullptr;
+    auto iter = accountDataMap_.find(accountId);
+    if (iter != accountDataMap_.end()) {
+        accountData = iter->second;
+        accountDataMap_.erase(iter);
+    }
+
+    return accountData;
+}
+
+void AccessibilityAccountDataMap::Clear()
+{
+    accountDataMap_.clear();
+}
 } // namespace Accessibility
 } // namespace OHOS

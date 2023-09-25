@@ -321,6 +321,20 @@ private:
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> configCallbacks_;
     std::shared_ptr<AccessibilitySettingsConfig> config_ = nullptr;
 };
+
+class AccessibilityAccountDataMap {
+public:
+    AccessibilityAccountDataMap() = default;
+    ~AccessibilityAccountDataMap() = default;
+    sptr<AccessibilityAccountData> AddAccountData(int32_t accountId);
+    sptr<AccessibilityAccountData> GetCurrentAccountData(int32_t accountId);
+    sptr<AccessibilityAccountData> GetAccountData(int32_t accountId);
+    sptr<AccessibilityAccountData> RemoveAccountData(int32_t accountId);
+    void Clear();
+private:
+    std::map<int32_t, sptr<AccessibilityAccountData>> accountDataMap_;
+    std::mutex accountDataMutex_;
+};
 } // namespace Accessibility
 } // namespace OHOS
 #endif // ACCESSIBILITY_ACCOUNT_DATA_H
