@@ -444,6 +444,37 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 }
 
 /**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationState_001
+ * @tc.name: SetDaltonizationState
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationState_001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationState_001 start";
+    bool state = true;
+    settingConfig_->Init();
+    settingConfig_->SetDaltonizationState(state);
+    EXPECT_TRUE(settingConfig_->GetDaltonizationState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetDaltonizationState_002
+ * @tc.name: SetDaltonizationState
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_SetDaltonizationState_002,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetDaltonizationState_002 start";
+    bool state = true;
+    settingConfig_->SetDaltonizationState(state);
+    EXPECT_TRUE(settingConfig_->GetDaltonizationState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_DaltonizationState_002 end";
+}
+
+/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_SetInvertColorState_001
  * @tc.name: SetInvertColorState
  * @tc.desc: Test function SetInvertColorState GetInvertColorState

@@ -138,6 +138,12 @@ Accessibility::RetError AccessibilityConfig::SetInvertColorState(const bool stat
     return pImpl_->SetInvertColorState(state);
 }
 
+Accessibility::RetError AccessibilityConfig::SetDaltonizationState(bool state)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetDaltonizationState(state);
+}
+
 Accessibility::RetError AccessibilityConfig::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
@@ -226,6 +232,12 @@ Accessibility::RetError AccessibilityConfig::GetHighContrastTextState(bool &stat
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->GetHighContrastTextState(state);
+}
+
+Accessibility::RetError AccessibilityConfig::GetDaltonizationState(bool &state) const
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetDaltonizationState(state);
 }
 
 Accessibility::RetError AccessibilityConfig::GetDaltonizationColorFilter(DALTONIZATION_TYPE &type) const

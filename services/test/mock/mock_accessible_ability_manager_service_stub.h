@@ -79,6 +79,7 @@ public:
     RetError SetInvertColorState(const bool state) override;
     RetError SetAnimationOffState(const bool state) override;
     RetError SetAudioMonoState(const bool state) override;
+    RetError SetDaltonizationState(const bool state) override;
     RetError SetDaltonizationColorFilter(const uint32_t filter) override;
     RetError SetContentTimeout(const uint32_t time) override;
     RetError SetBrightnessDiscount(const float discount) override;
@@ -93,6 +94,7 @@ public:
     RetError GetInvertColorState(bool &state) override;
     RetError GetAnimationOffState(bool &state) override;
     RetError GetAudioMonoState(bool &state) override;
+    RetError GetDaltonizationState(bool &state) override;
     RetError GetDaltonizationColorFilter(uint32_t &type) override;
     RetError GetContentTimeout(uint32_t &timer) override;
     RetError GetBrightnessDiscount(float &brightness) override;
@@ -115,6 +117,7 @@ private:
     bool animationOff_ = false;
     bool audioMono_ = false;
     bool mouseKey_ = false;
+    bool daltonizationState_ = false;
     int32_t mouseAutoClick_ = 0;
     uint32_t contentTimeout_ = 0;
     uint32_t daltonizationColorFilter_ = 0;

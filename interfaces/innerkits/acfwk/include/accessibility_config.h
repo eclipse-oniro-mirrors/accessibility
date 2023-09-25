@@ -39,6 +39,7 @@ enum CONFIG_ID : int32_t {
     CONFIG_SCREEN_MAGNIFICATION,
     CONFIG_SHORT_KEY_TARGET,
     CONFIG_MOUSE_AUTOCLICK,
+    CONFIG_DALTONIZATION_STATE,
     CONFIG_ID_MAX,
 };
 
@@ -51,6 +52,7 @@ struct ConfigValue {
     bool mouseKey;
     bool shortkey;
     bool captionState;
+    bool daltonizationState;
     DALTONIZATION_TYPE daltonizationColorFilter;
     uint32_t contentTimeout;
     int32_t mouseAutoClick;
@@ -210,6 +212,13 @@ public:
     Accessibility::RetError SetInvertColorState(const bool state);
 
     /**
+     * @brief Set whether to enable the daltonization
+     * @param state true:enable daltonization function; false:disable daltonization function
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetDaltonizationState(bool state);
+
+    /**
      * @brief Set daltonization color filter
      * @param type Daltonization color filter type
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
@@ -314,6 +323,14 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     Accessibility::RetError GetHighContrastTextState(bool &state) const;
+
+    /**
+     * @brief Get the status of whether the daltonization function is enabled
+     * @param state(out) true:the daltonization function is enabled;
+     *                   false:the daltonization is disabled
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetDaltonizationState(bool &state) const;
 
     /**
      * @brief Get daltonization color filter

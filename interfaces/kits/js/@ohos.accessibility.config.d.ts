@@ -42,6 +42,14 @@ declare namespace config {
    */
   let invertColor: Config<boolean>;
   /**
+   * Indicates the configuration of daltonization state.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 10
+   */
+  let daltonizationState: Config<boolean>;
+  /**
    * Indicates the configuration of daltonization color filter.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core

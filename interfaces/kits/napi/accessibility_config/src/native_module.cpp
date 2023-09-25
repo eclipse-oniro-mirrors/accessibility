@@ -73,6 +73,25 @@ static napi_value InitInvertColor(napi_env env)
     return invertColorValue;
 }
 
+static napi_value InitDaltonizationState(napi_env env)
+{
+    napi_value daltonizationStateValue;
+    napi_create_object(env, &daltonizationStateValue);
+    NAPI_CALL(env, napi_define_properties(env, daltonizationStateValue,
+                                          sizeof(configDesc) / sizeof(configDesc[0]),
+                                          configDesc));
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_DALTONIZATION_STATE);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
+    nativeObj->SetEnv(env);
+    NAPI_CALL(env, napi_wrap(env, daltonizationStateValue, reinterpret_cast<void*>(nativeObj),
+                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+    return daltonizationStateValue;
+}
+
 static napi_value InitDaltonizationColorFilter(napi_env env)
 {
     napi_value daltonizationColorFilterValue;
@@ -325,6 +344,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
 {
     napi_value highContrastTextValue = InitHighContrastText(env);
     napi_value invertColorValue = InitInvertColor(env);
+    napi_value daltonizationStateValue = InitDaltonizationState(env);
     napi_value daltonizationColorFilterValue = InitDaltonizationColorFilter(env);
     napi_value contentTimeoutValue = InitContentTimeout(env);
     napi_value animationOffValue = InitAnimationOff(env);
@@ -346,6 +366,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
         DECLARE_NAPI_STATIC_PROPERTY("highContrastText", highContrastTextValue),
         DECLARE_NAPI_STATIC_PROPERTY("invertColor", invertColorValue),
+        DECLARE_NAPI_STATIC_PROPERTY("daltonizationState", daltonizationStateValue),
         DECLARE_NAPI_STATIC_PROPERTY("daltonizationColorFilter", daltonizationColorFilterValue),
         DECLARE_NAPI_STATIC_PROPERTY("contentTimeout", contentTimeoutValue),
         DECLARE_NAPI_STATIC_PROPERTY("animationOff", animationOffValue),

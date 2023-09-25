@@ -47,6 +47,8 @@ void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleSetAudioMonoState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_ANIMATIONOFF_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_DALTONIZATION_COLORFILTER)] =
         &AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CONTENT_TIMEOUT)] =
@@ -81,6 +83,8 @@ void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleGetAudioMonoState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ANIMATIONOFF_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_DALTONIZATION_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_DALTONIZATION_COLORFILTER)] =
         &AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CONTENT_TIMEOUT)] =
@@ -703,6 +707,28 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAnimationOffState(MessageP
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationState(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("HandleSetDaltonizationState Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("HandleSetDaltonizationState Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool state = data.ReadBool();
+
+    reply.WriteInt32(SetDaltonizationState(state));
+
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
@@ -933,6 +959,25 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAnimationOffState(MessageP
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationState(
+    MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+    bool result = false;
+    RetError ret = GetDaltonizationState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetDaltonizationColorFilter(
     MessageParcel& data, MessageParcel& reply)
 {
@@ -1016,6 +1061,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &
     reply.WriteBool(configData.screenMagnifier_);
     reply.WriteBool(configData.shortkey_);
     reply.WriteInt32(configData.mouseAutoClick_);
+    reply.WriteBool(configData.daltonizationState_);
     reply.WriteUint32(configData.daltonizationColorFilter_);
     reply.WriteUint32(configData.contentTimeout_);
     reply.WriteFloat(configData.brightnessDiscount_);

@@ -427,6 +427,22 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_001, 
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001
+ * @tc.name: SetDaltonizationState
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001 start";
+    bool state = true;
+    bool ret = false;
+    EXPECT_EQ(RET_OK,
+     Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(ret));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_001 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetInvertColorState_001
  * @tc.name: SetInvertColorState
  * @tc.desc: Test function SetInvertColorState GetInvertColorState
@@ -1295,6 +1311,23 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetHighContrastTextState_002, 
     EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetHighContrastTextState(state));
     EXPECT_NE(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetHighContrastTextState(state));
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetHighContrastTextState_002 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002
+ * @tc.name: SetDaltonizationState
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetDaltonizationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 start";
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
+    bool state = true;
+    EXPECT_NE(RET_OK,
+     Singleton<AccessibleAbilityManagerService>::GetInstance().SetDaltonizationState(state));
+    EXPECT_NE(RET_OK,
+     Singleton<AccessibleAbilityManagerService>::GetInstance().GetDaltonizationState(state));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetDaltonizationState_002 end";
 }
 
 /**

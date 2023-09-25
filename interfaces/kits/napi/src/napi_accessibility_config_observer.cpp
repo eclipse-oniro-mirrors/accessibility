@@ -54,6 +54,8 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
         NotifyFloatChanged2JS(value.audioBalance);
     } else if (configId_ ==  CONFIG_HIGH_CONTRAST_TEXT) {
         NotifyStateChanged2JS(value.highContrastText);
+    } else if (configId_ ==  CONFIG_DALTONIZATION_STATE) {
+        NotifyStateChanged2JS(value.daltonizationState);
     } else if (configId_ == CONFIG_INVERT_COLOR) {
         NotifyStateChanged2JS(value.invertColor);
     } else if (configId_ == CONFIG_ANIMATION_OFF) {

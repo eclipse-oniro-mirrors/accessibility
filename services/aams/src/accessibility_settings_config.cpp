@@ -142,6 +142,13 @@ RetError AccessibilitySettingsConfig::SetAudioMonoState(const bool state)
     return SetStatePref(STATE::AUDIOMONO) ? RET_OK : RET_ERR_FAILED;
 }
 
+RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    daltonizationState_ = state;
+    return SetStatePref(STATE::DALTONIZATIONSTATE) ? RET_OK : RET_ERR_FAILED;
+}
+
 RetError AccessibilitySettingsConfig::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG("filter = [%{public}u]", filter);
@@ -255,6 +262,9 @@ bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
     } else if (type == STATE::HIGHCONTRASTTEXT) {
         strValue = StateChange(highContrastTextState_);
         pref_->PutString("highContrastText", strValue);
+    } else if (type == STATE::DALTONIZATIONSTATE) {
+        strValue = StateChange(daltonizationState_);
+        pref_->PutString("daltonizationState", strValue);
     } else if (type == STATE::INVERTCOLORSTATE) {
         strValue = StateChange(invertColorState_);
         pref_->PutString("invertColor", strValue);
@@ -342,6 +352,11 @@ bool AccessibilitySettingsConfig::GetAudioMonoState() const
     return audioMonoState_;
 }
 
+bool AccessibilitySettingsConfig::GetDaltonizationState() const
+{
+    return daltonizationState_;
+}
+
 uint32_t AccessibilitySettingsConfig::GetDaltonizationColorFilter() const
 {
     return daltonizationColorFilter_;
@@ -409,6 +424,10 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
 
     if (highContrastTextState_) {
         state |= STATE_HIGHCONTRAST_ENABLED;
+    }
+
+    if (daltonizationState_) {
+        state |= STATE_DALTONIZATION_STATE_ENABLED;
     }
 
     if (invertColorState_) {
@@ -492,6 +511,9 @@ void AccessibilitySettingsConfig::InitSetting()
 
     strValue = pref_->GetString("highContrastText", "");
     highContrastTextState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+
+    strValue = pref_->GetString("daltonizationState", "");
+    daltonizationState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     strValue = pref_->GetString("audioMono", "");
     audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true;

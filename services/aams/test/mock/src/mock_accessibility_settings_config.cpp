@@ -102,6 +102,13 @@ RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetDaltonizationState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    daltonizationState_ = state;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetInvertColorState(const bool state)
 {
     HILOG_DEBUG("start.");
@@ -212,6 +219,12 @@ bool AccessibilitySettingsConfig::GetHighContrastTextState() const
 {
     HILOG_DEBUG("start.");
     return highContrastTextState_;
+}
+
+bool AccessibilitySettingsConfig::GetDaltonizationState() const
+{
+    HILOG_DEBUG("start.");
+    return daltonizationState_;
 }
 
 bool AccessibilitySettingsConfig::GetInvertColorState() const

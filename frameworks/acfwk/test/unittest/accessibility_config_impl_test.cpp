@@ -202,6 +202,25 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetDaltonizationState_002
+ * @tc.name: SetDaltonizationState_002
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetDaltonizationState_002 start";
+
+    bool state = true;
+    bool value = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetDaltonizationState(state);
+    instance.GetDaltonizationState(value);
+    EXPECT_FALSE(value);
+    GTEST_LOG_(INFO) << "SetDaltonizationState_002 end";
+}
+
+/**
  * @tc.number: SetHighContrastTextState_002
  * @tc.name: SetHighContrastTextState_002
  * @tc.desc: Test function SetHighContrastTextState GetHighContrastTextState
@@ -502,6 +521,26 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_001, TestSize.Level1)
     instance.GetShortkeyTarget(value);
     EXPECT_STREQ(name.c_str(), value.c_str());
     GTEST_LOG_(INFO) << "SetShortkeyTarget_001 end";
+}
+
+/**
+ * @tc.number: SetDaltonizationState_001
+ * @tc.name: SetDaltonizationState_001
+ * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
+ * @tc.require: issueI5NTX9
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetDaltonizationState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetDaltonizationState_001 start";
+
+    bool state = true;
+    bool value = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SetDaltonizationState(state);
+    instance.GetDaltonizationState(value);
+    EXPECT_TRUE(value);
+    GTEST_LOG_(INFO) << "SetDaltonizationState_001 end";
 }
 
 /**

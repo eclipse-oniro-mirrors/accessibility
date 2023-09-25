@@ -612,6 +612,26 @@ void AccessibilityConfig::Impl::UpdateHighContrastTextEnabled(const bool enabled
     NotifyHighContrastTextChanged(observers, enabled);
 }
 
+void AccessibilityConfig::Impl::UpdateDaltonizationStateEnabled(const bool enabled)
+{
+    HILOG_INFO("enabled = [%{public}s]", enabled ? "True" : "False");
+    std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (daltonizationState_ == enabled) {
+            return;
+        }
+        daltonizationState_ = enabled;
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+            configObservers_.find(CONFIG_DALTONIZATION_STATE);
+        if (it == configObservers_.end()) {
+            return;
+        }
+        observers = it->second;
+    }
+    NotifyDaltonizationStateChanged(observers, enabled);
+}
+
 void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
@@ -681,6 +701,21 @@ void AccessibilityConfig::Impl::NotifyHighContrastTextChanged(
             ConfigValue configValue;
             configValue.highContrastText = state;
             observer->OnConfigChanged(CONFIG_HIGH_CONTRAST_TEXT, configValue);
+        } else {
+            HILOG_ERROR("end configObservers_ is null");
+        }
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyDaltonizationStateChanged(
+    const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
+{
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    for (auto &observer : observers) {
+        if (observer) {
+            ConfigValue configValue;
+            configValue.daltonizationState = state;
+            observer->OnConfigChanged(CONFIG_DALTONIZATION_STATE, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
@@ -847,8 +882,15 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
-            configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
-            observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            if (!daltonizationState_) {
+                HILOG_DEBUG();
+                configValue.daltonizationColorFilter = Normal;
+                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            } else {
+                HILOG_DEBUG();
+                configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
+                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            }
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
@@ -875,6 +917,17 @@ Accessibility::RetError AccessibilityConfig::Impl::SetInvertColorState(const boo
         return Accessibility::RET_ERR_SAMGR;
     }
     return serviceProxy_->SetInvertColorState(state);
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationState(const bool state)
+{
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return serviceProxy_->SetDaltonizationState(state);
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::SetDaltonizationColorFilter(const DALTONIZATION_TYPE type)
@@ -965,6 +1018,19 @@ Accessibility::RetError AccessibilityConfig::Impl::GetHighContrastTextState(bool
     }
 
     Accessibility::RetError ret = serviceProxy_->GetHighContrastTextState(state);
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    return ret;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::GetDaltonizationState(bool &state)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    Accessibility::RetError ret = serviceProxy_->GetDaltonizationState(state);
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
     return ret;
 }
@@ -1140,6 +1206,12 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerConfigStateChanged(con
         UpdateHighContrastTextEnabled(false);
     }
 
+    if (stateType & Accessibility::STATE_DALTONIZATION_STATE_ENABLED) {
+        UpdateDaltonizationStateEnabled(true);
+    } else {
+        UpdateDaltonizationStateEnabled(false);
+    }
+
     if (stateType & Accessibility::STATE_MOUSEKEY_ENABLED) {
         UpdateMouseKeyEnabled(true);
     } else {
@@ -1294,6 +1366,7 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.mouseAutoClick = mouseAutoClick_;
         configValue.audioBalance = audioBalance_;
         configValue.brightnessDiscount = brightnessDiscount_;
+        configValue.daltonizationState = daltonizationState_;
         configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
         configValue.shortkey_target = shortkeyTarget_;
         configValue.captionStyle = captionProperty_;
@@ -1314,6 +1387,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     screenMagnifier_ = configData.screenMagnifier_;
     shortkey_ = configData.shortkey_;
     mouseAutoClick_ = configData.mouseAutoClick_;
+    daltonizationState_ = configData.daltonizationState_;
     daltonizationColorFilter_ = configData.daltonizationColorFilter_;
     contentTimeout_ = configData.contentTimeout_;
     brightnessDiscount_ = configData.brightnessDiscount_;
@@ -1322,6 +1396,18 @@ void AccessibilityConfig::Impl::InitConfigValues()
     captionProperty_ = configData.captionProperty_;
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
+}
+
+void AccessibilityConfig::Impl::NotifyDefaultDaltonizationConfigs()
+{
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+        configObservers_.find(CONFIG_DALTONIZATION_STATE);
+    if (it != configObservers_.end()) {
+        NotifyDaltonizationStateChanged(it->second, daltonizationState_);
+    }
+    if ((it = configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER)) != configObservers_.end()) {
+        NotifyDaltonizationColorFilterChanged(it->second, daltonizationColorFilter_);
+    }
 }
 
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
@@ -1333,9 +1419,6 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     }
     if ((it = configObservers_.find(CONFIG_INVERT_COLOR)) != configObservers_.end()) {
         NotifyInvertColorChanged(it->second, invertColor_);
-    }
-    if ((it = configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER)) != configObservers_.end()) {
-        NotifyDaltonizationColorFilterChanged(it->second, daltonizationColorFilter_);
     }
     if ((it = configObservers_.find(CONFIG_CONTENT_TIMEOUT)) != configObservers_.end()) {
         NotifyContentTimeoutChanged(it->second, contentTimeout_);
@@ -1373,6 +1456,7 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     if ((it = configObservers_.find(CONFIG_MOUSE_AUTOCLICK)) != configObservers_.end()) {
         NotifyMouseAutoClickChanged(it->second, mouseAutoClick_);
     }
+    NotifyDefaultDaltonizationConfigs();
 }
 
 } // namespace AccessibilityConfig

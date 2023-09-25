@@ -322,6 +322,8 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE) {
+        callbackInfo->ret_ = instance.SetDaltonizationState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR) {
         callbackInfo->ret_ = instance.SetInvertColorState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF) {
@@ -368,6 +370,7 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE:
             napi_get_boolean(env, callbackInfo->boolConfig_, &result[PARAM1]);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
@@ -439,6 +442,8 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE) {
+        callbackInfo->ret_ = instance.GetDaltonizationState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_INVERT_COLOR) {
         callbackInfo->ret_ = instance.GetInvertColorState(callbackInfo->boolConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ANIMATION_OFF) {
@@ -537,6 +542,7 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE:
             {
                 bool state = false;
                 ret = ParseBool(env, state, parameters[PARAM0]);

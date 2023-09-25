@@ -35,6 +35,7 @@ enum STATE : int32_t {
     SHORTKEY,
     MOUSEKEY,
     HIGHCONTRASTTEXT,
+    DALTONIZATIONSTATE,
     INVERTCOLORSTATE,
     ANIMATIONOFF,
     AUDIOMONO
@@ -60,6 +61,7 @@ public:
     RetError SetInvertColorState(const bool state);
     RetError SetAnimationOffState(const bool state);
     RetError SetAudioMonoState(const bool state);
+    RetError SetDaltonizationState(const bool state);
     RetError SetDaltonizationColorFilter(const uint32_t filter);
     RetError SetContentTimeout(const uint32_t time);
     RetError SetBrightnessDiscount(const float discount);
@@ -79,6 +81,7 @@ public:
     bool GetInvertColorState() const;
     bool GetAnimationOffState() const;
     bool GetAudioMonoState() const;
+    bool GetDaltonizationState() const;
     uint32_t GetDaltonizationColorFilter() const;
     uint32_t GetContentTimeout() const;
     float GetBrightnessDiscount() const;
@@ -118,6 +121,7 @@ private:
     bool invertColorState_ = false;
     bool animationOffState_ = false;
     bool audioMonoState_ = false;
+    bool daltonizationState_ = false;
     uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;
     float brightnessDiscount_ = 0.0;

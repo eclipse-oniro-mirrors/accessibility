@@ -137,6 +137,7 @@ private:
     ErrCode HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetAudioMonoState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetDaltonizationState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
@@ -151,6 +152,7 @@ private:
     ErrCode HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAudioMonoState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetDaltonizationState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetDaltonizationColorFilter(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
