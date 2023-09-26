@@ -17,7 +17,7 @@ import("//build/test.gni")
 
 ##############################fuzztest##########################################
 ohos_fuzztest("AccessibleAbilityClientFuzzTest") {
-  module_out_path = "accessibility/aafwk"
+  module_out_path = "accessibility/accessibility"
   fuzz_config_file = "../../fuzztest/accessibleabilityclient_fuzzer"
 
   include_dirs = []
