@@ -97,6 +97,10 @@ void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleGetCaptionProperty;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CAPTION_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleGetCaptionState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_WINDOW_AND_ELEMENT_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetWindowAndElementId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCENE_BOARD_INNER_WINDOW_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId;
 }
 
 AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
@@ -1047,6 +1051,38 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterConfigCallback(
     uint64_t result = RegisterConfigObserver(config);
     reply.WriteUint64(result);
 
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetWindowAndElementId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t windowId = data.ReadInt32();
+    int32_t elementId = data.ReadInt32();
+    GetRealWindowAndElementId(windowId, elementId);
+    if (!reply.WriteInt32(windowId)) {
+        HILOG_ERROR("write windowId fail");
+    }
+    
+    if (!reply.WriteInt32(elementId)) {
+        HILOG_ERROR("write elementId fail");
+    }
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t windowId = data.ReadInt32();
+    int32_t elementId = data.ReadInt32();
+    int32_t innerWid = -1;
+    GetSceneBoardInnerWinId(windowId, elementId, innerWid);
+    if (!reply.WriteInt32(innerWid)) {
+        HILOG_ERROR("write windowId fail");
+    }
     return NO_ERROR;
 }
 } // namespace Accessibility

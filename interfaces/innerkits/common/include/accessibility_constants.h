@@ -61,10 +61,13 @@ extern const std::string HTML_ITEM_UNKOWN;
 
 extern const std::string OHOS_PERMISSION_READ_ACCESSIBILITY_CONFIG;
 extern const std::string OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG;
+extern const std::string OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT;
 
 extern const int32_t PREFETCH_PREDECESSORS;
 extern const int32_t PREFETCH_SIBLINGS;
 extern const int32_t PREFETCH_CHILDREN;
+extern const int32_t PREFETCH_RECURSIVE_CHILDREN;
+extern const int32_t GET_SOURCE_MODE;
 extern const int32_t UNDEFINED;
 extern const int32_t GET_SOURCE_PREFETCH_MODE;
 extern const int32_t UNDEFINED_SELECTION_INDEX;

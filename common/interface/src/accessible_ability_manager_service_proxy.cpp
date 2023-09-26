@@ -1285,5 +1285,69 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterConfigObserver(
 
     return reply.ReadUint32();
 }
+
+void AccessibleAbilityManagerServiceProxy::GetRealWindowAndElementId(int32_t& windowId, int& elementId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write Token fail");
+        return;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("write windowId fail");
+        return;
+    }
+
+    if (!data.WriteInt32(elementId)) {
+        HILOG_ERROR("write elementId fail");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_WINDOW_AND_ELEMENT_ID,
+        data, reply, option)) {
+        HILOG_ERROR("GetRealWindowAndElementId fail");
+        return;
+    }
+
+    windowId = reply.ReadInt32();
+    elementId = reply.ReadInt32();
+}
+
+void AccessibleAbilityManagerServiceProxy::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+    int32_t& innerWid)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("write Token fail");
+        return;
+    }
+
+    if (!data.WriteInt32(windowId)) {
+        HILOG_ERROR("write windowId fail");
+        return;
+    }
+
+    if (!data.WriteInt32(elementId)) {
+        HILOG_ERROR("write elementId fail");
+        return;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_SCENE_BOARD_INNER_WINDOW_ID,
+        data, reply, option)) {
+        HILOG_ERROR("GetSceneBoardInnerWinId fail");
+        return;
+    }
+
+    innerWid = reply.ReadInt32();
+}
 } // namespace Accessibility
 } // namespace OHOS

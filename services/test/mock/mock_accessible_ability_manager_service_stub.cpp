@@ -383,5 +383,14 @@ uint32_t MockAccessibleAbilityManagerServiceStub::RegisterConfigObserver(
     observer_ = callback;
     return 0;
 }
+
+void MockAccessibleAbilityManagerServiceStub::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
+{
+}
+
+void MockAccessibleAbilityManagerServiceStub::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+    int32_t& innerWid)
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

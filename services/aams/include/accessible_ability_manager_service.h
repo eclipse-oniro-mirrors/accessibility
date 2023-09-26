@@ -113,6 +113,8 @@ public:
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     RetError DisableUITestAbility() override;
     int32_t GetActiveWindow() override;
+    void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId) override;
+    void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) override;
 
 public:
     /* For inner modules */

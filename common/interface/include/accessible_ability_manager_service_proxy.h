@@ -133,6 +133,8 @@ public:
     virtual RetError GetAudioBalance(float &balance) override;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) override;
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
+    virtual void GetRealWindowAndElementId(int32_t& windowId, int& elementId) override;
+    virtual void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) override;
 private:
     /**
      * @brief Write the descriptor of IPC.

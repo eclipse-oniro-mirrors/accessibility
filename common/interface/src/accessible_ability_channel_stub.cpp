@@ -17,6 +17,7 @@
 #include "accessibility_element_info_parcel.h"
 #include "accessibility_gesture_inject_path_parcel.h"
 #include "accessibility_ipc_interface_code.h"
+#include "accessibility_permission.h"
 #include "accessibility_window_info_parcel.h"
 #include "hilog_wrapper.h"
 #include "parcel_util.h"
@@ -101,6 +102,19 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfoByAccessibilityId(M
     }
 
     int32_t mode = data.ReadInt32();
+    if (mode == PREFETCH_RECURSIVE_CHILDREN) {
+        if (!Permission::CheckCallingPermission(OHOS_PERMISSION_QUERY_ACCESSIBILITY_ELEMENT) &&
+            !Permission::IsStartByHdcd()) {
+            HILOG_ERROR("no get element permission");
+            reply.WriteInt32(RET_ERR_NO_CONNECTION);
+            return NO_ERROR;
+        }
+    }
+
+    if (mode == GET_SOURCE_MODE) {
+        mode = PREFETCH_RECURSIVE_CHILDREN;
+    }
+
     RetError result = SearchElementInfoByAccessibilityId(accessibilityWindowId, elementId, requestId, callback, mode);
     HILOG_DEBUG("SearchElementInfoByAccessibilityId ret = %{public}d", result);
     reply.WriteInt32(result);

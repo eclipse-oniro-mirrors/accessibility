@@ -42,6 +42,8 @@ public:
     MOCK_METHOD1(IsValidWindow, bool(int32_t windowId));
     MOCK_METHOD2(SetWindowSize, void(int32_t windowId, Rect rect));
     MOCK_METHOD2(GetSceneBoardElementId, int32_t(const int32_t windowId, const int32_t elementId));
+    MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t windowId, int32_t elementId));
+    MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int32_t elementId, int32_t& innerWid));
 };
 } // namespace Accessibility
 } // namespace OHOS

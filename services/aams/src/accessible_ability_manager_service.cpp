@@ -300,6 +300,39 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     return accountData->GetAccessibilityState();
 }
 
+void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
+{
+    HILOG_DEBUG("real windowId %{public}d", windowId);
+    if (!handler_) {
+        return;
+    }
+
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([&, this]() -> void {
+        Singleton<AccessibilityWindowManager>::GetInstance().GetRealWindowAndElementId(windowId, elementId);
+        syncPromise.set_value();
+        }), "GET_REAL_WINDOW_AND_ELEMENT_ID");
+    return syncFuture.get();
+}
+
+void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+    int32_t& innerWid)
+{
+    HILOG_DEBUG("real windowId %{public}d", windowId);
+    if (!handler_) {
+        return;
+    }
+
+    std::promise<void> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([&, this]() -> void {
+        Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
+        syncPromise.set_value();
+        }), "GET_REAL_WINDOW_AND_ELEMENT_ID");
+    return syncFuture.get();
+}
+
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
 {

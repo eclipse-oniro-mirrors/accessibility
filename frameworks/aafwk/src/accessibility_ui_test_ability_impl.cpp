@@ -134,6 +134,29 @@ RetError AccessibilityUITestAbilityImpl::GetRootByWindow(const AccessibilityWind
     return aaClient->GetRootByWindow(windowInfo, elementInfo);
 }
 
+RetError AccessibilityUITestAbilityImpl::GetRootBatch(std::vector<AccessibilityElementInfo>& elementInfos)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->GetRootBatch(elementInfos);
+}
+
+RetError AccessibilityUITestAbilityImpl::GetRootByWindowBatch(const AccessibilityWindowInfo& windowInfo,
+    std::vector<AccessibilityElementInfo>& elementInfos)
+{
+    HILOG_DEBUG();
+    sptr<AccessibleAbilityClient> aaClient = AccessibleAbilityClient::GetInstance();
+    if (!aaClient) {
+        HILOG_ERROR("aaClient is nullptr");
+        return RET_ERR_NULLPTR;
+    }
+    return aaClient->GetRootByWindowBatch(windowInfo, elementInfos);
+}
+
 RetError AccessibilityUITestAbilityImpl::GetWindow(const int32_t windowId, AccessibilityWindowInfo &windowInfo)
 {
     HILOG_DEBUG();
