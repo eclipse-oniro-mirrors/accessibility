@@ -88,6 +88,22 @@ public:
         AccessibilityElementInfo &elementInfo) = 0;
 
     /**
+     * @brief Obtains elementInfos of the accessible root node in batchs.
+     * @param elementInfos ElementInfos of the accessible root node and its recursive subnodes.
+     * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetRootBatch(std::vector<AccessibilityElementInfo>& elementInfos) = 0;
+
+    /**
+     * @brief Obtains elementInfos of the accessible root node in batchs.
+     * @param windowInfo The source window info to get root.
+     * @param elementInfos ElementInfos of the accessible root node and its recursive subnodes.
+     * @return Return RET_OK if obtains elementInfos successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
+        std::vector<AccessibilityElementInfo>& elementInfos) = 0;
+
+    /**
      * @brief Get the window information related with the event
      * @param windowId The window id.
      * @param windowInfo The window information.

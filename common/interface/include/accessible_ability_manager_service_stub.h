@@ -159,6 +159,8 @@ private:
 
     ErrCode HandleRegisterEnableAbilityListsObserver(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleRegisterConfigCallback(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetWindowAndElementId(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetSceneBoardInnerWinId(MessageParcel &data, MessageParcel &reply);
 
     using AccessibilityAbilityManagerServiceFunc = ErrCode (AccessibleAbilityManagerServiceStub::*)(
         MessageParcel &data, MessageParcel &reply);

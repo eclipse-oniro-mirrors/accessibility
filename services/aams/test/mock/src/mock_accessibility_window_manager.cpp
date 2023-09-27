@@ -154,5 +154,13 @@ int32_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     return elementId;
 }
 
+void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
+{
+}
+
+void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+    int32_t& innerWid)
+{
+}
 } // namespace Accessibility
 } // namespace OHOS

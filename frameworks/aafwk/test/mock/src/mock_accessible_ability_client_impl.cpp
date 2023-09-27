@@ -254,5 +254,18 @@ void AccessibleAbilityClientImpl::SetConnectionState(bool state)
 {
     HILOG_DEBUG();
 }
+
+RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElementInfo>& elementInfos)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
+
+RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
+    std::vector<AccessibilityElementInfo>& elementInfos)
+{
+    HILOG_DEBUG();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

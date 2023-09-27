@@ -579,5 +579,44 @@ int32_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     return elementId;
 }
 
+void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
+{
+    // sceneboard window id, element id is not equal -1
+    if (subWindows_.count(windowId) && elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
+        windowId = SCENE_BOARD_WINDOW_ID;
+        HILOG_INFO("windowId %{public}d, elementId %{public}d", windowId, elementId);
+        return;
+    }
+
+    if (elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
+        return;
+    }
+
+    if (subWindows_.count(windowId)) {
+        auto iter = a11yWindows_.find(windowId);
+        if (iter != a11yWindows_.end()) {
+            HILOG_DEBUG("GetRealWindowAndElementId [%{public}d]", iter->second.GetUiNodeId());
+            windowId = SCENE_BOARD_WINDOW_ID;
+            elementId = iter->second.GetUiNodeId();
+            return;
+        }
+    }
+}
+
+void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+    int32_t& innerWid)
+{
+    if (windowId != SCENE_BOARD_WINDOW_ID) {
+        return;
+    }
+
+    for (auto iter = a11yWindows_.begin(); iter != a11yWindows_.end(); iter++) {
+        if (iter->second.GetUiNodeId() == elementId) {
+            innerWid = iter->second.GetInnerWid();
+        }
+    }
+
+    return;
+}
 } // namespace Accessibility
 } // namespace OHOS

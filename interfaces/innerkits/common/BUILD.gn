@@ -37,6 +37,7 @@ accessibility_common_src = [
   "${accessibility_common_path}/src/accessibility_constants.cpp",
   "${accessibility_common_path}/src/accessibility_element_info.cpp",
   "${accessibility_common_path}/src/accessibility_event_info.cpp",
+  "${accessibility_common_path}/src/accessibility_permission.cpp",
   "${accessibility_common_path}/src/accessibility_window_info.cpp",
   "${accessibility_common_path}/src/accessibility_gesture_inject_path.cpp",
 ]
@@ -53,8 +54,10 @@ ohos_shared_library("accessibility_common") {
   install_enable = true
 
   external_deps = [
+    "access_token:libaccesstoken_sdk",
     "hilog:libhilog",
     "input:libmmi-client",
+    "ipc:ipc_single",
     "napi:ace_napi",
   ]
   innerapi_tags = [ "platformsdk" ]

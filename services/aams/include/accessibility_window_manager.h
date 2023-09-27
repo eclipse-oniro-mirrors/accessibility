@@ -53,6 +53,10 @@ public:
     int32_t GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     bool IsSceneBoard(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
 
+    // used for batch query, provide window and element id translation
+    void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId);
+    void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid);
+
     // test for ut to resize a window
     void SetWindowSize(int32_t windowId, Rect rect);
 
