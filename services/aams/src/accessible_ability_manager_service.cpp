@@ -329,7 +329,7 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
     handler_->PostTask(std::bind([&, this]() -> void {
         Singleton<AccessibilityWindowManager>::GetInstance().GetSceneBoardInnerWinId(windowId, elementId, innerWid);
         syncPromise.set_value();
-        }), "GET_REAL_WINDOW_AND_ELEMENT_ID");
+        }), "GET_SCENE_BOARD_INNER_WINDOW_ID");
     return syncFuture.get();
 }
 
