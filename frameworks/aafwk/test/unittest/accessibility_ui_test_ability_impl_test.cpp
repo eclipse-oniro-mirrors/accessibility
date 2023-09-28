@@ -820,5 +820,87 @@ HWTEST_F(AccessibilityUITestAbilityImplTest, SetCacheMode_001, TestSize.Level1)
 
     GTEST_LOG_(INFO) << "SetCacheMode_001 end";
 }
+
+/**
+ * @tc.number: GetRootBatch_001
+ * @tc.name: GetRootBatch
+ * @tc.desc: Test function GetRootBatch(AccessibleAbilityClient is null)
+ */
+HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootBatch_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRootBatch_001 start";
+
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
+        return;
+    }
+    AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
+    std::vector<AccessibilityElementInfo> elementInfos;
+    EXPECT_EQ(instance_->GetRootBatch(elementInfos), RET_ERR_NULLPTR);
+    AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
+
+    GTEST_LOG_(INFO) << "GetRootBatch_001 end";
+}
+
+/**
+ * @tc.number: GetRootBatch_002
+ * @tc.name: GetRootBatch
+ * @tc.desc: Test function GetRootBatch(AccessibleAbilityClient is not null)
+ */
+HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootBatch_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRootBatch_002 start";
+
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
+        return;
+    }
+    std::vector<AccessibilityElementInfo> elementInfos;
+    EXPECT_EQ(instance_->GetRootBatch(elementInfos), RET_OK);
+
+    GTEST_LOG_(INFO) << "GetRootBatch_002 end";
+}
+
+/**
+ * @tc.number: GetRootByWindowBatch_001
+ * @tc.name: GetRootByWindowbatch
+ * @tc.desc: Test function GetRootByWindow(AccessibleAbilityClient is null)
+ */
+HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindowBatch_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 start";
+
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
+        return;
+    }
+    AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(true);
+    AccessibilityWindowInfo windowInfo {};
+    std::vector<AccessibilityElementInfo> elementInfos;
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos), RET_ERR_NULLPTR);
+    AccessibilityAbilityUtHelper::GetInstance().SetAbilityClientNullFlag(false);
+
+    GTEST_LOG_(INFO) << "GetRootByWindowBatch_001 end";
+}
+
+/**
+ * @tc.number: GetRootByWindowBatch_002
+ * @tc.name: GetRootByWindowBatch
+ * @tc.desc: Test function GetRootByWindowBatch(AccessibleAbilityClient is not null)
+ */
+HWTEST_F(AccessibilityUITestAbilityImplTest, GetRootByWindowBatch_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetRootByWindowBatch_002 start";
+
+    if (!instance_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilityUITestAbilityImpl instance_";
+        return;
+    }
+    AccessibilityWindowInfo windowInfo {};
+    std::vector<AccessibilityElementInfo> elementInfos;
+    EXPECT_EQ(instance_->GetRootByWindowBatch(windowInfo, elementInfos), RET_OK);
+
+    GTEST_LOG_(INFO) << "GetRootByWindowBatch_002 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

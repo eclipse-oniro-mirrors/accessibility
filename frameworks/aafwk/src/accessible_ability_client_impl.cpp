@@ -257,10 +257,6 @@ void AccessibleAbilityClientImpl::OnAccessibilityEvent(const AccessibilityEventI
         }
         listener = listener_;
     }
-
-    // remove cache data
-    RemoveCacheData(eventInfo);
-
     if (listener) {
         listener->OnAccessibilityEvent(eventInfo);
     }
@@ -974,8 +970,8 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
 void AccessibleAbilityClientImpl::RemoveCacheData(const AccessibilityEventInfo& eventInfo)
 {
     EventType type = eventInfo.GetEventType();
-    if (type == TYPE_VIEW_TEXT_UPDATE_EVENT || type == TYPE_PAGE_STATE_UPDATE||
-        type == TYPE_NOTIFICATION_UPDATE_EVENT || type == TYPE_PAGE_CONTENT_UPDATE||
+    if (type == TYPE_VIEW_TEXT_UPDATE_EVENT || type == TYPE_PAGE_STATE_UPDATE ||
+        type == TYPE_NOTIFICATION_UPDATE_EVENT || type == TYPE_PAGE_CONTENT_UPDATE ||
         type == TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT || type == TYPE_WINDOW_UPDATE) {
         int32_t windowId = eventInfo.GetWindowId();
         HILOG_DEBUG("RemoveCacheData windowId %{public}d", windowId);
