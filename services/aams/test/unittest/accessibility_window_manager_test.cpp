@@ -38,6 +38,9 @@ namespace {
     constexpr int WINDOWS_SIZE = 2;
     constexpr int SEND_EVENT_TIMES = 2;
     constexpr int32_t ACCOUNT_ID = 100;
+    constexpr int32_t INNER_WINDOW_ID = 4;
+    constexpr int32_t INNER_ELEMENT_ID = 5;
+    constexpr int32_t INVALID_ELEMENT_ID = -1;
 } // namespace
 
 class AccessibilityWindowManagerTest : public testing::Test {
@@ -1567,6 +1570,72 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Ini
     EXPECT_EQ(result, true);
     
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_Init001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetRealWindowAndElementId001
+ * @tc.name: GetRealWindowAndElementId
+ * @tc.desc: Test function GetRealWindowAndElementId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetRealWindowAndElementId001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetRealWindowAndElementId001 start";
+    sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
+    EXPECT_TRUE(rosen_winInfo != nullptr);
+    rosen_winInfo->wid_ = 1;
+    rosen_winInfo->innerWid_ = INNER_WINDOW_ID;
+    rosen_winInfo->uiNodeId_ = INNER_ELEMENT_ID;
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    windowInfoManager.subWindows_.clear();
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosen_winInfo->innerWid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosen_winInfo)));
+    windowInfoManager.subWindows_.insert(rosen_winInfo->innerWid_);
+
+    int32_t windowId = INNER_WINDOW_ID;
+    int32_t elementId = INVALID_ELEMENT_ID;
+    windowInfoManager.GetRealWindowAndElementId(windowId, elementId);
+    EXPECT_EQ(windowId, 1);
+    EXPECT_EQ(elementId, INNER_ELEMENT_ID);
+
+    windowId = INNER_WINDOW_ID;
+    elementId = 0;
+    windowInfoManager.GetRealWindowAndElementId(windowId, elementId);
+    EXPECT_EQ(windowId, 1);
+    EXPECT_NE(elementId, INNER_ELEMENT_ID);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetRealWindowAndElementId001 end";
+}
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId001
+ * @tc.name: GetSceneBoardInnerWinId
+ * @tc.desc: Test function GetSceneBoardInnerWinId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId001 start";
+    sptr<Rosen::AccessibilityWindowInfo> rosen_winInfo = GetRosenWindowInfo(Rosen::WindowType::APP_WINDOW_BASE);
+    EXPECT_TRUE(rosen_winInfo != nullptr);
+    rosen_winInfo->wid_ = 1;
+    rosen_winInfo->innerWid_ = INNER_WINDOW_ID;
+    rosen_winInfo->uiNodeId_ = INNER_ELEMENT_ID;
+
+    AccessibilityWindowManager& windowInfoManager = Singleton<AccessibilityWindowManager>::GetInstance();
+    windowInfoManager.a11yWindows_.clear();
+    windowInfoManager.subWindows_.clear();
+    windowInfoManager.a11yWindows_.insert(std::make_pair(rosen_winInfo->innerWid_,
+        windowInfoManager.CreateAccessibilityWindowInfo(rosen_winInfo)));
+    windowInfoManager.subWindows_.insert(rosen_winInfo->innerWid_);
+
+    int32_t windowId = 1;
+    int32_t elementId = INNER_ELEMENT_ID;
+    int32_t innerWid = 0;
+    windowInfoManager.GetSceneBoardInnerWinId(windowId, elementId, innerWid);
+    EXPECT_EQ(innerWid, INNER_WINDOW_ID);
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId001 end";
 }
 } // namespace Accessibility
 } // namespace OHOS
