@@ -444,14 +444,12 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
                     longPressOffsetX_ = INIT_MMIPOINT;
                     longPressOffsetY_ = INIT_MMIPOINT;
                 }
-                SendEventToMultimodal(event, NO_CHANGE);
                 OnTouchInteractionEnd();
                 SendAccessibilityEventToAA(EventType::TYPE_TOUCH_END);
                 currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
             }
             break;
         default:
-            SendEventToMultimodal(event, NO_CHANGE);
             break;
     }
 }
