@@ -623,13 +623,20 @@ void AccessibilityConfig::Impl::UpdateDaltonizationStateEnabled(const bool enabl
         }
         daltonizationState_ = enabled;
         std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
-            configObservers_.find(CONFIG_DALTONIZATION_STATE);
+            configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER);
         if (it == configObservers_.end()) {
             return;
         }
         observers = it->second;
     }
     NotifyDaltonizationStateChanged(observers, enabled);
+    if (!enabled) {
+        HILOG_DEBUG();
+        NotifyDaltonizationColorFilterChanged(observers, Normal);
+    } else {
+        HILOG_DEBUG();
+        NotifyDaltonizationColorFilterChanged(observers, daltonizationColorFilter_);
+    }
 }
 
 void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
@@ -882,15 +889,8 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
-            if (!daltonizationState_) {
-                HILOG_DEBUG();
-                configValue.daltonizationColorFilter = Normal;
-                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
-            } else {
-                HILOG_DEBUG();
-                configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
-                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
-            }
+            configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter);
+            observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
