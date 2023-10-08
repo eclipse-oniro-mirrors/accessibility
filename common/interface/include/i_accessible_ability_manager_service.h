@@ -43,6 +43,7 @@ struct AccessibilityConfigData {
     bool screenMagnifier_ = false;
     bool shortkey_ = false;
     int32_t mouseAutoClick_ = 0;
+    bool daltonizationState_ = false;
     uint32_t daltonizationColorFilter_ = 0;
     uint32_t contentTimeout_ = 0;
     float brightnessDiscount_ = 0.0;
@@ -130,6 +131,7 @@ public:
     virtual RetError SetInvertColorState(const bool state) = 0;
     virtual RetError SetAnimationOffState(const bool state) = 0;
     virtual RetError SetAudioMonoState(const bool state) = 0;
+    virtual RetError SetDaltonizationState(const bool state) = 0;
     virtual RetError SetDaltonizationColorFilter(const uint32_t filter) = 0;
     virtual RetError SetContentTimeout(const uint32_t time) = 0;
     virtual RetError SetBrightnessDiscount(const float discount) = 0;
@@ -144,6 +146,7 @@ public:
     virtual RetError GetInvertColorState(bool &state) = 0;
     virtual RetError GetAnimationOffState(bool &state) = 0;
     virtual RetError GetAudioMonoState(bool &state) = 0;
+    virtual RetError GetDaltonizationState(bool &state) = 0;
     virtual RetError GetDaltonizationColorFilter(uint32_t &type) = 0;
     virtual RetError GetContentTimeout(uint32_t &timer) = 0;
     virtual RetError GetBrightnessDiscount(float &brightness) = 0;

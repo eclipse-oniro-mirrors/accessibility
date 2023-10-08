@@ -55,6 +55,7 @@ public:
     Accessibility::RetError SetShortkeyTarget(const std::string &name);
     Accessibility::RetError SetHighContrastTextState(bool state);
     Accessibility::RetError SetInvertColorState(const bool state);
+    Accessibility::RetError SetDaltonizationState(bool state);
     Accessibility::RetError SetDaltonizationColorFilter(const DALTONIZATION_TYPE type);
     Accessibility::RetError SetContentTimeout(const uint32_t timer);
     Accessibility::RetError SetAnimationOffState(const bool state);
@@ -71,6 +72,7 @@ public:
     Accessibility::RetError GetShortkeyTarget(std::string &name);
     Accessibility::RetError GetInvertColorState(bool &state);
     Accessibility::RetError GetHighContrastTextState(bool &state);
+    Accessibility::RetError GetDaltonizationState(bool &state);
     Accessibility::RetError GetDaltonizationColorFilter(DALTONIZATION_TYPE &type);
     Accessibility::RetError GetContentTimeout(uint32_t &timer);
     Accessibility::RetError GetAnimationOffState(bool &state);
@@ -210,6 +212,9 @@ private:
         const bool state);
     void NotifyHighContrastTextChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const bool state);
+    void NotifyDaltonizationStateChanged(
+        const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
 
     void UpdateScreenMagnificationEnabled(const bool enabled);
     void UpdateShortKeyEnabled(const bool enabled);
@@ -219,7 +224,9 @@ private:
     void UpdateAnimationOffEnabled(const bool enabled);
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
+    void UpdateDaltonizationStateEnabled(const bool enabled);
     void NotifyDefaultConfigs();
+    void NotifyDefaultDaltonizationConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
     static void OnParameterChanged(const char *key, const char *value, void *context);
@@ -238,6 +245,7 @@ private:
     bool animationOff_ = false;
     bool audioMono_ = false;
     bool mouseKey_ = false;
+    bool daltonizationState_ = false;
     int32_t mouseAutoClick_ = 0;
     uint32_t contentTimeout_ = 0;
     uint32_t daltonizationColorFilter_ = 0;

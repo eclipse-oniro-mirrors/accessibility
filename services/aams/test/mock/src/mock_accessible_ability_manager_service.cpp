@@ -268,6 +268,12 @@ RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool st
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
+{
+    (void)state;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     (void)state;
@@ -341,6 +347,12 @@ RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 }
 
 RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
+{
+    state = true;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
 {
     state = true;
     return RET_OK;

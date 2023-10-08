@@ -236,6 +236,12 @@ RetError MockAccessibleAbilityManagerServiceStub::SetAudioMonoState(const bool s
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::SetDaltonizationState(const bool state)
+{
+    daltonizationState_ = state;
+    return RET_OK;
+}
+
 RetError MockAccessibleAbilityManagerServiceStub::SetDaltonizationColorFilter(const uint32_t filter)
 {
     daltonizationColorFilter_ = filter;
@@ -328,6 +334,12 @@ RetError MockAccessibleAbilityManagerServiceStub::GetAudioMonoState(bool &state)
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::GetDaltonizationState(bool &state)
+{
+    state = daltonizationState_;
+    return RET_OK;
+}
+
 RetError MockAccessibleAbilityManagerServiceStub::GetDaltonizationColorFilter(uint32_t &type)
 {
     type = daltonizationColorFilter_;
@@ -362,6 +374,7 @@ void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigD
     configData.captionState_ = true;
     configData.screenMagnifier_ = true;
     configData.shortkey_ = true;
+    configData.daltonizationState_ = true;
     configData.mouseAutoClick_ = MOUSE_AUTO_CLICK_VALUE;
     configData.daltonizationColorFilter_ = 1;
     configData.contentTimeout_ = CONTENT_TIMEOUT_VALUE;

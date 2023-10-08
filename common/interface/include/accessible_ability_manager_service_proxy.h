@@ -113,6 +113,7 @@ public:
     virtual RetError SetInvertColorState(const bool state) override;
     virtual RetError SetAnimationOffState(const bool state) override;
     virtual RetError SetAudioMonoState(const bool state) override;
+    virtual RetError SetDaltonizationState(const bool state) override;
     virtual RetError SetDaltonizationColorFilter(const uint32_t filter) override;
     virtual RetError SetContentTimeout(const uint32_t time) override;
     virtual RetError SetBrightnessDiscount(const float discount) override;
@@ -127,6 +128,7 @@ public:
     virtual RetError GetInvertColorState(bool &state) override;
     virtual RetError GetAnimationOffState(bool &state) override;
     virtual RetError GetAudioMonoState(bool &state) override;
+    virtual RetError GetDaltonizationState(bool &state) override;
     virtual RetError GetDaltonizationColorFilter(uint32_t &type) override;
     virtual RetError GetContentTimeout(uint32_t &timer) override;
     virtual RetError GetBrightnessDiscount(float &brightness) override;

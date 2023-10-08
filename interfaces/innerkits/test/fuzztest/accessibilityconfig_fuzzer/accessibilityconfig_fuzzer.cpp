@@ -119,6 +119,7 @@ void DoSomethingInterestingSetConfig(OHOS::AccessibilityConfig::AccessibilityCon
     abConfig.SetMouseKeyState(data[startPos++] & 0x01);
     abConfig.SetCaptionsState(data[startPos++] & 0x01);
     abConfig.SetHighContrastTextState(data[startPos++] & 0x01);
+    abConfig.SetDaltonizationState(data[startPos++] & 0x01);
     abConfig.SetInvertColorState(data[startPos++] & 0x01);
     abConfig.SetAnimationOffState(data[startPos++] & 0x01);
     abConfig.SetAudioMonoState(data[startPos++] & 0x01);
@@ -197,6 +198,8 @@ void DoSomethingInterestingGetConfig(OHOS::AccessibilityConfig::AccessibilityCon
     abConfig.GetCaptionsState(flag);
     flag = data[startPos++] & 0x01;
     abConfig.GetHighContrastTextState(flag);
+    flag = data[startPos++] & 0x01;
+    abConfig.GetDaltonizationState(flag);
     flag = data[startPos++] & 0x01;
     abConfig.GetInvertColorState(flag);
     flag = data[startPos++] & 0x01;

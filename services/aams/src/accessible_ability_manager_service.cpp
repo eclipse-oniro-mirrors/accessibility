@@ -1412,6 +1412,21 @@ RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool st
     return ret;
 }
 
+RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
+{
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationState:" + to_string(state));
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    RetError ret = accountData->GetConfig()->SetDaltonizationState(state);
+    UpdateConfigState();
+    return ret;
+}
+
 RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
@@ -1699,6 +1714,26 @@ RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
+{
+    HILOG_DEBUG();
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        state = accountData->GetConfig()->GetDaltonizationState();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_DALTONIZATIONSTATE_STATE");
+
+    return syncFuture.get();
+}
+
 RetError AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 {
     HILOG_DEBUG();
@@ -1854,6 +1889,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         }
 
         configData.highContrastText_ = accountData->GetConfig()->GetHighContrastTextState();
+        configData.daltonizationState_ = accountData->GetConfig()->GetDaltonizationState();
         configData.invertColor_ = accountData->GetConfig()->GetInvertColorState();
         configData.animationOff_ = accountData->GetConfig()->GetAnimationOffState();
         configData.audioMono_ = accountData->GetConfig()->GetAudioMonoState();

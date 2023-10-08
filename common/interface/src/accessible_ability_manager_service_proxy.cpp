@@ -791,6 +791,31 @@ RetError AccessibleAbilityManagerServiceProxy::SetAudioMonoState(const bool stat
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityManagerServiceProxy::SetDaltonizationState(const bool state)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("SetDaltonizationState fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteBool(state)) {
+        HILOG_ERROR("SetDaltonizationState fail, connection write parcelable Caption State");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_DALTONIZATION_STATE, data, reply, option)) {
+        HILOG_ERROR("SetDaltonizationState fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityManagerServiceProxy::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_DEBUG();
@@ -1099,6 +1124,29 @@ RetError AccessibleAbilityManagerServiceProxy::GetAudioMonoState(bool &state)
     return ret;
 }
 
+RetError AccessibleAbilityManagerServiceProxy::GetDaltonizationState(bool &state)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_DALTONIZATION_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetDaltonizationState fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
+}
+
 RetError AccessibleAbilityManagerServiceProxy::GetDaltonizationColorFilter(uint32_t &type)
 {
     HILOG_DEBUG();
@@ -1216,6 +1264,7 @@ void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData
     configData.screenMagnifier_ = reply.ReadBool();
     configData.shortkey_ = reply.ReadBool();
     configData.mouseAutoClick_ = reply.ReadInt32();
+    configData.daltonizationState_ = reply.ReadBool();
     configData.daltonizationColorFilter_ = reply.ReadUint32();
     configData.contentTimeout_ = reply.ReadUint32();
     configData.brightnessDiscount_ = reply.ReadFloat();
