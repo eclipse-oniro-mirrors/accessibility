@@ -889,8 +889,14 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     for (auto &observer : observers) {
         if (observer) {
             ConfigValue configValue;
-            configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter);
-            observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            if (!daltonizationState_) {
+                HILOG_DEBUG();
+                configValue.daltonizationColorFilter = Normal;
+                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            } else {
+                configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter);
+                observer->OnConfigChanged(CONFIG_DALTONIZATION_COLOR_FILTER, configValue);
+            }
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
