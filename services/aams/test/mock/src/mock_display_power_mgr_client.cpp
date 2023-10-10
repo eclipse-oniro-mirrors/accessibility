@@ -55,10 +55,11 @@ int32_t DisplayPowerMgrClient::GetMainDisplayId()
     return INVALID_DISPLAY_ID;
 }
 
-bool DisplayPowerMgrClient::SetBrightness(uint32_t value, uint32_t displayId)
+bool DisplayPowerMgrClient::SetBrightness(uint32_t value, uint32_t displayId, bool continuous)
 {
     (void)value;
     (void)displayId;
+    (void)continuous;
     return true;
 }
 
