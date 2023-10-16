@@ -86,6 +86,7 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "init:libbegetutil",
     "ipc:ipc_core",
     "os_account:domain_account_innerkits",
+    "safwk:dynamic_cache",
     "samgr:samgr_proxy",
   ]
 }
