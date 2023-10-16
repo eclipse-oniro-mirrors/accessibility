@@ -282,6 +282,8 @@ private:
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
     void OnBundleManagerDied(const wptr<IRemoteObject> &remote);
+    void DeleteConnectionAndDeathRecipient(
+        const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection);
 
     bool isReady_ = false;
     bool isPublished_ = false;

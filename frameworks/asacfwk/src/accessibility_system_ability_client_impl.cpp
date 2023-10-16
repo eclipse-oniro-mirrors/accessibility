@@ -426,6 +426,7 @@ RetError AccessibilitySystemAbilityClientImpl::GetEnabledAbilities(std::vector<s
 void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChanged(const uint32_t stateType)
 {
     HILOG_DEBUG("stateType[%{public}d}", stateType);
+    SetAccessibilityState(stateType);
     std::lock_guard<std::mutex> lock(mutex_);
     if (stateType & STATE_ACCESSIBILITY_ENABLED) {
         NotifyStateChanged(AccessibilityStateEventType::EVENT_ACCESSIBILITY_STATE_CHANGED, true);
@@ -525,6 +526,63 @@ void AccessibilitySystemAbilityClientImpl::SetExecuteActionResult(
             }
         }
     }
+}
+
+void AccessibilitySystemAbilityClientImpl::SetAccessibilityState(const uint32_t stateType)
+{
+    HILOG_DEBUG();
+    state_ = stateType;
+}
+
+uint32_t AccessibilitySystemAbilityClientImpl::GetAccessibilityState()
+{
+    HILOG_DEBUG();
+    return state_;
+}
+
+void AccessibilitySystemAbilityClientImpl::SetFindAccessibilityNodeInfosResult(
+    const std::list<AccessibilityElementInfo> elementInfos, const int32_t requestId, const int32_t requestCode)
+{
+    HILOG_DEBUG();
+    switch (static_cast<SET_AA_CALLBACK_RESULT>(requestCode)) {
+        case FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID:
+            SetSearchElementInfoByAccessibilityIdResult(elementInfos, requestId);
+            break;
+        case FIND_ACCESSIBILITY_NODE_BY_TEXT:
+            SetSearchElementInfoByTextResult(elementInfos, requestId);
+            break;
+        default:
+            break;
+    }
+}
+
+void AccessibilitySystemAbilityClientImpl::SetFindAccessibilityNodeInfoResult(
+    const AccessibilityElementInfo elementInfo, const int32_t requestId, const int32_t requestCode)
+{
+    HILOG_DEBUG();
+    switch (static_cast<SET_AA_CALLBACK_RESULT>(requestCode)) {
+        case FIND_ACCESSIBILITY_NODE_BY_ACCESSIBILITY_ID:
+            {
+                std::list<AccessibilityElementInfo> elementInfos = {};
+                elementInfos.push_back(elementInfo);
+                SetSearchElementInfoByAccessibilityIdResult(elementInfos, requestId);
+            }
+            break;
+        case FIND_FOCUS:
+            SetFindFocusedElementInfoResult(elementInfo, requestId);
+            break;
+        case FIND_FOCUS_SEARCH:
+            SetFocusMoveSearchResult(elementInfo, requestId);
+            break;
+        default:
+            break;
+    }
+}
+
+void AccessibilitySystemAbilityClientImpl::SetPerformActionResult(const bool succeeded, const int32_t requestId)
+{
+    HILOG_DEBUG();
+    SetExecuteActionResult(succeeded, requestId);
 }
 } // namespace Accessibility
 } // namespace OHOS
