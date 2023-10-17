@@ -41,6 +41,8 @@ public:
     virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) override;
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) override;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) override;
+    virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override;
+    virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override;
 
 private:
     /**

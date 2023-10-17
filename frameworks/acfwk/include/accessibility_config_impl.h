@@ -62,6 +62,9 @@ public:
     Accessibility::RetError SetBrightnessDiscount(const float brightness);
     Accessibility::RetError SetAudioMonoState(const bool state);
     Accessibility::RetError SetAudioBalance(const float balance);
+    Accessibility::RetError SetClickResponseTime(const CLICK_RESPONSE_TIME time);
+    Accessibility::RetError SetIgnoreRepeatClickState(const bool state);
+    Accessibility::RetError SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time);
 
     Accessibility::RetError GetScreenMagnificationState(bool &state);
     Accessibility::RetError GetShortKeyState(bool &state);
@@ -79,6 +82,9 @@ public:
     Accessibility::RetError GetBrightnessDiscount(float &brightness);
     Accessibility::RetError GetAudioMonoState(bool &state);
     Accessibility::RetError GetAudioBalance(float &balance);
+    Accessibility::RetError GetClickResponseTime(CLICK_RESPONSE_TIME &time);
+    Accessibility::RetError GetIgnoreRepeatClickState(bool &state);
+    Accessibility::RetError GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time);
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);
@@ -89,6 +95,8 @@ public:
     void OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const uint32_t filterType);
     void OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick);
     void OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget);
+    void OnAccessibleAbilityManagerClickResponseTimeChanged(const uint32_t clickResponseTime);
+    void OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime);
     void OnAccessibilityEnableAbilityListsChanged();
 
 private:
@@ -156,6 +164,14 @@ private:
         {
             config_.OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
         }
+        virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override
+        {
+            config_.OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
+        }
+        virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) override
+        {
+            config_.OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(ignoreRepeatClickTime);
+        }
 
     private:
         Impl &config_;
@@ -215,6 +231,12 @@ private:
     void NotifyDaltonizationStateChanged(
         const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const bool state);
+    void NotifyClickResponseTimeChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const uint32_t clickResponseTime);
+    void NotifyIgnoreRepeatClickTimeChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const uint32_t time);
+    void NotifyIgnoreRepeatClickStateChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const bool state);
 
     void UpdateScreenMagnificationEnabled(const bool enabled);
     void UpdateShortKeyEnabled(const bool enabled);
@@ -225,11 +247,16 @@ private:
     void UpdateInvertColorEnabled(const bool enabled);
     void UpdateHighContrastTextEnabled(const bool enabled);
     void UpdateDaltonizationStateEnabled(const bool enabled);
+    void UpdateIgnoreRepeatClickStateEnabled(const bool enabled);
     void NotifyDefaultConfigs();
     void NotifyDefaultDaltonizationConfigs();
+    void NotifyDefaultScreenTouchConfigs();
+    void NotifyDefaultShortKeyConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
     static void OnParameterChanged(const char *key, const char *value, void *context);
+
+    void OnIgnoreRepeatClickStateChanged(const uint32_t stateType);
 
     sptr<Accessibility::IAccessibleAbilityManagerService> serviceProxy_ = nullptr;
     sptr<AccessibleAbilityManagerCaptionObserverImpl> captionObserver_ = nullptr;
@@ -252,6 +279,9 @@ private:
     float audioBalance_ = 0.0;
     float brightnessDiscount_ = 0.0;
     std::string shortkeyTarget_ = "";
+    uint32_t clickResponseTime_ = 0;
+    uint32_t ignoreRepeatClickTime_ = 0;
+    bool ignoreRepeatClickState_ = false;
     CaptionProperty captionProperty_ = {};
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;

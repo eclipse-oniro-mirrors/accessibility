@@ -117,8 +117,10 @@ public:
 private:
     static void AsyncWorkComplete(napi_env env, napi_status status, void* data);
     static void SetConfigExecute(napi_env env, void* data);
+    static void SetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo);
     static void GetConfigComplete(napi_env env, napi_status status, void* data);
     static void GetConfigExecute(napi_env env, void* data);
+    static void GetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo);
     static void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
         napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
     static void DisableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
@@ -130,6 +132,8 @@ private:
     static bool ParseConnectTimeoutData(napi_env env, NAccessibilityConfigData* callbackInfo,
         napi_value* parameters);
     static bool ParseMouseAutoClickData(napi_env env, NAccessibilityConfigData* callbackInfo,
+        napi_value* parameters);
+    static bool SetConfigParseBoolData(napi_env env, NAccessibilityConfigData* callbackInfo,
         napi_value* parameters);
     static bool SetConfigParseData(napi_env env, NAccessibilityConfigClass* obj,
         NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);

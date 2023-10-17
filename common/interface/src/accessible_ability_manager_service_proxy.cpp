@@ -917,6 +917,81 @@ RetError AccessibleAbilityManagerServiceProxy::SetAudioBalance(const float balan
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityManagerServiceProxy::SetClickResponseTime(const uint32_t time)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteUint32(time)) {
+        HILOG_ERROR("fail, connection write SetAudioBalance time");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_CLICK_RESPONSE_TIME, data, reply, option)) {
+        HILOG_ERROR("SetClickResponseTime fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
+RetError AccessibleAbilityManagerServiceProxy::SetIgnoreRepeatClickState(const bool state)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteBool(state)) {
+        HILOG_ERROR("fail, connection write SetAudioBalance time");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_STATE, data, reply, option)) {
+        HILOG_ERROR("SetIgnoreRepeatClickState fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
+RetError AccessibleAbilityManagerServiceProxy::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteUint32(time)) {
+        HILOG_ERROR("fail, connection write SetAudioBalance time");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_TIME, data, reply, option)) {
+        HILOG_ERROR("SetIgnoreRepeatClickTime fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityManagerServiceProxy::GetScreenMagnificationState(bool &state)
 {
     HILOG_DEBUG();
@@ -1235,6 +1310,75 @@ RetError AccessibleAbilityManagerServiceProxy::GetAudioBalance(float &balance)
     RetError ret = static_cast<RetError>(reply.ReadInt32());
     if (ret == RET_OK) {
         balance = reply.ReadFloat();
+    }
+    return ret;
+}
+
+RetError AccessibleAbilityManagerServiceProxy::GetClickResponseTime(uint32_t& time)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_CLICK_RESPONSE_TIME,
+        data, reply, option)) {
+        HILOG_ERROR("GetAudioBalance fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        time = reply.ReadUint32();
+    }
+    return ret;
+}
+
+RetError AccessibleAbilityManagerServiceProxy::GetIgnoreRepeatClickState(bool& state)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_STATE,
+        data, reply, option)) {
+        HILOG_ERROR("GetAudioBalance fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        state = reply.ReadBool();
+    }
+    return ret;
+}
+
+RetError AccessibleAbilityManagerServiceProxy::GetIgnoreRepeatClickTime(uint32_t& time)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_TIME,
+        data, reply, option)) {
+        HILOG_ERROR("GetAudioBalance fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret == RET_OK) {
+        time = reply.ReadUint32();
     }
     return ret;
 }

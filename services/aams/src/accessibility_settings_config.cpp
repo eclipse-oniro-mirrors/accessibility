@@ -205,6 +205,41 @@ RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
+{
+    HILOG_DEBUG("clickResponseTime = [%{public}u]", time);
+    clickResponseTime_ = time;
+    if (!pref_) {
+        HILOG_ERROR("pref_ is null!");
+        return RET_ERR_NULLPTR;
+    }
+
+    pref_->PutInt("clickResponseTime", clickResponseTime_);
+    pref_->Flush();
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    ignoreRepeatClickState_ = state;
+    return SetStatePref(STATE::AUDIOMONO) ? RET_OK : RET_ERR_FAILED;
+}
+
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u]", time);
+    ignoreRepeatClickTime_ = time;
+    if (!pref_) {
+        HILOG_ERROR("pref_ is null!");
+        return RET_ERR_NULLPTR;
+    }
+
+    pref_->PutInt("ignoreRepeatClickTime", time);
+    pref_->Flush();
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG();
@@ -274,6 +309,8 @@ bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
     } else if (type == STATE::AUDIOMONO) {
         strValue = StateChange(audioMonoState_);
         pref_->PutString("audioMono", strValue);
+    } else if (type == STATE::IGNOREREPEATCLICKSTATE) {
+        pref_->PutString("ignoreRepeatClickTime", StateChange(ignoreRepeatClickTime_));
     } else {
         ret = false;
         HILOG_ERROR("invalid parameter type = [%{public}d]", type);
@@ -402,6 +439,21 @@ const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCapt
     return captionProperty_;
 };
 
+uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
+{
+    return clickResponseTime_;
+}
+
+bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
+{
+    return ignoreRepeatClickState_;
+}
+
+uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
+{
+    return ignoreRepeatClickTime_;
+}
+
 uint32_t AccessibilitySettingsConfig::GetConfigState()
 {
     HILOG_DEBUG();
@@ -440,6 +492,10 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
 
     if (audioMonoState_) {
         state |= STATE_AUDIOMONO_ENABLED;
+    }
+
+    if (ignoreRepeatClickState_) {
+        state |= STATE_IGNORE_REPEAT_CLICK_ENABLED;
     }
     return state;
 }
@@ -518,12 +574,17 @@ void AccessibilitySettingsConfig::InitSetting()
     strValue = pref_->GetString("audioMono", "");
     audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
+    strValue = pref_->GetString("ignoreRepeatClickTime", "");
+    ignoreRepeatClickTime_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+
     shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(pref_->GetInt("daltonizationColorFilter", 0));
     contentTimeout_ = static_cast<uint32_t>(pref_->GetInt("contentTimeout", 0));
     brightnessDiscount_ = static_cast<float>(pref_->GetFloat("brightnessDiscount", 1.0));
     audioBalance_ = static_cast<float>(pref_->GetFloat("audioBalance", 0));
+    clickResponseTime_ = static_cast<uint32_t>(pref_->GetInt("clickResponseTime", 0));
+    ignoreRepeatClickTime_ = static_cast<uint32_t>(pref_->GetInt("ignoreRepeatClickTime", 0));
 }
 
 void AccessibilitySettingsConfig::InitCapability()

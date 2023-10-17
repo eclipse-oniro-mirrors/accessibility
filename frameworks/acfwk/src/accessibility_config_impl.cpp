@@ -639,6 +639,25 @@ void AccessibilityConfig::Impl::UpdateDaltonizationStateEnabled(const bool enabl
     }
 }
 
+void AccessibilityConfig::Impl::UpdateIgnoreRepeatClickStateEnabled(const bool enabled)
+{
+    std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (ignoreRepeatClickState_ == enabled) {
+            return;
+        }
+        ignoreRepeatClickState_ = enabled;
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+            configObservers_.find(CONFIG_IGNORE_REPEAT_CLICK_STATE);
+        if (it == configObservers_.end()) {
+            return;
+        }
+        observers = it->second;
+    }
+    NotifyIgnoreRepeatClickStateChanged(observers, enabled);
+}
+
 void AccessibilityConfig::Impl::NotifyScreenMagnificationChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
 {
@@ -903,6 +922,51 @@ void AccessibilityConfig::Impl::NotifyDaltonizationColorFilterChanged(
     }
 }
 
+void AccessibilityConfig::Impl::NotifyClickResponseTimeChanged(
+    const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t clickResponseTime)
+{
+    HILOG_INFO("daltonizationColorFilter = [%{public}u]", clickResponseTime);
+    for (auto &observer : observers) {
+        if (observer) {
+            ConfigValue configValue;
+            configValue.clickResponseTime = static_cast<CLICK_RESPONSE_TIME>(clickResponseTime);
+            observer->OnConfigChanged(CONIFG_CLICK_RESPONSE_TIME, configValue);
+        } else {
+            HILOG_ERROR("end configObservers_ is null");
+        }
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyIgnoreRepeatClickTimeChanged(
+    const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const uint32_t time)
+{
+    HILOG_INFO("daltonizationColorFilter = [%{public}u]", time);
+    for (auto &observer : observers) {
+        if (observer) {
+            ConfigValue configValue;
+            configValue.ignoreRepeatClickTime = static_cast<IGNORE_REPEAT_CLICK_TIME>(time);
+            observer->OnConfigChanged(CONFIG_IGNORE_REPEAT_CLICK_TIME, configValue);
+        } else {
+            HILOG_ERROR("end configObservers_ is null");
+        }
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyIgnoreRepeatClickStateChanged(
+    const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const bool state)
+{
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    for (auto &observer : observers) {
+        if (observer) {
+            ConfigValue configValue;
+            configValue.ignoreRepeatClickState = state;
+            observer->OnConfigChanged(CONFIG_IGNORE_REPEAT_CLICK_STATE, configValue);
+        } else {
+            HILOG_ERROR("end configObservers_ is null");
+        }
+    }
+}
+
 Accessibility::RetError AccessibilityConfig::Impl::SetHighContrastTextState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
@@ -1000,6 +1064,39 @@ Accessibility::RetError AccessibilityConfig::Impl::SetAudioBalance(const float b
         return Accessibility::RET_ERR_SAMGR;
     }
     return serviceProxy_->SetAudioBalance(balance);
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SetClickResponseTime(const CLICK_RESPONSE_TIME time)
+{
+    HILOG_INFO("click response time = [%{public}u]", time);
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return serviceProxy_->SetClickResponseTime(time);
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickState(const bool state)
+{
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return serviceProxy_->SetIgnoreRepeatClickState(state);
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time)
+{
+    HILOG_INFO("ignore repeat click time = [%{public}u]", time);
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return serviceProxy_->SetIgnoreRepeatClickTime(time);
 }
 
 Accessibility::RetError AccessibilityConfig::Impl::GetInvertColorState(bool &state)
@@ -1121,6 +1218,49 @@ Accessibility::RetError AccessibilityConfig::Impl::GetAudioBalance(float &balanc
     return ret;
 }
 
+Accessibility::RetError AccessibilityConfig::Impl::GetClickResponseTime(CLICK_RESPONSE_TIME &time)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    uint32_t responseTime = 0;
+    Accessibility::RetError ret = serviceProxy_->GetClickResponseTime(responseTime);
+    time = static_cast<CLICK_RESPONSE_TIME>(responseTime);
+    HILOG_INFO("click response time = [%{public}u]", time);
+    return ret;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickState(bool &state)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    Accessibility::RetError ret = serviceProxy_->GetIgnoreRepeatClickState(state);
+    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    return ret;
+}
+
+Accessibility::RetError AccessibilityConfig::Impl::GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    uint32_t ignoreRepeatClickTime = 0;
+    Accessibility::RetError ret = serviceProxy_->GetIgnoreRepeatClickTime(ignoreRepeatClickTime);
+    time = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime);
+    HILOG_INFO("ignore repeat click time = [%{public}u]", time);
+    return ret;
+}
+
 Accessibility::RetError AccessibilityConfig::Impl::SubscribeEnableAbilityListsObserver(
     const std::shared_ptr<AccessibilityEnableAbilityListsObserver> &observer)
 {
@@ -1164,6 +1304,15 @@ void AccessibilityConfig::Impl::OnAccessibilityEnableAbilityListsChanged()
     }
     for (auto &enableAbilityListsObserver : observers) {
         enableAbilityListsObserver->OnEnableAbilityListsStateChanged();
+    }
+}
+
+void AccessibilityConfig::Impl::OnIgnoreRepeatClickStateChanged(const uint32_t stateType)
+{
+    if (stateType & Accessibility::STATE_IGNORE_REPEAT_CLICK_ENABLED) {
+        UpdateIgnoreRepeatClickStateEnabled(true);
+    } else {
+        UpdateIgnoreRepeatClickStateEnabled(false);
     }
 }
 
@@ -1223,6 +1372,8 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerConfigStateChanged(con
     } else {
         UpdateMouseKeyEnabled(false);
     }
+
+    OnIgnoreRepeatClickStateChanged(stateType);
 }
 
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerAudioBalanceChanged(const float audioBalance)
@@ -1354,6 +1505,48 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
     NotifyShortkeyTargetChanged(observers, shortkeyTarget);
 }
 
+void AccessibilityConfig::Impl::OnAccessibleAbilityManagerClickResponseTimeChanged(const uint32_t clickResponseTime)
+{
+    HILOG_DEBUG("clickResponseTime = [%{public}u}", clickResponseTime);
+    std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (clickResponseTime_ == clickResponseTime) {
+            return;
+        }
+        clickResponseTime_ = clickResponseTime;
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+            configObservers_.find(CONIFG_CLICK_RESPONSE_TIME);
+        if (it == configObservers_.end()) {
+            return;
+        }
+        observers = it->second;
+    }
+
+    NotifyClickResponseTimeChanged(observers, clickResponseTime);
+}
+
+void AccessibilityConfig::Impl::OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(const uint32_t time)
+{
+    HILOG_DEBUG("ignoreRepeatClickTime = [%{public}u}", time);
+    std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (ignoreRepeatClickTime_ == time) {
+            return;
+        }
+        ignoreRepeatClickTime_ = time;
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+            configObservers_.find(CONFIG_IGNORE_REPEAT_CLICK_TIME);
+        if (it == configObservers_.end()) {
+            return;
+        }
+        observers = it->second;
+    }
+
+    NotifyIgnoreRepeatClickTimeChanged(observers, time);
+}
+
 void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
     const std::shared_ptr<AccessibilityConfigObserver> &observer)
 {
@@ -1376,6 +1569,9 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
         configValue.shortkey_target = shortkeyTarget_;
         configValue.captionStyle = captionProperty_;
+        configValue.clickResponseTime = static_cast<CLICK_RESPONSE_TIME>(clickResponseTime_);
+        configValue.ignoreRepeatClickState = ignoreRepeatClickState_;
+        configValue.ignoreRepeatClickTime = static_cast<IGNORE_REPEAT_CLICK_TIME>(ignoreRepeatClickTime_);
     }
     observer->OnConfigChanged(id, configValue);
 }
@@ -1400,6 +1596,9 @@ void AccessibilityConfig::Impl::InitConfigValues()
     audioBalance_ = configData.audioBalance_;
     shortkeyTarget_ = configData.shortkeyTarget_;
     captionProperty_ = configData.captionProperty_;
+    clickResponseTime_ = configData.clickResponseTime_;
+    ignoreRepeatClickTime_ = configData.ignoreRepeatClickTime_;
+    ignoreRepeatClickState_ = configData.ignoreRepeatClickState_;
     NotifyDefaultConfigs();
     HILOG_DEBUG("ConnectToService Success");
 }
@@ -1413,6 +1612,33 @@ void AccessibilityConfig::Impl::NotifyDefaultDaltonizationConfigs()
     }
     if ((it = configObservers_.find(CONFIG_DALTONIZATION_COLOR_FILTER)) != configObservers_.end()) {
         NotifyDaltonizationColorFilterChanged(it->second, daltonizationColorFilter_);
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyDefaultScreenTouchConfigs()
+{
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+        configObservers_.find(CONIFG_CLICK_RESPONSE_TIME);
+    if (it != configObservers_.end()) {
+        NotifyClickResponseTimeChanged(it->second, clickResponseTime_);
+    }
+    if ((it = configObservers_.find(CONFIG_IGNORE_REPEAT_CLICK_STATE)) != configObservers_.end()) {
+        NotifyIgnoreRepeatClickTimeChanged(it->second, ignoreRepeatClickState_);
+    }
+    if ((it = configObservers_.find(CONFIG_IGNORE_REPEAT_CLICK_TIME)) != configObservers_.end()) {
+        NotifyIgnoreRepeatClickStateChanged(it->second, ignoreRepeatClickTime_);
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyDefaultShortKeyConfigs()
+{
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+        configObservers_.find(CONFIG_SHORT_KEY);
+    if (it != configObservers_.end()) {
+        NotifyShortKeyChanged(it->second, shortkey_);
+    }
+    if ((it = configObservers_.find(CONFIG_SHORT_KEY_TARGET)) != configObservers_.end()) {
+        NotifyShortkeyTargetChanged(it->second, shortkeyTarget_);
     }
 }
 
@@ -1444,9 +1670,6 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     if ((it = configObservers_.find(CONFIG_MOUSE_KEY)) != configObservers_.end()) {
         NotifyMouseKeyChanged(it->second, mouseKey_);
     }
-    if ((it = configObservers_.find(CONFIG_SHORT_KEY)) != configObservers_.end()) {
-        NotifyShortKeyChanged(it->second, shortkey_);
-    }
     if ((it = configObservers_.find(CONFIG_CAPTION_STATE)) != configObservers_.end()) {
         NotifyCaptionStateChanged(it->second, captionState_);
     }
@@ -1456,13 +1679,13 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     if ((it = configObservers_.find(CONFIG_SCREEN_MAGNIFICATION)) != configObservers_.end()) {
         NotifyScreenMagnificationChanged(it->second, screenMagnifier_);
     }
-    if ((it = configObservers_.find(CONFIG_SHORT_KEY_TARGET)) != configObservers_.end()) {
-        NotifyShortkeyTargetChanged(it->second, shortkeyTarget_);
-    }
     if ((it = configObservers_.find(CONFIG_MOUSE_AUTOCLICK)) != configObservers_.end()) {
         NotifyMouseAutoClickChanged(it->second, mouseAutoClick_);
     }
+
     NotifyDefaultDaltonizationConfigs();
+    NotifyDefaultScreenTouchConfigs();
+    NotifyDefaultShortKeyConfigs();
 }
 
 } // namespace AccessibilityConfig

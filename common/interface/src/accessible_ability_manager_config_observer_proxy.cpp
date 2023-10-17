@@ -273,5 +273,74 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
         return;
     }
 }
+
+void AccessibleAbilityManagerConfigObserverProxy::OnClickResponseTimeChanged(const uint32_t clickResponseTime)
+{
+    HILOG_DEBUG();
+
+    int32_t error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return;
+    }
+
+    if (!data.WriteUint32(clickResponseTime)) {
+        HILOG_ERROR("fail, connection write stateType error");
+        return;
+    }
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd due to remote object");
+        return;
+    }
+
+    error = remote->SendRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CLICK_RESPONSE_TIME),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("OnClickResponseTimeChanged fail, error: %{public}d", error);
+        return;
+    }
+}
+
+void AccessibleAbilityManagerConfigObserverProxy::OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime)
+{
+    HILOG_DEBUG();
+
+    int32_t error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return;
+    }
+
+    if (!data.WriteUint32(ignoreRepeatClickTime)) {
+        HILOG_ERROR("fail, connection write stateType error");
+        return;
+    }
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd due to remote object");
+        return;
+    }
+
+    error = remote->SendRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_IGNORE_REPEAT_CLICK_TIME),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("OnIgnoreRepeatClickTimeChanged fail, error: %{public}d", error);
+        return;
+    }
+}
+
 } // namespace Accessibility
 } // namespace OHOS

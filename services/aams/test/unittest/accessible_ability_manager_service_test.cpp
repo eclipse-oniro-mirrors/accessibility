@@ -553,6 +553,48 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetAudioBalance_001, TestSize.
 }
 
 /**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001
+ * @tc.name: SetClickResponseTime
+ * @tc.desc: Test function SetClickResponseTime GetClickResponseTime
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetClickResponseTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001 start";
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetClickResponseTime(1));
+    uint32_t ret = 0;
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetClickResponseTime(ret));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetClickResponseTime_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001
+ * @tc.name: SetIgnoreRepeatClickState
+ * @tc.desc: Test function SetIgnoreRepeatClickState GetIgnoreRepeatClickState
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001 start";
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickState(true));
+    bool ret = false;
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickState(ret));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickState_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001
+ * @tc.name: SetIgnoreRepeatClickTime
+ * @tc.desc: Test function SetIgnoreRepeatClickTime GetIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetIgnoreRepeatClickTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001 start";
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().SetIgnoreRepeatClickTime(1));
+    uint32_t ret = 0;
+    EXPECT_EQ(RET_OK, Singleton<AccessibleAbilityManagerService>::GetInstance().GetIgnoreRepeatClickTime(ret));
+    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_SetIgnoreRepeatClickTime_001 end";
+}
+
+/**
  * @tc.number: AccessibleAbilityManagerServiceUnitTest_GetAllConfigs_001
  * @tc.name: GetAllConfigs
  * @tc.desc: Test function GetAllConfigs
@@ -1619,6 +1661,42 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateShortkeyTarget_001, Test
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateShortkeyTarget();
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateShortkeyTarget_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001
+ * @tc.name: UpdateClickResponseTime
+ * @tc.desc: Test function UpdateClickResponseTime
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateClickResponseTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001 start";
+    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
+    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
+
+    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
+    EXPECT_EQ(ret, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateClickResponseTime();
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateClickResponseTime_001 end";
+}
+
+/**
+ * @tc.number: AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001
+ * @tc.name: UpdateIgnoreRepeatClickTime
+ * @tc.desc: Test function UpdateIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, UpdateIgnoreRepeatClickTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001 start";
+    sptr<MockAccessibleAbilityManagerConfigObserverStub> stub = new MockAccessibleAbilityManagerConfigObserverStub();
+    sptr<IAccessibleAbilityManagerConfigObserver> state = new MockAccessibleAbilityManagerConfigObserverProxy(stub);
+
+    uint32_t ret = Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterConfigObserver(state);
+    EXPECT_EQ(ret, 0);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateIgnoreRepeatClickTime();
+    EXPECT_NE(stub_.GetRefPtr(), nullptr);
+    GTEST_LOG_(INFO) << "AccessibleAbility_ManagerService_UnitTest_UpdateIgnoreRepeatClickTime_001 end";
 }
 
 /**

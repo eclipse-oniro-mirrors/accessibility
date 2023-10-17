@@ -62,8 +62,12 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
         NotifyStateChanged2JS(value.animationOff);
     } else if (configId_ == CONFIG_AUDIO_MONO) {
         NotifyStateChanged2JS(value.audioMono);
-    } else {
-        HILOG_DEBUG("on config changed invalid parameter id = [%{public}d]", static_cast<int32_t>(configId_));
+    } else if (configId_ == CONIFG_CLICK_RESPONSE_TIME) {
+        NotifyStringChanged2JS(ConvertClickResponseTimeTypeToString(value.clickResponseTime));
+    } else if (configId_ == CONFIG_IGNORE_REPEAT_CLICK_TIME) {
+        NotifyStringChanged2JS(ConvertIgnoreRepeatClickTimeTypeToString(value.ignoreRepeatClickTime));
+    } else if (configId_ == CONFIG_IGNORE_REPEAT_CLICK_STATE) {
+        NotifyStateChanged2JS(value.ignoreRepeatClickState);
     }
 }
 

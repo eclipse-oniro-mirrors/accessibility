@@ -84,6 +84,9 @@ public:
     RetError SetContentTimeout(const uint32_t time) override;
     RetError SetBrightnessDiscount(const float discount) override;
     RetError SetAudioBalance(const float balance) override;
+    RetError SetClickResponseTime(const uint32_t time) override;
+    RetError SetIgnoreRepeatClickState(const bool state) override;
+    RetError SetIgnoreRepeatClickTime(const uint32_t time) override;
 
     RetError GetScreenMagnificationState(bool &state) override;
     RetError GetShortKeyState(bool &state) override;
@@ -99,6 +102,9 @@ public:
     RetError GetContentTimeout(uint32_t &timer) override;
     RetError GetBrightnessDiscount(float &brightness) override;
     RetError GetAudioBalance(float &balance) override;
+    RetError GetClickResponseTime(uint32_t &time) override;
+    RetError GetIgnoreRepeatClickState(bool &state) override;
+    RetError GetIgnoreRepeatClickTime(uint32_t &time) override;
     void GetAllConfigs(AccessibilityConfigData &configData) override;
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId) override;
@@ -126,6 +132,9 @@ private:
     float audioBalance_ = 0.0;
     float brightnessDiscount_ = 0.0;
     std::string shortkeyTarget_ = "";
+    uint32_t clickResponseTime_ = 0;
+    bool ignoreRepeatClickState_ = false;
+    uint32_t ignoreRepeatClickTime_ = 0;
     AccessibilityConfig::CaptionProperty captionProperty_ = {};
 };
 } // namespace Accessibility

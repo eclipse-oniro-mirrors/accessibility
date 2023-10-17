@@ -1611,6 +1611,84 @@ RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
+{
+    HILOG_INFO("click response time = [%{public}u]", time);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetClickResponseTime:" + to_string(time));
+
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        RetError ret = accountData->GetConfig()->SetClickResponseTime(time);
+        syncPromise.set_value(ret);
+        UpdateClickResponseTime();
+        }), "TASK_SET_CLICK_RESPONSE_TIME");
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
+{
+    HILOG_INFO("ignore repeat click state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickState:" + to_string(state));
+
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickState(state);
+        syncPromise.set_value(ret);
+        UpdateConfigState();
+        }), "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    HILOG_INFO("click response time = [%{public}u]", time);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickTime:" + to_string(time));
+
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickTime(time);
+        syncPromise.set_value(ret);
+        UpdateIgnoreRepeatClickTime();
+        }), "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
+    return syncFuture.get();
+}
+
 RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
     HILOG_DEBUG();
@@ -1903,6 +1981,66 @@ RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
+{
+    HILOG_DEBUG();
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        time = accountData->GetConfig()->GetClickResponseTime();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_CLICK_RESPONSE_TIME");
+
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
+{
+    HILOG_DEBUG();
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        state = accountData->GetConfig()->GetIgnoreRepeatClickState();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
+
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
+{
+    HILOG_DEBUG();
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
+
+    return syncFuture.get();
+}
+
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
 {
     HILOG_DEBUG();
@@ -2180,6 +2318,44 @@ void AccessibleAbilityManagerService::UpdateShortkeyTarget()
             }
         }
         }), "UpdateShortkeyTarget");
+}
+
+void AccessibleAbilityManagerService::UpdateClickResponseTime()
+{
+    handler_->PostTask(std::bind([this]() -> void {
+        HILOG_INFO("UpdateClickResponseTime.");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            return;
+        }
+
+        uint32_t time = accountData->GetConfig()->GetClickResponseTime();
+        for (auto &callback : accountData->GetConfigCallbacks()) {
+            if (callback) {
+                callback->OnClickResponseTimeChanged(time);
+            }
+        }
+        }), "UpdateClickResponseTime");
+}
+
+void AccessibleAbilityManagerService::UpdateIgnoreRepeatClickTime()
+{
+    handler_->PostTask(std::bind([this]() -> void {
+        HILOG_INFO("UpdateIgnoreRepeatClickTime.");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            return;
+        }
+
+        uint32_t time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
+        for (auto &callback : accountData->GetConfigCallbacks()) {
+            if (callback) {
+                callback->OnIgnoreRepeatClickTimeChanged(time);
+            }
+        }
+        }), "UpdateIgnoreRepeatClickTime");
 }
 
 void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
