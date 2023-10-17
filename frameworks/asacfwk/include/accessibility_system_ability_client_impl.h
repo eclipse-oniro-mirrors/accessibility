@@ -141,6 +141,15 @@ public:
     void OnAccessibleAbilityManagerStateChanged(const uint32_t stateType);
 
     /**
+     * @brief Set the accessibility state.
+     * @param stateType The state type and value.
+     *                  state type: Refer to AccessibilityStateEventType.
+     *                  value: STATE_ACCESSIBILITY_ENABLED/STATE_EXPLORATION_ENABLED/
+     *                         STATE_ACCESSIBILITY_DISABLED/STATE_EXPLORATION_DISABLED
+     */
+    void SetAccessibilityState(const uint32_t stateType);
+
+    /**
      * @brief Set the element information by accessibility id to AA.
      * @param infos The element info searched by accessibility id.
      * @param requestId The request id from AA, it is used to match with request and response.
@@ -177,6 +186,13 @@ public:
      * @param requestId The request id from AA, it is used to match with request and response.
      */
     virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+
+    virtual uint32_t GetAccessibilityState() override;
+    virtual void SetFindAccessibilityNodeInfoResult(const AccessibilityElementInfo elementInfo,
+        const int32_t requestId, const int32_t requestCode) override;
+    virtual void SetFindAccessibilityNodeInfosResult(const std::list<AccessibilityElementInfo> elementInfos,
+        const int32_t requestId, const int32_t requestCode) override;
+    virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) override;
 
 private:
     class AccessibleAbilityManagerStateObserverImpl : public AccessibleAbilityManagerStateObserverStub {
@@ -232,6 +248,7 @@ private:
     static void OnParameterChanged(const char *key, const char *value, void *context);
     void ReregisterElementOperator();
 
+    uint32_t state_;
     std::mutex mutex_;
     StateArray stateArray_;
     StateObserversArray stateObserversArray_;

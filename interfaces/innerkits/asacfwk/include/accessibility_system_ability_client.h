@@ -134,6 +134,13 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError GetEnabledAbilities(std::vector<std::string> &enabledAbilities) = 0;
+
+    virtual uint32_t GetAccessibilityState() = 0;
+    virtual void SetFindAccessibilityNodeInfoResult(const AccessibilityElementInfo elementInfo,
+        const int32_t requestId, const int32_t requestCode) = 0;
+    virtual void SetFindAccessibilityNodeInfosResult(const std::list<AccessibilityElementInfo> elementInfos,
+        const int32_t requestId, const int32_t requestCode) = 0;
+    virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

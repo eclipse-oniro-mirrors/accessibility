@@ -479,13 +479,8 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
             HILOG_ERROR("Get current account data failed!!");
             return;
         }
-        if (accountData->GetAccessibilityWindowConnection(windowId)) {
-            Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-                A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-            HILOG_WARN("This operation already exists, do not register twice!!");
-            return;
-        }
-
+        sptr<AccessibilityWindowConnection> oldConnection = accountData->GetAccessibilityWindowConnection(windowId);
+        DeleteConnectionAndDeathRecipient(windowId, oldConnection);
         sptr<AccessibilityWindowConnection> connection =
             new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);
         if (!connection) {
@@ -512,6 +507,40 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
         }
         }), "TASK_REGISTER_ELEMENT_OPERATOR");
     return RET_OK;
+}
+
+void AccessibleAbilityManagerService::DeleteConnectionAndDeathRecipient(
+    const int32_t windowId, const sptr<AccessibilityWindowConnection> &connection)
+{
+    HILOG_DEBUG();
+    if (!connection) {
+        HILOG_ERROR("connection is nullptr");
+        return;
+    }
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+        HILOG_ERROR("Get current account data failed!!");
+        return;
+    }
+
+    accountData->RemoveAccessibilityWindowConnection(windowId);
+    if (!connection->GetProxy()) {
+        HILOG_WARN("proxy is null");
+        return;
+    }
+    auto object = connection->GetProxy()->AsObject();
+    if (object) {
+        auto iter = interactionOperationDeathRecipients_.find(windowId);
+        if (iter != interactionOperationDeathRecipients_.end()) {
+            sptr<IRemoteObject::DeathRecipient> deathRecipient = iter->second;
+            bool result = object->RemoveDeathRecipient(deathRecipient);
+            HILOG_DEBUG("The result of deleting connection's death recipient is %{public}d", result);
+            interactionOperationDeathRecipients_.erase(iter);
+        }
+    }
 }
 
 RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t windowId)
