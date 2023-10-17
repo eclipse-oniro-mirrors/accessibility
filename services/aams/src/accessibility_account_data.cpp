@@ -460,7 +460,6 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
     if (!ret) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
         HILOG_ERROR("Query extension ability information failed.");
-        return false;
     }
     HILOG_DEBUG("query extensionAbilityInfos' size is %{public}zu.", extensionInfos.size());
     for (auto& info : extensionInfos) {
