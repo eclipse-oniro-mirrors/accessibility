@@ -243,6 +243,7 @@ public:
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
+    void UpdateAutoStartEnabledAbilities();
 
     uint32_t GetInputFilterFlag() const;
     void UpdateAbilities();
@@ -253,6 +254,9 @@ public:
     void AddUITestClient(const sptr<IRemoteObject> &obj,
         const std::string &bundleName, const std::string &abilityName);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
+    void SetAbilityAutoStartState(const std::string &name, const bool state);
+    void DelAbilityAutoStartStatePrefKey(const std::string &name);
+    void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
 
 private:
     /**

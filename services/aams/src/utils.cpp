@@ -235,6 +235,14 @@ std::string Utils::GetUri(const std::string &bundleName, const std::string &abil
     return bundleName + "/" + abilityName;
 }
 
+std::string Utils::GetAbilityAutoStartStateKey(const std::string &bundleName, const std::string &abilityName,
+    int32_t accountId)
+{
+    HILOG_DEBUG("bundle name(%{public}s) ability name(%{public}s) accountId(%{public}d)",
+        bundleName.c_str(), abilityName.c_str(), accountId);
+    return bundleName + "/" + abilityName + "/" + std::to_string(accountId);
+}
+
 void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
     const std::string &bundleName, const std::string &abilityName)
 {

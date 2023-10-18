@@ -50,6 +50,8 @@ public:
     static int64_t GetSystemTime();
     static std::string GetUri(const OHOS::AppExecFwk::ElementName &elementName);
     static std::string GetUri(const std::string &bundleName, const std::string &abilityName);
+    static std::string GetAbilityAutoStartStateKey(const std::string &bundleName, const std::string &abilityName,
+        int32_t accountId);
     static void RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordStartingA11yEvent(uint32_t flag);

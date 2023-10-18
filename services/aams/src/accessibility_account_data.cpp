@@ -209,7 +209,7 @@ void AccessibilityAccountData::AddEnabledAbility(const std::string &name)
 
 RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 {
-    HILOG_DEBUG("AddEnabledAbility start");
+    HILOG_DEBUG("RemoveEnabledAbility start");
     for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
         if (*it == name) {
             HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
@@ -400,6 +400,41 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
     isScreenMagnification_ = false;
 }
 
+void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name, const bool state)
+{
+    HILOG_DEBUG("start and name[%{public}s], state = [%{public}s].", name.c_str(), state ? "True" : "False");
+    if (!config_) {
+        config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
+    }
+    config_->SetAbilityAutoStartState(name, state);
+}
+
+void AccessibilityAccountData::DelAbilityAutoStartStatePrefKey(const std::string &name)
+{
+    HILOG_DEBUG("start and name[%{public}s]].", name.c_str());
+    if (!config_) {
+        config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
+    }
+    config_->DelAbilityAutoStartStatePrefKey(name);
+}
+
+void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
+{
+    HILOG_ERROR("start and bundleName[%{public}s].", bundleName.c_str());
+    if (installedAbilities_.empty()) {
+        HILOG_DEBUG("There is no installed abilities.");
+        return;
+    }
+    for (auto &installAbility : installedAbilities_) {
+        if (installAbility.GetPackageName() == bundleName) {
+            std::string abilityName = installAbility.GetName();
+            std::string uri = Utils::GetUri(bundleName, abilityName);
+            DelAbilityAutoStartStatePrefKey(uri);
+            break;
+        }
+    }
+}
+
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
 {
     HILOG_DEBUG("start and name[%{public}s] capabilities[%{public}d]", name.c_str(), capabilities);
@@ -437,6 +472,7 @@ RetError AccessibilityAccountData::EnableAbility(const std::string &name, const 
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableAbility:" + name);
 
     enabledAbilities_.push_back(name);
+    SetAbilityAutoStartState(name, true);
     UpdateAbilities();
     Utils::RecordStartingA11yEvent(name);
     return RET_OK;
@@ -573,6 +609,36 @@ void AccessibilityAccountData::UpdateImportantEnabledAbilities(
     }
 }
 
+void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
+{
+    HILOG_DEBUG();
+    if (id_ == -1) {
+        HILOG_DEBUG("Current user is -1.");
+        return;
+    }
+    if (installedAbilities_.empty()) {
+        HILOG_DEBUG("Current user has no installedAbilities.");
+        return;
+    }
+    if (!config_) {
+        HILOG_DEBUG("config_ is null.");
+        return;
+    }
+    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+    for (auto &installAbility : installedAbilities_) {
+        std::string bundleName = installAbility.GetPackageName();
+        std::string abilityName = installAbility.GetName();
+        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
+            bundleName.c_str(), abilityName.c_str());
+
+        std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, abilityName, id_);
+        if (config_->GetAbilityAutoStartState(strAutoStartStateKey)) {
+            std::string uri = Utils::GetUri(bundleName, abilityName);
+            AddEnabledAbility(uri);
+        }
+    }
+}
+
 uint32_t AccessibilityAccountData::GetInputFilterFlag() const
 {
     HILOG_DEBUG();
@@ -697,6 +763,15 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
                 std::make_shared<AccessibilityAbilityInfo>(initParams);
             AddInstalledAbility(*accessibilityInfo);
             hasNewExtensionAbility = true;
+
+            std::string tmpAbilityName = accessibilityInfo->GetName();
+            std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, tmpAbilityName, id_);
+            if (config_ != nullptr && config_->GetAbilityAutoStartState(strAutoStartStateKey)) {
+                std::string uri = Utils::GetUri(bundleName, tmpAbilityName);
+                AddEnabledAbility(uri);
+                RemoveConnectingA11yAbility(uri);
+            }
+            break;
         }
     }
 
