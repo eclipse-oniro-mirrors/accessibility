@@ -280,6 +280,24 @@ RetError MockAccessibleAbilityManagerServiceStub::SetAudioBalance(const float ba
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::SetClickResponseTime(const uint32_t time)
+{
+    clickResponseTime_ = time;
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickState(const bool state)
+{
+    ignoreRepeatClickState_ = state;
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    ignoreRepeatClickTime_ = time;
+    return RET_OK;
+}
+
 RetError MockAccessibleAbilityManagerServiceStub::GetScreenMagnificationState(bool &state)
 {
     state = screenMagnifier_;
@@ -364,6 +382,24 @@ RetError MockAccessibleAbilityManagerServiceStub::GetAudioBalance(float &balance
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::GetClickResponseTime(uint32_t &time)
+{
+    time = clickResponseTime_;
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickState(bool &state)
+{
+    state = ignoreRepeatClickState_;
+    return RET_OK;
+}
+
+RetError MockAccessibleAbilityManagerServiceStub::GetIgnoreRepeatClickTime(uint32_t &time)
+{
+    time = ignoreRepeatClickTime_;
+    return RET_OK;
+}
+
 void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigData &configData)
 {
     configData.highContrastText_ = true;
@@ -381,6 +417,9 @@ void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigD
     configData.brightnessDiscount_ = BRIGHTNESS_DISCOUNT_VALUE;
     configData.audioBalance_ = -1;
     configData.shortkeyTarget_ = "test";
+    configData.clickResponseTime_ = 1;
+    configData.ignoreRepeatClickState_ = false;
+    configData.ignoreRepeatClickTime_ = 1;
 }
 
 void MockAccessibleAbilityManagerServiceStub::RegisterEnableAbilityListsObserver(

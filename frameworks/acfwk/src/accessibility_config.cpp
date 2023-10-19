@@ -180,6 +180,24 @@ Accessibility::RetError AccessibilityConfig::SetAudioBalance(const float balance
     return pImpl_->SetAudioBalance(balance);
 }
 
+Accessibility::RetError AccessibilityConfig::SetClickResponseTime(const CLICK_RESPONSE_TIME time)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetClickResponseTime(time);
+}
+
+Accessibility::RetError AccessibilityConfig::SetIgnoreRepeatClickState(const bool state)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetIgnoreRepeatClickState(state);
+}
+
+Accessibility::RetError AccessibilityConfig::SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetIgnoreRepeatClickTime(time);
+}
+
 Accessibility::RetError AccessibilityConfig::GetScreenMagnificationState(bool &state) const
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
@@ -274,6 +292,24 @@ Accessibility::RetError AccessibilityConfig::GetAudioBalance(float &balance) con
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->GetAudioBalance(balance);
+}
+
+Accessibility::RetError AccessibilityConfig::GetClickResponseTime(CLICK_RESPONSE_TIME &time) const
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetClickResponseTime(time);
+}
+
+Accessibility::RetError AccessibilityConfig::GetIgnoreRepeatClickState(bool &state) const
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetIgnoreRepeatClickState(state);
+}
+
+Accessibility::RetError AccessibilityConfig::GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time) const
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetIgnoreRepeatClickTime(time);
 }
 } // Accessibility
 } // OHOS

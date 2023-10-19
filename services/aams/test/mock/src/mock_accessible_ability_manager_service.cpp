@@ -316,6 +316,24 @@ RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
+{
+    (void)time;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
+{
+    (void)state;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    (void)time;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
     state = true;
@@ -397,6 +415,24 @@ RetError AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightnes
 RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
     balance = 0.0f;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
+{
+    time = 0;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
+{
+    state = true;
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
+{
+    time = 0;
     return RET_OK;
 }
 

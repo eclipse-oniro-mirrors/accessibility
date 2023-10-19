@@ -118,6 +118,9 @@ public:
     virtual RetError SetContentTimeout(const uint32_t time) override;
     virtual RetError SetBrightnessDiscount(const float discount) override;
     virtual RetError SetAudioBalance(const float balance) override;
+    virtual RetError SetClickResponseTime(const uint32_t time) override;
+    virtual RetError SetIgnoreRepeatClickState(const bool state) override;
+    virtual RetError SetIgnoreRepeatClickTime(const uint32_t time) override;
 
     virtual RetError GetScreenMagnificationState(bool &state) override;
     virtual RetError GetShortKeyState(bool &state) override;
@@ -133,6 +136,9 @@ public:
     virtual RetError GetContentTimeout(uint32_t &timer) override;
     virtual RetError GetBrightnessDiscount(float &brightness) override;
     virtual RetError GetAudioBalance(float &balance) override;
+    virtual RetError GetClickResponseTime(uint32_t& time) override;
+    virtual RetError GetIgnoreRepeatClickState(bool& state) override;
+    virtual RetError GetIgnoreRepeatClickTime(uint32_t& time) override;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) override;
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     virtual void GetRealWindowAndElementId(int32_t& windowId, int& elementId) override;

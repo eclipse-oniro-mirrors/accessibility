@@ -155,6 +155,33 @@ declare namespace config {
   let captionsStyle: Config<accessibility.CaptionsStyle>;
 
   /**
+   * Indicates the configuration of click response time.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 11
+   */
+  const clickResponseTime: Config<ClickResponseTime>;
+
+  /**
+   * Indicates the configuration of ignore repeat click.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 11
+   */
+  const ignoreRepeatClick: Config<boolean>;
+
+  /**
+   * Indicates the configuration of ignore repeat click time.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 11
+   */
+  const ignoreRepeatClickTime: Config<IgnoreRepeatClickTime>;
+
+  /**
    * Enable the accessibility extension ability.
    *
    * @param { string } name Indicates the accessibility extension name, in "bundleName/abilityName" format.
@@ -340,5 +367,19 @@ declare namespace config {
    * @systemapi
    */
   type DaltonizationColorFilter = 'Normal' | 'Protanomaly' | 'Deuteranomaly' | 'Tritanomaly';
+
+  /**
+   * Indicates the type of click response time.
+   *
+   * @systemapi
+   */
+  type ClickResponseTime = 'Short' | 'Medium' | 'Long';
+
+  /**
+   * Indicates the type of ignore repeat click time.
+   *
+   * @systemapi
+   */
+  type IgnoreRepeatClickTime = 'Shortest' | 'Short' | 'Medium' | 'Long' | 'Longest';
 }
 export default config;

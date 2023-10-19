@@ -340,6 +340,63 @@ static napi_value InitCaptionsStyle(napi_env env)
     return captionsStyleValue;
 }
 
+static napi_value InitClickResponseTime(napi_env env)
+{
+    napi_value clickResponseTimeValue;
+    napi_create_object(env, &clickResponseTimeValue);
+    NAPI_CALL(env, napi_define_properties(env, clickResponseTimeValue,
+                                          sizeof(configDesc) / sizeof(configDesc[0]),
+                                          configDesc));
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONIFG_CLICK_RESPONSE_TIME);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
+    nativeObj->SetEnv(env);
+    NAPI_CALL(env, napi_wrap(env, clickResponseTimeValue, reinterpret_cast<void*>(nativeObj),
+                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+    return clickResponseTimeValue;
+}
+
+static napi_value InitIgnoreRepeatClickState(napi_env env)
+{
+    napi_value ignoreRepeatClickStateValue;
+    napi_create_object(env, &ignoreRepeatClickStateValue);
+    NAPI_CALL(env, napi_define_properties(env, ignoreRepeatClickStateValue,
+                                          sizeof(configDesc) / sizeof(configDesc[0]),
+                                          configDesc));
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_IGNORE_REPEAT_CLICK_STATE);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
+    nativeObj->SetEnv(env);
+    NAPI_CALL(env, napi_wrap(env, ignoreRepeatClickStateValue, reinterpret_cast<void*>(nativeObj),
+                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+    return ignoreRepeatClickStateValue;
+}
+
+static napi_value InitIgnoreRepeatClickTime(napi_env env)
+{
+    napi_value ignoreRepeatClickTimeValue;
+    napi_create_object(env, &ignoreRepeatClickTimeValue);
+    NAPI_CALL(env, napi_define_properties(env, ignoreRepeatClickTimeValue,
+                                          sizeof(configDesc) / sizeof(configDesc[0]),
+                                          configDesc));
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_IGNORE_REPEAT_CLICK_TIME);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
+    nativeObj->SetEnv(env);
+    NAPI_CALL(env, napi_wrap(env, ignoreRepeatClickTimeValue, reinterpret_cast<void*>(nativeObj),
+                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+    return ignoreRepeatClickTimeValue;
+}
+
 static napi_value InitConfigModule(napi_env env, napi_value exports)
 {
     napi_value highContrastTextValue = InitHighContrastText(env);
@@ -380,6 +437,9 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("shortkeyTarget", shortKeyTargetValue),
         DECLARE_NAPI_STATIC_PROPERTY("captions", captionsValue),
         DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", captionsStyleValue),
+        DECLARE_NAPI_STATIC_PROPERTY("clickResponseTime", InitClickResponseTime(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClick", InitIgnoreRepeatClickState(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClickTime", InitIgnoreRepeatClickTime(env)),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));

@@ -58,6 +58,12 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
     if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_TARGET_CHANGED)) {
         return HandleOnShortkeyTargetChanged(data, reply);
     }
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CLICK_RESPONSE_TIME)) {
+        return HandleOnClickResponseTimeChanged(data, reply);
+    }
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_IGNORE_REPEAT_CLICK_TIME)) {
+        return HandleOnIgnoreRepeatClickTimeChanged(data, reply);
+    }
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
@@ -126,6 +132,26 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChange
     HILOG_DEBUG();
     std::string shortkeyTarget = data.ReadString();
     OnShortkeyTargetChanged(shortkeyTarget);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnClickResponseTimeChanged(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG();
+    uint32_t time = data.ReadUint32();
+    OnClickResponseTimeChanged(time);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnIgnoreRepeatClickTimeChanged(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG();
+    uint32_t time = data.ReadUint32();
+    OnIgnoreRepeatClickTimeChanged(time);
 
     return NO_ERROR;
 }

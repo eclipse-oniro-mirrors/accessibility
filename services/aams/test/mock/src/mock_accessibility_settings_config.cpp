@@ -293,6 +293,24 @@ bool AccessibilitySettingsConfig::GetKeyEventObserverState() const
     return filteringKeyEvents_;
 }
 
+uint32_t AccessibilitySettingsConfig::GetClickResponseTime() const
+{
+    HILOG_DEBUG("start.");
+    return clickResponseTime_;
+}
+
+bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
+{
+    HILOG_DEBUG("start.");
+    return ignoreRepeatClickState_;
+}
+
+uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
+{
+    HILOG_DEBUG("start.");
+    return ignoreRepeatClickTime_;
+}
+
 const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
 {
     HILOG_DEBUG("start.");

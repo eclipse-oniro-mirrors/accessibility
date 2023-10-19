@@ -288,6 +288,9 @@ int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
     oss << "contentTimeout:  " << config->GetContentTimeout() << std::endl;
     oss << "brightnessDiscount:  " << config->GetBrightnessDiscount() << std::endl;
     oss << "audioBalance:  " << config->GetAudioBalance() << std::endl;
+    oss << "clickResponseTime:  " << config->GetClickResponseTime() << std::endl;
+    oss << "ignoreRepeatClickState:  " << config->GetIgnoreRepeatClickState() << std::endl;
+    oss << "ignoreRepeatClickTime:  " << config->GetIgnoreRepeatClickTime() << std::endl;
 
     // Dump caption info
     oss << "captionState:  " << config->GetCaptionState() << std::endl;

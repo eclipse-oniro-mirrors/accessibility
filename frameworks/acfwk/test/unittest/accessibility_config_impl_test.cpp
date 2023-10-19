@@ -371,6 +371,57 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetClickResponseTime_002
+ * @tc.name: SetClickResponseTime_002
+ * @tc.desc: Test function SetClickResponseTime GetClickResponseTime
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetClickResponseTime_002 start";
+    CLICK_RESPONSE_TIME time = ResponseDelayMedium;
+    CLICK_RESPONSE_TIME value = ResponseDelayShort;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetClickResponseTime(time);
+    instance.GetClickResponseTime(value);
+    EXPECT_EQ(0, static_cast<uint32_t>(value));
+    GTEST_LOG_(INFO) << "SetClickResponseTime_002 end";
+}
+
+/**
+ * @tc.number: SetIgnoreRepeatClickState_002
+ * @tc.name: SetIgnoreRepeatClickState_002
+ * @tc.desc: Test function SetIgnoreRepeatClickState GetIgnoreRepeatClickState
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_002 start";
+    bool state = true;
+    bool value = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetIgnoreRepeatClickState(state);
+    instance.GetIgnoreRepeatClickState(value);
+    EXPECT_EQ(false, value);
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_002 end";
+}
+
+/**
+ * @tc.number: SetIgnoreRepeatClickTime_002
+ * @tc.name: SetIgnoreRepeatClickTime_002
+ * @tc.desc: Test function SetIgnoreRepeatClickTime SetIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickTime_002 start";
+    IGNORE_REPEAT_CLICK_TIME time = RepeatClickTimeoutShort;
+    IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutShortest;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetIgnoreRepeatClickTime(time);
+    instance.GetIgnoreRepeatClickTime(value);
+    EXPECT_EQ(0, static_cast<uint32_t>(value));
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickTime_002 end";
+}
+
+/**
  * @tc.number: ConnectToService_001
  * @tc.name: ConnectToService_001
  * @tc.desc: Test function ConnectToService
@@ -699,6 +750,60 @@ HWTEST_F(AccessibilityConfigImplTest, SetAudioBalance_001, TestSize.Level1)
     EXPECT_FLOAT_EQ(balance, value);
     sleep(1);
     GTEST_LOG_(INFO) << "SetAudioBalance_001 end";
+}
+
+/**
+ * @tc.number: SetClickResponseTime_001
+ * @tc.name: SetClickResponseTime_001
+ * @tc.desc: Test function SetClickResponseTime GetClickResponseTime
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetClickResponseTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetClickResponseTime_001 start";
+    CLICK_RESPONSE_TIME time = ResponseDelayMedium;
+    CLICK_RESPONSE_TIME value = ResponseDelayShort;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SetClickResponseTime(time);
+    instance.GetClickResponseTime(value);
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
+    GTEST_LOG_(INFO) << "SetClickResponseTime_001 end";
+}
+
+/**
+ * @tc.number: SetIgnoreRepeatClickState_001
+ * @tc.name: SetIgnoreRepeatClickState_001
+ * @tc.desc: Test function SetIgnoreRepeatClickState GetIgnoreRepeatClickState
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_001 start";
+    bool state = true;
+    bool value = false;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SetIgnoreRepeatClickState(state);
+    instance.GetIgnoreRepeatClickState(value);
+    EXPECT_EQ(true, value);
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickState_001 end";
+}
+
+/**
+ * @tc.number: SetIgnoreRepeatClickTime_001
+ * @tc.name: SetIgnoreRepeatClickTime_001
+ * @tc.desc: Test function SetIgnoreRepeatClickTime SetIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetIgnoreRepeatClickTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickTime_001 start";
+    IGNORE_REPEAT_CLICK_TIME time = RepeatClickTimeoutShort;
+    IGNORE_REPEAT_CLICK_TIME value = RepeatClickTimeoutShortest;
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.InitializeContext();
+    instance.SetIgnoreRepeatClickTime(time);
+    instance.GetIgnoreRepeatClickTime(value);
+    EXPECT_EQ(1, static_cast<uint32_t>(value));
+    GTEST_LOG_(INFO) << "SetIgnoreRepeatClickTime_001 end";
 }
 
 /**

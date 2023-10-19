@@ -38,7 +38,8 @@ enum STATE : int32_t {
     DALTONIZATIONSTATE,
     INVERTCOLORSTATE,
     ANIMATIONOFF,
-    AUDIOMONO
+    AUDIOMONO,
+    IGNOREREPEATCLICKSTATE
 };
 
 class AccessibilitySettingsConfig final {
@@ -66,6 +67,9 @@ public:
     RetError SetContentTimeout(const uint32_t time);
     RetError SetBrightnessDiscount(const float discount);
     RetError SetAudioBalance(const float balance);
+    RetError SetClickResponseTime(const uint32_t time);
+    RetError SetIgnoreRepeatClickState(const bool state);
+    RetError SetIgnoreRepeatClickTime(const uint32_t time);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -87,6 +91,9 @@ public:
     float GetBrightnessDiscount() const;
     float GetAudioBalance() const;
     const AccessibilityConfig::CaptionProperty &GetCaptionProperty() const;
+    uint32_t GetClickResponseTime() const;
+    bool GetIgnoreRepeatClickState() const;
+    uint32_t GetIgnoreRepeatClickTime() const;
 
     void UpdateEnabledAbilities(const std::vector<std::string> &vecvalue);
     const std::vector<std::string> &GetEnabledAbilityInfos();
@@ -126,6 +133,9 @@ private:
     uint32_t contentTimeout_ = 0;
     float brightnessDiscount_ = 0.0;
     float audioBalance_ = 0.0;
+    uint32_t clickResponseTime_ = 0;
+    bool ignoreRepeatClickState_ = false;
+    uint32_t ignoreRepeatClickTime_ = 0;
 
     std::vector<std::string> enabledAbilityInfos_; // bundleName/abilityName/capabilities
 

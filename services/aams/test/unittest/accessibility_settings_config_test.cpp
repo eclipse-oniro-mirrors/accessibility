@@ -690,6 +690,93 @@ HWTEST_F(AccessibilitySettingsConfigTest, AccessibilitySettingsConfig_Unittest_S
 }
 
 /**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetClickResponseTime_001
+ * @tc.name: SetClickResponseTime
+ * @tc.desc: Test function SetClickResponseTime GetClickResponseTime
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetClickResponseTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetClickResponseTime(1);
+    EXPECT_EQ(1, settingConfig_->GetClickResponseTime());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002
+ * @tc.name: SetClickResponseTime
+ * @tc.desc: Test function SetClickResponseTime GetClickResponseTime
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002 start";
+    settingConfig_->SetClickResponseTime(1);
+    EXPECT_EQ(1, settingConfig_->GetClickResponseTime());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetClickResponseTime_002 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_001
+ * @tc.name: SetIgnoreRepeatClickState
+ * @tc.desc: Test function SetIgnoreRepeatClickState GetIgnoreRepeatClickState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetIgnoreRepeatClickState(true);
+    EXPECT_EQ(true, settingConfig_->GetIgnoreRepeatClickState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002
+ * @tc.name: SetIgnoreRepeatClickState
+ * @tc.desc: Test function SetIgnoreRepeatClickState GetIgnoreRepeatClickState
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 start";
+    settingConfig_->SetIgnoreRepeatClickState(true);
+    EXPECT_EQ(true, settingConfig_->GetIgnoreRepeatClickState());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickState_002 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_001
+ * @tc.name: SetIgnoreRepeatClickTime
+ * @tc.desc: Test function SetIgnoreRepeatClickTime GetIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_001 start";
+    settingConfig_->Init();
+    settingConfig_->SetIgnoreRepeatClickTime(1);
+    EXPECT_EQ(1, settingConfig_->GetIgnoreRepeatClickTime());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_001 end";
+}
+
+/**
+ * @tc.number: AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002
+ * @tc.name: SetIgnoreRepeatClickTime
+ * @tc.desc: Test function SetIgnoreRepeatClickTime GetIgnoreRepeatClickTime
+ */
+HWTEST_F(AccessibilitySettingsConfigTest,
+    AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002 start";
+    settingConfig_->SetIgnoreRepeatClickTime(1);
+    EXPECT_EQ(1, settingConfig_->GetIgnoreRepeatClickTime());
+    GTEST_LOG_(INFO) << "AccessibilitySettingsConfig_Unittest_SetIgnoreRepeatClickTime_002 end";
+}
+
+/**
  * @tc.number: AccessibilitySettingsConfig_Unittest_UpdateEnabledAbilities_001
  * @tc.name: UpdateEnabledAbilities
  * @tc.desc: Test function UpdateEnabledAbilities

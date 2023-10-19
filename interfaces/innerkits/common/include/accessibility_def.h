@@ -32,6 +32,19 @@ enum DALTONIZATION_TYPE : uint32_t {
     Tritanomaly,
 };
 
+enum CLICK_RESPONSE_TIME : uint32_t {
+    ResponseDelayShort = 0,
+    ResponseDelayMedium,
+    ResponseDelayLong,
+};
+
+enum IGNORE_REPEAT_CLICK_TIME : uint32_t {
+    RepeatClickTimeoutShortest = 0,
+    RepeatClickTimeoutShort,
+    RepeatClickTimeoutMedium,
+    RepeatClickTimeoutLong,
+    RepeatClickTimeoutLongest,
+};
 }
 }
 

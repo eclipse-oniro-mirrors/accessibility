@@ -40,6 +40,9 @@ enum CONFIG_ID : int32_t {
     CONFIG_SHORT_KEY_TARGET,
     CONFIG_MOUSE_AUTOCLICK,
     CONFIG_DALTONIZATION_STATE,
+    CONIFG_CLICK_RESPONSE_TIME,
+    CONFIG_IGNORE_REPEAT_CLICK_STATE,
+    CONFIG_IGNORE_REPEAT_CLICK_TIME,
     CONFIG_ID_MAX,
 };
 
@@ -60,6 +63,9 @@ struct ConfigValue {
     float audioBalance;
     std::string shortkey_target;
     CaptionProperty captionStyle;
+    CLICK_RESPONSE_TIME clickResponseTime;
+    bool ignoreRepeatClickState;
+    IGNORE_REPEAT_CLICK_TIME ignoreRepeatClickTime;
 };
 
 class AccessibilityConfigObserver {
@@ -261,6 +267,27 @@ public:
     Accessibility::RetError SetAudioBalance(const float balance);
 
     /**
+     * @brief Set click response time
+     * @param time The value of the click response time
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetClickResponseTime(const CLICK_RESPONSE_TIME time);
+
+    /**
+     * @brief Set ignore repeat click state
+     * @param state The value of the ignore repeat click state
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetIgnoreRepeatClickState(const bool state);
+
+    /**
+     * @brief Set ignore repeat click time
+     * @param time The value of the ignore repeat click time
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetIgnoreRepeatClickTime(const IGNORE_REPEAT_CLICK_TIME time);
+
+    /**
      * @brief Get the status of whether the magnification function is enabled
      * @param state(out) true:the magnification function is enabled; false:the magnification function is disabled
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
@@ -373,6 +400,27 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     Accessibility::RetError GetAudioBalance(float &balance) const;
+
+    /**
+     * @brief Get the value of the click response time
+     * @param time(out) The value of the click response time
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetClickResponseTime(CLICK_RESPONSE_TIME &time) const;
+
+    /**
+     * @brief Get the value of the ignore repeat click state
+     * @param time(out) The value of the ignore repeat click state
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetIgnoreRepeatClickState(bool &state) const;
+
+    /**
+     * @brief Get the value of the ignore repeat click time
+     * @param time(out) The value of the ignore repeat click time
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetIgnoreRepeatClickTime(IGNORE_REPEAT_CLICK_TIME &time) const;
 
 private:
     class Impl;

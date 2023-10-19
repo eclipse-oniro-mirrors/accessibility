@@ -142,6 +142,9 @@ private:
     ErrCode HandleSetContentTimeout(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetAudioBalance(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetClickResponseTime(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetIgnoreRepeatClickState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetIgnoreRepeatClickTime(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleGetScreenMagnificationState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetShortKeyState(MessageParcel &data, MessageParcel &reply);
@@ -157,6 +160,9 @@ private:
     ErrCode HandleGetContentTimeout(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetBrightnessDiscount(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAudioBalance(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetClickResponseTime(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetIgnoreRepeatClickState(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetIgnoreRepeatClickTime(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAllConfigs(MessageParcel &data, MessageParcel &reply);
 
     ErrCode HandleRegisterEnableAbilityListsObserver(MessageParcel &data, MessageParcel &reply);

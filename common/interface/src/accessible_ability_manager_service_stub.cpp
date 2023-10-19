@@ -61,6 +61,18 @@ void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleSetCaptionProperty;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CAPTION_STATE)] =
         &AccessibleAbilityManagerServiceStub::HandleSetCaptionState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_CLICK_RESPONSE_TIME)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetClickResponseTime;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_IGNORE_REPEAT_CLICK_TIME)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickTime;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_CLICK_RESPONSE_TIME)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetClickResponseTime;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_STATE)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickState;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_TIME)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime;
 }
 
 void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
@@ -812,6 +824,51 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetAudioBalance(MessageParcel
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetClickResponseTime(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    uint32_t time = data.ReadUint32();
+
+    reply.WriteInt32(SetClickResponseTime(time));
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    bool state = data.ReadBool();
+
+    reply.WriteInt32(SetIgnoreRepeatClickState(state));
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetIgnoreRepeatClickTime(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+    uint32_t time = data.ReadUint32();
+
+    reply.WriteInt32(SetIgnoreRepeatClickTime(time));
+
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetScreenMagnificationState(
     MessageParcel& data, MessageParcel& reply)
 {
@@ -1045,6 +1102,42 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAudioBalance(MessageParcel
     reply.WriteInt32(ret);
     if (ret == RET_OK) {
         reply.WriteFloat(result);
+    }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetClickResponseTime(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    uint32_t result = 0;
+    RetError ret = GetClickResponseTime(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteUint32(result);
+    }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickState(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    bool result = 0;
+    RetError ret = GetIgnoreRepeatClickState(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteBool(result);
+    }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    uint32_t result = 0;
+    RetError ret = GetIgnoreRepeatClickTime(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteUint32(result);
     }
     return NO_ERROR;
 }

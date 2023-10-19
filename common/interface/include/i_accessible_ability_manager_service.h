@@ -49,6 +49,9 @@ struct AccessibilityConfigData {
     float brightnessDiscount_ = 0.0;
     float audioBalance_ = 0.0;
     std::string shortkeyTarget_ = "";
+    uint32_t clickResponseTime_ = 0;
+    bool ignoreRepeatClickState_ = false;
+    uint32_t ignoreRepeatClickTime_ = 0;
     AccessibilityConfig::CaptionProperty captionProperty_ = {};
 };
 
@@ -136,6 +139,9 @@ public:
     virtual RetError SetContentTimeout(const uint32_t time) = 0;
     virtual RetError SetBrightnessDiscount(const float discount) = 0;
     virtual RetError SetAudioBalance(const float balance) = 0;
+    virtual RetError SetClickResponseTime(const uint32_t time) = 0;
+    virtual RetError SetIgnoreRepeatClickState(const bool state) = 0;
+    virtual RetError SetIgnoreRepeatClickTime(const uint32_t time) = 0;
 
     virtual RetError GetScreenMagnificationState(bool &state) = 0;
     virtual RetError GetShortKeyState(bool &state) = 0;
@@ -151,6 +157,9 @@ public:
     virtual RetError GetContentTimeout(uint32_t &timer) = 0;
     virtual RetError GetBrightnessDiscount(float &brightness) = 0;
     virtual RetError GetAudioBalance(float &balance) = 0;
+    virtual RetError GetClickResponseTime(uint32_t& time) = 0;
+    virtual RetError GetIgnoreRepeatClickState(bool& state) = 0;
+    virtual RetError GetIgnoreRepeatClickTime(uint32_t& time) = 0;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) = 0;
     virtual void GetRealWindowAndElementId(int32_t& windowId, int& elementId) = 0;
     virtual void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) = 0;

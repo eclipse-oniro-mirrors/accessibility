@@ -310,15 +310,29 @@ void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
+void NAccessibilityConfig::SetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo)
+{
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME) {
+        auto time = ConvertStringToClickResponseTimeTypes(callbackInfo->stringConfig_);
+        callbackInfo->ret_ = instance.SetClickResponseTime(time);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME) {
+        auto time = ConvertStringToIgnoreRepeatClickTimeTypes(callbackInfo->stringConfig_);
+        callbackInfo->ret_ = instance.SetIgnoreRepeatClickTime(time);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
+        callbackInfo->ret_ = instance.SetIgnoreRepeatClickState(callbackInfo->boolConfig_);
+    }
+}
+
 void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
 {
-    HILOG_INFO();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
 
+    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
@@ -353,9 +367,9 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER) {
         auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
         callbackInfo->ret_ = instance.SetDaltonizationColorFilter(filter);
-    } else {
-        HILOG_ERROR("invalid parameter callbackInfo->id_ = %{public}d", callbackInfo->id_);
     }
+
+    SetScreenTouchConfigExecute(callbackInfo);
 }
 
 void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityConfigData* callbackInfo,
@@ -371,6 +385,7 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE:
             napi_get_boolean(env, callbackInfo->boolConfig_, &result[PARAM1]);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
@@ -383,6 +398,8 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME:
             napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
@@ -430,15 +447,31 @@ void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, v
     callbackInfo = nullptr;
 }
 
+void NAccessibilityConfig::GetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo)
+{
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME) {
+        OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME time;
+        callbackInfo->ret_ = instance.GetClickResponseTime(time);
+        callbackInfo->stringConfig_ = ConvertClickResponseTimeTypeToString(time);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME) {
+        OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME time;
+        callbackInfo->ret_ = instance.GetIgnoreRepeatClickTime(time);
+        callbackInfo->stringConfig_ = ConvertIgnoreRepeatClickTimeTypeToString(time);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE) {
+        callbackInfo->ret_ = instance.GetIgnoreRepeatClickState(callbackInfo->boolConfig_);
+    }
+}
+
 void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
 {
-    HILOG_INFO();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
 
+    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
@@ -476,9 +509,9 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         OHOS::AccessibilityConfig::DALTONIZATION_TYPE type;
         callbackInfo->ret_ = instance.GetDaltonizationColorFilter(type);
         callbackInfo->stringConfig_ = ConvertDaltonizationTypeToString(type);
-    } else {
-        HILOG_ERROR("invalid parameter callbackInfo->id_ = %{public}d", callbackInfo->id_);
     }
+
+    GetScreenTouchConfigExecute(callbackInfo);
 }
 
 NAccessibilityConfigData* NAccessibilityConfig::GetCallbackInfo(napi_env env, napi_callback_info info,
@@ -529,6 +562,15 @@ bool NAccessibilityConfig::ParseMouseAutoClickData(napi_env env, NAccessibilityC
     return ret;
 }
 
+bool NAccessibilityConfig::SetConfigParseBoolData(napi_env env, NAccessibilityConfigData* callbackInfo,
+    napi_value* parameters)
+{
+    bool state = false;
+    bool ret = ParseBool(env, state, parameters[PARAM0]);
+    callbackInfo->boolConfig_ = state;
+    return ret;
+}
+
 bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfigClass* obj,
     NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc)
 {
@@ -543,11 +585,8 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE:
-            {
-                bool state = false;
-                ret = ParseBool(env, state, parameters[PARAM0]);
-                callbackInfo->boolConfig_ = state;
-            }
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE:
+            ret = SetConfigParseBoolData(env, callbackInfo, parameters);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
             ret = ParseConnectTimeoutData(env, callbackInfo, parameters);
@@ -565,6 +604,8 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME:
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME:
             {
                 std::string target = "";
                 ret = ParseString(env, target, parameters[PARAM0]) && target.length() > 0;

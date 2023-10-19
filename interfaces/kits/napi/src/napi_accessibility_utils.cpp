@@ -347,6 +347,36 @@ std::string ConvertDaltonizationTypeToString(OHOS::AccessibilityConfig::DALTONIZ
     return typeTable.at(type);
 }
 
+std::string ConvertClickResponseTimeTypeToString(OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME type)
+{
+    static const std::map<OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME, const std::string> typeTable = {
+        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort, "Short"},
+        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayMedium, "Medium"},
+        {OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong, "Long"}};
+
+    if (typeTable.find(type) == typeTable.end()) {
+        return "";
+    }
+
+    return typeTable.at(type);
+}
+
+std::string ConvertIgnoreRepeatClickTimeTypeToString(OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME type)
+{
+    static const std::map<OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME, const std::string> typeTable = {
+        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest, "Shortest"},
+        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShort, "Short"},
+        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutMedium, "Medium"},
+        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLong, "Long"},
+        {OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest, "Longest"}};
+
+    if (typeTable.find(type) == typeTable.end()) {
+        return "";
+    }
+
+    return typeTable.at(type);
+}
+
 void ConvertAccessibleAbilityInfoToJS(
     napi_env env, napi_value& result, OHOS::Accessibility::AccessibilityAbilityInfo& info)
 {
@@ -733,6 +763,40 @@ OHOS::AccessibilityConfig::DALTONIZATION_TYPE ConvertStringToDaltonizationTypes(
     }
 
     return daltonizationTTypesTable.at(type);
+}
+
+OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME ConvertStringToClickResponseTimeTypes(std::string& type)
+{
+    std::map<const std::string, OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME> clickResponseTimeTypesTable = {
+        {"Short", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort},
+        {"Medium", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayMedium},
+        {"Long", OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayLong},
+    };
+
+    if (clickResponseTimeTypesTable.find(type) == clickResponseTimeTypesTable.end()) {
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
+        return OHOS::AccessibilityConfig::CLICK_RESPONSE_TIME::ResponseDelayShort;
+    }
+
+    return clickResponseTimeTypesTable.at(type);
+}
+
+OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME ConvertStringToIgnoreRepeatClickTimeTypes(std::string& type)
+{
+    std::map<const std::string, OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME> mapTable = {
+        {"Shortest", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest},
+        {"Short", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShort},
+        {"Medium", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutMedium},
+        {"Long", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLong},
+        {"Longest", OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutLongest},
+    };
+
+    if (mapTable.find(type) == mapTable.end()) {
+        HILOG_WARN("invalid key[%{public}s]", type.c_str());
+        return OHOS::AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME::RepeatClickTimeoutShortest;
+    }
+
+    return mapTable.at(type);
 }
 
 TextMoveUnit ConvertStringToTextMoveUnit(const std::string &type)
