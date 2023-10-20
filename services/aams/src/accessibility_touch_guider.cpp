@@ -232,9 +232,14 @@ bool TouchGuider::TouchGuideListener::OnStarted()
     return true;
 }
 
-void TouchGuider::TouchGuideListener::TwoFingerGestureOnStarted()
+void TouchGuider::TouchGuideListener::MultiFingerGestureOnStarted(bool isTwoFingerGesture)
 {
     HILOG_DEBUG();
+
+    if (!isTwoFingerGesture) {
+        server_.currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
+        return;
+    }
 
     server_.CancelPostEventIfNeed(SEND_HOVER_ENTER_MOVE_MSG);
     server_.CancelPostEventIfNeed(SEND_HOVER_EXIT_MSG);
@@ -261,7 +266,7 @@ bool TouchGuider::TouchGuideListener::OnCompleted(GestureType gestureId)
     return true;
 }
 
-void TouchGuider::TouchGuideListener::TwoFingerGestureOnCompleted(GestureType gestureId)
+void TouchGuider::TouchGuideListener::MultiFingerGestureOnCompleted(GestureType gestureId)
 {
     HILOG_DEBUG("gestureId is %{public}d", gestureId);
 
@@ -302,10 +307,13 @@ bool TouchGuider::TouchGuideListener::OnCancelled(MMI::PointerEvent &event)
     return true;
 }
 
-void TouchGuider::TouchGuideListener::TwoFingerGestureOnCancelled(const bool isNoDelayFlag)
+void TouchGuider::TouchGuideListener::MultiFingerGestureOnCancelled(const bool isNoDelayFlag)
 {
     HILOG_DEBUG();
 
+    if (static_cast<TouchGuideState>(server_.currentState_) == TouchGuideState::TRANSMITTING) {
+        server_.currentState_ = static_cast<int32_t>(TouchGuideState::TOUCH_GUIDING);
+    }
     server_.SendAccessibilityEventToAA(EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     server_.CancelPostEvent(EXIT_GESTURE_REC_MSG);
     if (isNoDelayFlag) {
@@ -431,7 +439,8 @@ void TouchGuider::HandleTransmitingState(MMI::PointerEvent &event)
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_UP:
-            if (event.GetPointerIds().size() == POINTER_COUNT_1) {
+            if (event.GetPointerIds().size() == POINTER_COUNT_1 && !IsTouchInteractionEnd() &&
+                !multiFingerGestureRecognizer_.IsMultiFingerRecognize()) {
                 if (longPressPointId_ >= 0) {
                     // Adjust this event's location.
                     MMI::PointerEvent::PointerItem pointer = {};
