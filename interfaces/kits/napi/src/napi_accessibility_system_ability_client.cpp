@@ -1040,7 +1040,7 @@ napi_value NAccessibilityClient::SetCaptionsFontScale(napi_env env, napi_callbac
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc >= ARGS_SIZE_ONE) {
         // Get input FontScale
-        int32_t num = 0;
+        int32_t num = 100;
         OHOS::Accessibility::RetError ret = OHOS::Accessibility::RET_OK;
         if (ParseInt32(env, num, parameters[PARAM0])) {
             HILOG_INFO("FontScale = %{public}d", num);

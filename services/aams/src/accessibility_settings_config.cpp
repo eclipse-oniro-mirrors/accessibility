@@ -463,7 +463,7 @@ void AccessibilitySettingsConfig::InitCaption()
     std::string FONTFAMILY = pref_->GetString("fontFamily", "default");
     HILOG_DEBUG("fontFamily = %{public}s.", FONTFAMILY.c_str());
 
-    int32_t FONTSCALE =  static_cast<int32_t>(pref_->GetInt("fontScale", 0));
+    int32_t FONTSCALE =  static_cast<int32_t>(pref_->GetInt("fontScale", 100));
     HILOG_DEBUG("fontScale = %{public}d.", FONTSCALE);
 
     uint32_t FONTCOLOR = static_cast<uint32_t>(pref_->GetInt("fontColor", DEFAULT_COLOR));
