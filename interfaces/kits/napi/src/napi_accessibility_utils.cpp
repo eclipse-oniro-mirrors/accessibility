@@ -1522,7 +1522,7 @@ bool ConvertObjToCaptionProperty(
 {
     napi_value propertyNameValue = nullptr;
     bool hasProperty = false;
-    int32_t num = 0;
+    int32_t num = 100;
 
     napi_create_string_utf8(env, "fontFamily", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string fontFamily = ConvertCaptionPropertyJSToNAPI(env, object, propertyNameValue, hasProperty);
