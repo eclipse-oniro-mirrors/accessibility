@@ -45,7 +45,12 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
     } else if (configId_ == CONFIG_MOUSE_AUTOCLICK) {
         NotifyIntChanged2JS(value.mouseAutoClick);
     } else if (configId_ == CONFIG_DALTONIZATION_COLOR_FILTER) {
-        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(value.daltonizationColorFilter));
+        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+        DALTONIZATION_TYPE type = Normal;
+        RetError ret = instance.GetDaltonizationColorFilter(type);
+        if (ret == RET_OK) {
+            NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
+        }
     } else if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
