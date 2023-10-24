@@ -31,6 +31,7 @@ public:
         : env_(env), handlerRef_(callback), configId_(id) {};
     void OnConfigChanged(const OHOS::AccessibilityConfig::ConfigValue& value);
 
+    void OnDaltonizationColorFilterConfigChanged();
     void NotifyStateChanged2JS(bool enabled);
     int NotifyStateChanged(uv_work_t *work);
     void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption);
