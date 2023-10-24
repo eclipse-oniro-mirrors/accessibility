@@ -86,6 +86,11 @@ sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t system
     return nullptr;
 }
 
+int32_t GetOnDemandSystemAbilityIds(std::vector<int32_t>& systemAbilityIds)
+{
+    return -1;
+}
+
 sptr<IRemoteObject> SystemAbilityManagerProxy::CheckSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
     return nullptr;
@@ -211,5 +216,15 @@ int32_t SystemAbilityManagerProxy::UpdateOnDemandPolicy(int32_t systemAbilityId,
     const std::vector<SystemAbilityOnDemandEvent>& sabilityOnDemandEvents)
 {
     return -1;
+}
+
+int32_t SystemAbilityManagerProxy::GetOnDemandSystemAbilityIds(std::vector<int32_t>& systemAbilityIds)
+{
+    return -1;
+}
+
+sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
+{
+    return nullptr;
 }
 }

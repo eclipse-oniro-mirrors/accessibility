@@ -73,7 +73,9 @@ ohos_unittest("asac_unit_test") {
     "c_utils:utils",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
+    "init:libbegetutil",
     "ipc:ipc_core",
+    "safwk:dynamic_cache",
   ]
 }
 
