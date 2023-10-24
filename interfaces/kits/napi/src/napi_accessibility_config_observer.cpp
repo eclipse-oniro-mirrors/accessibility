@@ -45,12 +45,7 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
     } else if (configId_ == CONFIG_MOUSE_AUTOCLICK) {
         NotifyIntChanged2JS(value.mouseAutoClick);
     } else if (configId_ == CONFIG_DALTONIZATION_COLOR_FILTER) {
-        auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
-        DALTONIZATION_TYPE type = Normal;
-        RetError ret = instance.GetDaltonizationColorFilter(type);
-        if (ret == RET_OK) {
-            NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
-        }
+        OnDaltonizationColorFilterConfigChanged();
     } else if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
@@ -73,6 +68,19 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
         NotifyStringChanged2JS(ConvertIgnoreRepeatClickTimeTypeToString(value.ignoreRepeatClickTime));
     } else if (configId_ == CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         NotifyStateChanged2JS(value.ignoreRepeatClickState);
+    }
+}
+
+void NAccessibilityConfigObserver::OnDaltonizationColorFilterConfigChanged()
+{
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    DALTONIZATION_TYPE type = Normal;
+    RetError ret = instance.GetDaltonizationColorFilter(type);
+    if (ret == RET_OK) {
+        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
+    } else {
+        NotifyStringChanged2JS(ConvertDaltonizationTypeToString(type));
+        HILOG_ERROR("get DaltonizationColorFilter failed: %{public}d", ret);
     }
 }
 
