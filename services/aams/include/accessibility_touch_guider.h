@@ -237,9 +237,10 @@ private:
         bool OnStarted() override;
 
         /**
-         * @brief Send GESTURE_BEGIN to AccessibleAbility when two finger gesture start.
+         * @brief Send GESTURE_BEGIN to AccessibleAbility when multi finger gesture start.
+         * @param isTwoFingerGesture whether the gesture is triggered by two finger.
          */
-        void TwoFingerGestureOnStarted() override;
+        void MultiFingerGestureOnStarted(bool isTwoFingerGesture) override;
 
         /**
          * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility.
@@ -248,10 +249,10 @@ private:
         bool OnCompleted(GestureType gestureId) override;
 
         /**
-         * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility when two finger gesture complete.
+         * @brief Send GESTURE_END and TOUCH_END to AccessibleAbility when multi finger gesture complete.
          * @param gestureId the id of gesture.
          */
-        void TwoFingerGestureOnCompleted(GestureType gestureId) override;
+        void MultiFingerGestureOnCompleted(GestureType gestureId) override;
 
         /**
          * @brief The gesture has been cancelled.
@@ -263,7 +264,7 @@ private:
          * @brief The gesture has been cancelled.
          * @param isNoDelayFlag  whether the gesture recognize process is immediately canceled.
          */
-        void TwoFingerGestureOnCancelled(const bool isNoDelayFlag) override;
+        void MultiFingerGestureOnCancelled(const bool isNoDelayFlag) override;
     private:
         TouchGuider &server_;
     };
