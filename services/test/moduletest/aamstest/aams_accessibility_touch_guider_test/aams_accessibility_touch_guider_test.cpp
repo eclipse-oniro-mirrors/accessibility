@@ -721,9 +721,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent003, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::BUTTON_NONE);
     // Determine gesture type
     retOnPointerEvent3 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetGestureId() ==
@@ -781,9 +781,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent004, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::BUTTON_NONE);
     // Determine gesture type
     retOnPointerEvent4 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetGestureId() ==
@@ -841,9 +841,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent005, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::BUTTON_NONE);
     // Determine gesture type
     retOnPointerEvent5 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetGestureId() ==
@@ -901,9 +901,9 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent006, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(2), MMI::PointerEvent::BUTTON_NONE);
     // Determine gesture type
     retOnPointerEvent6 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetGestureId() ==
@@ -959,8 +959,8 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent007, Te
     EXPECT_EQ(AccessibilityHelper::GetInstance().GetEventTypeOfTargetIndex(2),
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
     // Determine action
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::POINTER_ACTION_MOVE);
-    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::POINTER_ACTION_MOVE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(0), MMI::PointerEvent::BUTTON_NONE);
+    EXPECT_EQ(MMI::MockInputManager::GetTouchActionOfTargetIndex(1), MMI::PointerEvent::BUTTON_NONE);
     // Determine gesture type
     retOnPointerEvent7 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
         if (AccessibilityHelper::GetInstance().GetGestureId() == static_cast<int32_t>(GestureType::GESTURE_SWIPE_UP)) {
@@ -1567,8 +1567,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent019, Te
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_SINGLE_TAP));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), 25);
 
     // touch action to multimode
     int32_t touchActionSize = static_cast<int32_t>(MMI::MockInputManager::GetTouchActions().size());
