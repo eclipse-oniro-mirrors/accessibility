@@ -120,6 +120,8 @@ private:
     static void SetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo);
     static void GetConfigComplete(napi_env env, napi_status status, void* data);
     static void GetConfigExecute(napi_env env, void* data);
+    static bool CheckReadPermission(const std::string &permission);
+    static bool IsAvailable(napi_env env, napi_callback_info info);
     static void GetScreenTouchConfigExecute(NAccessibilityConfigData* callbackInfo);
     static void EnableAbilityError(size_t& argc, OHOS::Accessibility::RetError& errCode,
         napi_env env, napi_value* parameters, NAccessibilityConfigData* callbackInfo);
