@@ -17,6 +17,7 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_mouse_autoclick.h"
 #include "accessibility_short_key.h"
+#include "accessibility_screen_touch.h"
 #include "accessibility_touch_guider.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_zoom_gesture.h"
@@ -132,7 +133,8 @@ void AccessibilityInputInterceptor::CreateTransmitters()
     if ((availableFunctions_ & FEATURE_MOUSE_AUTOCLICK) ||
         (availableFunctions_ & FEATURE_INJECT_TOUCH_EVENTS) ||
         (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) ||
-        (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
+        (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
+        (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
         CreatePointerEventTransmitters();
     }
     
@@ -187,6 +189,15 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         SetNextEventTransmitter(header, current, touchGuider);
     }
 
+    if (availableFunctions_& FEATURE_SCREEN_TOUCH) {
+        sptr<AccessibilityScreenTouch> screenTouch = new(std::nothrow) AccessibilityScreenTouch();
+        if (!screenTouch) {
+            HILOG_ERROR("screenTouch is null");
+            return;
+        }
+        SetNextEventTransmitter(header, current, screenTouch);
+    }
+
     SetNextEventTransmitter(header, current, instance_);
     pointerEventTransmitters_ = header;
 }
@@ -235,7 +246,8 @@ void AccessibilityInputInterceptor::UpdateInterceptor()
         (availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION) ||
         (availableFunctions_ & FEATURE_FILTER_KEY_EVENTS) ||
         (availableFunctions_ & FEATURE_MOUSE_KEY) ||
-        (availableFunctions_ & FEATURE_SHORT_KEY)) {
+        (availableFunctions_ & FEATURE_SHORT_KEY) ||
+        (availableFunctions_ & FEATURE_SCREEN_TOUCH)) {
         if (interceptorId_ < 0) {
             inputEventConsumer_ = std::make_shared<AccessibilityInputEventConsumer>();
             interceptorId_ = inputManager_->AddInterceptor(inputEventConsumer_);

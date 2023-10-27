@@ -321,6 +321,7 @@ ohos_unittest("accessibility_input_interceptor_test") {
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
     "../src/accessibility_multifinger_multitap.cpp",
+    "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touch_guider.cpp",
     "../src/accessible_ability_manager_service_event_handler.cpp",
@@ -511,6 +512,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_mouse_autoclick.cpp",
     "../src/accessibility_mouse_key.cpp",
     "../src/accessibility_multifinger_multitap.cpp",
+    "../src/accessibility_screen_touch.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",
@@ -857,6 +859,57 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
 }
 
 ################################################################################
+ohos_unittest("accessibility_screen_touch_test") {
+  module_out_path = module_output_path
+  sources = [
+    "../../test/mock/mock_common_event_data.cpp",
+    "../../test/mock/mock_common_event_manager.cpp",
+    "../../test/mock/mock_common_event_subscribe_info.cpp",
+    "../../test/mock/mock_common_event_subscriber.cpp",
+    "../../test/mock/mock_matching_skill.cpp",
+    "mock/src/mock_accessibility_common_event.cpp",
+    "mock/src/mock_accessibility_event_transmission.cpp",
+    "mock/src/mock_accessibility_settings_config.cpp",
+    "mock/src/mock_accessible_ability_client_stub_impl.cpp",
+    "mock/src/mock_system_ability.cpp",
+    "unittest/accessibility_screen_touch_test.cpp",
+  ]
+  sources += aams_mock_distributeddatamgr_src
+
+  configs = [
+    ":module_private_config",
+    "../../../resources/config/build:coverage_flags",
+  ]
+
+  deps = [
+    "../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../third_party/googletest:gtest_main",
+    "../../../common/interface:accessibility_interface",
+    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../aams:accessibleabilityms",
+  ]
+
+  external_deps = [
+    "ability_base:want",
+    "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
+    "hilog:libhilog",
+    "init:libbegetutil",
+    "input:libmmi-client",
+    "ipc:ipc_core",
+    "os_account:domain_account_innerkits",
+    "os_account:os_account_innerkits",
+    "resource_management:global_resmgr",
+    "safwk:system_ability_fwk",
+    "samgr:samgr_proxy",
+    "window_manager:libdm",
+    "window_manager:libwm",
+  ]
+}
+
+################################################################################
 ohos_unittest("accessibility_mouse_key_test") {
   module_out_path = module_output_path
   sources = [
@@ -1054,6 +1107,7 @@ group("unittest") {
     ":accessibility_keyevent_filter_test",
     ":accessibility_mouse_autoclick_test",
     ":accessibility_mouse_key_test",
+    ":accessibility_screen_touch_test",
     ":accessibility_settings_config_test",
     ":accessibility_short_key_test",
     ":accessibility_touch_guider_test",

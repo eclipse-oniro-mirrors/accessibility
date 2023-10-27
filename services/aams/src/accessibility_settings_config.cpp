@@ -310,7 +310,7 @@ bool AccessibilitySettingsConfig::SetStatePrefExec(int32_t type)
         strValue = StateChange(audioMonoState_);
         pref_->PutString("audioMono", strValue);
     } else if (type == STATE::IGNOREREPEATCLICKSTATE) {
-        pref_->PutString("ignoreRepeatClickTime", StateChange(ignoreRepeatClickTime_));
+        pref_->PutString("ignoreRepeatClickState", StateChange(ignoreRepeatClickState_));
     } else {
         ret = false;
         HILOG_ERROR("invalid parameter type = [%{public}d]", type);
@@ -574,8 +574,8 @@ void AccessibilitySettingsConfig::InitSetting()
     strValue = pref_->GetString("audioMono", "");
     audioMonoState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
-    strValue = pref_->GetString("ignoreRepeatClickTime", "");
-    ignoreRepeatClickTime_ = std::strcmp(strValue.c_str(), "on") ? false : true;
+    strValue = pref_->GetString("ignoreRepeatClickState", "");
+    ignoreRepeatClickState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
