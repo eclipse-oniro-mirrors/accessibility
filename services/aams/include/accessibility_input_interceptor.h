@@ -66,6 +66,9 @@ public:
     // Feature flag for mouse key.
     static constexpr uint32_t FEATURE_MOUSE_KEY = 0x00000040;
 
+    // Feature flag for screen touch.
+    static constexpr uint32_t FEATURE_SCREEN_TOUCH = 0x00000080;
+
     static sptr<AccessibilityInputInterceptor> GetInstance();
     ~AccessibilityInputInterceptor();
     void ProcessKeyEvent(std::shared_ptr<MMI::KeyEvent> event) const;

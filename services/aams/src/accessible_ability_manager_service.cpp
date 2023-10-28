@@ -1633,6 +1633,7 @@ RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t ti
         RetError ret = accountData->GetConfig()->SetClickResponseTime(time);
         syncPromise.set_value(ret);
         UpdateClickResponseTime();
+        UpdateInputFilter();
         }), "TASK_SET_CLICK_RESPONSE_TIME");
     return syncFuture.get();
 }
@@ -1659,6 +1660,7 @@ RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool s
         RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickState(state);
         syncPromise.set_value(ret);
         UpdateConfigState();
+        UpdateInputFilter();
         }), "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
     return syncFuture.get();
 }
@@ -1685,6 +1687,7 @@ RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_
         RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickTime(time);
         syncPromise.set_value(ret);
         UpdateIgnoreRepeatClickTime();
+        UpdateInputFilter();
         }), "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
     return syncFuture.get();
 }
