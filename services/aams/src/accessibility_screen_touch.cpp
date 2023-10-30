@@ -105,7 +105,7 @@ uint32_t AccessibilityScreenTouch::GetRealIgnoreRepeatClickTime()
         return iter->second;
     }
 
-    return IGNORE_REPEAT_CLICK_TIME_MAP.at(IGNORE_REPEAT_CLICK_SHORTEST); 
+    return IGNORE_REPEAT_CLICK_TIME_MAP.at(IGNORE_REPEAT_CLICK_SHORTEST);
 }
 
 bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
@@ -355,7 +355,7 @@ bool AccessibilityScreenTouch::OnPointerEvent(MMI::PointerEvent &event)
         return true;
     }
 
-    switch(currentState_) {
+    switch (currentState_) {
         case ScreenTouchState::CLICK_RESPONSE_DELAY_STATE:
             HandleResponseDelayState(event);
             break;
