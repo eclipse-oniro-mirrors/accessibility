@@ -336,7 +336,8 @@ void AccessibilityMultiTapGestureRecognizer::CancelGesture(bool isNoDelayFlag)
 
 bool AccessibilityMultiTapGestureRecognizer::ParamCheck(const int32_t fingerNum)
 {
-    if (lastUpPoint_.size() < fingerNum || firstDownPoint_.size() < fingerNum) {
+    if (static_cast<int32_t>(lastUpPoint_.size()) < fingerNum ||
+        static_cast<int32_t>(firstDownPoint_.size()) < fingerNum) {
         HILOG_ERROR("last_up point or first_down point size is less than target fingerNum");
         return false;
     }
@@ -447,7 +448,7 @@ bool AccessibilityMultiTapGestureRecognizer::IsMultiFingerDoubleTap(MMI::Pointer
     }
 
     std::vector<int32_t> pIds = event.GetPointerIds();
-    if (pIds.size() != fingerNum) {
+    if (static_cast<int32_t>(pIds.size()) != fingerNum) {
         return false;
     }
 
@@ -509,7 +510,8 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiTapEvent(MMI::PointerEve
     HILOG_DEBUG("fingerNum is %d", fingerNum);
 
     // check is double tap
-    if (firstDownPoint_.size() == fingerNum && lastUpPoint_.size() == fingerNum &&
+    if (static_cast<int32_t>(firstDownPoint_.size()) == fingerNum &&
+        static_cast<int32_t>(lastUpPoint_.size()) == fingerNum &&
         IsMultiFingerDoubleTap(event, fingerNum)) {
         HILOG_DEBUG("two finger Double tap is recognized, addContinueTapNum %d", addContinueTapNum_);
         addContinueTapNum_ = (addContinueTapNum_ + 1) % MULTI_FINGER_MAX_CONTINUE_TAP_NUM;
@@ -633,8 +635,8 @@ bool AccessibilityMultiTapGestureRecognizer::GetBasePointItem(MMI::PointerEvent:
 
 void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerMoveEvent(MMI::PointerEvent &event)
 {
-    int32_t pIdSize = event.GetPointerIds().size();
-    int32_t downPointSize = currentDownPoint_.size();
+    int32_t pIdSize = static_cast<int32_t>(event.GetPointerIds().size());
+    int32_t downPointSize = static_cast<int32_t>(currentDownPoint_.size());
     int32_t pId = event.GetPointerId();
     HILOG_DEBUG("pointer num is %d, down pointer size is %d, pointId is %d", pIdSize, downPointSize, pId);
 
@@ -707,7 +709,8 @@ bool AccessibilityMultiTapGestureRecognizer::recognizeGesturePath(const std::vec
 {
     HILOG_DEBUG();
 
-    for (int routerIndex = 0; routerIndex < path.size() - 1; routerIndex++) {
+    int pathSize = static_cast<int>(path.size() - 1);
+    for (int routerIndex = 0; routerIndex < pathSize; routerIndex++) {
         int32_t dx = static_cast<int32_t>(path[routerIndex + 1].px_ - path[routerIndex].px_);
         int32_t dy = static_cast<int32_t>(path[routerIndex + 1].py_ - path[routerIndex].py_);
         if (GetSwipeDirection(dx, dy) != moveDirection) {
@@ -721,7 +724,7 @@ GestureType AccessibilityMultiTapGestureRecognizer::GetMoveGestureId()
 {
     HILOG_DEBUG();
 
-    int32_t downPointSize = currentDownPoint_.size();
+    int32_t downPointSize = static_cast<int32_t>(currentDownPoint_.size());
     if (downPointSize == POINTER_COUNT_3) {
         switch (moveDirection) {
             case MoveGirectionType::SWIPE_LEFT:
@@ -760,8 +763,8 @@ bool AccessibilityMultiTapGestureRecognizer::IsMoveGestureRecognize()
         return false;
     }
 
-    int32_t downPointSize = currentDownPoint_.size();
-    if (pointerRoute_.size() != downPointSize) {
+    int32_t downPointSize = static_cast<int32_t>(currentDownPoint_.size());
+    if (static_cast<int32_t>(pointerRoute_.size()) != downPointSize) {
         return false;
     }
 
@@ -820,7 +823,7 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiFingerTouchUpEvent(MMI::
 
     lastUpPoint_[event.GetPointerId()] = std::make_shared<MMI::PointerEvent>(event);
     if (targetFingers_ == -1 && multiFingerGestureState_ == MultiFingerGestureState::GESTURE_START) {
-        targetFingers_ = event.GetPointerIds().size();
+        targetFingers_ = static_cast<int32_t>(event.GetPointerIds().size());
     }
 }
 
