@@ -113,7 +113,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
 
     EXPECT_EQ(screenTouch_->GetRealClickResponseTime(), CLICK_RESPONSE_TIME_LONG);
     EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickTime(), IGNORE_REPEAT_CLICK_TIME_LONGEST);
-    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickState(), true); 
+    EXPECT_EQ(screenTouch_->GetRealIgnoreRepeatClickState(), true);
     GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_001 end";
 }
 
