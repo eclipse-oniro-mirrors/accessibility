@@ -190,12 +190,17 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetAccessibilityWindowType(ConvertWindowType(windowInfo->type_));
     accWindowInfo.SetFocused(windowInfo->focused_);
     accWindowInfo.SetWindowLayer(windowInfo->layer_);
-    Rect bound;
-    bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
-    bound.SetRightBottomScreenPostion(
-        windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
-        windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
-    accWindowInfo.SetRectInScreen(bound);
+    if (static_cast<int32_t>(windowInfo->type_) == 1 && (static_cast<int32_t>(windowInfo->windowRect_.width_) == 0 ||
+        static_cast<int32_t>(windowInfo->windowRect_.height_) == 0)) {
+        HILOG_WARN("invalid window parameters, windowId(%{public}d)", windowInfo->wid_);
+    } else {
+        Rect bound;
+        bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
+        bound.SetRightBottomScreenPostion(
+            windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
+            windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
+        accWindowInfo.SetRectInScreen(bound);
+    }
     accWindowInfo.SetDisplayId(windowInfo->displayId_);
     accWindowInfo.SetDecorEnable(windowInfo->isDecorEnable_);
     accWindowInfo.SetUiNodeId(windowInfo->uiNodeId_);
