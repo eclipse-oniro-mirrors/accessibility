@@ -18,6 +18,7 @@
 #include "hilog_wrapper.h"
 
 using namespace OHOS;
+using namespace OHOS::Accessibility;
 
 napi_value NAccessibilityGesturePath::JSConstructor(napi_env env, napi_callback_info info)
 {

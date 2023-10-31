@@ -335,6 +335,9 @@ enum AccessibilityWindowType : int32_t {
     TYPE_SYSTEM = 0x00000010,
 };
 
+constexpr int32_t PARAM0 = 0;
+constexpr int32_t PARAM1 = 1;
+constexpr int32_t PARAM2 = 2;
 } // namespace Accessibility
 } // namespace OHOS
 
@@ -345,9 +348,6 @@ constexpr size_t ARGS_SIZE_TWO = 2;
 constexpr size_t ARGS_SIZE_THREE = 3;
 constexpr size_t ARGS_SIZE_FOUR = 4;
 constexpr int32_t DEFAULT_INT32 = 0;
-constexpr int32_t PARAM0 = 0;
-constexpr int32_t PARAM1 = 1;
-constexpr int32_t PARAM2 = 2;
 constexpr int32_t CODE_SUCCESS = 0;
 constexpr int32_t CODE_FAILED = -1;
 constexpr int32_t CHAE_BUFFER_MAX = 1024;
