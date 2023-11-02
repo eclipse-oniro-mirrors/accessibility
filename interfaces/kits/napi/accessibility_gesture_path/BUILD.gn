@@ -14,6 +14,16 @@
 import("//build/ohos.gni")
 
 ohos_shared_library("gesturepath_napi") {
+  branch_protector_ret = "pac_ret"
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = false
+    cfi_cross_dso = false
+    debug = false
+  }
+
   include_dirs = [
     "../../../../common/log/include",
     "../include",

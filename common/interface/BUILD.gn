@@ -69,6 +69,16 @@ accessibility_data_parcel_src = [
 ]
 
 ohos_shared_library("accessibility_interface") {
+  branch_protector_ret = "pac_ret"
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = false
+    cfi_cross_dso = false
+    debug = false
+  }
+
   sources = accessibility_interface_src
   sources += accessibility_data_parcel_src
   configs = [

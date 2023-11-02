@@ -36,6 +36,16 @@ gen_js_obj("accessibility_extension_abc") {
 }
 
 ohos_shared_library("accessibilityextensionability_napi") {
+  branch_protector_ret = "pac_ret"
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = false
+    cfi_cross_dso = false
+    debug = false
+  }
+
   sources = [ "accessibility_extension_module.cpp" ]
 
   deps = [
