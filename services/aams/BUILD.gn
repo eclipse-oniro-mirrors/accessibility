@@ -64,6 +64,16 @@ accessibleabilityms_files = [
 ]
 
 ohos_shared_library("accessibleabilityms") {
+  branch_protector_ret = "pac_ret"
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = false
+    cfi_cross_dso = false
+    debug = false
+  }
+
   sources = accessibleabilityms_files
   configs = [
     ":aams_service_config",

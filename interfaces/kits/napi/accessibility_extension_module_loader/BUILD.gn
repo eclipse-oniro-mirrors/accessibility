@@ -30,6 +30,16 @@ config("accessibility_extension_module_config") {
 }
 
 ohos_shared_library("accessibility_extension_module") {
+  branch_protector_ret = "pac_ret"
+  sanitize = {
+    integer_overflow = true
+    ubsan = true
+    boundary_sanitize = true
+    cfi = false
+    cfi_cross_dso = false
+    debug = false
+  }
+
   sources = [
     "src/accessibility_extension.cpp",
     "src/accessibility_extension_context.cpp",
