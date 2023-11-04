@@ -114,7 +114,7 @@ const std::string &AccessibilityAbilityInfo::GetSettingsAbility() const
 bool AccessibilityAbilityInfo::IsImportant() const
 {
     HILOG_DEBUG();
-    return isImportant_;
+    return false;
 }
 } // namespace Accessibility
 } // namespace OHOS

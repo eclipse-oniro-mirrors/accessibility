@@ -365,6 +365,26 @@ void AccessibilityAccountData::RemoveUITestClient(
     (void)bundleName;
 }
 
+void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name, const bool state)
+{
+    (void)name;
+    (void)state;
+}
+
+void AccessibilityAccountData::DelAbilityAutoStartStatePrefKey(const std::string &name)
+{
+    (void)name;
+}
+
+void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
+{
+    (void)bundleName;
+}
+
+void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
+{
+}
+
 sptr<AccessibleAbilityConnection> AccessibilityAccountData::AccessibilityAbility::GetAccessibilityAbilityByUri(
     const std::string& uri)
 {

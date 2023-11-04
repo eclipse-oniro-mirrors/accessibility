@@ -70,6 +70,8 @@ public:
     RetError SetClickResponseTime(const uint32_t time);
     RetError SetIgnoreRepeatClickState(const bool state);
     RetError SetIgnoreRepeatClickTime(const uint32_t time);
+    void SetAbilityAutoStartState(const std::string &name, const bool state);
+    void DelAbilityAutoStartStatePrefKey(const std::string &name);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -94,6 +96,7 @@ public:
     uint32_t GetClickResponseTime() const;
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
+    bool GetAbilityAutoStartState(const std::string &key);
 
     void UpdateEnabledAbilities(const std::vector<std::string> &vecvalue);
     const std::vector<std::string> &GetEnabledAbilityInfos();

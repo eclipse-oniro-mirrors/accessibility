@@ -889,6 +889,7 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
         HILOG_ERROR("RemoveEnabledAbility failed");
         return ret;
     }
+    accountData->SetAbilityAutoStartState(name, false);
     accountData->RemoveConnectingA11yAbility(name);
     accountData->UpdateAbilities();
     return RET_OK;
@@ -1190,6 +1191,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_ERROR("Failed to set brightness discount");
     }
     if (accountData->GetInstalledAbilitiesFromBMS()) {
+        accountData->UpdateAutoStartEnabledAbilities();
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         accountData->UpdateAbilities();
         UpdateAccessibilityManagerService();
@@ -1204,6 +1206,7 @@ void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleNa
         return;
     }
 
+    packageAccount->DelAutoStartPrefKeyInRemovePkg(bundleName);
     if (packageAccount->RemoveAbility(bundleName)) {
         HILOG_DEBUG("ability%{public}s removed!", bundleName.c_str());
         UpdateAccessibilityManagerService();
@@ -1228,6 +1231,7 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
         return;
     }
     packageAccount->ChangeAbility(bundleName);
+    UpdateAccessibilityManagerService();
 }
 
 void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event)
