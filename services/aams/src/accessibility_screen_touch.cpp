@@ -158,7 +158,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         return;
     }
 
-    if (startTime_ + static_cast<int64_t>(GetRealClickResponseTime() * US_TO_MS) >
+    if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
         static_cast<int64_t>(event.GetActionTime())) {
         return;
     }
@@ -185,7 +185,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
         return;
     }
 
-    if (startTime_ + static_cast<int64_t>(GetRealClickResponseTime() * US_TO_MS) >
+    if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
         static_cast<int64_t>(event.GetActionTime())) {
         return;
     }
