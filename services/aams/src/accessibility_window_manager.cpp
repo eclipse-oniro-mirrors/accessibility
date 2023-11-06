@@ -191,7 +191,8 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     accWindowInfo.SetFocused(windowInfo->focused_);
     accWindowInfo.SetWindowLayer(windowInfo->layer_);
     if (static_cast<int32_t>(windowInfo->type_) == 1 && (static_cast<int32_t>(windowInfo->windowRect_.width_) == 0 ||
-        static_cast<int32_t>(windowInfo->windowRect_.height_) == 0)) {
+        static_cast<int32_t>(windowInfo->windowRect_.height_) == 0 || windowInfo->windowRect_.posX_ != 0 ||
+        windowInfo->windowRect_.posY_ != 0)) {
         HILOG_WARN("invalid window parameters, windowId(%{public}d)", windowInfo->wid_);
     } else {
         Rect bound;
