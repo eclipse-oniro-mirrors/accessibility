@@ -225,7 +225,7 @@ RetError AccessibilityAccountData::RemoveEnabledAbility(const std::string &name)
 
 void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
-    HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
+    HILOG_ERROR("wjtest abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
     for (size_t i = 0; i < installedAbilities_.size(); i++) {
         if ((installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) &&
             installedAbilities_[i].GetName() == abilityInfo.GetName()) {
@@ -233,6 +233,7 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
             return;
         }
     }
+    HILOG_ERROR("wjtest pushback installedAbilities_ bundleName = %{public}s.", abilityInfo.GetPackageName().c_str());
     installedAbilities_.push_back(abilityInfo);
     HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}zu",
         installedAbilities_.size());
@@ -490,6 +491,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         return false;
     }
     bool ret = bms->QueryExtensionAbilityInfos(AppExecFwk::ExtensionAbilityType::ACCESSIBILITY, id_, extensionInfos);
+    HILOG_ERROR("wjtest bms->QueryExtensionAbilityInfos ret = %{public}d, size =  %{public}zu.", ret, extensionInfos.size());
     if (!ret) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::QUERY_EVENT, A11yError::ERROR_QUERY_PACKAGE_INFO_FAILED);
         HILOG_ERROR("Query extension ability information failed.");
@@ -500,6 +502,7 @@ bool AccessibilityAccountData::GetInstalledAbilitiesFromBMS()
         Utils::Parse(info, initParams);
         std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
             std::make_shared<AccessibilityAbilityInfo>(initParams);
+        HILOG_ERROR("wjtest addinstalledAbility bundleName = %{public}s.", accessibilityInfo->GetPackageName().c_str());
         AddInstalledAbility(*accessibilityInfo);
     }
     return true;
