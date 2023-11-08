@@ -241,11 +241,13 @@ void AccessibilityAccountData::AddInstalledAbility(AccessibilityAbilityInfo& abi
 
 void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleName)
 {
+    HILOG_ERROR("wjtest RemoveInstalledAbility bundleName = %{public}s.", bundleName.c_str());
     HILOG_DEBUG("start.");
     for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
         if (it->GetPackageName() == bundleName) {
             HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
             if (!config_) {
+                HILOG_ERROR("wjtest installedAbilities_ erase %{public}s.", it->GetPackageName().c_str());
                 it = installedAbilities_.erase(it);
                 continue;
             }
@@ -255,6 +257,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
                 config_->SetShortkeyTarget(targetName);
                 config_->SetShortKeyState(false);
             }
+            HILOG_ERROR("wjtest installedAbilities_ erase %{public}s.", it->GetPackageName().c_str());
             it = installedAbilities_.erase(it);
         } else {
             ++it;
@@ -264,6 +267,7 @@ void AccessibilityAccountData::RemoveInstalledAbility(const std::string &bundleN
 
 void AccessibilityAccountData::ClearInstalledAbility()
 {
+    HILOG_ERROR("wjtest installedAbilities_ clear.");
     HILOG_DEBUG("start.");
     installedAbilities_.clear();
 }
@@ -723,6 +727,7 @@ bool AccessibilityAccountData::RemoveAbility(const std::string &bundleName)
         HILOG_DEBUG("There is no installed abilities.");
         return false;
     }
+    HILOG_ERROR("wjtest RemoveAbility bundleName = %{public}s.", bundleName.c_str());
     RemoveInstalledAbility(bundleName);
 
     bool result = false;
@@ -792,6 +797,7 @@ void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
         HILOG_DEBUG("There is no installed abilities.");
         return;
     }
+    HILOG_ERROR("wjtest ChangeAbility bundleName = %{public}s.", bundleName.c_str());
     RemoveInstalledAbility(bundleName);
     AddAbility(bundleName);
 }
@@ -834,6 +840,7 @@ void AccessibilityAccountData::RemoveUITestClient(sptr<AccessibleAbilityConnecti
         HILOG_ERROR("connection is nullptr");
         return;
     }
+    HILOG_ERROR("wjtest RemoveUITestClient bundleName = %{public}s.", bundleName.c_str());
     RemoveInstalledAbility(bundleName);
     RemoveConnectedAbility(connection->GetElementName());
     connection->OnAbilityDisconnectDoneSync(connection->GetElementName());
