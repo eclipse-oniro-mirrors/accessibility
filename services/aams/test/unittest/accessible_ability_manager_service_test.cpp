@@ -1941,5 +1941,21 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, AddAccountData_001, TestSize.L
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001 end";
 }
 
+/**
+ * @tc.number: Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001
+ * @tc.name: FindInnerWindowId
+ * @tc.desc: Test function find inner windowId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, FindInnerWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 start";
+    AccessibilityEventInfo event;
+    event.SetWindowId(1);
+    event.SetSource(1);
+    int32_t windowId = 1;
+    Singleton<AccessibleAbilityManagerService>::GetInstance().FindInnerWindowId(event, windowId);
+    EXPECT_EQ(windowId, 1);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

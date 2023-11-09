@@ -53,6 +53,7 @@ bool AccessibilityWindowManager::Init()
 
         if (IsSceneBoard(window)) {
             subWindows_.insert(realWid);
+            sceneBoardElementIdMap_.InsertPair(realWid, window->uiNodeId_);
         }
 
         if (a11yWindows_[realWid].IsFocused()) {
@@ -67,6 +68,7 @@ void AccessibilityWindowManager::DeInit()
     HILOG_DEBUG("start");
     a11yWindows_.clear();
     subWindows_.clear();
+    sceneBoardElementIdMap_.Clear();
     activeWindowId_ = INVALID_WINDOW_ID;
     a11yFocusedWindowId_ = INVALID_WINDOW_ID;
 }
@@ -390,6 +392,7 @@ void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen:
 
         if (IsSceneBoard(windowInfo)) {
             subWindows_.insert(realWidId);
+            sceneBoardElementIdMap_.InsertPair(realWidId, windowInfo->uiNodeId_);
         }
         AccessibilityEventInfo evtInfAdded(realWidId, WINDOW_UPDATE_ADDED);
         Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(evtInfAdded);
@@ -421,6 +424,7 @@ void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rose
         }
         a11yWindows_.erase(realWidId);
         subWindows_.erase(realWidId);
+        sceneBoardElementIdMap_.RemovePair(realWidId);
         AccessibilityEventInfo evtInfRemoved(realWidId, WINDOW_UPDATE_REMOVED);
         aams.SendEvent(evtInfRemoved);
     }
@@ -445,6 +449,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 
         if (IsSceneBoard(windowInfo)) {
             subWindows_.insert(realWidId);
+            sceneBoardElementIdMap_.InsertPair(realWidId, windowInfo->uiNodeId_);
         }
         SetActiveWindow(realWidId);
         AccessibilityEventInfo evtInfFocused(realWidId, WINDOW_UPDATE_FOCUSED);
@@ -489,6 +494,7 @@ void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen
 
         if (IsSceneBoard(windowInfo)) {
             subWindows_.insert(realWidId);
+            sceneBoardElementIdMap_.InsertPair(realWidId, windowInfo->uiNodeId_);
         }
         SetActiveWindow(realWidId);
     }
@@ -623,6 +629,30 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32
     }
 
     return;
+}
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int32_t elementId)
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    windowElementMap_[windowId] = elementId;
+}
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_t windowId)
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    windowElementMap_.erase(windowId);
+}
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    windowElementMap_.clear();
+}
+
+std::map<int32_t, int32_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
+{
+    std::lock_guard<std::mutex> lock(mapMutex_);
+    return windowElementMap_;
 }
 } // namespace Accessibility
 } // namespace OHOS

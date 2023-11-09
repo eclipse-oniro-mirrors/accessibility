@@ -18,6 +18,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <set>
 #include "accessibility_window_info.h"
 #include "event_handler.h"
@@ -66,6 +67,21 @@ public:
     int32_t activeWindowId_ = INVALID_WINDOW_ID;
     int32_t a11yFocusedWindowId_ = INVALID_WINDOW_ID;
     std::set<int32_t> subWindows_ {}; // used for window id 1, scene board
+
+    // used for arkui windowId 1 map to WMS windowId
+    class SceneBoardElementIdMap {
+    public:
+        SceneBoardElementIdMap() = default;
+        ~SceneBoardElementIdMap() = default;
+        void InsertPair(const int32_t windowId, const int32_t elementId);
+        void RemovePair(const int32_t windowId);
+        std::map<int32_t, int32_t> GetAllPairs();
+        void Clear();
+    private:
+        std::map<int32_t, int32_t> windowElementMap_;
+        std::mutex mapMutex_;
+    };
+    SceneBoardElementIdMap sceneBoardElementIdMap_ = {};
 
 private:
     class AccessibilityWindowListener : public Rosen::IWindowUpdateListener {

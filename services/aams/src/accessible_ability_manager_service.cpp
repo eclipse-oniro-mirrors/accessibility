@@ -47,6 +47,7 @@ namespace {
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
+    constexpr int32_t REQUEST_ID_MAX = 0x0000FFFF;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -1235,15 +1236,130 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
     UpdateAccessibilityManagerService();
 }
 
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(
+    const AccessibilityElementInfo &info, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    accessibilityInfoResult_ = info;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByTextResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    elementInfosResult_ = infos;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetSearchElementInfoByAccessibilityIdResult(
+    const std::vector<AccessibilityElementInfo> &infos, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    elementInfosResult_ = infos;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFocusMoveSearchResult(
+    const AccessibilityElementInfo &info, const int32_t requestId)
+{
+    HILOG_DEBUG("Response [requestId:%{public}d]", requestId);
+    accessibilityInfoResult_ = info;
+    promise_.set_value();
+}
+
+void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteActionResult(const bool succeeded,
+    const int32_t requestId)
+{
+    HILOG_DEBUG("Response [result:%{public}d, requestId:%{public}d]", succeeded, requestId);
+    executeActionResult_ = succeeded;
+    promise_.set_value();
+}
+
+bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int32_t elementId,
+    std::vector<AccessibilityElementInfo>& infos)
+{
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(windowId);
+    if (!connection || !connection->GetProxy()) {
+        HILOG_ERROR("GetAccessibilityWindowConnection failed");
+        return false;
+    }
+
+    sptr<ElementOperatorCallbackImpl> callBack = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (!callBack) {
+        HILOG_ERROR("Failed to create callBack.");
+        return false;
+    }
+
+    std::future<void> promiseFuture = callBack->promise_.get_future();
+    connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, REQUEST_ID_MAX, callBack, 0);
+    std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (waitFocus != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait result");
+        return false;
+    }
+
+    for (auto& info : callBack->elementInfosResult_) {
+        if (info.GetAccessibilityId() == AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID) {
+            HILOG_ERROR("SearchElementInfoByAccessibilityId elementInfo from ace is wrong");
+            return false;
+        }
+    }
+
+    infos = callBack->elementInfosResult_;
+    HILOG_DEBUG("Get parent element success, size %{public}zu", infos.size());
+    return true;
+}
+
+void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId)
+{
+    HILOG_DEBUG();
+    auto mapTable = Singleton<AccessibilityWindowManager>::GetInstance().sceneBoardElementIdMap_.GetAllPairs();
+    int32_t elementId = event.GetAccessibilityId();
+    while (1) {
+        for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
+            if (elementId == iter->second) {
+                windowId = iter->first;
+                HILOG_DEBUG("inner windowId %{public}d", windowId);
+                return;
+            }
+        }
+
+        std::vector<AccessibilityElementInfo> infos = {};
+        if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false) {
+            HILOG_ERROR("find parent element failed");
+            return;
+        }
+
+        if (infos[0].GetComponentType() == "root") {
+            HILOG_ERROR("can not find parent element, has reach root node");
+            return;
+        }
+
+        elementId = infos[0].GetParentNodeId();
+    }
+}
+
 void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event)
 {
     EventType evtType = event.GetEventType();
     HILOG_DEBUG("windowId is %{public}d", event.GetWindowId());
+    int32_t windowId = event.GetWindowId();
+    if (windowId == 1 && (evtType == TYPE_VIEW_HOVER_ENTER_EVENT || evtType == TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT)) {
+        FindInnerWindowId(event, windowId);
+    }
+
     switch (evtType) {
         case TYPE_VIEW_HOVER_ENTER_EVENT:
         case TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT:
-            Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(event.GetWindowId());
-            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(event.GetWindowId());
+            Singleton<AccessibilityWindowManager>::GetInstance().SetActiveWindow(windowId);
+            Singleton<AccessibilityWindowManager>::GetInstance().SetAccessibilityFocusedWindow(windowId);
             break;
         default:
             break;
