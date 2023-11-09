@@ -162,5 +162,22 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32
     int32_t& innerWid)
 {
 }
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int32_t elementId)
+{
+}
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::RemovePair(const int32_t windowId)
+{
+}
+
+void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
+{
+}
+
+std::map<int32_t, int32_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
+{
+    return std::map<int32_t, int32_t>();
+}
 } // namespace Accessibility
 } // namespace OHOS

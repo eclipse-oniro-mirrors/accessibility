@@ -29,6 +29,7 @@
 #include "accessibility_account_data.h"
 #include "accessibility_common_event.h"
 #include "accessibility_display_manager.h"
+#include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_touchEvent_injector.h"
@@ -171,6 +172,35 @@ public:
     void PackageAdd(const std::string &bundleName);
 
     void UpdateAccessibilityManagerService();
+
+    // used for arkui windowId 1 map to WMS windowId
+    void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
+    bool GetParentElementRecursively(int32_t windowId, int32_t elementId,
+        std::vector<AccessibilityElementInfo>& infos);
+
+    // used for arkui windowId 1 map to WMS windowId
+    class ElementOperatorCallbackImpl : public AccessibilityElementOperatorCallbackStub {
+    public:
+        ElementOperatorCallbackImpl() = default;
+        ~ElementOperatorCallbackImpl() = default;
+
+        virtual void SetSearchElementInfoByAccessibilityIdResult(const std::vector<AccessibilityElementInfo> &infos,
+            const int32_t requestId) override;
+        virtual void SetSearchElementInfoByTextResult(const std::vector<AccessibilityElementInfo> &infos,
+            const int32_t requestId) override;
+        virtual void SetFindFocusedElementInfoResult(const AccessibilityElementInfo &info,
+            const int32_t requestId) override;
+        virtual void SetFocusMoveSearchResult(const AccessibilityElementInfo &info, const int32_t requestId) override;
+        virtual void SetExecuteActionResult(const bool succeeded, const int32_t requestId) override;
+
+    private:
+        std::promise<void> promise_;
+        bool executeActionResult_ = false;
+        AccessibilityElementInfo accessibilityInfoResult_ = {};
+        std::vector<AccessibilityElementInfo> elementInfosResult_;
+
+        friend class AccessibleAbilityManagerService;
+    };
 
     RetError SetScreenMagnificationState(const bool state) override;
     RetError SetShortKeyState(const bool state) override;
