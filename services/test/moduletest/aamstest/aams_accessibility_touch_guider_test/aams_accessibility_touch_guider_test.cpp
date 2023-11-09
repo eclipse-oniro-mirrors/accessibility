@@ -1163,8 +1163,7 @@ HWTEST_F(AamsTouchGuideTest, AamsTouchGuideTest_Moduletest_OnPointerEvent011, Te
         EventType::TYPE_TOUCH_GUIDE_GESTURE_END);
 
     // gestureId
-    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(),
-        static_cast<int32_t>(GestureType::GESTURE_TWO_FINGER_SINGLE_TAP));
+    EXPECT_EQ(AccessibilityHelper::GetInstance().GetGestureId(), 25);
 
     GTEST_LOG_(INFO) << "AamsTouchGuideTest AamsTouchGuideTest_Moduletest_OnPointerEvent011 ends";
 }
