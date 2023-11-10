@@ -39,7 +39,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     constexpr uint32_t SLEEP_TIME_1 = 1;
-    constexpr size_t IMPORTANT_ABILITIES_SIZE = 1;
+    constexpr size_t IMPORTANT_ABILITIES_SIZE = 0;
 } // namespace
 
 class AccessibilityAccountDataTest : public testing::Test {

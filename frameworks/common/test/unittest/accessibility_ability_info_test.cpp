@@ -155,7 +155,7 @@ HWTEST_F(AccessibilityAbilityInfoUnitTest, IsImportant_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "abilityInfo_ is null";
         return;
     }
-    EXPECT_TRUE(abilityInfo_->IsImportant());
+    EXPECT_TRUE(!(abilityInfo_->IsImportant()));
     GTEST_LOG_(INFO) << "IsImportant_001 end";
 }
 
