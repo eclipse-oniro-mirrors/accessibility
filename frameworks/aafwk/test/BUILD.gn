@@ -78,8 +78,12 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "c_utils:utils",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "init:libbeget_proxy",
@@ -112,6 +116,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/test/mock/src/mock_accessibility_common_event.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_input_interceptor.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_setting_provider.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_window_connection.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_window_manager.cpp",
     "../../../services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
@@ -152,8 +157,12 @@ ohos_unittest("accessible_ability_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "c_utils:utils",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hilog:libhilog",

@@ -49,7 +49,8 @@
         "hisysevent",
         "os_account",
         "preferences",
-        "power_manager"
+        "power_manager",
+        "data_share"
       ],
       "third_party": []
     },

@@ -360,26 +360,6 @@ void AccessibilitySettingsConfig::StringToVector(const std::string &stringIn, st
     HILOG_DEBUG("start.");
 }
 
-void AccessibilitySettingsConfig::SetAbilityAutoStartState(const std::string &name, const bool state)
-{
-    HILOG_DEBUG("start.");
-    (void)name;
-    (void)state;
-}
-
-void AccessibilitySettingsConfig::DelAbilityAutoStartStatePrefKey(const std::string &name)
-{
-    HILOG_DEBUG("start.");
-    (void)name;
-}
-
-bool AccessibilitySettingsConfig::GetAbilityAutoStartState(const std::string &key)
-{
-    HILOG_DEBUG("start.");
-    (void)key;
-    return true;
-}
-
 const std::vector<std::string> &AccessibilitySettingsConfig::GetEnabledAbilityInfos()
 {
     HILOG_DEBUG("start.");

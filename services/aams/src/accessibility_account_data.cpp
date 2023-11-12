@@ -23,6 +23,7 @@
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
 #include "utils.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -408,19 +409,13 @@ void AccessibilityAccountData::UpdateMagnificationCapability()
 void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name, const bool state)
 {
     HILOG_DEBUG("start and name[%{public}s], state = [%{public}s].", name.c_str(), state ? "True" : "False");
-    if (!config_) {
-        config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::string strState = state ? "on" : "off";
+    std::string abilityAutoStartKey = name + "/" + std::to_string(id_);
+    ErrCode ret = provider.PutStringValue(abilityAutoStartKey, strState, false);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("set failed, ret=%{public}d", ret);
     }
-    config_->SetAbilityAutoStartState(name, state);
-}
-
-void AccessibilityAccountData::DelAbilityAutoStartStatePrefKey(const std::string &name)
-{
-    HILOG_DEBUG("start and name[%{public}s]].", name.c_str());
-    if (!config_) {
-        config_ = std::make_shared<AccessibilitySettingsConfig>(id_);
-    }
-    config_->DelAbilityAutoStartStatePrefKey(name);
 }
 
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
@@ -434,10 +429,27 @@ void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string 
         if (installAbility.GetPackageName() == bundleName) {
             std::string abilityName = installAbility.GetName();
             std::string uri = Utils::GetUri(bundleName, abilityName);
-            DelAbilityAutoStartStatePrefKey(uri);
+            SetAbilityAutoStartState(uri, false);
             break;
         }
     }
+}
+
+bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
+{
+    HILOG_DEBUG();
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+    std::string strValue;
+    ErrCode ret = provider.GetStringValue(key, strValue);
+    if (ret != ERR_OK) {
+        HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", key.c_str(), ret);
+        return false;
+    }
+    HILOG_DEBUG("provider GetString = %{public}s, key = %{public}s.", strValue.c_str(), key.c_str());
+    if (!std::strcmp(strValue.c_str(), "on")) {
+        return true;
+    }
+    return false;
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
@@ -637,9 +649,9 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
         std::string abilityName = installAbility.GetName();
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             bundleName.c_str(), abilityName.c_str());
-
+ 
         std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, abilityName, id_);
-        if (config_->GetAbilityAutoStartState(strAutoStartStateKey)) {
+        if (GetAbilityAutoStartState(strAutoStartStateKey)) {
             std::string uri = Utils::GetUri(bundleName, abilityName);
             AddEnabledAbility(uri);
         }
@@ -774,7 +786,7 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
 
             std::string tmpAbilityName = accessibilityInfo->GetName();
             std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, tmpAbilityName, id_);
-            if (config_ != nullptr && config_->GetAbilityAutoStartState(strAutoStartStateKey)) {
+            if (GetAbilityAutoStartState(strAutoStartStateKey)) {
                 std::string uri = Utils::GetUri(bundleName, tmpAbilityName);
                 AddEnabledAbility(uri);
                 RemoveConnectingA11yAbility(uri);

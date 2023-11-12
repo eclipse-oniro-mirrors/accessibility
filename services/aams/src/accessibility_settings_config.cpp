@@ -240,35 +240,6 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
     return RET_OK;
 }
 
-void AccessibilitySettingsConfig::SetAbilityAutoStartState(const std::string &name, const bool state)
-{
-    HILOG_DEBUG("name = [%{public}s], state = [%{public}s].", name.c_str(), state ? "True" : "False");
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
-        return;
-    }
-
-    std::string strValue = StateChange(state);
-    std::string abilityAutoStartKey = name + "/" + std::to_string(accountId_);
-    pref_->PutString(abilityAutoStartKey, strValue);
-    pref_->Flush();
-    return;
-}
-
-void AccessibilitySettingsConfig::DelAbilityAutoStartStatePrefKey(const std::string &name)
-{
-    HILOG_DEBUG("name = [%{public}s].", name.c_str());
-    if (!pref_) {
-        HILOG_ERROR("pref_ is null!");
-        return;
-    }
-
-    std::string abilityAutoStartKey = name + "/" + std::to_string(accountId_);
-    pref_->Delete(abilityAutoStartKey);
-    pref_->Flush();
-    return;
-}
-
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG();
@@ -481,22 +452,6 @@ bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 {
     return ignoreRepeatClickTime_;
-}
-
-bool AccessibilitySettingsConfig::GetAbilityAutoStartState(const std::string &key)
-{
-    HILOG_DEBUG();
-    if (!pref_) {
-        HILOG_ERROR("pref_ is nullptr");
-        return false;
-    }
-
-    std::string strValue = pref_->GetString(key, "");
-    HILOG_DEBUG(" pref_->GetString() = %{public}s.", strValue.c_str());
-    if (!std::strcmp(strValue.c_str(), "on")) {
-        return true;
-    }
-    return false;
 }
 
 uint32_t AccessibilitySettingsConfig::GetConfigState()

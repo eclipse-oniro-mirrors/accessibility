@@ -371,9 +371,10 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
     (void)state;
 }
 
-void AccessibilityAccountData::DelAbilityAutoStartStatePrefKey(const std::string &name)
+bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
 {
-    (void)name;
+    (void)key;
+    return true;
 }
 
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)

@@ -30,6 +30,7 @@
 #include "mock_accessible_ability_manager_service_config_observer_stub.h"
 #include "mock_accessible_ability_manager_service_state_observer_proxy.h"
 #include "mock_accessible_ability_manager_service_state_observer_stub.h"
+#include "mock_accessibility_setting_provider.h"
 #include "utils.h"
 
 using namespace testing;
@@ -289,6 +290,7 @@ HWTEST_F(
     std::shared_ptr<AccessibilityAbilityInfo> abilityInfo = std::make_shared<AccessibilityAbilityInfo>(initParams);
     sptr<AccessibleAbilityConnection> connection =
         new MockAccessibleAbilityConnection(accountId, 0, *abilityInfo);
+    /* add */
     accountData->AddConnectingA11yAbility(bundleName, connection);
     EXPECT_TRUE(accountData->GetConnectingA11yAbility(bundleName));
     /* remove */
