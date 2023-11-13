@@ -206,7 +206,7 @@ RetError AccessibleAbilityManagerServiceProxy::GetAbilityList(const uint32_t abi
 }
 
 RetError AccessibleAbilityManagerServiceProxy::RegisterElementOperator(
-    int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
+    int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
     HILOG_DEBUG();
     MessageParcel data;

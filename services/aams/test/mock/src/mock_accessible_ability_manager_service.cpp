@@ -116,10 +116,11 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
 }
 
 RetError AccessibleAbilityManagerService::RegisterElementOperator(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, bool isApp)
 {
     (void)windowId;
     (void)operation;
+    (void)isApp;
     return RET_OK;
 }
 

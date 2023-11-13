@@ -280,7 +280,7 @@ HWTEST_F(AAMSServerTest, RegisterElementOperator_001, TestSize.Level1)
     auto accountData = aams.GetCurrentAccountData();
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr, true));
     sleep(1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
@@ -309,7 +309,7 @@ HWTEST_F(AAMSServerTest, DeregisterElementOperator_001, TestSize.Level1)
 
     AddAccessibleAbilityConnection();
     sleep(1);
-    aams.RegisterElementOperator(0, nullptr);
+    aams.RegisterElementOperator(0, nullptr, true);
     sleep(1);
     map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);

@@ -34,8 +34,8 @@ public:
         uint32_t(const sptr<IAccessibleAbilityManagerCaptionObserver>& callback, const int32_t accountId));
     MOCK_METHOD3(GetAbilityList, RetError(const uint32_t abilityTypes, const int32_t stateType,
         std::vector<AccessibilityAbilityInfo> &infos));
-    MOCK_METHOD2(RegisterElementOperator,
-        RetError(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation));
+    MOCK_METHOD3(RegisterElementOperator,
+        RetError(const int32_t windowId, const sptr<IAccessibilityElementOperator>& operation, bool isApp));
     MOCK_METHOD1(DeregisterElementOperator, RetError(const int32_t windowId));
     MOCK_METHOD1(GetCaptionProperty, RetError(AccessibilityConfig::CaptionProperty& caption));
     MOCK_METHOD1(SetCaptionProperty, RetError(const AccessibilityConfig::CaptionProperty& caption));

@@ -134,7 +134,7 @@ void AamsInjectorTest::AddAccessibilityWindowConnection()
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<IAccessibilityElementOperator> proxy = new MockAccessibilityElementOperatorProxy(stub);
     GTEST_LOG_(INFO) << "aams  RegisterElementOperator";
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy, true);
 }
 
 /**

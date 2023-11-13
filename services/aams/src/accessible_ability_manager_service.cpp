@@ -461,7 +461,7 @@ RetError AccessibleAbilityManagerService::GetAbilityList(const uint32_t abilityT
 }
 
 RetError AccessibleAbilityManagerService::RegisterElementOperator(
-    const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
+    const int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
     if (!handler_) {
         Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
@@ -481,6 +481,10 @@ RetError AccessibleAbilityManagerService::RegisterElementOperator(
             return;
         }
         sptr<AccessibilityWindowConnection> oldConnection = accountData->GetAccessibilityWindowConnection(windowId);
+        if (isApp && oldConnection) {
+            HILOG_WARN("no need to register again.");
+            return;
+        }
         DeleteConnectionAndDeathRecipient(windowId, oldConnection);
         sptr<AccessibilityWindowConnection> connection =
             new(std::nothrow) AccessibilityWindowConnection(windowId, operation, currentAccountId_);

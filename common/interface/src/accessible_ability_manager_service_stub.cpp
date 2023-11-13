@@ -238,6 +238,19 @@ bool AccessibleAbilityManagerServiceStub::IsSystemApp() const
     return isSystemApplication;
 }
 
+bool AccessibleAbilityManagerServiceStub::IsApp() const
+{
+    HILOG_DEBUG();
+
+    AccessTokenID callerToken = IPCSkeleton::GetCallingTokenID();
+    ATokenTypeEnum tokenType = AccessTokenKit::GetTokenTypeFlag(callerToken);
+    if (tokenType == TOKEN_HAP) {
+        HILOG_DEBUG("caller is an application");
+        return true;
+    }
+    return false;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleSendEvent(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
@@ -299,7 +312,8 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
     int32_t windowId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
-    RegisterElementOperator(windowId, operation);
+    bool isApp = IsApp();
+    RegisterElementOperator(windowId, operation, isApp);
 
     return NO_ERROR;
 }
