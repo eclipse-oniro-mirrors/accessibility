@@ -439,7 +439,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", captionsStyleValue),
         DECLARE_NAPI_STATIC_PROPERTY("clickResponseTime", InitClickResponseTime(env)),
         DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClick", InitIgnoreRepeatClickState(env)),
-        DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClickTime", InitIgnoreRepeatClickTime(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("repeatClickInterval", InitIgnoreRepeatClickTime(env)),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));

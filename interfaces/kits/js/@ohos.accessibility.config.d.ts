@@ -179,7 +179,7 @@ declare namespace config {
    * @systemapi
    * @since 11
    */
-  const ignoreRepeatClickTime: Config<IgnoreRepeatClickTime>;
+  const repeatClickInterval: Config<RepeatClickInterval>;
 
   /**
    * Enable the accessibility extension ability.
@@ -376,10 +376,10 @@ declare namespace config {
   type ClickResponseTime = 'Short' | 'Medium' | 'Long';
 
   /**
-   * Indicates the type of ignore repeat click time.
+   * Indicates the type of ignore repeat click interval.
    *
    * @systemapi
    */
-  type IgnoreRepeatClickTime = 'Shortest' | 'Short' | 'Medium' | 'Long' | 'Longest';
+  type RepeatClickInterval = 'Shortest' | 'Short' | 'Medium' | 'Long' | 'Longest';
 }
 export default config;
