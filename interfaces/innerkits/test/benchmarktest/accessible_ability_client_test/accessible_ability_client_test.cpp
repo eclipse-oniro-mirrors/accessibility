@@ -88,9 +88,9 @@ namespace {
     void AccessibleAbilityClientTest::TearDown(const ::benchmark::State &state)
     {
         // Disconnect
-        std::promise<void> disconnected;
-        std::future syncFuture = disconnected.get_future();
-        listener_->SetCompletePromise(disconnected);
+        std::promise<void> disconnect;
+        std::future syncFuture = disconnect.get_future();
+        listener_->SetCompletePromise(disconnect);
         AccessibilityUITestAbility::GetInstance()->Disconnect();
         syncFuture.wait();
     }
