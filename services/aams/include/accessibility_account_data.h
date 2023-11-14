@@ -29,6 +29,7 @@
 #include "i_accessible_ability_manager_config_observer.h"
 #include "i_accessible_ability_manager_state_observer.h"
 #include "element_name.h"
+#include "accessibility_setting_provider.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -255,8 +256,8 @@ public:
         const std::string &bundleName, const std::string &abilityName);
     void RemoveUITestClient(sptr<AccessibleAbilityConnection> &connection, const std::string &bundleName);
     void SetAbilityAutoStartState(const std::string &name, const bool state);
-    void DelAbilityAutoStartStatePrefKey(const std::string &name);
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
+    bool GetAbilityAutoStartState(const std::string &key);
 
 private:
     /**

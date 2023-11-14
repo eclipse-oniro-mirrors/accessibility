@@ -26,6 +26,7 @@
 #include "mock_accessibility_element_operator_proxy.h"
 #include "mock_accessibility_element_operator_stub.h"
 #include "mock_bundle_manager.h"
+#include "mock_accessibility_setting_provider.h"
 
 using namespace testing;
 using namespace testing::ext;

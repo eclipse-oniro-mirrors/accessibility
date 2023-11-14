@@ -65,6 +65,7 @@ ohos_unittest("accessibility_account_data_test") {
 
   sources = [
     "../src/accessibility_account_data.cpp",
+    "mock/src/mock_accessibility_setting_provider.cpp",
     "mock/src/mock_accessibility_settings_config.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
     "mock/src/mock_accessible_ability_connection.cpp",
@@ -90,11 +91,15 @@ ohos_unittest("accessibility_account_data_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "hitrace:hitrace_meter",
     "init:libbegetutil",
@@ -147,11 +152,15 @@ ohos_unittest("accessible_ability_manager_service_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "hilog:libhilog",
     "init:libbegetutil",
@@ -219,11 +228,15 @@ ohos_unittest("accessibility_touch_guider_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -275,11 +288,15 @@ ohos_unittest("accessibility_common_event_registry_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -354,12 +371,16 @@ ohos_unittest("accessibility_input_interceptor_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -416,11 +437,15 @@ ohos_unittest("accessibility_window_manager_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -467,12 +492,16 @@ ohos_unittest("accessibility_keyevent_filter_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -529,6 +558,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "mock/src/mock_accessibility_element_operator_callback_stub.cpp",
     "mock/src/mock_accessibility_element_operator_stub.cpp",
     "mock/src/mock_accessibility_keyevent_filter.cpp",
+    "mock/src/mock_accessibility_setting_provider.cpp",
     "mock/src/mock_accessible_ability_channel_proxy.cpp",
     "mock/src/mock_accessible_ability_client_proxy.cpp",
     "mock/src/mock_accessible_ability_client_stub_impl.cpp",
@@ -552,12 +582,16 @@ ohos_unittest("accessible_ability_connection_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
@@ -600,10 +634,14 @@ ohos_unittest("accessibility_display_manager_test") {
   ]
 
   external_deps = [
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -662,11 +700,15 @@ ohos_unittest("accessibility_dumper_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -715,10 +757,14 @@ ohos_unittest("accessibility_touchevent_injector_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "init:libbegetutil",
@@ -761,6 +807,7 @@ ohos_unittest("accessible_ability_channel_test") {
     "mock/src/mock_accessibility_element_operator_stub.cpp",
     "mock/src/mock_accessibility_event_transmission.cpp",
     "mock/src/mock_accessibility_keyevent_filter.cpp",
+    "mock/src/mock_accessibility_setting_provider.cpp",
     "mock/src/mock_accessibility_settings_config.cpp",
     "mock/src/mock_accessibility_touchEvent_injector.cpp",
     "mock/src/mock_accessibility_window_manager.cpp",
@@ -785,11 +832,15 @@ ohos_unittest("accessible_ability_channel_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
@@ -840,10 +891,14 @@ ohos_unittest("accessibility_mouse_autoclick_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
@@ -891,10 +946,14 @@ ohos_unittest("accessibility_screen_touch_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "init:libbegetutil",
     "input:libmmi-client",
@@ -931,10 +990,14 @@ ohos_unittest("accessibility_mouse_key_test") {
   ]
 
   external_deps = [
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "init:libbegetutil",
@@ -982,10 +1045,14 @@ ohos_unittest("accessibility_short_key_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "init:libbegetutil",
@@ -1025,9 +1092,13 @@ ohos_unittest("accessibility_settings_config_test") {
   ]
 
   external_deps = [
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "hilog:libhilog",
     "init:libbegetutil",
     "os_account:domain_account_innerkits",
@@ -1074,10 +1145,14 @@ ohos_unittest("accessibility_zoom_gesture_test") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_common",
+    "data_share:datashare_consumer",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
     "init:libbegetutil",

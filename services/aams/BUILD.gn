@@ -61,6 +61,8 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_display_manager.cpp",
   "${services_path}/src/utils.cpp",
   "${services_path}/src/accessibility_dumper.cpp",
+  "${services_path}/src/accessibility_setting_observer.cpp",
+  "${services_path}/src/accessibility_setting_provider.cpp",
 ]
 
 ohos_shared_library("accessibleabilityms") {
@@ -87,10 +89,13 @@ ohos_shared_library("accessibleabilityms") {
 
   external_deps = [
     "ability_base:want",
+    "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:dataobs_manager",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hilog:libhilog",
