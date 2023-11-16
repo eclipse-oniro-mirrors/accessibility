@@ -72,6 +72,12 @@ private:
     bool IsSystemApp() const;
 
     /**
+     * @brief Check the caller is an application.
+     * @return Check result.
+     */
+    bool IsApp() const;
+
+    /**
      * @brief Handle the IPC request for the function:HandleSendEvent.
      * @param data The data of process communication
      * @param reply The response of IPC request

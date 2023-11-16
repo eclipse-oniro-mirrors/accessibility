@@ -90,10 +90,11 @@ RetError MockAccessibleAbilityManagerServiceStub::GetAbilityList(const uint32_t 
 }
 
 RetError MockAccessibleAbilityManagerServiceStub::RegisterElementOperator(
-    int32_t windowId, const sptr<IAccessibilityElementOperator> &operation)
+    int32_t windowId, const sptr<IAccessibilityElementOperator> &operation, bool isApp)
 {
     (void)windowId;
     (void)operation;
+    (void)isApp;
     return RET_OK;
 }
 

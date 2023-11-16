@@ -169,7 +169,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_001, T
     ASSERT_TRUE(accountData);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 0);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr, true));
     sleep(SLEEP_TIME_1);
     GTEST_LOG_(INFO) << "RegisterElementOperator OK";
     map = accountData->GetAsacConnections();
@@ -208,7 +208,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, DeregisterElementOperator_002,
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     auto accountData = aams.GetCurrentAccountData();
     ASSERT_TRUE(accountData);
-    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr));
+    EXPECT_EQ(RET_OK, aams.RegisterElementOperator(0, nullptr, true));
     sleep(SLEEP_TIME_1);
     EXPECT_EQ(RET_OK, aams.DeregisterElementOperator(0));
     sleep(SLEEP_TIME_1);
@@ -928,7 +928,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_002, T
 {
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperator_002 start";
     Singleton<AccessibleAbilityManagerService>::GetInstance().SwitchedUser(-1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, nullptr, true);
     EXPECT_NE(stub_.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperator_002 end";
 }
@@ -945,9 +945,9 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperator_003, T
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     ASSERT_TRUE(accountData);
     sptr<IAccessibilityElementOperator> operation;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, operation);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, operation, true);
     sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, operation);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(0, operation, true);
     auto map = accountData->GetAsacConnections();
     EXPECT_EQ(int(map.size()), 1);
     GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperator_003 end";

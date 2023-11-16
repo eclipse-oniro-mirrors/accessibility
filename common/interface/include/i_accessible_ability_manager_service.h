@@ -95,10 +95,11 @@ public:
      * @brief Register the element operator, so the AA can get node info from ACE.
      * @param windowId Window ID
      * @param operation The callback object.
+     * @param isApp whether an application.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterElementOperator(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &operation) = 0;
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp = true) = 0;
 
     /**
      * @brief Deregister the element operator.

@@ -151,7 +151,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
         new MockAccessibilityElementOperatorImpl(windowId, nullptr, *mockCallback);
     sptr<MockAccessibilityElementOperatorProxy> proxy = new MockAccessibilityElementOperatorProxy(stub);
     proxy_ = proxy;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy);
+    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperator(windowId, proxy, true);
     bool ret = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([=]() -> bool {
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         if (aams.GetMainRunner()->GetEventQueue()->IsIdle()) {

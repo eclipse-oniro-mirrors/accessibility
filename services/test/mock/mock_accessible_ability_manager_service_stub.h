@@ -47,7 +47,7 @@ public:
         std::vector<AccessibilityAbilityInfo> &infos) override;
 
     RetError RegisterElementOperator(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &operation) override;
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp) override;
 
     RetError DeregisterElementOperator(const int32_t windowId) override;
 
