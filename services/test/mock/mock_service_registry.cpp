@@ -223,6 +223,12 @@ int32_t SystemAbilityManagerProxy::GetOnDemandSystemAbilityIds(std::vector<int32
     return -1;
 }
 
+int32_t SystemAbilityManagerProxy::SendStrategy(int32_t type, std::vector<int32_t>& systemAbilityIds,
+    int32_t level, std::string& action)
+{
+    return -1;
+}
+
 sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
 {
     return nullptr;
