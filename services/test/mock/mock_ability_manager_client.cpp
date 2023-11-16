@@ -37,18 +37,18 @@ std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
 }
 
 ErrCode AbilityManagerClient::ConnectAbility(
-    const Want& want, const sptr<IAbilityConnection>& connect, const sptr<IRemoteObject>& callerToken, int32_t userId)
+    const Want& want, sptr<IAbilityConnection> connect, sptr<IRemoteObject> callerToken, int32_t userId)
 {
     return NO_ERROR;
 }
 
-ErrCode AbilityManagerClient::DisconnectAbility(const sptr<IAbilityConnection>& connect)
+ErrCode AbilityManagerClient::DisconnectAbility(sptr<IAbilityConnection> connect)
 {
     return NO_ERROR;
 }
 
 ErrCode AbilityManagerClient::SetAbilityController(
-    const sptr<AppExecFwk::IAbilityController>& abilityController, bool imAStabilityTest)
+    sptr<AppExecFwk::IAbilityController> abilityController, bool imAStabilityTest)
 {
     return NO_ERROR;
 }
