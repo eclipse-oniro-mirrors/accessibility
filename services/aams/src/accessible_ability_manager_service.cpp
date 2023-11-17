@@ -1336,7 +1336,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
         }
 
         std::vector<AccessibilityElementInfo> infos = {};
-        if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false) {
+        if (GetParentElementRecursively(event.GetWindowId(), elementId, infos) == false || infos.size() == 0) {
             HILOG_ERROR("find parent element failed");
             return;
         }
