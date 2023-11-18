@@ -1196,7 +1196,6 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         HILOG_ERROR("Failed to set brightness discount");
     }
     if (accountData->GetInstalledAbilitiesFromBMS()) {
-        HILOG_ERROR("wjtest GetInstalledAbilitiesFromBMS true");
         accountData->UpdateAutoStartEnabledAbilities();
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         accountData->UpdateAbilities();
