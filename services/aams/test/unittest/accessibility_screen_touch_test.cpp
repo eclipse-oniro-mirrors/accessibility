@@ -58,6 +58,7 @@ public:
 
 void AccessibilityScreenTouchUnitTest::SetUpTestCase()
 {
+    // start
     GTEST_LOG_(INFO) << "###################### AccessibilityScreenTouchUnitTest Start ######################";
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
