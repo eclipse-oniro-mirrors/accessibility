@@ -223,35 +223,36 @@ private:
 
     napi_value SetTargetBundleNameCompleteTask(napi_env env, std::vector<std::string> targetBundleNames,
         NapiCallbackInfo& info)
-    {
-        NapiAsyncTask::CompleteCallback complete =
-            [weak = context_, targetBundleNames](napi_env env, NapiAsyncTask& task, int32_t status) {
-                HILOG_INFO("SetTargetBundleName begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
+    {  
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, targetBundleNames, ret] () {
+            HILOG_INFO("SetTargetBundleName begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
 
-                RetError ret = context->SetTargetBundleName(targetBundleNames);
-                if (ret == RET_OK) {
-                    task.Resolve(env, CreateJsUndefined(env));
-                } else {
-                    HILOG_ERROR("set target bundle name failed. ret: %{public}d.", ret);
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                }
-            };
+            *ret = context->SetTargetBundleName(targetBundleNames);
+        };
+        NapiAsyncTask::CompleteCallback complete =
+            [ret](napi_env env, NapiAsyncTask& task, int32_t status) {
+            if (*ret == RET_OK) {
+                task.Resolve(env, CreateJsUndefined(env));
+            } else {
+                HILOG_ERROR("set target bundle name failed. ret: %{public}d.", *ret);
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
+                    ERROR_MESSAGE_SYSTEM_ABNORMALITY));
+            }
+        };
 
         napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
             ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnSetTargetBundleName",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 
@@ -284,38 +285,39 @@ private:
 
     napi_value GetFoucusElementCompleteTask(napi_env env, int32_t focus, napi_value lastParam)
     {
-        NapiAsyncTask::CompleteCallback complete =
-            [weak = context_, focus](napi_env env, NapiAsyncTask& task, int32_t status) {
-                HILOG_INFO("GetFocusElement begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
+        auto elementInfo = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, elementInfo, focus, ret] () {
+            HILOG_INFO("GetFoucusElement begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
 
-                OHOS::Accessibility::AccessibilityElementInfo elementInfo;
-                RetError ret = context->GetFocus(focus, elementInfo);
-                if (ret == RET_OK) {
-                    napi_value constructor = nullptr;
-                    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
-                    napi_value napiElementInfo = nullptr;
-                    napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
-                    NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, elementInfo);
-                    task.Resolve(env, napiElementInfo);
-                } else {
-                    HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", ret);
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
-                }
-            };
+            *ret = context->GetFocus(focus, *elementInfo);
+        };
+        NapiAsyncTask::CompleteCallback complete =
+            [ret, elementInfo](napi_env env, NapiAsyncTask& task, int32_t status) {
+            if (*ret == RET_OK) {
+                napi_value constructor = nullptr;
+                napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+                napi_value napiElementInfo = nullptr;
+                napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
+                NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, *elementInfo);
+                task.Resolve(env, napiElementInfo);
+            } else {
+                HILOG_ERROR("Get focus elementInfo failed. ret: %{public}d", *ret);
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+            }
+        };
 
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGetFocusElement",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 
@@ -358,47 +360,46 @@ private:
     napi_value GetWindowRootElementCompleteTask(
         napi_env env, int32_t windowId, bool isActiveWindow, napi_value lastParam)
     {
-        NapiAsyncTask::CompleteCallback complete =
-            [weak = context_, windowId, isActiveWindow](napi_env env, NapiAsyncTask& task, int32_t status) {
-                HILOG_INFO("GetWindowRootElement begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
+        auto elementInfo = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, isActiveWindow, windowId, elementInfo, ret] () {
+            HILOG_INFO("GetWindowRootElement begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+            if (isActiveWindow) {
+                *ret = context->GetRoot(*elementInfo);
+            } else {
+                AccessibilityWindowInfo windowInfo;
+                windowInfo.SetWindowId(windowId);
+                *ret = context->GetRootByWindow(windowInfo, *elementInfo);
+            }
+        };
 
-                HILOG_DEBUG("isActiveWindow[%{public}d] windowId[%{public}d]", isActiveWindow, windowId);
-                OHOS::Accessibility::AccessibilityElementInfo elementInfo;
-                RetError ret = RET_OK;
-                if (isActiveWindow) {
-                    ret = context->GetRoot(elementInfo);
-                } else {
-                    AccessibilityWindowInfo windowInfo;
-                    windowInfo.SetWindowId(windowId);
-                    ret = context->GetRootByWindow(windowInfo, elementInfo);
-                }
-                if (ret == RET_OK) {
-                    napi_value constructor = nullptr;
-                    napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
-                    napi_value napiElementInfo = nullptr;
-                    napi_status result = napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
-                    HILOG_DEBUG("napi_new_instance result is %{public}d", result);
-                    NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, elementInfo);
-                    task.Resolve(env, napiElementInfo);
-                } else {
-                    HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", ret);
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
-                }
-            };
+        NapiAsyncTask::CompleteCallback complete =
+            [ret, elementInfo](napi_env env, NapiAsyncTask& task, int32_t status) {
+            if (*ret == RET_OK) {
+                napi_value constructor = nullptr;
+                napi_get_reference_value(env, NAccessibilityElement::consRef_, &constructor);
+                napi_value napiElementInfo = nullptr;
+                napi_status result = napi_new_instance(env, constructor, 0, nullptr, &napiElementInfo);
+                HILOG_DEBUG("napi_new_instance result is %{public}d", result);
+                NAccessibilityElement::ConvertElementInfoToJS(env, napiElementInfo, *elementInfo);
+                task.Resolve(env, napiElementInfo);
+            } else {
+                HILOG_ERROR("Get root elementInfo failed. ret : %{public}d", *ret);
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+            }
+        };
 
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGetWindowRootElement",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 
@@ -443,80 +444,74 @@ private:
     napi_value GetWindowsAsync(napi_env env, napi_value lastParam)
     {
         HILOG_INFO();
+        auto accessibilityWindows = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityWindowInfo>>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, accessibilityWindows, ret] () {
+            HILOG_INFO("Getwindows begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+            *ret = context->GetWindows(*accessibilityWindows);
+        };
+        
         NapiAsyncTask::CompleteCallback complete =
-            [weak = context_](napi_env env, NapiAsyncTask& task, int32_t status) {
-                HILOG_INFO("GetWindows begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
-
-                std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                RetError ret = context->GetWindows(accessibilityWindows);
-                if (ret == RET_OK) {
+            [ret, accessibilityWindows] (napi_env env, NapiAsyncTask& task, int32_t status) {
+                if (*ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(env, &napiWindowInfos);
-                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, accessibilityWindows);
+                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, *accessibilityWindows);
                     task.Resolve(env, napiWindowInfos);
                 } else {
                     HILOG_ERROR("Get windowInfos failed.");
                     task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
                 }
-            };
+        };    
 
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 
     napi_value GetWindowsByDisplayIdAsync(napi_env env, napi_value lastParam, int64_t displayId)
     {
         HILOG_INFO();
+        auto accessibilityWindows = std::make_shared<std::vector<OHOS::Accessibility::AccessibilityWindowInfo>>();
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, accessibilityWindows, ret, displayId] () {
+            HILOG_INFO("GetwindowsByDisplayId begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+            *ret = context->GetWindows(static_cast<uint64_t>(displayId), *accessibilityWindows);
+        };
+        
         NapiAsyncTask::CompleteCallback complete =
-            [weak = context_, displayId](napi_env env, NapiAsyncTask& task, int32_t status) {
-                HILOG_INFO("GetWindows begin");
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
-
-                if (displayId < 0) {
-                    HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM),
-                        ERROR_MESSAGE_PARAMETER_ERROR));
-                    return;
-                }
-
-                std::vector<OHOS::Accessibility::AccessibilityWindowInfo> accessibilityWindows;
-                RetError ret = context->GetWindows(static_cast<uint64_t>(displayId), accessibilityWindows);
-                if (ret == RET_OK) {
+            [ret, accessibilityWindows] (napi_env env, NapiAsyncTask& task, int32_t status) {
+                if (*ret == RET_OK) {
                     napi_value napiWindowInfos = nullptr;
                     napi_create_array(env, &napiWindowInfos);
-                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, accessibilityWindows);
+                    ConvertAccessibilityWindowInfosToJS(env, napiWindowInfos, *accessibilityWindows);
                     task.Resolve(env, napiWindowInfos);
                 } else {
-                    HILOG_ERROR("Get windowInfos failed.");
+                    HILOG_ERROR("Get windowInfosByDisplayId failed.");
                     task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
+                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
                 }
-            };
+        };
 
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsByDisplayIdAsync",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 
@@ -591,33 +586,35 @@ private:
     napi_value GestureInjectCompleteTask(
         napi_env env, NapiCallbackInfo& info, std::shared_ptr<AccessibilityGestureInjectPath> gesturePath)
     {
+        auto ret = std::make_shared<RetError>(RET_OK);
+        NapiAsyncTask::ExecuteCallback execute = [weak = context_, gesturePath, ret] () {
+            HILOG_INFO("GestureInject begin");
+            auto context = weak.lock();
+            if (!context) {
+                HILOG_ERROR("context is released");
+                *ret = RET_ERR_FAILED;
+                return;
+            }
+
+            *ret = context->InjectGesture(gesturePath);
+        };
         NapiAsyncTask::CompleteCallback complete =
-            [weak = context_, gesturePath](
-            napi_env env, NapiAsyncTask& task, int32_t status) {
-                auto context = weak.lock();
-                if (!context) {
-                    HILOG_ERROR("context is released");
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY),
-                        ERROR_MESSAGE_SYSTEM_ABNORMALITY));
-                    return;
-                }
-                RetError ret = context->InjectGesture(gesturePath);
-                if (ret == RET_OK) {
-                    task.Resolve(env, CreateJsUndefined(env));
-                } else {
-                    HILOG_ERROR("Gesture inject failed. ret: %{public}d.", ret);
-                    task.Reject(env, CreateJsError(env,
-                        static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).errCode),
-                        ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(ret).message));
-                }
-            };
+            [ret, gesturePath](napi_env env, NapiAsyncTask& task, int32_t status) {
+            if (*ret == RET_OK) {
+                task.Resolve(env, CreateJsUndefined(env));
+            } else {
+                HILOG_ERROR("Gesture inject failed. ret: %{public}d.", *ret);
+                task.Reject(env, CreateJsError(env,
+                    static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
+                    ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
+            }
+        };
 
         napi_value lastParam = (info.argc == ARGS_SIZE_ONE) ? nullptr :
             ((info.argv[PARAM1] != nullptr && IsNapiFunction(env, info.argv[PARAM1])) ? info.argv[PARAM1] : nullptr);
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::OnGestureInject",
-            env, CreateAsyncTaskWithLastParam(env, lastParam, nullptr, std::move(complete), &result));
+            env, CreateAsyncTaskWithLastParam(env, lastParam, std::move(execute), std::move(complete), &result));
         return result;
     }
 };
