@@ -223,7 +223,7 @@ private:
 
     napi_value SetTargetBundleNameCompleteTask(napi_env env, std::vector<std::string> targetBundleNames,
         NapiCallbackInfo& info)
-    {  
+        {
         auto ret = std::make_shared<RetError>(RET_OK);
         NapiAsyncTask::ExecuteCallback execute = [weak = context_, targetBundleNames, ret] () {
             HILOG_INFO("SetTargetBundleName begin");
@@ -470,7 +470,7 @@ private:
                         static_cast<int32_t>(ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).errCode),
                         ACCESSIBILITY_JS_TO_ERROR_CODE_MAP.at(*ret).message));
                 }
-        };    
+        };
 
         napi_value result = nullptr;
         NapiAsyncTask::Schedule("NAccessibilityExtensionContext::GetWindowsAsync",
