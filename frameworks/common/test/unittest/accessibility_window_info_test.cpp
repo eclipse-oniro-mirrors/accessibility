@@ -224,6 +224,7 @@ HWTEST_F(AccessibilityWindowInfoUnitTest, SetWindowMode_001, TestSize.Level1)
         GTEST_LOG_(INFO) << "windowInfo_ is null";
         return;
     }
+    GTEST_LOG_(INFO) << "SetWindowMode_001 begin";
     windowInfo_->SetWindowMode(1);
     EXPECT_EQ(windowInfo_->GetWindowMode(), 1);
     GTEST_LOG_(INFO) << "SetWindowMode_001 end";
