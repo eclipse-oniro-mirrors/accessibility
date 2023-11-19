@@ -439,6 +439,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
         HILOG_DEBUG("accountId is existed");
+        return iter->second;
     }
 
     sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
@@ -446,6 +447,7 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
         return nullptr;
     }
 
+    accountData->Init();
     accountDataMap_[accountId] = accountData;
     return accountData;
 }

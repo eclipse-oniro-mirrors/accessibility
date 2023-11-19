@@ -1132,10 +1132,7 @@ void AccessibleAbilityManagerService::EnableAbilityListsObserverDeathRecipient::
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)
 {
     HILOG_DEBUG();
-    auto accountData = a11yAccountsData_.AddAccountData(accountId);
-    if (accountData) {
-        accountData->Init();
-    }
+    a11yAccountsData_.AddAccountData(accountId);
 }
 
 void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
