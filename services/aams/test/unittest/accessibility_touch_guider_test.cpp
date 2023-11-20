@@ -250,6 +250,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_002, TestSize.Leve
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent2);
 
+    // create
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_UP);
     touchGuider_->OnPointerEvent(*event);
     retOnPointerEvent2 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {

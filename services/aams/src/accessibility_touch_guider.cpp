@@ -24,6 +24,7 @@ namespace {
     constexpr int32_t POINTER_COUNT_1 = 1;
     constexpr int32_t POINTER_COUNT_2 = 2;
     constexpr int32_t SCREEN_AXIS_NUM = 2;
+    constexpr int32_t REMOVE_POINTER_ID_1 = 1;
 } // namespace
 
 TGEventHandler::TGEventHandler(
@@ -556,6 +557,8 @@ void TouchGuider::SendPointerDownEventToMultimodal(MMI::PointerEvent event, int3
     event.RemovePointerItem(currentPid);
     event.AddPointerItem(pointer);
     event.SetActionTime(actionTime);
+    int32_t removePid = currentPid == 0 ? REMOVE_POINTER_ID_1 : 0;
+    event.RemovePointerItem(removePid);
     SendEventToMultimodal(event, action);
 }
 
