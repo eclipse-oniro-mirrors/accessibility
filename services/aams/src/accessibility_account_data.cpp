@@ -1010,16 +1010,17 @@ sptr<AccessibilityAccountData> AccessibilityAccountDataMap::AddAccountData(
     std::lock_guard<std::mutex> lock(accountDataMutex_);
     auto iter = accountDataMap_.find(accountId);
     if (iter != accountDataMap_.end()) {
-        HILOG_DEBUG("accountId is existed");
+        HILOG_WARN("accountId is existed");
+        return iter->second;
     }
 
-    // even old account exist, new account cover old
     sptr<AccessibilityAccountData> accountData = new(std::nothrow) AccessibilityAccountData(accountId);
     if (accountData == nullptr) {
         HILOG_ERROR("accountData is null");
         return nullptr;
     }
 
+    accountData->Init();
     accountDataMap_[accountId] = accountData;
     return accountData;
 }
