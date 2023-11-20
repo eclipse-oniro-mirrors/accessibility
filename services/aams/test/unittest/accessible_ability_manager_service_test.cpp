@@ -1897,6 +1897,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, SetTargetAbility_009, TestSize
         GTEST_LOG_(INFO) << "current account data is null";
         return;
     }
+    // set
     accountData->GetConfig()->SetShortkeyTarget("");
     bool ret = Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
     EXPECT_FALSE(ret);
