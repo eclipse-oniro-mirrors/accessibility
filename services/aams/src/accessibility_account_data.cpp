@@ -639,11 +639,13 @@ void AccessibilityAccountData::UpdateAutoStartEnabledAbilities()
     for (auto &installAbility : installedAbilities_) {
         std::string bundleName = installAbility.GetPackageName();
         std::string abilityName = installAbility.GetName();
-        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
-            bundleName.c_str(), abilityName.c_str());
- 
         std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, abilityName, id_);
         if (GetAbilityAutoStartState(strAutoStartStateKey)) {
+            HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
+            uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+                CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+            uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
+            installAbility.SetCapabilityValues(resultCapabilities);
             std::string uri = Utils::GetUri(bundleName, abilityName);
             AddEnabledAbility(uri);
         }
@@ -778,11 +780,15 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
             std::string tmpAbilityName = accessibilityInfo->GetName();
             std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, tmpAbilityName, id_);
             if (GetAbilityAutoStartState(strAutoStartStateKey)) {
+                HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
+                uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+                    CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+                uint32_t resultCapabilities = accessibilityInfo->GetStaticCapabilityValues() & capabilities;
+                accessibilityInfo->SetCapabilityValues(resultCapabilities);
                 std::string uri = Utils::GetUri(bundleName, tmpAbilityName);
                 AddEnabledAbility(uri);
                 RemoveConnectingA11yAbility(uri);
             }
-            break;
         }
     }
 
