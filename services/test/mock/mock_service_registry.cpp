@@ -229,6 +229,11 @@ int32_t SystemAbilityManagerProxy::SendStrategy(int32_t type, std::vector<int32_
     return -1;
 }
 
+int32_t SystemAbilityManagerProxy::UnloadAllIdleSystemAbility()
+{
+    return -1;
+}
+
 sptr<IRemoteObject> SystemAbilityManagerProxy::Recompute(int32_t systemAbilityId, int32_t code)
 {
     return nullptr;
