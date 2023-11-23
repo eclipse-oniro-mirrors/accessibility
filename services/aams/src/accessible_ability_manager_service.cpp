@@ -964,6 +964,12 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
         syncPromise.set_value(RET_OK);
         }), "TASK_DISABLE_UI_TEST_ABILITIES");
+
+    std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
+    if (wait != std::future_status::ready) {
+        HILOG_ERROR("Failed to wait DisableUITestAbility result");
+        return RET_ERR_TIME_OUT;
+    }
     return syncFuture.get();
 }
 
