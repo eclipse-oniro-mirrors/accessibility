@@ -491,6 +491,11 @@ private:
                 *ret = RET_ERR_FAILED;
                 return;
             }
+            if (displayId < 0) {
+                HILOG_ERROR("displayId is error: %{public}" PRId64 "", displayId);
+                *ret = RET_ERR_INVALID_PARAM;
+                return;
+            }
             *ret = context->GetWindows(static_cast<uint64_t>(displayId), *accessibilityWindows);
         };
         
