@@ -161,7 +161,7 @@ void NAccessibilityElement::ConvertElementInfosToJS(
     for (auto& elementInfo : elementInfos) {
         napi_value obj = nullptr;
         napi_status status = napi_new_instance(env, constructor, 0, nullptr, &obj);
-        HILOG_INFO("status is %{public}d", status);
+        HILOG_DEBUG("status is %{public}d", status);
         ConvertElementInfoToJS(env, obj, elementInfo);
         napi_set_element(env, result, index, obj);
         index++;
@@ -170,7 +170,7 @@ void NAccessibilityElement::ConvertElementInfosToJS(
 
 napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
@@ -220,7 +220,7 @@ napi_value NAccessibilityElement::AttributeNames(napi_env env, napi_callback_inf
 
 void NAccessibilityElement::AttributeNamesComplete(napi_env env, napi_status status, void* data)
 {
-    HILOG_INFO("AttributeNameComplete execute back");
+    HILOG_DEBUG("AttributeNameComplete execute back");
     NAccessibilityElementData* callbackInfo = static_cast<NAccessibilityElementData*>(data);
     napi_value result[ARGS_SIZE_TWO] = {0};
     napi_value callback = 0;
@@ -319,7 +319,7 @@ NAccessibilityErrorCode NAccessibilityElement::GetAttribute(
         // Parse attribute name
         std::string attribute = "";
         if (ParseString(env, attribute, argv[PARAM0])) {
-            HILOG_INFO("attribute = %{public}s", attribute.c_str());
+            HILOG_DEBUG("attribute = %{public}s", attribute.c_str());
             callbackInfo->attribute_ = attribute;
         } else {
             errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
@@ -385,7 +385,7 @@ void NAccessibilityElement::AttributeValueExecute(napi_env env, void* data)
     } else {
         callbackInfo->ret_ = RET_OK;
     }
-    HILOG_INFO("attribute[%{public}s], result[%{public}d]", callbackInfo->attribute_.c_str(), callbackInfo->ret_);
+    HILOG_DEBUG("attribute[%{public}s], result[%{public}d]", callbackInfo->attribute_.c_str(), callbackInfo->ret_);
 }
 
 void NAccessibilityElement::AttributeValueComplete(napi_env env, napi_status status, void* data)
@@ -979,7 +979,7 @@ void NAccessibilityElement::GetWindowInfoWindowId(NAccessibilityElementData *cal
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value argv = nullptr;
     napi_value thisVar = nullptr;
@@ -1174,7 +1174,7 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
             napi_create_reference(env, argv[PARAM1], 1, &callbackInfo->callback_);
             napi_get_undefined(env, &promise);
         } else {
-            HILOG_INFO("argc is three, use promise");
+            HILOG_DEBUG("argc is three, use promise");
             napi_create_promise(env, &callbackInfo->deferred_, &promise);
         }
     } else if (argc == ARGS_SIZE_TWO) {
@@ -1188,11 +1188,11 @@ napi_value NAccessibilityElement::PerformActionConstructPromise(napi_env env, si
                 ConvertActionArgsJSToNAPI(env, argv[PARAM1], actionArguments,
                     ConvertStringToAccessibleOperationType(actionName));
             }
-            HILOG_INFO("argc is two, use promise");
+            HILOG_DEBUG("argc is two, use promise");
             napi_create_promise(env, &callbackInfo->deferred_, &promise);
         }
     } else {
-        HILOG_INFO("argc is others, use promise");
+        HILOG_DEBUG("argc is others, use promise");
         napi_create_promise(env, &callbackInfo->deferred_, &promise);
     }
 
@@ -1346,7 +1346,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
         // Parse conditionType name
         std::string conditionType = "";
         if (ParseString(env, conditionType, argv[PARAM0])) {
-            HILOG_INFO("conditionType = %{public}s", conditionType.c_str());
+            HILOG_DEBUG("conditionType = %{public}s", conditionType.c_str());
             if (std::strcmp(conditionType.c_str(), "content") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusType") != 0 &&
                 std::strcmp(conditionType.c_str(), "focusDirection") != 0) {
@@ -1362,7 +1362,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
         // Parse queryData name
         std::string queryData = "";
         if (ParseString(env, queryData, argv[PARAM1])) {
-            HILOG_INFO("queryData = %{public}s", queryData.c_str());
+            HILOG_DEBUG("queryData = %{public}s", queryData.c_str());
             callbackInfo->condition_ = queryData;
         } else {
             errCode = NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM;
@@ -1401,7 +1401,7 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_TYPE:
             {
                 int32_t focusType = ConvertStringToFocusType(callbackInfo->condition_);
-                HILOG_INFO("focusType is %{public}d", focusType);
+                HILOG_DEBUG("focusType is %{public}d", focusType);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetFocusByElementInfo(
                     *(callbackInfo->accessibilityElement_.elementInfo_),
                     focusType, callbackInfo->nodeInfo_);
@@ -1410,7 +1410,7 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
         case FindElementCondition::FIND_ELEMENT_CONDITION_FOCUS_DIRECTION:
             {
                 FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->condition_);
-                HILOG_INFO("direction is %{public}d", direction);
+                HILOG_DEBUG("direction is %{public}d", direction);
                 callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
                     *(callbackInfo->accessibilityElement_.elementInfo_), direction,
                     callbackInfo->nodeInfo_);
@@ -1419,7 +1419,7 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
         default:
             break;
     }
-    HILOG_INFO("condition id[%{public}d], result[%{public}d]", callbackInfo->conditionId_, callbackInfo->ret_);
+    HILOG_DEBUG("condition id[%{public}d], result[%{public}d]", callbackInfo->conditionId_, callbackInfo->ret_);
 }
 
 void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status, void* data)
@@ -1457,7 +1457,7 @@ void NAccessibilityElement::FindElementComplete(napi_env env, napi_status status
 
 void NAccessibilityElement::GetElement(NAccessibilityElementData *callbackInfo, napi_value &value)
 {
-    HILOG_INFO("condition id[%{public}d]", callbackInfo->conditionId_);
+    HILOG_DEBUG("condition id[%{public}d]", callbackInfo->conditionId_);
     napi_env env = callbackInfo->env_;
     if (callbackInfo->ret_ != RET_OK) {
         HILOG_ERROR("GetElementInfo failed!");
@@ -1497,7 +1497,7 @@ void NAccessibilityElement::GetElement(NAccessibilityElementData *callbackInfo, 
 
 napi_value NAccessibilityElement::ErrorOperation(NAccessibilityElementData *callbackInfo)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     napi_value promise = nullptr;
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");

@@ -104,7 +104,7 @@ bool ParseString(napi_env env, std::string& param, napi_value args)
     }
 
     param = GetStringFromNAPI(env, args);
-    HILOG_INFO("param=%{public}s.", param.c_str());
+    HILOG_DEBUG("param=%{public}s.", param.c_str());
     return true;
 }
 
@@ -204,7 +204,7 @@ napi_value GetErrorValue(napi_env env, int errCode)
 
 bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, napi_ref iterRef)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (env != iterEnv) {
         return false;
     }
@@ -923,7 +923,7 @@ void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
 bool ConvertEventInfoJSToNAPI(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     bool tmpResult = ConvertEventInfoJSToNAPIPart1(env, object, eventInfo);
     if (!tmpResult) {
         return false;

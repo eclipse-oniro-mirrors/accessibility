@@ -45,7 +45,7 @@ void NAccessibilityConfig::EnableAbilityError(size_t& argc, OHOS::Accessibility:
         // parse name
         std::string ability = "";
         if (ParseString(env, ability, parameters[PARAM0])) {
-            HILOG_INFO("ability = %{private}s", ability.c_str());
+            HILOG_DEBUG("ability = %{private}s", ability.c_str());
             callbackInfo->abilityName_ = ability;
         } else {
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -71,7 +71,7 @@ void NAccessibilityConfig::DisableAbilityError(size_t& argc, OHOS::Accessibility
         // parse name
         std::string ability = "";
         if (ParseString(env, ability, parameters[PARAM0])) {
-            HILOG_INFO("ability = %{private}s", ability.c_str());
+            HILOG_DEBUG("ability = %{private}s", ability.c_str());
             callbackInfo->abilityName_ = ability;
         } else {
             errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
@@ -81,7 +81,7 @@ void NAccessibilityConfig::DisableAbilityError(size_t& argc, OHOS::Accessibility
 
 napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -133,7 +133,7 @@ napi_value NAccessibilityConfig::EnableAbility(napi_env env, napi_callback_info 
 
 napi_value NAccessibilityConfig::DisableAbility(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("DisableAbility callbackInfo is nullptr");
@@ -206,7 +206,7 @@ bool NAccessibilityConfig::CheckReadPermission(const std::string &permission)
 
 bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
         napi_throw(env, err);
@@ -226,7 +226,7 @@ bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
 
 napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -275,7 +275,7 @@ napi_value NAccessibilityConfig::SubscribeState(napi_env env, napi_callback_info
 
 napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -319,7 +319,7 @@ napi_value NAccessibilityConfig::UnsubscribeState(napi_env env, napi_callback_in
 
 void NAccessibilityConfig::AsyncWorkComplete(napi_env env, napi_status status, void* data)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -371,7 +371,7 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         return;
     }
 
-    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.SetHighContrastTextState(callbackInfo->boolConfig_);
@@ -452,13 +452,13 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
 
 void NAccessibilityConfig::GetConfigComplete(napi_env env, napi_status status, void* data)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     NAccessibilityConfigData* callbackInfo = static_cast<NAccessibilityConfigData*>(data);
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
         return;
     }
-    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     napi_value result[ARGS_SIZE_TWO] = {0};
     ConfigCompleteInfoById(env, callbackInfo, result, ARGS_SIZE_TWO);
 
@@ -510,7 +510,7 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         return;
     }
 
-    HILOG_INFO("callbackInfo->id_ = %{public}d", callbackInfo->id_);
+    HILOG_DEBUG("callbackInfo->id_ = %{public}d", callbackInfo->id_);
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_HIGH_CONTRAST_TEXT) {
         callbackInfo->ret_ = instance.GetHighContrastTextState(callbackInfo->boolConfig_);
@@ -572,7 +572,7 @@ NAccessibilityConfigData* NAccessibilityConfig::GetCallbackInfo(napi_env env, na
         napi_throw(env, err);
         return nullptr;
     }
-    HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+    HILOG_DEBUG("ConfigID = %{public}d", obj->GetConfigId());
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -662,7 +662,7 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
 
 napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     NAccessibilityConfigClass* obj;
     size_t argc = ARGS_SIZE_TWO;
@@ -718,7 +718,7 @@ napi_value NAccessibilityConfig::SetConfig(napi_env env, napi_callback_info info
 
 napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_value jsthis;
@@ -738,7 +738,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
         napi_throw(env, err);
         return nullptr;
     }
-    HILOG_INFO("ConfigID = %{public}d", obj->GetConfigId());
+    HILOG_DEBUG("ConfigID = %{public}d", obj->GetConfigId());
     
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (!callbackInfo) {
@@ -773,7 +773,7 @@ napi_value NAccessibilityConfig::GetConfig(napi_env env, napi_callback_info info
 
 napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -824,7 +824,7 @@ napi_value NAccessibilityConfig::SubscribeConfigObserver(napi_env env, napi_call
 
 napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_callback_info info)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (!IsAvailable(env, info)) {
         return nullptr;
     }
@@ -857,7 +857,7 @@ napi_value NAccessibilityConfig::UnSubscribeConfigObserver(napi_env env, napi_ca
 
 void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
 
     AccessibilityCallbackInfo *callbackInfo = new(std::nothrow) AccessibilityCallbackInfo();
     if (!callbackInfo) {
@@ -915,7 +915,7 @@ void EnableAbilityListsObserverImpl::SubscribeToFramework()
 
 void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto &observer : enableAbilityListsObservers_) {
         observer->OnEnableAbilityListsStateChanged();
@@ -924,7 +924,7 @@ void EnableAbilityListsObserverImpl::OnEnableAbilityListsStateChanged()
 
 void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value observer)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
@@ -941,12 +941,12 @@ void EnableAbilityListsObserverImpl::SubscribeObserver(napi_env env, napi_value 
         std::make_shared<EnableAbilityListsObserver>(env, callback);
 
     enableAbilityListsObservers_.emplace_back(observerPtr);
-    HILOG_INFO("observer size%{public}zu", enableAbilityListsObservers_.size());
+    HILOG_DEBUG("observer size%{public}zu", enableAbilityListsObservers_.size());
 }
 
 void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_value observer)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     for (auto iter = enableAbilityListsObservers_.begin(); iter != enableAbilityListsObservers_.end();) {
         if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->callback_)) {
@@ -960,7 +960,7 @@ void EnableAbilityListsObserverImpl::UnsubscribeObserver(napi_env env, napi_valu
 
 void EnableAbilityListsObserverImpl::UnsubscribeObservers()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     std::lock_guard<std::mutex> lock(mutex_);
     enableAbilityListsObservers_.clear();
 }
