@@ -281,6 +281,7 @@ void AccessibilityAccountData::Init()
 void AccessibilityAccountData::AddEnableAbilityListsObserver(
     const sptr<IAccessibilityEnableAbilityListsObserver>& observer)
 {
+    HILOG_DEBUG("start.");
     (void)observer;
 }
 

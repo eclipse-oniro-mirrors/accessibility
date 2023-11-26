@@ -81,7 +81,6 @@ void AccessibilityScreenTouchUnitTest::TearDown()
 
 std::shared_ptr<MMI::PointerEvent> AccessibilityScreenTouchUnitTest::SetPointerEvent(uint32_t time, uint32_t action)
 {
-    // set
     std::shared_ptr<MMI::PointerEvent> event = MMI::PointerEvent::Create();
     event->SetSourceType(MMI::PointerEvent::SOURCE_TYPE_TOUCHSCREEN);
     event->SetPointerAction(action);

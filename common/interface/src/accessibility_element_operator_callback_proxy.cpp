@@ -20,7 +20,7 @@
 namespace OHOS {
 namespace Accessibility {
 
-constexpr int32_t IPC_MEMORY_SIZE = 400 * 1024; // default size is 200 * 1024B, batch query need more memory
+constexpr int32_t IPC_MEMORY_SIZE = 500 * 1024; // default size is 200 * 1024B, batch query need more memory
 
 AccessibilityElementOperatorCallbackProxy::AccessibilityElementOperatorCallbackProxy(
     const sptr<IRemoteObject> &impl) : IRemoteProxy<IAccessibilityElementOperatorCallback>(impl)
