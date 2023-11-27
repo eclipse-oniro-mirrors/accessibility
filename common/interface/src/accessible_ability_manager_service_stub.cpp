@@ -312,6 +312,10 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleRegisterAccessibilityElementO
     int32_t windowId = data.ReadInt32();
     sptr<IRemoteObject> obj = data.ReadRemoteObject();
     sptr<IAccessibilityElementOperator> operation = iface_cast<IAccessibilityElementOperator>(obj);
+    if (operation == nullptr) {
+        HILOG_ERROR("iface_cast obj failed");
+        return TRANSACTION_ERR;      
+    }
     bool isApp = IsApp();
     RegisterElementOperator(windowId, operation, isApp);
 
