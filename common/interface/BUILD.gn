@@ -74,8 +74,8 @@ ohos_shared_library("accessibility_interface") {
     integer_overflow = true
     ubsan = true
     boundary_sanitize = true
-    cfi = false
-    cfi_cross_dso = false
+    cfi = true
+    cfi_cross_dso = true
     debug = false
   }
 
