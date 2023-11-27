@@ -390,6 +390,12 @@ private:
      * @brief Send all up events to multimodal.
      * @param event the event prepared to send to Multimodal
      */
+    void SendAllUpEvents(MMI::PointerEvent &event);
+
+    /**
+     * @brief Send all up events to multimodal.
+     * @param event the event prepared to send to Multimodal
+     */
     void SendUpForAllInjectedEvent(MMI::PointerEvent &event);
 
     /**
