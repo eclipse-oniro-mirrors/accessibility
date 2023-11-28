@@ -306,8 +306,7 @@ void TouchGuider::HandleDraggingState(MMI::PointerEvent& event)
                 Clear(event);
             } else {
                 currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
-                SendEventToMultimodal(event, POINTER_UP);
-                SendAllDownEvents(event);
+                SendAllUpEvents(event);
             }
             break;
         case MMI::PointerEvent::POINTER_ACTION_MOVE:
@@ -441,7 +440,6 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
                 SendEventToMultimodal(event, POINTER_DOWN);
             } else {
                 currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
-                SendAllDownEvents(event);
             }
             HILOG_DEBUG("POINTER_COUNT_2 end");
             break;
@@ -454,7 +452,6 @@ void TouchGuider::HandleTouchGuidingStateInnerMove(MMI::PointerEvent& event)
                 SendExitEvents();
             }
             currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
-            SendAllDownEvents(event);
             HILOG_DEBUG("default end");
             break;
     }
@@ -497,8 +494,7 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent& event)
         SendEventToMultimodal(event, NO_CHANGE);
     } else {
         currentState_ = static_cast<int32_t>(TouchGuideState::TRANSMITTING);
-        SendEventToMultimodal(event, POINTER_UP);
-        SendAllDownEvents(event);
+        SendAllUpEvents(event);
     }
 }
 
@@ -641,6 +637,17 @@ void TouchGuider::SendAllDownEvents(MMI::PointerEvent& event)
             event.SetPointerId(pId);
             SendEventToMultimodal(event, POINTER_DOWN);
         }
+    }
+}
+
+void TouchGuider::SendAllUpEvents(MMI::PointerEvent &event)
+{
+    HILOG_DEBUG();
+
+    std::vector<int32_t> pIds = event.GetPointerIds();
+    for (auto& pId : pIds) {
+        event.SetPointerId(pId);
+        SendEventToMultimodal(event, POINTER_UP);
     }
 }
 
