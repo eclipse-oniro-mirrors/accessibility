@@ -582,6 +582,8 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
                 bool result = object->RemoveDeathRecipient(deathRecipient);
                 HILOG_DEBUG("The result of deleting operation's death recipient is %{public}d", result);
                 interactionOperationDeathRecipients_.erase(iter);
+            } else {
+                HILOG_INFO("cannot find remote object. windowId[%{public}d]", windowId);
             }
         }
         }), "TASK_DEREGISTER_ELEMENT_OPERATOR");
