@@ -768,21 +768,25 @@ void AccessibilityAccountData::AddAbility(const std::string &bundleName)
             Utils::Parse(newAbility, initParams);
             std::shared_ptr<AccessibilityAbilityInfo> accessibilityInfo =
                 std::make_shared<AccessibilityAbilityInfo>(initParams);
-            AddInstalledAbility(*accessibilityInfo);
-            hasNewExtensionAbility = true;
 
             std::string tmpAbilityName = accessibilityInfo->GetName();
             std::string strAutoStartStateKey = Utils::GetAbilityAutoStartStateKey(bundleName, tmpAbilityName, id_);
             if (GetAbilityAutoStartState(strAutoStartStateKey)) {
-                HILOG_INFO("auto start packageName is %{public}s.", bundleName.c_str());
+                HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
                 uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
                     CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
                 uint32_t resultCapabilities = accessibilityInfo->GetStaticCapabilityValues() & capabilities;
                 accessibilityInfo->SetCapabilityValues(resultCapabilities);
+                AddInstalledAbility(*accessibilityInfo);
+                hasNewExtensionAbility = true;
                 std::string uri = Utils::GetUri(bundleName, tmpAbilityName);
                 AddEnabledAbility(uri);
                 RemoveConnectingA11yAbility(uri);
+                continue;
             }
+
+            AddInstalledAbility(*accessibilityInfo);
+            hasNewExtensionAbility = true;
         }
     }
 

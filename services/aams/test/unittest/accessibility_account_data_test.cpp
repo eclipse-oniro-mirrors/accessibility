@@ -176,7 +176,6 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     /* add connected ability */
     accountData->AddConnectedAbility(connection);
     /* add connecting A11y ability */
-
     const std::string bundleName = "bbb";
     accountData->AddConnectingA11yAbility(bundleName, connection);
 
