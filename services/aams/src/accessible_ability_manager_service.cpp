@@ -1602,6 +1602,7 @@ RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state
 RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
     HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetInvertColorState:" + to_string(state));
 
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
@@ -1655,6 +1656,7 @@ RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 RetError AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
 {
     HILOG_INFO("filter = [%{public}u]", filter);
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationColorFilter:" + to_string(filter));
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
