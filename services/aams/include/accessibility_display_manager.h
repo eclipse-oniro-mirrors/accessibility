@@ -30,6 +30,7 @@ public:
     std::vector<sptr<Rosen::Display>> GetDisplays();
     const sptr<Rosen::Display> GetDefaultDisplay();
     uint64_t GetDefaultDisplayId();
+    int32_t GetDefaultDisplayDpi();
 
     void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnregisterDisplayListener();

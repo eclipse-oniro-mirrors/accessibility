@@ -29,6 +29,7 @@
     ],
     "deps": {
       "components": [
+        "graphic_2d",
         "samgr",
         "napi",
         "window_manager",

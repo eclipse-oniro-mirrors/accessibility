@@ -15,6 +15,7 @@
 
 #include <map>
 #include "accessibility_screen_touch.h"
+#include "accessibility_circle_drawing_manager.h"
 #include "accessible_ability_manager_service.h"
 #include "hilog_wrapper.h"
 
@@ -43,6 +44,8 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_SHORT = 400; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONG = 1000; // ms
 constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
+
+constexpr uint32_t CIRCLE_ANGLE = 360;
 
 const std::map<uint32_t, uint32_t> CLICK_RESPONSE_TIME_MAP = {
     {CLICK_RESPONSE_DELAY_SHORT, CLICK_RESPONSE_TIME_SHORT},
@@ -116,10 +119,6 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
-
     MMI::PointerEvent::PointerItem pointerItem;
     if (!event.GetPointerItem(event.GetPointerId(), pointerItem)) {
         HILOG_WARN("get GetPointerItem %{public}d failed", event.GetPointerId());
@@ -129,15 +128,15 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     startPointer_ = pointerItem;
     isMoveBeyondThreshold_ = false;
     isFirstDownEvent_ = true;
+
+    AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(pointerItem.GetDisplayX(),
+        pointerItem.GetDisplayY(), 0);
+    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(true);
 }
 
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
-
     if (isMoveBeyondThreshold_ == true) {
         EventTransmission::OnPointerEvent(event);
         return;
@@ -155,14 +154,20 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
         EventTransmission::OnPointerEvent(event);
         isMoveBeyondThreshold_ = true;
+        AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
         return;
     }
 
     if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
         static_cast<int64_t>(event.GetActionTime())) {
+        int64_t interval = event.GetActionTime() - startTime_;
+        int32_t angle = static_cast<int32_t>(interval * CIRCLE_ANGLE / (GetRealClickResponseTime() * US_TO_MS));
+        AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(pointerItem.GetDisplayX(),
+            pointerItem.GetDisplayY(), angle);
         return;
     }
 
+    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
     if (isFirstDownEvent_ == true) {
         event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
         EventTransmission::OnPointerEvent(event);
@@ -176,10 +181,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
-        return;
-    }
-
+    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
     if (isMoveBeyondThreshold_ == true) {
         EventTransmission::OnPointerEvent(event);
         return;
@@ -200,6 +202,10 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent
 void AccessibilityScreenTouch::HandleResponseDelayState(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
+    if (event.GetPointerIds().size() > POINTER_COUNT_1) {
+        return;
+    }
+
     switch (event.GetPointerAction()) {
         case MMI::PointerEvent::POINTER_ACTION_DOWN:
             HandleResponseDelayStateInnerDown(event);
@@ -225,6 +231,7 @@ void AccessibilityScreenTouch::HandleIgnoreRepeatClickStateInnerDown(MMI::Pointe
     int64_t downTime = event.GetActionTime();
     if ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime()) {
         isInterceptClick_ = true;
+        return;
     }
 
     EventTransmission::OnPointerEvent(event);
@@ -284,6 +291,7 @@ void AccessibilityScreenTouch::HandleBothStateInnerDown(MMI::PointerEvent &event
     int64_t downTime = event.GetActionTime();
     if ((downTime - lastUpTime_) / US_TO_MS < GetRealIgnoreRepeatClickTime()) {
         isInterceptClick_ = true;
+        return;
     }
 
     HandleResponseDelayStateInnerDown(event);

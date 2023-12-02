@@ -52,6 +52,12 @@ uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
     return Rosen::DisplayManager::GetInstance().GetDefaultDisplayId();
 }
 
+int32_t AccessibilityDisplayManager::GetDefaultDisplayDpi()
+{
+    HILOG_DEBUG();
+    return Rosen::DisplayManager::GetInstance().GetDefaultDisplay()->GetDpi();
+}
+
 void AccessibilityDisplayManager::RegisterDisplayListener(
     const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {

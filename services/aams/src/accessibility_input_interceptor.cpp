@@ -106,7 +106,7 @@ void AccessibilityInputInterceptor::SetAvailableFunctions(uint32_t availableFunc
 {
     HILOG_INFO("function[%{public}d].", availableFunctions);
 
-    if (availableFunctions_ == availableFunctions) {
+    if (availableFunctions_ == availableFunctions && ((availableFunctions & FEATURE_SCREEN_TOUCH) == 0)) {
         return;
     }
     availableFunctions_ = availableFunctions;
@@ -189,7 +189,7 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         SetNextEventTransmitter(header, current, touchGuider);
     }
 
-    if (availableFunctions_& FEATURE_SCREEN_TOUCH) {
+    if ((availableFunctions_ & FEATURE_SCREEN_TOUCH) && ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) == 0)) {
         sptr<AccessibilityScreenTouch> screenTouch = new(std::nothrow) AccessibilityScreenTouch();
         if (!screenTouch) {
             HILOG_ERROR("screenTouch is null");
