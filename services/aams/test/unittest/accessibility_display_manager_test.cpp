@@ -139,5 +139,21 @@ HWTEST_F(
 
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayId_001 end";
 }
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001
+ * @tc.name: GetDefaultDisplayDpi
+ * @tc.desc: Test function GetDefaultDisplayDpi
+ */
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001 start";
+
+    auto dpi = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayDpi();
+    EXPECT_NE(dpi, 0);
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

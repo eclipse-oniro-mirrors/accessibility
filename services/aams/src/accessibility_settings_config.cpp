@@ -223,7 +223,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
     ignoreRepeatClickState_ = state;
-    return SetStatePref(STATE::AUDIOMONO) ? RET_OK : RET_ERR_FAILED;
+    return SetStatePref(STATE::IGNOREREPEATCLICKSTATE) ? RET_OK : RET_ERR_FAILED;
 }
 
 RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)

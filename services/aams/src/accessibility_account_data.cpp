@@ -678,6 +678,12 @@ uint32_t AccessibilityAccountData::GetInputFilterFlag() const
         flag |= AccessibilityInputInterceptor::FEATURE_MOUSE_AUTOCLICK;
     }
 
+    int32_t clickResponseTime = config_->GetClickResponseTime();
+    bool ignoreRepeatClickState = config_->GetIgnoreRepeatClickState();
+    if (clickResponseTime > 0 || ignoreRepeatClickState == true) {
+        flag |= AccessibilityInputInterceptor::FEATURE_SCREEN_TOUCH;
+    }
+
     return flag;
 }
 

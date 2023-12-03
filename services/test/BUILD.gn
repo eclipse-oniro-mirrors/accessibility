@@ -49,6 +49,7 @@ config("module_private_config") {
     "${ability_runtime_services_path}/abilitymgr/include",
     "mock/aafwk/include",
     "${AAMS_FOUNDATION_PATH}/window/window_manager/utils/include",
+    "../../../graphic/graphic_2d/rosen/modules/2d_graphics/include",
   ]
 
   defines = [
@@ -66,6 +67,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
   sources = [
     "../../frameworks/common/src/accessibility_window_info.cpp",
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -134,6 +136,8 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -142,6 +146,7 @@ ohos_moduletest("aams_accessibility_touch_guider_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }
@@ -152,6 +157,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
 
   sources = [
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -221,6 +227,8 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -229,6 +237,7 @@ ohos_moduletest("aams_accessibility_touchEvent_injector_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }
@@ -239,6 +248,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
 
   sources = [
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -313,6 +323,8 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -321,6 +333,7 @@ ohos_moduletest("aams_accessible_ability_channel_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }
@@ -331,6 +344,7 @@ ohos_moduletest("aams_server_test") {
 
   sources = [
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -403,6 +417,8 @@ ohos_moduletest("aams_server_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -411,6 +427,7 @@ ohos_moduletest("aams_server_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }
@@ -421,6 +438,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
 
   sources = [
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -488,6 +506,8 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -496,6 +516,7 @@ ohos_moduletest("aams_accessibility_keyevent_filter_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }
@@ -506,6 +527,7 @@ ohos_moduletest("aams_common_event_registry_test") {
 
   sources = [
     "../aams/src/accessibility_account_data.cpp",
+    "../aams/src/accessibility_circle_drawing_manager.cpp",
     "../aams/src/accessibility_common_event.cpp",
     "../aams/src/accessibility_display_manager.cpp",
     "../aams/src/accessibility_dumper.cpp",
@@ -578,6 +600,8 @@ ohos_moduletest("aams_common_event_registry_test") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
@@ -586,6 +610,7 @@ ohos_moduletest("aams_common_event_registry_test") {
     "input:libmmi-client",
     "ipc:ipc_core",
     "os_account:os_account_innerkits",
+    "window_manager:libdm",
     "window_manager:libwm",
   ]
 }

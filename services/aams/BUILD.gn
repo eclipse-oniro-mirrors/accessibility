@@ -28,6 +28,7 @@ config("aams_service_config") {
   include_dirs = [
     "include",
     "../../common/log/include",
+    "../../../foundation/graphic/graphic_2d/rosen/modules/2d_graphics/include",
   ]
 
   defines = [
@@ -42,6 +43,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessible_ability_manager_service_event_handler.cpp",
   "${services_path}/src/accessible_ability_manager_service.cpp",
   "${services_path}/src/accessibility_account_data.cpp",
+  "${services_path}/src/accessibility_circle_drawing_manager.cpp",
   "${services_path}/src/accessibility_settings_config.cpp",
   "${services_path}/src/accessibility_window_connection.cpp",
   "${services_path}/src/accessibility_zoom_gesture.cpp",
@@ -98,6 +100,8 @@ ohos_shared_library("accessibleabilityms") {
     "data_share:datashare_consumer",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
+    "graphic_2d:2d_graphics",
+    "graphic_2d:librender_service_client",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hitrace:hitrace_meter",
