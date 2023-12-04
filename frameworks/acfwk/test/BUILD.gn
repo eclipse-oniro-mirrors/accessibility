@@ -69,7 +69,9 @@ ohos_unittest("ac_unit_test") {
 
   external_deps = [
     "ability_base:zuri",
+    "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
+    "ability_runtime:extension_manager",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",

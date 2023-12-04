@@ -920,6 +920,18 @@ void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     }
 }
 
+void ConvertStringArrayJSToNAPICommon(napi_env env, napi_value object, std::vector<std::string> &stringArray)
+{
+    napi_value data = nullptr;
+    uint32_t dataLen = 0;
+    napi_get_array_length(env, object, &dataLen);
+    for (uint32_t i = 0; i < dataLen; i++) {
+        napi_get_element(env, object, i, &data);
+        std::string str = GetStringFromNAPI(env, data);
+        stringArray.push_back(str);
+    }
+}
+
 bool ConvertEventInfoJSToNAPI(
     napi_env env, napi_value object, OHOS::Accessibility::AccessibilityEventInfo& eventInfo)
 {

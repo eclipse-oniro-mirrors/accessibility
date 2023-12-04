@@ -213,6 +213,12 @@ RetError MockAccessibleAbilityManagerServiceStub::SetShortkeyTarget(const std::s
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    shortkeyMultiTarget_ = name;
+    return RET_OK;
+}
+
 RetError MockAccessibleAbilityManagerServiceStub::SetHighContrastTextState(const bool state)
 {
     highContrastText_ = state;
@@ -329,6 +335,12 @@ RetError MockAccessibleAbilityManagerServiceStub::GetShortkeyTarget(std::string 
     return RET_OK;
 }
 
+RetError MockAccessibleAbilityManagerServiceStub::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    name = shortkeyMultiTarget_;
+    return RET_OK;
+}
+
 RetError MockAccessibleAbilityManagerServiceStub::GetHighContrastTextState(bool &state)
 {
     state = highContrastText_;
@@ -418,6 +430,7 @@ void MockAccessibleAbilityManagerServiceStub::GetAllConfigs(AccessibilityConfigD
     configData.brightnessDiscount_ = BRIGHTNESS_DISCOUNT_VALUE;
     configData.audioBalance_ = -1;
     configData.shortkeyTarget_ = "test";
+    configData.shortkeyMultiTarget_ = {"test"};
     configData.clickResponseTime_ = 1;
     configData.ignoreRepeatClickState_ = false;
     configData.ignoreRepeatClickTime_ = 1;

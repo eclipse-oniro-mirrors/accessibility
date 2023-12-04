@@ -139,6 +139,7 @@ private:
     ErrCode HandleSetMouseKeyState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetShortkeyTarget(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleSetShortkeyMultiTarget(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetHighContrastTextState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetInvertColorState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleSetAnimationOffState(MessageParcel &data, MessageParcel &reply);
@@ -157,6 +158,7 @@ private:
     ErrCode HandleGetMouseKeyState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetShortkeyTarget(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleGetShortkeyMultiTarget(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetHighContrastTextState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetInvertColorState(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleGetAnimationOffState(MessageParcel &data, MessageParcel &reply);

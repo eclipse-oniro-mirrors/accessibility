@@ -102,6 +102,7 @@ std::string ConvertStringJSToNAPI(napi_env env, napi_value object, napi_value pr
 int32_t ConvertIntJSToNAPI(napi_env env, napi_value object, napi_value propertyNameValue, bool &hasProperty);
 void ConvertStringArrayJSToNAPI(napi_env env, napi_value object,
     napi_value propertyNameValue, bool &hasProperty, std::vector<std::string> &stringArray);
+void ConvertStringArrayJSToNAPICommon(napi_env env, napi_value object, std::vector<std::string> &stringArray);
 
 OHOS::Accessibility::ActionType ConvertStringToAccessibleOperationType(const std::string &type);
 OHOS::Accessibility::AccessibilityAbilityTypes ConvertStringToAccessibilityAbilityTypes(const std::string &type);
@@ -129,6 +130,7 @@ struct StateCallbackInfo: public AccessibilityCallbackInfo {
     uint32_t uint32Value_;
     int32_t int32Value_;
     float   floatValue_;
+    std::vector<std::string> stringVector_;
 };
 
 struct CaptionCallbackInfo: public AccessibilityCallbackInfo {

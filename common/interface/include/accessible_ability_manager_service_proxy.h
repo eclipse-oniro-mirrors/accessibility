@@ -110,6 +110,7 @@ public:
     virtual RetError SetMouseKeyState(const bool state) override;
     virtual RetError SetMouseAutoClick(const int32_t time) override;
     virtual RetError SetShortkeyTarget(const std::string &name) override;
+    virtual RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) override;
     virtual RetError SetHighContrastTextState(const bool state) override;
     virtual RetError SetInvertColorState(const bool state) override;
     virtual RetError SetAnimationOffState(const bool state) override;
@@ -128,6 +129,7 @@ public:
     virtual RetError GetMouseKeyState(bool &state) override;
     virtual RetError GetMouseAutoClick(int32_t &time) override;
     virtual RetError GetShortkeyTarget(std::string &name) override;
+    virtual RetError GetShortkeyMultiTarget(std::vector<std::string> &name) override;
     virtual RetError GetHighContrastTextState(bool &state) override;
     virtual RetError GetInvertColorState(bool &state) override;
     virtual RetError GetAnimationOffState(bool &state) override;

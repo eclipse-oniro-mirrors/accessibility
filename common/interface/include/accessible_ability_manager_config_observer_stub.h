@@ -58,6 +58,7 @@ private:
     ErrCode HandleOnDaltonizationColorFilterChanged(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnMouseAutoClickChanged(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnShortkeyTargetChanged(MessageParcel &data, MessageParcel &reply);
+    ErrCode HandleOnShortkeyMultiTargetChanged(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnClickResponseTimeChanged(MessageParcel &data, MessageParcel &reply);
     ErrCode HandleOnIgnoreRepeatClickTimeChanged(MessageParcel &data, MessageParcel &reply);
 };

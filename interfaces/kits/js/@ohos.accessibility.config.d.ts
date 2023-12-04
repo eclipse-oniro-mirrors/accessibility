@@ -138,6 +138,14 @@ declare namespace config {
    */
   let shortkeyTarget: Config<string>;
   /**
+   * Indicates the configuration of short key multi targets.
+   *
+   * @syscap SystemCapability.BarrierFree.Accessibility.Core
+   * @systemapi
+   * @since 11
+   */
+  let shortkeyMultiTargets: Config<Array<string>>;
+  /**
    * Indicates the configuration of captions state.
    *
    * @syscap SystemCapability.BarrierFree.Accessibility.Core

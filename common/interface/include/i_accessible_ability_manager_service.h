@@ -53,6 +53,7 @@ struct AccessibilityConfigData {
     bool ignoreRepeatClickState_ = false;
     uint32_t ignoreRepeatClickTime_ = 0;
     AccessibilityConfig::CaptionProperty captionProperty_ = {};
+    std::vector<std::string> shortkeyMultiTarget_ = {};
 };
 
 class IAccessibleAbilityManagerService : public IRemoteBroker {
@@ -131,6 +132,7 @@ public:
     virtual RetError SetMouseKeyState(const bool state) = 0;
     virtual RetError SetMouseAutoClick(const int32_t time) = 0;
     virtual RetError SetShortkeyTarget(const std::string &name) = 0;
+    virtual RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) = 0;
     virtual RetError SetHighContrastTextState(const bool state) = 0;
     virtual RetError SetInvertColorState(const bool state) = 0;
     virtual RetError SetAnimationOffState(const bool state) = 0;
@@ -149,6 +151,7 @@ public:
     virtual RetError GetMouseKeyState(bool &state) = 0;
     virtual RetError GetMouseAutoClick(int32_t &time) = 0;
     virtual RetError GetShortkeyTarget(std::string &name) = 0;
+    virtual RetError GetShortkeyMultiTarget(std::vector<std::string> &name) = 0;
     virtual RetError GetHighContrastTextState(bool &state) = 0;
     virtual RetError GetInvertColorState(bool &state) = 0;
     virtual RetError GetAnimationOffState(bool &state) = 0;

@@ -119,8 +119,9 @@ public:
 
 public:
     /* For inner modules */
-    bool EnableShortKeyTargetAbility();
+    bool EnableShortKeyTargetAbility(const std::string &name = "");
     bool DisableShortKeyTargetAbility();
+    void OnShortKeyProcess();
 
     void SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector);
 
@@ -207,6 +208,7 @@ public:
     RetError SetMouseKeyState(const bool state) override;
     RetError SetMouseAutoClick(const int32_t time) override;
     RetError SetShortkeyTarget(const std::string &name) override;
+    RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) override;
     RetError SetHighContrastTextState(const bool state) override;
     RetError SetInvertColorState(const bool state) override;
     RetError SetAnimationOffState(const bool state) override;
@@ -225,6 +227,7 @@ public:
     RetError GetMouseKeyState(bool &state) override;
     RetError GetMouseAutoClick(int32_t &time) override;
     RetError GetShortkeyTarget(std::string &name) override;
+    RetError GetShortkeyMultiTarget(std::vector<std::string> &name) override;
     RetError GetHighContrastTextState(bool &state) override;
     RetError GetInvertColorState(bool &state) override;
     RetError GetAnimationOffState(bool &state) override;
@@ -247,6 +250,7 @@ public:
     void UpdateDaltonizationColorFilter();
     void UpdateMouseAutoClick();
     void UpdateShortkeyTarget();
+    void UpdateShortkeyMultiTarget();
     void UpdateClickResponseTime();
     void UpdateIgnoreRepeatClickTime();
 

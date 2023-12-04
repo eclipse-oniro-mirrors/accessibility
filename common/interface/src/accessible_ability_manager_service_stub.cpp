@@ -73,6 +73,8 @@ void AccessibleAbilityManagerServiceStub::AddSetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickState;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_IGNORE_REPEAT_CLICK_TIME)] =
         &AccessibleAbilityManagerServiceStub::HandleGetIgnoreRepeatClickTime;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::SET_SHORTKEY_MULTI_TARGET)] =
+        &AccessibleAbilityManagerServiceStub::HandleSetShortkeyMultiTarget;
 }
 
 void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
@@ -117,6 +119,8 @@ void AccessibleAbilityManagerServiceStub::AddGetConfigHandles()
         &AccessibleAbilityManagerServiceStub::HandleGetWindowAndElementId;
     memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SCENE_BOARD_INNER_WINDOW_ID)] =
         &AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_SHORTKEY_MULTI_TARGET)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetShortkeyMultiTarget;
 }
 
 AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
@@ -641,6 +645,28 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyTarget(MessageParc
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceStub::HandleSetShortkeyMultiTarget(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    
+    if (!IsSystemApp()) {
+        HILOG_WARN("HandleSetShortkeyMultiTarget Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+    if (!CheckPermission(OHOS_PERMISSION_WRITE_ACCESSIBILITY_CONFIG)) {
+        HILOG_WARN("HandleSetShortkeyMultiTarget Permission denied!");
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return NO_ERROR;
+    }
+
+    std::vector<std::string> name;
+    data.ReadStringVector(&name);
+    reply.WriteInt32(SetShortkeyMultiTarget(name));
+
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleSetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
@@ -954,6 +980,25 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyTarget(MessageParc
     return NO_ERROR;
 }
 
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetShortkeyMultiTarget(MessageParcel &data, MessageParcel &reply)
+{
+    HILOG_DEBUG();
+
+    if (!IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return NO_ERROR;
+    }
+
+    std::vector<std::string> result;
+    RetError ret = GetShortkeyMultiTarget(result);
+    reply.WriteInt32(ret);
+    if (ret == RET_OK) {
+        reply.WriteStringVector(result);
+    }
+    return NO_ERROR;
+}
+
 ErrCode AccessibleAbilityManagerServiceStub::HandleGetMouseAutoClick(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
@@ -1183,6 +1228,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetAllConfigs(MessageParcel &
     reply.WriteFloat(configData.audioBalance_);
     reply.WriteString(configData.shortkeyTarget_);
     reply.WriteParcelable(&captionParcel);
+    reply.WriteStringVector(configData.shortkeyMultiTarget_);
     return NO_ERROR;
 }
 

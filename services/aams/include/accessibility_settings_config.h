@@ -58,6 +58,8 @@ public:
     RetError SetMouseKeyState(const bool state);
     RetError SetMouseAutoClick(const int32_t time);
     RetError SetShortkeyTarget(const std::string &name);
+    RetError SetShortkeyMultiTarget(const std::vector<std::string> &name);
+    RetError SetShortkeyMultiTargetInPkgRemove(const std::string &name);
     RetError SetHighContrastTextState(const bool state);
     RetError SetInvertColorState(const bool state);
     RetError SetAnimationOffState(const bool state);
@@ -81,6 +83,7 @@ public:
     bool GetMouseKeyState() const;
     int32_t GetMouseAutoClick() const;
     const std::string &GetShortkeyTarget() const;
+    const std::vector<std::string> &GetShortkeyMultiTarget() const;
     bool GetHighContrastTextState() const;
     bool GetInvertColorState() const;
     bool GetAnimationOffState() const;
@@ -137,6 +140,7 @@ private:
     bool ignoreRepeatClickState_ = false;
     uint32_t ignoreRepeatClickTime_ = 0;
 
+    std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::string> enabledAbilityInfos_; // bundleName/abilityName/capabilities
 
     std::shared_ptr<NativePreferences::Preferences> pref_ = nullptr;

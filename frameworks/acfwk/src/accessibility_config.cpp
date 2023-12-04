@@ -126,6 +126,12 @@ Accessibility::RetError AccessibilityConfig::SetShortkeyTarget(const std::string
     return pImpl_->SetShortkeyTarget(name);
 }
 
+Accessibility::RetError AccessibilityConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->SetShortkeyMultiTarget(name);
+}
+
 Accessibility::RetError AccessibilityConfig::SetHighContrastTextState(bool state)
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
@@ -238,6 +244,12 @@ Accessibility::RetError AccessibilityConfig::GetShortkeyTarget(std::string &name
 {
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->GetShortkeyTarget(name);
+}
+
+Accessibility::RetError AccessibilityConfig::GetShortkeyMultiTarget(std::vector<std::string> &name) const
+{
+    CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
+    return pImpl_->GetShortkeyMultiTarget(name);
 }
 
 Accessibility::RetError AccessibilityConfig::GetInvertColorState(bool &state) const

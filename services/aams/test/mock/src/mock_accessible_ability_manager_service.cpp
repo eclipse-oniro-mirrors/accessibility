@@ -263,6 +263,12 @@ RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &n
     return RET_OK;
 }
 
+RetError AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    (void)name;
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
     (void)state;
@@ -362,6 +368,13 @@ RetError AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 {
     name = "";
+    return RET_OK;
+}
+
+RetError AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    std::vector<std::string> vecName {};
+    name = vecName;
     return RET_OK;
 }
 
@@ -470,10 +483,14 @@ void AccessibleAbilityManagerService::SetKeyEventFilter(const sptr<KeyEventFilte
     keyEventFilter_ = keyEventFilter;
 }
 
-bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
+bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
 {
     AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);
     return true;
+}
+
+void AccessibleAbilityManagerService::OnShortKeyProcess()
+{
 }
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)

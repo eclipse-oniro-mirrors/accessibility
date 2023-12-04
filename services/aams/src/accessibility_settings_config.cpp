@@ -114,6 +114,42 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    HILOG_DEBUG();
+    shortkeyMultiTarget_ = name;
+    if (!pref_) {
+        HILOG_ERROR("pref_ is null!");
+        return RET_ERR_NULLPTR;
+    }
+
+    std::string stringOut = "";
+    VectorToString(name, stringOut);
+    pref_->PutString("ShortkeyMultiTarget", stringOut);
+    pref_->Flush();
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const std::string &name)
+{
+    HILOG_DEBUG();
+    if (!pref_) {
+        HILOG_ERROR("pref_ is null!");
+        return RET_ERR_NULLPTR;
+    }
+    for (auto iter = shortkeyMultiTarget_.begin(); iter != shortkeyMultiTarget_.end(); ++iter) {
+        if (*iter == name) {
+            shortkeyMultiTarget_.erase(iter);
+            std::string stringOut = "";
+            VectorToString(shortkeyMultiTarget_, stringOut);
+            pref_->PutString("ShortkeyMultiTarget", stringOut);
+            pref_->Flush();
+            break;
+        }
+    }
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
@@ -369,6 +405,11 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
     return shortkeyTarget_;
 }
 
+const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+{
+    return shortkeyMultiTarget_;
+}
+
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const
 {
     return highContrastTextState_;
@@ -578,6 +619,10 @@ void AccessibilitySettingsConfig::InitSetting()
     ignoreRepeatClickState_ = std::strcmp(strValue.c_str(), "on") ? false : true;
 
     shortkeyTarget_ = pref_->GetString("ShortkeyTarget", "none");
+
+    std::string tmpString = pref_->GetString("ShortkeyMultiTarget", "");
+    StringToVector(tmpString, shortkeyMultiTarget_);
+
     mouseAutoClick_ = static_cast<int32_t>(pref_->GetInt("MouseAutoClick", -1));
     daltonizationColorFilter_ = static_cast<uint32_t>(pref_->GetInt("daltonizationColorFilter", 0));
     contentTimeout_ = static_cast<uint32_t>(pref_->GetInt("contentTimeout", 0));

@@ -32,6 +32,7 @@
 #include "parameter.h"
 #include "system_ability_definition.h"
 #include "utils.h"
+#include "accessibility_short_key_dialog.h"
 
 using namespace std;
 
@@ -1217,20 +1218,30 @@ void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleNa
     }
 
     packageAccount->DelAutoStartPrefKeyInRemovePkg(bundleName);
+    std::vector<std::string> multiTarget = packageAccount->GetConfig()->GetShortkeyMultiTarget();
     std::string name = packageAccount->GetConfig()->GetShortkeyTarget();
     auto installedAbilities_ = packageAccount->GetInstalledAbilities();
-    HILOG_DEBUG("name%{public}s", name.c_str());
     for (auto &installAbility : installedAbilities_) {
         std::string abilityId = installAbility.GetId();
         HILOG_DEBUG("abilityId%{public}s", abilityId.c_str());
-        if (bundleName == installAbility.GetPackageName() && abilityId == name) {
+        if (bundleName != installAbility.GetPackageName()) {
+            continue;
+        }
+        // no use later version
+        if (abilityId == name) {
             std::string targetName = "";
             packageAccount->GetConfig()->SetShortkeyTarget(targetName);
             UpdateShortkeyTarget();
-            packageAccount->GetConfig()->SetShortKeyState(false);
-            break;
+        }
+        // multi
+        for (const auto &target : multiTarget) {
+            if (target == abilityId) {
+                packageAccount->GetConfig()->SetShortkeyMultiTargetInPkgRemove(abilityId);
+                UpdateShortkeyMultiTarget();
+            }
         }
     }
+
     if (packageAccount->RemoveAbility(bundleName)) {
         HILOG_DEBUG("ability%{public}s removed!", bundleName.c_str());
         UpdateAccessibilityManagerService();
@@ -1566,6 +1577,31 @@ RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &n
         syncPromise.set_value(ret);
         UpdateShortkeyTarget();
         }), "TASK_SET_SHORTKEY_TARGET");
+    return syncFuture.get();
+}
+
+RetError AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    HILOG_DEBUG();
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyMultiTarget");
+
+    if (!handler_) {
+        HILOG_ERROR("handler_ is nullptr.");
+        return RET_ERR_NULLPTR;
+    }
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr.");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        RetError ret = accountData->GetConfig()->SetShortkeyMultiTarget(name);
+        syncPromise.set_value(ret);
+        UpdateShortkeyMultiTarget();
+        }), "TASK_SET_SHORTKEY_MULTI_TARGET");
     return syncFuture.get();
 }
 
@@ -1949,6 +1985,26 @@ RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
     return syncFuture.get();
 }
 
+RetError AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    HILOG_DEBUG();
+    std::promise<RetError> syncPromise;
+    std::future syncFuture = syncPromise.get_future();
+    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
+        HILOG_DEBUG();
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("accountData is nullptr");
+            syncPromise.set_value(RET_ERR_NULLPTR);
+            return;
+        }
+        name = accountData->GetConfig()->GetShortkeyMultiTarget();
+        syncPromise.set_value(RET_OK);
+        }), "TASK_GET_SHORTKEY_MULTI_TARGET");
+
+    return syncFuture.get();
+}
+
 RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG();
@@ -2218,6 +2274,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
         configData.brightnessDiscount_ = accountData->GetConfig()->GetBrightnessDiscount();
         configData.audioBalance_ = accountData->GetConfig()->GetAudioBalance();
         configData.shortkeyTarget_ = accountData->GetConfig()->GetShortkeyTarget();
+        configData.shortkeyMultiTarget_ = accountData->GetConfig()->GetShortkeyMultiTarget();
         configData.captionProperty_ = accountData->GetConfig()->GetCaptionProperty();
         syncPromise.set_value();
         }), "TASK_GET_ALL_CONFIGS");
@@ -2225,7 +2282,7 @@ void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &con
     return syncFuture.get();
 }
 
-bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
+bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::string &name)
 {
     HILOG_DEBUG();
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "EnableShortKeyTargetAbility");
@@ -2236,11 +2293,16 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
         return false;
     }
 
-    std::string targetAbility = accountData->GetConfig()->GetShortkeyTarget();
-    HILOG_DEBUG("target ability is [%{public}s]", targetAbility.c_str());
-    if (targetAbility == "") {
-        HILOG_ERROR("target ability is null");
-        return false;
+    std::string targetAbility;
+    if (name != "") {
+        targetAbility = name;
+    } else {
+        targetAbility = accountData->GetConfig()->GetShortkeyTarget();
+        HILOG_DEBUG("target ability is [%{public}s]", targetAbility.c_str());
+        if (targetAbility == "") {
+            HILOG_ERROR("target ability is null");
+            return false;
+        }
     }
 
     auto it = AccessibilityConfigTable.find(targetAbility);
@@ -2256,6 +2318,29 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility()
         return InnerDisableAbility(targetAbility) == RET_OK;
     }
     return enableState == RET_OK;
+}
+
+void AccessibleAbilityManagerService::OnShortKeyProcess()
+{
+    HILOG_DEBUG();
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr");
+    }
+
+    std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
+    if (shortkeyMultiTarget.size() == 0) {
+        EnableShortKeyTargetAbility();
+    } else if (shortkeyMultiTarget.size() == 1) {
+        EnableShortKeyTargetAbility(shortkeyMultiTarget[0]);
+    } else {
+        // dialog
+        AccessibilityShortkeyDialog shortkeyDialog;
+        if (shortkeyDialog.ConnectDialog()) {
+            HILOG_DEBUG("ready to build dialog");
+        }
+    }
 }
 
 bool AccessibleAbilityManagerService::DisableShortKeyTargetAbility()
@@ -2466,6 +2551,25 @@ void AccessibleAbilityManagerService::UpdateShortkeyTarget()
             }
         }
         }), "UpdateShortkeyTarget");
+}
+
+void AccessibleAbilityManagerService::UpdateShortkeyMultiTarget()
+{
+    handler_->PostTask(std::bind([this]() -> void {
+        HILOG_INFO("UpdateShortkeyMultiTarget.");
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            return;
+        }
+
+        std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
+        for (auto &callback : accountData->GetConfigCallbacks()) {
+            if (callback) {
+                callback->OnShortkeyMultiTargetChanged(shortkeyMultiTarget);
+            }
+        }
+        }), "UpdateShortkeyMultiTarget");
 }
 
 void AccessibleAbilityManagerService::UpdateClickResponseTime()

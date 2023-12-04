@@ -95,6 +95,26 @@ RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    HILOG_DEBUG("start.");
+    shortkeyMultiTarget_ = name;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetShortkeyMultiTargetInPkgRemove(const std::string &name)
+{
+    HILOG_DEBUG("start.");
+
+    for (auto iter = shortkeyMultiTarget_.begin(); iter != shortkeyMultiTarget_.end(); ++iter) {
+        if (*iter == name) {
+            shortkeyMultiTarget_.erase(iter);
+            break;
+        }
+    }
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG("start.");
@@ -213,6 +233,11 @@ const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
     HILOG_DEBUG("start.");
     return shortkeyTarget_;
+}
+
+const std::vector<std::string> &AccessibilitySettingsConfig::GetShortkeyMultiTarget() const
+{
+    return shortkeyMultiTarget_;
 }
 
 bool AccessibilitySettingsConfig::GetHighContrastTextState() const

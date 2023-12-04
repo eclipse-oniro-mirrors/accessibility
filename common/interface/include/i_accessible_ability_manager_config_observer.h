@@ -31,6 +31,7 @@ public:
     virtual void OnDaltonizationColorFilterChanged(const uint32_t filterType) = 0;
     virtual void OnMouseAutoClickChanged(const int32_t mouseAutoClick) = 0;
     virtual void OnShortkeyTargetChanged(const std::string &shortkeyTarget) = 0;
+    virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) = 0;
     virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) = 0;
     virtual void OnIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime) = 0;
 };
