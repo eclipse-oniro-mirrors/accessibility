@@ -1255,6 +1255,29 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
         return;
     }
     packageAccount->ChangeAbility(bundleName);
+    packageAccount->DelAutoStartPrefKeyInRemovePkg(bundleName);
+    std::string name = packageAccount->GetConfig()->GetShortkeyTarget();
+    auto installedAbilities_ = packageAccount->GetInstalledAbilities();
+    HILOG_DEBUG("name%{public}s", name.c_str());
+    auto isExistence = false;
+    for (auto &installAbility : installedAbilities_) {
+        std::string abilityId = installAbility.GetId();
+
+        HILOG_DEBUG("abilityId%{public}s", abilityId.c_str());
+        if (bundleName == installAbility.GetPackageName() && abilityId == name) {
+            HILOG_DEBUG();
+            isExistence = true;
+            break;
+        }
+    }
+    if (!isExistence) {
+        HILOG_DEBUG();
+        std::string targetName = "";
+        packageAccount->GetConfig()->SetShortkeyTarget(targetName);
+
+        UpdateShortkeyTarget();
+        packageAccount->GetConfig()->SetShortKeyState(false);
+    }
     UpdateAccessibilityManagerService();
 }
 

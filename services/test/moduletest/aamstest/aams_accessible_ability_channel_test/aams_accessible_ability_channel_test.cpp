@@ -143,7 +143,7 @@ void AamsAccessibleAbilityChannelTest::AddAccessibleAbilityConnection(bool isNoC
 void AamsAccessibleAbilityChannelTest::AddAccessibilityWindowConnection()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest AddAccessibilityWindowConnection";
-    // accessibility interaction connection
+    //   accessibility interaction connection
     int32_t windowId = 0;
     std::shared_ptr<MockAccessibilityElementOperatorCallback> mockCallback =
         std::make_shared<MockAccessibilityElementOperatorCallback>();
