@@ -75,6 +75,7 @@ public:
     RetError SetMouseKeyState(const bool state) override;
     RetError SetMouseAutoClick(const int32_t time) override;
     RetError SetShortkeyTarget(const std::string &name) override;
+    RetError SetShortkeyMultiTarget(const std::vector<std::string> &name) override;
     RetError SetHighContrastTextState(const bool state) override;
     RetError SetInvertColorState(const bool state) override;
     RetError SetAnimationOffState(const bool state) override;
@@ -93,6 +94,7 @@ public:
     RetError GetMouseKeyState(bool &state) override;
     RetError GetMouseAutoClick(int32_t &time) override;
     RetError GetShortkeyTarget(std::string &name) override;
+    RetError GetShortkeyMultiTarget(std::vector<std::string> &name) override;
     RetError GetHighContrastTextState(bool &state) override;
     RetError GetInvertColorState(bool &state) override;
     RetError GetAnimationOffState(bool &state) override;
@@ -132,6 +134,7 @@ private:
     float audioBalance_ = 0.0;
     float brightnessDiscount_ = 0.0;
     std::string shortkeyTarget_ = "";
+    std::vector<std::string> shortkeyMultiTarget_ {};
     uint32_t clickResponseTime_ = 0;
     bool ignoreRepeatClickState_ = false;
     uint32_t ignoreRepeatClickTime_ = 0;

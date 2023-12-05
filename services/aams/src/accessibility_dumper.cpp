@@ -282,6 +282,7 @@ int AccessibilityDumper::DumpAccessibilityUserInfo(std::string& dumpInfo) const
     oss << "highContrastText:  " << config->GetHighContrastTextState() << std::endl;
     oss << "audioMono:  " << config->GetAudioMonoState() << std::endl;
     oss << "shortkeyTarget:  " << config->GetShortkeyTarget() << std::endl;
+    // need to add
     oss << "mouseAutoClick:  " << config->GetMouseAutoClick() << std::endl;
     oss << "daltonizationState:  " << config->GetDaltonizationState() << std::endl;
     oss << "daltonizationColorFilter:  " << config->GetDaltonizationColorFilter() << std::endl;

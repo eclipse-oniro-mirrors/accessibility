@@ -58,6 +58,9 @@ int AccessibleAbilityManagerConfigObserverStub::OnRemoteRequest(uint32_t code, M
     if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_TARGET_CHANGED)) {
         return HandleOnShortkeyTargetChanged(data, reply);
     }
+    if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_MULTI_TARGET_CHANGED)) {
+        return HandleOnShortkeyMultiTargetChanged(data, reply);
+    }
     if (code == static_cast<uint32_t>(AccessibilityInterfaceCode::ON_CLICK_RESPONSE_TIME)) {
         return HandleOnClickResponseTimeChanged(data, reply);
     }
@@ -132,6 +135,19 @@ ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyTargetChange
     HILOG_DEBUG();
     std::string shortkeyTarget = data.ReadString();
     OnShortkeyTargetChanged(shortkeyTarget);
+
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerConfigObserverStub::HandleOnShortkeyMultiTargetChanged(
+    MessageParcel& data, MessageParcel& reply)
+{
+    HILOG_DEBUG();
+    std::vector<std::string> shortkeyMultiTarget;
+    if (!data.ReadStringVector(&shortkeyMultiTarget)) {
+        return ERR_TRANSACTION_FAILED;
+    }
+    OnShortkeyMultiTargetChanged(shortkeyMultiTarget);
 
     return NO_ERROR;
 }

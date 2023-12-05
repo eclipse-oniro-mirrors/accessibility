@@ -274,6 +274,41 @@ void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyTargetChanged(const 
     }
 }
 
+void AccessibleAbilityManagerConfigObserverProxy::OnShortkeyMultiTargetChanged(
+    const std::vector<std::string> &shortkeyMultiTarget)
+{
+    HILOG_DEBUG();
+
+    int32_t error = NO_ERROR;
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_ASYNC);
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return;
+    }
+
+    if (!data.WriteStringVector(shortkeyMultiTarget)) {
+        HILOG_ERROR("connection write argument shortkeyMultiTarget failed");
+        return;
+    }
+
+    sptr<IRemoteObject> remote = Remote();
+    if (!remote) {
+        HILOG_ERROR("fail to send transact cmd due to remote object");
+        return;
+    }
+
+    error = remote->SendRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::ON_SHORTKEY_MULTI_TARGET_CHANGED),
+        data, reply, option);
+    if (error != NO_ERROR) {
+        HILOG_ERROR("OnShortkeyMultiTargetChanged fail, error: %{public}d", error);
+        return;
+    }
+}
+
 void AccessibleAbilityManagerConfigObserverProxy::OnClickResponseTimeChanged(const uint32_t clickResponseTime)
 {
     HILOG_DEBUG();

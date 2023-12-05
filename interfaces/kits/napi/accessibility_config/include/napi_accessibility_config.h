@@ -57,6 +57,7 @@ struct NAccessibilityConfigData {
     uint32_t uint32Config_ = 0;
     int32_t int32Config_ = 0;
     float floatConfig_ = 0;
+    std::vector<std::string> stringVectorConfig_ {};
     OHOS::AccessibilityConfig::CaptionProperty captionProperty_ {};
     OHOS::AccessibilityConfig::CONFIG_ID id_ = OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_ID_MAX;
     bool boolConfig_ = false;

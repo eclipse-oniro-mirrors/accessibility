@@ -41,6 +41,7 @@ public:
     MOCK_METHOD1(OnDaltonizationColorFilterChanged, void(const uint32_t filterType));
     MOCK_METHOD1(OnMouseAutoClickChanged, void(const int32_t mouseAutoClick));
     MOCK_METHOD1(OnShortkeyTargetChanged, void(const std::string &shortkeyTarget));
+    MOCK_METHOD1(OnShortkeyMultiTargetChanged, void(const std::vector<std::string> &shortkeyMultiTarget));
 };
 
 class MockAccessibilityEnableAbilityListsObserverProxy : public AccessibilityEnableAbilityListsObserverProxy {

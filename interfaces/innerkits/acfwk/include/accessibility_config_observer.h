@@ -30,6 +30,7 @@ public:
     NAccessibilityConfigObserver(napi_env env, napi_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
         : env_(env), handlerRef_(callback), configId_(id) {};
     void OnConfigChanged(const OHOS::AccessibilityConfig::ConfigValue& value);
+    void OnConfigChangedExtra(const OHOS::AccessibilityConfig::ConfigValue& value);
 
     void OnDaltonizationColorFilterConfigChanged();
     void NotifyStateChanged2JS(bool enabled);
@@ -37,7 +38,9 @@ public:
     void NotifyPropertyChanged2JS(const OHOS::AccessibilityConfig::CaptionProperty &caption);
     int NotifyPropertyChanged(uv_work_t *work);
     void NotifyStringChanged2JS(const std::string& value);
+    void NotifyStringVectorChanged2JS(std::vector<std::string> value);
     int NotifyStringChanged(uv_work_t *work);
+    int NotifyStringVectorChanged(uv_work_t *work);
     void NotifyIntChanged2JS(int32_t value);
     int NotifyIntChanged(uv_work_t *work);
     void NotifyUintChanged2JS(uint32_t value);

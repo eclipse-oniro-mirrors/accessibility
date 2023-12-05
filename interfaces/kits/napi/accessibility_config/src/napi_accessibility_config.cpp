@@ -401,7 +401,9 @@ void NAccessibilityConfig::SetConfigExecute(napi_env env, void* data)
         callbackInfo->ret_ = instance.SetBrightnessDiscount(callbackInfo->floatConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET) {
         callbackInfo->ret_ = instance.SetShortkeyTarget(callbackInfo->stringConfig_);
-    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE) {
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET) {
+        callbackInfo->ret_ = instance.SetShortkeyMultiTarget(callbackInfo->stringVectorConfig_);
+    }  else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE) {
         callbackInfo->ret_ = instance.SetCaptionsProperty(callbackInfo->captionProperty_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_COLOR_FILTER) {
         auto filter = ConvertStringToDaltonizationTypes(callbackInfo->stringConfig_);
@@ -440,6 +442,10 @@ void NAccessibilityConfig::ConfigCompleteInfoById(napi_env env, NAccessibilityCo
         case OHOS::AccessibilityConfig::CONFIG_ID::CONIFG_CLICK_RESPONSE_TIME:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_TIME:
             napi_create_string_utf8(env, callbackInfo->stringConfig_.c_str(), NAPI_AUTO_LENGTH, &result[PARAM1]);
+            break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET:
+            napi_create_array(env, &result[PARAM1]);
+            ConvertStringVecToJS(env, result[PARAM1], callbackInfo->stringVectorConfig_);
             break;
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
             napi_create_object(env, &result[PARAM1]);
@@ -538,6 +544,8 @@ void NAccessibilityConfig::GetConfigExecute(napi_env env, void* data)
         callbackInfo->ret_ = instance.GetBrightnessDiscount(callbackInfo->floatConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_TARGET) {
         callbackInfo->ret_ = instance.GetShortkeyTarget(callbackInfo->stringConfig_);
+    } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET) {
+        callbackInfo->ret_ = instance.GetShortkeyMultiTarget(callbackInfo->stringVectorConfig_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE) {
         callbackInfo->ret_ = instance.GetCaptionsProperty(callbackInfo->captionProperty_);
     } else if (callbackInfo->id_ == OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT) {
@@ -625,14 +633,11 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STATE:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_DALTONIZATION_STATE:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_IGNORE_REPEAT_CLICK_STATE:
-            ret = SetConfigParseBoolData(env, callbackInfo, parameters);
-            break;
+            return SetConfigParseBoolData(env, callbackInfo, parameters);
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CONTENT_TIMEOUT:
-            ret = ParseConnectTimeoutData(env, callbackInfo, parameters);
-            break;
+            return ParseConnectTimeoutData(env, callbackInfo, parameters);
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_MOUSE_AUTOCLICK:
-            ret = ParseMouseAutoClickData(env, callbackInfo, parameters);
-            break;
+            return ParseMouseAutoClickData(env, callbackInfo, parameters);
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_AUDIO_BALANCE:
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_BRIGHTNESS_DISCOUNT:
             {
@@ -651,9 +656,15 @@ bool NAccessibilityConfig::SetConfigParseData(napi_env env, NAccessibilityConfig
                 callbackInfo->stringConfig_ = target;
             }
             break;
+        case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_SHORT_KEY_MULTI_TARGET:
+            {
+                std::vector<std::string> stringArray;
+                ConvertStringArrayJSToNAPICommon(env, parameters[PARAM0], stringArray);
+                callbackInfo->stringVectorConfig_ = stringArray;
+                return true;
+            }
         case OHOS::AccessibilityConfig::CONFIG_ID::CONFIG_CAPTION_STYLE:
-            ret = ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
-            break;
+            return ConvertObjToCaptionProperty(env, parameters[PARAM0], &callbackInfo->captionProperty_);
         default:
             break;
     }

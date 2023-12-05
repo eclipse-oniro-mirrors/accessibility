@@ -53,6 +53,7 @@ public:
     Accessibility::RetError SetCaptionsProperty(const CaptionProperty &caption);
     Accessibility::RetError SetMouseAutoClick(const int32_t time);
     Accessibility::RetError SetShortkeyTarget(const std::string &name);
+    Accessibility::RetError SetShortkeyMultiTarget(const std::vector<std::string> &name);
     Accessibility::RetError SetHighContrastTextState(bool state);
     Accessibility::RetError SetInvertColorState(const bool state);
     Accessibility::RetError SetDaltonizationState(bool state);
@@ -73,6 +74,7 @@ public:
     Accessibility::RetError GetCaptionsProperty(CaptionProperty &caption);
     Accessibility::RetError GetMouseAutoClick(int32_t &time);
     Accessibility::RetError GetShortkeyTarget(std::string &name);
+    Accessibility::RetError GetShortkeyMultiTarget(std::vector<std::string> &name);
     Accessibility::RetError GetInvertColorState(bool &state);
     Accessibility::RetError GetHighContrastTextState(bool &state);
     Accessibility::RetError GetDaltonizationState(bool &state);
@@ -95,6 +97,7 @@ public:
     void OnAccessibleAbilityManagerDaltonizationColorFilterChanged(const uint32_t filterType);
     void OnAccessibleAbilityManagerMouseAutoClickChanged(const int32_t mouseAutoClick);
     void OnAccessibleAbilityManagerShortkeyTargetChanged(const std::string &shortkeyTarget);
+    void OnAccessibleAbilityManagerShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget);
     void OnAccessibleAbilityManagerClickResponseTimeChanged(const uint32_t clickResponseTime);
     void OnAccessibleAbilityManagerIgnoreRepeatClickTimeChanged(const uint32_t ignoreRepeatClickTime);
     void OnAccessibilityEnableAbilityListsChanged();
@@ -164,6 +167,10 @@ private:
         {
             config_.OnAccessibleAbilityManagerShortkeyTargetChanged(shortkeyTarget);
         }
+        virtual void OnShortkeyMultiTargetChanged(const std::vector<std::string> &shortkeyMultiTarget) override
+        {
+            config_.OnAccessibleAbilityManagerShortkeyMultiTargetChanged(shortkeyMultiTarget);
+        }
         virtual void OnClickResponseTimeChanged(const uint32_t clickResponseTime) override
         {
             config_.OnAccessibleAbilityManagerClickResponseTimeChanged(clickResponseTime);
@@ -209,6 +216,8 @@ private:
         const bool state);
     void NotifyShortkeyTargetChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const std::string &shortkey_target);
+    void NotifyShortkeyMultiTargetChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+        const std::vector<std::string> &shortkeyMultiTarget);
     void NotifyMouseAutoClickChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
         const uint32_t mouseAutoClick);
     void NotifyAudioBalanceChanged(const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
@@ -252,6 +261,7 @@ private:
     void NotifyDefaultDaltonizationConfigs();
     void NotifyDefaultScreenTouchConfigs();
     void NotifyDefaultShortKeyConfigs();
+    void NotifyDefaultShortKeyMultiConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
     void InitConfigValues();
     static void OnParameterChanged(const char *key, const char *value, void *context);
@@ -286,6 +296,7 @@ private:
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
 
+    std::vector<std::string> shortkeyMultiTarget_ {};
     std::vector<std::shared_ptr<AccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>> configObservers_;
     std::mutex mutex_;

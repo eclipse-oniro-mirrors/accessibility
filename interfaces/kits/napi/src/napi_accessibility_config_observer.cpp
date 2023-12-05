@@ -27,26 +27,10 @@ using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityNapi;
 using namespace OHOS::AccessibilityConfig;
 
-void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
+void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value)
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
-    if (configId_ == CONFIG_CAPTION_STATE) {
-        NotifyStateChanged2JS(value.captionState);
-    } else if (configId_ == CONFIG_CAPTION_STYLE) {
-        NotifyPropertyChanged2JS(value.captionStyle);
-    } else if (configId_ == CONFIG_SCREEN_MAGNIFICATION) {
-        NotifyStateChanged2JS(value.screenMagnifier);
-    } else if (configId_ == CONFIG_MOUSE_KEY) {
-        NotifyStateChanged2JS(value.mouseKey);
-    } else if (configId_ == CONFIG_SHORT_KEY) {
-        NotifyStateChanged2JS(value.shortkey);
-    } else if (configId_ == CONFIG_SHORT_KEY_TARGET) {
-        NotifyStringChanged2JS(value.shortkey_target);
-    } else if (configId_ == CONFIG_MOUSE_AUTOCLICK) {
-        NotifyIntChanged2JS(value.mouseAutoClick);
-    } else if (configId_ == CONFIG_DALTONIZATION_COLOR_FILTER) {
-        OnDaltonizationColorFilterConfigChanged();
-    } else if (configId_ == CONFIG_CONTENT_TIMEOUT) {
+    if (configId_ == CONFIG_CONTENT_TIMEOUT) {
         NotifyIntChanged2JS(static_cast<int32_t>(value.contentTimeout));
     } else if (configId_ == CONFIG_BRIGHTNESS_DISCOUNT) {
         NotifyFloatChanged2JS(value.brightnessDiscount);
@@ -68,6 +52,32 @@ void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
         NotifyStringChanged2JS(ConvertIgnoreRepeatClickTimeTypeToString(value.ignoreRepeatClickTime));
     } else if (configId_ == CONFIG_IGNORE_REPEAT_CLICK_STATE) {
         NotifyStateChanged2JS(value.ignoreRepeatClickState);
+    }
+}
+
+void NAccessibilityConfigObserver::OnConfigChanged(const ConfigValue &value)
+{
+    HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
+    if (configId_ == CONFIG_CAPTION_STATE) {
+        NotifyStateChanged2JS(value.captionState);
+    } else if (configId_ == CONFIG_CAPTION_STYLE) {
+        NotifyPropertyChanged2JS(value.captionStyle);
+    } else if (configId_ == CONFIG_SCREEN_MAGNIFICATION) {
+        NotifyStateChanged2JS(value.screenMagnifier);
+    } else if (configId_ == CONFIG_MOUSE_KEY) {
+        NotifyStateChanged2JS(value.mouseKey);
+    } else if (configId_ == CONFIG_SHORT_KEY) {
+        NotifyStateChanged2JS(value.shortkey);
+    } else if (configId_ == CONFIG_SHORT_KEY_TARGET) {
+        NotifyStringChanged2JS(value.shortkey_target);
+    } else if (configId_ == CONFIG_SHORT_KEY_MULTI_TARGET) {
+        NotifyStringVectorChanged2JS(value.shortkeyMultiTarget);
+    } else if (configId_ == CONFIG_MOUSE_AUTOCLICK) {
+        NotifyIntChanged2JS(value.mouseAutoClick);
+    } else if (configId_ == CONFIG_DALTONIZATION_COLOR_FILTER) {
+        OnDaltonizationColorFilterConfigChanged();
+    } else {
+        OnConfigChangedExtra(value);
     }
 }
 
@@ -182,6 +192,44 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             char buf[BUF_SIZE] = {0};
             napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
             HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
+            napi_close_handle_scope(callbackInfo->env_, scope);
+            delete callbackInfo;
+            callbackInfo = nullptr;
+            delete work;
+            work = nullptr;
+        },
+        uv_qos_default);
+    return ret;
+}
+
+int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
+{
+    uv_loop_s *loop = nullptr;
+    napi_get_uv_event_loop(env_, &loop);
+    int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
+            napi_handle_scope scope = nullptr;
+            napi_open_handle_scope(callbackInfo->env_, &scope);
+            if (scope == nullptr) {
+                HILOG_DEBUG("NotifyStringVectorChanged scope is nullptr");
+                return;
+            }
+            napi_value jsEvent;
+            napi_create_array(callbackInfo->env_, &jsEvent);
+            ConvertStringVecToJS(callbackInfo->env_, jsEvent, callbackInfo->stringVector_);
+
+            napi_value handler = nullptr;
+            napi_value callResult = nullptr;
+            napi_get_reference_value(callbackInfo->env_, callbackInfo->ref_, &handler);
+            napi_value undefined = nullptr;
+            napi_get_undefined(callbackInfo->env_, &undefined);
+            napi_call_function(callbackInfo->env_, undefined, handler, 1, &jsEvent, &callResult);
+            size_t result;
+            const uint32_t BUF_SIZE = 1024;
+            char buf[BUF_SIZE] = {0};
+            napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
+            HILOG_DEBUG("NotifyStringVectorChanged napi_call_function result[%{public}zu]", result);
             napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
@@ -389,6 +437,36 @@ void NAccessibilityConfigObserver::NotifyStringChanged2JS(const std::string& val
     int ret = NotifyStringChanged(work);
     if (ret != 0) {
         HILOG_ERROR("Failed to execute NotifyStringChanged2JS work queue");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        delete work;
+        work = nullptr;
+    }
+}
+
+void NAccessibilityConfigObserver::NotifyStringVectorChanged2JS(std::vector<std::string> value)
+{
+    HILOG_DEBUG();
+
+    StateCallbackInfo *callbackInfo = new(std::nothrow) StateCallbackInfo();
+    if (!callbackInfo) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return;
+    }
+    callbackInfo->stringVector_ = value;
+    callbackInfo->env_ = env_;
+    callbackInfo->ref_ = handlerRef_;
+    uv_work_t *work = new(std::nothrow) uv_work_t;
+    if (!work) {
+        HILOG_ERROR("NotifyStringVectorChanged2JS Failed to create work.");
+        delete callbackInfo;
+        callbackInfo = nullptr;
+        return;
+    }
+    work->data = static_cast<void*>(callbackInfo);
+    int ret = NotifyStringVectorChanged(work);
+    if (ret != 0) {
+        HILOG_ERROR("Failed to execute NotifyStringVectorChanged2JS work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
         delete work;

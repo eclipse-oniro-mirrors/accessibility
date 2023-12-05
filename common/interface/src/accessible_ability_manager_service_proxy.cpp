@@ -691,6 +691,31 @@ RetError AccessibleAbilityManagerServiceProxy::SetShortkeyTarget(const std::stri
     return static_cast<RetError>(reply.ReadInt32());
 }
 
+RetError AccessibleAbilityManagerServiceProxy::SetShortkeyMultiTarget(const std::vector<std::string> &name)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("DisableAbility fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!data.WriteStringVector(name)) {
+        HILOG_ERROR("fail, connection write SetShortkeyMultiTarget name");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::SET_SHORTKEY_MULTI_TARGET, data, reply, option)) {
+        HILOG_ERROR("send SetShortkeyMultiTarget fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    return static_cast<RetError>(reply.ReadInt32());
+}
+
 RetError AccessibleAbilityManagerServiceProxy::SetHighContrastTextState(const bool state)
 {
     HILOG_DEBUG();
@@ -1107,6 +1132,31 @@ RetError AccessibleAbilityManagerServiceProxy::GetShortkeyTarget(std::string &na
     return ret;
 }
 
+RetError AccessibleAbilityManagerServiceProxy::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    if (!WriteInterfaceToken(data)) {
+        HILOG_ERROR("fail, connection write Token");
+        return RET_ERR_IPC_FAILED;
+    }
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_SHORTKEY_MULTI_TARGET,
+        data, reply, option)) {
+        HILOG_ERROR("GetShortkeyMultiTarget fail");
+        return RET_ERR_IPC_FAILED;
+    }
+    RetError ret = static_cast<RetError>(reply.ReadInt32());
+    if (ret != RET_OK) {
+        return ret;
+    }
+    if (!reply.ReadStringVector(&name)) {
+        return RET_ERR_IPC_FAILED;
+    }
+    return RET_OK;
+}
+
 RetError AccessibleAbilityManagerServiceProxy::GetHighContrastTextState(bool &state)
 {
     HILOG_DEBUG();
@@ -1399,6 +1449,7 @@ void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData
         HILOG_ERROR("GetAllConfigs fail");
         return;
     }
+    std::vector<std::string> tmpMultiTarget;
     configData.highContrastText_ = reply.ReadBool();
     configData.invertColor_ = reply.ReadBool();
     configData.animationOff_ = reply.ReadBool();
@@ -1415,6 +1466,8 @@ void AccessibleAbilityManagerServiceProxy::GetAllConfigs(AccessibilityConfigData
     configData.audioBalance_ = reply.ReadFloat();
     configData.shortkeyTarget_ = reply.ReadString();
     configData.captionProperty_ = *reply.ReadStrongParcelable<CaptionPropertyParcel>();
+    reply.ReadStringVector(&tmpMultiTarget);
+    configData.shortkeyMultiTarget_ = tmpMultiTarget;
 }
 
 void AccessibleAbilityManagerServiceProxy::RegisterEnableAbilityListsObserver(

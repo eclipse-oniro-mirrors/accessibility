@@ -43,6 +43,7 @@ enum CONFIG_ID : int32_t {
     CONIFG_CLICK_RESPONSE_TIME,
     CONFIG_IGNORE_REPEAT_CLICK_STATE,
     CONFIG_IGNORE_REPEAT_CLICK_TIME,
+    CONFIG_SHORT_KEY_MULTI_TARGET,
     CONFIG_ID_MAX,
 };
 
@@ -66,6 +67,7 @@ struct ConfigValue {
     CLICK_RESPONSE_TIME clickResponseTime;
     bool ignoreRepeatClickState;
     IGNORE_REPEAT_CLICK_TIME ignoreRepeatClickTime;
+    std::vector<std::string> shortkeyMultiTarget;
 };
 
 class AccessibilityConfigObserver {
@@ -204,6 +206,13 @@ public:
     Accessibility::RetError SetShortkeyTarget(const std::string &name);
 
     /**
+     * @brief Set the name of the multi accessibility ability to be opened by the short key
+     * @param name name The vector string formatted by 'bundleName/abilityName'
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError SetShortkeyMultiTarget(const std::vector<std::string> &name);
+
+    /**
      * @brief Set whether to enable the high-contrast text function
      * @param state true:enable high-contrast text function; false:disable high-contrast text function
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
@@ -335,6 +344,13 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     Accessibility::RetError GetShortkeyTarget(std::string &name) const;
+
+    /**
+     * @brief Get the name of the multi accessibility ability to be opened by the short key
+     * @param name(out) The vector string formatted by 'bundleName/abilityName'
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    Accessibility::RetError GetShortkeyMultiTarget(std::vector<std::string> &name) const;
 
     /**
      * @brief Get the status of whether the invert color function is enabled

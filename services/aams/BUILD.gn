@@ -65,6 +65,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_dumper.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
   "${services_path}/src/accessibility_setting_provider.cpp",
+  "${services_path}/src/accessibility_short_key dialog.cpp",
 ]
 
 ohos_shared_library("accessibleabilityms") {
@@ -93,7 +94,9 @@ ohos_shared_library("accessibleabilityms") {
     "ability_base:want",
     "ability_base:zuri",
     "ability_runtime:ability_manager",
+    "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
+    "ability_runtime:extension_manager",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",

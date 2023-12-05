@@ -302,6 +302,25 @@ static napi_value InitShortKeyTarget(napi_env env)
     return shortKeyTargetValue;
 }
 
+static napi_value InitShortKeyMultiTarget(napi_env env)
+{
+    napi_value shortKeyMultiTargetValue;
+    napi_create_object(env, &shortKeyMultiTargetValue);
+    NAPI_CALL(env, napi_define_properties(env, shortKeyMultiTargetValue,
+                                          sizeof(configDesc) / sizeof(configDesc[0]),
+                                          configDesc));
+    NAccessibilityConfigClass* nativeObj =
+        new(std::nothrow) NAccessibilityConfigClass(OHOS::AccessibilityConfig::CONFIG_SHORT_KEY_MULTI_TARGET);
+    if (!nativeObj) {
+        HILOG_ERROR("Failed to create nativeObj.");
+        return nullptr;
+    }
+    nativeObj->SetEnv(env);
+    NAPI_CALL(env, napi_wrap(env, shortKeyMultiTargetValue, reinterpret_cast<void*>(nativeObj),
+                             NAccessibilityConfigClass::Destructor, nullptr, nativeObj->GetWrapper()));
+    return shortKeyMultiTargetValue;
+}
+
 static napi_value InitCaptionsState(napi_env env)
 {
     napi_value captionsValue;
@@ -413,6 +432,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
     napi_value mouseAutoClickValue = InitMouseAutoClick(env);
     napi_value shortKeyValue = InitShortKey(env);
     napi_value shortKeyTargetValue = InitShortKeyTarget(env);
+    napi_value shortKeyMultiTargetValue = InitShortKeyMultiTarget(env);
     napi_value captionsValue = InitCaptionsState(env);
     napi_value captionsStyleValue = InitCaptionsStyle(env);
 
@@ -435,6 +455,7 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("mouseAutoClick", mouseAutoClickValue),
         DECLARE_NAPI_STATIC_PROPERTY("shortkey", shortKeyValue),
         DECLARE_NAPI_STATIC_PROPERTY("shortkeyTarget", shortKeyTargetValue),
+        DECLARE_NAPI_STATIC_PROPERTY("shortkeyMultiTargets", shortKeyMultiTargetValue),
         DECLARE_NAPI_STATIC_PROPERTY("captions", captionsValue),
         DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", captionsStyleValue),
         DECLARE_NAPI_STATIC_PROPERTY("clickResponseTime", InitClickResponseTime(env)),

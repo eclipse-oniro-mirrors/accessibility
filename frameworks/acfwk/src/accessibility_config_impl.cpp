@@ -800,6 +800,17 @@ Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyTarget(const std::
     return serviceProxy_->SetShortkeyTarget(name);
 }
 
+Accessibility::RetError AccessibilityConfig::Impl::SetShortkeyMultiTarget(const std::vector<std::string>& name)
+{
+    HILOG_INFO("start");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+    return serviceProxy_->SetShortkeyMultiTarget(name);
+}
+
 Accessibility::RetError AccessibilityConfig::Impl::GetMouseAutoClick(int32_t &time)
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -826,6 +837,18 @@ Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyTarget(std::string
     return ret;
 }
 
+Accessibility::RetError AccessibilityConfig::Impl::GetShortkeyMultiTarget(std::vector<std::string> &name)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get accessibility service");
+        return Accessibility::RET_ERR_SAMGR;
+    }
+
+    Accessibility::RetError ret = serviceProxy_->GetShortkeyMultiTarget(name);
+    return ret;
+}
+
 void AccessibilityConfig::Impl::NotifyShortkeyTargetChanged(
     const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers, const std::string &shortkey_target)
 {
@@ -835,6 +858,22 @@ void AccessibilityConfig::Impl::NotifyShortkeyTargetChanged(
             ConfigValue configValue;
             configValue.shortkey_target = shortkeyTarget_;
             observer->OnConfigChanged(CONFIG_SHORT_KEY_TARGET, configValue);
+        } else {
+            HILOG_ERROR("end configObservers_ is null");
+        }
+    }
+}
+
+void AccessibilityConfig::Impl::NotifyShortkeyMultiTargetChanged(
+    const std::vector<std::shared_ptr<AccessibilityConfigObserver>> &observers,
+    const std::vector<std::string> &shortkeyMultiTarget)
+{
+    HILOG_DEBUG("start");
+    for (auto &observer : observers) {
+        if (observer) {
+            ConfigValue configValue;
+            configValue.shortkeyMultiTarget = shortkeyMultiTarget;
+            observer->OnConfigChanged(CONFIG_SHORT_KEY_MULTI_TARGET, configValue);
         } else {
             HILOG_ERROR("end configObservers_ is null");
         }
@@ -1505,6 +1544,27 @@ void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyTargetChanged(
     NotifyShortkeyTargetChanged(observers, shortkeyTarget);
 }
 
+void AccessibilityConfig::Impl::OnAccessibleAbilityManagerShortkeyMultiTargetChanged(
+    const std::vector<std::string> &shortkeyMultiTarget)
+{
+    HILOG_DEBUG("start");
+    std::vector<std::shared_ptr<AccessibilityConfigObserver>> observers;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        // need to add, if no change, do not inform
+        shortkeyMultiTarget_ = shortkeyMultiTarget;
+        std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+            configObservers_.find(CONFIG_SHORT_KEY_MULTI_TARGET);
+        if (it == configObservers_.end()) {
+            HILOG_DEBUG("Cannot find CONFIG_SHORT_KEY_MULTI_TARGET configObserver.");
+            return;
+        }
+        observers = it->second;
+    }
+
+    NotifyShortkeyMultiTargetChanged(observers, shortkeyMultiTarget);
+}
+
 void AccessibilityConfig::Impl::OnAccessibleAbilityManagerClickResponseTimeChanged(const uint32_t clickResponseTime)
 {
     HILOG_DEBUG("clickResponseTime = [%{public}u}", clickResponseTime);
@@ -1568,6 +1628,7 @@ void AccessibilityConfig::Impl::NotifyImmediately(const CONFIG_ID id,
         configValue.daltonizationState = daltonizationState_;
         configValue.daltonizationColorFilter = static_cast<DALTONIZATION_TYPE>(daltonizationColorFilter_);
         configValue.shortkey_target = shortkeyTarget_;
+        configValue.shortkeyMultiTarget = shortkeyMultiTarget_;
         configValue.captionStyle = captionProperty_;
         configValue.clickResponseTime = static_cast<CLICK_RESPONSE_TIME>(clickResponseTime_);
         configValue.ignoreRepeatClickState = ignoreRepeatClickState_;
@@ -1595,6 +1656,7 @@ void AccessibilityConfig::Impl::InitConfigValues()
     brightnessDiscount_ = configData.brightnessDiscount_;
     audioBalance_ = configData.audioBalance_;
     shortkeyTarget_ = configData.shortkeyTarget_;
+    shortkeyMultiTarget_ = configData.shortkeyMultiTarget_;
     captionProperty_ = configData.captionProperty_;
     clickResponseTime_ = configData.clickResponseTime_;
     ignoreRepeatClickTime_ = configData.ignoreRepeatClickTime_;
@@ -1642,6 +1704,18 @@ void AccessibilityConfig::Impl::NotifyDefaultShortKeyConfigs()
     }
 }
 
+void AccessibilityConfig::Impl::NotifyDefaultShortKeyMultiConfigs()
+{
+    std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
+        configObservers_.find(CONFIG_SHORT_KEY);
+    if (it != configObservers_.end()) {
+        NotifyShortKeyChanged(it->second, shortkey_);
+    }
+    if ((it = configObservers_.find(CONFIG_SHORT_KEY_MULTI_TARGET)) != configObservers_.end()) {
+        NotifyShortkeyMultiTargetChanged(it->second, shortkeyMultiTarget_);
+    }
+}
+
 void AccessibilityConfig::Impl::NotifyDefaultConfigs()
 {
     std::map<CONFIG_ID, std::vector<std::shared_ptr<AccessibilityConfigObserver>>>::iterator it =
@@ -1686,6 +1760,7 @@ void AccessibilityConfig::Impl::NotifyDefaultConfigs()
     NotifyDefaultDaltonizationConfigs();
     NotifyDefaultScreenTouchConfigs();
     NotifyDefaultShortKeyConfigs();
+    NotifyDefaultShortKeyMultiConfigs();
 }
 
 } // namespace AccessibilityConfig

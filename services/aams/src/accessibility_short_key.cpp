@@ -127,7 +127,7 @@ void AccessibilityShortKey::OnShortKey()
     HILOG_DEBUG();
 
     ClearCachedEventsAndMsg();
-    Singleton<AccessibleAbilityManagerService>::GetInstance().EnableShortKeyTargetAbility();
+    Singleton<AccessibleAbilityManagerService>::GetInstance().OnShortKeyProcess();
 }
 
 void AccessibilityShortKey::AddCachedKeyEvent(std::shared_ptr<MMI::KeyEvent> &event)
