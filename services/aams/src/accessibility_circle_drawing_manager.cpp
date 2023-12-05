@@ -94,6 +94,7 @@ void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
 {
     if (surfaceNode_ == nullptr) {
         HILOG_ERROR("surfaceNode_ is nullptr");
+        return;
     }
 
     surfaceNode_->SetVisible(state);
