@@ -118,7 +118,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_input_interceptor.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_setting_provider.cpp",
-    "../../../services/aams/test/mock/src/mock_accessibility_short_key dialog.cpp",
+    "../../../services/aams/test/mock/src/mock_accessibility_short_key_dialog.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_window_connection.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_window_manager.cpp",
     "../../../services/aams/test/mock/src/mock_accessible_ability_connection.cpp",
