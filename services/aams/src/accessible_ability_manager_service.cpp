@@ -945,27 +945,27 @@ RetError AccessibleAbilityManagerService::DisableUITestAbility()
         return RET_ERR_NULLPTR;
     }
 
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise]() -> void {
+    std::shared_ptr<std::promise<RetError>> syncPromise = std::make_shared<std::promise<RetError>>();
+    std::future syncFuture = syncPromise->get_future();
+    handler_->PostTask(std::bind([this, syncPromise]() -> void {
         HILOG_DEBUG();
         sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
         if (!accountData) {
             HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
+            syncPromise->set_value(RET_ERR_NULLPTR);
             return;
         }
         std::string uiTestUri = Utils::GetUri(UI_TEST_BUNDLE_NAME, UI_TEST_ABILITY_NAME);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uiTestUri);
         if (!connection) {
             HILOG_ERROR("connection is not existed!!");
-            syncPromise.set_value(RET_ERR_NO_CONNECTION);
+            syncPromise->set_value(RET_ERR_NO_CONNECTION);
             return;
         }
         std::function<void()> removeUITestClientFunc =
             std::bind(&AccessibilityAccountData::RemoveUITestClient, accountData, connection, UI_TEST_BUNDLE_NAME);
         handler_->PostTask(removeUITestClientFunc, "RemoveUITestClient");
-        syncPromise.set_value(RET_OK);
+        syncPromise->set_value(RET_OK);
         }), "TASK_DISABLE_UI_TEST_ABILITIES");
 
     std::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
