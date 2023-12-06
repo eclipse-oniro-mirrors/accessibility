@@ -16,7 +16,9 @@
 #ifndef ACCESSIBILITY_SCREEN_TOUCH_H
 #define ACCESSIBILITY_SCREEN_TOUCH_H
 
+#include <atomic>
 #include <string>
+#include <thread>
 #include "accessibility_event_transmission.h"
 #include "accessibility_gesture_recognizer.h"
 
@@ -40,7 +42,7 @@ public:
     /**
      * @brief A destructor used to delete the screen touch instance.
      */
-    ~AccessibilityScreenTouch() {}
+    ~AccessibilityScreenTouch();
 
     /**
      * @brief Handle pointer events from previous event stream node.
@@ -72,6 +74,8 @@ private:
 
     void Clear();
 
+    void DrawCircleProgress();
+
     bool isFirstDownEvent_ = false;
     bool isMoveBeyondThreshold_ = false;
     int64_t startTime_ = 0; // microsecond
@@ -85,6 +89,11 @@ private:
     uint32_t clickResponseTime_;
     bool ignoreRepeatClickState_;
     uint32_t ignoreRepeatClickTime_;
+
+    std::atomic<int32_t> circleCenterPhysicalX_;
+    std::atomic<int32_t> circleCenterPhysicalY_;
+    std::atomic<bool> isStopDrawCircle_;
+    std::shared_ptr<std::thread> drawCircleThread_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
