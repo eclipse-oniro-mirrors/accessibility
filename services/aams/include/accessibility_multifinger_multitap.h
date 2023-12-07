@@ -20,7 +20,9 @@
 #include <vector>
 
 #include "accessibility_gesture_recognizer.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
+#endif
 #include "accessibility_event_info.h"
 #include "accessible_ability_manager_service.h"
 #include "accessibility_def.h"

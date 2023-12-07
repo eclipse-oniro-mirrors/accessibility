@@ -83,6 +83,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
         currentState_ = DEFAULT_STATE;
     }
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
@@ -91,6 +92,10 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     }
 
     threshold_ = CALCULATION_DIMENSION(display->GetWidth()) / DISPLAY_WIDTH_RATIO;
+#else
+    HILOG_DEBUG("not support display manager");
+    threshold_ = static_cast<double>(CIRCLE_ANGLE) / DISPLAY_WIDTH_RATIO;
+#endif
 }
 
 AccessibilityScreenTouch::~AccessibilityScreenTouch()

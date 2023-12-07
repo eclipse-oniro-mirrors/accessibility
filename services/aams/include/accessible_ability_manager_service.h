@@ -28,7 +28,9 @@
 #include "accessible_ability_manager_service_event_handler.h"
 #include "accessibility_account_data.h"
 #include "accessibility_common_event.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
+#endif
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"

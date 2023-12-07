@@ -262,6 +262,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     screenTouch_ = std::make_shared<AccessibilityScreenTouch>();
     if (accountData == nullptr || screenTouch_ == nullptr) {
+        GTEST_LOG_(INFO) << "accountData is nullptr or screenTouch_ is nullptr";
         return;
     }
 

@@ -609,11 +609,16 @@ void TouchGuider::HandleDraggingStateInnerMove(MMI::PointerEvent &event)
     if (pointCount == POINTER_COUNT_1) {
         HILOG_DEBUG("Only two pointers can be received in the dragging state");
     } else if (pointCount == POINTER_COUNT_2 && IsDragGestureAccept(event)) {
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         // Get densityPixels from WMS
         AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
         auto display = displayMgr.GetDefaultDisplay();
         float densityPixels = display->GetVirtualPixelRatio();
         int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * densityPixels);
+#else
+        HILOG_DEBUG("not support display manager");
+        int32_t miniZoomPointerDistance = static_cast<int32_t>(MINI_POINTER_DISTANCE_DIP * 1);
+#endif
         MMI::PointerEvent::PointerItem pointerF = {};
         MMI::PointerEvent::PointerItem pointerS = {};
         event.GetPointerItem(pIds[INDEX_0], pointerF);

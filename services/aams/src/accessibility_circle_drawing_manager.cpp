@@ -14,7 +14,9 @@
  */
 
 #include "accessibility_circle_drawing_manager.h"
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
+#endif
 #include "hilog_wrapper.h"
 #include "pipeline/rs_recording_canvas.h"
 #include "recording/recording_canvas.h"
@@ -84,10 +86,15 @@ AccessibilityCircleDrawingManager::AccessibilityCircleDrawingManager()
     imageHeight_ = DEFAULT_HEIGHT;
     half_ = DEFAULT_WIDTH / DEFAULT_HALF;
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     screenId_ = displayMgr.GetDefaultDisplayId();
     auto dpi = displayMgr.GetDefaultDisplayDpi();
     dispalyDensity_ = static_cast<float>(dpi) / DEFAULT_PIXEL_DENSITY;
+#else
+    HILOG_DEBUG("not support display manager");
+    dispalyDensity_ = 1;
+#endif
 }
 
 void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)

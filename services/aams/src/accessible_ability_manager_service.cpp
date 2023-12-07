@@ -23,8 +23,10 @@
 
 #include "ability_info.h"
 #include "accessibility_event_info.h"
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+#include "accessibility_power_manager.h"
+#endif
 #include "accessibility_window_manager.h"
-#include "display_power_mgr_client.h"
 #include "hilog_wrapper.h"
 #include "input_manager.h"
 #include "iservice_registry.h"
@@ -1196,11 +1198,12 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
     accountData->Init();
     accountData->SetConfigCallbacks(defaultConfigCallbacks_);
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
     float discount = accountData->GetConfig()->GetBrightnessDiscount();
-    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
-    if (!displayPowerMgrClient.DiscountBrightness(discount)) {
+    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
         HILOG_ERROR("Failed to set brightness discount");
     }
+#endif
     if (accountData->GetInstalledAbilitiesFromBMS()) {
         accountData->UpdateAutoStartEnabledAbilities();
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
@@ -1768,11 +1771,13 @@ RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float disc
         HILOG_ERROR("handler_ is nullptr.");
         return RET_ERR_NULLPTR;
     }
-    auto& displayPowerMgrClient = DisplayPowerMgr::DisplayPowerMgrClient::GetInstance();
-    if (!displayPowerMgrClient.DiscountBrightness(discount)) {
+
+#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
+    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
         HILOG_ERROR("Failed to set brightness discount");
         return Accessibility::RET_ERR_FAILED;
     }
+#endif
     std::promise<RetError> syncPromise;
     std::future syncFuture = syncPromise.get_future();
     handler_->PostTask(std::bind([this, &syncPromise, discount]() -> void {
