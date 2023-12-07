@@ -47,6 +47,8 @@ constexpr uint32_t IGNORE_REPEAT_CLICK_TIME_LONGEST = 1300; // ms
 
 constexpr uint32_t CIRCLE_ANGLE = 360;
 
+constexpr uint32_t NUMBER_10 = 10;
+
 const std::map<uint32_t, uint32_t> CLICK_RESPONSE_TIME_MAP = {
     {CLICK_RESPONSE_DELAY_SHORT, CLICK_RESPONSE_TIME_SHORT},
     {CLICK_RESPONSE_DELAY_MEDIUM, CLICK_RESPONSE_TIME_MEDIUM},
@@ -91,6 +93,14 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
     threshold_ = CALCULATION_DIMENSION(display->GetWidth()) / DISPLAY_WIDTH_RATIO;
 }
 
+AccessibilityScreenTouch::~AccessibilityScreenTouch()
+{
+    if (drawCircleThread_ && drawCircleThread_->joinable()) {
+        drawCircleThread_->join();
+    }
+    drawCircleThread_ = nullptr;
+}
+
 uint32_t AccessibilityScreenTouch::GetRealClickResponseTime()
 {
     auto iter = CLICK_RESPONSE_TIME_MAP.find(clickResponseTime_);
@@ -116,6 +126,26 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
     return ignoreRepeatClickState_;
 }
 
+void AccessibilityScreenTouch::DrawCircleProgress()
+{
+    HILOG_DEBUG();
+    AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
+        circleCenterPhysicalY_, 0);
+    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(true);
+    uint32_t times = GetRealClickResponseTime() / NUMBER_10;
+    uint32_t step = CIRCLE_ANGLE / times;
+    uint32_t time = 0;
+    while (time < times && isStopDrawCircle_ == false) {
+        AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
+            circleCenterPhysicalY_, step * time);
+        time++;
+        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(NUMBER_10));
+    }
+
+    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
+}
+
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
@@ -129,9 +159,18 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerDown(MMI::PointerEve
     isMoveBeyondThreshold_ = false;
     isFirstDownEvent_ = true;
 
-    AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(pointerItem.GetDisplayX(),
-        pointerItem.GetDisplayY(), 0);
-    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(true);
+    circleCenterPhysicalX_ = pointerItem.GetDisplayX();
+    circleCenterPhysicalY_ = pointerItem.GetDisplayY();
+    isStopDrawCircle_ = false;
+    if (drawCircleThread_ && drawCircleThread_->joinable()) {
+        drawCircleThread_->join();
+    }
+
+    drawCircleThread_ = nullptr;
+    drawCircleThread_ = std::make_shared<std::thread>(&AccessibilityScreenTouch::DrawCircleProgress, this);
+    if (drawCircleThread_ == nullptr) {
+        HILOG_ERROR("create draw circle progress fail");
+    }
 }
 
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEvent &event)
@@ -154,20 +193,18 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
         event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
         EventTransmission::OnPointerEvent(event);
         isMoveBeyondThreshold_ = true;
-        AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
+        isStopDrawCircle_ = true;
         return;
     }
 
     if ((startTime_ + static_cast<int64_t>(GetRealClickResponseTime()) * US_TO_MS) >
         static_cast<int64_t>(event.GetActionTime())) {
-        int64_t interval = event.GetActionTime() - startTime_;
-        int32_t angle = static_cast<int32_t>(interval * CIRCLE_ANGLE / (GetRealClickResponseTime() * US_TO_MS));
-        AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(pointerItem.GetDisplayX(),
-            pointerItem.GetDisplayY(), angle);
+        circleCenterPhysicalX_ = pointerItem.GetDisplayX();
+        circleCenterPhysicalY_ = pointerItem.GetDisplayY();
         return;
     }
 
-    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
+    isStopDrawCircle_ = true;
     if (isFirstDownEvent_ == true) {
         event.SetPointerAction(MMI::PointerEvent::POINTER_ACTION_DOWN);
         EventTransmission::OnPointerEvent(event);
@@ -181,7 +218,7 @@ void AccessibilityScreenTouch::HandleResponseDelayStateInnerMove(MMI::PointerEve
 void AccessibilityScreenTouch::HandleResponseDelayStateInnerUp(MMI::PointerEvent &event)
 {
     HILOG_DEBUG();
-    AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(false);
+    isStopDrawCircle_ = true;
     if (isMoveBeyondThreshold_ == true) {
         EventTransmission::OnPointerEvent(event);
         return;
