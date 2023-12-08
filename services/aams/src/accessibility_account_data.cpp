@@ -30,6 +30,12 @@ namespace Accessibility {
 namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
+    const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
+    const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
+    const std::string PERSIST_SYS_CVAA_MONO_CHANNEL = "cvaa_mono_channel";
+    const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
+    const std::string MASTER_BALENCE = "master_balance";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -438,6 +444,19 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
         return true;
     }
     return false;
+}
+
+void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)
+{
+    HILOG_DEBUG();
+    AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
+
+    provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
+    provider.GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
+    provider.GetBoolValue(PERSIST_SYS_CVAA_MONO_CHANNEL, value.audioMono);
+    provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
+    provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)

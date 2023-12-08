@@ -65,6 +65,14 @@ ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool&
     return ERR_OK;
 }
 
+ErrCode AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+{
+    HILOG_DEBUG("start.");
+    (void)key;
+    (void)value;
+    return ERR_OK;
+}
+
 ErrCode AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
 {
     HILOG_DEBUG("start.");

@@ -294,6 +294,7 @@ private:
     };
 
     bool Init();
+    void InitInnerResource();
 
     class ConfigCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
@@ -337,6 +338,7 @@ private:
     void UpdateAccessibilityState();
     void UpdateInputFilter();
     void UpdateCaptionProperty();
+    void UpdateSettingsInAtoHos();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);

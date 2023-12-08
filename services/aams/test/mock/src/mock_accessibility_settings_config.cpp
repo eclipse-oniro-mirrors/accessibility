@@ -171,6 +171,13 @@ RetError AccessibilitySettingsConfig::SetBrightnessDiscount(const float discount
     return RET_OK;
 }
 
+RetError SetStartFromAtoHosState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    (void)state;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetAudioBalance(const float balance)
 {
     HILOG_DEBUG("start.");
@@ -348,6 +355,11 @@ uint32_t AccessibilitySettingsConfig::GetConfigState()
     uint32_t state = 0;
 
     return state;
+}
+
+bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+{
+    return true;
 }
 
 void AccessibilitySettingsConfig::InitCaption()

@@ -378,6 +378,11 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
     return true;
 }
 
+void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value)
+{
+    (void)value;
+}
+
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
 {
     (void)bundleName;

@@ -79,6 +79,20 @@ RetError AccessibilitySettingsConfig::SetShortKeyState(const bool state)
     return SetStatePref(STATE::SHORTKEY) ? RET_OK : RET_ERR_FAILED;
 }
 
+RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    std::string strState = state ? "on" : "off";
+    if (!pref_) {
+        HILOG_ERROR("pref_ is null!");
+        return RET_ERR_NULLPTR;
+    }
+
+    pref_->PutString("AccessibilityStartFromAtoHos", strState);
+    pref_->Flush();
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetMouseKeyState(const bool state)
 {
     HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
@@ -493,6 +507,18 @@ bool AccessibilitySettingsConfig::GetIgnoreRepeatClickState() const
 uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
 {
     return ignoreRepeatClickTime_;
+}
+
+bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
+{
+    HILOG_DEBUG();
+    if (!pref_) {
+        HILOG_ERROR("Input Parameter is nullptr");
+        return false;
+    }
+
+    std::string strValue = pref_->GetString("AccessibilityStartFromAtoHos", "");
+    return std::strcmp(strValue.c_str(), "off") ? true : false;
 }
 
 uint32_t AccessibilitySettingsConfig::GetConfigState()

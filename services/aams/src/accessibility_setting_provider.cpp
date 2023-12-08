@@ -79,6 +79,17 @@ ErrCode AccessibilitySettingProvider::GetLongValue(const std::string& key, int64
     return ERR_OK;
 }
 
+ErrCode AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+{
+    std::string valueStr;
+    ErrCode ret = GetStringValue(key, valueStr);
+    if (ret != ERR_OK) {
+        return ret;
+    }
+    value = std::stof(valueStr);
+    return ERR_OK;
+}
+
 ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool& value)
 {
     std::string valueStr;
@@ -86,7 +97,7 @@ ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool&
     if (ret != ERR_OK) {
         return ret;
     }
-    value = (valueStr == "true");
+    value = (valueStr == "1" || valueStr == "true");
     return ERR_OK;
 }
 

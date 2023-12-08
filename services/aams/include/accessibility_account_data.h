@@ -37,6 +37,15 @@ using CaptionPropertyCallbacks = std::vector<sptr<IAccessibleAbilityManagerCapti
 class AccessibleAbilityConnection;
 class AccessibilityWindowConnection;
 
+struct ConfigValueAtoHosUpdate {
+    bool highContrastText = false;
+    bool invertColor = false;
+    bool audioMono = false;
+    bool daltonizationState = false;
+    float audioBalance = 0.0;
+    bool isScreenReaderEnabled = false;
+};
+
 class AccessibilityAccountData final : public RefBase {
 public:
     AccessibilityAccountData(int32_t accountId);
@@ -258,6 +267,7 @@ public:
     void SetAbilityAutoStartState(const std::string &name, const bool state);
     void DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName);
     bool GetAbilityAutoStartState(const std::string &key);
+    void GetConfigValueAtoHos(ConfigValueAtoHosUpdate &value);
 
 private:
     /**
