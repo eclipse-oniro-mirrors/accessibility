@@ -77,6 +77,17 @@
       "inner_api": [
         {
           "type": "so",
+          "name": "//foundation/barrierfree/accessibility/common/interface:accessibility_interface",
+          "header": {
+            "header_files": [
+              "accessibility_element_info_parcel.h",
+              "accessibility_event_info_parcel.h"
+            ],
+            "header_base": "//foundation/barrierfree/accessibility/common/interface/include/parcel"
+          }
+        },
+        {
+          "type": "so",
           "name": "//foundation/barrierfree/accessibility/interfaces/innerkits/aafwk:accessibleability",
           "header": {
             "header_files": [
