@@ -159,6 +159,7 @@ AccessibilityMultiTapGestureRecognizer::AccessibilityMultiTapGestureRecognizer()
 {
     HILOG_DEBUG();
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
@@ -172,6 +173,13 @@ AccessibilityMultiTapGestureRecognizer::AccessibilityMultiTapGestureRecognizer()
     touchSlop_ = TOUCH_SLOP;
     mMinPixelsBetweenSamplesX_ = MIN_PIXELS(display->GetWidth());
     mMinPixelsBetweenSamplesY_ = MIN_PIXELS(display->GetHeight());
+#else
+    HILOG_DEBUG("not support display manager");
+    doubleTapOffsetThresh_ = static_cast<int32_t>(1 * DOUBLE_TAP_SLOP + SLOP_DELTA);
+    touchSlop_ = TOUCH_SLOP;
+    mMinPixelsBetweenSamplesX_ = 1;
+    mMinPixelsBetweenSamplesY_ = 1;
+#endif
 
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {

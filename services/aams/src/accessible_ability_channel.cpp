@@ -270,9 +270,14 @@ RetError AccessibleAbilityChannel::GetWindow(const int32_t windowId, Accessibili
 RetError AccessibleAbilityChannel::GetWindows(std::vector<AccessibilityWindowInfo> &windows)
 {
     HILOG_DEBUG();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     uint64_t displayId = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayId();
     HILOG_DEBUG("default display id is %{public}" PRIu64 "", displayId);
     return GetWindows(displayId, windows);
+#else
+    HILOG_DEBUG("not support display manager");
+    return GetWindows(0, windows);
+#endif
 }
 
 RetError AccessibleAbilityChannel::GetWindowsByDisplayId(const uint64_t displayId,
@@ -310,11 +315,17 @@ RetError AccessibleAbilityChannel::GetWindows(uint64_t displayId, std::vector<Ac
 
         std::vector<AccessibilityWindowInfo> windowInfos =
             Singleton<AccessibilityWindowManager>::GetInstance().GetAccessibilityWindows();
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
         for (auto &window : windowInfos) {
             if (window.GetDisplayId() == displayId) {
                 tmpWindows->emplace_back(window);
             }
         }
+#else
+        for (auto &window : windowInfos) {
+            tmpWindows->emplace_back(window);
+        }
+#endif
         syncPromise->set_value(RET_OK);
         }, accountId_, clientName_), "GetWindows");
     

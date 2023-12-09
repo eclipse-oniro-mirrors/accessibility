@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("../../accessibility_manager_service.gni")
 
 services_path = "./"
 
@@ -35,6 +36,8 @@ config("aams_service_config") {
     "AAMS_LOG_TAG = \"accessibility\"",
     "AAMS_LOG_DOMAIN = 0xD001D00",
   ]
+
+  defines += accessibility_default_defines
 }
 
 accessibleabilityms_files = [
@@ -60,7 +63,6 @@ accessibleabilityms_files = [
   "${services_path}/src/accessibility_screen_touch.cpp",
   "${services_path}/src/accessibility_short_key.cpp",
   "${services_path}/src/accessibility_window_manager.cpp",
-  "${services_path}/src/accessibility_display_manager.cpp",
   "${services_path}/src/utils.cpp",
   "${services_path}/src/accessibility_dumper.cpp",
   "${services_path}/src/accessibility_setting_observer.cpp",
@@ -80,6 +82,14 @@ ohos_shared_library("accessibleabilityms") {
   }
 
   sources = accessibleabilityms_files
+  if (accessibility_feature_power_manager) {
+    sources += [ "${services_path}/src/accessibility_power_manager.cpp" ]
+  }
+
+  if (accessibility_feature_display_manager) {
+    sources += [ "${services_path}/src/accessibility_display_manager.cpp" ]
+  }
+
   configs = [
     ":aams_service_config",
     "../../resources/config/build:coverage_flags",

@@ -42,6 +42,7 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
 
     tapDistance_ = TAP_MIN_DISTANCE;
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
@@ -51,6 +52,10 @@ AccessibilityZoomGesture::AccessibilityZoomGesture()
 
     float densityPixels = display->GetVirtualPixelRatio();
     multiTapDistance_ = densityPixels * DOUBLE_TAP_SLOP + 0.5f;
+#else
+    HILOG_DEBUG("not support display manager")
+    multiTapDistance_ = 1 * DOUBLE_TAP_SLOP + 0.5f;
+#endif
 }
 
 bool AccessibilityZoomGesture::OnPointerEvent(MMI::PointerEvent &event)

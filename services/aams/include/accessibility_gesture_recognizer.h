@@ -19,7 +19,9 @@
 #include <cmath>
 #include <vector>
 
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
+#endif
 #include "accessibility_event_info.h"
 #include "accessible_ability_manager_service.h"
 #include "event_handler.h"

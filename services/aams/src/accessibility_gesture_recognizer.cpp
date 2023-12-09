@@ -57,7 +57,7 @@ void GestureHandler::ProcessEvent(const AppExecFwk::InnerEvent::Pointer &event)
 AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
 {
     HILOG_DEBUG();
-
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
     if (!display) {
@@ -72,6 +72,14 @@ AccessibilityGestureRecognizer::AccessibilityGestureRecognizer()
     float densityPixels = display->GetVirtualPixelRatio();
     int32_t slop = static_cast<int32_t>(densityPixels * DOUBLE_TAP_SLOP + 0.5f);
     doubleTapScaledSlop_ = slop * slop;
+#else
+    HILOG_DEBUG("not support display manager");
+    threshold_ = 1;
+    xMinPixels_ = 1;
+    yMinPixels_ = 1;
+    int32_t slop = static_cast<int32_t>(1 * DOUBLE_TAP_SLOP + 0.5f);
+    doubleTapScaledSlop_ = slop * slop;
+#endif
 
     runner_ = Singleton<AccessibleAbilityManagerService>::GetInstance().GetMainRunner();
     if (!runner_) {

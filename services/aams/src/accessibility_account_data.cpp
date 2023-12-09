@@ -17,8 +17,9 @@
 
 #include <any>
 #include <hitrace_meter.h>
-
+#ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
 #include "accessibility_display_manager.h"
+#endif
 #include "accessible_ability_manager_service.h"
 #include "extension_ability_info.h"
 #include "hilog_wrapper.h"
