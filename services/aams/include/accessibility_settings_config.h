@@ -72,6 +72,7 @@ public:
     RetError SetClickResponseTime(const uint32_t time);
     RetError SetIgnoreRepeatClickState(const bool state);
     RetError SetIgnoreRepeatClickTime(const uint32_t time);
+    RetError SetStartFromAtoHosState(const bool state);
 
     bool GetEnabledState() const;
     bool GetTouchGuideState() const;
@@ -101,6 +102,7 @@ public:
     void UpdateEnabledAbilities(const std::vector<std::string> &vecvalue);
     const std::vector<std::string> &GetEnabledAbilityInfos();
     uint32_t GetConfigState();
+    bool GetStartFromAtoHosState();
 
     void Init();
     void ClearData();

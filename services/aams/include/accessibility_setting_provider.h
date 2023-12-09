@@ -31,6 +31,7 @@ public:
     ErrCode GetIntValue(const std::string& key, int32_t& value);
     ErrCode GetLongValue(const std::string& key, int64_t& value);
     ErrCode GetBoolValue(const std::string& key, bool& value);
+    ErrCode GetFloatValue(const std::string& key, float& value);
     ErrCode PutStringValue(const std::string& key, const std::string& value, bool needNotify = true);
     ErrCode PutIntValue(const std::string& key, int32_t value, bool needNotify = true);
     ErrCode PutLongValue(const std::string& key, int64_t value, bool needNotify = true);

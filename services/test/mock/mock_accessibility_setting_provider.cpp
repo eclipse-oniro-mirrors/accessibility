@@ -60,6 +60,13 @@ ErrCode AccessibilitySettingProvider::GetBoolValue(const std::string& key, bool&
     return ERR_OK;
 }
 
+ErrCode AccessibilitySettingProvider::GetFloatValue(const std::string& key, float& value)
+{
+    (void)key;
+    (void)value;
+    return ERR_OK;
+}
+
 ErrCode AccessibilitySettingProvider::PutIntValue(const std::string& key, int32_t value, bool needNotify)
 {
     (void)key;

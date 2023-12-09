@@ -47,10 +47,12 @@ namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
     constexpr uint32_t TIME_OUT_OPERATOR = 5000;
     constexpr int32_t REQUEST_ID_MAX = 0x0000FFFF;
+    constexpr int32_t DEFAULT_ACCOUNT_ID = 100;
 } // namespace
 
 const bool REGISTER_RESULT =
@@ -183,6 +185,8 @@ void AccessibleAbilityManagerService::OnAddSystemAbility(int32_t systemAbilityId
             }
             isPublished_ = true;
         }
+
+        InitInnerResource();
 
         isReady_ = true;
         SetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "true");
@@ -1016,6 +1020,11 @@ bool AccessibleAbilityManagerService::Init()
     return true;
 }
 
+void AccessibleAbilityManagerService::InitInnerResource()
+{
+    UpdateSettingsInAtoHos();
+}
+
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
     const wptr<IRemoteObject> &remote)
 {
@@ -1474,6 +1483,58 @@ void AccessibleAbilityManagerService::UpdateCaptionProperty()
             }
         }
         }), "UpdateCaptionProperty");
+}
+
+void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
+{
+    HILOG_DEBUG();
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+
+    if (!accountData->GetConfig()->GetStartFromAtoHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
+        return;
+    }
+
+    ConfigValueAtoHosUpdate atoHosValue;
+    accountData->GetConfigValueAtoHos(atoHosValue);
+
+    HILOG_DEBUG("daltonizationState(%{public}d), invertColor(%{public}d), \
+        audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
+        isScreenReaderEnabled(%{public}d).",
+        atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
+        atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled);
+
+    // set
+    if (atoHosValue.daltonizationState) {
+        accountData->GetConfig()->SetDaltonizationState(atoHosValue.daltonizationState);
+    }
+    if (atoHosValue.invertColor) {
+        accountData->GetConfig()->SetInvertColorState(atoHosValue.invertColor);
+    }
+    if (atoHosValue.audioMono) {
+        accountData->GetConfig()->SetAudioMonoState(atoHosValue.audioMono);
+    }
+    if (atoHosValue.highContrastText) {
+        accountData->GetConfig()->SetHighContrastTextState(atoHosValue.highContrastText);
+    }
+    UpdateConfigState();
+
+    if (atoHosValue.audioBalance != 0.0) {
+        accountData->GetConfig()->SetAudioBalance(atoHosValue.audioBalance);
+        UpdateAudioBalance();
+    }
+    // some other settings
+    
+    if (atoHosValue.isScreenReaderEnabled) {
+        uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+            CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+        accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
+    }
+
+    accountData->GetConfig()->SetStartFromAtoHosState(false);
 }
 
 void AccessibleAbilityManagerService::UpdateInputFilter()
