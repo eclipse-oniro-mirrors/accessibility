@@ -1495,13 +1495,14 @@ void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
     }
 
     if (!accountData->GetConfig()->GetStartFromAtoHosState() || currentAccountId_ != DEFAULT_ACCOUNT_ID) {
+        HILOG_INFO("Not first start from a to hos.");
         return;
     }
 
     ConfigValueAtoHosUpdate atoHosValue;
     accountData->GetConfigValueAtoHos(atoHosValue);
 
-    HILOG_DEBUG("daltonizationState(%{public}d), invertColor(%{public}d), \
+    HILOG_INFO("daltonizationState(%{public}d), invertColor(%{public}d), \
         audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
         isScreenReaderEnabled(%{public}d).",
         atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,

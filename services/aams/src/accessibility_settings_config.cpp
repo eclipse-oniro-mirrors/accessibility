@@ -518,7 +518,7 @@ bool AccessibilitySettingsConfig::GetStartFromAtoHosState()
     }
 
     std::string strValue = pref_->GetString("AccessibilityStartFromAtoHos", "");
-    return std::strcmp(strValue.c_str(), "off") ? true : false;
+    return (strValue == "off") ? false : true;
 }
 
 uint32_t AccessibilitySettingsConfig::GetConfigState()
