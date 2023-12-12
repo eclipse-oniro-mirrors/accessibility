@@ -73,15 +73,26 @@ std::shared_ptr<AccessibilityCircleDrawingManager> AccessibilityCircleDrawingMan
 
 std::shared_ptr<AccessibilityCircleDrawingManager> AccessibilityCircleDrawingManager::GetInstance()
 {
+    HILOG_DEBUG();
     if (pointDrawMgr_ == nullptr) {
         pointDrawMgr_ = std::make_shared<AccessibilityCircleDrawingManager>();
     }
     return pointDrawMgr_;
 }
 
+void AccessibilityCircleDrawingManager::DeleteInstance()
+{
+    HILOG_DEBUG();
+    if (pointDrawMgr_ == nullptr) {
+        HILOG_ERROR("surfaceNode_ is nullptr");
+        return;
+    }
+    pointDrawMgr_ = nullptr;
+}
+
 AccessibilityCircleDrawingManager::AccessibilityCircleDrawingManager()
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     imageWidth_ = DEFAULT_WIDTH;
     imageHeight_ = DEFAULT_HEIGHT;
     half_ = DEFAULT_WIDTH / DEFAULT_HALF;
@@ -93,12 +104,29 @@ AccessibilityCircleDrawingManager::AccessibilityCircleDrawingManager()
     dispalyDensity_ = static_cast<float>(dpi) / DEFAULT_PIXEL_DENSITY;
 #else
     HILOG_DEBUG("not support display manager");
+    screenId_ = 0;
     dispalyDensity_ = 1;
 #endif
 }
 
+AccessibilityCircleDrawingManager::~AccessibilityCircleDrawingManager()
+{
+    HILOG_DEBUG();
+    if (surfaceNode_ == nullptr) {
+        HILOG_ERROR("surfaceNode_ is nullptr");
+        return;
+    }
+
+    surfaceNode_->ClearChildren();
+    surfaceNode_->DetachToDisplay(screenId_);
+    surfaceNode_ = nullptr;
+    canvasNode_ = nullptr;
+    Rosen::RSTransaction::FlushImplicitTransaction();
+}
+
 void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
 {
+    HILOG_DEBUG("state %{public}s", state ? "true" : "false");
     if (surfaceNode_ == nullptr) {
         HILOG_ERROR("surfaceNode_ is nullptr");
         return;
@@ -106,12 +134,11 @@ void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
 
     surfaceNode_->SetVisible(state);
     Rosen::RSTransaction::FlushImplicitTransaction();
-    HILOG_INFO("Pointer window show success");
 }
 
 void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, int32_t physicalY)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     Rosen::RSSurfaceNodeConfig surfaceNodeConfig;
     surfaceNodeConfig.SurfaceNodeName = "screen touch progress";
     Rosen::RSSurfaceNodeType surfaceNodeType = Rosen::RSSurfaceNodeType::SELF_DRAWING_WINDOW_NODE;
@@ -278,7 +305,7 @@ void AccessibilityCircleDrawingManager::DrawingProgress(int32_t physicalX, int32
 
 void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, int32_t physicalY)
 {
-    HILOG_INFO("Pointer window move, x:%{public}d, y:%{public}d", physicalX, physicalY);
+    HILOG_DEBUG("Pointer window move, x:%{public}d, y:%{public}d", physicalX, physicalY);
     if (surfaceNode_ != nullptr) {
         surfaceNode_->SetBounds(physicalX - half_,
             physicalY - half_,
@@ -298,18 +325,16 @@ void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, in
             canvasNode_->GetStagingProperties().GetBounds().w_);
         Rosen::RSTransaction::FlushImplicitTransaction();
     }
-
-    HILOG_INFO("Pointer window move success");
 }
 
 void AccessibilityCircleDrawingManager::DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle)
 {
-    HILOG_INFO();
+    HILOG_DEBUG();
     if (surfaceNode_ != nullptr) {
         SetPointerLocation(physicalX, physicalY);
         DrawingProgress(physicalX, physicalY, angle);
         UpdatePointerVisible(true);
-        HILOG_INFO("surfaceNode_ is existed");
+        HILOG_DEBUG("surfaceNode_ is existed");
         return;
     }
 

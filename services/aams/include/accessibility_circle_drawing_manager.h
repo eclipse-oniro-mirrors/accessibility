@@ -31,10 +31,11 @@ class AccessibilityCircleDrawingManager {
 public:
     static std::shared_ptr<AccessibilityCircleDrawingManager> pointDrawMgr_;
     static std::shared_ptr<AccessibilityCircleDrawingManager> GetInstance();
+    static void DeleteInstance();
 
     AccessibilityCircleDrawingManager();
     DISALLOW_COPY_AND_MOVE(AccessibilityCircleDrawingManager);
-    ~AccessibilityCircleDrawingManager() = default;
+    ~AccessibilityCircleDrawingManager();
 
     void UpdatePointerVisible(bool state);
     void CreatePointerWindow(int32_t physicalX, int32_t physicalY);
