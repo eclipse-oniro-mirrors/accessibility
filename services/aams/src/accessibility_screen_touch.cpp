@@ -104,6 +104,7 @@ AccessibilityScreenTouch::~AccessibilityScreenTouch()
         drawCircleThread_->join();
     }
     drawCircleThread_ = nullptr;
+    AccessibilityCircleDrawingManager::DeleteInstance();
 }
 
 uint32_t AccessibilityScreenTouch::GetRealClickResponseTime()
