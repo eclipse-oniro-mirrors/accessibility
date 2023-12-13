@@ -418,46 +418,28 @@ static napi_value InitIgnoreRepeatClickTime(napi_env env)
 
 static napi_value InitConfigModule(napi_env env, napi_value exports)
 {
-    napi_value highContrastTextValue = InitHighContrastText(env);
-    napi_value invertColorValue = InitInvertColor(env);
-    napi_value daltonizationStateValue = InitDaltonizationState(env);
-    napi_value daltonizationColorFilterValue = InitDaltonizationColorFilter(env);
-    napi_value contentTimeoutValue = InitContentTimeout(env);
-    napi_value animationOffValue = InitAnimationOff(env);
-    napi_value brightnessDiscountValue = InitBrightnessDiscount(env);
-    napi_value screenMagnifierValue = InitScreenMagnifier(env);
-    napi_value audioMonoValue = InitAudioMono(env);
-    napi_value audioBalanceValue = InitAudioBalance(env);
-    napi_value mouseKeyValue = InitMouseKey(env);
-    napi_value mouseAutoClickValue = InitMouseAutoClick(env);
-    napi_value shortKeyValue = InitShortKey(env);
-    napi_value shortKeyTargetValue = InitShortKeyTarget(env);
-    napi_value shortKeyMultiTargetValue = InitShortKeyMultiTarget(env);
-    napi_value captionsValue = InitCaptionsState(env);
-    napi_value captionsStyleValue = InitCaptionsStyle(env);
-
     napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("on", NAccessibilityConfig::SubscribeState),
         DECLARE_NAPI_FUNCTION("off", NAccessibilityConfig::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("enableAbility", NAccessibilityConfig::EnableAbility),
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
-        DECLARE_NAPI_STATIC_PROPERTY("highContrastText", highContrastTextValue),
-        DECLARE_NAPI_STATIC_PROPERTY("invertColor", invertColorValue),
-        DECLARE_NAPI_STATIC_PROPERTY("daltonizationState", daltonizationStateValue),
-        DECLARE_NAPI_STATIC_PROPERTY("daltonizationColorFilter", daltonizationColorFilterValue),
-        DECLARE_NAPI_STATIC_PROPERTY("contentTimeout", contentTimeoutValue),
-        DECLARE_NAPI_STATIC_PROPERTY("animationOff", animationOffValue),
-        DECLARE_NAPI_STATIC_PROPERTY("brightnessDiscount", brightnessDiscountValue),
-        DECLARE_NAPI_STATIC_PROPERTY("screenMagnifier", screenMagnifierValue),
-        DECLARE_NAPI_STATIC_PROPERTY("audioMono", audioMonoValue),
-        DECLARE_NAPI_STATIC_PROPERTY("audioBalance", audioBalanceValue),
-        DECLARE_NAPI_STATIC_PROPERTY("mouseKey", mouseKeyValue),
-        DECLARE_NAPI_STATIC_PROPERTY("mouseAutoClick", mouseAutoClickValue),
-        DECLARE_NAPI_STATIC_PROPERTY("shortkey", shortKeyValue),
-        DECLARE_NAPI_STATIC_PROPERTY("shortkeyTarget", shortKeyTargetValue),
-        DECLARE_NAPI_STATIC_PROPERTY("shortkeyMultiTargets", shortKeyMultiTargetValue),
-        DECLARE_NAPI_STATIC_PROPERTY("captions", captionsValue),
-        DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", captionsStyleValue),
+        DECLARE_NAPI_STATIC_PROPERTY("highContrastText", InitHighContrastText(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("invertColor", InitInvertColor(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("daltonizationState", InitDaltonizationState(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("daltonizationColorFilter", InitDaltonizationColorFilter(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("contentTimeout", InitContentTimeout(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("animationOff", InitAnimationOff(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("brightnessDiscount", InitBrightnessDiscount(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("screenMagnifier", InitScreenMagnifier(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("audioMono", InitAudioMono(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("audioBalance", InitAudioBalance(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("mouseKey", InitMouseKey(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("mouseAutoClick", InitMouseAutoClick(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("shortkey", InitShortKey(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("shortkeyTarget", InitShortKeyTarget(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("shortkeyMultiTargets", InitShortKeyMultiTarget(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("captions", InitCaptionsState(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("captionsStyle", InitCaptionsStyle(env)),
         DECLARE_NAPI_STATIC_PROPERTY("clickResponseTime", InitClickResponseTime(env)),
         DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClick", InitIgnoreRepeatClickState(env)),
         DECLARE_NAPI_STATIC_PROPERTY("repeatClickInterval", InitIgnoreRepeatClickTime(env)),

@@ -1051,9 +1051,7 @@ void AccessibleAbilityClientImpl::ElementCacheInfo::AddElementCache(const int32_
         elementCache_.erase(winId);
     }
 
-    if (elementCache_.find(windowId) != elementCache_.end()) {
-        elementCache_.erase(windowId);
-    }
+    elementCache_.erase(windowId);
 
     std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>> cache;
     for (auto& elementInfo : elementInfos) {
