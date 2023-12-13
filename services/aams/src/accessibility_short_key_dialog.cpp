@@ -44,7 +44,7 @@ void ShortkeyAbilityConnection::OnAbilityConnectDone(const AppExecFwk::ElementNa
     MessageOption option;
     data.WriteInt32(SHORTKEY_DIALOG_PARAM_NUM);
     data.WriteString16(u"bundleName");
-    data.WriteString16(u"com.huawei.hmos.settings");
+    data.WriteString16(u"com.ohos.settings");
     data.WriteString16(u"abilityName");
     data.WriteString16(u"AccessibilityShortKeyDialog");
     data.WriteString16(u"parameters");
