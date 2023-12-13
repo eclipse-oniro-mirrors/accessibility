@@ -261,8 +261,8 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_Ability
     const std::string elementNameURI = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementNameURI));
-
     EXPECT_FALSE(accountData->GetConnectingA11yAbility(elementNameURI));
+    
     /* disconnect */
     accountData->RemoveConnectedAbility(connection->GetElementName());
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());

@@ -243,6 +243,30 @@ std::string Utils::GetAbilityAutoStartStateKey(const std::string &bundleName, co
     return bundleName + "/" + abilityName + "/" + std::to_string(accountId);
 }
 
+void Utils::SelectUsefulFromVecWithSameBundle(std::vector<std::string> &selectVec, std::vector<std::string> &cmpVec,
+    bool &hasDif, const std::string &bundleName)
+{
+    HILOG_DEBUG();
+    for (auto iter = selectVec.begin(); iter != selectVec.end();) {
+        if (iter->substr(0, iter->find("/")) != bundleName) {
+            ++iter;
+            continue;
+        }
+        auto it = cmpVec.begin();
+        for (; it != cmpVec.end(); ++it) {
+            if ((*it) == (*iter)) {
+                break;
+            }
+        }
+        if (it == cmpVec.end()) {
+            selectVec.erase(iter);
+            hasDif = true;
+        } else {
+            ++iter;
+        }
+    }
+}
+
 void Utils::RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
     const std::string &bundleName, const std::string &abilityName)
 {
