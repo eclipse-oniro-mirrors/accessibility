@@ -35,6 +35,7 @@ namespace {
     const std::string SHELL_NAME = "com.huawei.shell_assistant";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t ROOT_NONE_ID = -1;
+    constexpr int32_t NODE_ID_MAX = 0x7FFFFFFE;
     std::mutex g_Mutex;
     sptr<AccessibleAbilityClientImpl> g_Instance = nullptr;
 } // namespace
@@ -460,7 +461,57 @@ RetError AccessibleAbilityClientImpl::GetRootBatch(std::vector<AccessibilityElem
         HILOG_ERROR("get window element failed.");
         return ret;
     }
+    SortElementInfosIfNecessary(elementInfos);
     return RET_OK;
+}
+
+void AccessibleAbilityClientImpl::SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos)
+{
+    HILOG_DEBUG();
+    std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>> elementInfosMap;
+    std::vector<AccessibilityElementInfo> sortedElementInfos;
+    int32_t nodeId = NODE_ID_MAX;
+    int32_t count = 1;
+    AccessibilityElementInfo virtualRoot = elementInfos.front();
+    if (virtualRoot.GetAccessibilityId() != NODE_ID_MAX) {
+        return;
+    }
+    elementInfos.erase(elementInfos.begin());
+    for (auto &element : elementInfos) {
+        if (element.GetAccessibilityId() == NODE_ID_MAX) {
+            nodeId = NODE_ID_MAX - count;
+            element.SetAccessibilityId(nodeId);
+            element.SetParent(NODE_ID_MAX);
+            virtualRoot.AddChild(nodeId);
+            count += 1;
+        }
+        nodeId = element.GetAccessibilityId();
+        elementInfosMap[nodeId] = std::make_shared<AccessibilityElementInfo>(element);
+    }
+    elementInfosMap[NODE_ID_MAX] = std::make_shared<AccessibilityElementInfo>(virtualRoot);
+
+    std::vector<int32_t> elementList;
+    elementList.push_back(NODE_ID_MAX);
+    uint32_t index = 0;
+    while (index < elementList.size()) {
+        auto iter = elementInfosMap.find(elementList[index]);
+        if (iter == elementInfosMap.end()) {
+            sortedElementInfos.clear();
+            elementInfos.insert(elementInfos.begin(), virtualRoot);
+            return;
+        }
+        sortedElementInfos.push_back(*(iter->second));
+        std::vector<int32_t> childNodeIds = iter->second->GetChildIds();
+        for (auto &id : childNodeIds) {
+            elementList.push_back(id);
+        }
+        index++;
+    }
+
+    if (static_cast<int32_t>(sortedElementInfos.size()) > 0) {
+        elementInfos = sortedElementInfos;
+    }
+    elementInfosMap.clear();
 }
 
 RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWindowInfo &windowInfo,
