@@ -1277,31 +1277,42 @@ void AccessibleAbilityManagerService::PackageChanged(const std::string &bundleNa
         HILOG_ERROR("packageAccount is nullptr");
         return;
     }
+
+    bool isNeedUpdateShortKeyTarget = false;
+    std::string target = packageAccount->GetConfig()->GetShortkeyTarget();
+    if (target.substr(0, target.find("/")) == bundleName) {
+        isNeedUpdateShortKeyTarget = true;
+    }
+    std::vector<std::string> multiTarget = packageAccount->GetConfig()->GetShortkeyMultiTarget();
+
     packageAccount->ChangeAbility(bundleName);
-    packageAccount->DelAutoStartPrefKeyInRemovePkg(bundleName);
-    std::string name = packageAccount->GetConfig()->GetShortkeyTarget();
+    UpdateAccessibilityManagerService();
+
+    std::vector<std::string> sameBundleTarget;
     auto installedAbilities_ = packageAccount->GetInstalledAbilities();
-    HILOG_DEBUG("name%{public}s", name.c_str());
-    auto isExistence = false;
     for (auto &installAbility : installedAbilities_) {
         std::string abilityId = installAbility.GetId();
-
-        HILOG_DEBUG("abilityId%{public}s", abilityId.c_str());
-        if (bundleName == installAbility.GetPackageName() && abilityId == name) {
-            HILOG_DEBUG();
-            isExistence = true;
-            break;
+        if (bundleName != installAbility.GetPackageName()) {
+            continue;
         }
+        if (abilityId == target) {
+            isNeedUpdateShortKeyTarget = false;
+        }
+        sameBundleTarget.push_back(abilityId);
     }
-    if (!isExistence) {
-        HILOG_DEBUG();
-        std::string targetName = "";
-        packageAccount->GetConfig()->SetShortkeyTarget(targetName);
 
+    if (isNeedUpdateShortKeyTarget) {
+        packageAccount->GetConfig()->SetShortkeyTarget("");
         UpdateShortkeyTarget();
-        packageAccount->GetConfig()->SetShortKeyState(false);
     }
-    UpdateAccessibilityManagerService();
+    std::vector<std::string> tmpAbilities = multiTarget;
+    bool isNeedUpdateShortKeyMultiTarget = false;
+    Utils::SelectUsefulFromVecWithSameBundle(tmpAbilities, sameBundleTarget,
+        isNeedUpdateShortKeyMultiTarget, bundleName);
+    if (isNeedUpdateShortKeyMultiTarget) {
+        packageAccount->GetConfig()->SetShortkeyMultiTarget(tmpAbilities);
+        UpdateShortkeyMultiTarget();
+    }
 }
 
 void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetFindFocusedElementInfoResult(

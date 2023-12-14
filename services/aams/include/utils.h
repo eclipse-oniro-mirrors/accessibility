@@ -52,6 +52,8 @@ public:
     static std::string GetUri(const std::string &bundleName, const std::string &abilityName);
     static std::string GetAbilityAutoStartStateKey(const std::string &bundleName, const std::string &abilityName,
         int32_t accountId);
+    static void SelectUsefulFromVecWithSameBundle(std::vector<std::string> &selectVec, std::vector<std::string> &cmpVec,
+        bool &hasDif, const std::string &bundleName);
     static void RecordUnavailableEvent(A11yUnavailableEvent event, A11yError errCode,
         const std::string &bundleName = "", const std::string &abilityName = "");
     static void RecordStartingA11yEvent(uint32_t flag);
