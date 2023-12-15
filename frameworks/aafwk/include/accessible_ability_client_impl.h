@@ -310,6 +310,7 @@ public:
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
     void AddCacheByWMS(int32_t windowId, int32_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void AddCacheByAce(int32_t windowId, int32_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
+    void SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos);
 
 private:
     class ElementCacheInfo {

@@ -974,7 +974,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, AddCacheByAce_001, TestSize.Level1)
 /**
  * @tc.number: GetByContent_003
  * @tc.name: GetByContent
- * @tc.desc: Test function GetByContent
+ * @tc.desc: Test function GetByContent.
  */
 HWTEST_F(AccessibleAbilityClientImplTest, GetByContent_003, TestSize.Level1)
 {
