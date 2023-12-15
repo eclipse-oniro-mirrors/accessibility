@@ -2428,6 +2428,7 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
+        return;
     }
 
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();

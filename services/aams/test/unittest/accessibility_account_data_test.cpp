@@ -120,7 +120,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     const std::string elementName = Utils::GetUri(connection->GetElementName());
     EXPECT_EQ(connection, accountData->GetAccessibleAbilityConnection(elementName));
     EXPECT_EQ(1, (int)accountData->GetConnectedA11yAbilities().size());
-
+    // init
     accountData->Init();
     uint32_t stateType = accountData->GetAccessibilityState();
     EXPECT_EQ(stateType, Accessibility::STATE_ACCESSIBILITY_ENABLED);

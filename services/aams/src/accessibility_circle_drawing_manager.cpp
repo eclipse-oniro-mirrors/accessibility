@@ -269,7 +269,7 @@ void AccessibilityCircleDrawingManager::DrawingProgressByRosenDrawing(int32_t ph
     progressPen.SetWidth(PROGRESS_STROKE_WIDTH * dispalyDensity_);
 
     canvas->AttachPen(progressPen);
-    canvas->DrawCircle(Rosen::Drawing::Point(half_, half_), dispalyDensity_ * PROGRESS_RADIUS,)
+    canvas->DrawCircle(Rosen::Drawing::Point(half_, half_), dispalyDensity_ * PROGRESS_RADIUS);
     canvas->DetachPen();
 
     // progress arc
