@@ -47,6 +47,7 @@ accessibleabilityms_files = [
   "${services_path}/src/accessible_ability_manager_service.cpp",
   "${services_path}/src/accessibility_account_data.cpp",
   "${services_path}/src/accessibility_circle_drawing_manager.cpp",
+  "${services_path}/src/accessibility_settings.cpp",
   "${services_path}/src/accessibility_settings_config.cpp",
   "${services_path}/src/accessibility_window_connection.cpp",
   "${services_path}/src/accessibility_zoom_gesture.cpp",
