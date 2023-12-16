@@ -68,6 +68,8 @@ AccessibleAbilityManagerService::AccessibleAbilityManagerService()
     dependentServicesStatus_[DISPLAY_MANAGER_SERVICE_SA_ID] = false;
     dependentServicesStatus_[SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN] = false;
     dependentServicesStatus_[WINDOW_MANAGER_SERVICE_ID] = false;
+
+    accessibilitySettings_ = std::make_shared<AccessibilitySettings>();
 }
 
 AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
@@ -106,6 +108,8 @@ void AccessibleAbilityManagerService::OnStart()
     AddSystemAbilityListener(DISPLAY_MANAGER_SERVICE_SA_ID);
     AddSystemAbilityListener(SUBSYS_ACCOUNT_SYS_ABILITY_ID_BEGIN);
     AddSystemAbilityListener(WINDOW_MANAGER_SERVICE_ID);
+
+    accessibilitySettings_->RegisterSettingsHandler(handler_);
 }
 
 void AccessibleAbilityManagerService::OnStop()
@@ -599,64 +603,17 @@ RetError AccessibleAbilityManagerService::DeregisterElementOperator(int32_t wind
 
 RetError AccessibleAbilityManagerService::GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &caption]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        caption = accountData->GetConfig()->GetCaptionProperty();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CAPTION_PROPERTY");
-    return syncFuture.get();
+    return accessibilitySettings_->GetCaptionProperty(caption);
 }
 
 RetError AccessibleAbilityManagerService::SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &caption]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetCaptionProperty(caption);
-        syncPromise.set_value(ret);
-        UpdateCaptionProperty();
-        }), "TASK_SET_CAPTION_PROPERTY");
-    return syncFuture.get();
+    return accessibilitySettings_->SetCaptionProperty(caption);
 }
 
 RetError AccessibleAbilityManagerService::SetCaptionState(const bool state)
 {
-    HILOG_DEBUG();
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetCaptionState(state);
-    UpdateConfigState();
-    return ret;
+    return accessibilitySettings_->SetCaptionState(state);
 }
 
 bool AccessibleAbilityManagerService::GetEnabledState()
@@ -685,26 +642,7 @@ bool AccessibleAbilityManagerService::GetEnabledState()
 
 RetError AccessibleAbilityManagerService::GetCaptionState(bool &state)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetCaptionState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CAPTION_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->GetCaptionState(state);
 }
 
 bool AccessibleAbilityManagerService::GetTouchGuideState()
@@ -1478,22 +1416,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
 
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_DEBUG("UpdateCaptionProperty.");
-
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        AccessibilityConfig::CaptionProperty caption = accountData->GetConfig()->GetCaptionProperty();
-        for (auto &callback : accountData->GetCaptionPropertyCallbacks()) {
-            if (callback) {
-                callback->OnPropertyChanged(caption);
-            }
-        }
-        }), "UpdateCaptionProperty");
+    return accessibilitySettings_->UpdateCaptionProperty();
 }
 
 void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
@@ -1573,777 +1496,182 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
 
 RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetScreenMagnificationState:" + to_string(state));
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetScreenMagnificationState(state);
-    UpdateConfigState();
-    UpdateInputFilter();
-    return ret;
+    return accessibilitySettings_->SetScreenMagnificationState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortKeyState:" + to_string(state));
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetShortKeyState(state);
-        syncPromise.set_value(ret);
-        UpdateConfigState();
-        UpdateInputFilter();
-        }), "TASK_SET_SHORTKEY_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->SetShortKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetMouseKeyState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetMouseKeyState(state);
-    UpdateConfigState();
-    UpdateInputFilter();
-    return ret;
+    return accessibilitySettings_->SetMouseKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetMouseAutoClick(const int32_t time)
 {
-    HILOG_INFO("time = [%{public}d]", time);
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetMouseAutoClick(time);
-        syncPromise.set_value(ret);
-        UpdateMouseAutoClick();
-        UpdateInputFilter();
-        }), "TASK_SET_MOUSE_AUTOCLICK");
-    return syncFuture.get();
+    return accessibilitySettings_->SetMouseAutoClick(time);
 }
 
 RetError AccessibleAbilityManagerService::SetShortkeyTarget(const std::string &name)
 {
-    HILOG_INFO("name = [%{public}s]", name.c_str());
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyTarget:" + name);
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetShortkeyTarget(name);
-        syncPromise.set_value(ret);
-        UpdateShortkeyTarget();
-        }), "TASK_SET_SHORTKEY_TARGET");
-    return syncFuture.get();
+    return accessibilitySettings_->SetShortkeyTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::SetShortkeyMultiTarget(const std::vector<std::string> &name)
 {
-    HILOG_DEBUG();
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetShortkeyMultiTarget");
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetShortkeyMultiTarget(name);
-        syncPromise.set_value(ret);
-        UpdateShortkeyMultiTarget();
-        }), "TASK_SET_SHORTKEY_MULTI_TARGET");
-    return syncFuture.get();
+    return accessibilitySettings_->SetShortkeyMultiTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::SetHighContrastTextState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetHighContrastTextState:" + to_string(state));
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetHighContrastTextState(state);
-    UpdateConfigState();
-    return ret;
+    return accessibilitySettings_->SetHighContrastTextState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetDaltonizationState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationState:" + to_string(state));
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetDaltonizationState(state);
-    UpdateConfigState();
-    return ret;
+    return accessibilitySettings_->SetDaltonizationState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetInvertColorState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetInvertColorState:" + to_string(state));
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetInvertColorState(state);
-    UpdateConfigState();
-    return ret;
+    return accessibilitySettings_->SetInvertColorState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetAnimationOffState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetAnimationOffState(state);
-    UpdateConfigState();
-    int setGraphicParamRes = -1;
-    int setArkuiParamRes = -1;
-    if (state) {
-        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
-    } else {
-        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
-    }
-    HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
-    return ret;
+    return accessibilitySettings_->SetAnimationOffState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetAudioMonoState(const bool state)
 {
-    HILOG_INFO("state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioMonoState:" + to_string(state));
-
-    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-    if (!accountData) {
-        HILOG_ERROR("accountData is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-    RetError ret = accountData->GetConfig()->SetAudioMonoState(state);
-    UpdateConfigState();
-    return ret;
+    return accessibilitySettings_->SetAudioMonoState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetDaltonizationColorFilter(const uint32_t filter)
 {
-    HILOG_INFO("filter = [%{public}u]", filter);
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetDaltonizationColorFilter:" + to_string(filter));
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, filter]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetDaltonizationColorFilter(filter);
-        syncPromise.set_value(ret);
-        UpdateDaltonizationColorFilter();
-        }), "TASK_SET_DALTONIZATION_COLORFILTER");
-    return syncFuture.get();
+    return accessibilitySettings_->SetDaltonizationColorFilter(filter);
 }
 
 RetError AccessibleAbilityManagerService::SetContentTimeout(const uint32_t time)
 {
-    HILOG_INFO("time = [%{public}u]", time);
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetContentTimeout(time);
-        syncPromise.set_value(ret);
-        UpdateContentTimeout();
-        }), "TASK_SET_CONTENT_TIMEOUT");
-    return syncFuture.get();
+    return accessibilitySettings_->SetContentTimeout(time);
 }
 
 RetError AccessibleAbilityManagerService::SetBrightnessDiscount(const float discount)
 {
-    HILOG_INFO("discount = [%{public}f]", discount);
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-#ifdef OHOS_BUILD_ENABLE_POWER_MANAGER
-    if (!Singleton<AccessibilityPowerManager>::GetInstance().DiscountBrightness(discount)) {
-        HILOG_ERROR("Failed to set brightness discount");
-        return Accessibility::RET_ERR_FAILED;
-    }
-#endif
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, discount]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetBrightnessDiscount(discount);
-        syncPromise.set_value(ret);
-        UpdateBrightnessDiscount();
-        }), "TASK_SET_BRIGHTNESS_DISCOUNT");
-    return syncFuture.get();
+    return accessibilitySettings_->SetBrightnessDiscount(discount);
 }
 
 RetError AccessibleAbilityManagerService::SetAudioBalance(const float balance)
 {
-    HILOG_INFO("balance = [%{public}f]", balance);
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetAudioBalance:" + to_string(balance));
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, balance]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetAudioBalance(balance);
-        syncPromise.set_value(ret);
-        UpdateAudioBalance();
-        }), "TASK_SET_AUDIO_BALANCE");
-    return syncFuture.get();
+    return accessibilitySettings_->SetAudioBalance(balance);
 }
 
 RetError AccessibleAbilityManagerService::SetClickResponseTime(const uint32_t time)
 {
-    HILOG_INFO("click response time = [%{public}u]", time);
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetClickResponseTime:" + to_string(time));
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetClickResponseTime(time);
-        syncPromise.set_value(ret);
-        UpdateClickResponseTime();
-        UpdateInputFilter();
-        }), "TASK_SET_CLICK_RESPONSE_TIME");
-    return syncFuture.get();
+    return accessibilitySettings_->SetClickResponseTime(time);
 }
 
 RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickState(const bool state)
 {
-    HILOG_INFO("ignore repeat click state = [%{public}s]", state ? "True" : "False");
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickState:" + to_string(state));
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, state]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickState(state);
-        syncPromise.set_value(ret);
-        UpdateConfigState();
-        UpdateInputFilter();
-        }), "TASK_SET_IGNORE_REPEAT_CLICK_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->SetIgnoreRepeatClickState(state);
 }
 
 RetError AccessibleAbilityManagerService::SetIgnoreRepeatClickTime(const uint32_t time)
 {
-    HILOG_INFO("click response time = [%{public}u]", time);
-    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SetIgnoreRepeatClickTime:" + to_string(time));
-
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, time]() -> void {
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr.");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        RetError ret = accountData->GetConfig()->SetIgnoreRepeatClickTime(time);
-        syncPromise.set_value(ret);
-        UpdateIgnoreRepeatClickTime();
-        UpdateInputFilter();
-        }), "TASK_SET_IGNORE_REPEAT_CLICK_TIME");
-    return syncFuture.get();
+    return accessibilitySettings_->SetIgnoreRepeatClickTime(time);
 }
 
 RetError AccessibleAbilityManagerService::GetScreenMagnificationState(bool &state)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetScreenMagnificationState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SCREENMAGNIFIER_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->GetScreenMagnificationState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetShortKeyState(bool &state)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetShortKeyState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->GetShortKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetMouseKeyState(bool &state)
 {
-    HILOG_DEBUG();
-    if (!handler_) {
-        HILOG_ERROR("handler_ is nullptr.");
-        return RET_ERR_NULLPTR;
-    }
-
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetMouseKeyState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_MOUSEKEY_STATE");
-    return syncFuture.get();
+    return accessibilitySettings_->GetMouseKeyState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetMouseAutoClick(int32_t &time)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        time = accountData->GetConfig()->GetMouseAutoClick();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_MOUSE_AUTOCLICK");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetMouseAutoClick(time);
 }
 
 RetError AccessibleAbilityManagerService::GetShortkeyTarget(std::string &name)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        name = accountData->GetConfig()->GetShortkeyTarget();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_TARGET");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetShortkeyTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::GetShortkeyMultiTarget(std::vector<std::string> &name)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &name]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        name = accountData->GetConfig()->GetShortkeyMultiTarget();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_SHORTKEY_MULTI_TARGET");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetShortkeyMultiTarget(name);
 }
 
 RetError AccessibleAbilityManagerService::GetHighContrastTextState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetHighContrastTextState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_HIGHCONTRASTTEXT_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetHighContrastTextState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetDaltonizationState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetDaltonizationState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_DALTONIZATIONSTATE_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetDaltonizationState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetInvertColorState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetInvertColorState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_INVERTCOLOR_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetInvertColorState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetAnimationOffState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetAnimationOffState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_ANIMATIONOFF_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetAnimationOffState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetAudioMonoState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetAudioMonoState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_AUDIOMONO_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetAudioMonoState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetDaltonizationColorFilter(uint32_t &type)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &type]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        type = accountData->GetConfig()->GetDaltonizationColorFilter();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_DALTONIZATION_COLORFILTER");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetDaltonizationColorFilter(type);
 }
 
 RetError AccessibleAbilityManagerService::GetContentTimeout(uint32_t &timer)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &timer]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        timer = accountData->GetConfig()->GetContentTimeout();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CONTENT_TIMEOUT");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetContentTimeout(timer);
 }
 
 RetError AccessibleAbilityManagerService::GetBrightnessDiscount(float &brightness)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &brightness]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        brightness = accountData->GetConfig()->GetBrightnessDiscount();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_BRIGHTNESS_DISCOUNT");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetBrightnessDiscount(brightness);
 }
 
 RetError AccessibleAbilityManagerService::GetAudioBalance(float &balance)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &balance]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        balance = accountData->GetConfig()->GetAudioBalance();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_AUDIO_BALANCE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetAudioBalance(balance);
 }
 
 RetError AccessibleAbilityManagerService::GetClickResponseTime(uint32_t &time)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        time = accountData->GetConfig()->GetClickResponseTime();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_CLICK_RESPONSE_TIME");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetClickResponseTime(time);
 }
 
 RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickState(bool &state)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &state]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        state = accountData->GetConfig()->GetIgnoreRepeatClickState();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_IGNORE_REPEAT_CLICK_STATE");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetIgnoreRepeatClickState(state);
 }
 
 RetError AccessibleAbilityManagerService::GetIgnoreRepeatClickTime(uint32_t &time)
 {
-    HILOG_DEBUG();
-    std::promise<RetError> syncPromise;
-    std::future syncFuture = syncPromise.get_future();
-    handler_->PostTask(std::bind([this, &syncPromise, &time]() -> void {
-        HILOG_DEBUG();
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("accountData is nullptr");
-            syncPromise.set_value(RET_ERR_NULLPTR);
-            return;
-        }
-        time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
-        syncPromise.set_value(RET_OK);
-        }), "TASK_GET_IGNORE_REPEAT_CLICK_TIME");
-
-    return syncFuture.get();
+    return accessibilitySettings_->GetIgnoreRepeatClickTime(time);
 }
 
 void AccessibleAbilityManagerService::GetAllConfigs(AccessibilityConfigData &configData)
@@ -2524,192 +1852,52 @@ void AccessibleAbilityManagerService::BundleManagerDeathRecipient::OnRemoteDied(
 
 void AccessibleAbilityManagerService::UpdateConfigState()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateConfigState.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        uint32_t state = accountData->GetConfig()->GetConfigState();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnConfigStateChanged(state);
-            }
-        }
-        }), "UpdateConfigState");
+    return accessibilitySettings_->UpdateConfigState();
 }
 
 void AccessibleAbilityManagerService::UpdateAudioBalance()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateAudioBalance.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        float audioBalance = accountData->GetConfig()->GetAudioBalance();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnAudioBalanceChanged(audioBalance);
-            }
-        }
-        }), "UpdateAudioBalance");
+    return accessibilitySettings_->UpdateAudioBalance();
 }
 
 void AccessibleAbilityManagerService::UpdateBrightnessDiscount()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateBrightnessDiscount.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        float brightnessDiscount = accountData->GetConfig()->GetBrightnessDiscount();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnBrightnessDiscountChanged(brightnessDiscount);
-            }
-        }
-        }), "UpdateBrightnessDiscount");
+    return accessibilitySettings_->UpdateBrightnessDiscount();
 }
 
 void AccessibleAbilityManagerService::UpdateContentTimeout()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateContentTimeout.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        uint32_t contentTimeout = accountData->GetConfig()->GetContentTimeout();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnContentTimeoutChanged(contentTimeout);
-            }
-        }
-        }), "UpdateContentTimeout");
+    return accessibilitySettings_->UpdateContentTimeout();
 }
 
 void AccessibleAbilityManagerService::UpdateDaltonizationColorFilter()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateDaltonizationColorFilter.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        uint32_t daltonizationColorFilter = accountData->GetConfig()->GetDaltonizationColorFilter();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnDaltonizationColorFilterChanged(daltonizationColorFilter);
-            }
-        }
-        }), "UpdateDaltonizationColorFilter");
+    return accessibilitySettings_->UpdateDaltonizationColorFilter();
 }
 
 void AccessibleAbilityManagerService::UpdateMouseAutoClick()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateMouseAutoClick.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        int32_t mouseAutoClick = accountData->GetConfig()->GetMouseAutoClick();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnMouseAutoClickChanged(mouseAutoClick);
-            }
-        }
-        }), "UpdateMouseAutoClick");
+    return accessibilitySettings_->UpdateMouseAutoClick();
 }
 
 void AccessibleAbilityManagerService::UpdateShortkeyTarget()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateShortkeyTarget.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        std::string shortkeyTarget = accountData->GetConfig()->GetShortkeyTarget();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnShortkeyTargetChanged(shortkeyTarget);
-            }
-        }
-        }), "UpdateShortkeyTarget");
+    return accessibilitySettings_->UpdateShortkeyTarget();
 }
 
 void AccessibleAbilityManagerService::UpdateShortkeyMultiTarget()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateShortkeyMultiTarget.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnShortkeyMultiTargetChanged(shortkeyMultiTarget);
-            }
-        }
-        }), "UpdateShortkeyMultiTarget");
+    return accessibilitySettings_->UpdateShortkeyMultiTarget();
 }
 
 void AccessibleAbilityManagerService::UpdateClickResponseTime()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateClickResponseTime.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        uint32_t time = accountData->GetConfig()->GetClickResponseTime();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnClickResponseTimeChanged(time);
-            }
-        }
-        }), "UpdateClickResponseTime");
+    return accessibilitySettings_->UpdateClickResponseTime();
 }
 
 void AccessibleAbilityManagerService::UpdateIgnoreRepeatClickTime()
 {
-    handler_->PostTask(std::bind([this]() -> void {
-        HILOG_INFO("UpdateIgnoreRepeatClickTime.");
-        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
-        if (!accountData) {
-            HILOG_ERROR("Account data is null");
-            return;
-        }
-
-        uint32_t time = accountData->GetConfig()->GetIgnoreRepeatClickTime();
-        for (auto &callback : accountData->GetConfigCallbacks()) {
-            if (callback) {
-                callback->OnIgnoreRepeatClickTimeChanged(time);
-            }
-        }
-        }), "UpdateIgnoreRepeatClickTime");
+    return accessibilitySettings_->UpdateIgnoreRepeatClickTime();
 }
 
 void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,

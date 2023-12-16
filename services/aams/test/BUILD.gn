@@ -565,6 +565,7 @@ ohos_unittest("accessible_ability_connection_test") {
     "../src/accessibility_multifinger_multitap.cpp",
     "../src/accessibility_power_manager.cpp",
     "../src/accessibility_screen_touch.cpp",
+    "../src/accessibility_settings.cpp",
     "../src/accessibility_settings_config.cpp",
     "../src/accessibility_short_key.cpp",
     "../src/accessibility_touchEvent_injector.cpp",

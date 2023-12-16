@@ -34,6 +34,7 @@
 #include "accessibility_element_operator_callback_stub.h"
 #include "accessibility_input_interceptor.h"
 #include "accessibility_keyevent_filter.h"
+#include "accessibility_settings.h"
 #include "accessibility_touchEvent_injector.h"
 #include "accessibility_window_info.h"
 #include "bundlemgr/bundle_mgr_interface.h"
@@ -46,6 +47,7 @@ namespace OHOS {
 namespace Accessibility {
 class AccessibilityAccountData;
 class TouchEventInjector;
+class AccessibilitySettings;
 
 enum CallBackID {
     STATE_CALLBACK,
@@ -256,6 +258,8 @@ public:
     void UpdateClickResponseTime();
     void UpdateIgnoreRepeatClickTime();
 
+    void UpdateInputFilter();
+
 private:
     bool SetTargetAbility(const int32_t targetAbilityValue);
     class StateCallbackDeathRecipient final : public IRemoteObject::DeathRecipient {
@@ -338,7 +342,6 @@ private:
     void UpdateAccessibilityWindowStateByEvent(const AccessibilityEventInfo &event);
 
     void UpdateAccessibilityState();
-    void UpdateInputFilter();
     void UpdateCaptionProperty();
     void UpdateSettingsInAtoHos();
 
@@ -372,6 +375,7 @@ private:
     StateObservers stateObservers_;
     std::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
+    std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
