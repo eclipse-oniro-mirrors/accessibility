@@ -68,6 +68,9 @@ InputManager *InputManager::instance_ = new(std::nothrow) InputManager();
 InputManager *InputManager::GetInstance()
 {
     HILOG_DEBUG();
+    if (instance_ == nullptr) {
+        instance_ = new(std::nothrow) InputManager();
+    }
     return instance_;
 }
 
