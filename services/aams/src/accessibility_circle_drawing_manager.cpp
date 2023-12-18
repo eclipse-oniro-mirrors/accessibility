@@ -20,7 +20,6 @@
 #include "hilog_wrapper.h"
 #include "pipeline/rs_recording_canvas.h"
 #include "recording/recording_canvas.h"
-#include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -233,7 +232,7 @@ void AccessibilityCircleDrawingManager::DrawingProgressByRosenDrawing(int32_t ph
     int32_t angle)
 {
     HILOG_DEBUG();
-    auto canvas = static_cast<Rosen::Drawing::RecordingCanvas*>(canvasNode_->BeginRecording(imageWidth_, imageHeight_));
+    auto canvas = canvasNode_->BeginRecording(imageWidth_, imageHeight_);
 
     // outer circle
     Rosen::Drawing::Brush outCircleBrush;

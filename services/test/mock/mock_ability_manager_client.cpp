@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace AAFwk {
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::instance_ = nullptr;
-std::recursive_mutex AbilityManagerClient::mutex_;
+std::once_flag AbilityManagerClient::singletonFlag_;
 
 AbilityManagerClient::AbilityManagerClient()
 {}
@@ -27,12 +27,9 @@ AbilityManagerClient::~AbilityManagerClient()
 
 std::shared_ptr<AbilityManagerClient> AbilityManagerClient::GetInstance()
 {
-    if (!instance_) {
-        std::lock_guard<std::recursive_mutex> lock_l(mutex_);
-        if (!instance_) {
-            instance_ = std::make_shared<AbilityManagerClient>();
-        }
-    }
+    std::call_once(singletonFlag_, [] () {
+        instance_ = std::shared_ptr<AbilityManagerClient>(new AbilityManagerClient());
+    });
     return instance_;
 }
 

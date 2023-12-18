@@ -11,9 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/ohos.gni")
+
 declare_args() {
   accessibility_feature_power_manager = true
   accessibility_feature_display_manager = true
+  accessibility_use_rosen_drawing = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -23,7 +26,17 @@ declare_args() {
       !defined(global_parts_info.powermgr_power_manager)) {
     accessibility_feature_power_manager = false
   }
+
+  if (defined(use_rosen_drawing) && use_rosen_drawing) {
+    accessibility_use_rosen_drawing = true
+  }
 }
+
+print(
+    "accessibility_feature_display_manager = ${accessibility_feature_display_manager}")
+print(
+    "accessibility_feature_power_manager = ${accessibility_feature_power_manager}")
+print("accessibility_use_rosen_drawing = ${accessibility_use_rosen_drawing}")
 
 accessibility_default_defines = []
 
@@ -33,4 +46,8 @@ if (accessibility_feature_power_manager) {
 
 if (accessibility_feature_display_manager) {
   accessibility_default_defines += [ "OHOS_BUILD_ENABLE_DISPLAY_MANAGER" ]
+}
+
+if (accessibility_use_rosen_drawing) {
+  accessibility_default_defines += [ "USE_ROSEN_DRAWING" ]
 }

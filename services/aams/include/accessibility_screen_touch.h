@@ -94,6 +94,8 @@ private:
     std::atomic<int32_t> circleCenterPhysicalY_;
     std::atomic<bool> isStopDrawCircle_;
     std::shared_ptr<std::thread> drawCircleThread_ = nullptr;
+
+    static int64_t lastUpTime; // global last up time
 };
 } // namespace Accessibility
 } // namespace OHOS
