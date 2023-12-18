@@ -201,7 +201,7 @@ bool AamsTouchGuideTest::TwoFingerTapEventProduce(std::vector<MMI::PointerEvent:
 {
     auto inputEventConsumer = MMI::MockInputManager::GetInputEventConsumer();
     if (!inputEventConsumer) {
-        GTEST_LOG_(INFO) << "AamsTouchGuideTest TwoFingerTapEventProduce inputEventConsumer is null";
+        GTEST_LOG_(INFO) << "AamsTouchGuideTest TwoFingerTapEventProduce inputEventConsumer is nullptr";
         return false;
     }
 
