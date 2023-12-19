@@ -32,7 +32,6 @@ namespace Accessibility {
 constexpr int WAIT_WINDOW_REGIST = 500;
 namespace {
     const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
-    const std::string SHELL_NAME = "com.huawei.shell_assistant";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t ROOT_NONE_ID = -1;
     constexpr int32_t NODE_ID_MAX = 0x7FFFFFFE;
@@ -1016,29 +1015,6 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
         return RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE;
     }
 
-    ret = CheckElementInfo(windowId, elementId, mode, elementInfos);
-    if (ret != RET_OK) {
-        HILOG_ERROR("check element info failed. windowId %{public}d", windowId);
-        return ret;
-    }
-    return RET_OK;
-}
-
-RetError AccessibleAbilityClientImpl::CheckElementInfo(int32_t windowId, int32_t elementId, int mode,
-    std::vector<AccessibilityElementInfo> &elementInfos)
-{
-    HILOG_DEBUG();
-    AccessibilityElementInfo element = elementInfos.front();
-    if (element.GetBundleName() == SHELL_NAME) {
-        int32_t tempWid = windowId - 1;
-        elementInfos.clear();
-        RetError ret = channelClient_->SearchElementInfosByAccessibilityId(tempWid, elementId, mode, elementInfos);
-        if (ret != RET_OK) {
-            tempWid = tempWid - 1;
-            elementInfos.clear();
-            return channelClient_->SearchElementInfosByAccessibilityId(tempWid, elementId, mode, elementInfos);
-        }
-    }
     return RET_OK;
 }
 
