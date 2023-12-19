@@ -375,8 +375,6 @@ private:
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
     static void OnParameterChanged(const char *key, const char *value, void *context);
-    RetError CheckElementInfo(int32_t windowId, int32_t elementId, int mode,
-        std::vector<AccessibilityElementInfo> &elementInfos);
 
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ = nullptr;
     sptr<IRemoteObject::DeathRecipient> accessibilityServiceDeathRecipient_ = nullptr;
