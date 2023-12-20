@@ -540,6 +540,7 @@ RetError AccessibleAbilityClientImpl::GetRootByWindowBatch(const AccessibilityWi
         HILOG_ERROR("get window element failed");
         return ret;
     }
+    SortElementInfosIfNecessary(elementInfos);
     return RET_OK;
 }
 
