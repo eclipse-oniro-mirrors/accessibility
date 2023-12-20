@@ -81,7 +81,8 @@
           "header": {
             "header_files": [
               "accessibility_element_info_parcel.h",
-              "accessibility_event_info_parcel.h"
+              "accessibility_event_info_parcel.h",
+              "accessibility_window_info_parcel.h"
             ],
             "header_base": "//foundation/barrierfree/accessibility/common/interface/include/parcel"
           }
