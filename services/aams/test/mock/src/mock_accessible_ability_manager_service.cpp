@@ -491,6 +491,7 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
 
 void AccessibleAbilityManagerService::OnShortKeyProcess()
 {
+    AccessibilityAbilityHelper::GetInstance().SetShortKeyTargetAbilityState(true);
 }
 
 void AccessibleAbilityManagerService::AddedUser(int32_t accountId)

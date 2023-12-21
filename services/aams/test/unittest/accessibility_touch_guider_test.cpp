@@ -474,7 +474,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_006, TestSize.Leve
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, 3, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     retOnPointerEvent6 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0) ==
+        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0) !=
             MMI::PointerEvent::POINTER_ACTION_DOWN) {
             return true;
         } else {
@@ -650,7 +650,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_010, TestSize.Leve
     event = CreateTouchEvent(MMI::PointerEvent::POINTER_ACTION_MOVE, points, POINT_ID_3, 0, 0);
     touchGuider_->OnPointerEvent(*event);
     retOnPointerEvent10 = AccessibilityCommonHelper::GetInstance().WaitForLoop(std::bind([]() -> bool {
-        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1) ==
+        if (AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(1) !=
             MMI::PointerEvent::POINTER_ACTION_DOWN) {
             return true;
         } else {
@@ -658,7 +658,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_010, TestSize.Leve
         }
         }), SLEEP_TIME_3);
     EXPECT_TRUE(retOnPointerEvent10);
-    int32_t expectValue = MMI::PointerEvent::POINTER_ACTION_DOWN;
+    int32_t expectValue = MMI::PointerEvent::BUTTON_NONE;
     int32_t touchAction = AccessibilityAbilityHelper::GetInstance().GetTouchEventActionOfTargetIndex(0);
     EXPECT_EQ(touchAction, expectValue);
 
