@@ -32,18 +32,44 @@ void NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(napi_env env, napi_
 
 napi_value NAccessibilityEventInfo::JSConstructor(napi_env env, napi_callback_info info)
 {
-    size_t argc = ARGS_SIZE_ONE;
-    napi_value argv[ARGS_SIZE_ONE] = {nullptr};
-    napi_valuetype valueType;
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr));
-    if (argc != ARGS_SIZE_ONE) {
-        HILOG_ERROR("argc %{public}zu is not 1", argc);
-        return nullptr;
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value argv[ARGS_SIZE_THREE] = {nullptr};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, nullptr));
+    if (argc == ARGS_SIZE_ONE) {
+        napi_valuetype valueType;
+        NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
+        if (valueType != napi_object) {
+            HILOG_ERROR("valueType %{public}d is not napi_object", valueType);
+            return nullptr;
+        }
+
+        return argv[PARAM0];
+    } else if (argc == ARGS_SIZE_THREE) {
+        napi_valuetype valueType;
+        NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
+        if (valueType != napi_string) {
+            HILOG_ERROR("type mismatch for parameter 0");
+            return nullptr;
+        }
+
+        NAPI_CALL(env, napi_typeof(env, argv[PARAM1], &valueType));
+        if (valueType != napi_string) {
+            HILOG_ERROR("type mismatch for parameter 1");
+            return nullptr;
+        }
+
+        NAPI_CALL(env, napi_typeof(env, argv[PARAM2], &valueType));
+        if (valueType != napi_string) {
+            HILOG_ERROR("type mismatch for parameter 2");
+            return nullptr;
+        }
+
+        NAPI_CALL(env, napi_set_named_property(env, thisVar, "type", argv[PARAM0]));
+        NAPI_CALL(env, napi_set_named_property(env, thisVar, "bundleName", argv[PARAM1]));
+        NAPI_CALL(env, napi_set_named_property(env, thisVar, "triggerAction", argv[PARAM2]));
+        return thisVar;
     }
-    NAPI_CALL(env, napi_typeof(env, argv[PARAM0], &valueType));
-    if (valueType != napi_object) {
-        HILOG_ERROR("valueType %{public}d is not napi_object", valueType);
-        return nullptr;
-    }
-    return argv[PARAM0];
+
+    return nullptr;
 }
