@@ -103,6 +103,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     sptr<AccessibilityAccountData> accountData =
         Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
     if (!accountData) {
+        GTEST_LOG_(INFO) << "accountData is nullptr";
         return;
     }
 

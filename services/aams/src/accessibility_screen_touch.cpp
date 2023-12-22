@@ -63,6 +63,8 @@ const std::map<uint32_t, uint32_t> IGNORE_REPEAT_CLICK_TIME_MAP = {
     {IGNORE_REPEAT_CLICK_LONGEST, IGNORE_REPEAT_CLICK_TIME_LONGEST}
 };
 
+int64_t AccessibilityScreenTouch::lastUpTime = 0; // global last up time
+
 AccessibilityScreenTouch::AccessibilityScreenTouch()
 {
     HILOG_DEBUG();
@@ -83,6 +85,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
         currentState_ = DEFAULT_STATE;
     }
 
+    lastUpTime_ = lastUpTime;
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
     auto display = displayMgr.GetDefaultDisplay();
@@ -100,6 +103,7 @@ AccessibilityScreenTouch::AccessibilityScreenTouch()
 
 AccessibilityScreenTouch::~AccessibilityScreenTouch()
 {
+    lastUpTime = lastUpTime_;
     if (drawCircleThread_ && drawCircleThread_->joinable()) {
         drawCircleThread_->join();
     }
