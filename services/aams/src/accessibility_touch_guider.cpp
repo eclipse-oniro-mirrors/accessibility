@@ -979,7 +979,7 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
     connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
     std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitFocus != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
         return false;
     }
     elementId = focusCallback->accessibilityInfoResult_.GetAccessibilityId();
@@ -994,7 +994,7 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
     connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
     std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
     if (waitAction != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        HILOG_ERROR("ExecuteAction Failed to wait result");
         return false;
     }
 

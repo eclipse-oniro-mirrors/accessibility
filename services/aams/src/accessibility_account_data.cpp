@@ -31,6 +31,7 @@ namespace Accessibility {
 namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
+    constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
@@ -436,6 +437,11 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
     std::string strValue;
     ErrCode ret = provider.GetStringValue(key, strValue);
+    if (ret == ERR_NO_INIT) {
+        HILOG_INFO("helper is null, retry.");
+        std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
+        ret = provider.GetStringValue(key, strValue);
+    }
     if (ret != ERR_OK) {
         HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", key.c_str(), ret);
         return false;
@@ -452,7 +458,12 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     HILOG_DEBUG();
     AccessibilitySettingProvider& provider = AccessibilitySettingProvider::GetInstance(POWER_MANAGER_SERVICE_ID);
 
-    provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+    ErrCode ret = provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+    if (ret == ERR_NO_INIT) {
+        HILOG_INFO("helper is null, retry.");
+        std::this_thread::sleep_for(std::chrono::milliseconds(INIT_DATASHARE_HELPER_SLEEP_TIME));
+        provider.GetBoolValue(HIGH_TEXT_CONTRAST_ENABLED, value.highContrastText);
+    }
     provider.GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
     provider.GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
     provider.GetBoolValue(PERSIST_SYS_CVAA_MONO_CHANNEL, value.audioMono);
