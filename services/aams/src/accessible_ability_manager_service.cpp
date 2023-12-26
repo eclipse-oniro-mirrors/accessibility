@@ -960,7 +960,7 @@ bool AccessibleAbilityManagerService::Init()
 
 void AccessibleAbilityManagerService::InitInnerResource()
 {
-    UpdateSettingsInAtoHos();
+    UpdateSettingsInAtoHosTask();
 }
 
 void AccessibleAbilityManagerService::InteractionOperationDeathRecipient::OnRemoteDied(
@@ -1152,11 +1152,11 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
     }
 #endif
     if (accountData->GetInstalledAbilitiesFromBMS()) {
-        accountData->UpdateAutoStartEnabledAbilities();
         accountData->UpdateImportantEnabledAbilities(importantEnabledAbilities);
         accountData->UpdateAbilities();
         UpdateAccessibilityManagerService();
     }
+    UpdateAutoStartAbilities();
 }
 
 void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleName)
@@ -1417,6 +1417,37 @@ void AccessibleAbilityManagerService::UpdateAccessibilityState()
 void AccessibleAbilityManagerService::UpdateCaptionProperty()
 {
     return accessibilitySettings_->UpdateCaptionProperty();
+}
+
+void AccessibleAbilityManagerService::UpdateSettingsInAtoHosTask()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("UpdateSettingsInAtoHosTask: handler is nullptr!");
+        return;
+    }
+    handler_->PostTask(std::bind([=]() -> void {
+        UpdateSettingsInAtoHos();
+        }), "UPDATE_SETTINGS_IN_ATOHOS_TASK");
+}
+
+void AccessibleAbilityManagerService::UpdateAutoStartAbilities()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("UpdateAutoStartAbilities: handler is nullptr.");
+        return;
+    }
+
+    handler_->PostTask(std::bind([=]() -> void {
+        sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+        if (!accountData) {
+            HILOG_ERROR("Account data is null");
+            return;
+        }
+        accountData->UpdateAutoStartEnabledAbilities();
+        accountData->UpdateAbilities();
+        }), "UPDATE_AUTO_START_ABILITIES");
 }
 
 void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()

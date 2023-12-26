@@ -343,7 +343,9 @@ private:
 
     void UpdateAccessibilityState();
     void UpdateCaptionProperty();
+    void UpdateSettingsInAtoHosTask();
     void UpdateSettingsInAtoHos();
+    void UpdateAutoStartAbilities();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
