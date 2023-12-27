@@ -258,6 +258,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     const sptr<IAccessibleAbilityManagerStateObserver> &callback)
 {
     HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!callback || !handler_) {
         HILOG_ERROR("Parameters check failed!");
         return 0;
@@ -1182,7 +1183,6 @@ void AccessibleAbilityManagerService::UpdateAccessibilityWindowStateByEvent(cons
 void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 {
     HILOG_DEBUG("start.");
-
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -1197,7 +1197,7 @@ void AccessibleAbilityManagerService::UpdateAccessibilityManagerService()
 void AccessibleAbilityManagerService::UpdateAccessibilityState()
 {
     HILOG_DEBUG("start.");
-
+    std::lock_guard<std::mutex> lock(mutex_);
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
     if (!accountData) {
         HILOG_ERROR("Account data is null");
@@ -2126,6 +2126,7 @@ void AccessibleAbilityManagerService::RemoveCallback(CallBackID callback,
     const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote)
 {
     HILOG_INFO("remove callback[%{public}d]", callback);
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!handler_) {
         HILOG_ERROR("handler is nullptr");
         return;
