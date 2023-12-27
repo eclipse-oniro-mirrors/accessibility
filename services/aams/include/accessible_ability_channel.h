@@ -28,22 +28,22 @@ class AccessibleAbilityChannel : public AccessibleAbilityChannelStub {
 public:
     AccessibleAbilityChannel(const int32_t accountId, const std::string &clientName);
     ~AccessibleAbilityChannel() = default;
-    RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode) override;
 
-    RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
+    RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t direction,
+    RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t direction,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
-    RetError ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
+    RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 

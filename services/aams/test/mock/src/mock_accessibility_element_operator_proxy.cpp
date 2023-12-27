@@ -39,7 +39,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
     return true;
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int32_t elementId,
+void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
     AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
@@ -48,7 +48,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     (void)mode;
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t elementId,
+void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t elementId,
     const std::string &text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
@@ -58,7 +58,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t e
     (void)callback;
 }
 
-void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t elementId,
+void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     (void)focusType;
@@ -69,7 +69,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t ele
     }
 }
 
-void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
+void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     AccessibilityAbilityHelper::GetInstance().SetTestChannelElementId(elementId);
@@ -78,7 +78,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
     (void)callback;
 }
 
-void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, const int32_t action,
+void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, const int32_t action,
     const std::map<std::string, std::string> &arguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {

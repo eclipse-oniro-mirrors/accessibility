@@ -13,18 +13,19 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include "accessibility_element_info.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
-void AccessibilityElementInfo::SetComponentId(const int32_t componentId)
+void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
 {
     elementId_ = componentId;
-    HILOG_DEBUG("elementId_[%{public}d]", elementId_);
+    HILOG_DEBUG("elementId_[%{public}" PRIu64 "]", elementId_);
 }
 
-int32_t AccessibilityElementInfo::GetChildId(const int32_t index) const
+int64_t AccessibilityElementInfo::GetChildId(const int32_t index) const
 {
     HILOG_DEBUG("index[%{public}d]", index);
     if (index >= childCount_ || index < 0) {
@@ -40,29 +41,29 @@ int32_t AccessibilityElementInfo::GetChildCount() const
     return childCount_;
 }
 
-const std::vector<int32_t> &AccessibilityElementInfo::GetChildIds() const
+const std::vector<int64_t> &AccessibilityElementInfo::GetChildIds() const
 {
     HILOG_DEBUG("childCount_[%{public}d]", childCount_);
     return childNodeIds_;
 }
 
-void AccessibilityElementInfo::AddChild(const int32_t childId)
+void AccessibilityElementInfo::AddChild(const int64_t childId)
 {
-    HILOG_DEBUG("childId[%{public}d]", childId);
+    HILOG_DEBUG("childId[%{public}" PRIu64 "]", childId);
     for (int32_t i = 0; i < childCount_; i++) {
         if (childNodeIds_[i] == childId) {
-            HILOG_ERROR("childId[%{public}d] is exited", childId);
+            HILOG_ERROR("childId[%{public}" PRIu64 "] is exited", childId);
             return;
         }
     }
     childCount_++;
     childNodeIds_.push_back(childId);
-    HILOG_DEBUG("childId[%{public}d] end", childId);
+    HILOG_DEBUG("childId[%{public}" PRIu64 "] end", childId);
 }
 
-bool AccessibilityElementInfo::RemoveChild(const int32_t childId)
+bool AccessibilityElementInfo::RemoveChild(const int64_t childId)
 {
-    HILOG_DEBUG("childId[%{public}d]", childId);
+    HILOG_DEBUG("childId[%{public}" PRIu64 "]", childId);
     for (auto iter = childNodeIds_.begin(); iter != childNodeIds_.end(); iter++) {
         if (*iter == childId) {
             iter = childNodeIds_.erase(iter);
@@ -70,7 +71,7 @@ bool AccessibilityElementInfo::RemoveChild(const int32_t childId)
             return true;
         }
     }
-    HILOG_ERROR("Not find childId[%{public}d]", childId);
+    HILOG_ERROR("Not find childId[%{public}" PRIu64 "]", childId);
     return false;
 }
 
@@ -143,16 +144,16 @@ void AccessibilityElementInfo::SetWindowId(const int32_t windowId)
     HILOG_DEBUG("windowId_[%{public}d]", windowId_);
 }
 
-int32_t AccessibilityElementInfo::GetParentNodeId() const
+int64_t AccessibilityElementInfo::GetParentNodeId() const
 {
-    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
+    HILOG_DEBUG("parentId_[%{public}" PRIu64 "]", parentId_);
     return parentId_;
 }
 
-void AccessibilityElementInfo::SetParent(const int32_t parentId)
+void AccessibilityElementInfo::SetParent(const int64_t parentId)
 {
     parentId_ = parentId;
-    HILOG_DEBUG("parentId_[%{public}d]", parentId_);
+    HILOG_DEBUG("parentId_[%{public}" PRIu64 "]", parentId_);
 }
 
 const Rect &AccessibilityElementInfo::GetRectInScreen() const
@@ -599,27 +600,27 @@ const std::string &AccessibilityElementInfo::GetError() const
     return error_;
 }
 
-void AccessibilityElementInfo::SetLabeled(const int32_t componentId)
+void AccessibilityElementInfo::SetLabeled(const int64_t componentId)
 {
     labeled_ = componentId;
-    HILOG_DEBUG("labeled_[%{public}d]", labeled_);
+    HILOG_DEBUG("labeled_[%{public}" PRIu64 "]", labeled_);
 }
 
-int32_t AccessibilityElementInfo::GetLabeledAccessibilityId() const
+int64_t AccessibilityElementInfo::GetLabeledAccessibilityId() const
 {
-    HILOG_DEBUG("labeled_[%{public}d]", labeled_);
+    HILOG_DEBUG("labeled_[%{public}" PRIu64 "]", labeled_);
     return labeled_;
 }
 
-void AccessibilityElementInfo::SetAccessibilityId(const int32_t componentId)
+void AccessibilityElementInfo::SetAccessibilityId(const int64_t componentId)
 {
     elementId_ = componentId;
-    HILOG_DEBUG("elementId_[%{public}d]", elementId_);
+    HILOG_DEBUG("elementId_[%{public}" PRIu64 "]", elementId_);
 }
 
-int32_t AccessibilityElementInfo::GetAccessibilityId() const
+int64_t AccessibilityElementInfo::GetAccessibilityId() const
 {
-    HILOG_DEBUG("elementId_[%{public}d]", elementId_);
+    HILOG_DEBUG("elementId_[%{public}" PRIu64 "]", elementId_);
     return elementId_;
 }
 
