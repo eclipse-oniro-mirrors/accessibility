@@ -42,6 +42,7 @@ public:
      * @param parcel
      * @return true: Read parcel date successfully; otherwise is not
      */
+    bool ReadDataFromParcel(Parcel &parcel);
     bool ReadFromParcel(Parcel &parcel);
 
     /**

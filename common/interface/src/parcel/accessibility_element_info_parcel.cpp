@@ -28,42 +28,8 @@ AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const Accessibili
     *self = elementInfo;
 }
 
-bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
+bool AccessibilityElementInfoParcel::ReadDataFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
-
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
-    int32_t textMoveStep = STEP_CHARACTER;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textMoveStep);
-    textMoveStep_ = static_cast<TextMoveUnit>(textMoveStep);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32Vector, parcel, &childNodeIds_);
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childCount_);
-    int32_t operationsSize = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
-    for (int32_t i = 0; i < operationsSize; i++) {
-        sptr<AccessibleActionParcel> accessibleOperation = parcel.ReadStrongParcelable<AccessibleActionParcel>();
-        if (!accessibleOperation) {
-            HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
-            return false;
-        }
-        operations_.emplace_back(*accessibleOperation);
-    }
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
-    sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
-    if (!rect) {
-        return false;
-    }
-    bounds_ = *rect;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checkable_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, checked_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, focusable_);
@@ -110,6 +76,50 @@ bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, validElement_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, inspectorKey_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
+}
+
+bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
+{
+    HILOG_DEBUG();
+
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
+    int32_t textMoveStep = STEP_CHARACTER;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textMoveStep);
+    textMoveStep_ = static_cast<TextMoveUnit>(textMoveStep);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, parentId_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, text_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, hintText_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, contentDescription_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, resourceName_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32Vector, parcel, &childNodeIds_);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, childCount_);
+    int32_t operationsSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, operationsSize);
+    ContainerSecurityVerify(parcel, operationsSize, operations_.max_size());
+    for (int32_t i = 0; i < operationsSize; i++) {
+        sptr<AccessibleActionParcel> accessibleOperation = parcel.ReadStrongParcelable<AccessibleActionParcel>();
+        if (!accessibleOperation) {
+            HILOG_ERROR("ReadStrongParcelable<accessibleOperation> failed");
+            return false;
+        }
+        operations_.emplace_back(*accessibleOperation);
+    }
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, textLengthLimit_);
+    sptr<RectParcel> rect = parcel.ReadStrongParcelable<RectParcel>();
+    if (!rect) {
+        return false;
+    }
+    bounds_ = *rect;
+
+    bool result = ReadDataFromParcel(parcel);
+    if (!result) {
+        return false;
+    }
 
     return true;
 }

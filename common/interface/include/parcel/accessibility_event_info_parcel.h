@@ -45,6 +45,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
+    bool ReadDataFromParcel(Parcel &parcel);
     bool ReadFromParcel(Parcel &parcel);
 
     /**
