@@ -70,6 +70,7 @@ bool AccessibilityEventInfoParcel::ReadDataFromParcel(Parcel &parcel)
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
     SetItemCounts(itemCounts);
+    return true;
 }
 
 bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)

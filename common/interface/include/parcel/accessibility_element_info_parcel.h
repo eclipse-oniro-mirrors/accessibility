@@ -42,7 +42,6 @@ public:
      * @param parcel
      * @return true: Read parcel date successfully; otherwise is not
      */
-    bool ReadDataFromParcel(Parcel &parcel);
     bool ReadFromParcel(Parcel &parcel);
 
     /**
@@ -246,6 +245,15 @@ public:
      * @sysCap Accessibility
      */
     AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo);
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @return true: Read parcel data successfully; ohterwise is not.
+     * @since 3
+     * @sysCap Accessibility
+     */
+    bool ReadDataFromParcel(Parcel &parcel);
 
     /**
      * @brief Used for IPC communication

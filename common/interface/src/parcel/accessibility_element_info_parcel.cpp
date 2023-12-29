@@ -76,6 +76,7 @@ bool AccessibilityElementInfoParcel::ReadDataFromParcel(Parcel &parcel)
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, validElement_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, inspectorKey_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, pagePath_);
+    return true;
 }
 
 bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)

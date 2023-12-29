@@ -46,6 +46,14 @@ public:
      * @sysCap Accessibility
      */
     bool ReadDataFromParcel(Parcel &parcel);
+
+    /**
+     * @brief Used for IPC communication
+     * @param parcel
+     * @return true: Read parcel data successfully; otherwise is not.
+     * @since 3
+     * @sysCap Accessibility
+     */
     bool ReadFromParcel(Parcel &parcel);
 
     /**
