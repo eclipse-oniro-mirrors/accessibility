@@ -217,6 +217,7 @@ public:
      */
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
 
+    static int64_t lastDoubleTapTime;
 private:
     class TouchGuideListener : public AccessibilityGestureRecognizeListener {
     public:
@@ -462,6 +463,11 @@ private:
      * @param event event the touch event from Multimodal
      */
     void HandleDraggingStateInnerMove(MMI::PointerEvent &event);
+
+    /**
+     * @brief Ignore repeat execute action.
+     */
+    bool IgnoreRepeatExecuteAction();
 
     int32_t currentState_ = -1;
     int32_t longPressPointId_ = INIT_POINT_ID;
