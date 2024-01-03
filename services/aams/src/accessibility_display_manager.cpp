@@ -19,6 +19,9 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+constexpr int32_t DEFAULT_DPI = 540;
+
 AccessibilityDisplayManager::AccessibilityDisplayManager()
 {
 }
@@ -55,7 +58,12 @@ uint64_t AccessibilityDisplayManager::GetDefaultDisplayId()
 int32_t AccessibilityDisplayManager::GetDefaultDisplayDpi()
 {
     HILOG_DEBUG();
-    return Rosen::DisplayManager::GetInstance().GetDefaultDisplay()->GetDpi();
+    if (GetDefaultDisplay() == nullptr) {
+        HILOG_ERROR("default display is null");
+        return DEFAULT_DPI;
+    }
+
+    return GetDefaultDisplay()->GetDpi();
 }
 
 void AccessibilityDisplayManager::RegisterDisplayListener(

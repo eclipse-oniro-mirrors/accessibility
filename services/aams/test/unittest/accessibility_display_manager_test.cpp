@@ -153,7 +153,7 @@ HWTEST_F(
     auto dpi = Singleton<AccessibilityDisplayManager>::GetInstance().GetDefaultDisplayDpi();
     EXPECT_NE(dpi, 0);
 
-    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001 end";
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001 end.";
 }
 } // namespace Accessibility
 } // namespace OHOS
