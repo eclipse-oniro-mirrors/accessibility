@@ -27,6 +27,52 @@ AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEv
     *self = eventInfo;
 }
 
+bool AccessibilityEventInfoParcel::ReadDataFromParcel(Parcel &parcel)
+{
+    int32_t componentId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId);
+    SetSource(componentId);
+    int32_t windowId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId);
+    SetWindowId(windowId);
+    int32_t currentIndex = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex);
+    SetCurrentIndex(currentIndex);
+    int32_t beginIndex = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex);
+    SetBeginIndex(beginIndex);
+    int32_t endIndex = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex);
+    SetEndIndex(endIndex);
+    int32_t contentSize = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, contentSize);
+    std::string content;
+    ContainerSecurityVerify(parcel, contentSize, contents_.max_size());
+    for (auto i = 0 ; i < contentSize; i++) {
+        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, content);
+        AddContent(content);
+    }
+    std::string componentType;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType);
+    SetComponentType(componentType);
+    std::string description;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description);
+    SetDescription(description);
+    std::string beforeText;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, beforeText);
+    SetBeforeText(beforeText);
+    std::string latestConent;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, latestConent);
+    SetLatestContent(latestConent);
+    int32_t elementId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId);
+
+    int32_t itemCounts = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
+    SetItemCounts(itemCounts);
+    return true;
+}
+
 bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 {
     HILOG_DEBUG();
@@ -55,46 +101,11 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
     category_ = static_cast<NotificationCategory>(category);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
 
-    int32_t componentId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId);
-    SetSource(componentId);
-    int32_t windowId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId);
-    SetWindowId(windowId);
-    int32_t currentIndex = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, currentIndex);
-    SetCurrentIndex(currentIndex);
-    int32_t beginIndex = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, beginIndex);
-    SetBeginIndex(beginIndex);
-    int32_t endIndex = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, endIndex);
-    SetEndIndex(endIndex);
-    int32_t contentSize = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, contentSize);
-    std::string content;
-    for (auto i = 0 ; i < contentSize; i++) {
-        READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, content);
-        AddContent(content);
+    bool result = ReadDataFromParcel(parcel);
+    if (!result) {
+        return false;
     }
-    std::string componentType;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, componentType);
-    SetComponentType(componentType);
-    std::string description;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description);
-    SetDescription(description);
-    std::string beforeText;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, beforeText);
-    SetBeforeText(beforeText);
-    std::string latestConent;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, latestConent);
-    SetLatestContent(latestConent);
-    int32_t elementId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId);
 
-    int32_t itemCounts = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
-    SetItemCounts(itemCounts);
     return true;
 }
 
