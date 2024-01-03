@@ -17,6 +17,7 @@
 #include "accessibility_window_manager.h"
 #include "hilog_wrapper.h"
 #include "securec.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -25,6 +26,7 @@ namespace {
     constexpr int32_t POINTER_COUNT_2 = 2;
     constexpr int32_t SCREEN_AXIS_NUM = 2;
     constexpr int32_t REMOVE_POINTER_ID_1 = 1;
+    constexpr int64_t IGNORE_REPEAT_EXECUTE_INTERVAL = 300;
 } // namespace
 
 TGEventHandler::TGEventHandler(
@@ -32,6 +34,8 @@ TGEventHandler::TGEventHandler(
     : AppExecFwk::EventHandler(runner), tgServer_(tgServer)
 {
 }
+
+int64_t TouchGuider::lastDoubleTapTime = 0;
 
 TouchGuider::TouchGuider()
 {
@@ -947,9 +951,26 @@ void TouchGuider::ForceSendAndRemoveEvent(uint32_t innerEventID, MMI::PointerEve
     CancelPostEvent(innerEventID);
 }
 
+bool TouchGuider::IgnoreRepeatExecuteAction()
+{
+    HILOG_DEBUG();
+    int64_t time = Utils::GetSystemTime();
+    if (time - lastDoubleTapTime < IGNORE_REPEAT_EXECUTE_INTERVAL) {
+        HILOG_DEBUG("time interval < 300ms");
+        lastDoubleTapTime = time;
+        return true;
+    }
+
+    lastDoubleTapTime = time;
+    return false;
+}
+
 bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
 {
     HILOG_DEBUG();
+    if (IgnoreRepeatExecuteAction()) {
+        return true;
+    }
 
     int32_t elementId = -1;
     int32_t windowId = ANY_WINDOW_ID;
