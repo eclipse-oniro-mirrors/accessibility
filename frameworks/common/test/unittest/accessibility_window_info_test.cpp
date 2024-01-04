@@ -23,7 +23,7 @@ using namespace testing::ext;
 namespace OHOS {
 namespace Accessibility {
 constexpr int32_t INNER_WINDOW_ID = 2;
-constexpr int32_t UI_NODE_ID = 2;
+constexpr int64_t UI_NODE_ID = 2;
 
 class AccessibilityWindowInfoUnitTest : public ::testing::Test {
 public:

@@ -1532,7 +1532,7 @@ uint32_t AccessibleAbilityManagerServiceProxy::RegisterConfigObserver(
     return reply.ReadUint32();
 }
 
-void AccessibleAbilityManagerServiceProxy::GetRealWindowAndElementId(int32_t& windowId, int& elementId)
+void AccessibleAbilityManagerServiceProxy::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
 {
     HILOG_DEBUG();
     MessageParcel data;
@@ -1549,7 +1549,7 @@ void AccessibleAbilityManagerServiceProxy::GetRealWindowAndElementId(int32_t& wi
         return;
     }
 
-    if (!data.WriteInt32(elementId)) {
+    if (!data.WriteInt64(elementId)) {
         HILOG_ERROR("write elementId fail");
         return;
     }
@@ -1561,10 +1561,10 @@ void AccessibleAbilityManagerServiceProxy::GetRealWindowAndElementId(int32_t& wi
     }
 
     windowId = reply.ReadInt32();
-    elementId = reply.ReadInt32();
+    elementId = reply.ReadInt64();
 }
 
-void AccessibleAbilityManagerServiceProxy::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
+void AccessibleAbilityManagerServiceProxy::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
     int32_t& innerWid)
 {
     HILOG_DEBUG();
@@ -1582,7 +1582,7 @@ void AccessibleAbilityManagerServiceProxy::GetSceneBoardInnerWinId(int32_t windo
         return;
     }
 
-    if (!data.WriteInt32(elementId)) {
+    if (!data.WriteInt64(elementId)) {
         HILOG_ERROR("write elementId fail");
         return;
     }

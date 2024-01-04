@@ -39,19 +39,19 @@ size_t GetObject(T &object, const uint8_t *data, size_t size)
 class ElementOperatorForFuzzTest : public AccessibilityElementOperator {
 public:
     virtual ~ElementOperatorForFuzzTest() = default;
-    void SearchElementInfoByAccessibilityId(const int32_t elementId,
+    void SearchElementInfoByAccessibilityId(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback, const int32_t mode) override {}
 
-    void SearchElementInfosByText(const int32_t elementId, const std::string &text,
+    void SearchElementInfosByText(const int64_t elementId, const std::string &text,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) override {}
 
-    void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
         AccessibilityElementOperatorCallback &callback) override {}
 
-    void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
+    void FocusMoveSearch(const int64_t elementId, const int32_t direction, const int32_t requestId,
         AccessibilityElementOperatorCallback &callback) override {}
 
-    void ExecuteAction(const int32_t elementId, const int32_t action,
+    void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, AccessibilityElementOperatorCallback &callback) override {}
     void ClearFocus() override {}
@@ -68,8 +68,8 @@ public:
 static void CreateEventInfoFirstPart(AccessibilityEventInfo &eventInfo, const uint8_t* data, size_t size,
     size_t& position)
 {
-    int32_t componentId = 0;
-    position += GetObject<int32_t>(componentId, &data[position], size - position);
+    int64_t componentId = 0;
+    position += GetObject<int64_t>(componentId, &data[position], size - position);
     eventInfo.SetSource(componentId);
     int32_t windowId = 0;
     position += GetObject<int32_t>(windowId, &data[position], size - position);
@@ -226,8 +226,8 @@ bool SendEventFuzzTest(const uint8_t* data, size_t size)
     size_t position = 0;
     EventType eventType;
     position += GetObject<EventType>(eventType, &data[position], size - position);
-    int32_t componentId = 0;
-    position += GetObject<int32_t>(componentId, &data[position], size - position);
+    int64_t componentId = 0;
+    position += GetObject<int64_t>(componentId, &data[position], size - position);
     instance->SendEvent(eventType, componentId);
 
     AccessibilityEventInfo eventInfo;

@@ -406,7 +406,7 @@ protected:
 */
 class AccessibilityElementInfo {
 public:
-    static constexpr int32_t UNDEFINED_ACCESSIBILITY_ID = -1;
+    static constexpr int64_t UNDEFINED_ACCESSIBILITY_ID = -1;
     static constexpr int32_t MAX_SIZE = 50;
 
     /**
@@ -422,7 +422,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetComponentId(const int32_t componentId);
+    void SetComponentId(const int64_t componentId);
 
     /**
      * @brief Get the child's accessibility Id by index.
@@ -431,7 +431,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int32_t GetChildId(const int32_t index) const;
+    int64_t GetChildId(const int32_t index) const;
 
     /**
      * @brief Gets the number of children
@@ -447,7 +447,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    const std::vector<int32_t> &GetChildIds() const;
+    const std::vector<int64_t> &GetChildIds() const;
 
     /**
      * @brief Add child node information
@@ -455,7 +455,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void AddChild(const int32_t childId);
+    void AddChild(const int64_t childId);
 
     /**
      * @brief Remove child specified.
@@ -464,7 +464,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    bool RemoveChild(const int32_t childId);
+    bool RemoveChild(const int64_t childId);
 
     /**
      * @brief Gets an action list.
@@ -544,7 +544,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int32_t GetParentNodeId() const;
+    int64_t GetParentNodeId() const;
 
     /**
      * @brief Set parent node information
@@ -552,7 +552,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetParent(const int32_t parentId);
+    void SetParent(const int64_t parentId);
 
     /**
      * @brief Gets the rectangular area of this accessibility node control in the screen.
@@ -1010,7 +1010,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetLabeled(const int32_t componentId);
+    void SetLabeled(const int64_t componentId);
 
     /**
      * @brief Get labeled accessibility Id
@@ -1018,7 +1018,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int32_t GetLabeledAccessibilityId() const;
+    int64_t GetLabeledAccessibilityId() const;
 
     /**
      * @brief Set accessibility Id
@@ -1026,7 +1026,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetAccessibilityId(const int32_t componentId);
+    void SetAccessibilityId(const int64_t componentId);
 
     /**
      * @brief Get accessibility Id
@@ -1034,7 +1034,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int32_t GetAccessibilityId() const;
+    int64_t GetAccessibilityId() const;
 
     /**
      * @brief Get the object of RangeInfo
@@ -1315,8 +1315,8 @@ public:
 protected:
     int32_t pageId_ = -1;
     int32_t windowId_ = -1;
-    int32_t elementId_ = UNDEFINED_ACCESSIBILITY_ID;
-    int32_t parentId_ = UNDEFINED_ACCESSIBILITY_ID;
+    int64_t elementId_ = UNDEFINED_ACCESSIBILITY_ID;
+    int64_t parentId_ = UNDEFINED_ACCESSIBILITY_ID;
     std::string bundleName_ = "";
     std::string componentType_ = "";
     std::string text_ = "";
@@ -1325,7 +1325,7 @@ protected:
     std::string resourceName_ = "";
     std::string inspectorKey_ = "";
     std::string pagePath_ = "";
-    std::vector<int32_t> childNodeIds_;
+    std::vector<int64_t> childNodeIds_;
     int32_t childCount_ = 0;
     std::vector<AccessibleAction> operations_;
     int32_t textLengthLimit_ = -1;
@@ -1357,7 +1357,7 @@ protected:
     int32_t liveRegion_ = 0;
     bool contentInvalid_ = true;
     std::string error_ = "";
-    int32_t labeled_ = 0;
+    int64_t labeled_ = 0;
     int32_t beginSelected_ = 0;
     int32_t endSelected_ = 0;
     int32_t inputType_ = 0; // text input type added

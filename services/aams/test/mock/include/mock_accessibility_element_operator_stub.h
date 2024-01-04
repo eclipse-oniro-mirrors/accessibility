@@ -28,17 +28,17 @@ public:
 
     MOCK_METHOD4(OnRemoteRequest, int(uint32_t code, MessageParcel& data, MessageParcel& reply, MessageOption& option));
     MOCK_METHOD4(SearchElementInfoByAccessibilityId,
-        void(const int32_t elementId, const int32_t requestId,
+        void(const int64_t elementId, const int32_t requestId,
             const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode));
     MOCK_METHOD4(
-        SearchElementInfosByText, void(const int32_t elementId, const std::string& text, const int32_t requestId,
+        SearchElementInfosByText, void(const int64_t elementId, const std::string& text, const int32_t requestId,
                                       const sptr<IAccessibilityElementOperatorCallback>& callback));
-    MOCK_METHOD4(FindFocusedElementInfo, void(const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    MOCK_METHOD4(FindFocusedElementInfo, void(const int64_t elementId, const int32_t focusType, const int32_t requestId,
                                              const sptr<IAccessibilityElementOperatorCallback>& callback));
-    MOCK_METHOD4(FocusMoveSearch, void(const int32_t elementId, const int32_t direction, const int32_t requestId,
+    MOCK_METHOD4(FocusMoveSearch, void(const int64_t elementId, const int32_t direction, const int32_t requestId,
                                       const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD5(ExecuteAction,
-        void(const int32_t elementId, const int32_t action, const std::map<std::string, std::string> &actionArguments,
+        void(const int64_t elementId, const int32_t action, const std::map<std::string, std::string> &actionArguments,
             const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback));
     MOCK_METHOD0(ClearFocus, void());
     MOCK_METHOD0(OutsideTouch, void());

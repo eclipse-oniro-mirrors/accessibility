@@ -25,15 +25,15 @@ class MockAccessibilityElementOperator : public AccessibilityElementOperator {
 public:
     MockAccessibilityElementOperator() = default;
     virtual ~MockAccessibilityElementOperator() = default;
-    MOCK_METHOD4(SearchElementInfoByAccessibilityId, void(const int32_t elementId,
+    MOCK_METHOD4(SearchElementInfoByAccessibilityId, void(const int64_t elementId,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback, const int32_t mode));
-    MOCK_METHOD4(SearchElementInfosByText, void(const int32_t elementId, const std::string& text,
+    MOCK_METHOD4(SearchElementInfosByText, void(const int64_t elementId, const std::string& text,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));
-    MOCK_METHOD4(FindFocusedElementInfo, void(const int32_t elementId, const int32_t focusType,
+    MOCK_METHOD4(FindFocusedElementInfo, void(const int64_t elementId, const int32_t focusType,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));
-    MOCK_METHOD4(FocusMoveSearch, void(const int32_t elementId, const int32_t direction,
+    MOCK_METHOD4(FocusMoveSearch, void(const int64_t elementId, const int32_t direction,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));
-    MOCK_METHOD5(ExecuteAction, void(const int32_t elementId, const int32_t action,
+    MOCK_METHOD5(ExecuteAction, void(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, AccessibilityElementOperatorCallback& callback));
     MOCK_METHOD0(OutsideTouch, void());

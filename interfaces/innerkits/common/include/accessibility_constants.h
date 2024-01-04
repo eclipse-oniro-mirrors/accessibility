@@ -75,7 +75,7 @@ extern const int32_t UNDEFINED_ITEM_ID;
 extern const int32_t ROOT_ITEM_ID;
 extern const int32_t MAX_TEXT_LENGTH;
 extern const int32_t HOST_VIEW_ID;
-extern const int32_t ROOT_NODE_ID;
+extern const int64_t ROOT_NODE_ID;
 
 // Focus types
 extern const int32_t FOCUS_TYPE_INVALID;
