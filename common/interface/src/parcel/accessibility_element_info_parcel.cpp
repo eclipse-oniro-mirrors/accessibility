@@ -22,8 +22,6 @@ namespace Accessibility {
 /* AccessibilityElementInfoParcel       Parcel struct                 */
 AccessibilityElementInfoParcel::AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo)
 {
-    HILOG_DEBUG();
-
     AccessibilityElementInfo *self = this;
     *self = elementInfo;
 }
@@ -129,7 +127,6 @@ bool AccessibilityElementInfoParcel::ReadFromParcelThirdPart(Parcel &parcel)
 
 bool AccessibilityElementInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     if (!ReadFromParcelFirstPart(parcel)) {
         return false;
     }
@@ -213,7 +210,6 @@ bool AccessibilityElementInfoParcel::MarshallingSecondPart(Parcel &parcel) const
 
 bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     if (!MarshallingFirstPart(parcel)) {
         return false;
     }
@@ -225,8 +221,6 @@ bool AccessibilityElementInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
-
     sptr<AccessibilityElementInfoParcel> accessibilityInfo = new(std::nothrow) AccessibilityElementInfoParcel();
     if (!accessibilityInfo) {
         HILOG_ERROR("Failed to create accessibilityInfo.");
@@ -241,15 +235,12 @@ sptr<AccessibilityElementInfoParcel> AccessibilityElementInfoParcel::Unmarshalli
 
 AccessibleActionParcel::AccessibleActionParcel(const AccessibleAction &action)
 {
-    HILOG_DEBUG();
-
     AccessibleAction *self = this;
     *self = action;
 }
 
 bool AccessibleActionParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     int32_t type = ActionType::ACCESSIBILITY_ACTION_INVALID;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, type);
     actionType_ = static_cast<ActionType>(type);
@@ -259,7 +250,6 @@ bool AccessibleActionParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(actionType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, description_);
 
@@ -268,7 +258,6 @@ bool AccessibleActionParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<AccessibleActionParcel> accessibleOperation = new(std::nothrow) AccessibleActionParcel();
     if (!accessibleOperation) {
         HILOG_ERROR("Failed to create accessibleOperation.");
@@ -283,15 +272,12 @@ sptr<AccessibleActionParcel> AccessibleActionParcel::Unmarshalling(Parcel& parce
 
 RangeInfoParcel::RangeInfoParcel(const RangeInfo &rangeInfo)
 {
-    HILOG_DEBUG();
-
     RangeInfo *self = this;
     *self = rangeInfo;
 }
 
 bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
@@ -301,7 +287,6 @@ bool RangeInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, min_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, max_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, current_);
@@ -311,7 +296,6 @@ bool RangeInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<RangeInfoParcel> rangeInfo = new(std::nothrow) RangeInfoParcel();
     if (!rangeInfo) {
         HILOG_ERROR("Failed to create rangeInfo.");
@@ -326,15 +310,12 @@ sptr<RangeInfoParcel> RangeInfoParcel::Unmarshalling(Parcel& parcel)
 
 GridInfoParcel::GridInfoParcel(const GridInfo &gridInfo)
 {
-    HILOG_DEBUG();
-
     GridInfo *self = this;
     *self = gridInfo;
 }
 
 bool GridInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowCount_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnCount_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, selectionMode_);
@@ -344,7 +325,6 @@ bool GridInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool GridInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowCount_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnCount_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, selectionMode_);
@@ -354,7 +334,6 @@ bool GridInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<GridInfoParcel> grid = new(std::nothrow) GridInfoParcel();
     if (!grid) {
         HILOG_ERROR("Failed to create grid.");
@@ -369,15 +348,12 @@ sptr<GridInfoParcel> GridInfoParcel::Unmarshalling(Parcel& parcel)
 
 GridItemInfoParcel::GridItemInfoParcel(const GridItemInfo &itemInfo)
 {
-    HILOG_DEBUG();
-
     GridItemInfo *self = this;
     *self = itemInfo;
 }
 
 bool GridItemInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, heading_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnIndex_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowIndex_);
@@ -390,7 +366,6 @@ bool GridItemInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Bool, parcel, heading_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, columnIndex_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rowIndex_);
@@ -403,7 +378,6 @@ bool GridItemInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<GridItemInfoParcel> gridItem = new(std::nothrow) GridItemInfoParcel();
     if (!gridItem) {
         HILOG_ERROR("Failed to create gridItem.");
@@ -418,15 +392,12 @@ sptr<GridItemInfoParcel> GridItemInfoParcel::Unmarshalling(Parcel& parcel)
 
 RectParcel::RectParcel(const Rect &rect)
 {
-    HILOG_DEBUG();
-
     Rect *self = this;
     *self = rect;
 }
 
 bool RectParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopX_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopY_);
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rightBottomX_);
@@ -436,7 +407,6 @@ bool RectParcel::ReadFromParcel(Parcel &parcel)
 
 bool RectParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopX_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, leftTopY_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, rightBottomX_);
@@ -446,7 +416,6 @@ bool RectParcel::Marshalling(Parcel &parcel) const
 
 sptr<RectParcel> RectParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<RectParcel> rect = new(std::nothrow) RectParcel();
     if (!rect) {
         HILOG_ERROR("Failed to create rect.");
