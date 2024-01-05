@@ -503,7 +503,9 @@ void AccessibleAbilityClientImpl::SortElementInfosIfNecessary(std::vector<Access
         sortedElementInfos.push_back(*(iter->second));
         std::vector<int64_t> childNodeIds = iter->second->GetChildIds();
         for (auto &id : childNodeIds) {
-            elementList.push_back(id);
+            if (std::find(elementList.begin(), elementList.end(), id) == elementList.end()) {
+                elementList.push_back(id);
+            }
         }
         index++;
     }
