@@ -22,15 +22,12 @@ namespace Accessibility {
 AccessibilityGestureInjectPathParcel::AccessibilityGestureInjectPathParcel(
     const AccessibilityGestureInjectPath &gesturePath)
 {
-    HILOG_DEBUG();
     AccessibilityGestureInjectPath *self = this;
     *self = gesturePath;
 }
 
 bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
-
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     int32_t positionSize = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positionSize);
@@ -46,8 +43,6 @@ bool AccessibilityGestureInjectPathParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
-
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, durationTime_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, positions_.size());
     for (auto &position : positions_) {
@@ -60,7 +55,6 @@ bool AccessibilityGestureInjectPathParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityGestureInjectPathParcel> AccessibilityGestureInjectPathParcel::Unmarshalling(Parcel &parcel)
 {
-    HILOG_DEBUG();
     sptr<AccessibilityGestureInjectPathParcel> path = new(std::nothrow) AccessibilityGestureInjectPathParcel();
     if (!path) {
         HILOG_ERROR("Failed to create path.");

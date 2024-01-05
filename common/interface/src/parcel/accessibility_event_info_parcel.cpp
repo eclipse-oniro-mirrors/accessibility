@@ -21,10 +21,6 @@ namespace OHOS {
 namespace Accessibility {
 AccessibilityEventInfoParcel::AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo)
 {
-    HILOG_DEBUG();
-    HILOG_DEBUG("bundleName is [%{public}s]", bundleName_.c_str());
-    HILOG_DEBUG("notificationContent is [%{public}s]", notificationContent_.c_str());
-
     AccessibilityEventInfo *self = this;
     *self = eventInfo;
 }
@@ -106,7 +102,6 @@ bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
 
 bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 {
-    HILOG_DEBUG();
     if (!ReadFromParcelFirstPart(parcel)) {
         return false;
     }
@@ -118,7 +113,6 @@ bool AccessibilityEventInfoParcel::ReadFromParcel(Parcel &parcel)
 
 bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 {
-    HILOG_DEBUG();
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(eventType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint32, parcel, static_cast<uint32_t>(gestureType_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, bundleName_);
@@ -151,7 +145,6 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
 
 sptr<AccessibilityEventInfoParcel> AccessibilityEventInfoParcel::Unmarshalling(Parcel& parcel)
 {
-    HILOG_DEBUG();
     sptr<AccessibilityEventInfoParcel> accessibilityEventInfo = new(std::nothrow) AccessibilityEventInfoParcel();
     if (!accessibilityEventInfo) {
         HILOG_ERROR("Failed to create accessibilityEventInfo.");
