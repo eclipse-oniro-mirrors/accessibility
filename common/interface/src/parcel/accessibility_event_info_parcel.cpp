@@ -56,8 +56,8 @@ bool AccessibilityEventInfoParcel::ReadFromParcelFirstPart(Parcel &parcel)
 
 bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
 {
-    int64_t componentId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, componentId);
+    int32_t componentId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, componentId);
     SetSource(componentId);
     int32_t windowId = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, windowId);
@@ -91,8 +91,8 @@ bool AccessibilityEventInfoParcel::ReadFromParcelSecondPart(Parcel &parcel)
     std::string latestConent;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, latestConent);
     SetLatestContent(latestConent);
-    int64_t elementId = 0;
-    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, elementId);
+    int32_t elementId = 0;
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, elementId);
 
     int32_t itemCounts = 0;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, itemCounts);
@@ -124,7 +124,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(category_));
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, pageId_);
 
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, GetViewId());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetViewId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetWindowId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetCurrentIndex());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetBeginIndex());
@@ -138,7 +138,7 @@ bool AccessibilityEventInfoParcel::Marshalling(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetDescription());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetBeforeText());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, GetLatestContent());
-    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, GetAccessibilityId());
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetAccessibilityId());
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, GetItemCounts());
     return true;
 }

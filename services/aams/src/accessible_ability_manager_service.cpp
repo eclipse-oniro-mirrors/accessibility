@@ -312,7 +312,7 @@ uint32_t AccessibleAbilityManagerService::RegisterStateObserver(
     return accountData->GetAccessibilityState();
 }
 
-void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
 {
     HILOG_DEBUG("real windowId %{public}d", windowId);
     if (!handler_) {
@@ -328,7 +328,7 @@ void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowI
     return syncFuture.get();
 }
 
-void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
+void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
     int32_t& innerWid)
 {
     HILOG_DEBUG("real windowId %{public}d", windowId);
@@ -1293,7 +1293,7 @@ void AccessibleAbilityManagerService::ElementOperatorCallbackImpl::SetExecuteAct
     promise_.set_value();
 }
 
-bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int64_t elementId,
+bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t windowId, int32_t elementId,
     std::vector<AccessibilityElementInfo>& infos)
 {
     sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
@@ -1338,7 +1338,7 @@ void AccessibleAbilityManagerService::FindInnerWindowId(const AccessibilityEvent
 {
     HILOG_DEBUG();
     auto mapTable = Singleton<AccessibilityWindowManager>::GetInstance().sceneBoardElementIdMap_.GetAllPairs();
-    int64_t elementId = event.GetAccessibilityId();
+    int32_t elementId = event.GetAccessibilityId();
     while (1) {
         for (auto iter = mapTable.begin(); iter != mapTable.end(); iter++) {
             if (elementId == iter->second) {

@@ -21,22 +21,22 @@
 
 namespace OHOS {
 namespace Accessibility {
-void AccessibilityMemo::SetSource(const int64_t componentId)
+void AccessibilityMemo::SetSource(const int32_t componentId)
 {
-    HILOG_DEBUG("componentId[%{public}" PRIu64 "]", componentId);
+    HILOG_DEBUG("componentId[%{public}d]", componentId);
     componentId_ = componentId;
     elementId_ = componentId;
 }
 
-int64_t AccessibilityMemo::GetViewId() const
+int32_t AccessibilityMemo::GetViewId() const
 {
-    HILOG_DEBUG("componentId_[%{public}" PRIu64 "]", componentId_);
+    HILOG_DEBUG("componentId_[%{public}d]", componentId_);
     return componentId_;
 }
 
-int64_t AccessibilityMemo::GetAccessibilityId() const
+int32_t AccessibilityMemo::GetAccessibilityId() const
 {
-    HILOG_DEBUG("called] elementId_[%{public}" PRIu64 "]", elementId_);
+    HILOG_DEBUG("called] elementId_[%{public}d]", elementId_);
     return elementId_;
 }
 

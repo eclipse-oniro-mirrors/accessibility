@@ -118,8 +118,8 @@ public:
     RetError EnableUITestAbility(const sptr<IRemoteObject>& obj) override;
     RetError DisableUITestAbility() override;
     int32_t GetActiveWindow() override;
-    void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId) override;
+    void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) override;
 
 public:
     /* For inner modules */
@@ -180,7 +180,7 @@ public:
 
     // used for arkui windowId 1 map to WMS windowId
     void FindInnerWindowId(const AccessibilityEventInfo &event, int32_t& windowId);
-    bool GetParentElementRecursively(int32_t windowId, int64_t elementId,
+    bool GetParentElementRecursively(int32_t windowId, int32_t elementId,
         std::vector<AccessibilityElementInfo>& infos);
 
     // used for arkui windowId 1 map to WMS windowId
@@ -310,7 +310,7 @@ private:
 
         void OnRemoteDied(const wptr<IRemoteObject> &remote) final;
     };
-
+    
     class BundleManagerDeathRecipient final : public IRemoteObject::DeathRecipient {
     public:
         BundleManagerDeathRecipient() = default;

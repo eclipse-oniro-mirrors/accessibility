@@ -109,8 +109,8 @@ public:
     RetError GetIgnoreRepeatClickTime(uint32_t &time) override;
     void GetAllConfigs(AccessibilityConfigData &configData) override;
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
-    void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId) override;
+    void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

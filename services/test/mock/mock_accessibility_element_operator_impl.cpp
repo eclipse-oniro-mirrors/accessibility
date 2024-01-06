@@ -43,7 +43,7 @@ MockAccessibilityElementOperatorImpl::MockAccessibilityElementOperatorImpl(int32
 MockAccessibilityElementOperatorImpl::~MockAccessibilityElementOperatorImpl()
 {}
 
-void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
+void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
@@ -55,7 +55,7 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(co
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t elementId, const std::string& text,
+void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t elementId, const std::string& text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
@@ -67,7 +67,7 @@ void MockAccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::FindFocusedElementInfo(const int64_t elementId, const int32_t focusType,
+void MockAccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elementId, const int32_t focusType,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
@@ -79,7 +79,7 @@ void MockAccessibilityElementOperatorImpl::FindFocusedElementInfo(const int64_t 
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::FocusMoveSearch(const int64_t elementId, const int32_t direction,
+void MockAccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId, const int32_t direction,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     int32_t mRequestId = AddRequest(requestId, callback);
@@ -91,7 +91,7 @@ void MockAccessibilityElementOperatorImpl::FocusMoveSearch(const int64_t element
     return;
 }
 
-void MockAccessibilityElementOperatorImpl::ExecuteAction(const int64_t elementId, const int32_t action,
+void MockAccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId, const int32_t action,
     const std::map<std::string, std::string> &actionArguments, int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {

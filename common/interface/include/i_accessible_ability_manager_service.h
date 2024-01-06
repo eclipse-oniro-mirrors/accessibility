@@ -165,8 +165,8 @@ public:
     virtual RetError GetIgnoreRepeatClickState(bool& state) = 0;
     virtual RetError GetIgnoreRepeatClickTime(uint32_t& time) = 0;
     virtual void GetAllConfigs(AccessibilityConfigData& configData) = 0;
-    virtual void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) = 0;
-    virtual void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) = 0;
+    virtual void GetRealWindowAndElementId(int32_t& windowId, int& elementId) = 0;
+    virtual void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid) = 0;
 
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) = 0;
 };

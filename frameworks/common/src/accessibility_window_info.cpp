@@ -170,15 +170,15 @@ int32_t AccessibilityWindowInfo::GetInnerWid() const
     return innerWid_;
 }
 
-void AccessibilityWindowInfo::SetUiNodeId(const int64_t nodeId)
+void AccessibilityWindowInfo::SetUiNodeId(const int32_t nodeId)
 {
     uiNodeId_ = nodeId;
-    HILOG_DEBUG("uiNodeId_[%{public}" PRIu64 "]", uiNodeId_);
+    HILOG_DEBUG("uiNodeId_[%{public}d]", uiNodeId_);
 }
 
-int64_t AccessibilityWindowInfo::GetUiNodeId() const
+int32_t AccessibilityWindowInfo::GetUiNodeId() const
 {
-    HILOG_DEBUG("uiNodeId_[%{public}" PRIu64 "]", uiNodeId_);
+    HILOG_DEBUG("uiNodeId_[%{public}d]", uiNodeId_);
     return uiNodeId_;
 }
 

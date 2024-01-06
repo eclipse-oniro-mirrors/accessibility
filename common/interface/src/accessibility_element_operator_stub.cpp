@@ -70,7 +70,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfoByAccessibility
 {
     HILOG_DEBUG();
 
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
 
@@ -85,7 +85,7 @@ ErrCode AccessibilityElementOperatorStub::HandleSearchElementInfosByText(Message
 {
     HILOG_DEBUG();
 
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     std::string text = data.ReadString();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
@@ -100,7 +100,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFindFocusedElementInfo(MessagePa
 {
     HILOG_DEBUG();
 
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     int32_t focusType = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
@@ -114,7 +114,7 @@ ErrCode AccessibilityElementOperatorStub::HandleFocusFind(MessageParcel &data, M
 {
     HILOG_DEBUG();
 
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     int32_t direction = data.ReadInt32();
     int32_t requestId = data.ReadInt32();
     sptr<IRemoteObject> remote = data.ReadRemoteObject();
@@ -129,7 +129,7 @@ ErrCode AccessibilityElementOperatorStub::HandleExecuteAction(MessageParcel &dat
     HILOG_DEBUG();
     std::vector<std::string> argumentKey;
     std::vector<std::string> argumentValue;
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     int32_t action = data.ReadInt32();
     if (!data.ReadStringVector(&argumentKey)) {
         return ERR_TRANSACTION_FAILED;

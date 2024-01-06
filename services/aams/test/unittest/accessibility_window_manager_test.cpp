@@ -40,8 +40,8 @@ namespace {
     constexpr int SEND_EVENT_TIMES = 2;
     constexpr int32_t ACCOUNT_ID = 100;
     constexpr int32_t INNER_WINDOW_ID = 4;
-    constexpr int64_t INNER_ELEMENT_ID = 5;
-    constexpr int64_t INVALID_ELEMENT_ID = -1;
+    constexpr int32_t INNER_ELEMENT_ID = 5;
+    constexpr int32_t INVALID_ELEMENT_ID = -1;
 } // namespace
 
 class AccessibilityWindowManagerTest : public testing::Test {
@@ -1596,7 +1596,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     windowInfoManager.subWindows_.insert(rosen_winInfo->innerWid_);
 
     int32_t windowId = INNER_WINDOW_ID;
-    int64_t elementId = INVALID_ELEMENT_ID;
+    int32_t elementId = INVALID_ELEMENT_ID;
     windowInfoManager.GetRealWindowAndElementId(windowId, elementId);
     EXPECT_EQ(windowId, 1);
     EXPECT_EQ(elementId, INNER_ELEMENT_ID);
@@ -1632,7 +1632,7 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     windowInfoManager.subWindows_.insert(rosen_winInfo->innerWid_);
 
     int32_t windowId = 1;
-    int64_t elementId = INNER_ELEMENT_ID;
+    int32_t elementId = INNER_ELEMENT_ID;
     int32_t innerWid = 0;
     windowInfoManager.GetSceneBoardInnerWinId(windowId, elementId, innerWid);
     EXPECT_EQ(innerWid, INNER_WINDOW_ID);

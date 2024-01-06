@@ -54,7 +54,7 @@ public:
      *              PREFETCH_CHILDREN: Need to make the child node info also.
      *              otherwise: Make the node information by elementId only.
      */
-    void SearchElementInfoByAccessibilityId(const int64_t elementId, const int32_t requestId,
+    void SearchElementInfoByAccessibilityId(const int32_t elementId, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback, const int32_t mode) override;
 
     /**
@@ -64,7 +64,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param text  Filter for the child components to matched with the text
      */
-    void SearchElementInfosByText(const int64_t elementId, const std::string& text, const int32_t requestId,
+    void SearchElementInfosByText(const int32_t elementId, const std::string& text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -75,7 +75,7 @@ public:
      * @param focusType FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
      */
-    void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
+    void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -85,7 +85,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      */
-    void FocusMoveSearch(const int64_t elementId, const int32_t direction, const int32_t requestId,
+    void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 
     /**
@@ -109,7 +109,7 @@ public:
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      */
-    void ExecuteAction(const int64_t elementId, const int32_t action,
+    void ExecuteAction(const int32_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback>& callback) override;
 

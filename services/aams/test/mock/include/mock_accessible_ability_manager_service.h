@@ -94,8 +94,8 @@ public:
     MOCK_METHOD1(SetEnabledObj, bool(std::map<std::string, AppExecFwk::ElementName> it));
     MOCK_METHOD1(GetEnabledAbilities, RetError(std::vector<std::string> &enabledAbilities));
     MOCK_METHOD0(GetActiveWindow, int32_t());
-    MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t& windowId, int64_t& elementId));
-    MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int64_t elementId, int32_t& innerWid));
+    MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t& windowId, int32_t& elementId));
+    MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int32_t elementId, int32_t& innerWid));
 };
 } // namespace Accessibility
 } // namespace OHOS

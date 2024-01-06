@@ -39,7 +39,7 @@ AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
     HILOG_DEBUG();
 }
 
-void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
+void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
     HILOG_DEBUG();
@@ -52,7 +52,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const 
     }
 }
 
-void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t elementId,
+void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int32_t elementId,
     const std::string &text, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
@@ -65,7 +65,7 @@ void AccessibilityElementOperatorImpl::SearchElementInfosByText(const int64_t el
     }
 }
 
-void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int64_t elementId,
+void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int32_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
@@ -78,7 +78,7 @@ void AccessibilityElementOperatorImpl::FindFocusedElementInfo(const int64_t elem
     }
 }
 
-void AccessibilityElementOperatorImpl::FocusMoveSearch(const int64_t elementId,
+void AccessibilityElementOperatorImpl::FocusMoveSearch(const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
@@ -91,7 +91,7 @@ void AccessibilityElementOperatorImpl::FocusMoveSearch(const int64_t elementId,
     }
 }
 
-void AccessibilityElementOperatorImpl::ExecuteAction(const int64_t elementId,
+void AccessibilityElementOperatorImpl::ExecuteAction(const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string> &actionArguments,
     int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
