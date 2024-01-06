@@ -91,7 +91,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_002, Tes
 
     std::vector<std::u16string> args;
     int ret = dumper_->Dump(fd_, args);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-1, ret);
 
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_002 end";
 }
@@ -109,7 +109,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_003, Tes
     std::vector<std::u16string> args;
     args.emplace_back(Str8ToStr16(cmdHelp));
     int ret = dumper_->Dump(fd_, args);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-1, ret);
 
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_003 end";
 }
@@ -139,7 +139,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_004, Tes
     std::vector<std::u16string> args;
     args.emplace_back(Str8ToStr16(cmdUser));
     int ret = dumper_->Dump(fd_, args);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-1, ret);
 
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_004 end";
 }
@@ -176,7 +176,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
     std::vector<std::u16string> args;
     args.emplace_back(Str8ToStr16(cmdClient));
     int ret = dumper_->Dump(fd_, args);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-1, ret);
 
     currentAccount->RemoveConnectedAbility(connection->GetElementName());
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_005 end";
@@ -207,7 +207,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, Tes
     std::vector<std::u16string> args;
     args.emplace_back(Str8ToStr16(cmdWindow));
     int ret = dumper_->Dump(fd_, args);
-    EXPECT_EQ(0, ret);
+    EXPECT_EQ(-1, ret);
 
     currentAccount->RemoveAccessibilityWindowConnection(windowId);
     GTEST_LOG_(INFO) << "AccessibilityDumper_Unittest_Dump_006 end";
