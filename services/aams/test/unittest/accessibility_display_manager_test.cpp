@@ -92,6 +92,7 @@ HWTEST_F(AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unitte
     std::vector<int> infos{1};
     auto display = Singleton<AccessibilityDisplayManager>::GetInstance().GetDisplay(0);
     EXPECT_EQ(infos.size(), 1);
+    
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDisplay_001 end";
 }
 

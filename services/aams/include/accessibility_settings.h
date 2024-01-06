@@ -84,6 +84,7 @@ public:
     RetError GetCaptionState(bool &state);
 
     void UpdateCaptionProperty();
+    void UpdateAllSetting();
 
     std::shared_ptr<AppExecFwk::EventHandler> handler_ = nullptr;
 };

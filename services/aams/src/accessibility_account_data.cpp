@@ -841,8 +841,31 @@ void AccessibilityAccountData::ChangeAbility(const std::string &bundleName)
         HILOG_DEBUG("There is no installed abilities.");
         return;
     }
+    std::vector<std::string> autoStartAbilities;
+    for (auto &ability : installedAbilities_) {
+        if (ability.GetPackageName() != bundleName) {
+            continue;
+        }
+        std::string strKey = ability.GetId() + "/" + std::to_string(id_);
+        if (GetAbilityAutoStartState(strKey)) {
+            autoStartAbilities.push_back(ability.GetId());
+        }
+    }
+
     RemoveInstalledAbility(bundleName);
     AddAbility(bundleName);
+
+    for (auto &name : autoStartAbilities) {
+        auto iter = installedAbilities_.begin();
+        for (; iter != installedAbilities_.end(); ++iter) {
+            if (name == iter->GetId()) {
+                break;
+            }
+        }
+        if (iter == installedAbilities_.end()) {
+            SetAbilityAutoStartState(name, false);
+        }
+    }
 }
 
 void AccessibilityAccountData::AddUITestClient(const sptr<IRemoteObject> &obj,

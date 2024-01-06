@@ -1158,5 +1158,26 @@ void AccessibilitySettings::UpdateCaptionProperty()
         }
         }), "UpdateCaptionProperty");
 }
+
+void AccessibilitySettings::UpdateAllSetting()
+{
+    HILOG_DEBUG();
+    if (!handler_) {
+        HILOG_ERROR("UpdateAllSetting: handler is nullptr!");
+        return;
+    }
+    handler_->PostTask(std::bind([this]() -> void {
+        UpdateConfigState();
+        UpdateShortkeyTarget();
+        UpdateShortkeyMultiTarget();
+        UpdateMouseAutoClick();
+        UpdateDaltonizationColorFilter();
+        UpdateContentTimeout();
+        UpdateBrightnessDiscount();
+        UpdateAudioBalance();
+        UpdateClickResponseTime();
+        UpdateIgnoreRepeatClickTime();
+        }), "UPDATE_ALL_SETTING");
+}
 } // namespace Accessibility
 } // namespace OHOS

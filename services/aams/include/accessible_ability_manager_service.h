@@ -346,6 +346,7 @@ private:
     void UpdateSettingsInAtoHosTask();
     void UpdateSettingsInAtoHos();
     void UpdateAutoStartAbilities();
+    void UpdateAllSetting();
 
     void RemoveCallback(CallBackID callback, const sptr<DeathRecipient> &recipient, const wptr<IRemoteObject> &remote);
     void RemoveSavedConfigCallback(const wptr<IRemoteObject>& callback);
@@ -378,6 +379,7 @@ private:
     std::mutex mutex_; // current used for register state observer
     std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> defaultConfigCallbacks_;
     std::shared_ptr<AccessibilitySettings> accessibilitySettings_ = nullptr;
+    std::vector<std::string> removedAutoStartAbilities_ {};
 };
 } // namespace Accessibility
 } // namespace OHOS

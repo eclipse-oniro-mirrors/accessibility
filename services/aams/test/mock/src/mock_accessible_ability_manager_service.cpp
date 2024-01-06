@@ -239,6 +239,11 @@ RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool
     return RET_OK;
 }
 
+void AccessibleAbilityManagerService::UpdateAllSetting()
+{
+    return;
+}
+
 RetError AccessibleAbilityManagerService::SetShortKeyState(const bool state)
 {
     (void)state;

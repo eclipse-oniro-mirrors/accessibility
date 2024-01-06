@@ -781,6 +781,13 @@ RetError AccessibleAbilityManagerService::InnerEnableAbility(const std::string &
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_NULLPTR;
     }
+    auto iter = removedAutoStartAbilities_.begin();
+    for (; iter != removedAutoStartAbilities_.end(); ++iter) {
+        if (*iter == name) {
+            removedAutoStartAbilities_.erase(iter);
+            break;
+        }
+    }
     return accountData->EnableAbility(name, capabilities);
 }
 
@@ -1156,6 +1163,7 @@ void AccessibleAbilityManagerService::SwitchedUser(int32_t accountId)
         accountData->UpdateAbilities();
         UpdateAccessibilityManagerService();
     }
+    UpdateAllSetting();
     UpdateAutoStartAbilities();
 }
 
@@ -1176,6 +1184,10 @@ void AccessibleAbilityManagerService::PackageRemoved(const std::string &bundleNa
         HILOG_DEBUG("abilityId%{public}s", abilityId.c_str());
         if (bundleName != installAbility.GetPackageName()) {
             continue;
+        }
+        if (std::find(removedAutoStartAbilities_.begin(), removedAutoStartAbilities_.end(), abilityId)
+            == removedAutoStartAbilities_.end()) {
+            removedAutoStartAbilities_.push_back(abilityId);
         }
         // no use later version
         if (abilityId == name) {
@@ -1204,6 +1216,12 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
     if (!packageAccount) {
         HILOG_ERROR("packageAccount is nullptr");
         return;
+    }
+    for (auto &abilityId : removedAutoStartAbilities_) {
+        std::string strKey = abilityId + "/" + std::to_string(packageAccount->GetAccountId());
+        if (packageAccount->GetAbilityAutoStartState(strKey)) {
+            packageAccount->SetAbilityAutoStartState(abilityId, false);
+        }
     }
     packageAccount->AddAbility(bundleName);
 }
@@ -1445,6 +1463,12 @@ void AccessibleAbilityManagerService::UpdateAutoStartAbilities()
             HILOG_ERROR("Account data is null");
             return;
         }
+        for (auto &abilityId : removedAutoStartAbilities_) {
+            std::string strKey = abilityId + "/" + std::to_string(accountData->GetAccountId());
+            if (accountData->GetAbilityAutoStartState(strKey)) {
+                accountData->SetAbilityAutoStartState(abilityId, false);
+            }
+        }
         accountData->UpdateAutoStartEnabledAbilities();
         accountData->UpdateAbilities();
         }), "UPDATE_AUTO_START_ABILITIES");
@@ -1523,6 +1547,11 @@ void AccessibleAbilityManagerService::UpdateInputFilter()
     }
     inputInterceptor_->SetAvailableFunctions(flag);
     Utils::RecordStartingA11yEvent(flag);
+}
+
+void AccessibleAbilityManagerService::UpdateAllSetting()
+{
+    accessibilitySettings_->UpdateAllSetting();
 }
 
 RetError AccessibleAbilityManagerService::SetScreenMagnificationState(const bool state)
