@@ -30,10 +30,10 @@ namespace {
     const std::string TEST = "test";
     constexpr int32_t CHANNEL_ID = 1;
     constexpr int32_t SEQUENCE = 1;
-    constexpr int64_t INVALID_CHILD_ID = -1;
+    constexpr int32_t INVALID_CHILD_ID = -1;
     constexpr int INVALID_ID = -1;
     constexpr int32_t WINDOW_ID = 2;
-    constexpr int64_t ELEMENT_ID = 1;
+    constexpr int32_t ELEMENT_ID = 1;
 } // namespace
 
 class AccessibleAbilityClientImplTest : public ::testing::Test {

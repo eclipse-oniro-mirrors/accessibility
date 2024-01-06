@@ -100,7 +100,7 @@ public:
      * @param componentId Indicates the ID of the component to be associated with the event.
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
-    virtual RetError SendEvent(const EventType eventType, const int64_t componentId) = 0;
+    virtual RetError SendEvent(const EventType eventType, const int32_t componentId) = 0;
 
     /**
      * @brief Sends information about an accessibility event.

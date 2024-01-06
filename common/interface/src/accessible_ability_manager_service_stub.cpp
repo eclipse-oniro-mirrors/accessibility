@@ -1262,13 +1262,13 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetWindowAndElementId(Message
 {
     HILOG_DEBUG();
     int32_t windowId = data.ReadInt32();
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     GetRealWindowAndElementId(windowId, elementId);
     if (!reply.WriteInt32(windowId)) {
         HILOG_ERROR("write windowId fail");
     }
     
-    if (!reply.WriteInt64(elementId)) {
+    if (!reply.WriteInt32(elementId)) {
         HILOG_ERROR("write elementId fail");
     }
 
@@ -1280,7 +1280,7 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId(Messa
 {
     HILOG_DEBUG();
     int32_t windowId = data.ReadInt32();
-    int64_t elementId = data.ReadInt64();
+    int32_t elementId = data.ReadInt32();
     int32_t innerWid = -1;
     GetSceneBoardInnerWinId(windowId, elementId, innerWid);
     if (!reply.WriteInt32(innerWid)) {

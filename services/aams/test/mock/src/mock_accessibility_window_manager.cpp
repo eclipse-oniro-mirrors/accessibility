@@ -149,21 +149,21 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
 {
 }
 
-int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int64_t elementId)
+int32_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int32_t elementId)
 {
     return elementId;
 }
 
-void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
 {
 }
 
-void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
+void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
     int32_t& innerWid)
 {
 }
 
-void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
+void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int32_t elementId)
 {
 }
 
@@ -175,9 +175,9 @@ void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
 {
 }
 
-std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
+std::map<int32_t, int32_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
 {
-    return std::map<int32_t, int64_t>();
+    return std::map<int32_t, int32_t>();
 }
 } // namespace Accessibility
 } // namespace OHOS

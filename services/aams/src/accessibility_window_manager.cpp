@@ -576,7 +576,7 @@ void AccessibilityWindowManager::ClearAccessibilityFocused()
     Singleton<AccessibleAbilityManagerService>::GetInstance().SendEvent(eventInfo);
 }
 
-int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int64_t elementId)
+int32_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowId, const int32_t elementId)
 {
     if (elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         return elementId;
@@ -584,19 +584,19 @@ int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     if (subWindows_.count(windowId)) {
         auto iter = a11yWindows_.find(windowId);
         if (iter != a11yWindows_.end()) {
-            HILOG_DEBUG("GetSceneBoardElementId [%{public}" PRIu64 "]", iter->second.GetUiNodeId());
+            HILOG_DEBUG("GetSceneBoardElementId [%{public}d]", iter->second.GetUiNodeId());
             return iter->second.GetUiNodeId();
         }
     }
     return elementId;
 }
 
-void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
 {
     // sceneboard window id, element id is not equal -1
     if (subWindows_.count(windowId) && elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         windowId = SCENE_BOARD_WINDOW_ID;
-        HILOG_INFO("windowId %{public}d, elementId %{public}" PRIu64 "", windowId, elementId);
+        HILOG_INFO("windowId %{public}d, elementId %{public}d", windowId, elementId);
         return;
     }
 
@@ -607,7 +607,7 @@ void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, in
     if (subWindows_.count(windowId)) {
         auto iter = a11yWindows_.find(windowId);
         if (iter != a11yWindows_.end()) {
-            HILOG_DEBUG("GetRealWindowAndElementId [%{public}" PRIu64 "]", iter->second.GetUiNodeId());
+            HILOG_DEBUG("GetRealWindowAndElementId [%{public}d]", iter->second.GetUiNodeId());
             windowId = SCENE_BOARD_WINDOW_ID;
             elementId = iter->second.GetUiNodeId();
             return;
@@ -615,7 +615,7 @@ void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, in
     }
 }
 
-void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId,
+void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId,
     int32_t& innerWid)
 {
     if (windowId != SCENE_BOARD_WINDOW_ID) {
@@ -631,7 +631,7 @@ void AccessibilityWindowManager::GetSceneBoardInnerWinId(int32_t windowId, int64
     return;
 }
 
-void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int64_t elementId)
+void AccessibilityWindowManager::SceneBoardElementIdMap::InsertPair(const int32_t windowId, const int32_t elementId)
 {
     std::lock_guard<std::mutex> lock(mapMutex_);
     windowElementMap_[windowId] = elementId;
@@ -649,7 +649,7 @@ void AccessibilityWindowManager::SceneBoardElementIdMap::Clear()
     windowElementMap_.clear();
 }
 
-std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
+std::map<int32_t, int32_t> AccessibilityWindowManager::SceneBoardElementIdMap::GetAllPairs()
 {
     std::lock_guard<std::mutex> lock(mapMutex_);
     return windowElementMap_;

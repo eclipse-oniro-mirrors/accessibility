@@ -217,14 +217,14 @@ public:
      * @param nodeId Arkui node id
      * @sysCap Accessibility
      */
-    void SetUiNodeId(const int64_t nodeId);
+    void SetUiNodeId(const int32_t nodeId);
 
     /**
      * @brief Get arkui node id
      * @return Arkui node id
      * @sysCap Accessibility
      */
-    int64_t GetUiNodeId() const;
+    int32_t GetUiNodeId() const;
 
 protected:
     uint64_t displayId_ = 0;
@@ -239,7 +239,7 @@ protected:
     Rect boundsInScreen_ {};
     bool isDecorEnable_ = false;
     int32_t innerWid_ = 0; // used for window id 1, scene board
-    int64_t uiNodeId_ = 0; // used for window id 1, scene board
+    int32_t uiNodeId_ = 0; // used for window id 1, scene board
 };
 } // namespace Accessibility
 } // namespace OHOS

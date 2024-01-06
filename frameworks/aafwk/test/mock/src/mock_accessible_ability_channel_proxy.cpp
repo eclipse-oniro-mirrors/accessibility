@@ -42,7 +42,7 @@ bool AccessibleAbilityChannelProxy::SendTransactCmd(
 }
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
-    const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
+    const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback,
     const int32_t mode)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfoByAccessibilityId";
@@ -55,7 +55,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
 }
 
 RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t accessibilityWindowId,
-    const int64_t elementId, const std::string& text, const int32_t requestId,
+    const int32_t elementId, const std::string& text, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy SearchElementInfosByText";
@@ -68,7 +68,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
 }
 
 RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t accessibilityWindowId,
-    const int64_t elementId, const int32_t focusType, const int32_t requestId,
+    const int32_t elementId, const int32_t focusType, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy FindFocusedElementInfo";
@@ -80,7 +80,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
+RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback>& callback)
 {
     GTEST_LOG_(INFO) << "MOCK AccessibleAbilityChannelProxy FocusMoveSearch";
@@ -92,7 +92,7 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
     return RET_OK;
 }
 
-RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId,
+RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId,
     const int32_t action, const std::map<std::string, std::string>& actionArguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback>& callback)
 {

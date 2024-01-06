@@ -972,7 +972,7 @@ bool TouchGuider::ExecuteActionOnAccessibilityFocused(const ActionType &action)
         return true;
     }
 
-    int64_t elementId = -1;
+    int32_t elementId = -1;
     int32_t windowId = ANY_WINDOW_ID;
     int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);

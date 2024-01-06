@@ -71,7 +71,7 @@ const int32_t UNDEFINED_ITEM_ID = 0x1FFFFFF;
 const int32_t ROOT_ITEM_ID = -1;
 const int32_t MAX_TEXT_LENGTH = 500;
 const int32_t HOST_VIEW_ID = -1;
-const int64_t ROOT_NODE_ID = -1;
+const int32_t ROOT_NODE_ID = -1;
 
 // Focus types
 const int32_t FOCUS_TYPE_INVALID = -1;

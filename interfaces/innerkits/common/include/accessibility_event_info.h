@@ -42,7 +42,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    void SetSource(const int64_t componentId);
+    void SetSource(const int32_t componentId);
 
     /**
      * @brief Gets the view(component) ID associated with the accessibility event.
@@ -50,7 +50,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int64_t GetViewId() const;
+    int32_t GetViewId() const;
 
     /**
      * @brief Gets the accessibility ID of the component.
@@ -58,7 +58,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    int64_t GetAccessibilityId() const;
+    int32_t GetAccessibilityId() const;
 
     /**
      * @brief Set the window ID associated with the accessibility event.
@@ -222,7 +222,7 @@ public:
     void SetDescription(const std::string &contentDescription);
 
 protected:
-    int64_t componentId_ = 0;
+    int32_t componentId_ = 0;
     int32_t windowId_ = 0;
     int32_t currentIndex_ = 0;
     int32_t beginIndex_ = 0;
@@ -232,7 +232,7 @@ protected:
     std::string description_ = "";
     std::string beforeText_ = "";
     std::string latestContent_ = "";
-    int64_t elementId_ = 0;
+    int32_t elementId_ = 0;
     int32_t itemCounts_ = 0;
 };
 

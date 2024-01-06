@@ -13,18 +13,17 @@
  * limitations under the License.
  */
 
-#include <cinttypes>
 #include "accessibility_element_info.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
 namespace Accessibility {
-void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
+void AccessibilityElementInfo::SetComponentId(const int32_t componentId)
 {
     elementId_ = componentId;
 }
 
-int64_t AccessibilityElementInfo::GetChildId(const int32_t index) const
+int32_t AccessibilityElementInfo::GetChildId(const int32_t index) const
 {
     if (index >= childCount_ || index < 0) {
         HILOG_ERROR("index[%{public}d] is invalid", index);
@@ -38,16 +37,16 @@ int32_t AccessibilityElementInfo::GetChildCount() const
     return childCount_;
 }
 
-const std::vector<int64_t> &AccessibilityElementInfo::GetChildIds() const
+const std::vector<int32_t> &AccessibilityElementInfo::GetChildIds() const
 {
     return childNodeIds_;
 }
 
-void AccessibilityElementInfo::AddChild(const int64_t childId)
+void AccessibilityElementInfo::AddChild(const int32_t childId)
 {
     for (int32_t i = 0; i < childCount_; i++) {
         if (childNodeIds_[i] == childId) {
-            HILOG_ERROR("childId[%{public}" PRIu64 "] is exited", childId);
+            HILOG_ERROR("childId[%{public}d] is exited", childId);
             return;
         }
     }
@@ -55,7 +54,7 @@ void AccessibilityElementInfo::AddChild(const int64_t childId)
     childNodeIds_.push_back(childId);
 }
 
-bool AccessibilityElementInfo::RemoveChild(const int64_t childId)
+bool AccessibilityElementInfo::RemoveChild(const int32_t childId)
 {
     for (auto iter = childNodeIds_.begin(); iter != childNodeIds_.end(); iter++) {
         if (*iter == childId) {
@@ -64,7 +63,7 @@ bool AccessibilityElementInfo::RemoveChild(const int64_t childId)
             return true;
         }
     }
-    HILOG_ERROR("Not find childId[%{public}" PRIu64 "]", childId);
+    HILOG_ERROR("Not find childId[%{public}d]", childId);
     return false;
 }
 
@@ -126,12 +125,12 @@ void AccessibilityElementInfo::SetWindowId(const int32_t windowId)
     windowId_ = windowId;
 }
 
-int64_t AccessibilityElementInfo::GetParentNodeId() const
+int32_t AccessibilityElementInfo::GetParentNodeId() const
 {
     return parentId_;
 }
 
-void AccessibilityElementInfo::SetParent(const int64_t parentId)
+void AccessibilityElementInfo::SetParent(const int32_t parentId)
 {
     parentId_ = parentId;
 }
@@ -506,22 +505,22 @@ const std::string &AccessibilityElementInfo::GetError() const
     return error_;
 }
 
-void AccessibilityElementInfo::SetLabeled(const int64_t componentId)
+void AccessibilityElementInfo::SetLabeled(const int32_t componentId)
 {
     labeled_ = componentId;
 }
 
-int64_t AccessibilityElementInfo::GetLabeledAccessibilityId() const
+int32_t AccessibilityElementInfo::GetLabeledAccessibilityId() const
 {
     return labeled_;
 }
 
-void AccessibilityElementInfo::SetAccessibilityId(const int64_t componentId)
+void AccessibilityElementInfo::SetAccessibilityId(const int32_t componentId)
 {
     elementId_ = componentId;
 }
 
-int64_t AccessibilityElementInfo::GetAccessibilityId() const
+int32_t AccessibilityElementInfo::GetAccessibilityId() const
 {
     return elementId_;
 }

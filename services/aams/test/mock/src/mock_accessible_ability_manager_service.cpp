@@ -530,11 +530,11 @@ void AccessibleAbilityManagerService::PackageAdd(const std::string &bundleName)
     AccessibilityAbilityHelper::GetInstance().AddPackage(bundleName);
 }
 
-void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId)
+void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId)
 {
 }
 
-void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid)
+void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid)
 {
 }
 } // namespace Accessibility

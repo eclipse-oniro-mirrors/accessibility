@@ -59,7 +59,7 @@ public:
      * @param elementInfo[out] The components information matched conditions searched.
      * @return Return RET_OK if finds focus element info successfully, otherwise refer to the RetError for the failure.
      */
-    RetError FindFocusedElementInfo(int32_t accessibilityWindowId, int64_t elementId,
+    RetError FindFocusedElementInfo(int32_t accessibilityWindowId, int32_t elementId,
         int32_t focusType, AccessibilityElementInfo &elementInfo);
 
     /**
@@ -92,7 +92,7 @@ public:
      * @return RET_OK: execute action successfully; otherwise refer to the RetError for the failure.
      */
     RetError ExecuteAction(int32_t accessibilityWindowId,
-        int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
+        int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments);
 
     /**
      * @brief Find the node information by accessibility ID.
@@ -105,7 +105,7 @@ public:
      * @param elementInfos[out] The components information matched conditions searched.
      * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
-    RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int64_t elementId,
+    RetError SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId, int32_t elementId,
         int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos);
 
     /**
@@ -139,7 +139,7 @@ public:
      * @param elementInfos[out] The components information matched conditions searched.
      * @return Return RET_OK if search element info successfully, otherwise refer to the RetError for the failure.
      */
-    RetError SearchElementInfosByText(int32_t accessibilityWindowId, int64_t elementId,
+    RetError SearchElementInfosByText(int32_t accessibilityWindowId, int32_t elementId,
         const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos);
 
     /**
@@ -152,7 +152,7 @@ public:
      * @return Return RET_OK if find element info successfully, otherwise refer to the RetError for the failure.
      */
     RetError FocusMoveSearch(int32_t accessibilityWindowId,
-        int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo);
+        int32_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Set target bundle names.

@@ -27,7 +27,7 @@ namespace Accessibility {
 namespace {
     constexpr int32_t WINDOW_ID = 1;
     constexpr int32_t REQUEST_ID = 1;
-    constexpr int64_t COMPONENT_ID = 1;
+    constexpr int32_t COMPONENT_ID = 1;
     constexpr uint32_t WINDOW_ID_MASK = 16;
 } // namespace
 

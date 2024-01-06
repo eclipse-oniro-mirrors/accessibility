@@ -50,7 +50,7 @@ bool AccessibilityElementOperatorProxy::SendTransactCmd(AccessibilityInterfaceCo
     return true;
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int64_t elementId,
+void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const int32_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
     HILOG_DEBUG();
@@ -63,7 +63,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
         return;
     }
 
-    if (!data.WriteInt64(elementId)) {
+    if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("connection write parcelable element id failed");
         return;
     }
@@ -94,7 +94,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfoByAccessibilityId(const
     }
 }
 
-void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t elementId,
+void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int32_t elementId,
     const std::string &text,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
@@ -108,7 +108,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t e
         return;
     }
 
-    if (!data.WriteInt64(elementId)) {
+    if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("connection write parcelable elementId failed");
         return;
     }
@@ -137,7 +137,7 @@ void AccessibilityElementOperatorProxy::SearchElementInfosByText(const int64_t e
     }
 }
 
-void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t elementId,
+void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int32_t elementId,
     const int32_t focusType, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
@@ -150,7 +150,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t ele
         return;
     }
 
-    if (!data.WriteInt64(elementId)) {
+    if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("connection write elementId failed");
         return;
     }
@@ -180,7 +180,7 @@ void AccessibilityElementOperatorProxy::FindFocusedElementInfo(const int64_t ele
     }
 }
 
-void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
+void AccessibilityElementOperatorProxy::FocusMoveSearch(const int32_t elementId,
     const int32_t direction, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
     HILOG_DEBUG();
@@ -193,7 +193,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
         return;
     }
 
-    if (!data.WriteInt64(elementId)) {
+    if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("fail, connection write elementId error");
         return;
     }
@@ -223,7 +223,7 @@ void AccessibilityElementOperatorProxy::FocusMoveSearch(const int64_t elementId,
     }
 }
 
-void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, const int32_t action,
+void AccessibilityElementOperatorProxy::ExecuteAction(const int32_t elementId, const int32_t action,
     const std::map<std::string, std::string> &arguments, const int32_t requestId,
     const sptr<IAccessibilityElementOperatorCallback> &callback)
 {
@@ -237,7 +237,7 @@ void AccessibilityElementOperatorProxy::ExecuteAction(const int64_t elementId, c
         return;
     }
 
-    if (!data.WriteInt64(elementId)) {
+    if (!data.WriteInt32(elementId)) {
         HILOG_ERROR("connection write element id failed");
         return;
     }

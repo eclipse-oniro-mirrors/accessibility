@@ -29,7 +29,7 @@ namespace OHOS {
 namespace Accessibility {
 
 constexpr int32_t SCENE_BOARD_WINDOW_ID = 1; // default scene board window id 1
-constexpr int64_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board element id -1
+constexpr int32_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board element id -1
 
 class AccessibilityWindowManager {
     DECLARE_SINGLETON(AccessibilityWindowManager)
@@ -50,13 +50,13 @@ public:
     void ClearAccessibilityFocused();
 
     // used for window id 1, scene board
-    int64_t GetSceneBoardElementId(const int32_t windowId, const int64_t elementId);
+    int32_t GetSceneBoardElementId(const int32_t windowId, const int32_t elementId);
     int32_t GetRealWindowId(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     bool IsSceneBoard(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
 
     // used for batch query, provide window and element id translation
-    void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId);
-    void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid);
+    void GetRealWindowAndElementId(int32_t& windowId, int32_t& elementId);
+    void GetSceneBoardInnerWinId(int32_t windowId, int32_t elementId, int32_t& innerWid);
 
     // test for ut to resize a window
     void SetWindowSize(int32_t windowId, Rect rect);
@@ -73,12 +73,12 @@ public:
     public:
         SceneBoardElementIdMap() = default;
         ~SceneBoardElementIdMap() = default;
-        void InsertPair(const int32_t windowId, const int64_t elementId);
+        void InsertPair(const int32_t windowId, const int32_t elementId);
         void RemovePair(const int32_t windowId);
-        std::map<int32_t, int64_t> GetAllPairs();
+        std::map<int32_t, int32_t> GetAllPairs();
         void Clear();
     private:
-        std::map<int32_t, int64_t> windowElementMap_;
+        std::map<int32_t, int32_t> windowElementMap_;
         std::mutex mapMutex_;
     };
     SceneBoardElementIdMap sceneBoardElementIdMap_ = {};

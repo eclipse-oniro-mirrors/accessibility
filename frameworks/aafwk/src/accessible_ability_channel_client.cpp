@@ -52,7 +52,7 @@ void AccessibleAbilityChannelClient::SetOnKeyPressEventResult(const bool handled
 }
 
 RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo)
+    int32_t elementId, int32_t focusType, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "FindFocusedElement");
@@ -84,7 +84,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
         HILOG_ERROR("FindFocusedElementInfo failed. ret[%{public}d]", ret);
         return ret;
     }
-    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}" PRIu64 ", focusType:%{public}d",
+    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}d, focusType:%{public}d",
         channelId_, windowId, elementId, focusType);
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
@@ -117,7 +117,7 @@ RetError AccessibleAbilityChannelClient::SendSimulateGesture(
 }
 
 RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
+    int32_t elementId, int32_t action, const std::map<std::string, std::string> &actionArguments)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "ExecuteAction");
@@ -168,7 +168,7 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
+    int32_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, accessibilityWindowId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
@@ -248,7 +248,7 @@ RetError AccessibleAbilityChannelClient::GetWindows(const uint64_t displayId,
 }
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t accessibilityWindowId,
-    int64_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
+    int32_t elementId, const std::string &text, std::vector<AccessibilityElementInfo> &elementInfos)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementByText");
@@ -292,7 +292,7 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByText(int32_t access
 }
 
 RetError AccessibleAbilityChannelClient::FocusMoveSearch(int32_t accessibilityWindowId,
-    int64_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo)
+    int32_t elementId, int32_t direction, AccessibilityElementInfo &elementInfo)
 {
     HILOG_DEBUG("[channelId:%{public}d]", channelId_);
     if (!proxy_) {
