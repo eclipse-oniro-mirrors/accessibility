@@ -48,7 +48,7 @@ public:
      * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError SearchElementInfoByAccessibilityId(const int32_t accessibilityWindowId,
-        const int32_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
+        const int64_t elementId, const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback,
         const int32_t mode) override;
 
     /**
@@ -61,7 +61,7 @@ public:
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError SearchElementInfosByText(const int32_t accessibilityWindowId, const int64_t elementId,
         const std::string &text, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -76,7 +76,7 @@ public:
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return RET_OK if find elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError FindFocusedElementInfo(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -89,7 +89,7 @@ public:
      * @param callback  To transfer the element info to ASAC and it defined by ASAC.
      * @return Return RET_OK if search elementInfo successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int32_t elementId,
+    virtual RetError FocusMoveSearch(const int32_t accessibilityWindowId, const int64_t elementId,
         const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 
@@ -103,7 +103,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @return Return RET_OK if perform action successfully, otherwise refer to the RetError for the failure.
      */
-    virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int32_t elementId, const int32_t action,
+    virtual RetError ExecuteAction(const int32_t accessibilityWindowId, const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
 

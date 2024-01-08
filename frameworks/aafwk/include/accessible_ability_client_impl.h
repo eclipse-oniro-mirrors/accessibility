@@ -30,7 +30,7 @@ namespace Accessibility {
 
 constexpr int32_t SCENE_BOARD_WINDOW_ID = 1; // default scene board window id 1
 constexpr int32_t INVALID_SCENE_BOARD_INNER_WINDOW_ID = -1; // invalid scene board window id -1
-constexpr int32_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board element id -1
+constexpr int64_t INVALID_SCENE_BOARD_ELEMENT_ID = -1; // invalid scene board element id -1
 constexpr int32_t MAX_CACHE_WINDOW_SIZE = 5;
 
 class AccessibleAbilityClientImpl : public AccessibleAbilityClient, public AccessibleAbilityClientStub {
@@ -301,15 +301,15 @@ public:
      */
     void SetConnectionState(bool state);
 
-    void AddWindowElementMapByWMS(int32_t windowId, int32_t elementId);
-    void AddWindowElementMapByAce(int32_t windowId, int32_t elementId);
-    RetError GetElementInfoFromCache(int32_t windowId, int32_t elementId,
+    void AddWindowElementMapByWMS(int32_t windowId, int64_t elementId);
+    void AddWindowElementMapByAce(int32_t windowId, int64_t elementId);
+    RetError GetElementInfoFromCache(int32_t windowId, int64_t elementId,
         std::vector<AccessibilityElementInfo> &elementInfos);
-    RetError SearchElementInfoRecursive(int32_t windowId, int32_t elementId, int mode,
+    RetError SearchElementInfoRecursive(int32_t windowId, int64_t elementId, int mode,
         std::vector<AccessibilityElementInfo> &elementInfos);
     void RemoveCacheData(const AccessibilityEventInfo &eventInfo);
-    void AddCacheByWMS(int32_t windowId, int32_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
-    void AddCacheByAce(int32_t windowId, int32_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
+    void AddCacheByWMS(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
+    void AddCacheByAce(int32_t windowId, int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos);
     void SortElementInfosIfNecessary(std::vector<AccessibilityElementInfo> &elementInfos);
 
 private:
@@ -318,9 +318,9 @@ private:
         ElementCacheInfo() = default;
         ~ElementCacheInfo() = default;
         void RemoveElementByWindowId(const int32_t windowId);
-        bool GetElementByWindowId(const int32_t windowId, const int32_t elementId,
+        bool GetElementByWindowId(const int32_t windowId, const int64_t elementId,
             std::vector<AccessibilityElementInfo>& elementInfos);
-        bool GetElementByWindowIdBFS(const int32_t elementId, std::vector<AccessibilityElementInfo>& elementInfos,
+        bool GetElementByWindowIdBFS(const int64_t elementId, std::vector<AccessibilityElementInfo>& elementInfos,
             std::map<int32_t, std::shared_ptr<AccessibilityElementInfo>>& cache);
         void AddElementCache(int32_t windowId, const std::vector<AccessibilityElementInfo>& elementInfos);
         bool IsExistWindowId(int32_t windowId);
@@ -335,13 +335,13 @@ private:
         SceneBoardWindowElementMap() = default;
         ~SceneBoardWindowElementMap() = default;
         bool IsExistWindowId(int32_t windowId);
-        void AddWindowElementIdPair(int32_t windowId, int32_t elementId);
+        void AddWindowElementIdPair(int32_t windowId, int64_t elementId);
         std::vector<int32_t> GetWindowIdList();
-        int32_t GetWindowIdByElementId(int32_t elementId);
+        int32_t GetWindowIdByElementId(int64_t elementId);
         void RemovePairByWindowIdList(std::vector<int32_t>& windowIdList);
         void RemovePairByWindowId(int32_t windowId);
     private:
-        std::map<int32_t, int32_t> windowElementMap_;
+        std::map<int32_t, int64_t> windowElementMap_;
         std::mutex mapMutex_;
     };
 
@@ -368,10 +368,10 @@ private:
     };
 
     bool GetCacheElementInfo(const int32_t windowId,
-        const int32_t elementId, AccessibilityElementInfo &elementInfo) const;
+        const int64_t elementId, AccessibilityElementInfo &elementInfo) const;
     void SetCacheElementInfo(const int32_t windowId,
         const std::vector<OHOS::Accessibility::AccessibilityElementInfo> &elementInfos);
-    RetError SearchElementInfoFromAce(const int32_t windowId, const int32_t elementId,
+    RetError SearchElementInfoFromAce(const int32_t windowId, const int64_t elementId,
         const uint32_t mode, AccessibilityElementInfo &info);
     bool InitAccessibilityServiceProxy();
     static void OnParameterChanged(const char *key, const char *value, void *context);

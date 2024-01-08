@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include "accessibility_system_ability_client_impl.h"
 #include "hilog_wrapper.h"
 #include "if_system_ability_manager.h"
@@ -306,9 +307,9 @@ bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
     }
 }
 
-RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int32_t componentId)
+RetError AccessibilitySystemAbilityClientImpl::SendEvent(const EventType eventType, const int64_t componentId)
 {
-    HILOG_DEBUG("componentId[%{public}d], eventType[%{public}d]", componentId, eventType);
+    HILOG_DEBUG("componentId[%{public}" PRIu64 "], eventType[%{public}d]", componentId, eventType);
     std::lock_guard<std::mutex> lock(mutex_);
     if (!CheckEventType(eventType)) {
         return RET_ERR_INVALID_PARAM;

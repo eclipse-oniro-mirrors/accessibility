@@ -44,7 +44,7 @@ public:
      *              otherwise: Make the node information by elementId only.
      * @sysCap Accessibility
      */
-    virtual void SearchElementInfoByAccessibilityId(const int32_t elementId,
+    virtual void SearchElementInfoByAccessibilityId(const int64_t elementId,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode) = 0;
 
     /**
@@ -54,7 +54,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param text  Filter for the child components to matched with the text
      */
-    virtual void SearchElementInfosByText(const int32_t elementId, const std::string &text,
+    virtual void SearchElementInfosByText(const int64_t elementId, const std::string &text,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
@@ -65,7 +65,7 @@ public:
      * @param focusType FOCUS_TYPE_ACCESSIBILITY: accessibility focus
      *                  FOCUS_TYPE_INPUT: text input focus
      */
-    virtual void FindFocusedElementInfo(const int32_t elementId, const int32_t focusType, const int32_t requestId,
+    virtual void FindFocusedElementInfo(const int64_t elementId, const int32_t focusType, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
@@ -75,7 +75,7 @@ public:
      * @param callback  To transfer the node info to ASAC and it defined by ASAC.
      * @param direction Refer to AccessibilityElementInfo.FocusMoveDirection(UP/DOWN/LEFT/RIGHT/FORWARD/BACKWARD)
      */
-    virtual void FocusMoveSearch(const int32_t elementId, const int32_t direction, const int32_t requestId,
+    virtual void FocusMoveSearch(const int64_t elementId, const int32_t direction, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 
     /**
@@ -99,7 +99,7 @@ public:
      *      action: ACCESSIBILITY_ACTION_SET_TEXT,
      *                  actionArguments(ACTION_ARGU_SET_TEXT,"the text of setted")
      */
-    virtual void ExecuteAction(const int32_t elementId, const int32_t action,
+    virtual void ExecuteAction(const int64_t elementId, const int32_t action,
         const std::map<std::string, std::string> &actionArguments,
         const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback) = 0;
 

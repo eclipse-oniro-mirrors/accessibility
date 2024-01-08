@@ -461,7 +461,7 @@ void NAccessibilityElement::GetElementInfoComponentId(NAccessibilityElementData 
     if (!CheckElementInfoParameter(callbackInfo, value)) {
         return;
     }
-    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int32(callbackInfo->env_,
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_int64(callbackInfo->env_,
         callbackInfo->accessibilityElement_.elementInfo_->GetAccessibilityId(), &value));
 }
 
