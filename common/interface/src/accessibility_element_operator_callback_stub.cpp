@@ -21,6 +21,10 @@
 
 namespace OHOS {
 namespace Accessibility {
+
+constexpr int32_t SINGLE_TRANSMIT = -2;
+constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
+
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
     memberFuncMap_[static_cast<uint32_t>(
@@ -37,6 +41,8 @@ AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackSt
         AccessibilityInterfaceCode::SET_RESULT_PERFORM_ACTION)] =
         &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
 }
+
+std::vector<AccessibilityElementInfo> AccessibilityElementOperatorCallbackStub::storeData = {};
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
@@ -71,21 +77,34 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
-    std::vector<AccessibilityElementInfo> infos {};
+    int32_t flag = data.ReadInt32();
+    if (flag == SINGLE_TRANSMIT || flag == 0) {
+        storeData.clear();
+    }
+
     int32_t accessibilityInfosize = data.ReadInt32();
-    ContainerSecurityVerify(data, accessibilityInfosize, infos.max_size());
+    ContainerSecurityVerify(data, accessibilityInfosize, storeData.max_size());
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
         if (!accessibilityInfo) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
+            storeData.clear();
             return TRANSACTION_ERR;
         }
-        infos.emplace_back(*accessibilityInfo);
+        storeData.push_back(*accessibilityInfo);
     }
-    int32_t requestId = data.ReadInt32();
 
-    SetSearchElementInfoByAccessibilityIdResult(infos, requestId);
+    int32_t requestId = data.ReadInt32();
+    if (flag == SINGLE_TRANSMIT || flag == MULTI_TRANSMIT_FINISH) {
+        reply.WriteInt32(0);
+        HILOG_DEBUG("size %{public}zu requestId %{public}d", storeData.size(), requestId);
+        SetSearchElementInfoByAccessibilityIdResult(storeData, requestId);
+        // clear storeData will crash here
+        return NO_ERROR;
+    }
+
+    reply.WriteInt32(0);
     return NO_ERROR;
 }
 

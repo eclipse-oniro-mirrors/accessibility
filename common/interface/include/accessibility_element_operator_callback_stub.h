@@ -48,6 +48,8 @@ public:
      */
     virtual int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option) override;
+
+    static std::vector<AccessibilityElementInfo> storeData;
 private:
     /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByAccessibilityIdResult.
