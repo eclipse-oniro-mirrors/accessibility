@@ -93,6 +93,8 @@ private:
     bool SendTransactCmd(AccessibilityInterfaceCode code, MessageParcel &data,
         MessageParcel &reply,  MessageOption &option);
 
+    int32_t GetTransmitFlag(int32_t time, int32_t leftSize);
+
     static inline BrokerDelegator<AccessibilityElementOperatorCallbackProxy> delegator;
 };
 } // namespace Accessibility
