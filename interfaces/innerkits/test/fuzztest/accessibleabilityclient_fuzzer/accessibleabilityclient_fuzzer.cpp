@@ -115,17 +115,18 @@ static void GenerateAccessibilityElementInfoP1(OHOS::Accessibility::Accessibilit
     const uint8_t* data, size_t size, size_t& position)
 {
     int32_t int32Data = 0;
+    int64_t int64Data = 0;
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetPageId(int32Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetWindowId(int32Data);
 
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceElementInfo.SetAccessibilityId(int32Data);
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetAccessibilityId(int64Data);
 
-    position += GetObject<int32_t>(int32Data, &data[position], size - position);
-    sourceElementInfo.SetParent(int32Data);
+    position += GetObject<int64_t>(int64Data, &data[position], size - position);
+    sourceElementInfo.SetParent(int64Data);
 
     position += GetObject<int32_t>(int32Data, &data[position], size - position);
     sourceElementInfo.SetTextLengthLimit(int32Data);
@@ -161,8 +162,8 @@ static void GenerateAccessibilityElementInfoP1(OHOS::Accessibility::Accessibilit
     sourceElementInfo.SetTextMovementStep(static_cast<OHOS::Accessibility::TextMoveUnit>(int32Data));
 
     for (size_t i = 0; i < VEC_SIZE; i++) {
-        position += GetObject<int32_t>(int32Data, &data[position], size - position);
-        sourceElementInfo.AddChild(int32Data);
+        position += GetObject<int64_t>(int64Data, &data[position], size - position);
+        sourceElementInfo.AddChild(int64Data);
     }
 }
 

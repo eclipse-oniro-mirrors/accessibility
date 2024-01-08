@@ -34,7 +34,7 @@ using namespace OHOS::AccessibilityNapi;
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    constexpr int32_t VIRTUAL_COMPONENT_ID = -1;
+    constexpr int64_t VIRTUAL_COMPONENT_ID = -1;
 }
 NAccessibilityExtension* NAccessibilityExtension::Create(const std::unique_ptr<AbilityRuntime::Runtime>& runtime)
 {
@@ -250,7 +250,7 @@ std::shared_ptr<AccessibilityElement> NAccessibilityExtension::GetElement(const 
     if (!aaClient) {
         return nullptr;
     }
-    int32_t componentId = eventInfo.GetAccessibilityId();
+    int64_t componentId = eventInfo.GetAccessibilityId();
     int32_t windowId = eventInfo.GetWindowId();
     std::shared_ptr<AccessibilityElement> element = nullptr;
     if (componentId > 0) {

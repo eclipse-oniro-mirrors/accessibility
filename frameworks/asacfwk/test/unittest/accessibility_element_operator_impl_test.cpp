@@ -27,7 +27,7 @@ namespace OHOS {
 namespace Accessibility {
 namespace {
     const std::string TEST = "test";
-    constexpr int32_t ELEMENT_ID = 1;
+    constexpr int64_t ELEMENT_ID = 1;
     constexpr int32_t REQUEST_ID = 1;
     constexpr int32_t REQUEST_ID_2 = 2;
     constexpr int32_t MODE = 0;
