@@ -90,6 +90,7 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
         if (!accessibilityInfo) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
             storeData.clear();
+            reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
         storeData.push_back(*accessibilityInfo);
