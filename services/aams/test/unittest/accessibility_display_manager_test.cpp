@@ -155,5 +155,37 @@ HWTEST_F(
 
     GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetDefaultDisplayDpi_001 end.";
 }
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_IsFoldable_001
+ * @tc.name: IsFoldable
+ * @tc.desc: Test function IsFoldable
+ */
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_IsFoldable_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_IsFoldable_001 start";
+
+    auto status = Singleton<AccessibilityDisplayManager>::GetInstance().IsFoldable();
+    EXPECT_GE(status, 0);
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_IsFoldable_001 end.";
+}
+
+/**
+ * @tc.number: AccessibilityDisplayManager_Unittest_GetFoldDisplayMode_001
+ * @tc.name: GetFoldDisplayMode
+ * @tc.desc: Test function GetFoldDisplayMode
+ */
+HWTEST_F(
+    AccessibilityDisplayManagerUnitTest, AccessibilityDisplayManager_Unittest_GetFoldDisplayMode_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetFoldDisplayMode_001 start";
+
+    auto mode = Singleton<AccessibilityDisplayManager>::GetInstance().GetFoldDisplayMode();
+    EXPECT_GE(static_cast<uint64_t>(mode), 0);
+
+    GTEST_LOG_(INFO) << "AccessibilityDisplayManager_Unittest_GetFoldDisplayMode_001 end.";
+}
 } // namespace Accessibility
 } // namespace OHOS

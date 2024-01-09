@@ -66,6 +66,18 @@ int32_t AccessibilityDisplayManager::GetDefaultDisplayDpi()
     return GetDefaultDisplay()->GetDpi();
 }
 
+bool AccessibilityDisplayManager::IsFoldable()
+{
+    HILOG_DEBUG();
+    return Rosen::DisplayManager::GetInstance().IsFoldable();
+}
+
+Rosen::FoldDisplayMode AccessibilityDisplayManager::GetFoldDisplayMode()
+{
+    HILOG_DEBUG();
+    return Rosen::DisplayManager::GetInstance().GetFoldDisplayMode();
+}
+
 void AccessibilityDisplayManager::RegisterDisplayListener(
     const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {

@@ -49,6 +49,8 @@ constexpr uint32_t CIRCLE_ANGLE = 360;
 
 constexpr uint32_t NUMBER_10 = 10;
 
+constexpr uint64_t FOLD_SCREEN_ID = 5; // fold screen main screen id 5
+
 const std::map<uint32_t, uint32_t> CLICK_RESPONSE_TIME_MAP = {
     {CLICK_RESPONSE_DELAY_SHORT, CLICK_RESPONSE_TIME_SHORT},
     {CLICK_RESPONSE_DELAY_MEDIUM, CLICK_RESPONSE_TIME_MEDIUM},
@@ -135,15 +137,22 @@ bool AccessibilityScreenTouch::GetRealIgnoreRepeatClickState()
 void AccessibilityScreenTouch::DrawCircleProgress()
 {
     HILOG_DEBUG();
+    AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
+    uint64_t screenId = displayMgr.GetDefaultDisplayId(); // default screenId 0
+    if (displayMgr.IsFoldable() == true && displayMgr.GetFoldDisplayMode() == Rosen::FoldDisplayMode::MAIN) {
+        HILOG_DEBUG("fold screen and main screen, screenId %{public}" PRIu64 "", FOLD_SCREEN_ID);
+        screenId = FOLD_SCREEN_ID;
+    }
+
     AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
-        circleCenterPhysicalY_, 0);
+        circleCenterPhysicalY_, 0, screenId);
     AccessibilityCircleDrawingManager::GetInstance()->UpdatePointerVisible(true);
     uint32_t times = GetRealClickResponseTime() / NUMBER_10;
     uint32_t step = CIRCLE_ANGLE / times;
     uint32_t time = 0;
     while (time < times && isStopDrawCircle_ == false) {
         AccessibilityCircleDrawingManager::GetInstance()->DrawPointer(circleCenterPhysicalX_,
-            circleCenterPhysicalY_, step * time);
+            circleCenterPhysicalY_, step * time, screenId);
         time++;
         std::this_thread::yield();
         std::this_thread::sleep_for(std::chrono::milliseconds(NUMBER_10));

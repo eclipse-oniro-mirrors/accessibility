@@ -99,7 +99,7 @@ AccessibilityCircleDrawingManager::AccessibilityCircleDrawingManager()
 
 #ifdef OHOS_BUILD_ENABLE_DISPLAY_MANAGER
     AccessibilityDisplayManager &displayMgr = Singleton<AccessibilityDisplayManager>::GetInstance();
-    screenId_ = displayMgr.GetDefaultDisplayId();
+    screenId_ = displayMgr.GetDefaultDisplayId(); // default screenId 0
     auto dpi = displayMgr.GetDefaultDisplayDpi();
     dispalyDensity_ = static_cast<float>(dpi) / DEFAULT_PIXEL_DENSITY;
 #else
@@ -136,7 +136,7 @@ void AccessibilityCircleDrawingManager::UpdatePointerVisible(bool state)
     Rosen::RSTransaction::FlushImplicitTransaction();
 }
 
-void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, int32_t physicalY)
+void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, int32_t physicalY, uint64_t screenId)
 {
     HILOG_DEBUG();
     Rosen::RSSurfaceNodeConfig surfaceNodeConfig;
@@ -152,7 +152,8 @@ void AccessibilityCircleDrawingManager::CreatePointerWindow(int32_t physicalX, i
     surfaceNode_->SetPositionZ(Rosen::RSSurfaceNode::POINTER_WINDOW_POSITION_Z);
     surfaceNode_->SetBounds(physicalX - half_, physicalY - half_, imageWidth_, imageHeight_);
     surfaceNode_->SetBackgroundColor(SK_ColorTRANSPARENT); // USE_ROSEN_DRAWING
-    surfaceNode_->AttachToDisplay(screenId_);
+    screenId_ = screenId;
+    surfaceNode_->AttachToDisplay(screenId);
     surfaceNode_->SetRotation(0);
 
     canvasNode_ = Rosen::RSCanvasNode::Create();
@@ -303,7 +304,7 @@ void AccessibilityCircleDrawingManager::DrawingProgress(int32_t physicalX, int32
 #endif
 }
 
-void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, int32_t physicalY)
+void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, int32_t physicalY, uint64_t screenId)
 {
     HILOG_DEBUG("Pointer window move, x:%{public}d, y:%{public}d", physicalX, physicalY);
     if (surfaceNode_ != nullptr) {
@@ -311,6 +312,8 @@ void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, in
             physicalY - half_,
             surfaceNode_->GetStagingProperties().GetBounds().z_,
             surfaceNode_->GetStagingProperties().GetBounds().w_);
+        screenId_ = screenId;
+        surfaceNode_->AttachToDisplay(screenId);
         Rosen::RSTransaction::FlushImplicitTransaction();
     }
 
@@ -327,18 +330,19 @@ void AccessibilityCircleDrawingManager::SetPointerLocation(int32_t physicalX, in
     }
 }
 
-void AccessibilityCircleDrawingManager::DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle)
+void AccessibilityCircleDrawingManager::DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle,
+    uint64_t screenId)
 {
     HILOG_DEBUG();
     if (surfaceNode_ != nullptr) {
-        SetPointerLocation(physicalX, physicalY);
+        SetPointerLocation(physicalX, physicalY, screenId);
         DrawingProgress(physicalX, physicalY, angle);
         UpdatePointerVisible(true);
         HILOG_DEBUG("surfaceNode_ is existed");
         return;
     }
 
-    CreatePointerWindow(physicalX, physicalY);
+    CreatePointerWindow(physicalX, physicalY, screenId);
     if (surfaceNode_ == nullptr) {
         HILOG_ERROR("surfaceNode_ is nullptr");
         return;
