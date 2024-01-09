@@ -96,6 +96,7 @@ public:
     MOCK_METHOD0(GetActiveWindow, int32_t());
     MOCK_METHOD2(GetRealWindowAndElementId, void(int32_t& windowId, int64_t& elementId));
     MOCK_METHOD3(GetSceneBoardInnerWinId, void(int32_t windowId, int64_t elementId, int32_t& innerWid));
+    MOCK_METHOD1(ExecuteActionOnAccessibilityFocused, bool(const ActionType &action));
 };
 } // namespace Accessibility
 } // namespace OHOS

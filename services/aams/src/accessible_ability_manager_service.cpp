@@ -345,6 +345,57 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
     return syncFuture.get();
 }
 
+bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+{
+    int32_t elementId = -1;
+    int32_t windowId = ANY_WINDOW_ID;
+    int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
+    int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
+
+    sptr<AccessibilityAccountData> accountData = GetCurrentAccountData();
+    if (!accountData) {
+        HILOG_ERROR("GetCurrentAccountData failed");
+        return false;
+    }
+
+    sptr<AccessibilityWindowConnection> connection = accountData->GetAccessibilityWindowConnection(realId);
+    if (!connection || !connection->GetProxy()) {
+        HILOG_ERROR("GetAccessibilityWindowConnection failed");
+        return false;
+    }
+
+    uint32_t timeOut = 5000;
+    sptr<ElementOperatorCallbackImpl> focusCallback = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (!focusCallback) {
+        HILOG_ERROR("Failed to create focusCallback.");
+        return false;
+    }
+    std::future<void> focusFuture = focusCallback->promise_.get_future();
+    connection->GetProxy()->FindFocusedElementInfo(elementId, focusType, 0, focusCallback);
+    std::future_status waitFocus = focusFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitFocus != std::future_status::ready) {
+        HILOG_ERROR("FindFocusedElementInfo Failed to wait result");
+        return false;
+    }
+    elementId = focusCallback->accessibilityInfoResult_.GetAccessibilityId();
+
+    std::map<std::string, std::string> actionArguments {};
+    sptr<ElementOperatorCallbackImpl> actionCallback = new(std::nothrow) ElementOperatorCallbackImpl();
+    if (!actionCallback) {
+        HILOG_ERROR("Failed to create actionCallback.");
+        return false;
+    }
+    std::future<void> actionFuture = actionCallback->promise_.get_future();
+    connection->GetProxy()->ExecuteAction(elementId, action, actionArguments, 1, actionCallback);
+    std::future_status waitAction = actionFuture.wait_for(std::chrono::milliseconds(timeOut));
+    if (waitAction != std::future_status::ready) {
+        HILOG_ERROR("ExecuteAction Failed to wait result");
+        return false;
+    }
+
+    return actionCallback->executeActionResult_;
+}
+
 uint32_t AccessibleAbilityManagerService::RegisterCaptionObserver(
     const sptr<IAccessibleAbilityManagerCaptionObserver> &callback)
 {
@@ -835,6 +886,9 @@ RetError AccessibleAbilityManagerService::InnerDisableAbility(const std::string 
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr");
         return RET_ERR_NULLPTR;
+    }
+    if (name == SCREEN_READER_BUNDLE_ABILITY_NAME) {
+        ExecuteActionOnAccessibilityFocused(ACCESSIBILITY_ACTION_CLEAR_ACCESSIBILITY_FOCUS);
     }
     RetError ret = accountData->RemoveEnabledAbility(name);
     if (ret != RET_OK) {

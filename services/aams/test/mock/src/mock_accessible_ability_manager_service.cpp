@@ -532,5 +532,10 @@ void AccessibleAbilityManagerService::GetRealWindowAndElementId(int32_t& windowI
 void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid)
 {
 }
+
+bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
+{
+    return true;
+}
 } // namespace Accessibility
 } // namespace OHOS
