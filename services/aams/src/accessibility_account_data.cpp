@@ -32,12 +32,23 @@ namespace {
     constexpr int32_t AUTOCLICK_DELAY_TIME_MIN = 1000; // ms
     constexpr int32_t AUTOCLICK_DELAY_TIME_MAX = 5000; // ms
     constexpr int32_t INIT_DATASHARE_HELPER_SLEEP_TIME = 500;
+    constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM = 700;
+    constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG = 1000;
+    constexpr int DISPLAY_DALTONIZER_GREEN = 12;
+    constexpr int DISPLAY_DALTONIZER_RED = 11;
+    constexpr int DISPLAY_DALTONIZER_BLUE = 13;
     const std::string HIGH_TEXT_CONTRAST_ENABLED = "high_text_contrast_enabled";
     const std::string ACCESSIBILITY_DISPLAY_INVERSION_ENABLED = "accessibility_display_inversion_enabled";
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
-    const std::string PERSIST_SYS_CVAA_MONO_CHANNEL = "cvaa_mono_channel";
+    const std::string MASTER_MONO = "master_mono";
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const std::string MASTER_BALENCE = "master_balance";
+    const std::string CLICK_RESPONSE_TIME = "click_response_time";
+    const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";
+    const std::string IGNORE_REPEAT_CLICK_TIME = "ignore_repeat_click_time";
+    const std::string ACCESSIBILITY_DISPLAY_DALTONIZER = "accessibility_display_daltonizer";
 } // namespace
 
 AccessibilityAccountData::AccessibilityAccountData(int32_t accountId)
@@ -466,9 +477,37 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     }
     provider.GetBoolValue(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, value.invertColor);
     provider.GetBoolValue(ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED, value.daltonizationState);
-    provider.GetBoolValue(PERSIST_SYS_CVAA_MONO_CHANNEL, value.audioMono);
+    provider.GetBoolValue(MASTER_MONO, value.audioMono);
     provider.GetBoolValue(ACCESSIBILITY_SCREENREADER_ENABLED, value.isScreenReaderEnabled);
     provider.GetFloatValue(MASTER_BALENCE, value.audioBalance);
+    int tmpClickResTime = 0;
+    provider.GetIntValue(CLICK_RESPONSE_TIME, tmpClickResTime);
+    if (tmpClickResTime == DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayMedium);
+    } else if (tmpClickResTime > DOUBLE_CLICK_RESPONSE_TIME_MEDIUM) {
+        value.clickResponseTime = static_cast<int>(AccessibilityConfig::ResponseDelayLong);
+    }
+    provider.GetBoolValue(IGNORE_REPEAT_CLICK_SWITCH, value.ignoreRepeatClickState);
+    int tmpIgnoreRepeatClickTime = 0;
+    provider.GetIntValue(IGNORE_REPEAT_CLICK_TIME, tmpIgnoreRepeatClickTime);
+    if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT) {
+        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutShort);
+    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_MEDIUM) {
+        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutMedium);
+    } else if (tmpIgnoreRepeatClickTime == DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLong);
+    } else if (tmpIgnoreRepeatClickTime > DOUBLE_IGNORE_REPEAT_CLICK_TIME_LONG) {
+        value.ignoreRepeatClickTime = static_cast<int>(AccessibilityConfig::RepeatClickTimeoutLongest);
+    }
+    int tmpDaltonizer = 0;
+    provider.GetIntValue(ACCESSIBILITY_DISPLAY_DALTONIZER, tmpDaltonizer);
+    if (tmpDaltonizer == DISPLAY_DALTONIZER_GREEN) {
+        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Deuteranomaly);
+    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_RED) {
+        value.displayDaltonizer = static_cast<int>(AccessibilityConfig::Protanomaly);
+    } else if (tmpDaltonizer == DISPLAY_DALTONIZER_BLUE) {
+        value.displayDaltonizer= static_cast<int>(AccessibilityConfig::Tritanomaly);
+    }
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)

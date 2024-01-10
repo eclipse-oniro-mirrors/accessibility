@@ -29,6 +29,7 @@ namespace Accessibility {
 namespace {
     const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
     const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
+    const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.huawei.hmos.screenreader/AccessibilityExtAbility";
 }
 
 void AccessibilitySettings::RegisterSettingsHandler(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
@@ -458,6 +459,71 @@ RetError AccessibilitySettings::SetIgnoreRepeatClickTime(const uint32_t time)
     return syncFuture.get();
 }
 
+void AccessibilitySettings::UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpdate &atoHosValue)
+{
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    // set
+    if (atoHosValue.daltonizationState) {
+        accountData->GetConfig()->SetDaltonizationState(atoHosValue.daltonizationState);
+    }
+    if (atoHosValue.invertColor) {
+        accountData->GetConfig()->SetInvertColorState(atoHosValue.invertColor);
+    }
+    if (atoHosValue.audioMono) {
+        accountData->GetConfig()->SetAudioMonoState(atoHosValue.audioMono);
+    }
+    if (atoHosValue.highContrastText) {
+        accountData->GetConfig()->SetHighContrastTextState(atoHosValue.highContrastText);
+    }
+    if (atoHosValue.ignoreRepeatClickState) {
+        accountData->GetConfig()->SetIgnoreRepeatClickState(atoHosValue.ignoreRepeatClickState);
+    }
+    UpdateConfigState();
+}
+
+void AccessibilitySettings::UpdateSettingsInAtoHos()
+{
+    sptr<AccessibilityAccountData> accountData =
+        Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    ConfigValueAtoHosUpdate atoHosValue;
+    accountData->GetConfigValueAtoHos(atoHosValue);
+
+    HILOG_INFO("daltonizationState(%{public}d), invertColor(%{public}d), \
+        audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
+        isScreenReaderEnabled(%{public}d), ignoreRepeatClickState(%{public}d), \
+        clickResponseTime(%{public}d), ignoreRepeatClickTime(%{public}d), displayDaltonizer(%{public}d).",
+        atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
+        atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled, atoHosValue.ignoreRepeatClickState,
+        atoHosValue.clickResponseTime, atoHosValue.ignoreRepeatClickTime, atoHosValue.displayDaltonizer);
+
+    UpdateSettingsInAtoHosStatePart(atoHosValue);
+
+    if (atoHosValue.audioBalance != 0.0) {
+        accountData->GetConfig()->SetAudioBalance(atoHosValue.audioBalance);
+        UpdateAudioBalance();
+    }
+    if (atoHosValue.clickResponseTime != 0) {
+        accountData->GetConfig()->SetClickResponseTime(static_cast<uint32_t>(atoHosValue.clickResponseTime));
+        UpdateClickResponseTime();
+    }
+    if (atoHosValue.ignoreRepeatClickState && atoHosValue.ignoreRepeatClickTime != 0) {
+        accountData->GetConfig()->SetIgnoreRepeatClickTime(static_cast<uint32_t>(atoHosValue.ignoreRepeatClickTime));
+        UpdateIgnoreRepeatClickTime();
+    }
+    if (atoHosValue.daltonizationState && atoHosValue.displayDaltonizer != 0) {
+        accountData->GetConfig()->SetDaltonizationColorFilter(static_cast<uint32_t>(atoHosValue.displayDaltonizer));
+        UpdateDaltonizationColorFilter();
+    }
+    
+    if (atoHosValue.isScreenReaderEnabled) {
+        uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+            CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+        accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
+    }
+
+    accountData->GetConfig()->SetStartFromAtoHosState(false);
+}
 
 RetError AccessibilitySettings::GetScreenMagnificationState(bool &state)
 {
