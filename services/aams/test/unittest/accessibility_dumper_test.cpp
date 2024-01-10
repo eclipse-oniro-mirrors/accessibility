@@ -185,7 +185,7 @@ HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_005, Tes
 /**
  * @tc.number: AccessibilityDumper_Unittest_Dump_006
  * @tc.name: Dump
- * @tc.desc: Test function Dump
+ * @tc.desc: Test function Dump.
  */
 HWTEST_F(AccessibilityDumperUnitTest, AccessibilityDumper_Unittest_Dump_006, TestSize.Level1)
 {
