@@ -169,6 +169,7 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_TOUCH_GUIDE_GESTURE_END, "touchGuideGestureEnd"},
         {EventType::TYPE_PAGE_CONTENT_UPDATE, "pageContentUpdate"},
         {EventType::TYPE_VIEW_SCROLLED_EVENT, "scroll"},
+        {EventType::TYPE_VIEW_SCROLLED_START, "scrollStart"},
         {EventType::TYPE_VIEW_TEXT_SELECTION_UPDATE_EVENT, "textSelectionUpdate"},
         {EventType::TYPE_PUBLIC_NOTICE_EVENT, "publicNotice"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
