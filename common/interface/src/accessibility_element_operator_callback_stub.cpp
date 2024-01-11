@@ -25,6 +25,34 @@ namespace Accessibility {
 constexpr int32_t SINGLE_TRANSMIT = -2;
 constexpr int32_t MULTI_TRANSMIT_FINISH = -1;
 
+void StoreElementData::WriteData(std::vector<AccessibilityElementInfo> &infos)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    storeData_.insert(storeData_.end(), infos.begin(), infos.end());
+}
+
+void StoreElementData::Clear()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    storeData_.clear();
+}
+
+std::vector<AccessibilityElementInfo> StoreElementData::ReadData()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    return storeData_;
+}
+
+size_t StoreElementData::Size()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    return storeData_.size();
+}
+
 AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackStub()
 {
     memberFuncMap_[static_cast<uint32_t>(
@@ -42,7 +70,7 @@ AccessibilityElementOperatorCallbackStub::AccessibilityElementOperatorCallbackSt
         &AccessibilityElementOperatorCallbackStub::HandleSetExecuteActionResult;
 }
 
-std::vector<AccessibilityElementInfo> AccessibilityElementOperatorCallbackStub::storeData = {};
+StoreElementData AccessibilityElementOperatorCallbackStub::storeElementData;
 
 AccessibilityElementOperatorCallbackStub::~AccessibilityElementOperatorCallbackStub()
 {
@@ -79,29 +107,30 @@ ErrCode AccessibilityElementOperatorCallbackStub::HandleSetSearchElementInfoByAc
     HILOG_DEBUG();
     int32_t flag = data.ReadInt32();
     if (flag == SINGLE_TRANSMIT || flag == 0) {
-        storeData.clear();
+        storeElementData.Clear();
     }
 
     int32_t accessibilityInfosize = data.ReadInt32();
-    ContainerSecurityVerify(data, accessibilityInfosize, storeData.max_size());
+    std::vector<AccessibilityElementInfo> tmpData;
+    ContainerSecurityVerify(data, accessibilityInfosize, tmpData.max_size());
     for (int32_t i = 0; i < accessibilityInfosize; i++) {
         sptr<AccessibilityElementInfoParcel> accessibilityInfo =
             data.ReadStrongParcelable<AccessibilityElementInfoParcel>();
         if (!accessibilityInfo) {
             HILOG_ERROR("ReadStrongParcelable<accessibilityInfo> failed");
-            storeData.clear();
+            storeElementData.Clear();
             reply.WriteInt32(RET_ERR_FAILED);
             return TRANSACTION_ERR;
         }
-        storeData.push_back(*accessibilityInfo);
+        tmpData.push_back(*accessibilityInfo);
     }
 
+    storeElementData.WriteData(tmpData); // get all data and push once
     int32_t requestId = data.ReadInt32();
     if (flag == SINGLE_TRANSMIT || flag == MULTI_TRANSMIT_FINISH) {
         reply.WriteInt32(0);
-        HILOG_DEBUG("size %{public}zu requestId %{public}d", storeData.size(), requestId);
-        SetSearchElementInfoByAccessibilityIdResult(storeData, requestId);
-        // clear storeData will crash here
+        HILOG_DEBUG("infos size %{public}zu, requestId %{public}d", storeElementData.Size(), requestId);
+        SetSearchElementInfoByAccessibilityIdResult(storeElementData.ReadData(), requestId);
         return NO_ERROR;
     }
 
