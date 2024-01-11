@@ -89,6 +89,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
     GTEST_LOG_(INFO) << "AccessibilityAccountData_Unittest_GetAccessibilityState001 start";
     int32_t accountId = 1;
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
+    
     /* Initial state */
     accountData->Init();
     accountData->GetConfig()->SetTouchGuideState(true);
