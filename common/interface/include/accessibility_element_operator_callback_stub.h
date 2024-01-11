@@ -17,11 +17,25 @@
 #define ACCESSIBILITY_ELEMENT_OPERATOR_CALLBACK_STUB_H
 
 #include <map>
+#include <mutex>
 #include "i_accessibility_element_operator_callback.h"
 #include "iremote_stub.h"
 
 namespace OHOS {
 namespace Accessibility {
+
+class StoreElementData {
+public:
+    StoreElementData() = default;
+    ~StoreElementData() = default;
+    void WriteData(std::vector<AccessibilityElementInfo> &infos);
+    std::vector<AccessibilityElementInfo> ReadData();
+    size_t Size();
+    void Clear();
+    std::vector<AccessibilityElementInfo> storeData_ = {};
+    std::mutex mutex_;
+};
+
 /*
 * The class define the interface for UI to implement.
 * It triggered by ABMS when AA to request the accessibility information.
@@ -49,7 +63,7 @@ public:
     virtual int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
         MessageOption &option) override;
 
-    static std::vector<AccessibilityElementInfo> storeData;
+    static StoreElementData storeElementData;
 private:
     /**
      * @brief Handle the IPC request for the function:SetSearchElementInfoByAccessibilityIdResult.
