@@ -29,7 +29,8 @@ AccessibilityWindowManager::AccessibilityWindowManager()
 
 bool AccessibilityWindowManager::Init()
 {
-    HILOG_DEBUG("start");
+    DeInit();
+    HILOG_DEBUG("deinit before start");
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryWindowInfo");
     std::vector<sptr<Rosen::AccessibilityWindowInfo>> windowInfos;
     Rosen::WMError err = OHOS::Rosen::WindowManager::GetInstance().GetAccessibilityWindowInfo(windowInfos);
@@ -80,6 +81,8 @@ AccessibilityWindowManager::~AccessibilityWindowManager()
 
 void AccessibilityWindowManager::RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler)
 {
+    DeregisterWindowListener();
+    HILOG_DEBUG("deregister before register");
     if (windowListener_) {
         HILOG_DEBUG("Window listener is already registered!");
         return;
