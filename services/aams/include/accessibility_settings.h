@@ -77,6 +77,8 @@ public:
     void UpdateShortkeyMultiTarget();
     void UpdateClickResponseTime();
     void UpdateIgnoreRepeatClickTime();
+    void UpdateSettingsInAtoHos();
+    void UpdateSettingsInAtoHosStatePart(ConfigValueAtoHosUpdate &value);
 
     RetError GetCaptionProperty(AccessibilityConfig::CaptionProperty &caption);
     RetError SetCaptionProperty(const AccessibilityConfig::CaptionProperty &caption);

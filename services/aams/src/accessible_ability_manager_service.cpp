@@ -1487,44 +1487,7 @@ void AccessibleAbilityManagerService::UpdateSettingsInAtoHos()
         HILOG_INFO("Not first start from a to hos.");
         return;
     }
-
-    ConfigValueAtoHosUpdate atoHosValue;
-    accountData->GetConfigValueAtoHos(atoHosValue);
-
-    HILOG_INFO("daltonizationState(%{public}d), invertColor(%{public}d), \
-        audioMono(%{public}d), audioBalance(%{public}f), highContrastText(%{public}d), \
-        isScreenReaderEnabled(%{public}d).",
-        atoHosValue.daltonizationState, atoHosValue.invertColor, atoHosValue.audioMono, atoHosValue.audioBalance,
-        atoHosValue.highContrastText, atoHosValue.isScreenReaderEnabled);
-
-    // set
-    if (atoHosValue.daltonizationState) {
-        accountData->GetConfig()->SetDaltonizationState(atoHosValue.daltonizationState);
-    }
-    if (atoHosValue.invertColor) {
-        accountData->GetConfig()->SetInvertColorState(atoHosValue.invertColor);
-    }
-    if (atoHosValue.audioMono) {
-        accountData->GetConfig()->SetAudioMonoState(atoHosValue.audioMono);
-    }
-    if (atoHosValue.highContrastText) {
-        accountData->GetConfig()->SetHighContrastTextState(atoHosValue.highContrastText);
-    }
-    UpdateConfigState();
-
-    if (atoHosValue.audioBalance != 0.0) {
-        accountData->GetConfig()->SetAudioBalance(atoHosValue.audioBalance);
-        UpdateAudioBalance();
-    }
-    // some other settings
-    
-    if (atoHosValue.isScreenReaderEnabled) {
-        uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
-            CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-        accountData->EnableAbility(SCREEN_READER_BUNDLE_ABILITY_NAME, capabilities);
-    }
-
-    accountData->GetConfig()->SetStartFromAtoHosState(false);
+    accessibilitySettings_->UpdateSettingsInAtoHos();
 }
 
 void AccessibleAbilityManagerService::UpdateInputFilter()

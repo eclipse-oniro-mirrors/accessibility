@@ -115,6 +115,7 @@ HWTEST_F(AccessibilityAccountDataTest, AccessibilityAccountData_Unittest_GetAcce
         new MockAccessibleAbilityConnection(accountId, connectCounter++, *abilityInfo);
     sptr<AccessibilityAccountData> accountData = new AccessibilityAccountData(accountId);
     EXPECT_EQ(0, (int)accountData->GetConnectedA11yAbilities().size());
+    
     /* add connected ability */
     accountData->AddConnectedAbility(connection);
     const std::string elementName = Utils::GetUri(connection->GetElementName());

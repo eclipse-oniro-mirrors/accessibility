@@ -44,6 +44,10 @@ struct ConfigValueAtoHosUpdate {
     bool daltonizationState = false;
     float audioBalance = 0.0;
     bool isScreenReaderEnabled = false;
+    int clickResponseTime = 0;
+    bool ignoreRepeatClickState = false;
+    int ignoreRepeatClickTime = 0;
+    int displayDaltonizer = 0;
 };
 
 class AccessibilityAccountData final : public RefBase {
