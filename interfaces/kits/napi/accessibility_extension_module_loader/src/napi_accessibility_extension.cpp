@@ -414,7 +414,7 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         loop,
         work,
         [](uv_work_t *work) {},
-        &NAccessibilityExtension::AccessibilityEventWork);
+        AccessibilityEventWork);
     if (ret) {
         HILOG_ERROR("Failed to execute OnAccessibilityEvent work queue");
         delete callbackInfo;
@@ -450,7 +450,7 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
         loop,
         work,
         [](uv_work_t *work) {},
-        &NAccessibilityExtension::KeyEventWork);
+        KeyEventWork);
     if (ret) {
         HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");
         callbackInfo->syncPromise_.set_value(false);
