@@ -77,7 +77,7 @@ public:
      * @brief Called when an accessibility event occurs.
      * @param eventInfo The information of accessible event.
      */
-    void AccessibilityEventWork(uv_work_t *work, int status);
+    static void AccessibilityEventWork(uv_work_t *work, int status);
     void OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo);
 
     /**
@@ -86,7 +86,7 @@ public:
      * @return Returns true if the event has been consumed; returns false otherwise.
      *         The event that has been consumed will not be sent to the application.
      */
-    void KeyEventWork(uv_work_t *work, int status);
+    static void KeyEventWork(uv_work_t *work, int status);
     bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent);
 
 private:
