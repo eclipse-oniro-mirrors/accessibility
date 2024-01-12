@@ -38,9 +38,9 @@ public:
     ~AccessibilityCircleDrawingManager();
 
     void UpdatePointerVisible(bool state);
-    void CreatePointerWindow(int32_t physicalX, int32_t physicalY);
-    void DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle);
-    void SetPointerLocation(int32_t physicalX, int32_t physicalY);
+    void CreatePointerWindow(int32_t physicalX, int32_t physicalY, uint64_t screenId);
+    void DrawPointer(int32_t physicalX, int32_t physicalY, int32_t angle, uint64_t screenId);
+    void SetPointerLocation(int32_t physicalX, int32_t physicalY, uint64_t screenId);
     void DrawingProgress(int32_t physicalX, int32_t physicalY, int32_t angle);
 
     int32_t ParseStringToInteger(const std::string& color);

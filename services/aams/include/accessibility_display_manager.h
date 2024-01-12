@@ -18,6 +18,7 @@
 
 #include <memory>
 #include "display_manager.h"
+#include "dm_common.h"
 #include "event_handler.h"
 #include "singleton.h"
 
@@ -31,6 +32,8 @@ public:
     const sptr<Rosen::Display> GetDefaultDisplay();
     uint64_t GetDefaultDisplayId();
     int32_t GetDefaultDisplayDpi();
+    bool IsFoldable();
+    Rosen::FoldDisplayMode GetFoldDisplayMode();
 
     void RegisterDisplayListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void UnregisterDisplayListener();
