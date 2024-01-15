@@ -27,6 +27,7 @@ namespace Accessibility {
 class AccessibilitySettingProvider : public NoCopyable {
 public:
     static AccessibilitySettingProvider& GetInstance(int32_t systemAbilityId);
+    void DeleteInstance();
     ErrCode GetStringValue(const std::string& key, std::string& value);
     ErrCode GetIntValue(const std::string& key, int32_t& value);
     ErrCode GetLongValue(const std::string& key, int64_t& value);

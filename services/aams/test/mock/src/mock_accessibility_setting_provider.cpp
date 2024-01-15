@@ -41,6 +41,11 @@ AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t 
     return *instance_;
 }
 
+void AccessibilitySettingProvider::DeleteInstance()
+{
+    HILOG_DEBUG("start.");
+}
+
 ErrCode AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
 {
     HILOG_DEBUG("start.");

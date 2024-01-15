@@ -57,6 +57,18 @@ AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t 
     return *instance_;
 }
 
+void AccessibilitySettingProvider::DeleteInstance()
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (instance_ == nullptr) {
+        HILOG_INFO("instance_ is nullptr");
+        return;
+    }
+    delete instance_;
+    instance_ = nullptr;
+}
+
 ErrCode AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
 {
     int64_t valueLong;

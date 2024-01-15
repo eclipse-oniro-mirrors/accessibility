@@ -39,6 +39,10 @@ AccessibilitySettingProvider& AccessibilitySettingProvider::GetInstance(int32_t 
     return *instance_;
 }
 
+void AccessibilitySettingProvider::DeleteInstance()
+{
+}
+
 ErrCode AccessibilitySettingProvider::GetIntValue(const std::string& key, int32_t& value)
 {
     (void)key;
