@@ -300,15 +300,14 @@ void ConvertAccessibilityElementToJS(napi_env env, napi_value objEventInfo,
     napi_close_handle_scope(env, scope);
 }
 
-void NAccessibilityExtension::AccessibilityEventWork(uv_work_t *work, int status)
+int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop)
 {
-    AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
-
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope);
-            if (scope == nullptr) {
-                return;
-            }
+    int ret = uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            AccessibilityEventInfoCallbackInfo *data = static_cast<AccessibilityEventInfoCallbackInfo*>(work->data);
             napi_value napiEventInfo = nullptr;
             napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo);
 
@@ -331,55 +330,13 @@ void NAccessibilityExtension::AccessibilityEventWork(uv_work_t *work, int status
             NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
             NativeValue* argv[] = {nativeEventInfo};
             data->extension_->CallObjectMethod("onAccessibilityEvent", argv, 1);
-
-            napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
+            
             delete data;
             data = nullptr;
             delete work;
             work = nullptr;
-}
-
-void NAccessibilityExtension::KeyEventWork(uv_work_t *work, int status)
-{
-    KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(reinterpret_cast<napi_env>(data->engine_), &scope);
-            if (scope == nullptr) {
-                return;
-            }
-            napi_value napiEventInfo = nullptr;
-            if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
-                HILOG_ERROR("Create keyEvent object failed.");
-                data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
-                return;
-            }
-            ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
-            NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
-            NativeValue* argv[] = {nativeEventInfo};
-            NativeValue* nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
-
-            // Unwrap result
-            bool result = false;
-            if (!ConvertFromJsValue(*data->engine_, nativeResult, result)) {
-                HILOG_ERROR("ConvertFromJsValue failed");
-                data->syncPromise_.set_value(false);
-                delete data;
-                data = nullptr;
-                delete work;
-                work = nullptr;
-                return;
-            }
-            HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
-            data->syncPromise_.set_value(result);
-            napi_close_handle_scope(reinterpret_cast<napi_env>(data->engine_), scope);
-            delete data;
-            data = nullptr;
-            delete work;
-            work = nullptr;
+        });
+    return ret;
 }
 
 void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo& eventInfo)
@@ -410,18 +367,59 @@ void NAccessibilityExtension::OnAccessibilityEvent(const AccessibilityEventInfo&
         return;
     }
     work->data = static_cast<void*>(callbackInfo);
-    int ret = uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        AccessibilityEventWork);
-    if (ret) {
+    
+    if (OnAccessibilityEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnAccessibilityEvent work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
         delete work;
         work = nullptr;
     }
+}
+
+int NAccessibilityExtension::OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop)
+{
+    int ret = uv_queue_work(
+        loop,
+        work,
+        [](uv_work_t *work) {},
+        [](uv_work_t *work, int status) {
+            KeyEventCallbackInfo *data = static_cast<KeyEventCallbackInfo*>(work->data);
+            napi_value napiEventInfo = nullptr;
+            if (napi_create_object(reinterpret_cast<napi_env>(data->engine_), &napiEventInfo) != napi_ok) {
+                HILOG_ERROR("Create keyEvent object failed.");
+                data->syncPromise_.set_value(false);
+                delete data;
+                data = nullptr;
+                delete work;
+                work = nullptr;
+                return;
+            }
+            ConvertKeyEventToJS(reinterpret_cast<napi_env>(data->engine_), napiEventInfo, data->keyEvent_);
+            NativeValue* nativeEventInfo = reinterpret_cast<NativeValue*>(napiEventInfo);
+            NativeValue* argv[] = {nativeEventInfo};
+            NativeValue* nativeResult = data->extension_->CallObjectMethod("onKeyEvent", argv, 1);
+
+            // Unwrap result
+            bool result = false;
+            if (!ConvertFromJsValue(*data->engine_, nativeResult, result)) {
+                HILOG_ERROR("ConvertFromJsValue failed");
+                data->syncPromise_.set_value(false);
+                delete data;
+                data = nullptr;
+                delete work;
+                work = nullptr;
+                return;
+            }
+            HILOG_INFO("OnKeyPressEvent result = %{public}d", result);
+            data->syncPromise_.set_value(result);
+
+            delete data;
+            data = nullptr;
+            delete work;
+            work = nullptr;
+        });
+    return ret;
 }
 
 bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent)
@@ -445,13 +443,8 @@ bool NAccessibilityExtension::OnKeyPressEvent(const std::shared_ptr<MMI::KeyEven
     }
     work->data = static_cast<void*>(callbackInfo);
     std::future syncFuture = callbackInfo->syncPromise_.get_future();
-
-    int ret = uv_queue_work(
-        loop,
-        work,
-        [](uv_work_t *work) {},
-        KeyEventWork);
-    if (ret) {
+       
+    if (OnKeyPressEventExec(work, loop)) {
         HILOG_ERROR("Failed to execute OnKeyPressEvent work queue");
         callbackInfo->syncPromise_.set_value(false);
         delete callbackInfo;
