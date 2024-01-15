@@ -309,7 +309,9 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         HILOG_ERROR("handler_ is nullptr");
         return;
     }
-    handler_->PostTask(std::bind([](int32_t accountId, AppExecFwk::ElementName elementName) -> void {
+    std::shared_ptr<AppExecFwk::ElementName> sharedElementName =
+        std::make_shared<AppExecFwk::ElementName>(recipientElementName_);
+    handler_->PostTask(std::bind([](int32_t accountId, std::shared_ptr<AppExecFwk::ElementName> elementName) -> void {
         HILOG_DEBUG();
 
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
@@ -319,13 +321,13 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
             return;
         }
 
-        std::string uri = Utils::GetUri(elementName);
+        std::string uri = Utils::GetUri(*elementName);
         sptr<AccessibleAbilityConnection> connection = accountData->GetAccessibleAbilityConnection(uri);
         if (!connection) {
             HILOG_ERROR("There is no connection for %{public}s.", uri.c_str());
             return;
         }
-        accountData->RemoveConnectedAbility(elementName);
+        accountData->RemoveConnectedAbility(*elementName);
         accountData->RemoveEnabledAbility(uri);
 
         std::string uiTestUri = Utils::GetUri("ohos.uitest", "uitestability");
@@ -335,7 +337,7 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
 
         accountData->UpdateAbilities();
         aams.UpdateAccessibilityManagerService();
-        }, accountId_, recipientElementName_), "OnRemoteDied");
+        }, accountId_, sharedElementName), "OnRemoteDied");
 }
 } // namespace Accessibility
 } // namespace OHOS
