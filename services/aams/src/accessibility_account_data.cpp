@@ -423,6 +423,7 @@ void AccessibilityAccountData::SetAbilityAutoStartState(const std::string &name,
     if (ret != ERR_OK) {
         HILOG_ERROR("set failed, ret=%{public}d", ret);
     }
+    provider.DeleteInstance();
 }
 
 void AccessibilityAccountData::DelAutoStartPrefKeyInRemovePkg(const std::string &bundleName)
@@ -455,12 +456,15 @@ bool AccessibilityAccountData::GetAbilityAutoStartState(const std::string &key)
     }
     if (ret != ERR_OK) {
         HILOG_ERROR("get failed, key = %{public}s, ret=%{public}d", key.c_str(), ret);
+        provider.DeleteInstance();
         return false;
     }
     HILOG_DEBUG("provider GetString = %{public}s, key = %{public}s.", strValue.c_str(), key.c_str());
     if (!std::strcmp(strValue.c_str(), "on")) {
+        provider.DeleteInstance();
         return true;
     }
+    provider.DeleteInstance();
     return false;
 }
 
@@ -508,6 +512,7 @@ void AccessibilityAccountData::GetConfigValueAtoHos(ConfigValueAtoHosUpdate &val
     } else if (tmpDaltonizer == DISPLAY_DALTONIZER_BLUE) {
         value.displayDaltonizer= static_cast<int>(AccessibilityConfig::Tritanomaly);
     }
+    provider.DeleteInstance();
 }
 
 RetError AccessibilityAccountData::EnableAbility(const std::string &name, const uint32_t capabilities)
