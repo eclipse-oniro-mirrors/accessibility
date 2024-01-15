@@ -155,7 +155,7 @@ HWTEST_F(AccessibilityScreenTouchUnitTest, AccessibilityScreenTouch_Unittest_OnP
     event->SetPointerAction(MMI::PointerEvent::POINTER_ACTION_CANCEL);
 
     EXPECT_EQ(screenTouch_->OnPointerEvent(*event), true);
-    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_003 end";
+    GTEST_LOG_(INFO) << "AccessibilityScreenTouch_Unittest_OnPointerEvent_003 end.";
 }
 
 /**

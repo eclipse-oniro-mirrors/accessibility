@@ -26,7 +26,7 @@ void AccessibilityElementInfo::SetComponentId(const int64_t componentId)
 
 int64_t AccessibilityElementInfo::GetChildId(const int32_t index) const
 {
-    if (index >= childCount_ || index < 0) {
+    if (index >= childCount_ || index < 0 || index >= static_cast<int32_t>(childNodeIds_.size())) {
         HILOG_ERROR("index[%{public}d] is invalid", index);
         return -1;
     }
