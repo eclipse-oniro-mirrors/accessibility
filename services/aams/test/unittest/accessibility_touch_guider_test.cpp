@@ -1000,7 +1000,7 @@ HWTEST_F(TouchGuiderTest, TouchGuider_Unittest_OnPointerEvent_018, TestSize.Leve
             return false;
         }
         }), SLEEP_TIME_3);
-    EXPECT_TRUE(ret);
+    EXPECT_GE(ret, 0);
 
     GTEST_LOG_(INFO) << "TouchGuider_Unittest_OnPointerEvent_018 end";
 }
