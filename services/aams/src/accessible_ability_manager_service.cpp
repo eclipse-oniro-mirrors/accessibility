@@ -347,7 +347,7 @@ void AccessibleAbilityManagerService::GetSceneBoardInnerWinId(int32_t windowId, 
 
 bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const ActionType &action)
 {
-    int32_t elementId = -1;
+    int64_t elementId = -1;
     int32_t windowId = ANY_WINDOW_ID;
     int32_t focusType = FOCUS_TYPE_ACCESSIBILITY;
     int32_t realId = Singleton<AccessibilityWindowManager>::GetInstance().ConvertToRealWindowId(windowId, focusType);
