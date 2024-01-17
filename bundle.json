@@ -143,6 +143,7 @@
         "//foundation/barrierfree/accessibility/frameworks/acfwk/test:unittest",
         "//foundation/barrierfree/accessibility/frameworks/asacfwk/test:unittest",
         "//foundation/barrierfree/accessibility/frameworks/common/test:unittest",
+        "//foundation/barrierfree/accessibility/common/interface/test:unittest",
         "//foundation/barrierfree/accessibility/interfaces/innerkits/test/fuzztest:fuzztest",
         "//foundation/barrierfree/accessibility/interfaces/innerkits/test/benchmarktest:benchmarktest"
       ]
