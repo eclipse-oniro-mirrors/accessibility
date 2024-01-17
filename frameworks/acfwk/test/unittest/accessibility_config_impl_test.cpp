@@ -202,6 +202,25 @@ HWTEST_F(AccessibilityConfigImplTest, SetShortkeyTarget_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetShortkeyMultiTarget_002
+ * @tc.name: SetShortkeyMultiTarget_002
+ * @tc.desc: Test function SetShortkeyMultiTarget GetShortkeyMultiTarget
+ * @tc.require: issueI5NTXH
+ */
+HWTEST_F(AccessibilityConfigImplTest, SetShortkeyMultiTarget_002, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetShortkeyMultiTarget_002 start";
+
+    std::vector<std::string> name = {"test"};
+    std::vector<std::string> value = {};
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    instance.SetShortkeyMultiTarget(name);
+    instance.GetShortkeyMultiTarget(value);
+    EXPECT_EQ(value.size(), 0);
+    GTEST_LOG_(INFO) << "SetShortkeyMultiTarget_002 end";
+}
+
+/**
  * @tc.number: SetDaltonizationState_002
  * @tc.name: SetDaltonizationState_002
  * @tc.desc: Test function SetDaltonizationState GetDaltonizationState
