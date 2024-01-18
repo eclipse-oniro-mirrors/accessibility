@@ -1638,5 +1638,21 @@ HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_Get
     EXPECT_EQ(innerWid, INNER_WINDOW_ID);
     GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetSceneBoardInnerWinId001 end";
 }
+
+/**
+ * @tc.number: AccessibilityWindowManager_Unittest_GetFocusedWindowId001
+ * @tc.name: GetFocusedWindowId
+ * @tc.desc: Test function GetFocusedWindowId
+ */
+HWTEST_F(AccessibilityWindowManagerTest, AccessibilityWindowManager_Unittest_GetFocusedWindowId001,
+    TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetFocusedWindowId001 start";
+    int32_t windowId = 1;
+    RetError ret = Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(windowId);
+    EXPECT_EQ(ret, RET_OK);
+
+    GTEST_LOG_(INFO) << "AccessibilityWindowManager_Unittest_GetFocusedWindowId001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -458,5 +458,11 @@ void MockAccessibleAbilityManagerServiceStub::GetSceneBoardInnerWinId(int32_t wi
     int32_t& innerWid)
 {
 }
+
+RetError MockAccessibleAbilityManagerServiceStub::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    focusedWindowId = 1;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

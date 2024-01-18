@@ -146,6 +146,7 @@ public:
     virtual uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     virtual void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     virtual void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
 private:
     /**
      * @brief Write the descriptor of IPC.

@@ -1958,5 +1958,19 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, FindInnerWindowId_001, TestSiz
     EXPECT_EQ(windowId, 1);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_FindInnerWindowId_001 end";
 }
+
+/**
+ * @tc.number: Accessible_Ability_Manager_ServiceUnittest_GetFocusedWindowId_001
+ * @tc.name: GetFocusedWindowId
+ * @tc.desc: Test function find focused windowId
+ */
+HWTEST_F(AccessibleAbilityManagerServiceUnitTest, GetFocusedWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetFocusedWindowId_001 start";
+    int32_t windowId = 1;
+    RetError ret = Singleton<AccessibleAbilityManagerService>::GetInstance().GetFocusedWindowId(windowId);
+    EXPECT_EQ(ret, RET_OK);
+    GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_GetFocusedWindowId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -47,6 +47,7 @@ namespace Accessibility {
         SET_ON_KEY_PRESS_EVENT_RESULT,
         SEND_SIMULATE_GESTURE_PATH,
         SET_TARGET_BUNDLE_NAME,
+        GET_FOCUSED_WINDOW_ID,
 
         INIT = 500,
         DISCONNECT,

@@ -542,5 +542,11 @@ bool AccessibleAbilityManagerService::ExecuteActionOnAccessibilityFocused(const 
 {
     return true;
 }
+
+RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    focusedWindowId = 1;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

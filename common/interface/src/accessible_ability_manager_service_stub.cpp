@@ -158,18 +158,17 @@ AccessibleAbilityManagerServiceStub::AccessibleAbilityManagerServiceStub()
     memberFuncMap_[static_cast<uint32_t>(
         AccessibilityInterfaceCode::REGISTER_CAPTION_PROPERTY_CALLBACK)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterCaptionPropertyCallback;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::ENABLE_UI_TEST_ABILITY)] =
         &AccessibleAbilityManagerServiceStub::HandleEnableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::DISABLE_UI_TEST_ABILITY)] =
         &AccessibleAbilityManagerServiceStub::HandleDisableUITestAbility;
-    memberFuncMap_[static_cast<uint32_t>(
-        AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_ACTIVE_WINDOW)] =
         &AccessibleAbilityManagerServiceStub::HandleGetActiveWindow;
     memberFuncMap_[static_cast<uint32_t>(
         AccessibilityInterfaceCode::REGISTER_ENABLE_ABILITY_LISTS_OBSERVER)] =
         &AccessibleAbilityManagerServiceStub::HandleRegisterEnableAbilityListsObserver;
+    memberFuncMap_[static_cast<uint32_t>(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID)] =
+        &AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId;
 
     AddSetConfigHandles();
     AddGetConfigHandles();
@@ -1284,6 +1283,18 @@ ErrCode AccessibleAbilityManagerServiceStub::HandleGetSceneBoardInnerWinId(Messa
     int32_t innerWid = -1;
     GetSceneBoardInnerWinId(windowId, elementId, innerWid);
     if (!reply.WriteInt32(innerWid)) {
+        HILOG_ERROR("write windowId fail");
+    }
+    return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityManagerServiceStub::HandleGetFocusedWindowId(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    int32_t focusedWindowId = -1;
+    GetFocusedWindowId(focusedWindowId);
+    if (reply.WriteInt32(focusedWindowId)) {
         HILOG_ERROR("write windowId fail");
     }
     return NO_ERROR;

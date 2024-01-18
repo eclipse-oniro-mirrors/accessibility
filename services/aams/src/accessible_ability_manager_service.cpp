@@ -2090,5 +2090,11 @@ void AccessibleAbilityManagerService::StateObservers::Clear()
     std::lock_guard<std::mutex> lock(stateObserversMutex_);
     observersList_.clear();
 }
+
+RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    HILOG_DEBUG();
+    return Singleton<AccessibilityWindowManager>::GetInstance().GetFocusedWindowId(focusedWindowId);
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -141,6 +141,7 @@ public:
     virtual void SetFindAccessibilityNodeInfosResult(const std::list<AccessibilityElementInfo> elementInfos,
         const int32_t requestId, const int32_t requestCode) = 0;
     virtual void SetPerformActionResult(const bool succeeded, const int32_t requestId) = 0;
+    virtual RetError GetFocusedWindowId(int32_t &focusedWindowId) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

@@ -1595,5 +1595,25 @@ void AccessibleAbilityManagerServiceProxy::GetSceneBoardInnerWinId(int32_t windo
 
     innerWid = reply.ReadInt32();
 }
+
+RetError AccessibleAbilityManagerServiceProxy::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    HILOG_DEBUG();
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    if (WriteInterfaceToken(data)) {
+        HILOG_ERROR("write token fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    if (!SendTransactCmd(AccessibilityInterfaceCode::GET_FOCUSED_WINDOW_ID, data, reply, option)) {
+        HILOG_ERROR("GetFocusedWindowId fail");
+        return RET_ERR_IPC_FAILED;
+    }
+
+    focusedWindowId = reply.ReadInt32();
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -179,5 +179,11 @@ std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::G
 {
     return std::map<int32_t, int64_t>();
 }
+
+RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    focusedWindowId = 1;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
