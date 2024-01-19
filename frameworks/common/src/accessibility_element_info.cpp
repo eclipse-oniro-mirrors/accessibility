@@ -47,7 +47,7 @@ void AccessibilityElementInfo::AddChild(const int64_t childId)
 {
     for (int32_t i = 0; i < childCount_; i++) {
         if (childNodeIds_[i] == childId) {
-            HILOG_ERROR("childId[%{public}" PRIu64 "] is exited", childId);
+            HILOG_ERROR("childId[%{public}" PRId64 "] is exited", childId);
             return;
         }
     }
@@ -64,7 +64,7 @@ bool AccessibilityElementInfo::RemoveChild(const int64_t childId)
             return true;
         }
     }
-    HILOG_ERROR("Not find childId[%{public}" PRIu64 "]", childId);
+    HILOG_ERROR("Not find childId[%{public}" PRId64 "]", childId);
     return false;
 }
 
