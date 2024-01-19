@@ -101,12 +101,11 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyStateChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_object(callbackInfo->env_, &jsEvent);
             napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
@@ -120,7 +119,6 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
             HILOG_INFO("NotifyStateChangedJS napi_call_function result[%{public}d]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -137,11 +135,11 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             CaptionCallbackInfo *callbackInfo = static_cast<CaptionCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_object(callbackInfo->env_, &jsEvent);
             ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
@@ -155,7 +153,6 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
             HILOG_INFO("NotifyPropertyChangedJS napi_call_function result[%{public}d]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -172,12 +169,11 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyStringChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(),
                 callbackInfo->stringValue_.length(), &jsEvent);
@@ -192,7 +188,6 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
             char buf[BUF_SIZE] = {0};
             napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
             HILOG_INFO("NotifyStringChanged2JSInner napi_call_function result[%{public}zu]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -209,12 +204,11 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
     int ret = uv_queue_work_with_qos(loop, work, [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyStringVectorChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_array(callbackInfo->env_, &jsEvent);
             ConvertStringVecToJS(callbackInfo->env_, jsEvent, callbackInfo->stringVector_);
@@ -230,7 +224,6 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
             char buf[BUF_SIZE] = {0};
             napi_get_value_string_utf8(callbackInfo->env_, callResult, buf, BUF_SIZE, &result);
             HILOG_DEBUG("NotifyStringVectorChanged napi_call_function result[%{public}zu]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -250,12 +243,11 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyStateChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_int32(callbackInfo->env_, callbackInfo->int32Value_, &jsEvent);
 
@@ -268,7 +260,6 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
             HILOG_INFO("NotifyIntChanged2JSInner napi_call_function result[%{public}d]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -288,12 +279,11 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyUintChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_uint32(callbackInfo->env_, callbackInfo->uint32Value_, &jsEvent);
 
@@ -306,7 +296,6 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
             uint32_t result;
             napi_get_value_uint32(callbackInfo->env_, callResult, &result);
             HILOG_INFO("NotifyUintChanged2JSInner napi_call_function result[%{public}d]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -326,12 +315,11 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
         [](uv_work_t *work) {},
         [](uv_work_t *work, int status) {
             StateCallbackInfo *callbackInfo = static_cast<StateCallbackInfo*>(work->data);
-            napi_handle_scope scope = nullptr;
-            napi_open_handle_scope(callbackInfo->env_, &scope);
-            if (scope == nullptr) {
-                HILOG_DEBUG("NotifyFloatChanged scope is nullptr");
-                return;
-            }
+            auto closeScope = [callbackInfo](napi_handle_scope scope) {
+                napi_close_handle_scope(callbackInfo->env_, scope);
+            };
+            std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
+                TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
 
@@ -344,7 +332,6 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
             int32_t result;
             napi_get_value_int32(callbackInfo->env_, callResult, &result);
             HILOG_INFO("NotifyFloatChanged2JSInner napi_call_function result[%{public}d]", result);
-            napi_close_handle_scope(callbackInfo->env_, scope);
             delete callbackInfo;
             callbackInfo = nullptr;
             delete work;
@@ -636,4 +623,11 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityC
             iter++;
         }
     }
+}
+
+napi_handle_scope TmpOpenScope(napi_env env)
+{
+    napi_handle_scope scope = nullptr;
+    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+    return scope;
 }

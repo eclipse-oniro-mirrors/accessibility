@@ -68,4 +68,5 @@ private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
+napi_handle_scope TmpOpenScope(napi_env env);
 #endif // ACCESSIBILITY_CONFIG_OBSERVER_H
