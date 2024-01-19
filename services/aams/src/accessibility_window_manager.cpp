@@ -66,7 +66,7 @@ bool AccessibilityWindowManager::Init()
 
 void AccessibilityWindowManager::DeInit()
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     a11yWindows_.clear();
     subWindows_.clear();
     sceneBoardElementIdMap_.Clear();
@@ -109,7 +109,7 @@ void AccessibilityWindowManager::DeregisterWindowListener()
 void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos,
     Rosen::WindowUpdateType type)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("WindowUpdateType type[%{public}d]", type);
     if (!eventHandler_) {
         HILOG_ERROR("eventHandler_ is nullptr.");
         return;
@@ -120,22 +120,22 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
     }
     eventHandler_->PostTask(std::bind([=]() -> void {
         switch (type) {
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED: // 1
                 WindowUpdateAdded(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED: // 2
                 WindowUpdateRemoved(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: // 4
                 WindowUpdateBounds(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE: // 5
                 WindowUpdateActive(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: // 3
                 WindowUpdateFocused(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY:
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
                 WindowUpdateProperty(infos);
                 break;
             default:
@@ -249,7 +249,7 @@ AccessibilityWindowInfo AccessibilityWindowManager::CreateAccessibilityWindowInf
 
 void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
 {
-    HILOG_DEBUG("windowId(%{public}d)", windowId);
+    HILOG_DEBUG("windowId is %{public}d", windowId);
     if (windowId == INVALID_WINDOW_ID) {
         ClearOldActiveWindow();
         activeWindowId_ = INVALID_WINDOW_ID;
@@ -274,7 +274,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG("windowId is %{public}d", windowid);
     if (windowId == INVALID_WINDOW_ID) {
         ClearAccessibilityFocused();
         a11yFocusedWindowId_ = INVALID_WINDOW_ID;
@@ -378,7 +378,7 @@ void AccessibilityWindowManager::SetWindowSize(int32_t windowId, Rect rect)
 
 void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -407,7 +407,7 @@ void AccessibilityWindowManager::WindowUpdateAdded(const std::vector<sptr<Rosen:
 
 void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -435,7 +435,7 @@ void AccessibilityWindowManager::WindowUpdateRemoved(const std::vector<sptr<Rose
 
 void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -462,7 +462,7 @@ void AccessibilityWindowManager::WindowUpdateFocused(const std::vector<sptr<Rose
 
 void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
@@ -482,7 +482,7 @@ void AccessibilityWindowManager::WindowUpdateBounds(const std::vector<sptr<Rosen
 
 void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
             HILOG_ERROR("invalid windowInfo");
@@ -505,7 +505,7 @@ void AccessibilityWindowManager::WindowUpdateActive(const std::vector<sptr<Rosen
 
 void AccessibilityWindowManager::WindowUpdateProperty(const std::vector<sptr<Rosen::AccessibilityWindowInfo>>& infos)
 {
-    HILOG_DEBUG("start");
+    HILOG_DEBUG();
     auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
     for (auto &windowInfo : infos) {
         if (!windowInfo) {
