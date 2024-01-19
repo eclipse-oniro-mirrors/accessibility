@@ -584,7 +584,7 @@ int64_t AccessibilityWindowManager::GetSceneBoardElementId(const int32_t windowI
     if (subWindows_.count(windowId)) {
         auto iter = a11yWindows_.find(windowId);
         if (iter != a11yWindows_.end()) {
-            HILOG_DEBUG("GetSceneBoardElementId [%{public}" PRIu64 "]", iter->second.GetUiNodeId());
+            HILOG_DEBUG("GetSceneBoardElementId [%{public}" PRId64 "]", iter->second.GetUiNodeId());
             return iter->second.GetUiNodeId();
         }
     }
@@ -596,7 +596,7 @@ void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, in
     // sceneboard window id, element id is not equal -1
     if (subWindows_.count(windowId) && elementId != INVALID_SCENE_BOARD_ELEMENT_ID) {
         windowId = SCENE_BOARD_WINDOW_ID;
-        HILOG_INFO("windowId %{public}d, elementId %{public}" PRIu64 "", windowId, elementId);
+        HILOG_INFO("windowId %{public}d, elementId %{public}" PRId64 "", windowId, elementId);
         return;
     }
 
@@ -607,7 +607,7 @@ void AccessibilityWindowManager::GetRealWindowAndElementId(int32_t& windowId, in
     if (subWindows_.count(windowId)) {
         auto iter = a11yWindows_.find(windowId);
         if (iter != a11yWindows_.end()) {
-            HILOG_DEBUG("GetRealWindowAndElementId [%{public}" PRIu64 "]", iter->second.GetUiNodeId());
+            HILOG_DEBUG("GetRealWindowAndElementId [%{public}" PRId64 "]", iter->second.GetUiNodeId());
             windowId = SCENE_BOARD_WINDOW_ID;
             elementId = iter->second.GetUiNodeId();
             return;

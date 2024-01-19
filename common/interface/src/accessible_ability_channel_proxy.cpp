@@ -81,7 +81,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfoByAccessibilityId(const
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRIu64 "", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(requestId)) {
@@ -128,7 +128,7 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRIu64 "", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteString(text)) {
@@ -174,7 +174,7 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRIu64 "", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(focusType)) {
@@ -218,7 +218,7 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRIu64 "", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(direction)) {
@@ -259,7 +259,7 @@ RetError AccessibleAbilityChannelProxy::ExecuteAction(const int32_t accessibilit
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt64(elementId)) {
-        HILOG_ERROR("elementId write error: %{public}" PRIu64 "", elementId);
+        HILOG_ERROR("elementId write error: %{public}" PRId64 "", elementId);
         return RET_ERR_IPC_FAILED;
     }
     if (!data.WriteInt32(action)) {

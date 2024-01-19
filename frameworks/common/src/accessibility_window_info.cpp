@@ -173,12 +173,12 @@ int32_t AccessibilityWindowInfo::GetInnerWid() const
 void AccessibilityWindowInfo::SetUiNodeId(const int64_t nodeId)
 {
     uiNodeId_ = nodeId;
-    HILOG_DEBUG("uiNodeId_[%{public}" PRIu64 "]", uiNodeId_);
+    HILOG_DEBUG("uiNodeId_[%{public}" PRId64 "]", uiNodeId_);
 }
 
 int64_t AccessibilityWindowInfo::GetUiNodeId() const
 {
-    HILOG_DEBUG("uiNodeId_[%{public}" PRIu64 "]", uiNodeId_);
+    HILOG_DEBUG("uiNodeId_[%{public}" PRId64 "]", uiNodeId_);
     return uiNodeId_;
 }
 

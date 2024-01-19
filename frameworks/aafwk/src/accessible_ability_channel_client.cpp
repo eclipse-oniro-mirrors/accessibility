@@ -84,7 +84,7 @@ RetError AccessibleAbilityChannelClient::FindFocusedElementInfo(int32_t accessib
         HILOG_ERROR("FindFocusedElementInfo failed. ret[%{public}d]", ret);
         return ret;
     }
-    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}" PRIu64 ", focusType:%{public}d",
+    HILOG_DEBUG("channelId:%{public}d, windowId:%{public}d, elementId:%{public}" PRId64 ", focusType:%{public}d",
         channelId_, windowId, elementId, focusType);
 
     std::future_status wait = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));

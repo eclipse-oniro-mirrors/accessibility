@@ -330,7 +330,7 @@ RetError AccessibleAbilityClientImpl::GetFocusByElementInfo(const AccessibilityE
 
     int32_t windowId = sourceInfo.GetWindowId();
     int64_t elementId = sourceInfo.GetAccessibilityId();
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRIu64 "], focusType[%{public}d]",
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], focusType[%{public}d]",
         windowId, elementId, focusType);
 
     return channelClient_->FindFocusedElementInfo(windowId, elementId, focusType, elementInfo);
@@ -580,7 +580,7 @@ RetError AccessibleAbilityClientImpl::GetWindows(const uint64_t displayId,
 RetError AccessibleAbilityClientImpl::GetNext(const AccessibilityElementInfo &elementInfo,
     const FocusMoveDirection direction, AccessibilityElementInfo &nextElementInfo)
 {
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRIu64 "], direction[%{public}d]",
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], direction[%{public}d]",
         elementInfo.GetWindowId(), elementInfo.GetAccessibilityId(), direction);
     if (!isConnected_) {
         HILOG_ERROR("connection is broken");
@@ -617,9 +617,9 @@ RetError AccessibleAbilityClientImpl::GetChildElementInfo(const int32_t index, c
 
     int32_t windowId = parent.GetWindowId();
     int64_t childId = parent.GetChildId(index);
-    HILOG_DEBUG("windowId[%{public}d], childId[%{public}" PRIu64 "]", windowId, childId);
+    HILOG_DEBUG("windowId[%{public}d], childId[%{public}" PRId64 "]", windowId, childId);
     if (childId == -1) {
-        HILOG_ERROR("childId[%{public}" PRIu64 "] is invalid", childId);
+        HILOG_ERROR("childId[%{public}" PRId64 "] is invalid", childId);
         return RET_ERR_INVALID_PARAM;
     }
     if (GetCacheElementInfo(windowId, childId, child)) {
@@ -649,7 +649,7 @@ RetError AccessibleAbilityClientImpl::GetChildren(const AccessibilityElementInfo
     std::vector<int64_t> childIds =  parent.GetChildIds();
     HILOG_DEBUG("windowId[%{public}d], childIds.size[%{public}zu]", windowId, childIds.size());
     for (auto &childId : childIds) {
-        HILOG_DEBUG("childId[%{public}" PRIu64 "]", childId);
+        HILOG_DEBUG("childId[%{public}" PRId64 "]", childId);
         if (childId == -1) {
             HILOG_ERROR("childId is invalid");
             return RET_ERR_INVALID_PARAM;
@@ -689,7 +689,7 @@ RetError AccessibleAbilityClientImpl::GetByContent(const AccessibilityElementInf
 
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
-    HILOG_DEBUG("windowId %{public}d, elementId %{public}" PRIu64 ", text %{public}s",
+    HILOG_DEBUG("windowId %{public}d, elementId %{public}" PRId64 ", text %{public}s",
         windowId, elementId, text.c_str());
     if (text != "") { // find element condition is null, so we will search all element info
         return channelClient_->SearchElementInfosByText(windowId, elementId, text, elementInfos);
@@ -719,7 +719,7 @@ RetError AccessibleAbilityClientImpl::GetSource(const AccessibilityEventInfo &ev
     }
     int32_t windowId = eventInfo.GetWindowId();
     int64_t elementId = eventInfo.GetAccessibilityId();
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRIu64 "]", windowId, elementId);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "]", windowId, elementId);
     if (GetCacheElementInfo(windowId, elementId, elementInfo)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
@@ -743,7 +743,7 @@ RetError AccessibleAbilityClientImpl::GetParentElementInfo(const AccessibilityEl
     }
     int32_t windowId = child.GetWindowId();
     int64_t elementId = child.GetParentNodeId();
-    HILOG_DEBUG("windowId[%{public}d], parentId[%{public}" PRIu64 "]", windowId, elementId);
+    HILOG_DEBUG("windowId[%{public}d], parentId[%{public}" PRId64 "]", windowId, elementId);
     if (GetCacheElementInfo(windowId, elementId, parent)) {
         HILOG_DEBUG("get element info from cache");
         return RET_OK;
@@ -772,7 +772,7 @@ RetError AccessibleAbilityClientImpl::ExecuteAction(const AccessibilityElementIn
     }
     int32_t windowId = elementInfo.GetWindowId();
     int64_t elementId = elementInfo.GetAccessibilityId();
-    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRIu64 "], action[%{public}d", windowId, elementId, action);
+    HILOG_DEBUG("windowId[%{public}d], elementId[%{public}" PRId64 "], action[%{public}d", windowId, elementId, action);
     return channelClient_->ExecuteAction(windowId, elementId, action,
         const_cast<std::map<std::string, std::string> &>(actionArguments));
 }
@@ -874,7 +874,7 @@ bool AccessibleAbilityClientImpl::GetCacheElementInfo(const int32_t windowId,
 
     auto iter = cacheElementInfos_.find(elementId);
     if (iter == cacheElementInfos_.end()) {
-        HILOG_DEBUG("the element id[%{public}" PRIu64 "] is not in cache", elementId);
+        HILOG_DEBUG("the element id[%{public}" PRId64 "] is not in cache", elementId);
         return false;
     }
 
@@ -906,7 +906,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoFromAce(const int32_t win
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(
         windowId, elementId, static_cast<int32_t>(mode), elementInfos);
     if (ret != RET_OK) {
-        HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}" PRIu64 "] mode[%{public}d]",
+        HILOG_ERROR("search element info failed. windowId[%{public}d] elementId[%{public}" PRId64 "] mode[%{public}d]",
             windowId, elementId, mode);
         return ret;
     }
@@ -955,7 +955,7 @@ void AccessibleAbilityClientImpl::AddWindowElementMapByWMS(int32_t windowId, int
     int32_t realWindowId = windowId;
     int64_t realElementId = elementId;
     serviceProxy_->GetRealWindowAndElementId(realWindowId, realElementId);
-    HILOG_DEBUG("windowId %{public}d, real windowId %{public}d, real elementId %{public}" PRIu64 "",
+    HILOG_DEBUG("windowId %{public}d, real windowId %{public}d, real elementId %{public}" PRId64 "",
         windowId, realWindowId, realElementId);
     if (windowId != realElementId) {
         windowElementMap_.AddWindowElementIdPair(windowId, realElementId);
@@ -968,7 +968,7 @@ void AccessibleAbilityClientImpl::AddWindowElementMapByAce(int32_t windowId, int
     if (windowId == SCENE_BOARD_WINDOW_ID) {
         int32_t innerWid = INVALID_SCENE_BOARD_INNER_WINDOW_ID;
         serviceProxy_->GetSceneBoardInnerWinId(windowId, elementId, innerWid);
-        HILOG_DEBUG("windowId %{public}d, elementId %{public}" PRIu64 ", innerWid %{public}d",
+        HILOG_DEBUG("windowId %{public}d, elementId %{public}" PRId64 ", innerWid %{public}d",
             windowId, elementId, innerWid);
         if (innerWid != INVALID_SCENE_BOARD_INNER_WINDOW_ID) {
             windowElementMap_.AddWindowElementIdPair(innerWid, elementId);
@@ -1008,7 +1008,7 @@ RetError AccessibleAbilityClientImpl::SearchElementInfoRecursive(int32_t windowI
     RetError ret = channelClient_->SearchElementInfosByAccessibilityId(windowId, elementId,
         mode, elementInfos);
     if (ret != RET_OK) {
-        HILOG_ERROR("search element info failed. windowId %{public}d elementId %{public}" PRIu64 "",
+        HILOG_ERROR("search element info failed. windowId %{public}d elementId %{public}" PRId64 "",
             windowId, elementId);
         return ret;
     }
@@ -1136,7 +1136,7 @@ bool AccessibleAbilityClientImpl::ElementCacheInfo::GetElementByWindowId(const i
     }
 
     if (cache.find(elementId) == cache.end() && elementId != ROOT_NONE_ID) {
-        HILOG_DEBUG("elementId %{public}" PRIu64 " is not existed", elementId);
+        HILOG_DEBUG("elementId %{public}" PRId64 " is not existed", elementId);
         return false;
     }
 
@@ -1145,14 +1145,14 @@ bool AccessibleAbilityClientImpl::ElementCacheInfo::GetElementByWindowId(const i
         for (auto iter = cache.begin(); iter != cache.end(); iter++) {
             if (iter->second->GetComponentType() == "root") {
                 realElementId = iter->first;
-                HILOG_DEBUG("find realElementId %{public}" PRIu64 "", realElementId);
+                HILOG_DEBUG("find realElementId %{public}" PRId64 "", realElementId);
                 break;
             }
         }
     }
 
     if (realElementId == ROOT_NONE_ID) {
-        HILOG_ERROR("elementId %{public}" PRIu64 " is not existed", realElementId);
+        HILOG_ERROR("elementId %{public}" PRId64 " is not existed", realElementId);
         return false;
     }
 
