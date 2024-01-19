@@ -361,8 +361,7 @@ int NAccessibilityExtension::OnAccessibilityEventExec(uv_work_t *work, uv_loop_t
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
-                if (napi_set_named_property(data->env_, napiEventInfo,
-                    "timeStamp", nTimeStamp) != napi_ok) {
+                if (napi_set_named_property(data->env_, napiEventInfo, "timeStamp", nTimeStamp) != napi_ok) {
                     GET_AND_THROW_LAST_ERROR((data->env_));
                     break;
                 }
