@@ -58,6 +58,8 @@ public:
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId);
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid);
 
+    RetError GetFocusedWindowId(int32_t &focusedWindowId);
+
     // test for ut to resize a window
     void SetWindowSize(int32_t windowId, Rect rect);
 

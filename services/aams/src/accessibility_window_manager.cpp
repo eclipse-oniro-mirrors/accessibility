@@ -657,5 +657,18 @@ std::map<int32_t, int64_t> AccessibilityWindowManager::SceneBoardElementIdMap::G
     std::lock_guard<std::mutex> lock(mapMutex_);
     return windowElementMap_;
 }
+
+RetError AccessibilityWindowManager::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    HILOG_DEBUG();
+    HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "QueryFocusedWindowInfo");
+    Rosen::FocusChangeInfo focusedWindowInfo;
+    OHOS::Rosen::WindowManager::GetInstance().GetFocusWindowInfo(focusedWindowInfo);
+    if (focusedWindowInfo.windowId_ == INVALID_WINDOW_ID) {
+        return RET_ERR_INVALID_PARAM;
+    }
+    focusedWindowId = focusedWindowInfo.windowId_;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS

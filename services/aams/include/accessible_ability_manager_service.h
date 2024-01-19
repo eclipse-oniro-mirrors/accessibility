@@ -121,6 +121,7 @@ public:
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
     bool ExecuteActionOnAccessibilityFocused(const ActionType &action);
+    RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
 
 public:
     /* For inner modules */

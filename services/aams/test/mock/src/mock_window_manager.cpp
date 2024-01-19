@@ -36,5 +36,10 @@ WMError WindowManager::GetAccessibilityWindowInfo(std::vector<sptr<Accessibility
     infos.emplace_back(winInfo);
     return WMError::WM_OK;
 }
+
+void WindowManager::GetFocusWindowInfo(FocusChangeInfo &info)
+{
+    info.windowId_ = 1;
+}
 } // namespace Rosen
 } // namespace OHOS

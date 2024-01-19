@@ -585,5 +585,16 @@ void AccessibilitySystemAbilityClientImpl::SetPerformActionResult(const bool suc
     HILOG_DEBUG();
     SetExecuteActionResult(succeeded, requestId);
 }
+
+RetError AccessibilitySystemAbilityClientImpl::GetFocusedWindowId(int32_t &focusedWindowId)
+{
+    HILOG_DEBUG();
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!serviceProxy_) {
+        HILOG_ERROR("Failed to get aams service");
+        return RET_ERR_SAMGR;
+    }
+    return serviceProxy_->GetFocusedWindowId(focusedWindowId);
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -111,6 +111,7 @@ public:
     uint32_t RegisterConfigObserver(const sptr<IAccessibleAbilityManagerConfigObserver> &callback) override;
     void GetRealWindowAndElementId(int32_t& windowId, int64_t& elementId) override;
     void GetSceneBoardInnerWinId(int32_t windowId, int64_t elementId, int32_t& innerWid) override;
+    RetError GetFocusedWindowId(int32_t &focusedWindowId) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

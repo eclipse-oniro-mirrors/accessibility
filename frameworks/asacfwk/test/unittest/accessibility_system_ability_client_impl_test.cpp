@@ -951,5 +951,25 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, SetExecuteActionResult_003, T
     impl_ = nullptr;
     GTEST_LOG_(INFO) << "SetExecuteActionResult_003 end";
 }
+
+/**
+ * @tc.number: GetFocusedWindowId_001
+ * @tc.name: GetFocusedWindowId
+ * @tc.desc: Test function GetFocusedWindowId
+ */
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, GetFocusedWindowId_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "GetFocusedWindowId_001 start";
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+        return;
+    }
+    int32_t windowId = 0;
+    impl_->GetFocusedWindowId(windowId);
+    EXPECT_NE(impl_.get(), nullptr);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "GetFocusedWindowId_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS
