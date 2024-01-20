@@ -265,5 +265,30 @@ void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &e
 {
     (void)eventInfo;
 }
+
+void AccessibleAbilityConnection::OnAbilityConnectDoneSync(const AppExecFwk::ElementName &element,
+    const sptr<IRemoteObject> &remoteObject)
+{
+    HILOG_DEBUG();
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
+    if (!accountData) {
+        HILOG_ERROR("accountData is nullptr.");
+        return;
+    }
+    if (!remoteObject) {
+        HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
+        return;
+    }
+    elementName_ = element;
+
+    sptr<AccessibleAbilityConnection> pointer = this;
+    accountData->AddConnectedAbility(pointer);
+}
+
+void AccessibleAbilityConnection::OnAbilityDisconnectDoneSync(const AppExecFwk::ElementName &element)
+{
+    HILOG_DEBUG("start");
+    (void)element;
+}
 } // namespace Accessibility
 } // namespace OHOS

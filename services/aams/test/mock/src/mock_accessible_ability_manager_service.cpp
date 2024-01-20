@@ -548,5 +548,11 @@ RetError AccessibleAbilityManagerService::GetFocusedWindowId(int32_t &focusedWin
     focusedWindowId = 1;
     return RET_OK;
 }
+
+void AccessibleAbilityManagerService::SetTouchEventInjector(const sptr<TouchEventInjector> &touchEventInjector)
+{
+    HILOG_DEBUG();
+    touchEventInjector_ = touchEventInjector;
+}
 } // namespace Accessibility
 } // namespace OHOS
