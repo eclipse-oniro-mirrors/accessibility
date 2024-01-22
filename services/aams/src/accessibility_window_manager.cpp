@@ -126,13 +126,13 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
             case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED: // 2
                 WindowUpdateRemoved(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: // 4
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: // 3
                 WindowUpdateBounds(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE: // 5
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE: // 4
                 WindowUpdateActive(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: // 3
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: // 5
                 WindowUpdateFocused(infos);
                 break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
@@ -274,7 +274,7 @@ void AccessibilityWindowManager::SetActiveWindow(int32_t windowId)
 
 void AccessibilityWindowManager::SetAccessibilityFocusedWindow(int32_t windowId)
 {
-    HILOG_DEBUG("windowId is %{public}d", windowid);
+    HILOG_DEBUG("windowId is %{public}d", windowId);
     if (windowId == INVALID_WINDOW_ID) {
         ClearAccessibilityFocused();
         a11yFocusedWindowId_ = INVALID_WINDOW_ID;
