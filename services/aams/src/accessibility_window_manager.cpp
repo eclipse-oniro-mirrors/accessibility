@@ -126,13 +126,13 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
             case Rosen::WindowUpdateType::WINDOW_UPDATE_REMOVED: // 2
                 WindowUpdateRemoved(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: // 3
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_BOUNDS: // 4
                 WindowUpdateBounds(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE: // 4
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_ACTIVE: // 5
                 WindowUpdateActive(infos);
                 break;
-            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: // 5
+            case Rosen::WindowUpdateType::WINDOW_UPDATE_FOCUSED: // 3
                 WindowUpdateFocused(infos);
                 break;
             case Rosen::WindowUpdateType::WINDOW_UPDATE_PROPERTY: // 6
