@@ -245,11 +245,11 @@ void AccessibilityMultiTapGestureRecognizer::CancelFourFingerEvent()
     }
 
     handler_->RemoveEvent(FOUR_FINGER_SINGLE_TAP_MSG);
-    handler_->RemoveEvent(TWO_FINGER_LONG_PRESS_MSG);
-    handler_->RemoveEvent(TWO_FINGER_DOUBLE_TAP_MSG);
-    handler_->RemoveEvent(TWO_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
-    handler_->RemoveEvent(TWO_FINGER_TRIPLE_TAP_MSG);
-    handler_->RemoveEvent(TWO_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
+    handler_->RemoveEvent(FOUR_FINGER_LONG_PRESS_MSG);
+    handler_->RemoveEvent(FOUR_FINGER_DOUBLE_TAP_MSG);
+    handler_->RemoveEvent(FOUR_FINGER_DOUBLE_TAP_AND_HOLD_MSG);
+    handler_->RemoveEvent(FOUR_FINGER_TRIPLE_TAP_MSG);
+    handler_->RemoveEvent(FOUR_FINGER_TRIPLE_TAP_AND_HOLD_MSG);
 }
 
 void AccessibilityMultiTapGestureRecognizer::CancelTapAndHoldGestureEvent(const int32_t fingerNum)
@@ -522,13 +522,17 @@ void AccessibilityMultiTapGestureRecognizer::HandleMultiTapEvent(MMI::PointerEve
         static_cast<int32_t>(lastUpPoint_.size()) == fingerNum &&
         IsMultiFingerDoubleTap(event, fingerNum)) {
         HILOG_DEBUG("two finger Double tap is recognized, addContinueTapNum %d", addContinueTapNum_);
-        addContinueTapNum_ = (addContinueTapNum_ + 1) % MULTI_FINGER_MAX_CONTINUE_TAP_NUM;
+        addContinueTapNum_ = addContinueTapNum_ + 1;
     } else {
         addContinueTapNum_ = 0;
     }
-    if (fingerNum < POINTER_COUNT_2 || fingerNum > POINTER_COUNT_4 ||
-        addContinueTapNum_ >= MULTI_FINGER_MAX_CONTINUE_TAP_NUM) {
-        HILOG_ERROR("fingerNum: %d or tap times: %u is wrong", fingerNum, addContinueTapNum_);
+    if (fingerNum < POINTER_COUNT_2 || fingerNum > POINTER_COUNT_4) {
+        HILOG_ERROR("fingerNum: %d is wrong", fingerNum);
+        return;
+    }
+    if (addContinueTapNum_ >= MULTI_FINGER_MAX_CONTINUE_TAP_NUM) {
+        HILOG_ERROR("continue tap times: %u is wrong", addContinueTapNum_);
+        CancelGesture(true);
         return;
     }
     uint32_t fingerNumIndex = static_cast<uint32_t>(fingerNum - 2);
