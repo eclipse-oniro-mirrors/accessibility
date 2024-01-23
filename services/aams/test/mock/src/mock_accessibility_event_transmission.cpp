@@ -45,5 +45,17 @@ void EventTransmission::DestroyEvents()
 {
     AccessibilityAbilityHelper::GetInstance().SetDestroyState();
 }
+
+void EventTransmission::SetNext(const sptr<EventTransmission> &next)
+{
+    HILOG_DEBUG();
+    next_ = next;
+}
+
+sptr<EventTransmission> EventTransmission::GetNext()
+{
+    HILOG_DEBUG();
+    return next_;
+}
 } // namespace Accessibility
 } // namespace OHOS

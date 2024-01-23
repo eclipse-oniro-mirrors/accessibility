@@ -413,5 +413,32 @@ void AccessibilitySettingsConfig::ClearData()
 {
     HILOG_DEBUG("start.");
 }
+
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    ignoreRepeatClickState_ = state;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t time)
+{
+    HILOG_DEBUG("start.");
+    ignoreRepeatClickTime_ = time;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetStartFromAtoHosState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetClickResponseTime(const uint32_t time)
+{
+    HILOG_DEBUG("start.");
+    clickResponseTime_ = time;
+    return RET_OK;
+}
 } // namespace Accessibility
 } // namespace OHOS
