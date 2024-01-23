@@ -39,6 +39,7 @@ public:
     static AccessibilityWindowInfo CreateAccessibilityWindowInfo(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     static void UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
         const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
+    static bool CheckIntegerOverflow(const sptr<Rosen::AccessibilityWindowInfo> windowInfo);
     int32_t ConvertToRealWindowId(int32_t windowId, int32_t focusType);
     void RegisterWindowListener(const std::shared_ptr<AppExecFwk::EventHandler> &handler);
     void DeregisterWindowListener();
