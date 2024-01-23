@@ -81,7 +81,7 @@ void AccessibilityWindowManagerTest::SetUp()
 
 void AccessibilityWindowManagerTest::TearDown()
 {
-    GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest TearDown";
+    GTEST_LOG_(INFO) << "AccessibilityWindowManagerTest TearDown.";
 }
 
 sptr<Rosen::AccessibilityWindowInfo> GetRosenWindowInfo(Rosen::WindowType windowType)

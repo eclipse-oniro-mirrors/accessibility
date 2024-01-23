@@ -186,6 +186,47 @@ AccessibilityWindowType ConvertWindowType(Rosen::WindowType type)
     return winType;
 }
 
+bool AccessibilityWindowManager::CheckIntegerOverflow(const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
+{
+    if ((windowInfo->windowRect_.posX_ > 0) && (static_cast<int32_t>(windowInfo->windowRect_.width_) > 0)) {
+        int32_t leftX = INT32_MAX - windowInfo->windowRect_.posX_;
+        if (leftX < static_cast<int32_t>(windowInfo->windowRect_.width_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", windowInfo->windowRect_.posX_,
+                windowInfo->windowRect_.width_);
+            return false;
+        }
+    }
+
+    if ((windowInfo->windowRect_.posX_ < 0) && (static_cast<int32_t>(windowInfo->windowRect_.width_) < 0)) {
+        int32_t leftX = INT32_MIN - windowInfo->windowRect_.posX_;
+        if (leftX > static_cast<int32_t>(windowInfo->windowRect_.width_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, width_ %{public}u", windowInfo->windowRect_.posX_,
+                windowInfo->windowRect_.width_);
+            return false;
+        }
+    }
+
+    if ((windowInfo->windowRect_.posY_ > 0) && (static_cast<int32_t>(windowInfo->windowRect_.height_) > 0)) {
+        int32_t leftY = INT32_MAX - windowInfo->windowRect_.posY_;
+        if (leftY < static_cast<int32_t>(windowInfo->windowRect_.height_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", windowInfo->windowRect_.posY_,
+                windowInfo->windowRect_.height_);
+            return false;
+        }
+    }
+
+    if ((windowInfo->windowRect_.posY_ < 0) && (static_cast<int32_t>(windowInfo->windowRect_.height_) < 0)) {
+        int32_t leftY = INT32_MIN - windowInfo->windowRect_.posY_;
+        if (leftY > static_cast<int32_t>(windowInfo->windowRect_.height_)) {
+            HILOG_ERROR("input parameter invalid posX %{public}d, height_ %{public}u", windowInfo->windowRect_.posY_,
+                windowInfo->windowRect_.height_);
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWindowInfo &accWindowInfo,
     const sptr<Rosen::AccessibilityWindowInfo> windowInfo)
 {
@@ -202,9 +243,13 @@ void AccessibilityWindowManager::UpdateAccessibilityWindowInfo(AccessibilityWind
     } else {
         Rect bound;
         bound.SetLeftTopScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
-        bound.SetRightBottomScreenPostion(
-            windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
-            windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
+        if (!CheckIntegerOverflow(windowInfo)) {
+            bound.SetRightBottomScreenPostion(windowInfo->windowRect_.posX_, windowInfo->windowRect_.posY_);
+        } else {
+            bound.SetRightBottomScreenPostion(
+                windowInfo->windowRect_.posX_ + static_cast<int32_t>(windowInfo->windowRect_.width_),
+                windowInfo->windowRect_.posY_ + static_cast<int32_t>(windowInfo->windowRect_.height_));
+        }
         accWindowInfo.SetRectInScreen(bound);
     }
     accWindowInfo.SetDisplayId(windowInfo->displayId_);
