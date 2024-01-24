@@ -42,9 +42,8 @@ AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
 void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
-    HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
-    HILOG_DEBUG("search element add requestId[%{public}d]", mRequestId);
+    HILOG_DEBUG("search element add requestId[%{public}d] [elementId:%{public}d] [requestId:%{public}d]", mRequestId, elementId, requestId);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {

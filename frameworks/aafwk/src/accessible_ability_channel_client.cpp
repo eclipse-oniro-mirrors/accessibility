@@ -169,16 +169,16 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
-{
-    HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d]", channelId_, accessibilityWindowId);
+{   
+    int32_t requestId = GenerateRequestId();
+    HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d] [requestId:%{public}d]", channelId_, accessibilityWindowId, requestId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
     if (!proxy_) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
     }
-
-    int32_t requestId = GenerateRequestId();
+    
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
