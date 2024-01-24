@@ -171,14 +171,15 @@ RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
 {   
     int32_t requestId = GenerateRequestId();
-    HILOG_DEBUG("[channelId:%{public}d] [windowId:%{public}d] [requestId:%{public}d]", channelId_, accessibilityWindowId, requestId);
+    HILOG_DEBUG("[channelId:%{public}d] elementId:[%{public}" PRId64 "] [windowId:%{public}d] [requestId:%{public}d]",
+        channelId_, elementId, accessibilityWindowId, requestId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
     if (!proxy_) {
         HILOG_ERROR("SearchElementInfosByAccessibilityId Failed to connect to aams [channelId:%{public}d]",
             channelId_);
         return RET_ERR_SAMGR;
     }
-    
+
     sptr<AccessibilityElementOperatorCallbackImpl> elementOperator =
         new(std::nothrow) AccessibilityElementOperatorCallbackImpl();
     if (!elementOperator) {
