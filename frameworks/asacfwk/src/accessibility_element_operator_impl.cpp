@@ -153,7 +153,7 @@ int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
 void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("requestId is %{public}d", requestId);
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
