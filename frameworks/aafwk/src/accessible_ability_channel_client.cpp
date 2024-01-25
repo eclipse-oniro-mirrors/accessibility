@@ -169,9 +169,9 @@ RetError AccessibleAbilityChannelClient::ExecuteAction(int32_t accessibilityWind
 
 RetError AccessibleAbilityChannelClient::SearchElementInfosByAccessibilityId(int32_t accessibilityWindowId,
     int64_t elementId, int32_t mode, std::vector<AccessibilityElementInfo> &elementInfos)
-{   
+{
     int32_t requestId = GenerateRequestId();
-    HILOG_DEBUG("[channelId:%{public}d] elementId:[%{public}" PRId64 "] [windowId:%{public}d] [requestId:%{public}d]",
+    HILOG_DEBUG("channelId:%{public}d, elementId:%{public}" PRId64 ", windowId:%{public}d, requestId:%{public}d",
         channelId_, elementId, accessibilityWindowId, requestId);
     HITRACE_METER_NAME(HITRACE_TAG_ACCESSIBILITY_MANAGER, "SearchElementById");
     if (!proxy_) {
