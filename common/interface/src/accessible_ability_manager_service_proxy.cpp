@@ -1602,7 +1602,7 @@ RetError AccessibleAbilityManagerServiceProxy::GetFocusedWindowId(int32_t &focus
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    if (WriteInterfaceToken(data)) {
+    if (!WriteInterfaceToken(data)) {
         HILOG_ERROR("write token fail");
         return RET_ERR_IPC_FAILED;
     }
