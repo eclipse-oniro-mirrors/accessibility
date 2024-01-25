@@ -17,7 +17,7 @@
 #include "accessibility_element_operator.h"
 #include "accessibility_system_ability_client.h"
 #include "hilog_wrapper.h"
-
+#include <cinttypes>
 namespace OHOS {
 namespace Accessibility {
 namespace {
@@ -42,9 +42,9 @@ AccessibilityElementOperatorImpl::~AccessibilityElementOperatorImpl()
 void AccessibilityElementOperatorImpl::SearchElementInfoByAccessibilityId(const int64_t elementId,
     const int32_t requestId, const sptr<IAccessibilityElementOperatorCallback> &callback, const int32_t mode)
 {
-    HILOG_DEBUG();
     int32_t mRequestId = AddRequest(requestId, callback);
-    HILOG_DEBUG("search element add requestId[%{public}d]", mRequestId);
+    HILOG_DEBUG("search element add requestId[%{public}d], elementId[%{public}" PRId64 "], requestId[%{public}d]",
+        mRequestId, elementId, requestId);
     if (operator_) {
         operator_->SearchElementInfoByAccessibilityId(elementId, mRequestId, operatorCallback_, mode);
     } else {
@@ -154,7 +154,7 @@ int32_t AccessibilityElementOperatorImpl::AddRequest(int32_t requestId,
 void AccessibilityElementOperatorImpl::SetSearchElementInfoByAccessibilityIdResult(
     const std::list<AccessibilityElementInfo> &infos, const int32_t requestId)
 {
-    HILOG_DEBUG();
+    HILOG_DEBUG("requestId is %{public}d", requestId);
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<AccessibilityElementInfo> myInfos = TranslateListToVector(infos);
     auto iter = requests_.find(requestId);
