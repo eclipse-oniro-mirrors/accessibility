@@ -137,8 +137,9 @@ private:
     std::shared_ptr<AccessibilityElement> GetElement(const AccessibilityEventInfo& eventInfo);
     void CreateElementInfoByEventInfo(const AccessibilityEventInfo& eventInfo,
         const std::shared_ptr<AccessibilityElementInfo> &elementInfo);
-
     void GetSrcPath(std::string &srcPath);
+    int OnAccessibilityEventExec(uv_work_t *work, uv_loop_t *loop);
+    int OnKeyPressEventExec(uv_work_t *work, uv_loop_t *loop);
 
     NativeEngine *engine_ = nullptr;
     AbilityRuntime::JsRuntime& jsRuntime_;
