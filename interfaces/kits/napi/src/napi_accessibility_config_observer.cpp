@@ -29,12 +29,12 @@ using namespace OHOS::AccessibilityConfig;
 
 namespace OHOS {
 namespace Accessibility {
-    napi_handle_scope TmpOpenScope(napi_env env)
-    {
-        napi_handle_scope scope = nullptr;
-        NAPI_CALL(env, napi_open_handle_scope(env, &scope));
-        return scope;
-    }
+napi_handle_scope TmpOpenScope(napi_env env)
+{
+    napi_handle_scope scope = nullptr;
+    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+    return scope;
+}
 } // namespace Accessibility
 } // namespace OHOS
 

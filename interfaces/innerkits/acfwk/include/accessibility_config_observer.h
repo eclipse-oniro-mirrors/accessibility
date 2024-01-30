@@ -25,7 +25,7 @@
 
 namespace OHOS {
 namespace Accessibility {
-    napi_handle_scope TmpOpenScope(napi_env env);
+napi_handle_scope TmpOpenScope(napi_env env);
 } // namespace Accessibility
 } // namespace OHOS
 
