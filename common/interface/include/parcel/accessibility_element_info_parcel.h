@@ -157,7 +157,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    GridItemInfoParcel(const GridItemInfo &itemInfo);
+    explicit GridItemInfoParcel(const GridItemInfo &itemInfo);
 
     /**
      * @brief Used for IPC communication
@@ -244,7 +244,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo);
+    explicit AccessibilityElementInfoParcel(const AccessibilityElementInfo &elementInfo);
 
     /**
      * @brief Used for IPC communication

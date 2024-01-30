@@ -24,7 +24,7 @@ namespace Accessibility {
 class CaptionPropertyParcel : public AccessibilityConfig::CaptionProperty, public Parcelable {
 public:
     CaptionPropertyParcel() = default;
-    CaptionPropertyParcel(const AccessibilityConfig::CaptionProperty &property);
+    explicit CaptionPropertyParcel(const AccessibilityConfig::CaptionProperty &property);
     /**
      * @brief read this sequenceable object from a Parcel.
      * @param parcel Indicates the Parcel object into which the sequenceable
