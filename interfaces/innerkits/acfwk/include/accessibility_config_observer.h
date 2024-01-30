@@ -24,7 +24,7 @@
 #include "napi/native_node_api.h"
 
 namespace OHOS {
-    namespace Accessibility {
+namespace Accessibility {
     napi_handle_scope TmpOpenScope(napi_env env);
 } // namespace Accessibility
 } // namespace OHOS
