@@ -116,7 +116,7 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                OHOS::Accessibility::(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_object(callbackInfo->env_, &jsEvent);
             napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
