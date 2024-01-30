@@ -27,12 +27,7 @@ const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
 namespace OHOS {
 namespace Accessibility {
-    napi_handle_scope TmpOpenScope(napi_env env)
-    {
-        napi_handle_scope scope = nullptr;
-        NAPI_CALL(env, napi_open_handle_scope(env, &scope));
-        return scope;
-    }   
+    napi_handle_scope TmpOpenScope(napi_env env);      
 } 
 }
 

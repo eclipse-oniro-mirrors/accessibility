@@ -27,6 +27,17 @@ using namespace OHOS::Accessibility;
 using namespace OHOS::AccessibilityNapi;
 using namespace OHOS::AccessibilityConfig;
 
+namespace OHOS {
+namespace Accessibility {
+    napi_handle_scope TmpOpenScope(napi_env env)
+    {
+        napi_handle_scope scope = nullptr;
+        NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+        return scope;
+    }   
+} 
+}
+
 void NAccessibilityConfigObserver::OnConfigChangedExtra(const ConfigValue &value)
 {
     HILOG_INFO("id = [%{public}d]", static_cast<int32_t>(configId_));
