@@ -23,13 +23,13 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
-const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
-
 namespace OHOS {
 namespace Accessibility {
     napi_handle_scope TmpOpenScope(napi_env env);      
 } 
 }
+
+const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
 struct NAccessibilityConfigObserver {
 public:
