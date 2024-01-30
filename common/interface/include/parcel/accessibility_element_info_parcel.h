@@ -35,7 +35,7 @@ public:
      * @brief Construct
      * @param action The object of AccessibleAction
      */
-    AccessibleActionParcel(const AccessibleAction &action);
+    explicit AccessibleActionParcel(const AccessibleAction &action);
 
     /**
      * @brief Used for IPC communication
@@ -74,7 +74,7 @@ public:
      * @brief Construct
      * @param rangeInfo The object of RangeInfo.
      */
-    RangeInfoParcel(const RangeInfo &rangeInfo);
+    explicit RangeInfoParcel(const RangeInfo &rangeInfo);
 
     /**
      * @brief Used for IPC communication
@@ -115,7 +115,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    GridInfoParcel(const GridInfo &gridInfo);
+    explicit GridInfoParcel(const GridInfo &gridInfo);
 
     /**
      * @brief Used for IPC communication
@@ -199,7 +199,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    RectParcel(const Rect &rect);
+    explicit RectParcel(const Rect &rect);
 
     /**
      * @brief Used for IPC communication

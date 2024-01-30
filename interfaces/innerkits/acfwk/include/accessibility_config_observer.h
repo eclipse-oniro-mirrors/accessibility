@@ -25,6 +25,17 @@
 
 const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
+namespace OHOS {
+namespace Accessibility {
+    napi_handle_scope TmpOpenScope(napi_env env)
+    {
+        napi_handle_scope scope = nullptr;
+        NAPI_CALL(env, napi_open_handle_scope(env, &scope));
+        return scope;
+    }   
+} 
+}
+
 struct NAccessibilityConfigObserver {
 public:
     NAccessibilityConfigObserver(napi_env env, napi_ref callback, OHOS::AccessibilityConfig::CONFIG_ID id)
@@ -68,5 +79,4 @@ private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
-napi_handle_scope TmpOpenScope(napi_env env);
 #endif // ACCESSIBILITY_CONFIG_OBSERVER_H

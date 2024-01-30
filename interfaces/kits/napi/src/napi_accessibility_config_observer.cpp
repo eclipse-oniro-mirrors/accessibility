@@ -105,7 +105,7 @@ int NAccessibilityConfigObserver::NotifyStateChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_object(callbackInfo->env_, &jsEvent);
             napi_get_boolean(callbackInfo->env_, callbackInfo->state_, &jsEvent);
@@ -139,7 +139,7 @@ int NAccessibilityConfigObserver::NotifyPropertyChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_object(callbackInfo->env_, &jsEvent);
             ConvertCaptionPropertyToJS(callbackInfo->env_, jsEvent, callbackInfo->caption_);
@@ -173,7 +173,7 @@ int NAccessibilityConfigObserver::NotifyStringChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_string_utf8(callbackInfo->env_, callbackInfo->stringValue_.c_str(),
                 callbackInfo->stringValue_.length(), &jsEvent);
@@ -208,7 +208,7 @@ int NAccessibilityConfigObserver::NotifyStringVectorChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_array(callbackInfo->env_, &jsEvent);
             ConvertStringVecToJS(callbackInfo->env_, jsEvent, callbackInfo->stringVector_);
@@ -247,7 +247,7 @@ int NAccessibilityConfigObserver::NotifyIntChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_int32(callbackInfo->env_, callbackInfo->int32Value_, &jsEvent);
 
@@ -283,7 +283,7 @@ int NAccessibilityConfigObserver::NotifyUintChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_uint32(callbackInfo->env_, callbackInfo->uint32Value_, &jsEvent);
 
@@ -319,7 +319,7 @@ int NAccessibilityConfigObserver::NotifyFloatChanged(uv_work_t *work)
                 napi_close_handle_scope(callbackInfo->env_, scope);
             };
             std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scopes(
-                TmpOpenScope(callbackInfo->env_), closeScope);
+                OHOS::Accessibility::TmpOpenScope(callbackInfo->env_), closeScope);
             napi_value jsEvent;
             napi_create_double(callbackInfo->env_, double(callbackInfo->floatValue_), &jsEvent);
 
@@ -623,11 +623,4 @@ void NAccessibilityConfigObserverImpl::UnsubscribeObservers(OHOS::AccessibilityC
             iter++;
         }
     }
-}
-
-napi_handle_scope TmpOpenScope(napi_env env)
-{
-    napi_handle_scope scope = nullptr;
-    NAPI_CALL(env, napi_open_handle_scope(env, &scope));
-    return scope;
 }
