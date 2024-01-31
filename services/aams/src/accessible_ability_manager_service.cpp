@@ -15,6 +15,7 @@
 
 #include "accessible_ability_manager_service.h"
 
+#include <cinttypes>
 #include <new>
 #include <string>
 #include <unistd.h>
@@ -1391,7 +1392,8 @@ bool AccessibleAbilityManagerService::GetParentElementRecursively(int32_t window
     connection->GetProxy()->SearchElementInfoByAccessibilityId(elementId, REQUEST_ID_MAX, callBack, 0);
     std::future_status waitFocus = promiseFuture.wait_for(std::chrono::milliseconds(TIME_OUT_OPERATOR));
     if (waitFocus != std::future_status::ready) {
-        HILOG_ERROR("Failed to wait result");
+        ipcTimeoutNum_++;
+        HILOG_ERROR("Failed to wait result, number %{public}" PRId64 "", ipcTimeoutNum_);
         return false;
     }
 
