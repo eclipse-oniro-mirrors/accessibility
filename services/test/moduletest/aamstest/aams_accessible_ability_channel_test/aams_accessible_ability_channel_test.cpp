@@ -56,6 +56,7 @@ public:
 void AamsAccessibleAbilityChannelTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest SetUpTestCase";
+
     // Start AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStart();
     AccessibilityCommonHelper::GetInstance().WaitForServicePublish();
@@ -66,6 +67,7 @@ void AamsAccessibleAbilityChannelTest::SetUpTestCase()
 void AamsAccessibleAbilityChannelTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << "AamsAccessibleAbilityChannelTest TearDownTestCase";
+    
     // Stop AAMS
     Singleton<AccessibleAbilityManagerService>::GetInstance().OnStop();
 }

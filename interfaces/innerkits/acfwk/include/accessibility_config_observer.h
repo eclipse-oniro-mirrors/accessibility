@@ -23,6 +23,12 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 
+namespace OHOS {
+namespace Accessibility {
+napi_handle_scope TmpOpenScope(napi_env env);
+} // namespace Accessibility
+} // namespace OHOS
+
 const uint32_t CONFIG_START_WORK_ARGS_SIZE = 2;
 
 struct NAccessibilityConfigObserver {
@@ -68,5 +74,4 @@ private:
     std::mutex mutex_;
     std::vector<std::shared_ptr<NAccessibilityConfigObserver>> observers_ = {};
 };
-napi_handle_scope TmpOpenScope(napi_env env);
 #endif // ACCESSIBILITY_CONFIG_OBSERVER_H
