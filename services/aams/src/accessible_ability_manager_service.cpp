@@ -79,6 +79,7 @@ AccessibleAbilityManagerService::~AccessibleAbilityManagerService()
     inputInterceptor_ = nullptr;
     touchEventInjector_ = nullptr;
     keyEventFilter_ = nullptr;
+    a11yAccountsData_.Clear();
 }
 
 void AccessibleAbilityManagerService::OnStart()
