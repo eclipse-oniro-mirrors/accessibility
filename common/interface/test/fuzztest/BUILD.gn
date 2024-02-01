@@ -29,6 +29,7 @@ group("fuzztest") {
     "accessibleabilityclientstub_fuzzer:fuzztest",
     "accessibleabilitymanagercaptionobserverstub_fuzzer:fuzztest",
     "accessibleabilitymanagerconfigobserverstub_fuzzer:fuzztest",
+    "accessibleabilitymanagerservicestub_fuzzer:fuzztest",
     "accessibleabilitymanagerstateobserverstub_fuzzer:fuzztest",
   ]
 }
