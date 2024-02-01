@@ -23,9 +23,9 @@ config("module_parcel_private_config") {
     cflags += [ "-DBINDER_IPC_32BIT" ]
   }
   include_dirs = [
-    "../include/parcel",
-    "../../../common/log/include",
-    "../../../interfaces/innerkits/common/include",
+    "../../include/parcel",
+    "../../../../common/log/include",
+    "../../../../interfaces/innerkits/common/include",
   ]
   defines = [
     "AAMS_LOG_TAG = \"accessibility_parcel\"",
@@ -34,19 +34,19 @@ config("module_parcel_private_config") {
 }
 
 accessibility_parcel_src = [
-  "../src/parcel/accessibility_ability_info_parcel.cpp",
-  "../src/parcel/accessibility_caption_parcel.cpp",
-  "../src/parcel/accessibility_element_info_parcel.cpp",
-  "../src/parcel/accessibility_event_info_parcel.cpp",
-  "../src/parcel/accessibility_window_info_parcel.cpp",
+  "../../src/parcel/accessibility_ability_info_parcel.cpp",
+  "../../src/parcel/accessibility_caption_parcel.cpp",
+  "../../src/parcel/accessibility_element_info_parcel.cpp",
+  "../../src/parcel/accessibility_event_info_parcel.cpp",
+  "../../src/parcel/accessibility_window_info_parcel.cpp",
 ]
 
 accessibility_parcel_test_src = [
-  "unittest/accessibility_ability_info_parcel_test.cpp",
-  "unittest/accessibility_caption_parcel_test.cpp",
-  "unittest/accessibility_element_info_parcel_test.cpp",
-  "unittest/accessibility_event_info_parcel_test.cpp",
-  "unittest/accessibility_window_info_parcel_test.cpp",
+  "accessibility_ability_info_parcel_test.cpp",
+  "accessibility_caption_parcel_test.cpp",
+  "accessibility_element_info_parcel_test.cpp",
+  "accessibility_event_info_parcel_test.cpp",
+  "accessibility_window_info_parcel_test.cpp",
 ]
 
 ohos_unittest("accessibility_parcel_test") {
@@ -57,13 +57,13 @@ ohos_unittest("accessibility_parcel_test") {
 
   configs = [
     ":module_parcel_private_config",
-    "../../../resources/config/build:coverage_flags",
+    "../../../../resources/config/build:coverage_flags",
   ]
 
   deps = [
-    "../../../../../../third_party/googletest:gmock_main",
-    "../../../../../../third_party/googletest:gtest_main",
-    "../../../interfaces/innerkits/common:accessibility_common",
+    "../../../../../../../third_party/googletest:gmock_main",
+    "../../../../../../../third_party/googletest:gtest_main",
+    "../../../../interfaces/innerkits/common:accessibility_common",
   ]
 
   external_deps = [
