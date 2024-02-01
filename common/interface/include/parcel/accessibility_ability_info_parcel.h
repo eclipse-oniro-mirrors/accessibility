@@ -24,7 +24,7 @@ namespace Accessibility {
 class AccessibilityAbilityInfoParcel : public AccessibilityAbilityInfo, public Parcelable {
 public:
     AccessibilityAbilityInfoParcel() = default;
-    AccessibilityAbilityInfoParcel(const AccessibilityAbilityInfo &accessibilityAbilityInfo);
+    explicit AccessibilityAbilityInfoParcel(const AccessibilityAbilityInfo &accessibilityAbilityInfo);
 
     /**
      * @brief read this sequenceable object from a Parcel.

@@ -24,7 +24,7 @@ namespace Accessibility {
 class AccessibilityWindowInfoParcel : public AccessibilityWindowInfo, public Parcelable {
 public:
     AccessibilityWindowInfoParcel() = default;
-    AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo);
+    explicit AccessibilityWindowInfoParcel(const AccessibilityWindowInfo &accessibilityWindowInfo);
 
     /**
      * @brief Used for IPC communication.

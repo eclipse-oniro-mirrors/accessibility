@@ -36,7 +36,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo);
+    explicit AccessibilityEventInfoParcel(const AccessibilityEventInfo &eventInfo);
 
     /**
      * @brief Used for IPC communication
