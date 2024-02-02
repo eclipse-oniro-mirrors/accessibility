@@ -54,7 +54,7 @@ public:
      * @since 3
      * @sysCap Accessibility
      */
-    virtual bool Marshalling(Parcel &parcel) const override;
+    bool Marshalling(Parcel &parcel) const override;
 
     /**
      * @brief Used for IPC communication

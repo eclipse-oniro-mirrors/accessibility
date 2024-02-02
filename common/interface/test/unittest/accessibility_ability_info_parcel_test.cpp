@@ -35,6 +35,7 @@ public:
     {
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoParcelTest End";
     }
+
     void SetUp()
     {
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoParcelTest SetUp() Start";
@@ -52,6 +53,7 @@ public:
         abilityInfoParcel_ = std::make_shared<AccessibilityAbilityInfoParcel>(*abilityInfo_);
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoParcelTest SetUp() End";
     };
+    
     void TearDown()
     {
         GTEST_LOG_(INFO) << "AccessibilityAbilityInfoParcelTest TearDown()";
