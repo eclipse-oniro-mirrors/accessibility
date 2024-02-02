@@ -48,7 +48,7 @@ public:
      * @brief Used for IPC communication
      * @param parcel
      */
-    virtual bool Marshalling(Parcel &parcel) const override;
+    bool Marshalling(Parcel &parcel) const override;
 
     /**
      * @brief Used for IPC communication
