@@ -100,7 +100,7 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError RegisterElementOperator(const int32_t windowId,
-        const sptr<IAccessibilityElementOperator> &operation, bool isApp = true) = 0;
+        const sptr<IAccessibilityElementOperator> &operation, bool isApp = false) = 0;
 
     /**
      * @brief Deregister the element operator.
