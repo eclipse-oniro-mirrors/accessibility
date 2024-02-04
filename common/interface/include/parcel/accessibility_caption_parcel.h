@@ -39,7 +39,7 @@ public:
      * object will be marshaled.
      * @return Return true if Marshal successfully, else return false.
      */
-    virtual bool Marshalling(Parcel& parcel) const override;
+    bool Marshalling(Parcel& parcel) const override;
 
     /**
      * @brief Unmarshals this sequenceable object from a Parcel.

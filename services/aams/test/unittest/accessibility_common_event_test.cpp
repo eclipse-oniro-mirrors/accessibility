@@ -253,8 +253,8 @@ HWTEST_F(AccessibilityCommonEventUnitTest, AccessibilityCommonEvent_Unittest_Han
     data.SetWant(want);
     CommonEventManager::PublishCommonEvent(data);
     sleep(SLEEP_TIME);
+    
     EXPECT_TRUE(AccessibilityAbilityHelper::GetInstance().GetChangePackageFlag());
-
     GTEST_LOG_(INFO) << "AccessibilityCommonEvent_Unittest_HandlePackageChanged_001 end";
 }
 } // namespace Accessibility
