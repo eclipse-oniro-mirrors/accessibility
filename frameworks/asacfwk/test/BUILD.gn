@@ -74,6 +74,7 @@ ohos_unittest("asac_unit_test") {
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
     "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "data_share:datashare_common",
     "data_share:datashare_consumer",

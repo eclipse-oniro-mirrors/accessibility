@@ -86,6 +86,7 @@ ohos_unittest("accessibility_ui_test_ability_impl_test") {
     "ability_runtime:abilitykit_native",
     "ability_runtime:dataobs_manager",
     "ability_runtime:extension_manager",
+    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "data_share:datashare_common",
     "data_share:datashare_consumer",
