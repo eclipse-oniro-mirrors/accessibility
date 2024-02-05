@@ -93,6 +93,7 @@ public:
     static napi_value IsOpenTouchExplorationSync(napi_env env, napi_callback_info info);
     static napi_value GetAbilityList(napi_env env, napi_callback_info info);
     static napi_value GetAccessibilityExtensionList(napi_env env, napi_callback_info info);
+    static napi_value GetAccessibilityExtensionListSync(napi_env env, napi_callback_info info);
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
     static napi_value SendEvent(napi_env env, napi_callback_info info);

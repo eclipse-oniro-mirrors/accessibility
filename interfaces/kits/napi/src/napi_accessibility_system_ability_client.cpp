@@ -367,6 +367,67 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListAsync(
     return promise;
 }
 
+napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env, napi_callback_info info)
+{
+    size_t argc = ARGS_SIZE_THREE;
+    napi_value parameters[ARGS_SIZE_THREE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    OHOS::Accessibility::RetError errCode = OHOS::Accessibility::RET_OK;
+    OHOS::Accessibility::AbilityStateType stateTypes = OHOS::Accessibility::ABILITY_STATE_INVALID;
+    uint32_t abilityTypes = 0;
+
+    do {
+        if (argc < ARGS_SIZE_THREE - 1) {
+            HILOG_ERROR("argc is invalid: %{public}zu", argc);
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            break;
+        }
+
+        // parse ability type
+        std::string abilityTypeStr = "";
+        std::string stateTypeStr = "";
+        if (!ParseString(env, abilityTypeStr, parameters[PARAM0]) ||
+            !ParseString(env, stateTypeStr, parameters[PARAM1])) {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            break;
+        }
+
+        HILOG_DEBUG("abilityTypeStr = %{private}s", abilityTypeStr.c_str());
+        if (CheckAbilityType(abilityTypeStr)) {
+            abilityTypes = ConvertStringToAccessibilityAbilityTypes(abilityTypeStr);
+        } else {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+            break;
+        }
+
+        // parse ability state
+        HILOG_DEBUG("stateTypeStr = %{private}s", stateTypeStr.c_str());
+        if (CheckStateType(stateTypeStr)) {
+            stateTypes = ConvertStringToAbilityStateType(stateTypeStr);
+        } else {
+            errCode = OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+    } while (0);
+
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList {};
+    if (asaClient) {
+        errCode = asaClient->GetAbilityList(abilityTypes, stateTypes, abilityList);
+        if (errCode != OHOS::Accessibility::RET_OK) {
+            HILOG_ERROR("fail to get abilityList");
+        }
+    }
+
+    ACCESSIBILITY_NAPI_ASSERT(env, errCode == OHOS::Accessibility::RET_OK,
+        OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+
+    napi_value resultAbilityList;
+    napi_create_array(env, &resultAbilityList);
+    ConvertAccessibleAbilityInfosToJS(env, resultAbilityList, abilityList);
+    return resultAbilityList;
+}
+
 bool NAccessibilityClient::CheckAbilityType(const std::string& abilityType)
 {
     if (std::strcmp(abilityType.c_str(), "audible") == 0 ||
