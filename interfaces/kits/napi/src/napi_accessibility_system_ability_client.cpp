@@ -410,12 +410,11 @@ napi_value NAccessibilityClient::GetAccessibilityExtensionListSync(napi_env env,
         }
     } while (0);
 
-    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
     std::vector<OHOS::Accessibility::AccessibilityAbilityInfo> abilityList {};
-    if (asaClient) {
-        errCode = asaClient->GetAbilityList(abilityTypes, stateTypes, abilityList);
-        if (errCode != OHOS::Accessibility::RET_OK) {
-            HILOG_ERROR("fail to get abilityList");
+    if (errCode == OHOS::Accessibility::RET_OK) {
+        auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient) {
+            errCode = asaClient->GetAbilityList(abilityTypes, stateTypes, abilityList);
         }
     }
 
